@@ -13,6 +13,13 @@ Telemetry_Error_Fault_Type_Key = "Context.Default.AzureCLI.errorFaultType"
 Telemetry_Error_Name_Key = "Context.Default.AzureCLI.errorName"
 Telemetry_Error_Message_Key = "Context.Default.AzureCLI.errorMessage"
 Telemetry_Error_Tsg_Link_Key = "Context.Default.AzureCLI.errorTsgLink"
+Telemetry_Error_Exception_Type_Key = "Context.Default.AzureCLI.errorExceptionType"
+Telemetry_Error_Http_Status_Code_Key = "Context.Default.AzureCLI.errorHttpStatusCode"
+Telemetry_Warning_Code_Key = "Context.Default.AzureCLI.warningCode"
+Telemetry_Warning_Fault_Type_Key = "Context.Default.AzureCLI.warningFaultType"
+Telemetry_Warning_Name_Key = "Context.Default.AzureCLI.warningName"
+Telemetry_Warning_Message_Key = "Context.Default.AzureCLI.warningMessage"
+Telemetry_Warning_Tsg_Link_Key = "Context.Default.AzureCLI.warningTsgLink"
 
 Distribution_Enum_Values = [
     "generic",
@@ -216,6 +223,7 @@ Get_Credentials_Failed_Fault_Type = "failed-to-get-list-cluster-user-credentials
 Failed_To_Merge_Credentials_Fault_Type = "failed-to-merge-credentials"
 Kubeconfig_Failed_To_Load_Fault_Type = "failed-to-load-kubeconfig-file"
 Failed_To_Load_K8s_Configuration_Fault_Type = "failed-to-load-kubernetes-configuration"
+Failed_To_Inject_Private_Key_Fault_Type = "failed-to-inject-private-key"
 Failed_To_Merge_Kubeconfig_File = "failed-to-merge-kubeconfig-file"
 Download_Helm_Fault_Type = "helm-client-download-error"
 Create_HelmExe_Fault_Type = "helm-client-create-error"

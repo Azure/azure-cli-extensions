@@ -32,6 +32,7 @@ from azext_connectedk8s._utils import (
     _build_helm_timeout_telemetry_properties,
     _collect_timeout_diagnostics_from_events,
     _collect_timeout_diagnostics_from_pods,
+    _get_underlying_exception_type,
     _resolve_helm_timeout_classification,
     build_helm_timeout_report,
     check_cluster_DNS,
@@ -45,6 +46,7 @@ from azext_connectedk8s._utils import (
     remove_rsa_private_key,
     report_connectedk8s_diagnostic,
     report_connectedk8s_error,
+    report_connectedk8s_warning,
     report_helm_timeout_error,
     scrub_proxy_url,
     should_use_secret_injection_flow,
@@ -55,6 +57,36 @@ def _build_test_proxy_url(username, password):
     # Avoid storing credential-shaped URLs in the test source.
     credentials = f"{username}:{password}"
     return urlunsplit(("http", f"{credentials}@example.com:8080", "", "", ""))
+
+
+def test_get_underlying_exception_type_uses_transport_reason():
+    underlying = type("NameResolutionError", (Exception,), {})("sensitive endpoint")
+    outer = type("MaxRetryError", (Exception,), {"reason": underlying})("retry")
+
+    assert _get_underlying_exception_type(outer) == "NameResolutionError"
+
+
+def test_get_underlying_exception_type_uses_explicit_cause():
+    underlying = PermissionError("sensitive path")
+    outer = RuntimeError("wrapper")
+    outer.__cause__ = underlying
+
+    assert _get_underlying_exception_type(outer) == "PermissionError"
+
+
+def test_get_underlying_exception_type_stops_on_cycle():
+    outer = RuntimeError("wrapper")
+    underlying = OSError("underlying")
+    outer.__cause__ = underlying
+    underlying.__cause__ = outer
+
+    assert _get_underlying_exception_type(outer) == "OSError"
+
+
+def test_get_underlying_exception_type_is_bounded():
+    exception = type("E" * 256, (Exception,), {})("sensitive detail")
+
+    assert _get_underlying_exception_type(exception) == "E" * 128
 
 
 def test_remove_rsa_private_key():
@@ -464,7 +496,9 @@ def test_error_catalog_uses_proposed_exception_classes():
         "AZK8S0106": InvalidArgumentValueError,
         "AZK8S0200": FileOperationError,
         "AZK8S0201": ValidationError,
-        "AZK8S0203": ValidationError,
+        "AZK8S0202": ValidationError,
+        "AZK8S0205": ValidationError,
+        "AZK8S0206": ValidationError,
         "AZK8S0209": ValidationError,
         "AZK8S0403": ArgumentUsageError,
         "AZK8S0404": ArgumentUsageError,
@@ -609,6 +643,7 @@ def test_report_connectedk8s_error_uses_same_message_and_includes_arm_id(
     assert properties["Context.Default.AzureCLI.errorFaultType"] == "test-error"
     assert properties["Context.Default.AzureCLI.errorName"] == "TestError"
     assert properties["Context.Default.AzureCLI.errorMessage"] == expected_message
+    assert properties["Context.Default.AzureCLI.errorExceptionType"] == "RuntimeError"
     assert mock_telemetry.set_exception.call_args.kwargs["summary"] == expected_message
     mock_telemetry.set_user_fault.assert_called_once_with()
 
@@ -630,20 +665,22 @@ def test_report_connectedk8s_error_sanitizes_telemetry_apostrophes(monkeypatch):
     reported_error = report_connectedk8s_error(
         None,
         error,
-        details="Run 'helm version' to diagnose",
+        exception=RuntimeError("can't connect to host='127.0.0.1'"),
+        details="can't connect to host='127.0.0.1'",
     )
 
     assert str(reported_error) == (
-        "[AZK8S0009] TestError: Test message: Run 'helm version' to diagnose"
+        "[AZK8S0009] TestError: Test message: can't connect to host='127.0.0.1'"
     )
     _, properties = mock_telemetry.add_extension_event.call_args.args
     telemetry_message = properties["Context.Default.AzureCLI.errorMessage"]
     assert telemetry_message == (
-        "[AZK8S0009] TestError: Test message: Run helm version to diagnose"
+        "[AZK8S0009] TestError: Test message: cant connect to host=127.0.0.1"
     )
+    telemetry_exception = mock_telemetry.set_exception.call_args.kwargs["exception"]
+    assert type(telemetry_exception).__name__ == "RuntimeError"
+    assert str(telemetry_exception) == "cant connect to host=127.0.0.1"
     assert mock_telemetry.set_exception.call_args.kwargs["summary"] == telemetry_message
-    mock_telemetry.add_extension_event.assert_called_once()
-    mock_telemetry.set_exception.assert_called_once()
 
 
 def test_report_connectedk8s_diagnostic_does_not_build_cli_exception(monkeypatch):
@@ -671,6 +708,36 @@ def test_report_connectedk8s_diagnostic_does_not_build_cli_exception(monkeypatch
     add_event.assert_called_once()
     mock_telemetry.set_exception.assert_called_once()
     mock_telemetry.set_user_fault.assert_called_once_with()
+
+
+def test_report_connectedk8s_warning_logs_without_marking_command_failed(
+    monkeypatch,
+):
+    cmd = SimpleNamespace(cli_ctx=SimpleNamespace(data={}))
+    mock_telemetry = MagicMock()
+    mock_logger = MagicMock()
+    monkeypatch.setattr(utils_module, "telemetry", mock_telemetry)
+    monkeypatch.setattr(utils_module, "logger", mock_logger)
+
+    message = report_connectedk8s_warning(
+        cmd,
+        errors_module.KUBERNETES_NAMESPACE_GET_FAILED,
+        details="namespace lookup failed",
+    )
+
+    assert message.startswith(
+        "[AZK8S0204] KubernetesNamespaceGetFailed: "
+        "Failed to determine the Kubernetes namespace."
+    )
+    _, properties = mock_telemetry.add_extension_event.call_args.args
+    assert properties["Context.Default.AzureCLI.warningCode"] == "AZK8S0204"
+    assert (
+        properties["Context.Default.AzureCLI.warningFaultType"]
+        == errors_module.KUBERNETES_NAMESPACE_GET_FAILED.fault_type
+    )
+    mock_logger.warning.assert_called_once_with("%s", message)
+    mock_telemetry.set_exception.assert_not_called()
+    mock_telemetry.set_user_fault.assert_not_called()
 
 
 def test_build_helm_timeout_report_preserves_failed_diagnostics(monkeypatch):

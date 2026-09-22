@@ -9,6 +9,8 @@ from typing import Dict, Optional
 from unittest.mock import MagicMock, create_autospec
 
 import pytest
+from azure.cli.core.azclierror import AzCLIError, FileOperationError, ValidationError
+from kubernetes.client.exceptions import ApiException
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
@@ -346,6 +348,367 @@ def test_check_cl_registration_reports_standardized_error(monkeypatch):
     mock_telemetry.add_extension_event.assert_called_once()
     mock_telemetry.set_exception.assert_called_once()
     mock_telemetry.set_user_fault.assert_not_called()
+
+
+def test_load_kube_config_forwards_command_context(monkeypatch):
+    cmd = MagicMock()
+    expected = ValidationError("reported")
+    report_error = MagicMock(return_value=expected)
+    monkeypatch.setattr(
+        custom.config,
+        "load_kube_config",
+        MagicMock(side_effect=RuntimeError("invalid kubeconfig")),
+    )
+    monkeypatch.setattr(custom.utils, "report_connectedk8s_error", report_error)
+
+    with pytest.raises(ValidationError) as raised:
+        custom.load_kube_config(None, None, False, cmd=cmd)
+
+    assert raised.value is expected
+    assert report_error.call_args.args[0] is cmd
+    assert report_error.call_args.kwargs["user_fault"] is True
+    assert report_error.call_args.kwargs["details"] == "invalid kubeconfig"
+
+
+def test_check_kube_connection_forwards_command_context(monkeypatch):
+    cmd = MagicMock()
+    api_instance = MagicMock()
+    api_instance.get_code.side_effect = RuntimeError("cluster unreachable")
+    exception_handler = MagicMock(side_effect=ValidationError("reported"))
+    monkeypatch.setattr(
+        custom.kube_client, "VersionApi", MagicMock(return_value=api_instance)
+    )
+    monkeypatch.setattr(custom.utils, "kubernetes_exception_handler", exception_handler)
+
+    with pytest.raises(ValidationError):
+        custom.check_kube_connection(cmd=cmd)
+
+    assert exception_handler.call_args.kwargs["cmd"] is cmd
+
+
+def test_private_key_injection_forwards_command_context(monkeypatch):
+    cmd = MagicMock()
+    api_instance = MagicMock()
+    api_instance.create_namespaced_secret.side_effect = ApiException(status=403)
+    exception_handler = MagicMock(side_effect=ValidationError("reported"))
+    monkeypatch.setattr(
+        custom.utils,
+        "ensure_arc_namespace_with_helm_metadata",
+        MagicMock(),
+    )
+    monkeypatch.setattr(
+        custom.utils.kube_client,
+        "CoreV1Api",
+        MagicMock(return_value=api_instance),
+    )
+    monkeypatch.setattr(custom.utils, "kubernetes_exception_handler", exception_handler)
+
+    with pytest.raises(ValidationError):
+        custom.utils.inject_onboarding_private_key_secret("private-key", cmd=cmd)
+
+    assert exception_handler.call_args.kwargs["cmd"] is cmd
+
+
+def test_namespace_cleanup_transient_lookup_failure_is_not_reported(monkeypatch):
+    cmd = MagicMock()
+    api_instance = MagicMock()
+    api_instance.list_namespace.side_effect = [
+        RuntimeError("cluster unreachable"),
+        MagicMock(items=[]),
+    ]
+    exception_handler = MagicMock()
+    sleep = MagicMock()
+    monkeypatch.setattr(
+        custom.utils.kube_client,
+        "CoreV1Api",
+        MagicMock(return_value=api_instance),
+    )
+    monkeypatch.setattr(custom.utils, "kubernetes_exception_handler", exception_handler)
+    monkeypatch.setattr(custom.utils.time, "sleep", sleep)
+
+    custom.utils.ensure_namespace_cleanup(cmd)
+
+    exception_handler.assert_not_called()
+    sleep.assert_not_called()
+
+
+def test_namespace_cleanup_reports_persistent_lookup_failure_without_raising(
+    monkeypatch,
+):
+    cmd = MagicMock()
+    lookup_error = RuntimeError("cluster unreachable")
+    api_instance = MagicMock()
+    api_instance.list_namespace.side_effect = lookup_error
+    exception_handler = MagicMock()
+    monkeypatch.setattr(
+        custom.utils.kube_client,
+        "CoreV1Api",
+        MagicMock(return_value=api_instance),
+    )
+    monkeypatch.setattr(custom.utils, "kubernetes_exception_handler", exception_handler)
+    monkeypatch.setattr(custom.utils.time, "sleep", MagicMock())
+    monkeypatch.setattr(
+        custom.utils.time,
+        "time",
+        MagicMock(side_effect=[0, 0, 181, 181]),
+    )
+
+    custom.utils.ensure_namespace_cleanup(cmd)
+
+    exception_handler.assert_called_once()
+    assert exception_handler.call_args.args[0] is lookup_error
+    assert exception_handler.call_args.kwargs["raise_error"] is False
+    assert exception_handler.call_args.kwargs["cmd"] is cmd
+
+
+@pytest.fixture
+def onboarding_access_context(monkeypatch):
+    cmd = MagicMock()
+    cmd.cli_ctx.data = {}
+    cmd.cli_ctx.cloud.endpoints.resource_manager = "https://management.azure.com"
+    telemetry = MagicMock()
+    monkeypatch.setattr(custom, "telemetry", telemetry)
+    monkeypatch.setattr(custom.utils, "telemetry", telemetry)
+    monkeypatch.setattr(custom.precheckutils, "telemetry", telemetry)
+    for name, value in {
+        "get_subscription_id": "subscription",
+        "send_cloud_telemetry": "AzureCloud",
+        "set_kube_config": "kubeconfig",
+        "get_config_dp_endpoint": ("endpoint", "stable"),
+        "get_kubectl_client_location": "kubectl",
+        "get_helm_client_location": "helm",
+    }.items():
+        monkeypatch.setattr(custom, name, MagicMock(return_value=value))
+    for name, value in {
+        "validate_custom_token": (False, "eastus"),
+        "check_provider_registrations": None,
+        "get_values_file": None,
+        "get_metadata": {},
+    }.items():
+        monkeypatch.setattr(custom.utils, name, MagicMock(return_value=value))
+    monkeypatch.setattr(custom.config, "load_kube_config", MagicMock())
+    version_api = MagicMock()
+    version_api.get_code.return_value.git_version = "v1.30.0"
+    monkeypatch.setattr(
+        custom.kube_client, "VersionApi", MagicMock(return_value=version_api)
+    )
+    core_api = MagicMock()
+    monkeypatch.setattr(
+        custom.kube_client, "CoreV1Api", MagicMock(return_value=core_api)
+    )
+    permission = MagicMock(return_value=False)
+    monkeypatch.setattr(custom.utils, "can_create_clusterrolebindings", permission)
+    helm_install = MagicMock()
+    monkeypatch.setattr(custom.utils, "helm_install_release", helm_install)
+    return SimpleNamespace(
+        cmd=cmd,
+        telemetry=telemetry,
+        core_api=core_api,
+        permission=permission,
+        helm_install=helm_install,
+        version_api=version_api,
+    )
+
+
+@pytest.mark.parametrize("node_os", ["linux", "windows"])
+@pytest.mark.parametrize("permission", [False, "Unknown"])
+def test_onboarding_permission_failure_emits_one_fault(
+    onboarding_access_context, node_os, permission
+):
+    ctx = onboarding_access_context
+    ctx.core_api.list_node.return_value = V1NodeList(
+        items=[create_node(labels={"kubernetes.io/os": node_os})]
+    )
+    ctx.permission.return_value = permission
+
+    with pytest.raises(ValidationError, match="ClusterRoleBindingCreateForbidden"):
+        custom.create_connectedk8s(
+            ctx.cmd,
+            MagicMock(),
+            "rg",
+            "cluster",
+            infrastructure="azure_stack_hci",
+            distribution="aks_edge_k3s",
+        )
+
+    ctx.telemetry.set_exception.assert_called_once()
+    fault = ctx.telemetry.set_exception.call_args.kwargs
+    assert (
+        fault["fault_type"]
+        == custom.consts.Cannot_Create_ClusterRoleBindings_Fault_Type
+    )
+    ctx.permission.assert_called_once()
+    ctx.helm_install.assert_not_called()
+    properties = ctx.telemetry.add_extension_event.call_args.args[1]
+    assert properties[custom.consts.Telemetry_Error_Code_Key] == (
+        custom.errors.CLUSTER_ROLE_BINDING_CREATE_FORBIDDEN.code
+    )
+    assert properties[
+        custom.consts.Connected_Cluster_Arm_Id_Telemetry_Property
+    ].endswith("/connectedClusters/cluster")
+    warning_events = [
+        call.args[1]
+        for call in ctx.telemetry.add_extension_event.call_args_list
+        if custom.consts.Telemetry_Warning_Code_Key in call.args[1]
+    ]
+    assert len(warning_events) == (0 if node_os == "linux" else 1)
+
+
+@pytest.mark.parametrize("failure_point", ["kubeconfig", "connectivity"])
+def test_onboarding_cluster_access_failure_is_not_reported_twice(
+    onboarding_access_context, monkeypatch, failure_point
+):
+    ctx = onboarding_access_context
+    if failure_point == "kubeconfig":
+        monkeypatch.setattr(
+            custom.config,
+            "load_kube_config",
+            MagicMock(side_effect=RuntimeError("invalid kubeconfig")),
+        )
+    else:
+        ctx.version_api.get_code.side_effect = ApiException(status=403)
+
+    with pytest.raises(AzCLIError):
+        custom.create_connectedk8s(ctx.cmd, MagicMock(), "rg", "cluster")
+
+    ctx.telemetry.set_exception.assert_called_once()
+    ctx.core_api.list_node.assert_not_called()
+    ctx.permission.assert_not_called()
+    ctx.helm_install.assert_not_called()
+    properties = ctx.telemetry.add_extension_event.call_args.args[1]
+    assert properties[custom.consts.Telemetry_Error_Exception_Type_Key] == (
+        "RuntimeError" if failure_point == "kubeconfig" else "ApiException"
+    )
+    if failure_point == "connectivity":
+        assert properties[custom.consts.Telemetry_Error_Http_Status_Code_Key] == 403
+
+
+@pytest.mark.parametrize("status", [401, 403, 404, 429, 500])
+def test_private_key_failure_retains_status_and_emits_one_fault(monkeypatch, status):
+    cmd = SimpleNamespace(cli_ctx=SimpleNamespace(data={}))
+    telemetry = MagicMock()
+    monkeypatch.setattr(custom.utils, "telemetry", telemetry)
+    monkeypatch.setattr(custom, "telemetry", telemetry)
+    monkeypatch.setattr(
+        custom.utils, "ensure_arc_namespace_with_helm_metadata", MagicMock()
+    )
+    api = MagicMock()
+    api.create_namespaced_secret.side_effect = ApiException(status=status)
+    monkeypatch.setattr(
+        custom.utils.kube_client, "CoreV1Api", MagicMock(return_value=api)
+    )
+
+    @_telemetry_catch_all
+    def inject(cmd):
+        custom.utils.inject_onboarding_private_key_secret("private-key", cmd=cmd)
+
+    with pytest.raises(AzCLIError):
+        inject(cmd)
+
+    telemetry.set_exception.assert_called_once()
+    properties = telemetry.add_extension_event.call_args.args[1]
+    assert properties[custom.consts.Telemetry_Error_Http_Status_Code_Key] == status
+    assert (
+        properties[custom.consts.Telemetry_Error_Exception_Type_Key] == "ApiException"
+    )
+    assert properties[custom.consts.Telemetry_Error_Fault_Type_Key] == (
+        custom.errors.KUBERNETES_PRIVATE_KEY_INJECTION_FAILED.fault_type
+    )
+    api.replace_namespaced_secret.assert_not_called()
+
+
+@pytest.mark.parametrize("check", ["aks", "proxy"])
+def test_kubeconfig_lookup_error_keeps_command_context(monkeypatch, check):
+    arm_id = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Kubernetes/connectedClusters/cluster"
+    cmd = SimpleNamespace(
+        cli_ctx=SimpleNamespace(
+            data={custom.consts.Connected_Cluster_Arm_Id_Telemetry_Context_Key: arm_id}
+        )
+    )
+    telemetry = MagicMock()
+    monkeypatch.setattr(custom.utils, "telemetry", telemetry)
+    monkeypatch.setattr(
+        custom,
+        "KubeConfigMerger",
+        MagicMock(side_effect=RuntimeError("invalid kubeconfig")),
+    )
+    with pytest.raises(FileOperationError):
+        if check == "aks":
+            custom.check_aks_cluster("kubeconfig", None, cmd=cmd)
+        else:
+            custom.check_proxy_kubeconfig("kubeconfig", None, "hash", cmd=cmd)
+
+    telemetry.set_exception.assert_called_once()
+    properties = telemetry.add_extension_event.call_args.args[1]
+    assert (
+        properties[custom.consts.Connected_Cluster_Arm_Id_Telemetry_Property] == arm_id
+    )
+
+
+def test_merge_kubernetes_configurations_does_not_rereport_az_cli_error(monkeypatch):
+    expected = FileOperationError("already reported")
+    report_error = MagicMock()
+    monkeypatch.setattr(
+        custom,
+        "load_kubernetes_configuration",
+        MagicMock(side_effect=expected),
+    )
+    monkeypatch.setattr(custom.utils, "report_connectedk8s_error", report_error)
+
+    with pytest.raises(FileOperationError) as raised:
+        custom.merge_kubernetes_configurations("existing", "addition", False)
+
+    assert raised.value is expected
+    report_error.assert_not_called()
+
+
+def test_client_side_proxy_does_not_rereport_merge_az_cli_error(monkeypatch):
+    expected = FileOperationError("already reported")
+    process = MagicMock()
+    response = MagicMock()
+    response.text = '{"kubeconfigs": [{"value": "YXBpVmVyc2lvbjogdjE="}]}'
+
+    monkeypatch.setattr(custom, "get_subscription_id", MagicMock(return_value="sub"))
+    monkeypatch.setattr(custom, "Popen", MagicMock(return_value=process))
+    monkeypatch.setattr(
+        custom.proxylogic,
+        "get_cluster_user_credentials",
+        MagicMock(return_value=MagicMock()),
+    )
+    monkeypatch.setattr(
+        custom.clientproxyutils,
+        "prepare_clientproxy_data",
+        MagicMock(return_value={"hybridConnectionConfig": {"expirationTime": 123}}),
+    )
+    monkeypatch.setattr(
+        custom.proxylogic,
+        "post_register_to_proxy",
+        MagicMock(return_value=response),
+    )
+    monkeypatch.setattr(
+        custom, "print_or_merge_credentials", MagicMock(side_effect=expected)
+    )
+    telemetry = MagicMock()
+    monkeypatch.setattr(custom, "telemetry", telemetry)
+
+    with pytest.raises(FileOperationError) as raised:
+        custom.client_side_proxy(
+            MagicMock(),
+            "tenant",
+            MagicMock(),
+            "rg",
+            "cluster",
+            custom.ProxyStatus.FirstRun,
+            ["clientproxy"],
+            47010,
+            47011,
+            False,
+            token="token",
+        )
+
+    assert raised.value is expected
+    process.terminate.assert_called_once()
+    telemetry.set_exception.assert_not_called()
 
 
 def create_node(

@@ -592,6 +592,7 @@ class TestSendPostDiagnosticPrecheckFailureTelemetry:
             props[consts.Telemetry_Onboarding_Error_Type_Key]
             == consts.Post_Diagnostic_Precheck_Fault_Type
         )
+        mock_telemetry.set_exception.assert_called_once()
 
     @patch("azext_connectedk8s._precheckutils.telemetry")
     def test_message_includes_check_name_and_reason(self, mock_telemetry):

@@ -318,17 +318,23 @@ def send_prediagnostic_check_failure_telemetry(
     _send_onboarding_telemetry_event(fault_type, summary)
 
 
+def get_post_diagnostic_precheck_telemetry_properties(
+    check_name: str, reason: str
+) -> dict[str, str]:
+    """Build extension telemetry properties for a post-diagnostic precheck failure."""
+    msg = {"checkName": check_name, "reason": reason}
+
+    return {
+        consts.Telemetry_Onboarding_Error_Type_Key: consts.Post_Diagnostic_Precheck_Fault_Type,
+        consts.Telemetry_Onboarding_Error_Message_Key: json.dumps(msg).replace("'", ""),
+    }
+
+
 def send_post_diagnostic_precheck_failure_telemetry(
     check_name: str, reason: str, cmd: CLICommand | None = None
 ) -> None:
     """Send telemetry for individual precheck failures that occur after the diagnostic job."""
-    # Build structured message for add_extension_event
-    msg = {"checkName": check_name, "reason": reason}
-
-    props = {
-        consts.Telemetry_Onboarding_Error_Type_Key: consts.Post_Diagnostic_Precheck_Fault_Type,
-        consts.Telemetry_Onboarding_Error_Message_Key: json.dumps(msg).replace("'", ""),
-    }
+    props = get_post_diagnostic_precheck_telemetry_properties(check_name, reason)
     azext_utils.add_connectedk8s_telemetry_event(cmd, props)
 
     # Also send via set_exception for ADX fault_type encoding

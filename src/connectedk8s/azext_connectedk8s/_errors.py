@@ -197,40 +197,38 @@ KUBERNETES_CONNECTIVITY_FAILED = _define(
     name="KubernetesConnectivityFailed",
     description="Unable to connect to the Kubernetes cluster.",
     fault_type=consts.Kubernetes_Connectivity_FaultType,
-)
-DEFAULT_NAMESPACE_NOT_FOUND = _define(
-    code="AZK8S0203",
-    name="DefaultNamespaceNotFound",
-    description="The default namespace does not exist on the Kubernetes cluster.",
-    fault_type=consts.Default_Namespace_Does_Not_Exist_Fault_Type,
     az_error_cls=ValidationError,
 )
 KUBERNETES_DISTRIBUTION_DETECTION_FAILED = _define(
-    code="AZK8S0204",
+    code="AZK8S0203",
     name="KubernetesDistributionDetectionFailed",
     description="Failed to detect the Kubernetes distribution.",
     fault_type=consts.Get_Kubernetes_Distro_Fault_Type,
+    az_error_cls=CLIInternalError,
 )
 KUBERNETES_NAMESPACE_GET_FAILED = _define(
-    code="AZK8S0205",
+    code="AZK8S0204",
     name="KubernetesNamespaceGetFailed",
     description="Failed to determine the Kubernetes namespace.",
     fault_type=consts.Get_Kubernetes_Namespace_Fault_Type,
+    az_error_cls=CLIInternalError,
 )
 LINUX_NODE_NOT_FOUND = _define(
-    code="AZK8S0206",
+    code="AZK8S0205",
     name="LinuxNodeNotFound",
     description="No Linux node is available for scheduling Azure Arc agents.",
     fault_type=consts.Linux_Node_Not_Exists_Fault_Type,
+    az_error_cls=ValidationError,
 )
 CLUSTER_ROLE_BINDING_CREATE_FORBIDDEN = _define(
-    code="AZK8S0207",
+    code="AZK8S0206",
     name="ClusterRoleBindingCreateForbidden",
     description="The current identity cannot create Kubernetes ClusterRoleBindings.",
     fault_type=consts.Cannot_Create_ClusterRoleBindings_Fault_Type,
+    az_error_cls=ValidationError,
 )
 KUBERNETES_CONFIGURATION_LOAD_FAILED = _define(
-    code="AZK8S0208",
+    code="AZK8S0207",
     name="KubernetesConfigurationLoadFailed",
     description="Failed to load the Kubernetes client configuration.",
     fault_type=consts.Failed_To_Load_K8s_Configuration_Fault_Type,
@@ -241,6 +239,15 @@ CONFIGMAP_WRITE_FAILED = _define(
     description="Failed to {operation} the ConfigMap.",
     fault_type=consts.Create_ConfigMap_Fault_Type,
     az_error_cls=ValidationError,
+)
+
+KUBERNETES_PRIVATE_KEY_INJECTION_FAILED = _define(
+    code="AZK8S0208",
+    name="KubernetesPrivateKeyInjectionFailed",
+    description="Failed to inject the private key into the Kubernetes cluster.",
+    fault_type=consts.Failed_To_Inject_Private_Key_Fault_Type,
+    fault_type_aliases=(consts.Inject_PrivateKey_Secret_Fault_Type,),
+    az_error_cls=CLIInternalError,
 )
 
 # Network & Connectivity (AZK8S0300-AZK8S0399)
@@ -635,11 +642,11 @@ ALL_ERRORS: tuple[ArcError, ...] = (
     KUBECONFIG_LOAD_FAILED,
     CONFIGMAP_READ_FAILED,
     KUBERNETES_CONNECTIVITY_FAILED,
-    DEFAULT_NAMESPACE_NOT_FOUND,
     KUBERNETES_DISTRIBUTION_DETECTION_FAILED,
     KUBERNETES_NAMESPACE_GET_FAILED,
     LINUX_NODE_NOT_FOUND,
     CLUSTER_ROLE_BINDING_CREATE_FORBIDDEN,
+    KUBERNETES_PRIVATE_KEY_INJECTION_FAILED,
     KUBERNETES_CONFIGURATION_LOAD_FAILED,
     CONFIGMAP_WRITE_FAILED,
     DATA_PLANE_HEALTH_CHECK_FAILED,
