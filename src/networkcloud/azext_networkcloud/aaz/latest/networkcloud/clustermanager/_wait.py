@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-08-01-preview"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-01",
+                    "api-version", "2026-08-01-preview",
                     required=True,
                 ),
             }
@@ -246,6 +246,9 @@ class Wait(AAZWaitCommand):
             properties.relay_configuration = AAZObjectType(
                 serialized_name="relayConfiguration",
                 flags={"read_only": True},
+            )
+            properties.rollout_ring = AAZIntType(
+                serialized_name="rolloutRing",
             )
             properties.vm_size = AAZStrType(
                 serialized_name="vmSize",
