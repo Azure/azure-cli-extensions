@@ -15,8 +15,7 @@ from azure.cli.testsdk.decorators import serial_test
 class OracleDatabaseAdbsBackupScenario(ScenarioTest):
 
     @live_only()
-    @serial_test()
-    @AllowLargeResponse(size_kb=10240)
+    # @serial_test()
     def test_01_oracledatabase_adbs_backup_show(self):
         resource_group = os.environ.get(
             'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_GROUP', 'PowerShellTestRg'

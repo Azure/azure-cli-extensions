@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database backup wait",
 )
 class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+    """Wait until an Autonomous Database backup meets a condition.
+
+    :example: Wait for an Autonomous Database backup to be created
+        az oracle-database autonomous-database backup wait --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <backup_resource_name> --created
     """
 
     _aaz_info = {
@@ -42,7 +45,7 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.adbbackupid = AAZStrArg(
             options=["-n", "--name", "--adbbackupid"],
-            help="AutonomousDatabaseBackup id",
+            help="Azure backup resource name. Use the final segment of the id returned by backup create or backup list, not the full Azure resource ID.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(

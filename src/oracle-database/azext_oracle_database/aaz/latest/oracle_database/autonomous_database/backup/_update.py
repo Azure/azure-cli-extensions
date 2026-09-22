@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database backup update",
 )
 class Update(AAZCommand):
-    """Update a AutonomousDatabaseBackup
+    """Update an Autonomous Database backup.
 
-    :example: ADBS Backup Update
-        az oracle-database autonomous-database backup create --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id> --retention-period-in-days <days>
+    :example: Update an Autonomous Database backup
+        az oracle-database autonomous-database backup update --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <backup_resource_name> --retention-period-in-days <days>
     """
 
     _aaz_info = {
@@ -47,7 +47,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.adbbackupid = AAZStrArg(
             options=["-n", "--name", "--adbbackupid"],
-            help="AutonomousDatabaseBackup id",
+            help="Azure backup resource name. Use the final segment of the id returned by backup create or backup list, not the full Azure resource ID.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(

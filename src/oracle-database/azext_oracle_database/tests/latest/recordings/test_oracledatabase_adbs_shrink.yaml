@@ -1,48 +1,44 @@
 interactions:
 - request:
-    body: '{"disasterRecoveryType": "Adg", "isReplicateAutomaticBackups": false}'
+    body: null
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - oracle-database autonomous-database change-disaster-recovery-configuration
+      - oracle-database autonomous-database shrink
       Connection:
       - keep-alive
       Content-Length:
-      - '69'
-      Content-Type:
-      - application/json
+      - '0'
       ParameterSetName:
-      - --resource-group --autonomousdatabasename --disaster-recovery-type --is-replicate-automatic-backups
+      - --resource-group --autonomousdatabasename
       User-Agent:
       - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/autonomousDatabases/DNDAdbsTets/changeDisasterRecoveryConfiguration?api-version=2026-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/autonomousDatabases/DNDAdbsTets/shrink?api-version=2026-06-01
   response:
     body:
       string: '{"error":{"code":"ResourcePostActionFailed","message":"ResourcePostActionFailed:
-        Conflict"}}'
+        Not Found"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '92'
+      - '93'
       content-type:
       - application/json
       date:
-      - Tue, 22 Sep 2026 05:21:54 GMT
+      - Tue, 22 Sep 2026 04:45:52 GMT
       expires:
       - '-1'
       opc-request-id:
-      - oci-810C4C9B621E074-202609220521/37BD77FC63B2FBA37210B26A494144A0/727633383B34EBAF848FE72D66FD3F3C
+      - oci-D3095EFE6EB6698-202609220445/CC82E026D4B2DB2B0108B26A4941445B/F7D78328BB9A10C459CF3B7EF391FC23
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Origin
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -50,7 +46,7 @@ interactions:
       x-ms-failure-cause:
       - service
       x-ms-operation-identifier:
-      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/eastus/05b4421a-032d-4fd7-acb6-c5ce6e62d0d0
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/eastus/f7e7cc36-e751-42e0-beeb-1ecf7c411618
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-writes:
@@ -58,8 +54,8 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
       x-msedge-ref:
-      - 'Ref A: A6A2C66B17F04AFCBBA44F1A1CA91040 Ref B: BY1AA1072316040 Ref C: 2026-09-22T05:21:53Z'
+      - 'Ref A: F285A768B73A461687EBC3D886FE0A1A Ref B: BY1AA1072316034 Ref C: 2026-09-22T04:45:52Z'
     status:
-      code: 409
-      message: Conflict
+      code: 404
+      message: Not Found
 version: 1

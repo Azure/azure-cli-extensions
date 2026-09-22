@@ -19,6 +19,10 @@ class Create(AAZCommand):
 
     :example: Exa Infra Create
         az oracle-database cloud-exadata-infrastructure create --name <name> --resource-group <RG name> --zones <2> --compute-count 2<> --display-name <display name> --shape Exadata.X9M --storage-count <2> --location <location>
+
+    :example: Create a Cloud Exadata Infrastructure with a Resource Anchor
+        az oracle-database cloud-exadata-infrastructure create --name MyExaInfra --resource-group MyResourceGroup --location eastus --zones 1 --resource-anchor-id <resource_anchor_id> --compute-count 2 --storage-count 3 --shape Exadata.X9M --display-name MyExaInfra
+
     """
 
     _aaz_info = {

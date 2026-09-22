@@ -17,9 +17,9 @@ from ._list import List
     "oracle-database autonomous-database backup create",
 )
 class Create(AAZCommand):
-    """Create a AutonomousDatabaseBackup
+    """Create an Autonomous Database backup.
 
-    :example: ADBS Backup Create
+    :example: Create an Autonomous Database backup
         az oracle-database autonomous-database backup create --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id> --display-name <display name> --retention-period-in-days <days>
     """
 
@@ -49,7 +49,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.adbbackupid = AAZStrArg(
             options=["-n", "--name", "--adbbackupid"],
-            help="AutonomousDatabaseBackup id",
+            help="Name for the new Azure backup resource.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern=".*",

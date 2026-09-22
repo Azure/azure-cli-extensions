@@ -17,10 +17,10 @@ from ._list import List
     "oracle-database autonomous-database backup show",
 )
 class Show(AAZCommand):
-    """Get a AutonomousDatabaseBackup
+    """Get an Autonomous Database backup.
 
-    :example: Get ADBS Backup
-        az oracle-database autonomous-database backup show --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id>
+    :example: Get an Autonomous Database backup
+        az oracle-database autonomous-database backup show --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <backup_resource_name>
     """
 
     _aaz_info = {
@@ -48,7 +48,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.adbbackupid = AAZStrArg(
             options=["-n", "--name", "--adbbackupid"],
-            help="AutonomousDatabaseBackup id",
+            help="Azure backup resource name. Use the final segment of the id returned by backup create or backup list, not the full Azure resource ID.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(

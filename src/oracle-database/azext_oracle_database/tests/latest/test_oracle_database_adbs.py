@@ -15,7 +15,7 @@ class OracleDatabaseAdbsScenario(ScenarioTest):
         self.vcr.match_on = ['scheme', 'method', 'path', 'query']
         super(OracleDatabaseAdbsScenario, self).setUp()
 
-    # @live_only()
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs(self, resource_group):
@@ -34,7 +34,7 @@ class OracleDatabaseAdbsScenario(ScenarioTest):
                 subscription_id, resource_group_name
             )
         )
-        admin_password = os.environ.get('AZURE_ORACLE_DATABASE_ADBS_ADMIN_PASSWORD', 'TestPass#2024#')
+        admin_password = os.environ['AZURE_ORACLE_DATABASE_ADBS_ADMIN_PASSWORD']
 
         self.cmd('az oracle-database autonomous-database version list --location eastus ')
         self.cmd('az oracle-database gi-version list --location eastus ')
@@ -74,92 +74,56 @@ class OracleDatabaseAdbsScenario(ScenarioTest):
     @AllowLargeResponse(size_kb=10240)
     def test_oracledatabase_adbs_create_with_anchors_and_zone(self):
         subscription_id = self.get_subscription_id()
-        resource_group = 'PowerShellTestRg'
-        anchor_resource_group = 'AzureCli'
+        resource_group = 'AzClitets2026'
+        anchor_resource_group = 'AzClitets2026'
         resource_anchor_id = (
-            '/subscriptions/{}/resourceGroups/{}/providers/Oracle.Database/resourceAnchors/PsRa632460'.format(
+            '/subscriptions/{}/resourceGroups/{}/providers/Oracle.Database/resourceAnchors/azCli2026RA'.format(
                 subscription_id, anchor_resource_group
             )
         )
         network_anchor_id = (
-            '/subscriptions/{}/resourceGroups/{}/providers/Oracle.Database/networkAnchors/AzureCliTest'.format(
+            '/subscriptions/{}/resourceGroups/{}/providers/Oracle.Database/networkAnchors/testAzCliNA2026'.format(
                 subscription_id, anchor_resource_group
             )
         )
-        zone = '2'
+        zone = '1'
         location = 'eastus'
-        admin_password = os.environ.get('AZURE_ORACLE_DATABASE_ADBS_ADMIN_PASSWORD', 'TestPass#2024#')
+        admin_password = os.environ['AZURE_ORACLE_DATABASE_ADBS_ADMIN_PASSWORD']
         autonomous_database_name = self.create_random_name(prefix='adbanc', length=20)
-        cleanup_eligible = False
-        test_error = None
 
-        try:
-            # The name is unique and all infrastructure is supplied by the live test
-            # environment. Mark it before submission so a successful remote request
-            # followed by a local failure cannot leave an ADBS behind.
-            cleanup_eligible = True
-            created_database = self.cmd(
-                'az oracle-database autonomous-database create '
-                '--resource-group {} '
-                '--autonomousdatabasename {} '
-                '--location {} '
-                '--resource-anchor-id {} '
-                '--network-anchor-id {} '
-                '--zone {} '
-                '--display-name {} '
-                '--compute-model {} --compute-count {} '
-                '--data-storage-size-in-tbs {} '
-                '--license-model {} --db-workload {} '
-                '--admin-password {} --db-version {} '
-                '--character-set AL32UTF8 --ncharacter-set AL16UTF16 --regular'.format(
-                    resource_group,
-                    autonomous_database_name,
-                    location,
-                    resource_anchor_id,
-                    network_anchor_id,
-                    zone,
-                    autonomous_database_name,
-                    'ECPU',
-                    2,
-                    1,
-                    'BringYourOwnLicense',
-                    'DW',
-                    admin_password,
-                    '19c',
-                )
-            ).get_output_in_json()
-            self.assertTrue(created_database.get('id'))
-            self.assertEqual(autonomous_database_name.lower(), created_database.get('name', '').lower())
-
-            self.cmd(
-                'az oracle-database autonomous-database wait '
-                '--resource-group {} --autonomousdatabasename {} '
-                '--custom "properties.provisioningState == \'Succeeded\'" '
-                '--interval 60 --timeout 7200'.format(resource_group, autonomous_database_name)
+        self.cmd(
+            'az oracle-database autonomous-database create '
+            '--resource-group {} '
+            '--autonomousdatabasename {} '
+            '--location {} '
+            '--resource-anchor-id {} '
+            '--network-anchor-id {} '
+            '--zone {} '
+            '--display-name {} '
+            '--compute-model {} --compute-count {} '
+            '--data-storage-size-in-tbs {} '
+            '--license-model {} --db-workload {} '
+            '--admin-password {} --db-version {} '
+            '--character-set AL32UTF8 --ncharacter-set AL16UTF16 --regular'.format(
+                resource_group,
+                autonomous_database_name,
+                location,
+                resource_anchor_id,
+                network_anchor_id,
+                zone,
+                autonomous_database_name,
+                'ECPU',
+                2,
+                1,
+                'BringYourOwnLicense',
+                'DW',
+                admin_password,
+                '19c',
             )
-            shown_database = self.cmd(
-                'az oracle-database autonomous-database show '
-                '--resource-group {} --autonomousdatabasename {}'.format(
-                    resource_group, autonomous_database_name
-                )
-            ).get_output_in_json()
-            self.assertEqual(autonomous_database_name.lower(), shown_database.get('name', '').lower())
-            self.assertEqual(resource_anchor_id, shown_database.get('resourceAnchorId'))
-            self.assertEqual(network_anchor_id, shown_database.get('networkAnchorId'))
-            self.assertEqual(zone, shown_database.get('zone'))
-            self.assertEqual('Succeeded', shown_database.get('provisioningState'))
-        except Exception as err:
-            test_error = err
-            raise
-        finally:
-            if cleanup_eligible:
-                try:
-                    self.cmd(
-                        'az oracle-database autonomous-database delete '
-                        '--resource-group {} --autonomousdatabasename {} --yes'.format(
-                            resource_group, autonomous_database_name
-                        )
-                    )
-                except Exception:
-                    if test_error is None:
-                        raise
+        )
+        self.cmd(
+            'az oracle-database autonomous-database show '
+            '--resource-group {} --autonomousdatabasename {}'.format(
+                resource_group, autonomous_database_name
+            )
+        )

@@ -66,7 +66,7 @@ class Switchover(AAZCommand):
         _args_schema.peer_db_id = AAZStrArg(
             options=["--peer-db-id"],
             arg_group="Body",
-            help="The database OCID of the Disaster Recovery peer database, which is located in a different region from the current peer database.",
+            help="The Azure resource ID of the Disaster Recovery peer database, which is located in a different region from the current peer database. Use --peer-db-ocid for the OCI database OCID.",
             fmt=AAZStrArgFormat(
                 max_length=255,
                 min_length=1,
@@ -80,7 +80,7 @@ class Switchover(AAZCommand):
         _args_schema.peer_db_ocid = AAZStrArg(
             options=["--peer-db-ocid"],
             arg_group="Body",
-            help="Ocid of the Disaster Recovery peer database, which is located in a different region from the current peer database.",
+            help="The OCI database OCID of the Disaster Recovery peer database, which is located in a different region from the current peer database.",
         )
         return cls._args_schema
 

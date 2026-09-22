@@ -19,6 +19,9 @@ class Create(AAZCommand):
 
     :example: Create VM Cluster
         az oracle-database cloud-vm-cluster create --name <name> --resource-group <resource group> --location <location> --cloud-exadata-infrastructure-id <Exa Infra Id> --cpu-core-count <cpu count> --data-storage-percentage <storage percent> --data-storage-size-in-tbs <storage in TBs> --db-node-storage-size-in-gbs <storage size> --db-servers ['ocid1','ocid2'] --display-name <display name> --gi-version 19.0.0.0 --hostname <host name> --is-local-backup-enabled False --is-sparse-diskgroup-enabled False --license-model <LicenseIncluded/BringYourOwnLicense> --memory-size-in-gbs <memory size> --ssh-public-keys <ssh key> --subnet-id <subnet id> --time-zone <timezeone eg. UTC> --vnet-id <virtual network id>
+
+    :example: Create a Cloud VM Cluster with Resource and Network Anchors
+        az oracle-database cloud-vm-cluster create --name MyVmCluster --resource-group MyResourceGroup --location eastus --cloud-exadata-infrastructure-id <cloud_exadata_infrastructure_id> --resource-anchor-id <resource_anchor_id> --network-anchor-id <network_anchor_id> --cpu-core-count <cpu_count> --data-storage-size-in-tbs <storage_tbs> --db-node-storage-size-in-gbs <node_storage_gbs> --db-servers '<db_server_ocid_1>' '<db_server_ocid_2>' --display-name MyVmCluster --gi-version <gi_version> --hostname myvmcluster --license-model LicenseIncluded --memory-size-in-gbs <memory_gbs> --ssh-public-keys '<ssh_public_key>' --time-zone UTC
     """
 
     _aaz_info = {
