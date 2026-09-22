@@ -12,6 +12,7 @@ from urllib.parse import urlsplit, urlunsplit
 from knack.log import get_logger
 
 from azure.cli.core.util import send_raw_request
+from azure.cli.core.azclierror import ForbiddenError
 
 from azext_migrate.shared import arm_ids, errors
 from azext_migrate.shared.constants import (
@@ -27,6 +28,12 @@ _MAX_POLL_DELAY = 60
 _TERMINAL_SUCCESS = 'succeeded'
 _TERMINAL_FAILURE = ('failed', 'canceled', 'cancelled')
 
+# A control-plane action the caller is actually granted can still return a
+# transient AuthorizationFailed while RBAC replicas converge; ARM's own
+# guidance is to retry. Bounded so a genuine denial still fails promptly.
+_AUTH_RETRY_ATTEMPTS = 3
+_AUTH_RETRY_BACKOFF = 3
+
 
 def _poll_delay(response):
     """Seconds to wait before the next poll, honoring Retry-After."""
@@ -34,6 +41,19 @@ def _poll_delay(response):
     if retry_after and retry_after.isdigit():
         return min(int(retry_after), _MAX_POLL_DELAY)
     return _DEFAULT_POLL_DELAY
+
+
+def _force_https(url):
+    """Upgrade a poll URL to https.
+
+    ARM async-operation/Location URLs must be https; some services emit an
+    ``http://`` URL behind a TLS-terminating proxy, which the management edge
+    then rejects with a 400 HTML error. An ``http`` management URL is never
+    legitimate, so upgrade it in place (preserving the signed token).
+    """
+    if isinstance(url, str) and url.startswith('http://'):
+        return 'https://' + url[len('http://'):]
+    return url
 
 
 def _rewrite_poll_api_version(url):
@@ -153,6 +173,7 @@ class ArmClient:
             return self._finalize(result, final_get_id)
         if self.rewrite_poll_api_version:
             poll_url = _rewrite_poll_api_version(poll_url)
+        poll_url = _force_https(poll_url)
         delay = _poll_delay(response)
         if not self.quiet_lro:
             # warning (not info) so it shows at default verbosity.
@@ -310,7 +331,8 @@ class ArmClient:
 
     def post_action(self, resource_id, action_name, body=None,
                     no_wait=False, final_get=False,
-                    return_final_poll=False, message=None):
+                    return_final_poll=False, message=None,
+                    retry_transient=False):
         """POST {resourceId}/{action_name} with an optional JSON body.
 
         This is the workhorse for every action endpoint (AddStep,
@@ -323,9 +345,28 @@ class ArmClient:
         in the async operation status (e.g. an artifact download SAS URL).
         Most actions return their own payload (SAS URL, validation result)
         or mutate state exposed elsewhere, so they leave both False.
+
+        Set ``retry_transient=True`` only for idempotent actions (e.g. the
+        SAS-minting Generate*Url actions) so a transient ARM
+        AuthorizationFailed is retried rather than surfaced.
         """
         action_id = f"{resource_id}/{action_name}"
         final_get_id = resource_id if final_get else None
-        return self._begin(
-            'POST', action_id, body, no_wait, final_get_id,
-            return_final_poll, message=message)
+        attempts = _AUTH_RETRY_ATTEMPTS if retry_transient else 1
+        last_exc = None
+        for attempt in range(1, attempts + 1):
+            try:
+                return self._begin(
+                    'POST', action_id, body, no_wait, final_get_id,
+                    return_final_poll, message=message)
+            except ForbiddenError as ex:
+                last_exc = ex
+                if attempt < attempts:
+                    wait = _AUTH_RETRY_BACKOFF * attempt
+                    logger.warning(
+                        "'%s' was denied by ARM authorization (attempt "
+                        "%s/%s); this is often a transient RBAC condition, "
+                        "retrying in %ss...",
+                        action_name, attempt, attempts, wait)
+                    _time.sleep(wait)
+        raise last_exc

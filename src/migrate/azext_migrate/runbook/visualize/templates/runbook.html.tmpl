@@ -330,10 +330,14 @@ $refresh<title>$title</title>
     letter-spacing: .5px; color: var(--ink); }
   .ent { border: 1px solid var(--border-strong); border-radius: 8px;
     overflow: hidden; }
-  .ent__h { display: flex; align-items: center; justify-content: space-between;
+  .ent__h { display: flex; flex-wrap: wrap;
+    align-items: center; justify-content: space-between;
     gap: 8px; padding: 9px 12px; background: #f8f8f7;
     border-bottom: 1px solid var(--border); }
-  .ent__nm { font-weight: 600; font-size: 13px; word-break: break-all; }
+  /* break-word keeps the id's flex min-size at the whole id (never 1 char),
+     so a long sibling meta chip pushes to the next line instead of
+     collapsing the id into a vertical column. */
+  .ent__nm { font-weight: 600; font-size: 13px; overflow-wrap: break-word; }
   .ent__meta { display: flex; align-items: center; gap: 6px; flex: none; }
   .ent__body { padding: 10px 12px; display: flex; flex-direction: column;
     gap: 12px; }

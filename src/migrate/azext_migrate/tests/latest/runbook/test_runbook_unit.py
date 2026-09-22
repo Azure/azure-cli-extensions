@@ -17,6 +17,7 @@ from unittest import mock
 from azure.cli.core.azclierror import (
     AzureResponseError,
     CLIInternalError,
+    ForbiddenError,
     InvalidArgumentValueError,
     RequiredArgumentMissingError,
 )
@@ -49,7 +50,6 @@ from azext_migrate.runbook.configure import renderer as configure_renderer
 from azext_migrate.runbook.constants import (
     SCOPE_TYPE_WAVE,
     RUNBOOK_STATUS_VALUES,
-    parameter_upload_blob_name,
 )
 from azext_migrate.runbook.models import ExecutionAction
 from azext_migrate.runbook.validators import (
@@ -259,7 +259,31 @@ class ArmClientLroTests(unittest.TestCase):
         self.assertIn("api-version=2026-06-01-preview", polled_url)
         self.assertNotIn(WAVE_OPERATIONS_API_VERSION, polled_url)
 
-    def test_delete_raises_on_failed_operation(self):
+    def test_poll_upgrades_http_async_url_to_https(self):
+        # A service may emit an http:// async-operation URL behind a
+        # TLS-terminating proxy; polling it over http 400s at the edge, so the
+        # poll URL must be upgraded to https (preserving the signed token).
+        http_url = ("http://management.azure.com/.../operations/op"
+                    "?api-version=2020-06-01-preview&c=SIGNED")
+        accepted = _fake_response(
+            202, headers={'Azure-AsyncOperation': http_url}, body={})
+        done = _fake_response(
+            200, body={"status": "Succeeded",
+                       "properties": {"sasUrl": "https://blob/x"}})
+        self.send.side_effect = [accepted, done]
+
+        cmd = mock.Mock()
+        cmd.cli_ctx.cloud.endpoints.resource_manager = (
+            "https://management.azure.com")
+        client = ArmClient(cmd, rewrite_poll_api_version=False)
+        client.post_action(
+            "/artifacts/a", 'generateDownloadUrl', {},
+            return_final_poll=True)
+
+        polled_url = self.send.call_args_list[1][0][2]
+        self.assertTrue(polled_url.startswith("https://"))
+        self.assertNotIn("http://", polled_url)
+        self.assertIn("c=SIGNED", polled_url)
         async_url = ("https://management.azure.com/.../WaveOperations/op"
                      "?api-version=2020-06-01-preview")
         accepted = _fake_response(
@@ -281,6 +305,41 @@ class ArmClientLroTests(unittest.TestCase):
         _arm_client().delete("/runbooks/r", no_wait=True)
 
         self.assertEqual(self.send.call_count, 1)
+
+    def test_post_action_retries_transient_forbidden(self):
+        # A transient AuthorizationFailed on an idempotent SAS-minting action
+        # is retried (RBAC replica flap), then succeeds.
+        forbidden = _fake_response(403, body={
+            "error": {"code": "AuthorizationFailed",
+                      "message": "recently granted; refresh credentials"}})
+        ok = _fake_response(200, body={"properties": {"sasUrl": "https://b/x"}})
+        self.send.side_effect = [forbidden, ok]
+
+        result = _arm_client().post_action(
+            "/exec/1", 'GenerateDownloadUrl', {}, retry_transient=True)
+
+        self.assertEqual(
+            (result.get("properties") or {}).get("sasUrl"), "https://b/x")
+        self.assertEqual(self.send.call_count, 2)
+
+    def test_post_action_does_not_retry_by_default(self):
+        forbidden = _fake_response(403, body={
+            "error": {"code": "AuthorizationFailed", "message": "denied"}})
+        self.send.side_effect = [forbidden]
+
+        with self.assertRaises(ForbiddenError):
+            _arm_client().post_action("/exec/1", 'GenerateDownloadUrl', {})
+        self.assertEqual(self.send.call_count, 1)
+
+    def test_post_action_reraises_after_exhausting_retries(self):
+        forbidden = _fake_response(403, body={
+            "error": {"code": "AuthorizationFailed", "message": "denied"}})
+        self.send.side_effect = [forbidden, forbidden, forbidden]
+
+        with self.assertRaises(ForbiddenError):
+            _arm_client().post_action(
+                "/exec/1", 'GenerateDownloadUrl', {}, retry_transient=True)
+        self.assertEqual(self.send.call_count, 3)
 
     def test_list_reroutes_foreign_next_link_to_arm(self):
         # Migrate paging can return a nextLink on an internal backend host;
@@ -850,7 +909,7 @@ class DefinitionCommandTests(unittest.TestCase):
         self.client.post_action.assert_called_once_with(
             arm_ids.artifact_id(project, ARTIFACT), 'generateDownloadUrl',
             {"mode": "Directory"},
-            return_final_poll=True)
+            return_final_poll=True, retry_transient=True)
         self.assertEqual(result["id"], "w1")
 
     def test_show_raises_without_download_url(self):
@@ -1316,7 +1375,8 @@ class ExecutionCommandTests(unittest.TestCase):
         self.client.post_action.assert_called_once_with(
             arm_ids.execution_id(self._runbook_id(), "e1"),
             'GenerateDownloadUrl',
-            {"mode": "File", "path": "executionStatus.json"})
+            {"mode": "File", "path": "executionStatus.json"},
+            retry_transient=True)
         dl.assert_called_once_with("https://b/x")
 
     def test_show_projects_step(self):
@@ -1381,6 +1441,20 @@ class ExecutionAutoViewTests(unittest.TestCase):
                 mock.Mock(), RG, PROJECT, RUNBOOK, "e9")
         self.assertTrue(log.warning.called)
         self.assertTrue(vis.call_args.kwargs.get('watch'))
+
+    def test_open_execution_view_watch_failure_is_actionable(self):
+        # A mid-watch failure (e.g. a denied status-download poll) must not
+        # be reported as an "open" failure: the execution already started,
+        # so surface the re-check command instead.
+        with mock.patch.object(
+                execution_cmds, 'visualize',
+                side_effect=Exception('Forbidden')), \
+                mock.patch.object(execution_cmds, 'logger') as log:
+            execution_cmds._open_execution_view(
+                mock.Mock(), RG, PROJECT, RUNBOOK, "e9")
+        msg = ' '.join(str(c.args) for c in log.warning.call_args_list)
+        self.assertIn('execution show', msg)
+        self.assertNotIn('Could not open the execution view', msg)
 
 
 class ExecutionStepModelTests(unittest.TestCase):
@@ -1489,20 +1563,11 @@ _CFG_SPEC = {"spec": {
 
 class ParameterUploadNameTests(unittest.TestCase):
 
-    def test_known_names_preserved(self):
-        self.assertEqual(
-            parameter_upload_blob_name('/x/inputs.json'), 'inputs.json')
-        self.assertEqual(
-            parameter_upload_blob_name('/x/parameters.json'),
-            'parameters.json')
-        self.assertEqual(
-            parameter_upload_blob_name('PARAMETERS.JSON'), 'PARAMETERS.JSON')
-
-    def test_unknown_or_empty_falls_back_to_legacy(self):
-        self.assertEqual(
-            parameter_upload_blob_name('/x/my-params.json'), 'inputs.json')
-        self.assertEqual(parameter_upload_blob_name(''), 'inputs.json')
-        self.assertEqual(parameter_upload_blob_name(None), 'inputs.json')
+    def test_upload_always_targets_parameters_json(self):
+        # The service accepts only parameters.json for upload, so the CLI
+        # uploads under that name regardless of the local file name.
+        from azext_migrate.runbook.constants import RUNBOOK_PARAMETERS_FILE
+        self.assertEqual(RUNBOOK_PARAMETERS_FILE, 'parameters.json')
 
 
 class ParameterCommandTests(unittest.TestCase):
@@ -1540,7 +1605,7 @@ class ParameterCommandTests(unittest.TestCase):
                 arm_ids.artifact_id(project, ARTIFACT),
                 'generateDownloadUrl',
                 {"mode": "Directory"},
-                return_final_poll=True)
+                return_final_poll=True, retry_transient=True)
             names = sorted(os.path.basename(r['path']) for r in result)
             self.assertEqual(names, ['inputs.json', 'schema.json'])
             for row in result:
@@ -1568,7 +1633,7 @@ class ParameterCommandTests(unittest.TestCase):
             self.assertEqual(
                 client.post_action.call_args_list[0],
                 mock.call(runbook_id, 'GenerateUploadUrl',
-                          {"path": "inputs.json"}))
+                          {"path": "parameters.json"}, retry_transient=True))
             self.assertEqual(
                 client.post_action.call_args_list[1],
                 mock.call(runbook_id, 'ValidateInput'))
@@ -1596,7 +1661,7 @@ class ParameterCommandTests(unittest.TestCase):
             self.assertEqual(
                 client.post_action.call_args_list[0],
                 mock.call(runbook_id, 'GenerateUploadUrl',
-                          {"path": "parameters.json"}))
+                          {"path": "parameters.json"}, retry_transient=True))
 
     def test_configure_writes_html(self):
         self.client.get.return_value = {
@@ -1679,7 +1744,7 @@ class ExecutionParameterCommandTests(unittest.TestCase):
             dl.assert_called_once_with("https://blob/x")
             self.client.post_action.assert_called_once_with(
                 self._execution_id(), 'GenerateDownloadUrl',
-                {"mode": "Directory"})
+                {"mode": "Directory"}, retry_transient=True)
             names = sorted(os.path.basename(r['path']) for r in result)
             self.assertEqual(names, ['inputs.json'])
             self.assertEqual(result[0]['kind'], 'parameters')
@@ -1697,7 +1762,7 @@ class ExecutionParameterCommandTests(unittest.TestCase):
                     mock.Mock(), RG, PROJECT, RUNBOOK, "e1", src)
             self.client.post_action.assert_called_once_with(
                 self._execution_id(), 'GenerateUploadUrl',
-                {"path": "inputs.json"})
+                {"path": "parameters.json"}, retry_transient=True)
             up.assert_called_once_with(
                 "https://blob/u", b'{"runbookInputs": {}}')
             self.assertEqual(result, {"status": "uploaded"})
@@ -3541,6 +3606,28 @@ class ConfigStatusBranchTests(unittest.TestCase):
             config_status_mod.compute(
                 {'stepId': 's', 'stepRef': 't', 'entities': []},
                 {'schema': schema, 'stepInputs': {'s': {}}}),
+            config_status_mod.NOT_CONFIGURED)
+
+    def test_compute_entity_scope_inherits_step_level(self):
+        # A step-level value for an entity-scoped required field satisfies
+        # every workload (configure editor's effective()): Configured.
+        schema = {'t': {'a': {'required': True, 'scope': 'Entity'}}}
+        step = {'stepId': 's', 'stepRef': 't', 'entities': ['vm1', 'vm2']}
+        self.assertEqual(
+            config_status_mod.compute(
+                step, {'schema': schema, 'stepInputs': {'s': {'a': 'shared'}}}),
+            config_status_mod.CONFIGURED)
+
+    def test_compute_entity_scope_missing_on_one_workload(self):
+        # Override on one workload, no step-level fallback, none on the other
+        # -> the field is not satisfied for all workloads.
+        schema = {'t': {'a': {'required': True, 'scope': 'Entity'}}}
+        step = {'stepId': 's', 'stepRef': 't', 'entities': ['vm1', 'vm2']}
+        self.assertEqual(
+            config_status_mod.compute(step, {
+                'schema': schema,
+                'stepInputs': {
+                    's': {'workloadOverrides': {'vm1': {'a': 'x'}}}}}),
             config_status_mod.NOT_CONFIGURED)
 
     def test_annotate_non_dict_passthrough(self):

@@ -27,7 +27,7 @@ from azext_migrate.runbook.cmds.definition import (
     _artifact_download_url, _runbook_id)
 from azext_migrate.runbook.constants import (
     ARTIFACT_DOWNLOAD_MODE_DIRECTORY,
-    parameter_upload_blob_name,
+    RUNBOOK_PARAMETERS_FILE,
 )
 
 logger = get_logger(__name__)
@@ -56,7 +56,8 @@ def _upload_url(cmd, resource_id, blob_name):
     # resource (download uses the artifact resource) — verify the resource.
     body = ArmClient(cmd).post_action(
         resource_id, 'GenerateUploadUrl',
-        models.build_artifact_upload_url_body(blob_name))
+        models.build_artifact_upload_url_body(blob_name),
+        retry_transient=True)
     url = files.extract_sas_url(body)
     if not url:
         raise CLIInternalError(
@@ -76,7 +77,7 @@ def upload(cmd, resource_group_name, project_name, runbook_name, file):
         cmd, resource_group_name, project_name, runbook_name)
     client = ArmClient(cmd)
     files.upload_bytes(
-        _upload_url(cmd, resource_id, parameter_upload_blob_name(source)),
+        _upload_url(cmd, resource_id, RUNBOOK_PARAMETERS_FILE),
         data)
     logger.warning('Parameters file uploaded to Azure Migrate.')
     client.post_action(resource_id, 'ValidateInput')

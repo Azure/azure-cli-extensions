@@ -15,8 +15,11 @@ inputs come in two scopes:
 
 * ``Appliance`` — one shared value stored at ``stepInputs[stepId][field]``.
 * ``Entity`` — one value **per migration entity**, stored at
-  ``stepInputs[stepId].workloadOverrides[entityId][field]``. An entity-scope
-  field is only "set" when *every* entity on the step has a value for it.
+  ``stepInputs[stepId].workloadOverrides[entityId][field]``. A non-empty
+  step-level value is inherited by every workload (the per-entity override is
+  optional), so an entity-scope field is "set" when each entity's *effective*
+  value -- its override if non-empty, else the step-level value -- is set.
+  This mirrors the configure editor's ``effective()``.
 
 The status is one of:
 
@@ -57,13 +60,19 @@ def _field_is_set(field, meta, step, step_inputs):
     scope = (meta.get('scope') if isinstance(meta, dict) else None) or \
         'Appliance'
     if scope == 'Entity':
-        overrides = step_inputs.get('workloadOverrides') or {}
         entities = step.get('entities') or []
         if not entities:
             return False
+        overrides = step_inputs.get('workloadOverrides') or {}
+        # A non-empty step-level value is inherited by every workload; only a
+        # non-empty per-entity override takes precedence (configure's
+        # ``effective()``: override if set, else the step-level value).
+        step_level = step_inputs.get(field)
         for entity_id in entities:
-            entity_values = overrides.get(entity_id) or {}
-            if _is_empty(entity_values.get(field)):
+            effective = (overrides.get(entity_id) or {}).get(field)
+            if _is_empty(effective):
+                effective = step_level
+            if _is_empty(effective):
                 return False
         return True
     return not _is_empty(step_inputs.get(field))

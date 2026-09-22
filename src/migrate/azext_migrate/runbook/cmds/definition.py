@@ -76,7 +76,8 @@ def _artifact_download_url(cmd, resource_group_name, project_name,
         cmd, api_version=ARTIFACTS_API_VERSION,
         rewrite_poll_api_version=False, quiet_lro=quiet_lro)
     result = client.post_action(
-        artifact_id, 'generateDownloadUrl', body, return_final_poll=True)
+        artifact_id, 'generateDownloadUrl', body, return_final_poll=True,
+        retry_transient=True)
     url = files.extract_sas_url(result)
     if not url:
         raise CLIInternalError(

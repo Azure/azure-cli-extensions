@@ -112,8 +112,10 @@ behavior are updated in the SAME change and the suite is green.
   - `executionStatus.json` → the per-execution status document (File-mode SAS download).
 - Archive members are classified by **content**, not filename suffix (member naming varies across
   services, e.g. `rb-<name>-spec.json` vs `spec.json`). See `shared/files.py::_classify_archive`
-  as the single source of truth. Only the derived-inputs exclusion and the File-mode download/upload
-  **paths** (`inputs.json`, `executionStatus.json`; `runbook/constants.py`) are name-sensitive.
+  as the single source of truth. Only the derived-inputs exclusion and the File-mode
+  download/upload **paths** are name-sensitive (`runbook/constants.py`): parameter **upload** now
+  targets `parameters.json` ONLY (the service rejects `inputs.json`, for both runbook and
+  execution inputs); `executionStatus.json` is the File-mode status download.
 - **UpdateStep/AddStep `dependsOn` write contract:** each entry is a polymorphic
   `RunbookStepDependency`; the discriminator `"waitFor"` is one of `Step` / `Entity` /
   `MappedEntities`. `Entity`/`MappedEntities` are invalid for Manual steps (only entity-bearing

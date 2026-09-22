@@ -492,10 +492,12 @@ const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g,
   .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 const short = (s, n) => { s = String(s); return s.length > n ? s.slice(0, n - 1) + '\u2026' : s; };
 const isComplex = r => r.type === 'array' || r.type === 'object';
-// A schema-described array (items.properties) gets a grid editor; a free-form
-// object gets a key/value editor; anything else falls back to raw JSON.
+// A schema-described array (items.properties) gets a grid editor; a bare array
+// (no items.properties) gets a single-column list editor; a free-form object
+// gets a key/value editor; anything else falls back to raw JSON.
 const itemProps = r => (r.items && r.items.properties) ? r.items.properties : null;
 const isGrid = r => r.type === 'array' && !!itemProps(r);
+const isScalarArray = r => r.type === 'array' && !itemProps(r);
 const isMap = r => r.type === 'object' && !r.properties;
 const RX = {};
 const rx = p => (RX[p] || (RX[p] = new RegExp(p)));
@@ -533,6 +535,16 @@ function fieldError(rule, v) {
       }
     }
   }
+  // Bare array (no item schema): validate each non-empty scalar item.
+  if (!props && rule.type === 'array' && Array.isArray(v)) {
+    const item = rule.items || {};
+    if (rule.required && !v.some(x => !isEmpty(x))) return 'Required';
+    for (let i = 0; i < v.length; i++) {
+      if (isEmpty(v[i])) continue;
+      const e = fieldError(item, v[i]);
+      if (e) return `Item ${i + 1}: ${e}`;
+    }
+  }
   return null;
 }
 function woFor(sid, eid) { return (DOC.stepInputs[sid].workloadOverrides || {})[eid]; }
@@ -564,6 +576,10 @@ function summarise(v, rule) {
     const k = Object.keys(v);
     return k.length ? `${k.length} entr${k.length === 1 ? 'y' : 'ies'}: ${short(k.join(', '), 40)}` : 'no entries';
   }
+  if (isScalarArray(rule) && Array.isArray(v)) {
+    const items = v.filter(x => !isEmpty(x));
+    return items.length ? `${items.length} item${items.length === 1 ? '' : 's'}: ${short(items.join(', '), 60)}` : 'no items';
+  }
   return short(fmt(v), 90);
 }
 function stepErrors(sid) {
@@ -591,13 +607,9 @@ function accessor(path) {
       clear: () => {
         const w = woFor(sid, eid);
         if (!w) return;
+        // Remove only this input's override; keep the (now possibly empty)
+        // entity object in workloadOverrides.
         delete w[f];
-        // Drop the workload's entry (and the map) once it has no overrides.
-        const wo = DOC.stepInputs[sid].workloadOverrides;
-        if (wo && !Object.keys(w).length) {
-          delete wo[eid];
-          if (!Object.keys(wo).length) delete DOC.stepInputs[sid].workloadOverrides;
-        }
       } };
   }
   const f = p[2];
@@ -726,6 +738,7 @@ function boolCtrl(path, v, dis, firstLabel, firstVal) {
 // have to hand-edit JSON (and can't accidentally touch isEditable:false props).
 function complexCtrl(path, rule, value, editable) {
   if (isGrid(rule)) return gridCtrl(path, rule, Array.isArray(value) ? value : [], editable);
+  if (isScalarArray(rule)) return listCtrl(path, rule, Array.isArray(value) ? value : [], editable);
   if (isMap(rule)) return kvCtrl(path, (value && typeof value === 'object' && !Array.isArray(value)) ? value : {}, editable);
   return `<div class="cplx" data-path="${esc(path)}" data-cplx="${esc(path)}" data-kind="raw">
     <textarea data-raw="1" ${editable ? '' : 'disabled'}>${esc(value == null ? '' : JSON.stringify(value, null, 2))}</textarea></div>`;
@@ -745,6 +758,22 @@ function gridCtrl(path, rule, rows, editable) {
   return `<div class="cplx" data-path="${esc(path)}" data-cplx="${esc(path)}" data-kind="grid">
     <div class="arr-wrap" tabindex="0" role="group" aria-label="${esc(field)} rows"><table class="arr"><thead><tr>${head}<th scope="col"><span class="sr-only">Actions</span></th></tr></thead><tbody>${
       body || `<tr><td class="empty" colspan="${keys.length + 1}">No rows</td></tr>`
+    }</tbody></table></div>
+    <div class="arr-acts"><button type="button" class="lnk" data-arr-add="1" ${editable ? '' : 'disabled'}
+      aria-label="Add ${esc(field)} row">+ Add row</button></div>
+  </div>`;
+}
+// A bare array (no items.properties) edits as a single-column table, reusing
+// the grid's row add/remove machinery; each row is one scalar value.
+function listCtrl(path, rule, rows, editable) {
+  const field = path.split('|').pop(), item = rule.items || { type: 'string' };
+  const body = rows.map((val, i) => `<tr data-idx="${i}"><td>${
+      cellCtrl('v', item, val, editable ? '' : 'disabled')
+    }</td><td><button type="button" class="lnk" data-arr-del="${i}" ${editable ? '' : 'disabled'}
+      aria-label="Remove ${esc(field)} row ${i + 1}">Remove</button></td></tr>`).join('');
+  return `<div class="cplx" data-path="${esc(path)}" data-cplx="${esc(path)}" data-kind="list">
+    <div class="arr-wrap" tabindex="0" role="group" aria-label="${esc(field)} rows"><table class="arr"><thead><tr><th scope="col">${esc(field)}</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead><tbody>${
+      body || `<tr><td class="empty" colspan="2">No rows</td></tr>`
     }</tbody></table></div>
     <div class="arr-acts"><button type="button" class="lnk" data-arr-add="1" ${editable ? '' : 'disabled'}
       aria-label="Add ${esc(field)} row">+ Add row</button></div>
@@ -778,6 +807,13 @@ function collectComplex(box) {
       const o = {};
       keys.forEach(k => { const el = tr.querySelector(`[data-prop="${k}"]`); o[k] = el ? coerce(el.value, props[k]) : null; });
       return o;
+    });
+  }
+  if (box.dataset.kind === 'list') {
+    const item = rule.items || { type: 'string' };
+    return [...box.querySelectorAll('tbody tr[data-idx]')].map(tr => {
+      const el = tr.querySelector('[data-prop]');
+      return el ? coerce(el.value, item) : null;
     });
   }
   if (box.dataset.kind === 'kv') {
@@ -936,9 +972,9 @@ function renderOverrides() {
   const clearBtn = document.getElementById('entClear');
   if (clearBtn) clearBtn.addEventListener('click', e => {
     e.preventDefault(); e.stopPropagation(); // keep the disclosure from toggling
-    // Remove the workload's entire override entry (and the map if now empty).
+    // Clear the workload's overrides but keep an empty entity object.
     const wo = DOC.stepInputs[sid].workloadOverrides;
-    if (wo) { delete wo[cur.id]; if (!Object.keys(wo).length) delete DOC.stepInputs[sid].workloadOverrides; }
+    if (wo && wo[cur.id]) wo[cur.id] = {};
     renderForm(); toast(`Removed all overrides for ${cur.name}.`);
   });
   pane.querySelectorAll('[data-revert]').forEach(b => b.addEventListener('click', () => {
@@ -987,7 +1023,7 @@ function bindInputs(scope) {
       if (!t.matches('[data-arr-add], [data-arr-del], [data-kv-add], [data-kv-del]')) return;
       e.preventDefault();
       const acc = accessor(path), val = collectComplex(box);
-      if (t.dataset.arrAdd) val.push({});
+      if (t.dataset.arrAdd) val.push(box.dataset.kind === 'list' ? null : {});
       else if (t.dataset.arrDel !== undefined) val.splice(+t.dataset.arrDel, 1);
       else if (t.dataset.kvAdd) { let i = 1; while (has(val, 'key' + i)) i++; val['key' + i] = ''; }
       else delete val[t.closest('.kv-row').querySelector('[data-kv="k"]').value.trim()];

@@ -49,7 +49,8 @@ def _status_download_url(cmd, resource_id):
     body = ArmClient(cmd).post_action(
         resource_id, 'GenerateDownloadUrl',
         models.build_artifact_download_url_body(
-            mode=ARTIFACT_DOWNLOAD_MODE_FILE, path=RUNBOOK_STATUS_FILE))
+            mode=ARTIFACT_DOWNLOAD_MODE_FILE, path=RUNBOOK_STATUS_FILE),
+        retry_transient=True)
     url = files.extract_sas_url(body)
     if not url:
         raise CLIInternalError(
@@ -178,7 +179,16 @@ def _open_execution_view(cmd, resource_group_name, project_name,
     except ManualInterrupt:
         pass  # user stopped watching
     except Exception as ex:  # pylint: disable=broad-except
-        logger.warning('Could not open the execution view: %s', ex)
+        # The execution has already started; only the live (watch) view
+        # stopped (e.g. a status-download poll was denied or timed out).
+        # Report it as such, with the command to re-check status.
+        logger.warning(
+            "Stopped showing the live execution view: %s\n"
+            "The execution '%s' is unaffected. Re-check its status with:\n"
+            "  az migrate runbook execution show -g %s --project-name %s "
+            "--runbook-name %s --execution-id %s",
+            ex, execution_id, resource_group_name, project_name,
+            runbook_name, execution_id)
 
 
 def list_(cmd, resource_group_name, project_name, runbook_name):

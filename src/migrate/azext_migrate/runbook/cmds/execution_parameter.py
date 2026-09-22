@@ -27,7 +27,7 @@ from azext_migrate.runbook.cmds.execution import _execution_resource_id
 from azext_migrate.runbook.constants import (
     ARTIFACT_DOWNLOAD_MODE_DIRECTORY,
     RUNBOOK_INPUT_FILE,
-    parameter_upload_blob_name,
+    RUNBOOK_PARAMETERS_FILE,
 )
 
 logger = get_logger(__name__)
@@ -37,7 +37,8 @@ def _download_url(cmd, resource_id):
     body = ArmClient(cmd).post_action(
         resource_id, 'GenerateDownloadUrl',
         models.build_artifact_download_url_body(
-            mode=ARTIFACT_DOWNLOAD_MODE_DIRECTORY))
+            mode=ARTIFACT_DOWNLOAD_MODE_DIRECTORY),
+        retry_transient=True)
     url = files.extract_sas_url(body)
     if not url:
         raise CLIInternalError(
@@ -48,7 +49,8 @@ def _download_url(cmd, resource_id):
 def _upload_url(cmd, resource_id, blob_name):
     body = ArmClient(cmd).post_action(
         resource_id, 'GenerateUploadUrl',
-        models.build_artifact_upload_url_body(blob_name))
+        models.build_artifact_upload_url_body(blob_name),
+        retry_transient=True)
     url = files.extract_sas_url(body)
     if not url:
         raise CLIInternalError(
@@ -84,7 +86,7 @@ def upload(cmd, resource_group_name, project_name, runbook_name,
     resource_id = _execution_resource_id(
         cmd, resource_group_name, project_name, runbook_name, execution_id)
     files.upload_bytes(
-        _upload_url(cmd, resource_id, parameter_upload_blob_name(source)),
+        _upload_url(cmd, resource_id, RUNBOOK_PARAMETERS_FILE),
         data)
     logger.warning('Execution input file uploaded to Azure Migrate.')
     return {'status': 'uploaded'}
