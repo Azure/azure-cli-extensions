@@ -5,6 +5,7 @@
   - [Prerequisites](#prerequisites)
   - [Installation Instructions (End User)](#installation-instructions-end-user)
   - [Current Limitations](#current-limitations)
+  - [Platform Support (Linux and Windows Policies)](#platform-support-linux-and-windows-policies)
   - [Trademarks](#trademarks)
 
 ## Repository
@@ -13,7 +14,7 @@
 
 ## Prerequisites
 
-**MacOS** is **NOT** supported yet
+**MacOS** is supported for Linux-container policy generation. Native Darwin binaries for `dmverity-vhd` (integrity-vhd v2.3) and `sign1util` (cosesign1go v1.7.0) are included in the extension package.
 
 - **64-bit** `Python 3.6+` and `pip`
   - **64-bit** **Windows 10** or later
@@ -21,13 +22,9 @@
     - or chocolatey: `choco install python`
   - Or **64-bit** Linux Distribution System, **Ubuntu 18.04** or later is recommended
     - Ubuntu 18.04 or later comes with python 3.6+ by default
-- Docker Daemon
-  - Linux(Ubuntu):
-
-    ```bash
-    sudo apt install docker.io
-    ```
-
+- **64-bit** MacOS on Apple Silicon or Intel
+- Container runtime: Docker
+  - Docker must be running when generating Linux policies.
   - Windows: [Docker Desktop](https://www.docker.com/products/docker-desktop) and [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install)
 - **CimWriter.dll** (Windows only, for Windows container support)
   - Required for generating security policies for Windows containers
@@ -36,7 +33,7 @@
 ## Installation Instructions (End User)
 
 1. Install Azure CLI through following ways:
-   1. Option 1: (Windows and Linux) use `PyPI/pip(comes with 64-bit python)` to install `azure-cli`
+   1. Option 1: (Windows, Linux, and MacOS) use `PyPI/pip(comes with 64-bit python)` to install `azure-cli`
 
       ```bash
       python3 -m pip install azure-cli
@@ -62,18 +59,19 @@ The `confcom` extension does not currently support:
 
 ## Platform Support (Linux and Windows Policies)
 
-The `--platform` parameter controls whether policies are generated for Linux (`linux/amd64`, the default) or Windows (`windows/amd64`) containers.
+The `--platform` parameter controls whether policies are generated for Linux (`linux/amd64`, the default) or Windows (`windows/amd64`) containers. On macOS, only Linux-container policies are supported.
 
-**Docker Desktop must be running in the matching container mode** to produce correct layer hashes:
+Docker must be running when generating Linux policies.
 
-| Policy Target | Docker Container Mode | Where to Run |
+Windows policies require Docker in Windows-container mode:
+
+| Policy Target | Container Runtime Mode | Where to Run |
 |---|---|---|
-| Linux (`--platform linux/amd64`) | Linux containers | WSL or PowerShell |
-| Windows (`--platform windows/amd64`) | Windows containers | PowerShell only |
+| Linux (`--platform linux/amd64`) | Docker, Linux containers | Linux, WSL, PowerShell, or macOS |
+| Windows (`--platform windows/amd64`) | Docker, Windows containers | PowerShell only |
 
 - **Windows policies cannot be generated from WSL**, because Windows layer hashing (CIMfs) requires Windows APIs.
-- **Linux policies can be generated from either WSL or PowerShell**, as long as Docker Desktop is in Linux containers mode.
-- Running with the wrong Docker container mode may produce **incorrect layer hashes** that will cause the container to be rejected at runtime.
+- Running with the wrong container runtime mode may produce **incorrect layer hashes** that will cause the container to be rejected at runtime.
 
 ## Trademarks
 
