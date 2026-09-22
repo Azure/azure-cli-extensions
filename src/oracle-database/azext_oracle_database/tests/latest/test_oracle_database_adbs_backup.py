@@ -15,16 +15,17 @@ from azure.cli.testsdk.decorators import serial_test
 class OracleDatabaseAdbsBackupScenario(ScenarioTest):
 
     @live_only()
-    # @serial_test()
-    def test_01_oracledatabase_adbs_backup_show(self):
+    @serial_test()
+    @AllowLargeResponse(size_kb=10240)
+    def test_oracledatabase_adbs_backup_show(self):
         resource_group = os.environ.get(
-            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_GROUP', 'PowerShellTestRg'
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_GROUP', 'PowerShellTestRgMihr'
         )
         autonomous_database_name = os.environ.get(
-            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_NAME', 'DNDAdbsTets'
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_NAME', 'testRegression0914'
         )
         backup_resource_name = os.environ.get(
-            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_NAME', 'bkpiyw2ykxo6xeak5jgb'
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_NAME', 'bkpbv3kcbbkfan3s44z6'
         )
 
         self.cmd('az oracle-database autonomous-database backup show '
@@ -39,15 +40,45 @@ class OracleDatabaseAdbsBackupScenario(ScenarioTest):
     @live_only()
     @serial_test()
     @AllowLargeResponse(size_kb=10240)
-    def test__oracledatabase_adbs_backup_update(self):
+    def test_oracledatabase_adbs_backup_create(self):
         resource_group = os.environ.get(
-            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_GROUP', 'PowerShellTestRg'
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_GROUP', 'PowerShellTestRgMihr'
         )
         autonomous_database_name = os.environ.get(
-            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_NAME', 'DNDAdbsTets'
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_NAME', 'testRegression0914'
+        )
+        retention_period_in_days = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_UPDATED_RETENTION_DAYS',
+            '365'
+        )
+        backup_resource_name = self.create_random_name(prefix='bkp', length=20)
+
+        self.cmd('az oracle-database autonomous-database backup create '
+                 '--resource-group {} '
+                 '--autonomousdatabasename {} '
+                 '--adbbackupid {} '
+                 '--display-name {} '
+                 '--retention-period-in-days {} '
+                 '--no-wait'.format(
+                     resource_group,
+                     autonomous_database_name,
+                     backup_resource_name,
+                     backup_resource_name,
+                     retention_period_in_days
+                 ))
+
+    @live_only()
+    @serial_test()
+    @AllowLargeResponse(size_kb=10240)
+    def test_oracledatabase_adbs_backup_update(self):
+        resource_group = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_GROUP', 'PowerShellTestRgMihr'
+        )
+        autonomous_database_name = os.environ.get(
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_NAME', 'testRegression0914'
         )
         backup_resource_name = os.environ.get(
-            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_NAME', 'bkpiyw2ykxo6xeak5jgb'
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_NAME', 'bkpbv3kcbbkfan3s44z6'
         )
         updated_retention_period_in_days = os.environ.get(
             'AZURE_ORACLE_DATABASE_ADBS_BACKUP_UPDATED_RETENTION_DAYS',
@@ -68,15 +99,15 @@ class OracleDatabaseAdbsBackupScenario(ScenarioTest):
     @live_only()
     @serial_test()
     @AllowLargeResponse(size_kb=10240)
-    def test_03_oracledatabase_adbs_backup_delete(self):
+    def test_oracledatabase_adbs_backup_delete(self):
         resource_group = os.environ.get(
-            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_GROUP', 'PowerShellTestRg'
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_GROUP', 'PowerShellTestRgMihr'
         )
         autonomous_database_name = os.environ.get(
-            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_NAME', 'DNDAdbsTets'
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_NAME', 'testRegression0914'
         )
         backup_resource_name = os.environ.get(
-            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_NAME', 'bkpiyw2ykxo6xeak5jgb'
+            'AZURE_ORACLE_DATABASE_ADBS_BACKUP_RESOURCE_NAME', 'bkpbv3kcbbkfan3s44z6'
         )
 
         self.cmd('az oracle-database autonomous-database backup delete '
