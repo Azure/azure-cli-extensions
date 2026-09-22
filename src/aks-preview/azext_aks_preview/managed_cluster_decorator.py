@@ -6874,6 +6874,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         pool_sku,
                         pool_option,
                         pool_size,
+                        self.context.raw_param.get("ephemeral_disk_volume_type"),
+                        self.context.raw_param.get("ephemeral_disk_nvme_perf_tier"),
                         self.context.raw_param.get("container_storage_version"),
                     )
                     self.context.set_intermediate(

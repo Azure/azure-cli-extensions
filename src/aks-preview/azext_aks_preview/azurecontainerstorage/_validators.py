@@ -637,6 +637,8 @@ def validate_disable_distributed_accelerator_params(
     storage_pool_sku,
     storage_pool_option,
     storage_pool_size,
+    ephemeral_disk_volume_type,
+    ephemeral_disk_nvme_perf_tier,
     container_storage_version=None,
 ):
     disablement_option_arr = disablement_option if isinstance(disablement_option, list) else [disablement_option]
@@ -667,6 +669,10 @@ def validate_disable_distributed_accelerator_params(
         unsupported_params.append('--storage-pool-option')
     if storage_pool_size is not None:
         unsupported_params.append('--storage-pool-size')
+    if ephemeral_disk_volume_type is not None:
+        unsupported_params.append('--ephemeral-disk-volume-type')
+    if ephemeral_disk_nvme_perf_tier is not None:
+        unsupported_params.append('--ephemeral-disk-nvme-perf-tier')
     if container_storage_version is not None:
         unsupported_params.append('--container-storage-version')
 
