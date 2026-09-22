@@ -112,6 +112,34 @@ class TestAIManagerConstruction(unittest.TestCase):
 
         self.assertNotIn("clusterResourceId", dict(resource.properties))
 
+    def test_update_omits_existing_cluster_resource_id(self):
+        cmd = SimpleNamespace(
+            cli_ctx=object(),
+            get_models=lambda name, **_: getattr(models, name),
+        )
+        client = MagicMock()
+        client.get.return_value = models.AIManager(
+            location="eastus2",
+            tags={"env": "test"},
+            properties=models.AIManagerProperties(
+                delete_policy="Keep",
+                cluster_resource_id="/subscriptions/sub/clusters/aks",
+            ),
+        )
+
+        custom.update_aimanager(cmd, client, "rg", "aim", no_wait=True)
+
+        resource = client.begin_create_or_update.call_args.args[2]
+        self.assertNotIn("clusterResourceId", dict(resource.properties))
+        self.assertEqual(dict(resource.properties)["deletePolicy"], "Keep")
+
+    def test_update_rejects_cluster_id(self):
+        with self.assertRaises(TypeError):
+            custom.update_aimanager(
+                SimpleNamespace(cli_ctx=object()), MagicMock(), "rg", "aim",
+                cluster_id="/subscriptions/sub/clusters/other-aks",
+            )
+
 
 class TestCallerRoleWiring(unittest.TestCase):
 
