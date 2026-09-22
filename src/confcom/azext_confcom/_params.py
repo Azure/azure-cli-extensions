@@ -121,9 +121,8 @@ def load_arguments(self, _):
             required=False,
             default="linux/amd64",
             help="Target platform for policy generation. Defaults to linux/amd64. "
-                 "Note: Docker Desktop must be running in the matching container mode "
-                 "(Linux containers for linux/amd64, Windows containers for windows/amd64) "
-                 "to produce correct layer hashes.",
+                 "Docker must be running for Linux policies; Docker in "
+                 "Windows-container mode is required for Windows policies.",
             choices=["linux/amd64", "windows/amd64"],
         )
         c.argument(

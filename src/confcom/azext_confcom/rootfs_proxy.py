@@ -48,6 +48,16 @@ _dmverity_vhd_binaries = [
         "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd.exe",
         "sha256": "a00429b781883b304839e14c01ec9788912fef7e016d0ee8b6fad7571a330f08",
     },
+    "Darwin-arm64": {
+        "path": _binaries_dir / "dmverity-vhd-darwin-arm64",
+        "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd-darwin-arm64",
+        "sha256": "020d2a93cae2466673b6ee42638c42b6b7b88535e607c61d503632b72fda03cf",
+    },
+    "Darwin-amd64": {
+        "path": _binaries_dir / "dmverity-vhd-darwin-amd64",
+        "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd-darwin-amd64",
+        "sha256": "11d19739b2d6e5cd4fb71a6ac65cabee6df48a4adfd30a5ea4f8acf612b777f4",
+    },
     {
         "path": _binaries_dir / "CimWriter.dll",
         "url": f"{_INTEGRITY_VHD_RELEASE_URL}/CimWriter.dll",
@@ -91,10 +101,15 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
                     "32-bit Windows is not supported."
                 )
         elif host_os == "Darwin":
-            eprint("The extension for MacOS has not been implemented.")
+            if machine == "arm64":
+                DEFAULT_LIB += "-darwin-arm64"
+            elif machine in ("x86_64", "amd64"):
+                DEFAULT_LIB += "-darwin-amd64"
+            else:
+                eprint(f"Unsupported MacOS architecture: {machine}.")
         else:
             eprint(
-                "Unknown target platform. The extension only works with Windows and Linux"
+                "Unknown target platform. The extension only works with Windows, Linux, and Darwin"
             )
 
         self.policy_bin = os.path.join(f"{script_directory}", f"{DEFAULT_LIB}")
