@@ -32,7 +32,7 @@ from azure.cli.core import telemetry
 from azure.cli.core.commands import LongRunningOperation
 from azure.core.polling import LROPoller
 
-from ._ssh_command import get_ssh_command, has_ssh_dependencies_installed, ssh_connector_file_path_space_message
+from ._ssh_command import get_ssh_command, has_ssh_dependencies_installed
 from .raise_error import log_and_raise_error, print_limited_result_set_warning
 from .utils import _dump_entity_with_warnings, filter_job_tags, get_list_view_type, get_ml_client
 
@@ -309,16 +309,13 @@ def ml_job_connect_ssh(cmd, resource_group_name, workspace_name, name, node_inde
                 error_category=ErrorCategory.USER_ERROR,
                 error_type=ValidationErrorType.FILE_OR_FOLDER_NOT_FOUND,
             )
+        services_dict = ml_client.jobs.show_services(name, node_index)
+        ssh_command = get_ssh_command(services_dict, node_index, private_key_file_path)
         if not has_ssh_dependencies_installed():
             return
 
-        services_dict = ml_client.jobs.show_services(name, node_index)
-        path_has_space, ssh_command = get_ssh_command(services_dict, node_index, private_key_file_path)
         print(f"ssh_command: {ssh_command}")
-        if path_has_space:
-            module_logger.error(ssh_connector_file_path_space_message())
-        else:
-            subprocess.call(ssh_command, shell=True)
+        subprocess.call(ssh_command, shell=False)
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 

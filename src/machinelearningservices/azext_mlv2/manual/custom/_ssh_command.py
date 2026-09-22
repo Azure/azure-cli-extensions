@@ -8,12 +8,15 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # ---------------------------------------------------------
+import ipaddress
 import os
 import pathlib
 import platform
+import re
 import subprocess
 import sys
-from typing import Dict, Tuple, Sequence, Optional
+from typing import Dict, List, Sequence, Optional
+from urllib.parse import urlsplit
 from xmlrpc.client import boolean
 
 from azure.ai.ml.entities import ServiceInstance
@@ -26,12 +29,9 @@ def get_ssh_command(
     private_key_file_path: str,
     ssh_args: Optional[Sequence[str]] = None,
     connector_args: Optional[Sequence[str]] = None
-) -> Tuple[bool, str]:
-    proxyEndpoint = _get_proxy_endpoint(services_dict, node_index).replace("<nodeIndex>", str(node_index))
+) -> List[str]:
+    proxy_endpoint = _validate_proxy_endpoint(_get_proxy_endpoint(services_dict, node_index), node_index)
     connect_ssh_path = pathlib.Path(__file__).parent / "_ssh_connector.py"
-
-    # split by space to check if file path has space
-    connect_ssh_path_has_space = len(str(connect_ssh_path).split(" ")) > 1
 
     ssh_path = "ssh"
 
@@ -43,15 +43,81 @@ def get_ssh_command(
         )
         ssh_path = os.path.join(system32, "OpenSSH\\ssh.exe")
 
-    identity_param = " -i {}".format(private_key_file_path) if private_key_file_path else ""
-    # TODO: Find how to enable debug mode
-    ssh_args_str = " ".join(ssh_args) if ssh_args else ""
-    connector_args_str = " ".join(connector_args) if connector_args else ""
-    return (
-        connect_ssh_path_has_space,
-        f'{ssh_path} -v -o ProxyCommand="{sys.executable} {connect_ssh_path} {proxyEndpoint} {connector_args_str}" '
-        f"azureuser@{proxyEndpoint}{identity_param}{ssh_args_str}",
-    )
+    connector_command = [sys.executable, str(connect_ssh_path), proxy_endpoint, *(connector_args or [])]
+    proxy_command = " ".join(_quote_proxy_argument(argument) for argument in connector_command)
+    # OpenSSH expands percent tokens before passing ProxyCommand to the shell or Windows process API.
+    proxy_command = proxy_command.replace("%", "%%")
+    command = [ssh_path, "-v", "-o", f"ProxyCommand={proxy_command}"]
+    if private_key_file_path:
+        command.extend(["-i", private_key_file_path])
+    command.extend([f"azureuser@{proxy_endpoint}", *(ssh_args or [])])
+    return command
+
+
+def _quote_proxy_argument(argument: str) -> str:
+    # Double quotes satisfy OpenSSH's option parser as well as the platform's command parser.
+    if os.name == "nt":
+        quoted = subprocess.list2cmdline([argument])
+        if quoted.startswith('"'):
+            return quoted
+        trailing_backslashes = len(quoted) - len(quoted.rstrip("\\"))
+        return '"' + quoted + "\\" * trailing_backslashes + '"'
+    return '"' + re.sub(r'([\\"$`])', r'\\\1', argument) + '"'
+
+
+def _validate_proxy_endpoint(proxy_endpoint: str, node_index: int) -> str:
+    try:
+        if not isinstance(proxy_endpoint, str):
+            raise ValueError
+        proxy_endpoint = proxy_endpoint.replace("<nodeIndex>", str(node_index))
+        # urlsplit strips some controls, so reject them before parsing instead of normalizing the input.
+        if not proxy_endpoint or any(not char.isprintable() or char.isspace() for char in proxy_endpoint):
+            raise ValueError
+
+        endpoint = urlsplit(proxy_endpoint)
+        if (
+            endpoint.scheme not in ("ws", "wss")
+            or not endpoint.hostname
+            or endpoint.username is not None
+            or "?" in proxy_endpoint
+            or "#" in proxy_endpoint
+            or not re.fullmatch(r"(?:\[[0-9A-Fa-f:.]+\]|[^:\[\]]+)(?::[0-9]+)?", endpoint.netloc)
+        ):
+            raise ValueError
+        if endpoint.port is not None and not 1 <= endpoint.port <= 65535:
+            raise ValueError
+
+        hostname = endpoint.hostname
+        if ":" in hostname:
+            ipaddress.IPv6Address(hostname)
+        else:
+            hostname = hostname.encode("idna").decode("ascii").removesuffix(".")
+            if len(hostname) > 253 or any(
+                not re.fullmatch(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?", label)
+                for label in hostname.split(".")
+            ):
+                raise ValueError
+            if re.fullmatch(r"[0-9.]+", hostname):
+                ipaddress.IPv4Address(hostname)
+
+        if (
+            not re.fullmatch(r"(?:/(?:[A-Za-z0-9._~-]|%[0-9A-Fa-f]{2})*)*", endpoint.path)
+            or re.search(r"%(?:0[0-9a-f]|1[0-9a-f]|7f)", endpoint.path, re.IGNORECASE)
+        ):
+            raise ValueError
+    except ValueError:
+        msg = (
+            "The ssh JobService.properties ProxyEndpoint must be a valid ws:// or wss:// URL "
+            "with a host, optional port and path."
+        )
+        raise ValidationException(
+            message=msg,
+            no_personal_data_message=msg,
+            target=ErrorTarget.JOB,
+            error_category=ErrorCategory.USER_ERROR,
+            error_type=ValidationErrorType.INVALID_VALUE,
+        ) from None
+    return proxy_endpoint
 
 
 def _get_proxy_endpoint(services_dict: Dict[str, ServiceInstance], node_index: int) -> str:
@@ -116,15 +182,6 @@ def has_ssh_dependencies_installed() -> boolean:
         print("Exiting as you preferred not to install websockets.")
         return False
     return True
-
-
-def ssh_connector_file_path_space_message():
-    return """
-    File path for _ssh_connector.py has space, unfortunately which will not work with ProxyCommand. To work
-    around this you can copy the _ssh_connector.py file from the location above (see ssh_command) to the
-    current working directory and run ssh_command output above, swapping the new ssh_connector file path:
-
-            ssh -v -o ProxyCommand="... _ssh_connector.py ..."""
 
 
 def _confirm(question, default="no"):
