@@ -100,6 +100,15 @@ from azext_aks_preview.azurecontainerstorage.acstor_ops import (
     perform_enable_distributed_accelerator,
     perform_disable_distributed_accelerator,
 )
+from azext_aks_preview.azuremanagedlustre._helpers import (
+    check_if_extension_is_installed as check_if_azure_managed_lustre_is_installed,
+    get_azure_managed_lustre_extension_client,
+)
+from azext_aks_preview.azuremanagedlustre._validators import validate_azure_managed_lustre_params
+from azext_aks_preview.azuremanagedlustre.aml_ops import (
+    perform_disable_azure_managed_lustre,
+    perform_enable_azure_managed_lustre,
+)
 from azext_aks_preview.azuremonitormetrics.azuremonitorprofile import (
     ensure_azure_monitor_profile_prerequisites,
 )
@@ -301,6 +310,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             external_functions[
                 "perform_disable_distributed_accelerator"
             ] = perform_disable_distributed_accelerator
+            external_functions["perform_enable_azure_managed_lustre"] = perform_enable_azure_managed_lustre
+            external_functions["perform_disable_azure_managed_lustre"] = perform_disable_azure_managed_lustre
             external_functions["sanitize_loganalytics_ws_resource_id"] = sanitize_loganalytics_ws_resource_id
             # Override base module function with preview version that uses REST API to avoid
             # "Request Header Fields Too Large" errors
@@ -5368,6 +5379,13 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_azure_managed_lustre(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+        if self.context.raw_param.get("enable_azure_managed_lustre"):
+            get_azure_managed_lustre_extension_client(self.cmd)
+            self.context.set_intermediate("enable_azure_managed_lustre", True, overwrite_exists=True)
+        return mc
+
     def set_up_azure_container_storage(self, mc: ManagedCluster) -> ManagedCluster:  # pylint: disable=too-many-locals
         """Set up azure container storage for the Managed Cluster object
         :return: ManagedCluster
@@ -5989,6 +6007,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_ai_toolchain_operator(mc)
         # set up for azure container storage
         mc = self.set_up_azure_container_storage(mc)
+        mc = self.set_up_azure_managed_lustre(mc)
         # set up node provisioning profile
         mc = self.set_up_node_provisioning_profile(mc)
         # set up node disruption policy
@@ -6086,6 +6105,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             need_grant_vnet_permission_to_cluster_identity or
             enable_azure_container_storage or
             enable_distributed_accelerator or
+            self.context.get_intermediate("enable_azure_managed_lustre", default_value=False) or
             enable_backup
         ):
             return True
@@ -6358,6 +6378,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     enable_azure_container_storage,
                     is_called_from_extension=True,
                 )
+
+        if self.context.get_intermediate("enable_azure_managed_lustre", default_value=False):
+            self.context.external_functions.perform_enable_azure_managed_lustre(
+                self.cmd, self.context.get_resource_group_name(), self.context.get_name()
+            )
 
         # Add role assignments for automatic sku
         if cluster.sku is not None and cluster.sku.name == "Automatic":
@@ -6787,6 +6812,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 )
             self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
 
+        return mc
+
+    def update_azure_managed_lustre(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+        enable = self.context.raw_param.get("enable_azure_managed_lustre", False)
+        disable = self.context.raw_param.get("disable_azure_managed_lustre", False)
+        validate_azure_managed_lustre_params(enable, disable)
+        if enable or disable:
+            installed = check_if_azure_managed_lustre_is_installed(
+                self.cmd, self.context.get_resource_group_name(), self.context.get_name()
+            )
+            validate_azure_managed_lustre_params(enable, disable, installed)
+            self.context.set_intermediate("enable_azure_managed_lustre", enable, overwrite_exists=True)
+            self.context.set_intermediate("disable_azure_managed_lustre", disable, overwrite_exists=True)
         return mc
 
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
@@ -9301,6 +9340,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_ai_toolchain_operator(mc)
         # update azure container storage
         mc = self.update_azure_container_storage(mc)
+        mc = self.update_azure_managed_lustre(mc)
         # update node provisioning profile
         mc = self.update_node_provisioning_profile(mc)
         # update bootstrap profile
@@ -9359,6 +9399,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # pylint: disable=too-many-boolean-expressions
             if (enable_azure_container_storage or disable_azure_container_storage) or \
                (enable_distributed_accelerator or disable_distributed_accelerator) or \
+               self.context.get_intermediate("enable_azure_managed_lustre", default_value=False) or \
+               self.context.get_intermediate("disable_azure_managed_lustre", default_value=False) or \
                (keyvault_id and enable_azure_keyvault_secrets_provider_addon) or \
                (monitoring_addon_postprocessing_required) or \
                enable_backup:
@@ -9373,6 +9415,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         :return: None
         """
         super().postprocessing_after_mc_created(cluster)
+
+        if self.context.get_intermediate("enable_azure_managed_lustre", default_value=False):
+            self.context.external_functions.perform_enable_azure_managed_lustre(
+                self.cmd, self.context.get_resource_group_name(), self.context.get_name()
+            )
+        if self.context.get_intermediate("disable_azure_managed_lustre", default_value=False):
+            self.context.external_functions.perform_disable_azure_managed_lustre(
+                self.cmd, self.context.get_resource_group_name(), self.context.get_name()
+            )
 
         # Handle monitoring addon postprocessing (enable case)
         monitoring_addon_postprocessing_required = self.context.get_intermediate(

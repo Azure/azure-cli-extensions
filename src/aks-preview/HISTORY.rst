@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create/update`: Add `--enable-azure-managed-lustre` to install the Azure Managed Lustre cluster extension at version 0.6.0 on the stable release train with automatic upgrades disabled. Add `az aks update --disable-azure-managed-lustre` to uninstall it.
 
 22.0.0b10
 +++++++++
