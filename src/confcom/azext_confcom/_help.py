@@ -107,7 +107,7 @@ helps[
 
         - name: --platform
           type: string
-          short-summary: 'Target platform for policy generation (linux/amd64 or windows/amd64). Defaults to linux/amd64. Docker Desktop must be running in the matching container mode to produce correct layer hashes.'
+          short-summary: 'Target platform for policy generation (linux/amd64 or windows/amd64). Defaults to linux/amd64. Docker must be running for Linux image workflows; it is not required when all image layers are supplied with --tar. Docker in Windows-container mode is required for Windows policies.'
 
     examples:
         - name: Input an ARM Template file to inject a base64 encoded Confidential Container Security Policy into the ARM Template
@@ -116,7 +116,7 @@ helps[
           text: az confcom acipolicygen --template-file "./template.json" --outraw-pretty-print
         - name: Input an ARM Template file to save a Confidential Container Security Policy to a file as base64 encoded text
           text: az confcom acipolicygen --template-file "./template.json" -s "./output-file.txt" --print-policy
-        - name: Input an ARM Template file and use a tar file as the image source instead of the Docker daemon
+        - name: Input an ARM Template file and use a tar file as the image source instead of the container runtime
           text: az confcom acipolicygen --template-file "./template.json" --tar "./image.tar"
         - name: Input an ARM Template file and use a fragments JSON file to generate a policy
           text: az confcom acipolicygen --template-file "./template.json" --fragments-json "./fragments.json" --include-fragments

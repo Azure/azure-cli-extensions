@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.2.0
++++++
+* Add MacOS support for Linux-container policy generation
+
 2.1.1
 +++++
 
