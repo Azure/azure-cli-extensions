@@ -107,7 +107,7 @@ helps[
 
         - name: --platform
           type: string
-          short-summary: 'Target platform for policy generation (linux/amd64 or windows/amd64). Defaults to linux/amd64. Docker must be running for Linux policies; Docker in Windows-container mode is required for Windows policies.'
+          short-summary: 'Target platform for policy generation (linux/amd64 or windows/amd64). Defaults to linux/amd64. Docker must be running for Linux image workflows; it is not required when all image layers are supplied with --tar. Docker in Windows-container mode is required for Windows policies.'
 
         - name: --allow-kubeproxy
           type: boolean

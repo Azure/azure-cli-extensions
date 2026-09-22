@@ -6,6 +6,7 @@ Release History
 2.4.1
 +++++
 * Retain Windows exec argument arrays and additionally emit Windows-quoted command lines to work around hcsshim passing CommandLine as one argument, including probes and lifecycle hooks
+* Add MacOS support for Linux-container policy generation
 
 2.4.0
 +++++
@@ -41,7 +42,6 @@ Release History
 +++++
 
 * Added de-duping of exec_processes in the generated policies so same command used in two probes results in one exec_processes entry
-* Add MacOS support for Linux-container policy generation
 
 2.1.0
 +++++

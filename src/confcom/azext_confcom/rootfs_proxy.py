@@ -11,6 +11,7 @@ import platform
 import stat
 import subprocess
 import sys
+from pathlib import Path
 from typing import List, Dict
 
 import requests
@@ -48,12 +49,12 @@ _dmverity_vhd_binaries = [
         "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd.exe",
         "sha256": "a00429b781883b304839e14c01ec9788912fef7e016d0ee8b6fad7571a330f08",
     },
-    "Darwin-arm64": {
+    {
         "path": _binaries_dir / "dmverity-vhd-darwin-arm64",
         "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd-darwin-arm64",
         "sha256": "020d2a93cae2466673b6ee42638c42b6b7b88535e607c61d503632b72fda03cf",
     },
-    "Darwin-amd64": {
+    {
         "path": _binaries_dir / "dmverity-vhd-darwin-amd64",
         "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd-darwin-amd64",
         "sha256": "11d19739b2d6e5cd4fb71a6ac65cabee6df48a4adfd30a5ea4f8acf612b777f4",
@@ -69,6 +70,30 @@ _dmverity_vhd_binaries = [
         "sha256": "a8099a63704a7aaa672e82a3785bf6921400da28dc9c2958bf512e440c39e787",
     },
 ]
+
+
+def get_dmverity_vhd_path() -> Path:
+    """Return the host-specific dmverity-vhd binary path."""
+    binary_name = "dmverity-vhd"
+
+    if host_os == "Windows":
+        if machine.endswith("64"):
+            binary_name += ".exe"
+        else:
+            eprint("32-bit Windows is not supported.")
+    elif host_os == "Darwin":
+        if machine == "arm64":
+            binary_name += "-darwin-arm64"
+        elif machine in ("x86_64", "amd64"):
+            binary_name += "-darwin-amd64"
+        else:
+            eprint(f"Unsupported MacOS architecture: {machine}.")
+    elif host_os != "Linux":
+        eprint(
+            "Unknown target platform. The extension only works with Windows, Linux, and Darwin"
+        )
+
+    return Path(__file__).parent / "bin" / binary_name
 
 
 class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
@@ -88,31 +113,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
                 f.write(dmverity_vhd_fetch_resp.content)
 
     def __init__(self):
-        script_directory = os.path.dirname(os.path.realpath(__file__))
-        DEFAULT_LIB = "./bin/dmverity-vhd"
-
-        if host_os == "Linux":
-            pass
-        elif host_os == "Windows":
-            if machine.endswith("64"):
-                DEFAULT_LIB += ".exe"
-            else:
-                eprint(
-                    "32-bit Windows is not supported."
-                )
-        elif host_os == "Darwin":
-            if machine == "arm64":
-                DEFAULT_LIB += "-darwin-arm64"
-            elif machine in ("x86_64", "amd64"):
-                DEFAULT_LIB += "-darwin-amd64"
-            else:
-                eprint(f"Unsupported MacOS architecture: {machine}.")
-        else:
-            eprint(
-                "Unknown target platform. The extension only works with Windows, Linux, and Darwin"
-            )
-
-        self.policy_bin = os.path.join(f"{script_directory}", f"{DEFAULT_LIB}")
+        self.policy_bin = str(get_dmverity_vhd_path())
 
         # check if the extension binary exists
         if not os.path.exists(self.policy_bin):
