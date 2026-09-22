@@ -45,6 +45,31 @@ COMMANDS = (
         "Delete",
     ),
     (
+        "agentfabric cluster-association create",
+        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._create",
+        "Create",
+    ),
+    (
+        "agentfabric cluster-association show",
+        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._show",
+        "Show",
+    ),
+    (
+        "agentfabric cluster-association list",
+        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._list",
+        "List",
+    ),
+    (
+        "agentfabric cluster-association update",
+        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._update",
+        "Update",
+    ),
+    (
+        "agentfabric cluster-association delete",
+        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._delete",
+        "Delete",
+    ),
+    (
         "agentfabric policy-group create",
         "azext_agentfabric.aaz.latest.agentfabric.policy_group._create",
         "Create",
@@ -74,6 +99,7 @@ COMMANDS = (
 HELP_ONLY_COMMANDS = (
     "agentfabric wait",
     "agentfabric member wait",
+    "agentfabric cluster-association wait",
     "agentfabric policy-group wait",
 )
 
@@ -84,6 +110,7 @@ REQUEST_SHAPES = (
         "AgentFabricsCreateOrUpdate",
         "PUT",
         "/Microsoft.NetworkSecurity/agentFabrics/{agentFabricName}",
+        "2026-07-21-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric._update",
@@ -91,6 +118,7 @@ REQUEST_SHAPES = (
         "AgentFabricsUpdate",
         "PATCH",
         "/Microsoft.NetworkSecurity/agentFabrics/{agentFabricName}",
+        "2026-07-21-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric._delete",
@@ -98,6 +126,7 @@ REQUEST_SHAPES = (
         "AgentFabricsDelete",
         "DELETE",
         "/Microsoft.NetworkSecurity/agentFabrics/{agentFabricName}",
+        "2026-07-21-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.member._create",
@@ -105,6 +134,7 @@ REQUEST_SHAPES = (
         "MembersCreateOrUpdate",
         "PUT",
         "/agentFabrics/{agentFabricName}/members/{memberName}",
+        "2026-07-21-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.member._update",
@@ -112,6 +142,7 @@ REQUEST_SHAPES = (
         "MembersUpdate",
         "PATCH",
         "/agentFabrics/{agentFabricName}/members/{memberName}",
+        "2026-07-21-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.member._delete",
@@ -119,6 +150,47 @@ REQUEST_SHAPES = (
         "MembersDelete",
         "DELETE",
         "/agentFabrics/{agentFabricName}/members/{memberName}",
+        "2026-07-21-preview",
+    ),
+    (
+        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._create",
+        "Create",
+        "ClusterAssociationsCreateOrUpdate",
+        "PUT",
+        "/agentFabrics/{agentFabricName}/clusterAssociations/{clusterAssociationName}",
+        "2026-09-10-preview",
+    ),
+    (
+        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._show",
+        "Show",
+        "ClusterAssociationsGet",
+        "GET",
+        "/agentFabrics/{agentFabricName}/clusterAssociations/{clusterAssociationName}",
+        "2026-09-10-preview",
+    ),
+    (
+        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._list",
+        "List",
+        "ClusterAssociationsListByParent",
+        "GET",
+        "/agentFabrics/{agentFabricName}/clusterAssociations",
+        "2026-09-10-preview",
+    ),
+    (
+        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._update",
+        "Update",
+        "ClusterAssociationsCreateOrUpdate",
+        "PUT",
+        "/agentFabrics/{agentFabricName}/clusterAssociations/{clusterAssociationName}",
+        "2026-09-10-preview",
+    ),
+    (
+        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._delete",
+        "Delete",
+        "ClusterAssociationsDelete",
+        "DELETE",
+        "/agentFabrics/{agentFabricName}/clusterAssociations/{clusterAssociationName}",
+        "2026-09-10-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.policy_group._create",
@@ -126,6 +198,7 @@ REQUEST_SHAPES = (
         "PolicyGroupsCreateOrUpdate",
         "PUT",
         "/Microsoft.NetworkSecurity/policyGroups/{policyGroupName}",
+        "2026-07-21-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.policy_group._update",
@@ -133,6 +206,7 @@ REQUEST_SHAPES = (
         "PolicyGroupsUpdate",
         "PATCH",
         "/Microsoft.NetworkSecurity/policyGroups/{policyGroupName}",
+        "2026-07-21-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.policy_group._delete",
@@ -140,6 +214,7 @@ REQUEST_SHAPES = (
         "PolicyGroupsDelete",
         "DELETE",
         "/Microsoft.NetworkSecurity/policyGroups/{policyGroupName}",
+        "2026-07-21-preview",
     ),
 )
 
@@ -159,6 +234,7 @@ class AgentfabricScenario(ScenarioTest):
         commands = (
             "agentfabric",
             "agentfabric member",
+            "agentfabric cluster-association",
             "agentfabric policy-group",
             *(command for command, _, _ in COMMANDS),
             *HELP_ONLY_COMMANDS,
@@ -195,8 +271,15 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
                 command,
             )
 
-    def test_lro_request_shapes_and_resource_urls(self):
-        for module_name, class_name, operation_name, method, url_suffix in REQUEST_SHAPES:
+    def test_request_shapes_and_resource_urls(self):
+        for (
+            module_name,
+            class_name,
+            operation_name,
+            method,
+            url_suffix,
+            api_version,
+        ) in REQUEST_SHAPES:
             command_class = getattr(importlib.import_module(module_name), class_name)
             operation_class = getattr(command_class, operation_name)
             operation = operation_class(ctx=MagicMock())
@@ -204,6 +287,41 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
             self.assertEqual(operation.method, method)
             self.assertEqual(
                 operation.query_parameters,
-                {"api-version": "2026-07-21-preview"},
+                {"api-version": api_version},
             )
             self.assertTrue(operation.url.endswith(url_suffix), operation.url)
+
+    def test_cluster_association_contract(self):
+        create_module = importlib.import_module(
+            "azext_agentfabric.aaz.latest.agentfabric.cluster_association._create"
+        )
+        create_schema = create_module.Create._build_arguments_schema()
+        self.assertTrue(create_schema.cluster_resource_id._required)
+        self.assertEqual(
+            create_schema.sku.enum.items,
+            {"Premium": "Premium", "Standard": "Standard"},
+        )
+        self.assertEqual(create_schema.if_none_match.enum.items, {"*": "*"})
+
+        update_module = importlib.import_module(
+            "azext_agentfabric.aaz.latest.agentfabric.cluster_association._update"
+        )
+        update_schema = update_module.Update._build_arguments_schema()
+        self.assertFalse(hasattr(update_schema, "cluster_resource_id"))
+        self.assertFalse(hasattr(update_schema, "if_none_match"))
+        self.assertTrue(hasattr(update_schema, "sku"))
+
+        show_module = importlib.import_module(
+            "azext_agentfabric.aaz.latest.agentfabric.cluster_association._show"
+        )
+        output_schema = (
+            show_module.Show.ClusterAssociationsGet._build_schema_on_200()
+        )
+        self.assertEqual(
+            set(output_schema.properties._fields),
+            {"cluster_resource_id", "provisioning_state", "sku", "status"},
+        )
+        self.assertEqual(
+            set(output_schema.properties.status._fields),
+            {"code", "message"},
+        )
