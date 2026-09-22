@@ -9,6 +9,10 @@ from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview import ContainerServiceCommandsLoader
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._consts import CONST_FLEX_NODES
+from azext_aks_preview._consts import (
+    CONST_CONTAINER_INSIGHTS_DEFAULT_SYSLOG_PORT,
+    CONST_CONTAINER_NETWORK_LOGS_DISABLED,
+)
 from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolModels
 from azext_aks_preview.managed_cluster_decorator import (
     AKSPreviewManagedClusterModels,
@@ -23,6 +27,8 @@ from azext_aks_preview.custom import (
     aks_upgrade,
     aks_enable_addons,
     aks_list_vm_skus,
+    _validate_addons_for_disable,
+    _resolve_dcr_settings_from_existing,
 )
 from azext_aks_preview.tests.latest.mocks import MockCLI, MockClient, MockCmd
 from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode
@@ -1081,6 +1087,285 @@ class TestMonitoringArgumentRegistration(unittest.TestCase):
             ):
                 self.assertIn(dest, arguments, f"{dest} missing from {command_name}")
             self.assertIsNotNone(arguments["syslog_port"].get("validator"), command_name)
+
+
+class TestDisableAddonsMonitoringCleanup(unittest.TestCase):
+    """`az aks disable-addons -a monitoring` must behave like `--disable-azure-monitor-logs`.
+
+    The two commands are the legacy and the first-class view of the same feature, so a cluster
+    disabled through either one has to end up in the same state.
+    """
+
+    def setUp(self):
+        register_aks_preview_resource_type()
+        self.cli_ctx = MockCLI()
+        self.cmd = MockCmd(self.cli_ctx)
+
+    def _instance(self, otlp_enabled=False, stale=True):
+        container_insights = Mock(
+            enabled=True,
+            syslog_port=51400 if stale else 28330,
+            disable_prometheus_metrics_scraping=True if stale else False,
+            container_network_logs="Enabled" if stale else "Disabled",
+        )
+        otlp = Mock(enabled=otlp_enabled, http_port=4318, grpc_port=4317)
+        instance = Mock()
+        instance.azure_monitor_profile = Mock(
+            container_insights=container_insights,
+            app_monitoring=Mock(open_telemetry_logs_and_traces=otlp),
+        )
+        # Both addons are installed: disabling an addon that is not installed is rejected up front.
+        instance.addon_profiles = {
+            "omsagent": Mock(enabled=True, config={}),
+            "azurepolicy": Mock(enabled=True, config={}),
+        }
+        instance.location = "westus2"
+        return instance
+
+    def _run(self, addons, instance, yes=False, answer=True):
+        from azext_aks_preview import custom
+
+        client = Mock()
+        client.get.return_value = instance
+        with patch.object(custom, "get_subscription_id", return_value="sub"), patch.object(
+            custom, "_update_addons", side_effect=lambda *a, **k: instance
+        ), patch.object(custom, "sdk_no_wait") as put, patch.object(
+            custom, "prompt_y_n", return_value=answer
+        ) as prompt:
+            result = custom.aks_disable_addons(
+                cmd=self.cmd,
+                client=client,
+                resource_group_name="rg",
+                name="cluster",
+                addons=addons,
+                yes=yes,
+            )
+        return result, put, prompt
+
+    def test_container_insights_settings_are_reset_to_defaults(self):
+        # The RP only copies a containerInsights field when it is present on the request, so a
+        # stale value left behind here is silently inherited by the next onboarding.
+        instance = self._instance()
+        _, put, _ = self._run("monitoring", instance)
+
+        ci = instance.azure_monitor_profile.container_insights
+        self.assertFalse(ci.enabled)
+        self.assertEqual(ci.syslog_port, CONST_CONTAINER_INSIGHTS_DEFAULT_SYSLOG_PORT)
+        self.assertFalse(ci.disable_prometheus_metrics_scraping)
+        self.assertEqual(ci.container_network_logs, CONST_CONTAINER_NETWORK_LOGS_DISABLED)
+        put.assert_called_once()
+
+    def test_comma_separated_addon_list_still_disables_monitoring(self):
+        # An exact string compare skips the cleanup for 'monitoring,azure-policy'.
+        instance = self._instance()
+        self._run("monitoring,azure-policy", instance)
+        self.assertFalse(instance.azure_monitor_profile.container_insights.enabled)
+
+    def test_unrelated_addon_leaves_container_insights_alone(self):
+        instance = self._instance()
+        self._run("azure-policy", instance)
+        self.assertTrue(instance.azure_monitor_profile.container_insights.enabled)
+
+    def test_declining_the_opentelemetry_prompt_makes_no_changes(self):
+        # Declining must abort before the cluster is written, not after.
+        instance = self._instance(otlp_enabled=True)
+        result, put, prompt = self._run("monitoring", instance, answer=False)
+
+        self.assertIsNone(result)
+        put.assert_not_called()
+        prompt.assert_called_once()
+        self.assertTrue(instance.azure_monitor_profile.container_insights.enabled)
+
+    def test_accepting_the_prompt_also_turns_opentelemetry_off(self):
+        instance = self._instance(otlp_enabled=True)
+        _, put, prompt = self._run("monitoring", instance, answer=True)
+
+        prompt.assert_called_once()
+        otlp = instance.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces
+        self.assertFalse(otlp.enabled)
+        self.assertIsNone(otlp.http_port)
+        self.assertIsNone(otlp.grpc_port)
+        put.assert_called_once()
+
+    def test_yes_skips_the_prompt(self):
+        instance = self._instance(otlp_enabled=True)
+        _, put, prompt = self._run("monitoring", instance, yes=True)
+
+        prompt.assert_not_called()
+        put.assert_called_once()
+        self.assertFalse(
+            instance.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled
+        )
+
+    def test_no_prompt_when_opentelemetry_is_off(self):
+        instance = self._instance(otlp_enabled=False)
+        _, put, prompt = self._run("monitoring", instance)
+
+        prompt.assert_not_called()
+        put.assert_called_once()
+
+    def test_bad_addon_is_rejected_before_any_cleanup_runs(self):
+        """The whole point of validating up front is that nothing is deleted on the way to the error.
+
+        Calling the validator directly proves it rejects the addon, but not that aks_disable_addons
+        actually calls it, nor that it does so before the destructive DCR association cleanup.
+        """
+        from azext_aks_preview import custom
+
+        instance = self._instance()
+        client = Mock()
+        client.get.return_value = instance
+        with patch.object(custom, "get_subscription_id", return_value="sub"), patch.object(
+            custom, "_update_addons"
+        ) as update_addons, patch.object(custom, "sdk_no_wait") as put, patch.object(
+            custom, "ensure_container_insights_for_monitoring"
+        ) as cleanup:
+            with self.assertRaises(CLIError):
+                custom.aks_disable_addons(
+                    cmd=self.cmd,
+                    client=client,
+                    resource_group_name="rg",
+                    name="cluster",
+                    addons="monitoring,bogusaddon",
+                    yes=True,
+                )
+
+        cleanup.assert_not_called()
+        update_addons.assert_not_called()
+        put.assert_not_called()
+        # The cluster is left exactly as it was found.
+        self.assertTrue(instance.azure_monitor_profile.container_insights.enabled)
+
+
+class TestValidateAddonsForDisable(unittest.TestCase):
+    """`aks disable-addons` deletes the DCR association before the cluster PUT, so a bad addon
+    name has to be rejected before that cleanup runs rather than after it."""
+
+    def _instance(self, *installed):
+        instance = Mock()
+        instance.addon_profiles = {key: Mock(enabled=True) for key in installed}
+        return instance
+
+    def test_unknown_addon_rejected(self):
+        with self.assertRaises(CLIError) as cm:
+            _validate_addons_for_disable(self._instance("omsagent"), "bogusaddon")
+        self.assertIn("Invalid addon name", str(cm.exception))
+
+    def test_not_installed_addon_rejected(self):
+        with self.assertRaises(CLIError) as cm:
+            _validate_addons_for_disable(self._instance("azurepolicy"), "monitoring")
+        self.assertIn("is not installed", str(cm.exception))
+
+    def test_installed_addon_accepted(self):
+        _validate_addons_for_disable(self._instance("omsagent", "azurepolicy"), "monitoring,azure-policy")
+
+    def test_installed_check_is_case_insensitive(self):
+        # _update_addons normalizes the casing of the stored key before checking, and the addon
+        # key has been seen as 'omsAgent' in the wild.
+        _validate_addons_for_disable(self._instance("omsAgent"), "monitoring")
+
+    def test_bad_addon_alongside_a_good_one_is_still_rejected(self):
+        # The whole list has to be validated, otherwise the monitoring cleanup runs and only then
+        # does _update_addons reject the rest, skipping the PUT.
+        with self.assertRaises(CLIError):
+            _validate_addons_for_disable(self._instance("omsagent"), "monitoring,bogusaddon")
+
+    def test_kube_dashboard_exempt_from_installed_check(self):
+        # _update_addons synthesizes a disabled profile for it instead of failing.
+        _validate_addons_for_disable(self._instance("omsagent"), "kube-dashboard")
+
+    def test_virtual_node_uses_the_os_suffixed_key(self):
+        _validate_addons_for_disable(self._instance("aciConnectorLinux"), "virtual-node")
+        with self.assertRaises(CLIError):
+            _validate_addons_for_disable(self._instance("aciConnector"), "virtual-node")
+
+    def test_ingress_profile_addons_are_exempt(self):
+        # These two live in the ingress profile, not addon_profiles. _update_addons handles them
+        # before it validates anything, so rejecting them here would break disabling them.
+        instance = self._instance()
+        _validate_addons_for_disable(instance, "web_application_routing")
+        _validate_addons_for_disable(instance, "applicationloadbalancer")
+
+
+class TestResolveDcrSettingsFromExisting(unittest.TestCase):
+    """Reconfiguring rebuilds the DCR from scratch, so settings not named on the command line have
+    to be read back off the existing DCR or they are silently dropped."""
+
+    @staticmethod
+    def _dcr(streams=None, syslog=False, data_collection_settings=None):
+        extension = {"extensionName": "ContainerInsights", "streams": streams or []}
+        if data_collection_settings is not None:
+            extension["extensionSettings"] = {"dataCollectionSettings": data_collection_settings}
+        data_sources = {"extensions": [{"extensionName": "Unrelated"}, extension]}
+        if syslog:
+            data_sources["syslog"] = [{"name": "sysLogsDataSource"}]
+        return {"properties": {"dataSources": data_sources}}
+
+    def test_unspecified_settings_are_inherited(self):
+        dcr = self._dcr(
+            streams=["Microsoft-ContainerLogV2-HighScale"],
+            syslog=True,
+            data_collection_settings={"interval": "5m"},
+        )
+        syslog, settings, hlsm = _resolve_dcr_settings_from_existing(dcr, None, None, None)
+        self.assertTrue(syslog)
+        self.assertTrue(hlsm)
+        self.assertEqual(settings, {"interval": "5m"})
+
+    def test_explicit_false_beats_the_existing_dcr(self):
+        # An explicitly supplied value always wins, including a falsy one.
+        dcr = self._dcr(streams=["Microsoft-ContainerLogV2-HighScale"], syslog=True)
+        syslog, _, hlsm = _resolve_dcr_settings_from_existing(dcr, False, None, False)
+        self.assertFalse(syslog)
+        self.assertFalse(hlsm)
+
+    def test_explicit_data_collection_settings_are_not_overridden(self):
+        dcr = self._dcr(data_collection_settings={"interval": "5m"})
+        _, settings, _ = _resolve_dcr_settings_from_existing(dcr, None, "{}", None)
+        self.assertIsNone(settings)
+
+    def test_absent_dcr_resolves_to_defaults(self):
+        for existing in ({}, None, {"properties": {}}):
+            with self.subTest(existing=existing):
+                syslog, settings, hlsm = _resolve_dcr_settings_from_existing(
+                    existing, None, None, None
+                )
+                self.assertFalse(syslog)
+                self.assertFalse(hlsm)
+                self.assertIsNone(settings)
+
+    def test_preserving_is_opt_in(self):
+        """Every call site that does not ask for preservation must get a fresh onboarding.
+
+        Most call sites omit the flag entirely, so a default of True would silently make them all
+        inherit whatever the leftover DCR happens to contain.
+        """
+        import inspect
+
+        from azext_aks_preview.custom import ensure_container_insights_for_monitoring_preview
+
+        default = inspect.signature(
+            ensure_container_insights_for_monitoring_preview
+        ).parameters["preserve_existing_dcr_settings"].default
+        self.assertIs(default, False)
+
+    def test_high_log_scale_mode_read_from_the_container_insights_extension_only(self):
+        # The high scale stream on some other extension must not be mistaken for this one.
+        dcr = {
+            "properties": {
+                "dataSources": {
+                    "extensions": [
+                        {
+                            "extensionName": "Unrelated",
+                            "streams": ["Microsoft-ContainerLogV2-HighScale"],
+                        },
+                        {"extensionName": "ContainerInsights", "streams": ["Microsoft-ContainerLogV2"]},
+                    ]
+                }
+            }
+        }
+        _, _, hlsm = _resolve_dcr_settings_from_existing(dcr, None, None, None)
+        self.assertFalse(hlsm)
 
 
 if __name__ == '__main__':

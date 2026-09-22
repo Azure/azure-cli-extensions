@@ -2877,5 +2877,100 @@ class TestValidateContainerInsightsSettings(unittest.TestCase):
         self.assertIn("--disable-azure-monitor-logs", str(cm.exception))
 
 
+class TestOpenTelemetryPortsNotDisabled(unittest.TestCase):
+    """A port flag naming a receiver that is being disabled must be rejected at validation time.
+
+    The decorator's port getters catch this too, but only after the Azure Monitor collection
+    resources have already been deleted, so the command fails with the cluster half torn down.
+    """
+
+    PORT_DISABLE_COMBOS = [
+        ("opentelemetry_metrics_port", "--opentelemetry-metrics-port-http",
+         "disable_azure_monitor_metrics", "--disable-azure-monitor-metrics"),
+        ("opentelemetry_metrics_port", "--opentelemetry-metrics-port-http",
+         "disable_opentelemetry_metrics", "--disable-opentelemetry-metrics"),
+        ("opentelemetry_metrics_port_grpc", "--opentelemetry-metrics-port-grpc",
+         "disable_azure_monitor_metrics", "--disable-azure-monitor-metrics"),
+        ("opentelemetry_metrics_port_grpc", "--opentelemetry-metrics-port-grpc",
+         "disable_opentelemetry_metrics", "--disable-opentelemetry-metrics"),
+        ("opentelemetry_logs_port", "--opentelemetry-logs-traces-port-http",
+         "disable_azure_monitor_logs", "--disable-azure-monitor-logs"),
+        ("opentelemetry_logs_port", "--opentelemetry-logs-traces-port-http",
+         "disable_opentelemetry_logs", "--disable-opentelemetry-logs-traces"),
+        ("opentelemetry_logs_traces_port_grpc", "--opentelemetry-logs-traces-port-grpc",
+         "disable_azure_monitor_logs", "--disable-azure-monitor-logs"),
+        ("opentelemetry_logs_traces_port_grpc", "--opentelemetry-logs-traces-port-grpc",
+         "disable_opentelemetry_logs", "--disable-opentelemetry-logs-traces"),
+    ]
+
+    @staticmethod
+    def _namespace(**kwargs):
+        defaults = {
+            "opentelemetry_metrics_port": None,
+            "opentelemetry_metrics_port_grpc": None,
+            "opentelemetry_logs_port": None,
+            "opentelemetry_logs_traces_port_grpc": None,
+            "disable_azure_monitor_metrics": False,
+            "disable_azure_monitor_logs": False,
+            "disable_opentelemetry_metrics": False,
+            "disable_opentelemetry_logs": False,
+            "enable_azure_monitor_metrics": False,
+            "enable_azure_monitor_logs": False,
+            "enable_opentelemetry_metrics": False,
+            "enable_opentelemetry_logs": False,
+            "enable_addons": None,
+        }
+        defaults.update(kwargs)
+        return SimpleNamespace(**defaults)
+
+    def test_port_with_matching_disable_rejected(self):
+        for port_attr, port_flag, disable_attr, disable_flag in self.PORT_DISABLE_COMBOS:
+            with self.subTest(port=port_flag, disable=disable_flag):
+                namespace = self._namespace(**{port_attr: 4318, disable_attr: True})
+                with self.assertRaises(InvalidArgumentValueError) as cm:
+                    validators.validate_opentelemetry_ports_not_disabled(namespace)
+                self.assertIn(port_flag, str(cm.exception))
+                self.assertIn(disable_flag, str(cm.exception))
+
+    def test_port_with_unrelated_disable_allowed(self):
+        # Disabling metrics must not reject a logs/traces port, and vice versa.
+        namespace = self._namespace(
+            opentelemetry_logs_port=4318,
+            disable_azure_monitor_metrics=True,
+            disable_opentelemetry_metrics=True,
+        )
+        validators.validate_opentelemetry_ports_not_disabled(namespace)
+
+        namespace = self._namespace(
+            opentelemetry_metrics_port=4318,
+            disable_azure_monitor_logs=True,
+            disable_opentelemetry_logs=True,
+        )
+        validators.validate_opentelemetry_ports_not_disabled(namespace)
+
+    def test_disable_without_ports_allowed(self):
+        namespace = self._namespace(
+            disable_azure_monitor_metrics=True,
+            disable_azure_monitor_logs=True,
+            disable_opentelemetry_metrics=True,
+            disable_opentelemetry_logs=True,
+        )
+        validators.validate_opentelemetry_ports_not_disabled(namespace)
+
+    def test_port_disable_conflict_rejected_by_aggregate_validators(self):
+        # The aggregate validators are the entry points the commands register. The conflict has to
+        # be reachable through them, otherwise it is only caught in the decorator's port getters,
+        # which run after the Azure Monitor collection resources have already been deleted.
+        for aggregate in (
+            validators.validate_azure_monitor_and_opentelemetry_for_create,
+            validators.validate_azure_monitor_and_opentelemetry_for_update,
+        ):
+            for port_attr, port_flag, disable_attr, disable_flag in self.PORT_DISABLE_COMBOS:
+                with self.subTest(aggregate=aggregate.__name__, port=port_flag, disable=disable_flag):
+                    namespace = self._namespace(**{port_attr: 4318, disable_attr: True})
+                    with self.assertRaises(InvalidArgumentValueError):
+                        aggregate(namespace)
+
+
 if __name__ == "__main__":
     unittest.main()

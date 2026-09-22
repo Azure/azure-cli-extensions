@@ -6772,6 +6772,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             (self.context.get_nat_gateway_outbound_ip_ids(), None),
             (self.context.get_nat_gateway_outbound_ip_prefix_ids(), None),
             (self.context.raw_param.get("enable_high_log_scale_mode"), None),
+            (self.context.raw_param.get("enable_syslog"), None),
         ]
 
     def check_raw_parameters(self):
@@ -9108,6 +9109,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # disabled addon) to managed identity, while preserving the existing useAADAuth value on a
         # cluster that is already onboarded with legacy shared-key auth.
         container_insights = self._ensure_container_insights(mc)
+
+        # The guards above reject clusters that are already enabled, so reaching here is always a
+        # genuine onboarding rather than a reconfigure. Start from the documented defaults so the
+        # result does not depend on what a previous onboarding left behind: the RP copies a
+        # containerInsights field onto the cluster only when that field is present on the request,
+        # so a stale syslog port, scraping choice or container network logs setting would otherwise
+        # be inherited silently. Values the user asked for are applied on top of this below and by
+        # update_azure_monitor_logs_settings, which runs later in the update flow.
+        _reset_container_insights_to_defaults(container_insights)
         container_insights.enabled = True
         container_insights.log_analytics_workspace_resource_id = workspace_resource_id
 
@@ -9639,6 +9649,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     is_private_cluster=self.context.get_enable_private_cluster(),
                     ampls_resource_id=self.context.get_ampls_resource_id(),
                     enable_high_log_scale_mode=self.context.get_enable_high_log_scale_mode(),
+                    # This is the reconfigure path: the cluster is already onboarded and only
+                    # the settings named on the command line should change. Everything else is
+                    # carried over from the existing DCR rather than reset to its default.
+                    preserve_existing_dcr_settings=True,
                 )
 
         # Monitoring addon disable cleanup is now done upfront in _disable_azure_monitor_logs (not in postprocessing)

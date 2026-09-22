@@ -9895,6 +9895,31 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         _, kwargs = mock_ecifm.call_args
         self.assertTrue(kwargs["create_dcr"])
 
+    def test_postprocessing_amp_onboarding_skips_monitoring_role_assignment(self):
+        """--enable-azure-monitor-logs must never attempt the Monitoring Metrics Publisher grant.
+
+        The grant only applies to legacy service-principal/addon-MSI auth. AMP onboarding is
+        always AAD-authenticated, and such a cluster may come back with no addon profiles at
+        all, so the call site is guarded by `if not aad_route`. Core hardened the body of
+        add_monitoring_role_assignment against that shape; here the guard is what keeps it
+        unreachable, so the guard itself is what has to be pinned.
+        """
+        dec = self._make_postprocessing_decorator({"enable_azure_monitor_logs": True})
+        cluster = self.models.ManagedCluster(location="test_location")
+        self.assertIsNone(cluster.addon_profiles)
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ), patch.object(
+            external_functions,
+            "add_monitoring_role_assignment",
+            return_value=None,
+        ) as mock_role:
+            dec.postprocessing_after_mc_created(cluster)
+        mock_role.assert_not_called()
+
     # ------------------------------------------------------------------
     # Tests for _should_create_dcra and _is_cnl_or_hlsm_changing helpers
     # ------------------------------------------------------------------
@@ -19239,7 +19264,13 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertNotIn(CONST_MONITORING_ADDON_NAME, mc.addon_profiles or {})
 
     def test_setup_azure_monitor_logs_no_retina_flags_without_cnl(self):
-        """_setup_azure_monitor_logs leaves containerNetworkLogs unset when CNL is not specified."""
+        """_setup_azure_monitor_logs disables containerNetworkLogs when CNL is not specified.
+
+        Leaving the field unset is not equivalent: the RP backfills an unspecified
+        containerNetworkLogs from the omsagent addon config, so a stale 'retinaNetworkFlowLogs=true'
+        left behind by a previous onboarding would turn CNL back on. Writing the default
+        explicitly keeps it off.
+        """
         dec = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -19270,7 +19301,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         container_insights = mc.azure_monitor_profile.container_insights
         self.assertIsNotNone(container_insights)
         self.assertTrue(container_insights.enabled)
-        self.assertIsNone(container_insights.container_network_logs)
+        self.assertEqual(
+            container_insights.container_network_logs, CONST_CONTAINER_NETWORK_LOGS_DISABLED
+        )
 
     # ------------------------------------------------------------------
     # Tests for _setup_azure_monitor_logs workspace change detection
@@ -20890,6 +20923,26 @@ class AKSPreviewCoreMonitoringFixPortsTestCase(unittest.TestCase):
         self.addCleanup(os.unlink, handle.name)
         return handle.name
 
+    def test_check_raw_parameters_explicit_false_three_state_flags(self):
+        # three-state flags explicitly set to false are a real update request,
+        # they must not be mistaken for "no argument specified". `False` is falsy, so the
+        # generic `any(...)` scan cannot see it; the flag has to be declared in
+        # get_special_parameter_default_value_pairs_list to be noticed.
+        for param in ("enable_syslog", "enable_high_log_scale_mode"):
+            with self.subTest(param=param):
+                dec = AKSPreviewManagedClusterUpdateDecorator(
+                    self.cmd,
+                    self.client,
+                    {param: False},
+                    CUSTOM_MGMT_AKS_PREVIEW,
+                )
+                with patch(
+                    "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
+                    return_value=False,
+                ) as prompt:
+                    dec.check_raw_parameters()
+                prompt.assert_not_called()
+
     def test_data_collection_settings_size_is_measured_on_the_contents(self):
         # The getter returns the file path, so a check against the path length can never fire.
         # An oversized file has to be rejected on the size of what gets serialized into the DCR.
@@ -21131,6 +21184,190 @@ class AKSPreviewCoreMonitoringFixPortsTestCase(unittest.TestCase):
         # The receivers stay on: a port change must not alter the enabled state.
         self.assertTrue(app_monitoring.open_telemetry_metrics.enabled)
         self.assertTrue(app_monitoring.open_telemetry_logs_and_traces.enabled)
+
+    def test_re_enabling_starts_from_defaults_not_the_previous_onboarding(self):
+        """Regression test: a re-onboard must not inherit the previous configuration.
+
+        The RP copies a containerInsights field onto the cluster only when the field is present on
+        the request, so any value left behind by an earlier onboarding survives a disable/enable
+        cycle unless the enable path writes the defaults explicitly.
+        """
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": "/subscriptions/s/resourceGroups/rg/providers/"
+                                         "Microsoft.OperationalInsights/workspaces/ws",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        # A disabled cluster still carrying the settings of its previous onboarding.
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=False, config={CONST_MONITORING_USING_AAD_MSI_AUTH: "true"}
+                )
+            },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=False,
+                    syslog_port=51400,
+                    disable_prometheus_metrics_scraping=True,
+                    container_network_logs="Enabled",
+                )
+            ),
+        )
+        dec.context.attach_mc(mc)
+
+        with patch.object(dec, "_provision_azure_monitor_logs_dcr"), patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda ws: ws,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+
+        container_insights = mc.azure_monitor_profile.container_insights
+        self.assertTrue(container_insights.enabled)
+        self.assertEqual(
+            container_insights.syslog_port, CONST_CONTAINER_INSIGHTS_DEFAULT_SYSLOG_PORT
+        )
+        self.assertFalse(container_insights.disable_prometheus_metrics_scraping)
+        self.assertEqual(
+            container_insights.container_network_logs, CONST_CONTAINER_NETWORK_LOGS_DISABLED
+        )
+
+    def test_re_enabling_keeps_settings_asked_for_in_the_same_command(self):
+        """Starting from the defaults must not discard values supplied alongside the enable."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": "/subscriptions/s/resourceGroups/rg/providers/"
+                                         "Microsoft.OperationalInsights/workspaces/ws",
+                "enable_syslog": True,
+                "syslog_port": 2833,
+                "disable_prometheus_metrics_scraping": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=False, config={CONST_MONITORING_USING_AAD_MSI_AUTH: "true"}
+                )
+            },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=False, syslog_port=51400
+                )
+            ),
+        )
+        dec.context.attach_mc(mc)
+
+        with patch.object(dec, "_provision_azure_monitor_logs_dcr"), patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda ws: ws,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+            # The real pipeline applies these after the enable, so the reset must not win.
+            dec.update_azure_monitor_logs_settings(mc)
+
+        container_insights = mc.azure_monitor_profile.container_insights
+        self.assertTrue(container_insights.enabled)
+        self.assertEqual(container_insights.syslog_port, 2833)
+        self.assertTrue(container_insights.disable_prometheus_metrics_scraping)
+
+    def test_enable_azure_monitor_logs_does_not_inherit_leftover_dcr_settings(self):
+        """Re-enabling is a fresh onboarding, so the leftover DCR must not be carried over.
+
+        Disabling monitoring removes the association but leaves the DCR itself behind. If this
+        path preserved its settings, '--enable-azure-monitor-logs' would silently come back with
+        the previous onboarding's syslog, high log scale mode and custom data collection settings,
+        instead of the documented defaults the container insights profile is reset to.
+        """
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": "/subscriptions/s/resourceGroups/rg/providers/"
+                                         "Microsoft.OperationalInsights/workspaces/ws",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=False, config={CONST_MONITORING_USING_AAD_MSI_AUTH: "true"}
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test-subscription-id")
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda ws: ws,
+        ), patch.object(
+            dec.context.external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as ensure_mock:
+            dec._setup_azure_monitor_logs(mc)
+
+        ensure_mock.assert_called_once()
+        self.assertFalse(
+            ensure_mock.call_args.kwargs.get("preserve_existing_dcr_settings", False)
+        )
+
+    def test_reconfiguring_an_onboarded_cluster_preserves_existing_dcr_settings(self):
+        """The postprocessing path only changes what was named on the command line.
+
+        '--enable-high-log-scale-mode' on its own rebuilds the DCR, so without this the rebuild
+        would drop the cluster's syslog and custom data collection settings.
+        """
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_high_log_scale_mode": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: "/ws",
+                    },
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test-subscription-id")
+        dec.context.set_intermediate(
+            "monitoring_addon_postprocessing_required", True, overwrite_exists=True
+        )
+
+        with patch.object(
+            dec.context.external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as ensure_mock, patch.object(
+            dec.context.external_functions, "add_monitoring_role_assignment", return_value=None
+        ):
+            dec.postprocessing_after_mc_created(mc)
+
+        ensure_mock.assert_called_once()
+        self.assertTrue(ensure_mock.call_args.kwargs["preserve_existing_dcr_settings"])
 
 
 if __name__ == "__main__":

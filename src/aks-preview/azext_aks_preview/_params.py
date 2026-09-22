@@ -3262,6 +3262,12 @@ def load_arguments(self, _):
 
     with self.argument_context("aks disable-addons") as c:
         c.argument("addons", options_list=["--addons", "-a"], validator=validate_addons)
+        c.argument(
+            "yes",
+            options_list=["--yes", "-y"],
+            help="Do not prompt for confirmation.",
+            action="store_true",
+        )
 
     with self.argument_context("aks enable-addons") as c:
         c.argument("addons", options_list=["--addons", "-a"], validator=validate_addons)

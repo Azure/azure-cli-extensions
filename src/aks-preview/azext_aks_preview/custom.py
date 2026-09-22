@@ -159,7 +159,6 @@ from azure.cli.command_modules.acs.addonconfiguration import (
     ensure_container_insights_for_monitoring,
     ensure_default_log_analytics_workspace_for_monitoring,
     sanitize_loganalytics_ws_resource_id,
-    get_existing_container_insights_extension_dcr_tags,
     validate_data_collection_settings,
     create_data_collection_endpoint,
     create_or_delete_dcr_association,
@@ -287,6 +286,66 @@ def _create_or_update_dcr_with_table_readiness_retry(resources, dcr_resource_id,
 
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
+def get_existing_container_insights_extension_dcr(cmd, dcr_url):
+    """Fetch the Container Insights extension DCR that already exists, or {} if there is none."""
+    _MAX_RETRY_TIMES = 3
+    for retry_count in range(0, _MAX_RETRY_TIMES):
+        try:
+            resp = send_raw_request(
+                cmd.cli_ctx, "GET", dcr_url
+            )
+            return json.loads(resp.text)
+        except CLIError as e:
+            if "ResourceNotFound" in str(e):
+                break
+            if retry_count >= (_MAX_RETRY_TIMES - 1):
+                raise e
+    return {}
+
+
+def _resolve_dcr_settings_from_existing(
+    existing_dcr, enable_syslog, data_collection_settings, enable_high_log_scale_mode
+):
+    """Carry over DCR settings the caller did not specify from the DCR that already exists.
+
+    The DCR is rebuilt from scratch on every reconfiguration, so a setting that is not supplied on
+    the command line is otherwise silently dropped: 'az aks update --enable-syslog' on a cluster
+    using high log scale mode would rebuild the DCR without the high scale streams, its custom data
+    collection settings and its ingestion DCE, and '--data-collection-settings' on its own would
+    drop syslog. Only explicitly supplied settings should change anything.
+
+    None means "not specified"; an explicit True or False always wins. Returns the resolved
+    (enable_syslog, existing_data_collection_settings, enable_high_log_scale_mode), where the
+    middle value is an already-parsed settings dict to fall back on, or None.
+    """
+    properties = (existing_dcr or {}).get("properties") or {}
+    data_sources = properties.get("dataSources") or {}
+    ci_extension = next(
+        (
+            extension
+            for extension in (data_sources.get("extensions") or [])
+            if extension.get("extensionName") == "ContainerInsights"
+        ),
+        {},
+    )
+
+    if enable_syslog is None:
+        enable_syslog = bool(data_sources.get("syslog"))
+
+    if enable_high_log_scale_mode is None:
+        enable_high_log_scale_mode = "Microsoft-ContainerLogV2-HighScale" in (
+            ci_extension.get("streams") or []
+        )
+
+    existing_data_collection_settings = None
+    if data_collection_settings is None:
+        existing_data_collection_settings = (
+            ci_extension.get("extensionSettings") or {}
+        ).get("dataCollectionSettings") or None
+
+    return enable_syslog, existing_data_collection_settings, enable_high_log_scale_mode
+
+
 def ensure_container_insights_for_monitoring_preview(
     cmd,
     addon,
@@ -303,6 +362,7 @@ def ensure_container_insights_for_monitoring_preview(
     is_private_cluster=False,
     ampls_resource_id=None,
     enable_high_log_scale_mode=None,
+    preserve_existing_dcr_settings=False,
 ):
     """
     Preview extension version of ensure_container_insights_for_monitoring that uses REST API
@@ -430,6 +490,30 @@ def ensure_container_insights_for_monitoring_preview(
             f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/"
             f"providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
         )
+        dcr_url = cmd.cli_ctx.cloud.endpoints.resource_manager + \
+            f"{dcr_resource_id}?api-version=2022-06-01"
+
+        existing_dcr = {}
+        existing_data_collection_settings = None
+        if create_dcr:
+            # The DCR is rebuilt from scratch below, so read the one that already exists to keep
+            # customer-added tags.
+            existing_dcr = get_existing_container_insights_extension_dcr(cmd, dcr_url)
+            if preserve_existing_dcr_settings:
+                # Reconfiguring a cluster that is already onboarded: carry over any setting the
+                # caller did not supply instead of dropping it. A fresh onboarding deliberately
+                # skips this. Disabling monitoring leaves the DCR behind, so inheriting from it
+                # would make re-enabling pick up the previous onboarding's syslog, high log scale
+                # mode and custom data collection settings, when re-enabling is meant to start
+                # from the documented defaults just like the container insights profile does.
+                (
+                    enable_syslog,
+                    existing_data_collection_settings,
+                    enable_high_log_scale_mode,
+                ) = _resolve_dcr_settings_from_existing(
+                    existing_dcr, enable_syslog, data_collection_settings, enable_high_log_scale_mode
+                )
+        existing_tags = existing_dcr.get("tags") or {}
 
         # ingestion DCE MUST be in workspace region
         ingestionDataCollectionEndpointName = f"MSCI-ingest-{location}-{cluster_name}"
@@ -476,22 +560,35 @@ def ensure_container_insights_for_monitoring_preview(
                     "name"
                 ]
 
-            dcr_url = cmd.cli_ctx.cloud.endpoints.resource_manager + \
-                f"{dcr_resource_id}?api-version=2022-06-01"
-            # get existing tags on the container insights extension DCR if the customer added any
-            existing_tags = get_existing_container_insights_extension_dcr_tags(
-                cmd, dcr_url)
             # get data collection settings
             extensionSettings = {}
             cistreams = ["Microsoft-ContainerInsights-Group-Default"]
             if enable_high_log_scale_mode:
-                cistreams = ContainerInsightsStreams
+                cistreams = list(ContainerInsightsStreams)
             if data_collection_settings is not None:
                 dataCollectionSettings = _get_data_collection_settings(data_collection_settings)
                 validate_data_collection_settings(dataCollectionSettings)
                 dataCollectionSettings.setdefault("enableContainerLogV2", True)
                 extensionSettings["dataCollectionSettings"] = dataCollectionSettings
                 cistreams = dataCollectionSettings["streams"]
+            elif existing_data_collection_settings is not None:
+                # inherited from the existing DCR, which was validated when it was first written
+                dataCollectionSettings = dict(existing_data_collection_settings)
+                dataCollectionSettings.setdefault("enableContainerLogV2", True)
+                if dataCollectionSettings.get("streams"):
+                    # the stored streams were rewritten to match the high log scale mode the DCR
+                    # was written with, so normalise them back to whichever mode applies now
+                    inherited_streams = list(dataCollectionSettings["streams"])
+                    if not enable_high_log_scale_mode:
+                        inherited_streams = [
+                            "Microsoft-ContainerLogV2"
+                            if stream == "Microsoft-ContainerLogV2-HighScale"
+                            else stream
+                            for stream in inherited_streams
+                        ]
+                    dataCollectionSettings["streams"] = inherited_streams
+                    cistreams = inherited_streams
+                extensionSettings["dataCollectionSettings"] = dataCollectionSettings
             else:
                 # If data_collection_settings is None, set default dataCollectionSettings
                 dataCollectionSettings = {
@@ -3661,15 +3758,73 @@ def aks_addon_update(
     )
 
 
-def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=False):
+def _validate_addons_for_disable(instance, addons):
+    """Validate every addon name and installed state before any cleanup runs.
+
+    aks_disable_addons deletes the monitoring data collection rule association before it builds the
+    updated cluster payload. _update_addons rejects unknown or not-installed addons, but by then the
+    association is already gone, and the raised error skips the cluster PUT — leaving monitoring
+    enabled on the cluster with nothing for the agent to collect into. Fail here instead, before
+    anything is deleted. The checks mirror _update_addons so the two cannot drift.
+    """
+    addon_profiles = instance.addon_profiles or {}
+    installed = {key.lower() for key in addon_profiles}
+    for addon_arg in addons.split(','):
+        # These two live in the ingress profile rather than the addon profiles, and _update_addons
+        # handles them before it validates anything, so neither check below applies to them.
+        if addon_arg in ("applicationloadbalancer", "web_application_routing"):
+            continue
+        if addon_arg not in ADDONS:
+            raise CLIError("Invalid addon name: {}.".format(addon_arg))
+        addon = ADDONS[addon_arg]
+        if addon == CONST_VIRTUAL_NODE_ADDON_NAME:
+            # Only Linux is supported for now, matching _update_addons.
+            addon += 'Linux'
+        # kube-dashboard is exempt: _update_addons synthesizes a disabled profile for it rather
+        # than failing, so disabling it on a cluster that never had it is not an error.
+        if addon.lower() not in installed and addon != CONST_KUBE_DASHBOARD_ADDON_NAME:
+            raise CLIError("The addon {} is not installed.".format(addon))
+
+
+def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=False, yes=False):
+    from azext_aks_preview.managed_cluster_decorator import (
+        _is_opentelemetry_logs_traces_enabled,
+        _reset_container_insights_to_defaults,
+    )
+
     instance = client.get(resource_group_name, name)
     subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    # Every addon is validated up front, because the cleanup below is destructive and a later
+    # failure would skip the cluster PUT that is supposed to accompany it.
+    _validate_addons_for_disable(instance, addons)
+
+    # --addons takes a comma separated list, so an exact string compare silently skips the
+    # monitoring cleanup for 'monitoring,azure-policy' and leaves the DCR association behind.
+    disabling_monitoring = CONST_MONITORING_ADDON_NAME in [
+        ADDONS.get(addon) for addon in addons.split(",")
+    ]
+
+    # OpenTelemetry logs and traces are collected by the Container Insights agent, so disabling the
+    # monitoring addon necessarily turns them off too. The confirmation is taken before any cleanup
+    # runs, otherwise declining the prompt would leave the DCR association already deleted.
+    opentelemetry_logs_traces_enabled = (
+        disabling_monitoring and _is_opentelemetry_logs_traces_enabled(instance)
+    )
+    if opentelemetry_logs_traces_enabled and not yes:
+        msg = (
+            "OpenTelemetry logs and traces are enabled on this cluster and are collected by "
+            "Azure Monitor logs. Disabling the monitoring addon will also disable OpenTelemetry "
+            "logs and traces. Do you want to continue?"
+        )
+        if not prompt_y_n(msg, default="n"):
+            return None
 
     try:
         addon_profiles = instance.addon_profiles or {}
         monitoring_addon_key = get_monitoring_addon_key(addon_profiles, CONST_MONITORING_ADDON_NAME)
         if (
-            addons == "monitoring" and
+            disabling_monitoring and
             monitoring_addon_key in addon_profiles and
             addon_profiles[monitoring_addon_key].enabled and
             CONST_MONITORING_USING_AAD_MSI_AUTH in
@@ -3710,6 +3865,26 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
         enable=False,
         no_wait=no_wait
     )
+
+    if disabling_monitoring:
+        # The legacy addon and the AMP containerInsights profile are two views of the same feature,
+        # and the RP only copies a containerInsights field onto the cluster when that field is
+        # present on the request. Disabling therefore has to reset them explicitly, otherwise a
+        # later --enable-azure-monitor-logs silently re-onboards with the old syslog port, scraping
+        # choice and container network logs setting.
+        if instance.azure_monitor_profile and instance.azure_monitor_profile.container_insights:
+            _reset_container_insights_to_defaults(
+                instance.azure_monitor_profile.container_insights
+            )
+        # OpenTelemetry logs and traces ride on the Container Insights agent, so they go down with
+        # it. The confirmation for this was taken above.
+        if opentelemetry_logs_traces_enabled:
+            open_telemetry_logs_and_traces = (
+                instance.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces
+            )
+            open_telemetry_logs_and_traces.enabled = False
+            open_telemetry_logs_and_traces.http_port = None
+            open_telemetry_logs_and_traces.grpc_port = None
 
     # send the managed cluster representation to update the addon profiles
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance)
