@@ -10,13 +10,107 @@ from unittest.mock import MagicMock, patch
 from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
 
 from azext_aimanager import custom
+from azext_aimanager import _params
 from azext_aimanager.constants import AIMANAGER_CALLER_ROLE_IDS
+from azext_aimanager.vendored_sdks.v2026_09_02_preview import models
 
 SUB_PATCH = "azure.cli.core.commands.client_factory.get_subscription_id"
 
 AIMANAGER_SCOPE = ("/subscriptions/sub/resourceGroups/rg"
                    "/providers/Microsoft.ContainerService/aiManagers/aim")
 NAMESPACE_SCOPE = AIMANAGER_SCOPE + "/namespaces/team-alpha"
+
+
+class _ArgumentContext:
+
+    def __init__(self, loader, scope):
+        self.loader = loader
+        self.scope = scope
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        return False
+
+    def argument(self, name, **kwargs):
+        self.loader.arguments[(self.scope, name)] = kwargs
+
+    def extra(self, name, **kwargs):
+        self.argument(name, **kwargs)
+
+    def ignore(self, name):
+        self.loader.arguments[(self.scope, name)] = {"ignored": True}
+
+
+class _ArgumentLoader:
+
+    def __init__(self):
+        self.cli_ctx = MagicMock()
+        self.arguments = {}
+
+    def argument_context(self, scope):
+        return _ArgumentContext(self, scope)
+
+
+class TestAIManagerArguments(unittest.TestCase):
+
+    @patch.object(_params, "get_location_type")
+    def test_cluster_id_is_optional_on_create(self, _get_location_type):
+        loader = _ArgumentLoader()
+
+        _params.load_arguments(loader, None)
+
+        argument = loader.arguments[("aimanager create", "cluster_id")]
+        self.assertEqual(argument["options_list"], ["--cluster-id"])
+        self.assertFalse(argument.get("required", False))
+
+
+class TestAIManagerConstruction(unittest.TestCase):
+
+    def test_construct_aimanager_sets_cluster_resource_id(self):
+        properties_model = MagicMock()
+        ai_manager = SimpleNamespace()
+        cmd = MagicMock()
+        cmd.get_models.side_effect = [properties_model, MagicMock(return_value=ai_manager)]
+
+        result = custom._construct_aimanager(
+            cmd, "eastus2", {"env": "test"}, "Keep", "/subscriptions/sub/clusters/aks")
+
+        properties_model.assert_called_once_with(
+            delete_policy="Keep",
+            cluster_resource_id="/subscriptions/sub/clusters/aks",
+        )
+        self.assertIs(result, ai_manager)
+
+    def _create(self, cluster_id=None):
+        cmd = SimpleNamespace(
+            cli_ctx=object(),
+            get_models=lambda name, **_: getattr(models, name),
+        )
+        client = MagicMock()
+        client.get.side_effect = ResourceNotFoundError()
+
+        with patch.object(custom, "warn_roles_skipped_no_wait"), \
+                patch(SUB_PATCH, return_value="sub"):
+            custom.create_aimanager(
+                cmd, client, "rg", "aim", location="eastus2",
+                cluster_id=cluster_id, no_wait=True)
+
+        return client.begin_create_or_update.call_args.args[2]
+
+    def test_create_serializes_cluster_resource_id_when_provided(self):
+        resource = self._create("/subscriptions/sub/clusters/aks")
+
+        self.assertEqual(
+            dict(resource.properties)["clusterResourceId"],
+            "/subscriptions/sub/clusters/aks",
+        )
+
+    def test_create_omits_cluster_resource_id_when_not_provided(self):
+        resource = self._create()
+
+        self.assertNotIn("clusterResourceId", dict(resource.properties))
 
 
 class TestCallerRoleWiring(unittest.TestCase):

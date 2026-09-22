@@ -3,6 +3,11 @@
 Release History
 ===============
 
+2.0.0b2
+++++++++
+* Update the vendored SDK to API version ``2026-09-02-preview`` and add ``--cluster-id`` to
+  ``az aimanager create`` for attaching an existing AKS cluster.
+
 2.0.0b1
 +++++++
 * Rename ``--aks-custom-headers`` to ``--custom-headers`` across all AIManager commands.

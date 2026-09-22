@@ -12,7 +12,7 @@ from azure.core import MatchConditions
 
 from azext_aimanager import custom
 from azext_aimanager._params import load_arguments
-from azext_aimanager.vendored_sdks.v2026_05_02_preview import models
+from azext_aimanager.vendored_sdks.v2026_09_02_preview import models
 
 
 class MockCmd:
