@@ -24,7 +24,8 @@
     - Ubuntu 18.04 or later comes with python 3.6+ by default
 - **64-bit** MacOS on Apple Silicon or Intel
 - Container runtime: Docker
-  - Docker must be running when generating Linux policies.
+  - Docker must be running when generating Linux policies from container images.
+  - Docker is not required when all image layers are supplied with `--tar`.
   - Windows: [Docker Desktop](https://www.docker.com/products/docker-desktop) and [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install)
 - **CimWriter.dll** (Windows only, for Windows container support)
   - Required for generating security policies for Windows containers
@@ -61,7 +62,7 @@ The `confcom` extension does not currently support:
 
 The `--platform` parameter controls whether policies are generated for Linux (`linux/amd64`, the default) or Windows (`windows/amd64`) containers. On macOS, only Linux-container policies are supported.
 
-Docker must be running when generating Linux policies.
+Docker must be running when generating Linux policies from container images. It is not required when all image layers are supplied with `--tar`.
 
 Windows policies require Docker in Windows-container mode:
 

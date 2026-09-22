@@ -11,6 +11,7 @@ import platform
 import stat
 import subprocess
 import sys
+from pathlib import Path
 from typing import List, Dict
 
 import requests
@@ -49,6 +50,30 @@ _dmverity_vhd_binaries = {
 }
 
 
+def get_dmverity_vhd_path() -> Path:
+    """Return the host-specific dmverity-vhd binary path."""
+    binary_name = "dmverity-vhd"
+
+    if host_os == "Windows":
+        if machine.endswith("64"):
+            binary_name += ".exe"
+        else:
+            eprint("32-bit Windows is not supported.")
+    elif host_os == "Darwin":
+        if machine == "arm64":
+            binary_name += "-darwin-arm64"
+        elif machine in ("x86_64", "amd64"):
+            binary_name += "-darwin-amd64"
+        else:
+            eprint(f"Unsupported MacOS architecture: {machine}.")
+    elif host_os != "Linux":
+        eprint(
+            "Unknown target platform. The extension only works with Windows, Linux, and Darwin"
+        )
+
+    return Path(__file__).parent / "bin" / binary_name
+
+
 class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
     # static variable to cache layer hashes between container groups
     layer_cache = {}
@@ -66,31 +91,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
                 f.write(dmverity_vhd_fetch_resp.content)
 
     def __init__(self):
-        script_directory = os.path.dirname(os.path.realpath(__file__))
-        DEFAULT_LIB = "./bin/dmverity-vhd"
-
-        if host_os == "Linux":
-            pass
-        elif host_os == "Windows":
-            if machine.endswith("64"):
-                DEFAULT_LIB += ".exe"
-            else:
-                eprint(
-                    "32-bit Windows is not supported."
-                )
-        elif host_os == "Darwin":
-            if machine == "arm64":
-                DEFAULT_LIB += "-darwin-arm64"
-            elif machine in ("x86_64", "amd64"):
-                DEFAULT_LIB += "-darwin-amd64"
-            else:
-                eprint(f"Unsupported MacOS architecture: {machine}.")
-        else:
-            eprint(
-                "Unknown target platform. The extension only works with Windows, Linux, and Darwin"
-            )
-
-        self.policy_bin = os.path.join(f"{script_directory}", f"{DEFAULT_LIB}")
+        self.policy_bin = str(get_dmverity_vhd_path())
 
         # check if the extension binary exists
         if not os.path.exists(self.policy_bin):
