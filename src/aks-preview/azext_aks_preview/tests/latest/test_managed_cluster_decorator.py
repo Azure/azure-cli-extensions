@@ -79,6 +79,7 @@ from azext_aks_preview.managed_cluster_decorator import (
     _get_monitoring_addon_key_from_consts,
     _build_monitoring_addon_shim,
     _is_monitoring_aad_auth,
+    _is_private_cluster_on_mc,
 )
 from azext_aks_preview.tests.latest.utils import get_test_data_file_path
 from azure.cli.command_modules.acs._consts import (
@@ -21368,6 +21369,174 @@ class AKSPreviewCoreMonitoringFixPortsTestCase(unittest.TestCase):
 
         ensure_mock.assert_called_once()
         self.assertTrue(ensure_mock.call_args.kwargs["preserve_existing_dcr_settings"])
+
+
+class AKSPreviewMonitoringAmplsPrivateClusterTestCase(unittest.TestCase):
+    """--ampls-resource-id has to work on a cluster that is already private.
+
+    ensure_container_insights_for_monitoring rejects an AMPLS resource id unless is_private_cluster
+    is true, but get_enable_private_cluster() only falls back to the ManagedCluster in create mode.
+    In update mode it returns the command line flag, so 'az aks update --ampls-resource-id <id>' on
+    an already-private cluster reached the guard with None and failed. The private state is now
+    taken from the cluster as well.
+    """
+
+    def setUp(self):
+        register_aks_preview_resource_type()
+        self.cli_ctx = MockCLI()
+        self.cmd = MockCmd(self.cli_ctx)
+        self.models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
+        self.client = MockClient()
+
+    def _private_cluster(self, enable_private_cluster):
+        monitoring_addon_profile = self.models.ManagedClusterAddonProfile(
+            enabled=True,
+            config={CONST_MONITORING_USING_AAD_MSI_AUTH: "true"},
+        )
+        return self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={CONST_MONITORING_ADDON_NAME: monitoring_addon_profile},
+            api_server_access_profile=self.models.ManagedClusterAPIServerAccessProfile(
+                enable_private_cluster=enable_private_cluster,
+            ),
+        )
+
+    def _update_decorator(self, raw_params):
+        params = {
+            "resource_group_name": "test_rg_name",
+            "name": "test_name",
+        }
+        params.update(raw_params)
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd, self.client, params, CUSTOM_MGMT_AKS_PREVIEW
+        )
+        dec.context.set_intermediate("subscription_id", "test_subscription_id")
+        return dec
+
+    def _postprocess(self, mc, raw_params):
+        """Drive the real postprocessing and return the is_private_cluster it provisioned with.
+
+        Only monitoring_addon_postprocessing_required is set, which is what update_azure_monitor_profile
+        does for an --ampls-resource-id update. monitoring_addon_enabled is deliberately left unset:
+        it gates the core base class's own monitoring block, which would otherwise run its (unfixed)
+        call as well.
+        """
+        params = {"enable_msi_auth_for_monitoring": True}
+        params.update(raw_params)
+        dec = self._update_decorator(params)
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("monitoring_addon_postprocessing_required", True)
+        with patch.object(
+            dec.context.external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ensure:
+            dec.postprocessing_after_mc_created(mc)
+        mock_ensure.assert_called_once()
+        return mock_ensure.call_args[1]
+
+    def test_helper_reads_private_state_from_the_cluster(self):
+        self.assertTrue(_is_private_cluster_on_mc(self._private_cluster(True)))
+        self.assertFalse(_is_private_cluster_on_mc(self._private_cluster(False)))
+        self.assertFalse(_is_private_cluster_on_mc(self._private_cluster(None)))
+
+    def test_helper_tolerates_missing_profile_and_cluster(self):
+        self.assertFalse(
+            _is_private_cluster_on_mc(self.models.ManagedCluster(location="test_location"))
+        )
+        self.assertFalse(_is_private_cluster_on_mc(None))
+
+    def test_ampls_update_on_already_private_cluster(self):
+        # the regression: --ampls-resource-id alone, no --enable-private-cluster re-supplied
+        kwargs = self._postprocess(
+            self._private_cluster(True), {"ampls_resource_id": "/subscriptions/s/ampls/a"}
+        )
+        self.assertTrue(kwargs["is_private_cluster"])
+        self.assertEqual(kwargs["ampls_resource_id"], "/subscriptions/s/ampls/a")
+
+    def test_public_cluster_is_still_reported_as_public(self):
+        # the guard in ensure_container_insights_for_monitoring must still reject this case
+        kwargs = self._postprocess(
+            self._private_cluster(False), {"ampls_resource_id": "/subscriptions/s/ampls/a"}
+        )
+        self.assertFalse(kwargs["is_private_cluster"])
+
+    def test_command_line_flag_is_still_honoured(self):
+        # --enable-private-cluster on update additionally requires apiserver vnet integration
+        kwargs = self._postprocess(
+            self._private_cluster(False),
+            {
+                "ampls_resource_id": "/subscriptions/s/ampls/a",
+                "enable_private_cluster": True,
+                "enable_apiserver_vnet_integration": True,
+            },
+        )
+        self.assertTrue(kwargs["is_private_cluster"])
+
+    def _provision(self, enable_private_cluster):
+        """Drive the up-front DCR provisioning done by --enable-azure-monitor-logs."""
+        dec = self._update_decorator(
+            {
+                "enable_azure_monitor_logs": True,
+                "ampls_resource_id": "/subscriptions/s/ampls/a",
+            }
+        )
+        mc = self._private_cluster(enable_private_cluster)
+        mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
+            CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
+        ] = "/subscriptions/s/workspaces/w"
+        dec.context.attach_mc(mc)
+        with patch.object(
+            dec.context.external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as mock_ensure:
+            dec._provision_azure_monitor_logs_dcr(mc, dec.context.get_addon_consts())
+        mock_ensure.assert_called_once()
+        return mock_ensure.call_args[1]
+
+    def test_provisioning_reads_private_state_from_the_cluster(self):
+        self.assertTrue(self._provision(True)["is_private_cluster"])
+        self.assertFalse(self._provision(False)["is_private_cluster"])
+
+    def _run_real_guard(self, enable_private_cluster):
+        """Drive the real ensure_container_insights_for_monitoring, AMPLS guard included.
+
+        Mocking the provisioning call shows which value was passed; running the real function
+        shows that the value is actually accepted. Execution is cut short at the credential
+        lookup, which is the first thing past the guard that would reach ARM.
+        """
+        reached_workspace_lookup = RuntimeError("reached the workspace lookup")
+        mc = self._private_cluster(enable_private_cluster)
+        mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
+            CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
+        ] = (
+            "/subscriptions/1234-5678-9012/resourceGroups/rg/providers"
+            "/microsoft.operationalinsights/workspaces/test_workspace"
+        )
+        dec = self._update_decorator(
+            {
+                "enable_msi_auth_for_monitoring": True,
+                "ampls_resource_id": "/subscriptions/s/ampls/a",
+            }
+        )
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("monitoring_addon_postprocessing_required", True)
+        with patch(
+            "azure.cli.core._profile.Profile",
+            side_effect=reached_workspace_lookup,
+        ):
+            dec.postprocessing_after_mc_created(mc)
+
+    def test_real_guard_accepts_an_already_private_cluster(self):
+        # pre-fix this raised ArgumentUsageError rather than getting past the guard at all
+        with self.assertRaises(RuntimeError) as ctx:
+            self._run_real_guard(True)
+        self.assertIn("reached the workspace lookup", str(ctx.exception))
+
+    def test_real_guard_still_rejects_a_public_cluster(self):
+        with self.assertRaises(ArgumentUsageError):
+            self._run_real_guard(False)
 
 
 if __name__ == "__main__":

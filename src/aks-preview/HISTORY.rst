@@ -38,6 +38,8 @@ Pending
 * Fix `--enable-high-log-scale-mode` mutating the shared list of Container Insights streams, so the stream set leaked between data collection rules built in the same command invocation.
 * `az aks create` and `az aks update`: Fix the `--data-collection-settings` size limit being applied to the file path instead of the settings it holds, which let an oversized file through to fail the data collection rule call with `Request Header Fields Too Large`.
 * `az aks update`: Fix `--enable-syslog false` being rejected with `Please specify one or more of "--enable-syslog"` after prompting to reconcile the cluster. Explicitly turning syslog collection off is a real update request, but the falsy value made the command treat it as though no argument had been supplied.
+* `az aks update`: Stop reopening public network access on the ingestion data collection endpoint of a cluster that is linked to an Azure Monitor Private Link Scope. The endpoint is created or updated on every reconfiguration, but `--ampls-resource-id` is only supplied on the command that links the scope, so an unrelated update such as `--enable-syslog` used to flip an existing private endpoint back to public. The existing network configuration is now preserved unless the caller explicitly asks to change it.
+* `az aks update`: Fix `--ampls-resource-id` being rejected with `--ampls-resource-id can only be used with private cluster in MSI mode.` on a cluster that is already private. The private state was only read from the command line, so it was invisible unless `--enable-private-cluster` happened to be supplied again in the same command; it is now read from the cluster as well.
 
 22.0.0b6
 +++++++++

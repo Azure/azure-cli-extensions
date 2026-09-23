@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import json
 import unittest
 from unittest.mock import Mock, patch
 
@@ -29,6 +30,7 @@ from azext_aks_preview.custom import (
     aks_list_vm_skus,
     _validate_addons_for_disable,
     _resolve_dcr_settings_from_existing,
+    create_data_collection_endpoint,
 )
 from azext_aks_preview.tests.latest.mocks import MockCLI, MockClient, MockCmd
 from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode
@@ -1366,6 +1368,86 @@ class TestResolveDcrSettingsFromExisting(unittest.TestCase):
         }
         _, _, hlsm = _resolve_dcr_settings_from_existing(dcr, None, None, None)
         self.assertFalse(hlsm)
+
+
+class TestCreateDataCollectionEndpointNetworkAccess(unittest.TestCase):
+    """The ingestion DCE must not have its network configuration reopened by an unrelated update.
+
+    create_data_collection_endpoint is a create_or_update, and is_ampls is derived purely from
+    whether --ampls-resource-id was supplied on the current command. Since that flag is only
+    passed on the command that links the scope, every later reconfiguration of an onboarded
+    cluster ('az aks update --enable-syslog', for example) arrives with is_ampls False. Without
+    the read-back below that would flip an existing private endpoint to publicNetworkAccess
+    Enabled, silently exposing it.
+    """
+
+    DCE_ID = (
+        "/subscriptions/sub-id/resourceGroups/rg"
+        "/providers/Microsoft.Insights/dataCollectionEndpoints/MSCI-ingest-eastus-cluster"
+    )
+
+    def _run(self, existing_access, is_ampls=False):
+        """Drive the real function and return (written body, GET mock)."""
+        cmd = Mock()
+        cmd.cli_ctx.cloud.endpoints.resource_manager = "https://management.azure.com"
+
+        def fake_send_raw_request(cli_ctx, method, url, **_):
+            self.assertEqual(method, "GET")
+            self.assertIn("dataCollectionEndpoints", url)
+            if existing_access is None:
+                raise CLIError("ResourceNotFound: no such DCE")
+            resp = Mock()
+            resp.text = json.dumps(
+                {"properties": {"networkAcls": {"publicNetworkAccess": existing_access}}}
+            )
+            return resp
+
+        resources = Mock()
+        base = "azext_aks_preview.custom."
+        with patch(
+            base + "send_raw_request", side_effect=fake_send_raw_request
+        ) as mock_get, patch(base + "get_resources_client", return_value=resources):
+            returned_id = create_data_collection_endpoint(
+                cmd, "sub-id", "rg", "eastus", "MSCI-ingest-eastus-cluster", is_ampls
+            )
+
+        self.assertEqual(returned_id, self.DCE_ID)
+        resources.begin_create_or_update_by_id.assert_called_once()
+        body = resources.begin_create_or_update_by_id.call_args[0][2]
+        return body, mock_get
+
+    @staticmethod
+    def _access(body):
+        return body["properties"]["networkAcls"]["publicNetworkAccess"]
+
+    def test_existing_private_endpoint_is_not_reopened(self):
+        # the regression: a syslog-only update must leave an AMPLS endpoint private
+        body, _ = self._run("Disabled", is_ampls=False)
+        self.assertEqual(self._access(body), "Disabled")
+
+    def test_existing_public_endpoint_stays_public(self):
+        body, _ = self._run("Enabled", is_ampls=False)
+        self.assertEqual(self._access(body), "Enabled")
+
+    def test_missing_endpoint_defaults_to_public(self):
+        # first onboarding without AMPLS: nothing to preserve, keep the documented default
+        body, _ = self._run(None, is_ampls=False)
+        self.assertEqual(self._access(body), "Enabled")
+
+    def test_unrecognised_access_value_is_preserved_verbatim(self):
+        body, _ = self._run("SecuredByPerimeter", is_ampls=False)
+        self.assertEqual(self._access(body), "SecuredByPerimeter")
+
+    def test_ampls_forces_private_without_reading_the_existing_endpoint(self):
+        # an explicit --ampls-resource-id is the one case that may change the configuration
+        body, mock_get = self._run("Enabled", is_ampls=True)
+        self.assertEqual(self._access(body), "Disabled")
+        mock_get.assert_not_called()
+
+    def test_location_and_kind_are_unchanged(self):
+        body, _ = self._run("Disabled", is_ampls=False)
+        self.assertEqual(body["location"], "eastus")
+        self.assertEqual(body["kind"], "Linux")
 
 
 if __name__ == '__main__':
