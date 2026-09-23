@@ -2,6 +2,10 @@
 
 Release History
 ===============
+3.0.0b1
+++++++++++++++++++
+* [Breaking Change] `az monitor app-insights query`: Remove the default one-hour `--offset`. Queries without time arguments now use all available data, consistent with `az monitor log-analytics query`.
+
 2.0.0b1
 ++++++++++++++++++
 * `az monitor app-insights events/metrics/query`: Migrate data-plane using codegen tool

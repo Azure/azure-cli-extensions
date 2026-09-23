@@ -88,8 +88,8 @@ def load_arguments(self, _):
         c.argument('application', validator=validate_applications, options_list=['--apps', '-a'], nargs='+', id_part='name', help='GUID, app name, or fully-qualified Azure resource name of Application Insights component. The application GUID may be acquired from the API Access menu item on any Application Insights resource in the Azure portal. If using an application name, please specify resource group.')
         c.argument('analytics_query', help='Query to execute over Application Insights data.')
         c.argument('start_time', arg_type=get_datetime_type(help='Start-time of time range for which to retrieve data.'))
-        c.argument('end_time', arg_type=get_datetime_type(help='End of time range for current operation. Defaults to the current time.'))
-        c.argument('offset', help='Filter results based on UTC hour offset.', type=get_period_type(as_timedelta=True))
+        c.argument('end_time', arg_type=get_datetime_type(help='End-time of time range for which to retrieve data.'))
+        c.argument('offset', help='Time offset used to calculate a query timespan from --start-time or --end-time.', type=get_period_type(as_timedelta=True))
 
     with self.argument_context('monitor app-insights component linked-storage') as c:
         c.argument('storage_account_id', options_list=['--storage-account', '-s'], validator=validate_storage_account_name_or_id,

@@ -28,19 +28,23 @@ logger = get_logger(__name__)
 HELP_MESSAGE = " Please use `az feature register --name AIWorkspacePreview --namespace microsoft.insights` to register the feature"
 
 
-def execute_query(cmd, application, analytics_query, start_time=None, end_time=None, offset='1h', resource_group_name=None):
+def execute_query(cmd, application, analytics_query, start_time=None, end_time=None, offset=None, resource_group_name=None):
     """Executes a query against the provided Application Insights application."""
     targets = get_query_targets(cmd.cli_ctx, application, resource_group_name)
-    if not isinstance(offset, datetime.timedelta):
+    if offset is not None and not isinstance(offset, datetime.timedelta):
         offset = isodate.parse_duration(offset)
-    timespan = get_timespan(cmd.cli_ctx, start_time, end_time, offset)
+    if offset is None and bool(start_time) != bool(end_time):
+        raise InvalidArgumentValueError(
+            "When specifying only one of --start-time or --end-time, --offset is required."
+        )
     from .aaz.latest.monitor.app_insights import QueryExecute
     arg_obj = {
         "app_id": targets[0],
         "query": analytics_query,
-        "timespan": timespan,
         "applications": targets[1:],
     }
+    if start_time or end_time or offset is not None:
+        arg_obj["timespan"] = get_timespan(cmd.cli_ctx, start_time, end_time, offset)
     try:
         return QueryExecute(cli_ctx=cmd.cli_ctx)(command_args=arg_obj)
     except Exception as ex:
