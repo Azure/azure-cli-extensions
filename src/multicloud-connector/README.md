@@ -16,7 +16,14 @@ This is an extension to Azure CLI to manage MulticloudConnector resources.
 
 - Create a PublicCloudConnector for GCP
     ```bash
-        arc-multicloud public-cloud-connector create --resource-group rgpublicCloud --name gcpConnector --gcp-cloud-profile "{project-properties:{project-number:123456789123,project-id:my-project},organization-properties:{organization-id:123456789123,management-project-number:123456789124,management-project-id:my-management-project}}" --host-type GCP --tags "{}" --location eastus
+        arc-multicloud public-cloud-connector create --resource-group rgpublicCloud --name gcpConnector --gcp-cloud-profile "{project-properties:{project-number:123456789123,project-id:my-project}}" --host-type GCP --tags "{}" --location eastus
+    ```
+
+  `projectProperties` and `organizationProperties` are mutually exclusive — set exactly one. To
+  create an organization-scoped connector instead:
+
+    ```bash
+        arc-multicloud public-cloud-connector create --resource-group rgpublicCloud --name gcpConnector --gcp-cloud-profile "{organization-properties:{organization-id:123456789123,management-project-number:123456789124,management-project-id:my-management-project}}" --host-type GCP --tags "{}" --location eastus
     ```
 
 - GenerateGcpTemplate

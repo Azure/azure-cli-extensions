@@ -19,14 +19,14 @@ class GenerateGcpTemplate(AAZCommand):
 
     For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
 
-    :example: GenerateGcpTemplate_Post
+    :example: Generate a template for an existing connector. Solution types are read from the connector's solution configurations and must not be passed in the request.
         az arc-multicloud generate-gcp-template --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --output-directory example_folder/templates
 
-    :example: GenerateGcpTemplate_Post
-        az arc-multicloud generate-gcp-template --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --gcp-template-format shellscript --gcp-cloud-profile "{project-properties:{project-number:1234567890,project-id:my-project},organization-properties:{organization-id:123456789,management-project-number:1234567890,management-project-id:my-project}}"
+    :example: Generate a template before the connector exists, for an organization-scoped profile. projectProperties and organizationProperties are mutually exclusive; set exactly one.
+        az arc-multicloud generate-gcp-template --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --gcp-template-format shellscript --solution-types "[{solution-type:Microsoft.AssetManagement,solution-settings:{periodicSync:true,periodicSyncTime:1,gcpServiceTypes:compute}}]" --gcp-cloud-profile "{organization-properties:{organization-id:123456789,management-project-number:1234567890,management-project-id:my-project}}"
 
-    :example: GenerateGcpTemplate_Post
-        az arc-multicloud generate-gcp-template --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --gcp-template-format shellscript --gcp-cloud-profile project-properties.project-number=1234567890 project-properties.project-id=my-project organization-properties.organization-id=123456789 organization-properties.management-project-number=1234567890 organization-properties.management-project-id=my-project
+    :example: The same pre-provisioning request using the flat key=value form with a project-scoped profile.
+        az arc-multicloud generate-gcp-template --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --gcp-template-format shellscript --solution-types "[0].solution-type=Microsoft.AssetManagement" "[0].solution-settings.periodicSync=true" "[0].solution-settings.periodicSyncTime=1" "[0].solution-settings.gcpServiceTypes=compute" --gcp-cloud-profile project-properties.project-number=1234567890 project-properties.project-id=my-project
     """
 
     _aaz_info = {

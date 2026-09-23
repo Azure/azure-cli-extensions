@@ -155,8 +155,10 @@ class MulticloudConnectorScenario(ScenarioTest):
             'rg': resource_group,
             'sub': f'{sub}',
             'loc': 'eastus',
-            'profile': '{project-properties:{project-number:123456789123,project-id:my-project},'
-                       'organization-properties:{organization-id:123456789123,'
+            # projectProperties and organizationProperties are mutually exclusive (service-side
+            # rule, not expressed in the swagger). Use the organization profile here so the
+            # exclusion-list update below applies to the same connector.
+            'profile': '{organization-properties:{organization-id:123456789123,'
                        'management-project-number:123456789124,'
                        'management-project-id:my-management-project}}',
         })
@@ -171,8 +173,11 @@ class MulticloudConnectorScenario(ScenarioTest):
             '--gcp-cloud-profile "{profile}" '
             '--location {loc}',
             checks=[self.check('name', 'testGcpConnector'),
+                    self.check('kind', 'GCP'),
                     self.check('properties.hostType', 'GCP'),
-                    self.check('properties.gcpCloudProfile.projectProperties.projectId', 'my-project')]
+                    self.check(
+                        'properties.gcpCloudProfile.organizationProperties.organizationId',
+                        '123456789123')]
         )
 
         self.kwargs.update({
@@ -192,6 +197,17 @@ class MulticloudConnectorScenario(ScenarioTest):
             '--subscription {sub} '
             '--gcp-cloud-profile "{update_profile}"',
             checks=[self.check('name', 'testGcpConnector')]
+        )
+
+        # a solution configuration is required before a template can be generated: the service
+        # reads the solution types from the connector and rejects them in the request body
+        self.cmd(
+            'arc-multicloud solution-configuration create '
+            '--connector-id {cid} '
+            '--name assetmgmt '
+            '--solution-type "Microsoft.AssetManagement" '
+            '--solution-settings periodicSync="true" periodicSyncTime="1"',
+            checks=[self.check('properties.solutionType', 'Microsoft.AssetManagement')]
         )
 
         # test generate-gcp-template

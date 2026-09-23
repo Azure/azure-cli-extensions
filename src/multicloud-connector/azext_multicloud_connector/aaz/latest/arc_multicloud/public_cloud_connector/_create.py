@@ -25,11 +25,11 @@ class Create(AAZCommand):
     :example: PublicCloudConnectors_CreateOrUpdate
         az arc-multicloud public-cloud-connector create --resource-group multiCloudRG --name awsConnector --aws-cloud-profile account-id=123456789123 is-organizational-account=false --host-type AWS --tags a=b --location eastus
 
-    :example: PublicCloudConnectors_CreateOrUpdate
-        az arc-multicloud public-cloud-connector create --resource-group multiCloudRG --name gcpConnector --gcp-cloud-profile "{project-properties:{project-number:123456789123,project-id:my-project},organization-properties:{organization-id:123456789123,management-project-number:123456789124,management-project-id:my-management-project}}" --host-type GCP --tags a=b --location eastus
+    :example: Create a project-scoped GCP connector. projectProperties and organizationProperties are mutually exclusive; set exactly one.
+        az arc-multicloud public-cloud-connector create --resource-group multiCloudRG --name gcpConnector --gcp-cloud-profile "{project-properties:{project-number:123456789123,project-id:my-project}}" --host-type GCP --tags a=b --location eastus
 
-    :example: PublicCloudConnectors_CreateOrUpdate
-        az arc-multicloud public-cloud-connector create --resource-group multiCloudRG --name gcpConnector --gcp-cloud-profile project-properties.project-number=123456789123 project-properties.project-id=my-project organization-properties.organization-id=123456789123 organization-properties.management-project-number=123456789124 organization-properties.management-project-id=my-management-project --host-type GCP --tags a=b --location eastus
+    :example: Create an organization-scoped GCP connector, using the flat key=value form.
+        az arc-multicloud public-cloud-connector create --resource-group multiCloudRG --name gcpConnector --gcp-cloud-profile organization-properties.organization-id=123456789123 organization-properties.management-project-number=123456789124 organization-properties.management-project-id=my-management-project --host-type GCP --tags a=b --location eastus
     """
 
     _aaz_info = {
