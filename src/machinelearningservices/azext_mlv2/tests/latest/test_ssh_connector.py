@@ -9,18 +9,26 @@
 # --------------------------------------------------------------------------
 import io
 import sys
-from types import SimpleNamespace
-from unittest.mock import MagicMock, patch
+from types import ModuleType, SimpleNamespace
+from unittest.mock import patch
 
-mock_websockets = MagicMock()
-mock_websockets_client = MagicMock()
+
+# Create a fake websockets package and its imported submodules.
+mock_websockets = ModuleType("websockets")
+mock_websockets.__path__ = []
+
+mock_websockets_client = ModuleType("websockets.client")
+mock_websockets_exceptions = ModuleType("websockets.exceptions")
+
 mock_websockets.client = mock_websockets_client
+mock_websockets.exceptions = mock_websockets_exceptions
 
 with patch.dict(
     sys.modules,
     {
         "websockets": mock_websockets,
         "websockets.client": mock_websockets_client,
+        "websockets.exceptions": mock_websockets_exceptions,
     },
 ):
     from azext_mlv2.manual.custom._ssh_connector import run_az_cli
@@ -43,6 +51,7 @@ def test_run_az_cli_redirects_output_and_preserves_result():
                 "https://management.core.windows.net/.default",
             ]
             assert out_file is not None
+
             out_file.write('{"accessToken":"fake-token"}')
             self.result = SimpleNamespace(
                 result={"accessToken": "fake-token"}
