@@ -12,7 +12,7 @@
 import asyncio
 import concurrent
 import concurrent.futures
-import io
+import io  # pylint: disable=import-error
 import os
 import os.path
 import sys
