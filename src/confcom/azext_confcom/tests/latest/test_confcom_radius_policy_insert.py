@@ -10,7 +10,16 @@ Tests the core regex replacement that inserts base64-encoded policy strings
 into bicep template ccePolicy annotation values.
 """
 
+import tempfile
+
 from azext_confcom.command.radius_policy_insert import insert_policy_into_template
+from azext_confcom.lib.serialization import (
+  PRERELEASE_COMMON_ENFORCEMENT_POINTS,
+  PRERELEASE_WINDOWS_ENFORCEMENT_POINTS,
+  WINDOWS_ENFORCEMENT_POINTS,
+  policy_deserialize,
+  policy_serialize,
+)
 
 
 def test_replaces_first_ccepolicy_in_bicep():
@@ -92,3 +101,122 @@ def test_matches_case_insensitive_annotation():
     template = "{ 'Microsoft.ContainerInstance.VirtualNode.CcePolicy': '' }"
     result = insert_policy_into_template("p2", template, 0)
     assert "'p2'" in result
+
+
+def test_serialization_preserves_allowed_log_providers():
+    policy_text = """package policy
+allowed_log_providers := ["Microsoft-Windows-Provider"]
+mount_cims := data.framework.mount_cims
+"""
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as policy_file:
+        policy_file.write(policy_text)
+        policy_file.flush()
+        result = policy_serialize(policy_deserialize(policy_file.name))
+
+    assert 'allowed_log_providers := [\n  "Microsoft-Windows-Provider"\n]' in result
+
+
+def test_serialization_uses_windows_enforcement_points():
+    policy_text = """package policy
+api_version := "0.12.0"
+mount_cims := data.framework.mount_cims
+"""
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as policy_file:
+        policy_file.write(policy_text)
+        policy_file.flush()
+        result = policy_serialize(policy_deserialize(policy_file.name))
+
+    for name in WINDOWS_ENFORCEMENT_POINTS + PRERELEASE_WINDOWS_ENFORCEMENT_POINTS:
+        assert f"{name} := data.framework.{name}" in result
+
+
+def test_serialization_omits_windows_enforcement_points_for_linux():
+    policy_text = "package policy\nmount_device := data.framework.mount_device\n"
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as policy_file:
+        policy_file.write(policy_text)
+        policy_file.flush()
+        result = policy_serialize(policy_deserialize(policy_file.name))
+
+    for name in PRERELEASE_COMMON_ENFORCEMENT_POINTS:
+        assert f"{name} := data.framework.{name}" not in result
+    for name in (
+      "allow_log_provider_dropping",
+      "allow_registry_changes_dropping",
+      "allowed_log_providers",
+    ):
+      assert f"{name} :=" not in result
+    for name in WINDOWS_ENFORCEMENT_POINTS:
+        assert f"{name} := data.framework.{name}" not in result
+
+
+def test_serialization_uses_prerelease_linux_enforcement_points():
+    policy_text = """package policy
+api_version := "0.12.0"
+mount_device := data.framework.mount_device
+"""
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as policy_file:
+        policy_file.write(policy_text)
+        policy_file.flush()
+        result = policy_serialize(policy_deserialize(policy_file.name))
+
+    for name in PRERELEASE_COMMON_ENFORCEMENT_POINTS:
+        assert f"{name} := data.framework.{name}" in result
+
+
+def test_serialization_preserves_mapped_directories_and_registry_changes():
+    policy_text = """package policy
+api_version := "0.12.0"
+framework_version := "0.5.0"
+containers := [
+  {
+    "registry_changes": {
+      "add_values": [],
+      "delete_keys": []
+    }
+  }
+]
+mapped_directories := [
+  {
+    "container_path": "C:\\\\data",
+    "read_only": true
+  }
+]
+mount_cims := data.framework.mount_cims
+"""
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as policy_file:
+        policy_file.write(policy_text)
+        policy_file.flush()
+        policy = policy_deserialize(policy_file.name)
+        result = policy_serialize(policy)
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as result_file:
+        result_file.write(result)
+        result_file.flush()
+        round_tripped_policy = policy_deserialize(result_file.name)
+
+    assert policy.mapped_directories == [
+        {"container_path": "C:\\data", "read_only": True}
+    ]
+    assert policy.containers[0].registry_changes == {
+        "add_values": [],
+        "delete_keys": [],
+    }
+    assert '"registry_changes": {' in result
+    assert "mapped_directories := [" in result
+    assert round_tripped_policy.mapped_directories == policy.mapped_directories
+    assert (
+        round_tripped_policy.containers[0].registry_changes
+        == policy.containers[0].registry_changes
+    )
+
+
+def test_serialization_omits_absent_registry_changes():
+    policy_text = """package policy
+containers := [{}]
+mount_device := data.framework.mount_device
+"""
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as policy_file:
+        policy_file.write(policy_text)
+        policy_file.flush()
+        result = policy_serialize(policy_deserialize(policy_file.name))
+
+    assert '"registry_changes"' not in result
