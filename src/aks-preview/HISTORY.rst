@@ -14,20 +14,6 @@ Pending
 * `az aks nodepool update`: Preserve the existing GPU management mode when `--enable-managed-gpu` is omitted, including when enabling, updating, or disabling the cluster autoscaler.
 * `az aks alert-config add`: Reject an empty `--name` before looking up existing configurations instead of reporting that it already exists.
 * `az aks nodepool scale`: add `--use-patch-api` to optionally scale a VMSS node pool via the new dedicated PATCH agent pool API (scales to the target count without triggering full reconciliation). The default behavior continues to use the PUT agent pool API.
-
-22.0.0b8
-+++++++++
-* `az aks nodepool add`: Omit `nodeTaints` when `--node-taints` is not specified for FlexNodes pools, and reject explicitly empty values.
-
-22.0.0b7
-+++++++++
-* `az aks machine add`: Add preview `--capacity-reservation-group` support to associate a machine with a Capacity Reservation Group.
-* Add `az aks alert-config` commands to manage AKS-managed alert configurations.
-* `az aks create`: Honor `--enable-osdisk-full-caching` for the default agent pool.
-* `az aks kollect` and `az aks kanalyze`: Fix compatibility with the keyword-only credential SDK parameters.
-* `az aks maintenanceconfiguration add` and `az aks maintenanceconfiguration update`: Preserve configuration-file fields with the typespec-generated SDK model.
-* Improve AKS live-test resilience for preview feature gates, transient resource and monitoring-table readiness, retired configurations, and service propagation delays.
-* `az aks create` and `az aks update`: Reject `--outbound-type managedNATGatewayV2` with an actionable error directing to `--outbound-type managedNATGateway --outbound-type-sku StandardV2` (the GA-aligned shape); the legacy value is no longer accepted on the target api-version.
 * `az aks create` and `az aks update`: Reject `--enable-azure-monitor-logs` on clusters using service principal authentication, since the Azure Monitor profile onboards with managed identity only.
 * `az aks update`: Reject `--enable-azure-monitor-logs` when Azure Monitor logs is already enabled on the cluster, matching `az aks enable-addons -a monitoring`. Run `--disable-azure-monitor-logs` first to change the configuration.
 * `az aks update`: `--disable-azure-monitor-logs` now removes the data collection rule association and resets the Container Insights settings (syslog port, Prometheus scraping and container network logs) back to their defaults, and asks for confirmation when OpenTelemetry logs and traces are enabled.
@@ -50,6 +36,20 @@ Pending
 * `az aks update`: Fix `--enable-syslog false` being rejected with `Please specify one or more of "--enable-syslog"` after prompting to reconcile the cluster. Explicitly turning syslog collection off is a real update request, but the falsy value made the command treat it as though no argument had been supplied.
 * `az aks update`: Stop reopening public network access on the ingestion data collection endpoint of a cluster that is linked to an Azure Monitor Private Link Scope. The endpoint is created or updated on every reconfiguration, but `--ampls-resource-id` is only supplied on the command that links the scope, so an unrelated update such as `--enable-syslog` used to flip an existing private endpoint back to public. The existing network configuration is now preserved unless the caller explicitly asks to change it.
 * `az aks update`: Fix `--ampls-resource-id` being rejected with `--ampls-resource-id can only be used with private cluster in MSI mode.` on a cluster that is already private. The private state was only read from the command line, so it was invisible unless `--enable-private-cluster` happened to be supplied again in the same command; it is now read from the cluster as well.
+
+22.0.0b8
++++++++++
+* `az aks nodepool add`: Omit `nodeTaints` when `--node-taints` is not specified for FlexNodes pools, and reject explicitly empty values.
+
+22.0.0b7
++++++++++
+* `az aks machine add`: Add preview `--capacity-reservation-group` support to associate a machine with a Capacity Reservation Group.
+* Add `az aks alert-config` commands to manage AKS-managed alert configurations.
+* `az aks create`: Honor `--enable-osdisk-full-caching` for the default agent pool.
+* `az aks kollect` and `az aks kanalyze`: Fix compatibility with the keyword-only credential SDK parameters.
+* `az aks maintenanceconfiguration add` and `az aks maintenanceconfiguration update`: Preserve configuration-file fields with the typespec-generated SDK model.
+* Improve AKS live-test resilience for preview feature gates, transient resource and monitoring-table readiness, retired configurations, and service propagation delays.
+* `az aks create` and `az aks update`: Reject `--outbound-type managedNATGatewayV2` with an actionable error directing to `--outbound-type managedNATGateway --outbound-type-sku StandardV2` (the GA-aligned shape); the legacy value is no longer accepted on the target api-version.
 
 22.0.0b6
 +++++++++
@@ -815,7 +815,6 @@ Pending
 * Update --enable-advanced-network-observability description to note additional costs and add missing flag to create command.
 * Change default value of `--vm-set-type` to VirtualMachines when `--vm-sizes` is set.
 
-
 4.0.0b5
 ++++++++
 * Add warnings to `az aks mesh` commands for out of support asm revision in use.
@@ -909,7 +908,6 @@ Pending
 * Add `--sku` to the `az aks create` command.
 * Add `--sku` to the `az aks update` command.
 * Support cluster service health probe mode by `--cluster-service-load-balancer-health-probe-mode {Shared, Servicenodeport}`
-
 
 3.0.0b1
 +++++++
@@ -1031,7 +1029,6 @@ Pending
 * Add --disable-network-observability to `az aks update` cluster command.
 * Add `--node-soak-duration` to the `az aks nodepool add/update/upgrade` commands.
 * Add `--drain-timeout` to the `az aks nodepool add/update/upgrade` commands (already in [azure-cli](https://github.com/Azure/azure-cli/pull/27475)).
-
 
 0.5.168
 +++++++
