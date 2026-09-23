@@ -2,6 +2,19 @@
 
 Release History
 ===============
+1.11.4
++++++++
+* Standardize error reporting for configuration input, kubectl and cluster access, network connectivity, ARM operations, Helm, pre-onboarding diagnostics, custom locations, and the client proxy.
+* Improve pre-onboarding diagnostic job completion handling and actionable failure guidance.
+* Ignore transient DNS lookup issues when parsing diagnostic results.
+* Add Application Gateway for Containers endpoint configuration and proxy bypass support for Arc services and Container Insights.
+* Restrict Arc proxy bypass when reconnecting an already onboarded cluster.
+* Add ownership tracking for Arc proxy bypass settings.
+* Add a Helm override for the kube-state-metrics image repository.
+* Inject the onboarding Kubernetes secret without Helm and include the ARM resource ID in command and fault telemetry.
+* Improve unhandled-error telemetry coverage.
+* Update the client proxy version to 1.3.035302 and update the CSP version.
+
 1.11.3
 +++++++
 * Fix container log parsing issue for environments using Python Kubernetes client 36.0 or higher.
