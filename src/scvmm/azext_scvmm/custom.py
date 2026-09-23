@@ -8,6 +8,7 @@ from collections import defaultdict
 from getpass import getpass
 from azure.cli.command_modules.acs._client_factory import get_resources_client
 from azure.cli.core.azclierror import (
+    AzureResponseError,
     UnrecognizedArgumentError,
     RequiredArgumentMissingError,
     MutuallyExclusiveArgumentError,
@@ -1005,13 +1006,37 @@ def delete_vm(
             no_wait, client.begin_delete, machine_id, force, delete_from_host,
         )
     except ResourceNotFoundError:
-        # Nothing to delete if the parent machine does not exist.
+        # A missing VM instance can still leave a retained machine to clean up.
+        if delete_machine:
+            return
+    else:
+        if no_wait:
+            get_logger(__name__).warning(
+                "SCVMM kind cleanup is skipped with --no-wait. After VM deletion completes, "
+                "rerun 'az scvmm vm delete' without --no-wait to clear the retained machine's kind."
+            )
+            return
+
+        op.result()
+        if delete_machine:
+            # Wait for the VM to be deleted from the host.
+            machine_client.delete(resource_group_name, resource_name)
+            return
+
+    try:
+        machine = machine_client.get(resource_group_name, resource_name)
+    except ResourceNotFoundError:
         return
 
-    op.result()
-    if delete_machine:
-        # Wait for the VM to be deleted from the host.
-        machine_client.delete(resource_group_name, resource_name)
+    if machine.kind and machine.kind.lower() == MACHINE_KIND_SCVMM.lower():
+        machine = machine_client.update(
+            resource_group_name, resource_name, MachineUpdate(kind=''),
+        )
+        if machine.kind:
+            raise AzureResponseError(
+                "The retained machine's kind was not cleared. Verify that the service supports "
+                "clearing machine kind, then rerun 'az scvmm vm delete'."
+            )
 
 
 def show_vm(
