@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "agentfabric cluster-association list",
 )
 class List(AAZCommand):
-    """List ClusterAssociation resources by AgentFabric
+    """List Cluster Association resources that are children of an Agent Fabric. The parent Fabric name is required.
 
     :example: ClusterAssociations_ListByParent
         az agentfabric cluster-association list --resource-group rgnetworksecurity --fabric-name testAIFabric
@@ -47,7 +47,7 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="The name of the AgentFabric",
+            help="The name of the parent Agent Fabric.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",

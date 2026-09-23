@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "agentfabric cluster-association",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Cluster Association
+    """Manage Cluster Association resources that are children of an Agent Fabric. The parent Fabric name is required.
     """
     pass
 
