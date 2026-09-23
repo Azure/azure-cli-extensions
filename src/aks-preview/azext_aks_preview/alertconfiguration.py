@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.azclierror import (
+    ClientRequestError,
     RequiredArgumentMissingError,
     ResourceNotFoundError,
 )
@@ -28,6 +29,19 @@ def aks_alert_config_add_internal(cmd, client, raw_parameters, headers, no_wait)
         raise RequiredArgumentMissingError(
             "Please specify --name for the alert configuration."
         )
+
+    existing_alert_config = None
+    try:
+        existing_alert_config = client.get(resource_group_name, cluster_name, name, headers=headers)
+    except SdkResourceNotFoundError:
+        pass
+
+    if existing_alert_config:
+        raise ClientRequestError(
+            f"Alert configuration '{name}' already exists. "
+            "Please use 'az aks alert-config update' to update it."
+        )
+
     if not mode:
         raise RequiredArgumentMissingError(
             "Please specify --mode for the alert configuration. "

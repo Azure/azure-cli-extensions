@@ -12,10 +12,8 @@ class ImageGalleryCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from ._client_factory import cf_galleries
         image_gallery_custom = CliCommandType(
-            operations_tmpl='azext_image_gallery.custom#{}',
-            client_factory=cf_galleries)
+            operations_tmpl='azext_image_gallery.custom#{}')
         super().__init__(cli_ctx=cli_ctx, custom_command_type=image_gallery_custom)
 
     def load_command_table(self, args):

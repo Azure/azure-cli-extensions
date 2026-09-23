@@ -107,7 +107,7 @@ def step_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster bmckeyset  delete --name {name} --cluster-name {clusterName} --resource-group {rg} -y"
+        "az networkcloud cluster bmckeyset delete --name {name} --cluster-name {clusterName} --resource-group {rg} --yes"
     )
 
 

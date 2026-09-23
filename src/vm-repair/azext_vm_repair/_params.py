@@ -53,10 +53,10 @@ def load_arguments(self, _):
         c.argument('custom_script_file', help='Custom script file to run on VM. Script should be PowerShell for windows, Bash for Linux.')
         c.argument('parameters', nargs='+', help="Space-separated parameters in the format of '[name=]value'. Positional for bash scripts. To avoid splitting on =, use the prefix \'++\' to send the entire string.")
         c.argument('run_on_repair', help="Script will be run on the linked repair VM.")
-        c.argument('preview', help="URL of forked repair script library map.json https://github.com/{user}/repair-script-library/blob/master/map.json")
+        c.argument('preview', help="URL of forked repair script library map.json https://github.com/{user}/repair-script-library/blob/main/map.json. The branch name must be a single path segment: a branch containing '/' resolves to a different repository.")
 
     with self.argument_context('vm repair list-scripts') as c:
-        c.argument('preview', help="URL of forked repair script library map.json https://github.com/{user}/repair-script-library/blob/master/map.json")
+        c.argument('preview', help="URL of forked repair script library map.json https://github.com/{user}/repair-script-library/blob/main/map.json. The branch name must be a single path segment: a branch containing '/' resolves to a different repository.")
 
     with self.argument_context('vm repair reset-nic') as c:
         c.argument('subscriptionid', help='Subscription id to default subscription using `az account set -s NAME_OR_ID`.')

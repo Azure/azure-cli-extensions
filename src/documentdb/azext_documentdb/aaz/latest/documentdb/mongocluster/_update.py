@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a mongo cluster. Only the properties specified in the request are modified; all other properties are left unchanged (HTTP PATCH). Generic update arguments (--set, --add, --remove) are supported.

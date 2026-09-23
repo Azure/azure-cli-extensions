@@ -11,6 +11,7 @@ from knack.arguments import CLIArgumentType
 from azure.cli.core.azclierror import InvalidArgumentValueError, CLIError
 from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag
 from azure.cli.core.util import shell_safe_json_parse
+from ._validators import validate_email
 
 
 class JobParamsAction(argparse._AppendAction):
@@ -183,8 +184,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     job_output_format_type = CLIArgumentType(help='The expected job output format')
     entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for some provider QIR jobs.')
     skip_autoadd_type = CLIArgumentType(help='If specified, the plans that offer free credits will not automatically be added.')
-    workspace_kind_type = CLIArgumentType(options_list=['--workspace-kind'], help='The kind of the workspace to create.', choices=['V1', 'V2'])
-    quota_type = CLIArgumentType(options_list=['--quota'], help='Target quota allocation as provider-id, target-id, standard-minutes-lifetime, and optional high-minutes-lifetime key=value pairs, a JSON object or array, or `@{file}` with JSON content. standard-minutes-lifetime is required for a new allocation. camelCase keys (providerId, targetId, ...) are also accepted. Repeat --quota once per target.', action=QuotaAction, nargs='+')
+    workspace_kind_type = CLIArgumentType(options_list=['--workspace-kind'], help='The kind of the workspace to create.', arg_type=get_enum_type(['V1', 'V2']))
+    quota_type = CLIArgumentType(options_list=['--quota'], help='Target quota allocation for a V2 workspace as provider-id, target-id, standard-minutes-lifetime, and optional high-minutes-lifetime key=value pairs, a JSON object or array, or `@{file}` with JSON content. Use --workspace-kind V2 when creating a workspace. Values are absolute and cannot exceed the suite target allocation or, when updating, be below current workspace usage. standard-minutes-lifetime is required for a new allocation. camelCase keys (providerId, targetId, ...) are also accepted. Repeat --quota once per target.', action=QuotaAction, nargs='+')
     key_type = CLIArgumentType(options_list=['--key-type'], help='The api keys to be regenerated, should be Primary and/or Secondary.')
     enable_key_type = CLIArgumentType(options_list=['--enable-api-key'], help='Enable or disable API key authentication.')
     job_type_type = CLIArgumentType(options_list=['--job-type'], help='Job type to be listed, example "QuantumComputing".')
@@ -196,10 +197,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     top_type = CLIArgumentType(options_list=['--top'], help='The number of jobs listed per page.')
     orderby_type = CLIArgumentType(options_list=['--orderby'], help='The field on which to order the list.')
     order_type = CLIArgumentType(options_list=['--order'], help='How to order the list: `asc` or `desc`')
-    assignee_type = CLIArgumentType(options_list=['--assignee'], help='Represents a user, group, or service principal. Supported formats: object id, user sign-in name, or service principal name.')
-    assignee_object_id_type = CLIArgumentType(options_list=['--assignee-object-id'], help="Use this parameter instead of '--assignee' to bypass Graph API invocation in case of insufficient privileges. This parameter only works with object ids for users, groups, service principals, and managed identities. For managed identities use the principal id. For service principals, use the object id and not the app id.")
-    role_type = CLIArgumentType(options_list=['--role'], help="Role name or id. For 'create', the role granted to the user; for 'delete', the role assignment to remove. Defaults to the 'Quantum Workspace Data Contributor' role.")
-    assignee_principal_type_type = CLIArgumentType(options_list=['--assignee-principal-type'], arg_type=get_enum_type(['User', 'Group', 'ServicePrincipal', 'ForeignGroup']), help="Use with '--assignee-object-id' to avoid errors caused by propagation latency in Microsoft Graph.")
+    email_type = CLIArgumentType(options_list=['--email'], validator=validate_email, help='The email address of the user to grant or remove access.')
     include_inherited_type = CLIArgumentType(options_list=['--include-inherited'], arg_type=get_three_state_flag(), help='Include role assignments inherited from the parent resource group and subscription. Enabled by default; use "--include-inherited false" to list only assignments scoped directly to the workspace.')
 
     with self.argument_context('quantum workspace') as c:
@@ -215,12 +213,12 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
 
     with self.argument_context('quantum workspace user') as c:
         c.argument('workspace_name', workspace_name_type)
-        c.argument('assignee', assignee_type)
-        c.argument('assignee_object_id', assignee_object_id_type)
-        c.argument('role', role_type)
 
-    with self.argument_context('quantum workspace user create') as c:
-        c.argument('assignee_principal_type', assignee_principal_type_type)
+    with self.argument_context('quantum workspace user add') as c:
+        c.argument('email', email_type, required=True)
+
+    with self.argument_context('quantum workspace user remove') as c:
+        c.argument('email', email_type, required=True)
 
     with self.argument_context('quantum workspace user list') as c:
         c.argument('include_inherited', include_inherited_type)
@@ -316,3 +314,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('workspace_name', workspace_name_type)
         c.argument('enable_key', enable_key_type)
         c.argument('quota', quota_type)
+
+    with self.argument_context('quantum suite-offer quotas') as c:
+        c.argument('provider_id', provider_id_type, required=True)
+
+    with self.argument_context('quantum suite-offer target list') as c:
+        c.argument('provider_id', provider_id_type, required=True)

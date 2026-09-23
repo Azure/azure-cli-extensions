@@ -8,11 +8,69 @@ import os
 import unittest
 
 import azext_confcom.config as config
+from azext_confcom.container import ContainerImage
 from azext_confcom.security_policy import (OutputType, UserContainerImage,
                                            load_policy_from_json)
-from azext_confcom.template_util import DockerClient, case_insensitive_dict_get
+from azext_confcom.template_util import DockerClient, case_insensitive_dict_get, extract_probe
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
+
+
+class ExecProcessDeduplication(unittest.TestCase):
+    def get_policy_exec_processes(self, exec_processes):
+        image = ContainerImage(
+            containerImage="test:latest",
+            environmentRules=[],
+            command=[],
+            workingDir="/",
+            mounts=[],
+            allow_elevated=False,
+            id_val="test",
+            extraEnvironmentRules=[],
+            execProcesses=exec_processes,
+        )
+        return image.get_policy_json()[config.POLICY_FIELD_CONTAINERS_ELEMENTS_EXEC_PROCESSES]
+
+    def test_identical_liveness_and_readiness_probes(self):
+        container_properties = {
+            "livenessProbe": {"exec": {"command": ["echo", "hello"]}},
+            "readinessProbe": {"exec": {"command": ["echo", "hello"]}},
+        }
+        exec_processes = []
+        extract_probe(exec_processes, container_properties, config.ACI_FIELD_CONTAINERS_READINESS_PROBE)
+        extract_probe(exec_processes, container_properties, config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE)
+
+        self.assertEqual(
+            self.get_policy_exec_processes(exec_processes),
+            [{"command": ["echo", "hello"], "signals": []}],
+        )
+
+    def test_distinct_exec_processes_preserved_in_order(self):
+        exec_processes = [
+            {"command": ["echo", "hello"], "signals": []},
+            {"command": ["echo", "ready"], "signals": []},
+            {"signals": [], "command": ["echo", "hello"]},
+            {"command": ["echo", "hello"], "signals": [15]},
+            {"command": ["hello", "echo"], "signals": []},
+            {"command": ["echo", "hello"], "signals": [15]},
+        ]
+        original_exec_processes = json.loads(json.dumps(exec_processes))
+
+        self.assertEqual(
+            self.get_policy_exec_processes(exec_processes),
+            [
+                {"command": ["echo", "hello"], "signals": []},
+                {"command": ["echo", "ready"], "signals": []},
+                {"command": ["echo", "hello"], "signals": [15]},
+                {"command": ["hello", "echo"], "signals": []},
+            ],
+        )
+        self.assertEqual(exec_processes, original_exec_processes)
+
+    def test_empty_and_single_exec_process_unchanged(self):
+        for exec_processes in ([], [{"command": ["echo", "hello"], "signals": []}]):
+            with self.subTest(exec_processes=exec_processes):
+                self.assertEqual(self.get_policy_exec_processes(exec_processes), exec_processes)
 
 
 class MountEnforcement(unittest.TestCase):
@@ -968,5 +1026,3 @@ class CustomJsonParsingIncorrect(unittest.TestCase):
                     )
                 )[0].get(config.POLICY_FIELD_CONTAINERS_ELEMENTS_COMMANDS)
             )
-
-

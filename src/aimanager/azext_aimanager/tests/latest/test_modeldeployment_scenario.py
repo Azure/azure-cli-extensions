@@ -49,7 +49,7 @@ class ModelDeploymentScenarioTest(ScenarioTest):
 
         command_prefix = (
             'aimanager namespace modeldeployment {} -g rg '
-            '--aimanager-name manager --namespace-name namespace')
+            '--aimanager manager --namespace namespace')
 
         with patch('azext_aimanager._client_factory.get_aimanager_client',
                    return_value=service_client):
@@ -91,7 +91,7 @@ class ModelDeploymentScenarioTest(ScenarioTest):
 
             self.cmd(
                 'aimanager namespace modeldeployment list -g rg '
-                '-m manager --namespace-name namespace',
+                '-m manager --namespace namespace',
                 checks=[self.check("length([?name=='deployment'])", 1)])
 
             self.cmd(
