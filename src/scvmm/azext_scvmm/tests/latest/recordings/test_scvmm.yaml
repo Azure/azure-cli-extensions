@@ -8420,12 +8420,13 @@ interactions:
     uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2022-10-01
   response:
     body:
-      string: '{"totalRecords":2,"count":2,"data":[{"machineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01","name":"azcli-test-vm-01","resourceGroup":"azcli-test-rg-vmm","kind":"SCVMM","inventoryId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.ScVmm/vmmServers/azcli-test-vmm-vmmserver/InventoryItems/11c98997-d2a9-4fc8-af91-cf29a0e1cb4d","biosId":"8ae7e222-f756-4210-b3b9-13f5fcea0dc7","managedResourceId":""},{"machineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hsurana-test-RG/providers/Microsoft.HybridCompute/machines/FDUS56IU0X1N3D3","name":"FDUS56IU0X1N3D3","resourceGroup":"hsurana-test-rg","kind":"SCVMM","inventoryId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.ScVmm/vmmServers/azcli-test-vmm-vmmserver/InventoryItems/0416ba19-2b46-4612-af79-be309d8d4da2","biosId":"d0ad7674-0bcf-45fb-8cad-282dc4064f5f","managedResourceId":""}],"facets":[],"resultTruncated":"false"}'
+      # Synthetic cleared-kind state for relinking; not a new live Resource Graph recording.
+      string: '{"totalRecords":2,"count":2,"data":[{"machineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01","name":"azcli-test-vm-01","resourceGroup":"azcli-test-rg-vmm","kind":null,"inventoryId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.ScVmm/vmmServers/azcli-test-vmm-vmmserver/InventoryItems/11c98997-d2a9-4fc8-af91-cf29a0e1cb4d","biosId":"8ae7e222-f756-4210-b3b9-13f5fcea0dc7","managedResourceId":""},{"machineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hsurana-test-RG/providers/Microsoft.HybridCompute/machines/FDUS56IU0X1N3D3","name":"FDUS56IU0X1N3D3","resourceGroup":"hsurana-test-rg","kind":"SCVMM","inventoryId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.ScVmm/vmmServers/azcli-test-vmm-vmmserver/InventoryItems/0416ba19-2b46-4612-af79-be309d8d4da2","biosId":"d0ad7674-0bcf-45fb-8cad-282dc4064f5f","managedResourceId":""}],"facets":[],"resultTruncated":"false"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1117'
+      - '1114'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -10046,4 +10047,124 @@ interactions:
     status:
       code: 202
       message: Accepted
+# Synthetic contract fixtures for delete -> clear -> relink -> delete.
+# These exercise CLI/SDK requests offline; they are not live service recordings.
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01?api-version=2023-04-25-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01","location":"eastus2euap","kind":"SCVMM","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"kind": ""}'
+    headers:
+      Content-Type:
+      - application/json
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01?api-version=2023-04-25-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01","location":"eastus2euap","kind":null,"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01?api-version=2023-04-25-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01","location":"eastus2euap","kind":null,"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"kind": "SCVMM"}'
+    headers:
+      Content-Type:
+      - application/json
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01?api-version=2023-04-25-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01","location":"eastus2euap","kind":"SCVMM","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01?api-version=2023-04-25-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01","location":"eastus2euap","kind":"SCVMM","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01?api-version=2023-04-25-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01","location":"eastus2euap","kind":"SCVMM","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"kind": ""}'
+    headers:
+      Content-Type:
+      - application/json
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01?api-version=2023-04-25-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01","location":"eastus2euap","kind":null,"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01?api-version=2023-04-25-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg-vmm/providers/Microsoft.HybridCompute/machines/azcli-test-vm-01","location":"eastus2euap","kind":null,"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
 version: 1

@@ -315,7 +315,20 @@ class ScVmmScenarioTest(ScenarioTest):
             ]
         )
 
+        machine_id = (
+            f'/subscriptions/{self.get_subscription_id()}'
+            f'/resourceGroups/{self.kwargs["resource_group"]}'
+            f'/providers/Microsoft.HybridCompute/machines/{self.kwargs["vm_name"]}'
+        )
+        machine_show = (
+            f'az rest --method get --url https://management.azure.com{machine_id}'
+            '?api-version=2023-04-25-preview'
+        )
+
         self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} -y')
+        machine = self.cmd(machine_show).get_output_in_json()
+        self.assertEqual(machine['id'].lower(), machine_id.lower())
+        self.assertFalse(machine.get('kind'))
         
         with self.assertRaisesRegex(SystemExit, "3"):
             self.cmd('az scvmm vm show -g {resource_group} --name {vm_name}')
@@ -331,8 +344,13 @@ class ScVmmScenarioTest(ScenarioTest):
         self.cmd('az scvmm vm show -g {resource_group} --name {vm_name}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
         ])
+        machine = self.cmd(machine_show).get_output_in_json()
+        self.assertEqual(machine['kind'].lower(), 'scvmm')
 
         self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} --delete-from-host -y')
+        machine = self.cmd(machine_show).get_output_in_json()
+        self.assertEqual(machine['id'].lower(), machine_id.lower())
+        self.assertFalse(machine.get('kind'))
 
         self.cmd('az scvmm avset delete -g {resource_group} --name {avset_name} -y')
 

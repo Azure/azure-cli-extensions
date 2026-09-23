@@ -1034,7 +1034,8 @@ def delete_vm(
         )
         if machine.kind:
             raise AzureResponseError(
-                "The retained machine's kind was not cleared. Verify that the service supports "
+                "The VM instance is deleted, but the retained machine's kind was not cleared. "
+                "Verify that the service supports "
                 "clearing machine kind, then rerun 'az scvmm vm delete'."
             )
 

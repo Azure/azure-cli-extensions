@@ -177,6 +177,20 @@ class DeleteVmTest(unittest.TestCase):
                     RESOURCE_GROUP, MACHINE_NAME, mock.ANY,
                 )
 
+    def test_retry_after_patch_failure_clears_kind_without_vm_instance(self):
+        self.machine_client.update.side_effect = HttpResponseError('Patch failed')
+
+        with self.assertRaises(HttpResponseError):
+            self._delete_vm()
+
+        self.client.begin_delete.side_effect = ResourceNotFoundError('VM not found')
+        self.machine_client.update.side_effect = None
+        self._delete_vm()
+
+        self.assertEqual(self.machine_client.update.call_count, 2)
+        self.poller.result.assert_called_once_with()
+        self.machine_client.delete.assert_not_called()
+
     def test_patch_response_accepts_empty_or_null_kind(self):
         for kind in ('', None):
             with self.subTest(kind=kind):
@@ -293,10 +307,11 @@ class DeleteVmTest(unittest.TestCase):
 
         with mock.patch.object(
             sdk_client.machines, 'get', return_value=Machine(location='eastus', kind='SCVMM'),
-        ), mock.patch.object(
-            sdk_client.machines, '_deserialize', return_value=Machine(location='eastus'),
         ), mock.patch.object(sdk_client._client._pipeline, 'run') as pipeline:
             pipeline.return_value.http_response.status_code = 200
+            pipeline.return_value.context = {
+                'deserialized_data': {'location': 'eastus', 'kind': None},
+            }
 
             self._delete_vm()
 
@@ -307,6 +322,33 @@ class DeleteVmTest(unittest.TestCase):
             request.url, f'https://management.azure.com{MACHINE_ID}?api-version=2023-04-25-preview',
         )
         self.assertEqual(json.loads(request.body), {'kind': ''})
+
+    def test_sdk_response_kind_is_checked_after_deserialization(self):
+        sdk_client = HybridComputeManagementClient(
+            credential=mock.Mock(), subscription_id=SUBSCRIPTION_ID,
+        )
+        self.addCleanup(sdk_client.close)
+        self.machine_factory.return_value = sdk_client.machines
+
+        with mock.patch.object(
+            sdk_client.machines, 'get', return_value=Machine(location='eastus', kind='SCVMM'),
+        ), mock.patch.object(sdk_client._client._pipeline, 'run') as pipeline:
+            pipeline.return_value.http_response.status_code = 200
+            for kind in ('', None, 'SCVMM'):
+                with self.subTest(kind=kind):
+                    pipeline.reset_mock()
+                    pipeline.return_value.context = {
+                        'deserialized_data': {'location': 'eastus', 'kind': kind},
+                    }
+
+                    if kind:
+                        with self.assertRaisesRegex(AzureResponseError, 'VM instance is deleted'):
+                            self._delete_vm()
+                    else:
+                        self._delete_vm()
+
+                    pipeline.assert_called_once()
+                    self.assertEqual(json.loads(pipeline.call_args[0][0].body), {'kind': ''})
 
     def test_omitted_or_none_kind_does_not_serialize_an_empty_kind(self):
         self.assertEqual(MachineUpdate().serialize(), {})
