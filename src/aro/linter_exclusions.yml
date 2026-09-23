@@ -1,0 +1,27 @@
+# azure-cli 2.82.0 added --isolation-scope to 'az identity create' but the linter
+# can't validate it yet. Remove this once upstream fixes linter validation.
+identity create:
+  rule_exclusions:
+    - faulty_help_example_parameters_rule
+
+aro create:
+  parameters:
+    cluster_resource_group:
+      rule_exclusions:
+      - option_length_too_long
+      - parameter_should_not_end_in_resource_group
+    worker_vm_disk_size_gb:
+      rule_exclusions:
+      - option_length_too_long
+    vnet_resource_group_name:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+    enable_preconfigured_nsg:
+      rule_exclusions:
+      - option_length_too_long
+
+aro hcp cluster create:
+  parameters:
+    managed_resource_group_name:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
