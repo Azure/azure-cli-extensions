@@ -12,7 +12,17 @@ import sys
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
-with patch.dict(sys.modules, {"websockets": MagicMock()}):
+mock_websockets = MagicMock()
+mock_websockets_client = MagicMock()
+mock_websockets.client = mock_websockets_client
+
+with patch.dict(
+    sys.modules,
+    {
+        "websockets": mock_websockets,
+        "websockets.client": mock_websockets_client,
+    },
+):
     from azext_mlv2.manual.custom._ssh_connector import run_az_cli
 
 
@@ -21,7 +31,9 @@ def test_run_az_cli_redirects_output_and_preserves_result():
 
     class FakeCli:
         def __init__(self):
-            self.result = SimpleNamespace(result={"accessToken": "fake-token"})
+            self.result = SimpleNamespace(
+                result={"accessToken": "fake-token"}
+            )
 
         def invoke(self, args, out_file=None):
             assert args == [
