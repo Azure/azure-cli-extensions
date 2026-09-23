@@ -2,6 +2,13 @@
 
 Release History
 ===============
+1.9.0
++++++++++++++++++++
+* Add Microsoft.ChaosStudio partner customization for AKS workspace connectivity and owned prerequisite lifecycle management.
+
+1.8.1
++++++++++++++++++++
+* Add WI validation and new allowed network policy setting for Microsoft.virtualnodes AKS Extension.
 
 1.8.0
 +++++++++++++++++++
