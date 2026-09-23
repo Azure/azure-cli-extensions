@@ -18,7 +18,7 @@ from .aaz.latest.managedcleanroom.private_endpoint_util import PrivateEndpointUt
 logger = get_logger(__name__)
 
 
-class _PrivateNamespaceOperationMixin:
+class _PrivateNamespaceOperationMixin:  # pylint: disable=too-few-public-methods
 
     @property
     def url(self):
