@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a ClusterAssociation
+    """Delete a Cluster Association resource that is a child of an Agent Fabric. The parent Fabric name is required.
 
     :example: ClusterAssociations_Delete
         az agentfabric cluster-association delete --resource-group rgnetworksecurity --fabric-name testAIFabric --cluster-association-name testClusterAssociation
@@ -48,7 +48,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="The name of the AgentFabric",
+            help="The name of the parent Agent Fabric.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -57,7 +57,7 @@ class Delete(AAZCommand):
         )
         _args_schema.cluster_association_name = AAZStrArg(
             options=["-n", "--name", "--cluster-association-name"],
-            help="The name of the ClusterAssociation",
+            help="The name of the Cluster Association.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(

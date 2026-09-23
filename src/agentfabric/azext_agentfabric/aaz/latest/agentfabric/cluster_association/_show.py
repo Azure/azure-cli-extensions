@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "agentfabric cluster-association show",
 )
 class Show(AAZCommand):
-    """Get a ClusterAssociation
+    """Show a Cluster Association resource that is a child of an Agent Fabric. The parent Fabric name is required.
 
     :example: ClusterAssociations_Get
         az agentfabric cluster-association show --resource-group rgnetworksecurity --fabric-name testAIFabric --cluster-association-name testClusterAssociation
@@ -46,7 +46,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="The name of the AgentFabric",
+            help="The name of the parent Agent Fabric.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -55,7 +55,7 @@ class Show(AAZCommand):
         )
         _args_schema.cluster_association_name = AAZStrArg(
             options=["-n", "--name", "--cluster-association-name"],
-            help="The name of the ClusterAssociation",
+            help="The name of the Cluster Association.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(

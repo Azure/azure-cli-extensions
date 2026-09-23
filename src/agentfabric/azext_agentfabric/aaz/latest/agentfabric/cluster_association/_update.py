@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "agentfabric cluster-association update",
 )
 class Update(AAZCommand):
-    """Update a ClusterAssociation
+    """Update a Cluster Association resource that is a child of an Agent Fabric. The parent Fabric name is required.
 
     :example: ClusterAssociations_CreateOrUpdate
         az agentfabric cluster-association update --resource-group rgnetworksecurity --fabric-name testAIFabric --cluster-association-name testClusterAssociation --sku Premium
@@ -49,7 +49,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="The name of the AgentFabric",
+            help="The name of the parent Agent Fabric.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -58,7 +58,7 @@ class Update(AAZCommand):
         )
         _args_schema.cluster_association_name = AAZStrArg(
             options=["-n", "--name", "--cluster-association-name"],
-            help="The name of the ClusterAssociation",
+            help="The name of the Cluster Association.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(

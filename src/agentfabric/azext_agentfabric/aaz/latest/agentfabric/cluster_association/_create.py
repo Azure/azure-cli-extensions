@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "agentfabric cluster-association create",
 )
 class Create(AAZCommand):
-    """Create a ClusterAssociation
+    """Create a Cluster Association resource as a child of an Agent Fabric. The parent Fabric name is required.
 
     :example: ClusterAssociations_CreateOrUpdate
         az agentfabric cluster-association create --resource-group rgnetworksecurity --fabric-name testAIFabric --cluster-association-name testClusterAssociation --if-none-match * --cluster-resource-id /subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/rgaks/providers/Microsoft.ContainerService/managedClusters/testCluster --sku Standard
@@ -52,7 +52,7 @@ class Create(AAZCommand):
         )
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="The name of the AgentFabric",
+            help="The name of the parent Agent Fabric.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
@@ -60,7 +60,7 @@ class Create(AAZCommand):
         )
         _args_schema.cluster_association_name = AAZStrArg(
             options=["-n", "--name", "--cluster-association-name"],
-            help="The name of the ClusterAssociation",
+            help="The name of the Cluster Association.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
