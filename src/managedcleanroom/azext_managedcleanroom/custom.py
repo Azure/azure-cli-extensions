@@ -10,5 +10,36 @@
 
 from knack.log import get_logger
 
+from .aaz.latest.managedcleanroom.collaboration import Create as _CollaborationCreate
+from .aaz.latest.managedcleanroom.collaboration import Update as _CollaborationUpdate
+from .aaz.latest.managedcleanroom.private_endpoint_util import PrivateEndpointUtil
+
 
 logger = get_logger(__name__)
+
+
+class _PrivateNamespaceOperationMixin:
+
+    @property
+    def url(self):
+        return self.client.format_url(
+            f"/subscriptions/{{subscriptionId}}/resourceGroups/{{resourceGroupName}}/providers/"
+            f"{PrivateEndpointUtil.get_configured_namespace()}/collaborations/{{collaborationName}}",
+            **self.url_parameters
+        )
+
+
+class CollaborationCreate(_CollaborationCreate):
+
+    class CollaborationsCreate(
+            _PrivateNamespaceOperationMixin,
+            _CollaborationCreate.CollaborationsCreate):
+        pass
+
+
+class CollaborationUpdate(_CollaborationUpdate):
+
+    class CollaborationsUpdate(
+            _PrivateNamespaceOperationMixin,
+            _CollaborationUpdate.CollaborationsUpdate):
+        pass
