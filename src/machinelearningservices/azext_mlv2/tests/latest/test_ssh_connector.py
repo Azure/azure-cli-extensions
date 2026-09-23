@@ -8,10 +8,12 @@
 # regenerated.
 # --------------------------------------------------------------------------
 import io
+import sys
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
-from azext_mlv2.manual.custom._ssh_connector import run_az_cli
+with patch.dict(sys.modules, {"websockets": MagicMock()}):
+    from azext_mlv2.manual.custom._ssh_connector import run_az_cli
 
 
 def test_run_az_cli_redirects_output_and_preserves_result():
@@ -22,16 +24,31 @@ def test_run_az_cli_redirects_output_and_preserves_result():
             self.result = SimpleNamespace(result={"accessToken": "fake-token"})
 
         def invoke(self, args, out_file=None):
-            assert args == ["account", "get-access-token", "--scope", "https://management.core.windows.net/.default"]
+            assert args == [
+                "account",
+                "get-access-token",
+                "--scope",
+                "https://management.core.windows.net/.default",
+            ]
             assert out_file is not None
             out_file.write('{"accessToken":"fake-token"}')
-            self.result = SimpleNamespace(result={"accessToken": "fake-token"})
+            self.result = SimpleNamespace(
+                result={"accessToken": "fake-token"}
+            )
 
     fake_cli = FakeCli()
 
-    with patch("azext_mlv2.manual.custom._ssh_connector.get_default_cli", return_value=fake_cli):
+    with patch(
+        "azext_mlv2.manual.custom._ssh_connector.get_default_cli",
+        return_value=fake_cli,
+    ):
         with patch("sys.stdout", captured_stdout):
-            result = run_az_cli(["account", "get-access-token", "--scope", "https://management.core.windows.net/.default"])
+            result = run_az_cli([
+                "account",
+                "get-access-token",
+                "--scope",
+                "https://management.core.windows.net/.default",
+            ])
 
     assert result["accessToken"] == "fake-token"
     assert captured_stdout.getvalue() == ""
