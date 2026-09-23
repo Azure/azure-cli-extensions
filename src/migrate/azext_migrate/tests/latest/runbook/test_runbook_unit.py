@@ -2218,6 +2218,38 @@ class ExecutionStatusParsingTests(unittest.TestCase):
         steps = {s.id: s for ws in view.workstreams for s in ws.steps}
         self.assertTrue(steps['migration-1'].entities[0].completed)
 
+    def test_execution_view_resolves_entity_display_name(self):
+        # Root entities are keyed by full ARM id + bare name (a GUID); the
+        # step/entityExecution reference the bare name. The step pane must
+        # show the friendly displayName, not the GUID.
+        doc = {
+            "entities": [
+                {"id": "/subs/x/migrationentities/guid-1",
+                 "name": "guid-1", "displayName": "share01"}],
+            "workstreams": [{
+                "id": "ws1", "displayName": "waveapp", "status": "Completed",
+                "steps": [{
+                    "stepId": "mig-1", "displayName": "Migration",
+                    "status": "Succeeded", "entities": ["guid-1"],
+                    "entityExecutions": [
+                        {"entity": "guid-1", "status": "Succeeded"}]}]}]}
+        view = visualize_viewmodel.build_execution_view(doc, title='X')
+        self.assertEqual(
+            view.workstreams[0].steps[0].entities[0].name, 'share01')
+
+    def test_execution_view_entity_name_falls_back_to_id(self):
+        # No matching root entity -> keep the raw identifier.
+        doc = {"workstreams": [{
+            "id": "ws1", "displayName": "w", "status": "Completed",
+            "steps": [{
+                "stepId": "m-1", "displayName": "M", "status": "Succeeded",
+                "entities": ["guid-x"],
+                "entityExecutions": [
+                    {"entity": "guid-x", "status": "Succeeded"}]}]}]}
+        view = visualize_viewmodel.build_execution_view(doc, title='X')
+        self.assertEqual(
+            view.workstreams[0].steps[0].entities[0].name, 'guid-x')
+
     def test_execution_view_captures_attempt_and_step_times(self):
         view = visualize_viewmodel.build_execution_view(
             _STATUS_DETAIL_DOC, title='X')
@@ -2602,7 +2634,6 @@ class VisualizeRendererTests(unittest.TestCase):
         positions, _, _, _ = visualize_renderer._layout(graph)
         html_text = visualize_renderer.render(graph)
         node_w = visualize_renderer._NODE_W
-        node_h = visualize_renderer._NODE_H
         ax, ay = positions["a"]
         bx, by = positions["b"]
         cx, _cy = positions["c"]
@@ -3129,6 +3160,22 @@ class VisualizeGridTests(unittest.TestCase):
         self.assertNotIn('class="col-apps">Application Tier', html_text)
         self.assertIn("Application Tier", html_text)
         self.assertIn("DB Tier", html_text)
+
+    def test_definition_view_resolves_entity_display_name(self):
+        # Steps reference entities by bare name (a GUID); the step pane must
+        # resolve the root entity displayName keyed off that name.
+        document = {
+            "entities": [
+                {"id": "/subs/x/migrationentities/guid-1",
+                 "name": "guid-1", "displayName": "share01"}],
+            "workstreams": [{
+                "id": "w1", "displayName": "Unmapped", "steps": [{
+                    "stepId": "s1", "displayName": "Validate",
+                    "entities": ["guid-1"]}]}]}
+        view = visualize_viewmodel.build_definition_view(
+            document, title="Def")
+        self.assertEqual(
+            view.workstreams[0].steps[0].entity_names, ['share01'])
 
     def test_definition_renders_brand_bar_and_cli_help(self):
         document = {

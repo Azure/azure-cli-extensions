@@ -163,14 +163,30 @@ def _step_name_map(root):
 
 
 def _entity_name_map(root):
-    """Map every entity id to its display name (for step detail panes)."""
+    """Map every entity identifier to its display name (for step panes).
+
+    Steps and entityExecutions reference an entity by its bare ``name`` (a
+    GUID), while the root ``entities`` records are keyed by the full ARM
+    ``id``; index both so either reference resolves to the ``displayName``.
+    """
     names = {}
     for entity in root.get('entities') or []:
-        if isinstance(entity, dict):
-            entity_id = entity.get('id') or entity.get('name')
-            if entity_id:
-                names[entity_id] = entity.get('displayName') or entity_id
+        if not isinstance(entity, dict):
+            continue
+        display = entity.get('displayName')
+        if not display:
+            continue
+        for key in (entity.get('name'), entity.get('id')):
+            if key:
+                names[key] = display
     return names
+
+
+def _entity_exec_name(entity_exec, entity_map):
+    """Resolve an entityExecution's display name, falling back to its id."""
+    eid = (entity_exec.get('entity') or entity_exec.get('entityId')
+           or entity_exec.get('name'))
+    return entity_map.get(eid, eid)
 
 
 def _entity_group_map(root):
@@ -367,6 +383,7 @@ def build_execution_view(document, title):
     """Build the grid view model for a runbook execution status document."""
     root = _unwrap(document)
     dep_labels = dep_utils.build_dep_labels(root)
+    entity_map = _entity_name_map(root)
     group_map = _entity_group_map(root)
     workstreams = []
     status_counts = {}
@@ -381,8 +398,7 @@ def build_execution_view(document, title):
                             if isinstance(e, dict)]
             entities = [
                 EntityProgress(
-                    e.get('entity') or e.get('displayName')
-                    or e.get('entityId') or e.get('name'),
+                    _entity_exec_name(e, entity_map),
                     _entity_status(e),
                     status_reason=e.get('statusReason'),
                     error=_error_text(e),
