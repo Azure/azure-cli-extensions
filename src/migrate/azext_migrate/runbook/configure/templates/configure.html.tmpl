@@ -869,8 +869,18 @@ function renderGroup(title, sub, sid, kind, fields, rules, data) {
   </section>`;
 }
 function renderForm() {
-  const sid = current, rules = rulesFor(sid), data = DOC.stepInputs[sid];
   const host = document.getElementById('form');
+  // A runbook with no configurable steps yields no selection; show the empty
+  // state instead of dereferencing an undefined step id.
+  if (current == null) {
+    host.innerHTML = `<h2 class="step-h">No inputs to configure</h2>
+      <p class="step-sub">This runbook has no steps that require configuration.</p>`;
+    const pane = document.getElementById('ovPane');
+    if (pane) pane.innerHTML = '<h2 class="aside-h" id="asideH">Workload level overrides</h2>';
+    sync();
+    return;
+  }
+  const sid = current, rules = rulesFor(sid), data = DOC.stepInputs[sid];
   const es = entitiesFor(sid), all = stepFields(sid);
   let html = `<h2 class="step-h">${esc(stepLabel(sid))}</h2>
     <p class="step-sub">Step id <code>${esc(sid)}</code> &middot; ${
