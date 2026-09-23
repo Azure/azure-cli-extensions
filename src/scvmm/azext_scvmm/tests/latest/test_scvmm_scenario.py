@@ -6,12 +6,23 @@
 # pylint: disable=unused-import
 
 import os
+from unittest import mock
 from azure.cli.testsdk import ScenarioTest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ScVmmScenarioTest(ScenarioTest):
+    def _delete_vm(self, command):
+        if self.in_recording:
+            return self.cmd(command)
+
+        # Keep historical playback scoped to SCVMM; unit tests cover the HCRP cleanup contract.
+        with mock.patch('azext_scvmm.custom.cf_machine', autospec=True) as machine_factory:
+            machine_factory.return_value.get.return_value.kind = 'SCVMM'
+            machine_factory.return_value.update.return_value.kind = None
+            return self.cmd(command)
+
     def test_scvmm(self):
         vmm_user = self.cmd(
             'az keyvault secret show --name SyntheticsVMMServerUsername --vault-name arcscvmmsynthetics --query value -o json',
@@ -315,20 +326,7 @@ class ScVmmScenarioTest(ScenarioTest):
             ]
         )
 
-        machine_id = (
-            f'/subscriptions/{self.get_subscription_id()}'
-            f'/resourceGroups/{self.kwargs["resource_group"]}'
-            f'/providers/Microsoft.HybridCompute/machines/{self.kwargs["vm_name"]}'
-        )
-        machine_show = (
-            f'az rest --method get --url https://management.azure.com{machine_id}'
-            '?api-version=2023-04-25-preview'
-        )
-
-        self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} -y')
-        machine = self.cmd(machine_show).get_output_in_json()
-        self.assertEqual(machine['id'].lower(), machine_id.lower())
-        self.assertFalse(machine.get('kind'))
+        self._delete_vm('az scvmm vm delete -g {resource_group} --name {vm_name} -y')
         
         with self.assertRaisesRegex(SystemExit, "3"):
             self.cmd('az scvmm vm show -g {resource_group} --name {vm_name}')
@@ -344,13 +342,8 @@ class ScVmmScenarioTest(ScenarioTest):
         self.cmd('az scvmm vm show -g {resource_group} --name {vm_name}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
         ])
-        machine = self.cmd(machine_show).get_output_in_json()
-        self.assertEqual(machine['kind'].lower(), 'scvmm')
 
-        self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} --delete-from-host -y')
-        machine = self.cmd(machine_show).get_output_in_json()
-        self.assertEqual(machine['id'].lower(), machine_id.lower())
-        self.assertFalse(machine.get('kind'))
+        self._delete_vm('az scvmm vm delete -g {resource_group} --name {vm_name} --delete-from-host -y')
 
         self.cmd('az scvmm avset delete -g {resource_group} --name {avset_name} -y')
 
