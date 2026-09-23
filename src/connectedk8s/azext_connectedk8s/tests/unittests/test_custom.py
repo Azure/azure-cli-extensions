@@ -72,6 +72,22 @@ def test_telemetry_catch_all_uses_keyword_cmd(monkeypatch):
     assert report_error.call_args.args[0] is cmd
 
 
+def test_telemetry_catch_all_does_not_report_classified_error_twice(monkeypatch):
+    expected = custom.AzCLIError("[AZK8S0400] ConnectedClusterCreateFailed")
+    report_error = MagicMock()
+    monkeypatch.setattr(custom.utils, "report_connectedk8s_error", report_error)
+
+    @_telemetry_catch_all
+    def command():
+        raise expected
+
+    with pytest.raises(custom.AzCLIError) as raised:
+        command()
+
+    assert raised.value is expected
+    report_error.assert_not_called()
+
+
 def _cmd_without_arm_id():
     return SimpleNamespace(cli_ctx=SimpleNamespace(data={}))
 

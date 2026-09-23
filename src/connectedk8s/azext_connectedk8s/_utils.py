@@ -537,10 +537,7 @@ def set_connected_cluster_arm_id_telemetry_context(
 def add_connectedk8s_telemetry_event(
     cmd: CLICommand | None, properties: dict[str, Any]
 ) -> None:
-    event_properties = {
-        key: _sanitize_telemetry_text(value) if isinstance(value, str) else value
-        for key, value in properties.items()
-    }
+    event_properties = properties.copy()
     if cmd is not None:
         arm_id = cmd.cli_ctx.data.get(
             consts.Connected_Cluster_Arm_Id_Telemetry_Context_Key
@@ -549,22 +546,9 @@ def add_connectedk8s_telemetry_event(
             event_properties[consts.Connected_Cluster_Arm_Id_Telemetry_Property] = (
                 arm_id
             )
-    telemetry.add_extension_event("connectedk8s", event_properties)
-
-
-def _sanitize_telemetry_text(value: str) -> str:
-    # Azure CLI telemetry replaces apostrophes with quotes before parsing JSON.
-    return value.replace("'", "")
-
-
-def _sanitize_exception_for_telemetry(exception: BaseException) -> BaseException:
-    sanitized_message = _sanitize_telemetry_text(str(exception))
-    if sanitized_message == str(exception):
-        return exception
-
-    telemetry_exception_type = type(exception.__class__.__name__, (Exception,), {})
-    telemetry_exception: BaseException = telemetry_exception_type(sanitized_message)
-    return telemetry_exception
+    telemetry.add_extension_event(
+        "connectedk8s", sanitize_telemetry_payload(event_properties)
+    )
 
 
 def report_connectedk8s_warning(
@@ -605,7 +589,7 @@ def report_connectedk8s_diagnostic(
 ) -> str:
     """Report one standardized diagnostic to telemetry without raising it."""
     message = error.format(**context)
-    telemetry_message = _sanitize_telemetry_text(message)
+    telemetry_message = sanitize_telemetry_text(message)
     properties = (telemetry_properties or {}).copy()
     properties.update(
         {
@@ -625,12 +609,9 @@ def report_connectedk8s_diagnostic(
 
     if user_fault:
         telemetry.set_user_fault()
+    telemetry_exception = sanitize_telemetry_exception(exception, telemetry_message)
     telemetry.set_exception(
-        exception=(
-            _sanitize_exception_for_telemetry(exception)
-            if exception is not None
-            else Exception(telemetry_message)
-        ),
+        exception=telemetry_exception,
         fault_type=fault_type or error.fault_type,
         summary=telemetry_message,
     )
@@ -1848,8 +1829,54 @@ def send_request_with_retries(
 
 
 def arm_exception_handler(
-    ex: Exception, fault_type: str, summary: str, return_if_not_found: bool = False
+    ex: Exception,
+    fault_type: str,
+    summary: str,
+    return_if_not_found: bool = False,
+    *,
+    cmd: Any | None = None,
+    error: errors.ArcError | None = None,
 ) -> None:
+    status_code = None
+    if isinstance(ex, HttpOperationError):
+        status_code = ex.response.status_code
+    elif isinstance(ex, HttpResponseError):
+        status_code = ex.status_code
+    arm_error_code = _get_arm_error_code(ex)
+
+    if return_if_not_found and (
+        status_code == 404 or isinstance(ex, ResourceNotFoundError)
+    ):
+        return
+
+    if error is not None:
+        reported_error = error
+        if (
+            status_code == 404
+            and error
+            in (
+                errors.CONNECTED_CLUSTER_UPDATE_FAILED,
+                errors.CONNECTED_CLUSTER_DELETE_FAILED,
+            )
+            and arm_error_code in ("connectedclusternotfound", "resourcenotfound")
+        ):
+            reported_error = errors.RESOURCE_NOT_FOUND
+        elif (
+            status_code == 409
+            and error is errors.CONNECTED_CLUSTER_CREATE_FAILED
+            and arm_error_code
+            in ("connectedclusteralreadyexists", "resourcealreadyexists")
+        ):
+            reported_error = errors.RESOURCE_ALREADY_EXISTS
+
+        raise report_connectedk8s_error(
+            cmd,
+            reported_error,
+            exception=ex,
+            user_fault=status_code in (400, 401, 403, 404, 409, 412, 422),
+            details=str(ex),
+        ) from ex
+
     if isinstance(ex, AuthenticationError):
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
         raise AzureResponseError(
@@ -1868,8 +1895,6 @@ def arm_exception_handler(
 
     if isinstance(ex, HttpOperationError):
         status_code = ex.response.status_code
-        if status_code == 404 and return_if_not_found:
-            return
         if status_code // 100 == 4:
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
@@ -1895,8 +1920,6 @@ def arm_exception_handler(
 
     if isinstance(ex, HttpResponseError):
         status_code = ex.status_code
-        if status_code == 404 and return_if_not_found:
-            return
         if status_code and status_code // 100 == 4:
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
@@ -1912,13 +1935,39 @@ def arm_exception_handler(
             + f"\nSummary: {summary}"
         )
 
-    if isinstance(ex, ResourceNotFoundError) and return_if_not_found:
-        return
-
     telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
     raise ClientRequestError(
         "Error occured while making ARM request: " + str(ex) + f"\nSummary: {summary}"
     )
+
+
+def _get_arm_error_code(ex: Exception) -> str | None:
+    for value in (getattr(ex, "error", None), getattr(ex, "model", None)):
+        code = _get_error_code_from_value(value)
+        if code:
+            return code.lower()
+
+    response = getattr(ex, "response", None)
+    if response is None:
+        return None
+    try:
+        payload = response.json()
+    except (AttributeError, TypeError, ValueError):
+        return None
+    code = _get_error_code_from_value(payload)
+    return code.lower() if code else None
+
+
+def _get_error_code_from_value(value: Any) -> str | None:
+    if isinstance(value, dict):
+        nested_error = value.get("error")
+        if isinstance(nested_error, dict):
+            value = nested_error
+        code = value.get("code")
+    else:
+        nested_error = getattr(value, "error", None)
+        code = getattr(nested_error, "code", None) or getattr(value, "code", None)
+    return code if isinstance(code, str) and code else None
 
 
 def kubernetes_exception_handler(
@@ -2543,16 +2592,7 @@ def helm_install_release(
 
 
 def process_helm_error_detail(helm_error_detail: str) -> str:
-    helm_error_detail = remove_rsa_private_key(helm_error_detail)
-    helm_error_detail = scrub_proxy_url(helm_error_detail)
-    helm_error_detail = redact_base64_strings(helm_error_detail)
-    helm_error_detail = redact_sensitive_fields_from_string(helm_error_detail)
-    # Remove apostrophes/single quotes to prevent CLI telemetry client parse failures.
-    # The telemetry client's _parse_in_json does data.replace("'", '"') which corrupts
-    # JSON payloads containing apostrophes (e.g. "Couldn't" becomes invalid JSON).
-    helm_error_detail = helm_error_detail.replace("'", "")
-
-    return helm_error_detail
+    return sanitize_telemetry_text(helm_error_detail)
 
 
 def remove_rsa_private_key(input_text: str) -> str:
@@ -2580,19 +2620,67 @@ def redact_base64_strings(content: str) -> str:
 
 
 def redact_sensitive_fields_from_string(input_text: str) -> str:
-    # Define regex patterns for keys
-    patterns = {
-        r"(username:\s*).*": r"\1[REDACTED]",
-        r"(password:\s*).*": r"\1[REDACTED]",
-        r"(token:\s*).*": r"\1[REDACTED]",
-    }
+    pattern = re.compile(
+        r"(?<![A-Za-z0-9_])"
+        r"(?P<prefix>[\"']?(?:username|password|token)[\"']?"
+        r"(?![A-Za-z0-9_])\s*[:=]\s*)"
+        r"(?P<value>\"[^\"]*\"|'[^']*'|[^\r\n,}]+)",
+        re.IGNORECASE,
+    )
 
-    # Apply regex to redact sensitive fields
-    for pattern, replacement in patterns.items():
-        input_text = re.sub(pattern, replacement, input_text)
+    def redact_value(match: re.Match[str]) -> str:
+        value = match.group("value").strip()
+        if len(value) >= 2 and value[0] in "\"'" and value[-1] == value[0]:
+            redacted_value = f"{value[0]}[REDACTED]{value[0]}"
+        else:
+            redacted_value = "[REDACTED]"
+        return f"{match.group('prefix')}{redacted_value}"
 
-    # Return the redacted text
-    return input_text
+    return pattern.sub(redact_value, input_text)
+
+
+def sanitize_telemetry_text(value: str) -> str:
+    value = remove_rsa_private_key(value)
+    value = scrub_proxy_url(value)
+    value = redact_base64_strings(value)
+    value = redact_sensitive_fields_from_string(value)
+    # Azure CLI telemetry replaces apostrophes with double quotes while parsing JSON.
+    return value.replace("'", "")
+
+
+def sanitize_telemetry_exception(
+    exception: BaseException | None, fallback_message: str
+) -> BaseException:
+    if exception is None:
+        return Exception(sanitize_telemetry_text(fallback_message))
+
+    sanitized_message = sanitize_telemetry_text(str(exception))
+    if sanitized_message == str(exception):
+        return exception
+
+    exception_type = type(exception)
+    sanitized_type = type(exception_type.__name__, (Exception,), {})
+    sanitized_exception: BaseException = sanitized_type(sanitized_message)
+    return sanitized_exception
+
+
+def sanitize_telemetry_payload(value: Any) -> Any:
+    if isinstance(value, str):
+        return sanitize_telemetry_text(value)
+    if isinstance(value, dict):
+        return {
+            key: (
+                item
+                if key == consts.Connected_Cluster_Arm_Id_Telemetry_Property
+                else sanitize_telemetry_payload(item)
+            )
+            for key, item in value.items()
+        }
+    if isinstance(value, list):
+        return [sanitize_telemetry_payload(item) for item in value]
+    if isinstance(value, tuple):
+        return tuple(sanitize_telemetry_payload(item) for item in value)
+    return value
 
 
 def get_helm_major_version(helm_client_location: str) -> int:
@@ -2771,30 +2859,29 @@ def is_guid(guid: str) -> bool:
 
 
 def check_provider_registrations(
-    cli_ctx: AzCli,
+    cmd: CLICommand,
     subscription_id: str,
     is_gateway_enabled: bool,
     is_workload_identity_enabled: bool,
 ) -> None:
     print(f"Step: {get_utctimestring()}: Checking Provider Registrations")
     try:
-        rp_client = resource_providers_client(cli_ctx, subscription_id)
+        rp_client = resource_providers_client(cmd.cli_ctx, subscription_id)
         cc_registration_state = rp_client.get(
             consts.Connected_Cluster_Provider_Namespace
         ).registration_state
         if cc_registration_state not in consts.allowed_rp_registration_states:
-            telemetry.set_exception(
-                exception=Exception(
-                    f"{consts.Connected_Cluster_Provider_Namespace} provider is not registered"
-                ),
-                fault_type=consts.CC_Provider_Namespace_Not_Registered_Fault_Type,
-                summary=f"{consts.Connected_Cluster_Provider_Namespace} provider is not registered",
-            )
             err_msg = (
                 f"{consts.Connected_Cluster_Provider_Namespace} provider is not registered. Please register it using 'az provider register -n 'Microsoft."
                 "Kubernetes' before running the connect command."
             )
-            raise ValidationError(err_msg)
+            raise report_connectedk8s_error(
+                cmd,
+                errors.CONNECTED_CLUSTER_PROVIDER_NOT_REGISTERED,
+                exception=Exception(err_msg),
+                user_fault=True,
+                details=err_msg,
+            )
         kc_registration_state = rp_client.get(
             consts.Kubernetes_Configuration_Provider_Namespace
         ).registration_state
