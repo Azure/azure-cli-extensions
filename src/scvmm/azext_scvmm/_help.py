@@ -613,15 +613,7 @@ helps[
 ] = """
     type: command
     short-summary: Delete VM resource
-    long-summary: |-
-        After VM instance deletion, clears the top-level SCVMM kind on the retained Microsoft.HybridCompute/machines resource. Other kinds are unchanged. No kind cleanup is needed with --delete-machine.
-        With --no-wait, a newly started deletion skips kind cleanup. After deletion completes, rerun this command without --no-wait to clear the retained machine's kind.
-        Clearing machine kind requires service-side support and permission to read and update the retained machine. A cleanup failure does not undo VM instance deletion; resolve the cleanup error and rerun this command.
     examples:
-      - name: Finish retained machine kind cleanup after an asynchronous VM instance deletion has completed
-        text: |-
-                az scvmm vm delete --subscription contoso-sub --resource-group contoso-rg --name contoso-vm
-
       - name: Delete a VM by ARM ID from both azure and VMM
         text: |-
                 az scvmm vm delete --ids \
