@@ -71,7 +71,7 @@ class Create(AAZCommand):
             help="Gets or sets the resource location for the collaboration.",
         )
         _args_schema.target_resource_configuration = AAZObjectArg(
-            options=["--target-resource-configuration"],
+            options=["--target-resource-configuration", "--target-config"],
             arg_group="Properties",
             help="Create-time configuration for the Azure resources that host the collaboration.",
         )
