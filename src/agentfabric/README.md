@@ -1,10 +1,9 @@
 # Azure CLI Agent Fabric Extension
 
-This extension manages Azure Agent Fabric resources, their child members and
-cluster associations, and independent Policy Group peer resources. It uses the
+This extension manages Azure Agent Fabric resources, AKS cluster enrollment,
+child members, and independent Policy Group peer resources. It uses the
 `Microsoft.NetworkSecurity` resource provider API version
-`2026-07-21-preview`, with Cluster Associations using
-`2026-09-10-preview`.
+`2026-07-21-preview`, with AKS enrollment using `2026-09-10-preview`.
 
 ## Resource hierarchy
 
@@ -12,7 +11,7 @@ cluster associations, and independent Policy Group peer resources. It uses the
 Microsoft.NetworkSecurity
 ├── agentFabrics/{fabricName} (independent top-level resource)
 │   ├── members/{memberName} (child of an Agent Fabric)
-│   └── clusterAssociations/{clusterAssociationName} (child of an Agent Fabric)
+│   └── clusterAssociations/{clusterName} (AKS enrollment implementation resource)
 └── policyGroups/{policyGroupName} (independent top-level peer resource)
 ```
 
@@ -60,29 +59,31 @@ az agentfabric member show \
   --member-name myMember
 ```
 
-## Cluster Associations
+## AKS enrollment
 
-Cluster Associations enroll AKS managed clusters with an Agent Fabric. The
-cluster must be in the same subscription as the Agent Fabric, but it can be in
-a different resource group. The cluster resource ID is immutable; delete and
-recreate the association to enroll a different cluster.
+Create the Agent Fabric separately, then use `az agentfabric aks` to attach
+AKS managed clusters. The cluster must be in the same subscription as the
+Agent Fabric, but it can be in a different resource group. The AKS cluster name
+is used as the underlying Cluster Association child resource name, while the
+cluster resource ID is immutable.
 
 ```bash
-az agentfabric cluster-association create \
+az agentfabric aks attach \
   --resource-group myResourceGroup \
   --fabric-name myFabric \
-  --name myClusterAssociation \
+  --cluster-name myCluster \
   --cluster-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myAksResourceGroup/providers/Microsoft.ContainerService/managedClusters/myCluster \
-  --sku Standard \
-  --if-none-match '*'
+  --sku Standard
 
-az agentfabric cluster-association show \
+az agentfabric aks show \
   --resource-group myResourceGroup \
   --fabric-name myFabric \
-  --name myClusterAssociation
+  --cluster-name myCluster
 ```
 
-Supported SKUs are `Standard` and `Premium`.
+Supported SKUs are `Standard` and `Premium`. Run `aks attach` once per AKS
+cluster to enroll multiple clusters in the same Agent Fabric. Use `aks update`
+to change an enrollment SKU and `aks detach` to remove an enrollment.
 
 ## Policy Groups
 
@@ -104,6 +105,6 @@ az agentfabric policy-group show \
 
 Policy Group ARM IDs end with `/policyGroups/{name}`.
 
-Long-running create, update, and delete operations support `--no-wait`. Use
-the corresponding `wait` command to wait for provisioning to reach a target
-state.
+Long-running create, attach, update, detach, and delete operations support
+`--no-wait`. Use the corresponding `wait` command to wait for provisioning to
+reach a target state.

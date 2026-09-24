@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "agentfabric cluster-association delete",
+    "agentfabric aks detach",
     confirmation="Are you sure you want to perform this operation?",
 )
-class Delete(AAZCommand):
-    """Delete a Cluster Association resource that is a child of an Agent Fabric. The parent Fabric name is required.
+class Detach(AAZCommand):
+    """Detach an AKS cluster from an Agent Fabric. The parent Fabric name and AKS cluster name are required.
 
-    :example: ClusterAssociations_Delete
-        az agentfabric cluster-association delete --resource-group rgnetworksecurity --fabric-name testAIFabric --cluster-association-name testClusterAssociation
+    :example: Detach an AKS cluster
+        az agentfabric aks detach --resource-group rgnetworksecurity --fabric-name testAIFabric --cluster-name testCluster
     """
 
     _aaz_info = {
@@ -55,9 +55,9 @@ class Delete(AAZCommand):
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
-        _args_schema.cluster_association_name = AAZStrArg(
-            options=["-n", "--name", "--cluster-association-name"],
-            help="The name of the Cluster Association.",
+        _args_schema.cluster_name = AAZStrArg(
+            options=["--cluster-name"],
+            help="The name of the AKS cluster. This value is used as the Cluster Association ARM child resource name.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -141,7 +141,7 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "clusterAssociationName", self.ctx.args.cluster_association_name,
+                    "clusterAssociationName", self.ctx.args.cluster_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -172,8 +172,8 @@ class Delete(AAZCommand):
             pass
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
+class _DetachHelper:
+    """Helper class for Detach"""
 
 
-__all__ = ["Delete"]
+__all__ = ["Detach"]

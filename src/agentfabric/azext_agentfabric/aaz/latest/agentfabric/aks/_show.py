@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "agentfabric cluster-association create",
+    "agentfabric aks show",
 )
-class Create(AAZCommand):
-    """Create a Cluster Association resource as a child of an Agent Fabric. The parent Fabric name is required.
+class Show(AAZCommand):
+    """Show an AKS cluster enrollment for an Agent Fabric. The parent Fabric name and AKS cluster name are required.
 
-    :example: ClusterAssociations_CreateOrUpdate
-        az agentfabric cluster-association create --resource-group rgnetworksecurity --fabric-name testAIFabric --cluster-association-name testClusterAssociation --if-none-match * --cluster-resource-id /subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/rgaks/providers/Microsoft.ContainerService/managedClusters/testCluster --sku Standard
+    :example: Show an AKS cluster enrollment
+        az agentfabric aks show --resource-group rgnetworksecurity --fabric-name testAIFabric --cluster-name testCluster
     """
 
     _aaz_info = {
@@ -28,11 +28,10 @@ class Create(AAZCommand):
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -45,23 +44,20 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.if_none_match = AAZStrArg(
-            options=["--if-none-match"],
-            help="Set to \"*\" when creating an association to require that the resource does not already exist. The service returns 412 Precondition Failed when the condition is not met.",
-            enum={"*": "*"},
-        )
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
             help="The name of the parent Agent Fabric.",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
-        _args_schema.cluster_association_name = AAZStrArg(
-            options=["-n", "--name", "--cluster-association-name"],
-            help="The name of the Cluster Association.",
+        _args_schema.cluster_name = AAZStrArg(
+            options=["--cluster-name"],
+            help="The name of the AKS cluster. This value is used as the Cluster Association ARM child resource name.",
             required=True,
+            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
@@ -69,27 +65,11 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.cluster_resource_id = AAZResourceIdArg(
-            options=["--cluster-resource-id"],
-            arg_group="Properties",
-            help="The AKS managed cluster to enroll. The cluster must be in the same subscription as the AgentFabric; a different resource group is allowed. Set at creation and immutable thereafter; to enroll a different cluster, delete and recreate the association.",
-            required=True,
-        )
-        _args_schema.sku = AAZStrArg(
-            options=["--sku"],
-            arg_group="Properties",
-            help="Determines which AgentFabric components are deployed to the cluster. Defaults to Standard when omitted at creation and remains unchanged when omitted during an update.",
-            enum={"Premium": "Premium", "Standard": "Standard"},
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ClusterAssociationsCreateOrUpdate(ctx=self.ctx)()
+        self.ClusterAssociationsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -104,30 +84,14 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ClusterAssociationsCreateOrUpdate(AAZHttpOperation):
+    class ClusterAssociationsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
@@ -140,7 +104,7 @@ class Create(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "GET"
 
         @property
         def error_format(self):
@@ -154,7 +118,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "clusterAssociationName", self.ctx.args.cluster_association_name,
+                    "clusterAssociationName", self.ctx.args.cluster_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -182,67 +146,45 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "If-None-Match", self.ctx.args.if_none_match,
-                ),
-                **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
 
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("properties", AAZObjectType)
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("clusterResourceId", AAZStrType, ".cluster_resource_id", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("sku", AAZStrType, ".sku")
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
+            cls._schema_on_200 = AAZObjectType()
 
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType()
-            _schema_on_200_201.system_data = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200_201.type = AAZStrType(
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200_201.properties
+            properties = cls._schema_on_200.properties
             properties.cluster_resource_id = AAZStrType(
                 serialized_name="clusterResourceId",
                 flags={"required": True},
@@ -256,7 +198,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
-            status = cls._schema_on_200_201.properties.status
+            status = cls._schema_on_200.properties.status
             status.code = AAZStrType(
                 flags={"read_only": True},
             )
@@ -264,7 +206,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200_201.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -284,11 +226,11 @@ class Create(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            return cls._schema_on_200_201
+            return cls._schema_on_200
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["Create"]
+__all__ = ["Show"]

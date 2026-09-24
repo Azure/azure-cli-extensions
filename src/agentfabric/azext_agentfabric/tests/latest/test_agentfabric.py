@@ -45,29 +45,29 @@ COMMANDS = (
         "Delete",
     ),
     (
-        "agentfabric cluster-association create",
-        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._create",
-        "Create",
+        "agentfabric aks attach",
+        "azext_agentfabric.aaz.latest.agentfabric.aks._attach",
+        "Attach",
     ),
     (
-        "agentfabric cluster-association show",
-        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._show",
+        "agentfabric aks show",
+        "azext_agentfabric.aaz.latest.agentfabric.aks._show",
         "Show",
     ),
     (
-        "agentfabric cluster-association list",
-        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._list",
+        "agentfabric aks list",
+        "azext_agentfabric.aaz.latest.agentfabric.aks._list",
         "List",
     ),
     (
-        "agentfabric cluster-association update",
-        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._update",
+        "agentfabric aks update",
+        "azext_agentfabric.aaz.latest.agentfabric.aks._update",
         "Update",
     ),
     (
-        "agentfabric cluster-association delete",
-        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._delete",
-        "Delete",
+        "agentfabric aks detach",
+        "azext_agentfabric.aaz.latest.agentfabric.aks._detach",
+        "Detach",
     ),
     (
         "agentfabric policy-group create",
@@ -99,7 +99,7 @@ COMMANDS = (
 HELP_ONLY_COMMANDS = (
     "agentfabric wait",
     "agentfabric member wait",
-    "agentfabric cluster-association wait",
+    "agentfabric aks wait",
     "agentfabric policy-group wait",
 )
 
@@ -153,15 +153,15 @@ REQUEST_SHAPES = (
         "2026-07-21-preview",
     ),
     (
-        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._create",
-        "Create",
+        "azext_agentfabric.aaz.latest.agentfabric.aks._attach",
+        "Attach",
         "ClusterAssociationsCreateOrUpdate",
         "PUT",
         "/agentFabrics/{agentFabricName}/clusterAssociations/{clusterAssociationName}",
         "2026-09-10-preview",
     ),
     (
-        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._show",
+        "azext_agentfabric.aaz.latest.agentfabric.aks._show",
         "Show",
         "ClusterAssociationsGet",
         "GET",
@@ -169,7 +169,7 @@ REQUEST_SHAPES = (
         "2026-09-10-preview",
     ),
     (
-        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._list",
+        "azext_agentfabric.aaz.latest.agentfabric.aks._list",
         "List",
         "ClusterAssociationsListByParent",
         "GET",
@@ -177,7 +177,7 @@ REQUEST_SHAPES = (
         "2026-09-10-preview",
     ),
     (
-        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._update",
+        "azext_agentfabric.aaz.latest.agentfabric.aks._update",
         "Update",
         "ClusterAssociationsCreateOrUpdate",
         "PUT",
@@ -185,8 +185,8 @@ REQUEST_SHAPES = (
         "2026-09-10-preview",
     ),
     (
-        "azext_agentfabric.aaz.latest.agentfabric.cluster_association._delete",
-        "Delete",
+        "azext_agentfabric.aaz.latest.agentfabric.aks._detach",
+        "Detach",
         "ClusterAssociationsDelete",
         "DELETE",
         "/agentFabrics/{agentFabricName}/clusterAssociations/{clusterAssociationName}",
@@ -234,7 +234,7 @@ class AgentfabricScenario(ScenarioTest):
         commands = (
             "agentfabric",
             "agentfabric member",
-            "agentfabric cluster-association",
+            "agentfabric aks",
             "agentfabric policy-group",
             *(command for command, _, _ in COMMANDS),
             *HELP_ONLY_COMMANDS,
@@ -291,20 +291,22 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
             )
             self.assertTrue(operation.url.endswith(url_suffix), operation.url)
 
-    def test_cluster_association_contract(self):
-        create_module = importlib.import_module(
-            "azext_agentfabric.aaz.latest.agentfabric.cluster_association._create"
+    def test_aks_enrollment_contract(self):
+        attach_module = importlib.import_module(
+            "azext_agentfabric.aaz.latest.agentfabric.aks._attach"
         )
-        create_schema = create_module.Create._build_arguments_schema()
-        self.assertTrue(create_schema.cluster_resource_id._required)
+        attach_schema = attach_module.Attach._build_arguments_schema()
+        self.assertTrue(attach_schema.cluster_resource_id._required)
+        self.assertTrue(attach_schema.cluster_name._required)
+        self.assertEqual(attach_schema.cluster_name._options, ["--cluster-name"])
         self.assertEqual(
-            create_schema.sku.enum.items,
+            attach_schema.sku.enum.items,
             {"Premium": "Premium", "Standard": "Standard"},
         )
-        self.assertEqual(create_schema.if_none_match.enum.items, {"*": "*"})
+        self.assertFalse(hasattr(attach_schema, "if_none_match"))
 
         update_module = importlib.import_module(
-            "azext_agentfabric.aaz.latest.agentfabric.cluster_association._update"
+            "azext_agentfabric.aaz.latest.agentfabric.aks._update"
         )
         update_schema = update_module.Update._build_arguments_schema()
         self.assertFalse(hasattr(update_schema, "cluster_resource_id"))
@@ -312,7 +314,7 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
         self.assertTrue(hasattr(update_schema, "sku"))
 
         show_module = importlib.import_module(
-            "azext_agentfabric.aaz.latest.agentfabric.cluster_association._show"
+            "azext_agentfabric.aaz.latest.agentfabric.aks._show"
         )
         output_schema = (
             show_module.Show.ClusterAssociationsGet._build_schema_on_200()

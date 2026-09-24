@@ -12,17 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "agentfabric cluster-association show",
+    "agentfabric aks wait",
 )
-class Show(AAZCommand):
-    """Show a Cluster Association resource that is a child of an Agent Fabric. The parent Fabric name is required.
-
-    :example: ClusterAssociations_Get
-        az agentfabric cluster-association show --resource-group rgnetworksecurity --fabric-name testAIFabric --cluster-association-name testClusterAssociation
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2026-09-10-preview",
         "resources": [
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/clusterassociations/{}", "2026-09-10-preview"],
         ]
@@ -53,9 +49,9 @@ class Show(AAZCommand):
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
-        _args_schema.cluster_association_name = AAZStrArg(
-            options=["-n", "--name", "--cluster-association-name"],
-            help="The name of the Cluster Association.",
+        _args_schema.cluster_name = AAZStrArg(
+            options=["--cluster-name"],
+            help="The name of the AKS cluster. This value is used as the Cluster Association ARM child resource name.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -81,7 +77,7 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
     class ClusterAssociationsGet(AAZHttpOperation):
@@ -118,7 +114,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "clusterAssociationName", self.ctx.args.cluster_association_name,
+                    "clusterAssociationName", self.ctx.args.cluster_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -229,8 +225,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
-__all__ = ["Show"]
+__all__ = ["Wait"]
