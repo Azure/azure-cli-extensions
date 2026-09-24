@@ -17,7 +17,7 @@ class ScVmmScenarioTest(ScenarioTest):
         if self.in_recording:
             return self.cmd(command)
 
-        # Keep historical playback scoped to SCVMM; unit tests cover the HCRP cleanup contract.
+        # Isolate HCRP cleanup only while replaying the historical SCVMM recording.
         with mock.patch('azext_scvmm.custom.cf_machine', autospec=True) as machine_factory:
             machine_factory.return_value.get.return_value.kind = 'SCVMM'
             machine_factory.return_value.update.return_value.kind = None
