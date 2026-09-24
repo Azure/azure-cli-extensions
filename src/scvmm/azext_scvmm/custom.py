@@ -8,7 +8,6 @@ from collections import defaultdict
 from getpass import getpass
 from azure.cli.command_modules.acs._client_factory import get_resources_client
 from azure.cli.core.azclierror import (
-    AzureResponseError,
     UnrecognizedArgumentError,
     RequiredArgumentMissingError,
     MutuallyExclusiveArgumentError,
@@ -1007,13 +1006,9 @@ def delete_vm(
             machine = None
 
         if machine is not None and machine.kind and machine.kind.lower() == MACHINE_KIND_SCVMM.lower():
-            machine = machine_client.update(
+            _ = machine_client.update(
                 resource_group_name, resource_name, MachineUpdate(kind=''),
             )
-            if machine.kind:
-                raise AzureResponseError(
-                    "The machine's kind was not cleared. VM instance deletion was not started."
-                )
 
     try:
         # TODO (snaskar): Add deleteFromHost to SDK
