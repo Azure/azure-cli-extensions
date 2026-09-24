@@ -6,23 +6,12 @@
 # pylint: disable=unused-import
 
 import os
-from unittest import mock
 from azure.cli.testsdk import ScenarioTest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ScVmmScenarioTest(ScenarioTest):
-    def _delete_vm(self, command):
-        if self.in_recording:
-            return self.cmd(command)
-
-        # Isolate HCRP cleanup only while replaying the historical SCVMM recording.
-        with mock.patch('azext_scvmm.custom.cf_machine', autospec=True) as machine_factory:
-            machine_factory.return_value.get.return_value.kind = 'SCVMM'
-            machine_factory.return_value.update.return_value.kind = None
-            return self.cmd(command)
-
     def test_scvmm(self):
         vmm_user = self.cmd(
             'az keyvault secret show --name SyntheticsVMMServerUsername --vault-name arcscvmmsynthetics --query value -o json',
@@ -326,7 +315,7 @@ class ScVmmScenarioTest(ScenarioTest):
             ]
         )
 
-        self._delete_vm('az scvmm vm delete -g {resource_group} --name {vm_name} -y')
+        self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} -y')
         
         with self.assertRaisesRegex(SystemExit, "3"):
             self.cmd('az scvmm vm show -g {resource_group} --name {vm_name}')
@@ -343,7 +332,7 @@ class ScVmmScenarioTest(ScenarioTest):
             self.check('properties.provisioningState', 'Succeeded'),
         ])
 
-        self._delete_vm('az scvmm vm delete -g {resource_group} --name {vm_name} --delete-from-host -y')
+        self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} --delete-from-host -y')
 
         self.cmd('az scvmm avset delete -g {resource_group} --name {avset_name} -y')
 
