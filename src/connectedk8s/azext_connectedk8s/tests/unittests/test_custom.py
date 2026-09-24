@@ -9,7 +9,12 @@ from typing import Dict, Optional
 from unittest.mock import MagicMock, create_autospec
 
 import pytest
-from azure.cli.core.azclierror import AzCLIError, FileOperationError, ValidationError
+from azure.cli.core.azclierror import (
+    ArgumentUsageError,
+    AzCLIError,
+    FileOperationError,
+    ValidationError,
+)
 from kubernetes.client.exceptions import ApiException
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
@@ -33,6 +38,7 @@ from azext_connectedk8s.custom import (
     has_arc_proxy_skip_range_endpoints,
     remove_arc_proxy_skip_range_endpoints,
     resolve_arc_proxy_bypass,
+    validate_arc_proxy_bypass_clear,
 )
 
 
@@ -843,6 +849,17 @@ ARC_SKIP_RANGE = (
     ",.guestconfiguration.azure.com"
 )
 
+ARC_ENDPOINTS_TEXT = ", ".join(ARC_SKIP_RANGE.split(","))
+ARC_APPLIED_MESSAGE = consts.Proxy_Bypass_Arc_Applied_Message.format(
+    endpoints=ARC_ENDPOINTS_TEXT
+)
+ARC_CLEARED_MESSAGE = consts.Proxy_Bypass_Arc_Cleared_Message.format(
+    endpoints=ARC_ENDPOINTS_TEXT
+)
+ARC_PRESERVED_WARNING = consts.Proxy_Bypass_Arc_Preserved_Warning.format(
+    endpoints=ARC_ENDPOINTS_TEXT
+)
+
 
 @pytest.mark.parametrize(
     "no_proxy,expected",
@@ -895,6 +912,43 @@ def test_has_arc_endpoints(no_proxy, expected):
     assert has_arc_proxy_skip_range_endpoints(_proxy_cmd(), no_proxy) is expected
 
 
+@pytest.mark.parametrize(
+    "no_proxy,expected",
+    [
+        ("", False),
+        ("10.0.0.0/8", False),
+        (".his.arc.azure.com", False),
+        ("10.0.0.0/8,.his.arc.azure.com,.guestconfiguration.azure.com", False),
+        (ARC_SKIP_RANGE, True),
+        ("10.0.0.0/8," + ARC_SKIP_RANGE, True),
+        (ARC_SKIP_RANGE.upper(), True),
+    ],
+    ids=[
+        "empty",
+        "unrelated",
+        "one-of-them",
+        "two-of-them",
+        "all-three",
+        "keeps-entry",
+        "any-case",
+    ],
+)
+def test_has_every_arc_endpoint(no_proxy, expected):
+    # The bypass always writes every endpoint, so only the full set marks it as applied.
+    assert (
+        has_arc_proxy_skip_range_endpoints(_proxy_cmd(), no_proxy, require_all=True)
+        is expected
+    )
+
+
+def test_has_arc_endpoints_without_a_skip_range():
+    # The CLI sends an empty string when --proxy-skip-range is left out, so this only
+    # guards the helper against a caller that passes nothing at all.
+    cmd = _proxy_cmd()
+    assert has_arc_proxy_skip_range_endpoints(cmd, None) is False
+    assert has_arc_proxy_skip_range_endpoints(cmd, None, require_all=True) is False
+
+
 # ---------------- Tests for remove_arc_proxy_skip_range_endpoints ----------------
 @pytest.mark.parametrize(
     "no_proxy,expected",
@@ -917,6 +971,79 @@ def test_has_arc_endpoints(no_proxy, expected):
 )
 def test_remove_arc_endpoints(no_proxy, expected):
     assert remove_arc_proxy_skip_range_endpoints(_proxy_cmd(), no_proxy) == expected
+
+
+# ---------------- Tests for validate_arc_proxy_bypass_clear ----------------
+@pytest.mark.parametrize(
+    "no_proxy",
+    [
+        ".his.arc.azure.com",
+        ".guestconfiguration.azure.com,10.0.0.0/8",
+        ".his.arc.azure.com,.dp.kubernetesconfiguration.azure.com",
+        ARC_SKIP_RANGE,
+        "10.0.0.0/8," + ARC_SKIP_RANGE,
+        ".HIS.ARC.AZURE.COM",
+        " .his.arc.azure.com ",
+    ],
+    ids=[
+        "one-endpoint",
+        "one-endpoint-beside-a-customer-entry",
+        "two-endpoints",
+        "all-three",
+        "all-three-beside-a-customer-entry",
+        "any-case",
+        "surrounding-spaces",
+    ],
+)
+def test_validate_clear_refuses_a_skip_range_holding_arc_endpoints(no_proxy):
+    # The skip range the caller typed has to survive, so the overlap is refused however many
+    # endpoints it holds. The full set too, since it cannot be told from an applied bypass.
+    with pytest.raises(ArgumentUsageError):
+        validate_arc_proxy_bypass_clear(_proxy_cmd(), no_proxy, "Arc")
+
+
+@pytest.mark.parametrize(
+    "clear",
+    ["Arc", " aRc ", "Arc,Microsoft.AzureMonitor.Containers"],
+    ids=["exact", "any-case-and-spaces", "beside-the-extension-keyword"],
+)
+def test_validate_clear_refuses_however_the_keyword_is_written(clear):
+    with pytest.raises(ArgumentUsageError):
+        validate_arc_proxy_bypass_clear(_proxy_cmd(), ARC_SKIP_RANGE, clear)
+
+
+@pytest.mark.parametrize(
+    "no_proxy,clear",
+    [
+        ("", "Arc"),
+        (None, "Arc"),
+        ("10.0.0.0/8", "Arc"),
+        ("eastus.his.arc.azure.com", "Arc"),
+        (ARC_SKIP_RANGE, ""),
+        (ARC_SKIP_RANGE, "Microsoft.AzureMonitor.Containers"),
+    ],
+    ids=[
+        "clearing-on-its-own",
+        "no-skip-range-at-all",
+        "skip-range-without-arc-endpoints",
+        "narrower-customer-entry",
+        "nothing-cleared",
+        "only-the-extension-cleared",
+    ],
+)
+def test_validate_clear_allows_everything_else(no_proxy, clear):
+    # Only the overlap is refused, so clearing on its own keeps working.
+    assert validate_arc_proxy_bypass_clear(_proxy_cmd(), no_proxy, clear) is None
+
+
+def test_validate_clear_recommends_the_order_that_works():
+    # Setting the skip range first re-applies the bypass, so the order has to be named.
+    with pytest.raises(ArgumentUsageError) as raised:
+        validate_arc_proxy_bypass_clear(_proxy_cmd(), ARC_SKIP_RANGE, "Arc")
+    assert (
+        consts.Proxy_Bypass_Arc_Clear_Conflict_Recommendation
+        in raised.value.recommendations
+    )
 
 
 # ---------------- Tests for resolve_arc_proxy_bypass ----------------
@@ -1006,15 +1133,30 @@ def test_resolve_add_with_a_new_skip_range_does_not_read_the_cluster(monkeypatch
 
 def test_resolve_announces_the_bypass_when_it_is_applied(monkeypatch, capsys):
     _resolve(monkeypatch, add="Arc", cluster="10.0.0.0/8")
-    assert consts.Proxy_Bypass_Arc_Applied_Message in capsys.readouterr().out
+    out = capsys.readouterr().out
+    # The endpoints are named in the message, so each one has to appear as written.
+    assert ARC_APPLIED_MESSAGE in out
+    for endpoint in ARC_SKIP_RANGE.split(","):
+        assert endpoint in out
+    # The flag was dropped from this message, so it must not creep back in.
+    assert "--proxy-skip-range" not in out
 
 
 def test_resolve_leaves_the_announcement_to_connect(monkeypatch, capsys):
-    # connect announces the bypass before it reaches the resolver, so the resolver stays
-    # quiet instead of reporting the same thing twice in one command.
+    # connect announces this itself once it knows the agents are updated, so the
+    # resolver stays quiet rather than reporting the same thing twice.
     result, _ = _resolve(monkeypatch, add="Arc", cluster="10.0.0.0/8", announce=False)
     assert result == "10.0.0.0/8," + ARC_SKIP_RANGE
-    assert consts.Proxy_Bypass_Arc_Applied_Message not in capsys.readouterr().out
+    assert ARC_APPLIED_MESSAGE not in capsys.readouterr().out
+
+
+def test_resolve_clear_names_the_endpoints_it_removes(monkeypatch, capsys):
+    # Clearing reports the same endpoints the bypass named when it was applied.
+    _resolve(monkeypatch, clear="Arc", cluster="10.0.0.0/8," + ARC_SKIP_RANGE)
+    out = capsys.readouterr().out
+    assert ARC_CLEARED_MESSAGE in out
+    for endpoint in ARC_SKIP_RANGE.split(","):
+        assert endpoint in out
 
 
 def test_resolve_clear_removes_only_the_arc_endpoints(monkeypatch):
@@ -1076,6 +1218,18 @@ def test_resolve_clear_with_a_new_skip_range_that_has_nothing_to_remove(monkeypa
     warning.assert_called_once_with(consts.Proxy_Bypass_Arc_Nothing_To_Clear_Warning)
 
 
+def test_resolve_clear_keeps_an_endpoint_the_customer_listed(monkeypatch):
+    # One endpoint on its own is not the bypass this CLI applies, so the clear leaves it
+    # for the customer to remove through --proxy-skip-range.
+    warning = MagicMock()
+    monkeypatch.setattr(custom.logger, "warning", warning)
+    result, _ = _resolve(
+        monkeypatch, clear="Arc", cluster="10.0.0.0/8,.his.arc.azure.com"
+    )
+    assert result is None
+    warning.assert_called_once_with(consts.Proxy_Bypass_Arc_Nothing_To_Clear_Warning)
+
+
 def test_resolve_reapplies_the_bypass_when_the_skip_range_changes(monkeypatch):
     # --proxy-skip-range replaces the whole skip range, so a cluster that has the bypass
     # keeps it instead of silently losing the endpoints.
@@ -1097,9 +1251,26 @@ def test_resolve_reports_the_carry_over_even_when_it_stays_quiet(monkeypatch):
         announce=False,
     )
     assert result == "192.168.0.0/16," + ARC_SKIP_RANGE
-    warning.assert_called_once_with(consts.Proxy_Bypass_Arc_Preserved_Warning)
+    # The warning names the endpoints it kept, rather than describing them.
+    warning.assert_called_once_with(ARC_PRESERVED_WARNING)
+    for endpoint in ARC_SKIP_RANGE.split(","):
+        assert endpoint in ARC_PRESERVED_WARNING
 
 
 def test_resolve_skip_range_change_without_the_bypass_stays_untouched(monkeypatch):
     result, _ = _resolve(monkeypatch, no_proxy="192.168.0.0/16", cluster="10.0.0.0/8")
     assert result is None
+
+
+def test_resolve_skip_range_change_keeps_an_endpoint_the_customer_listed(monkeypatch):
+    # One endpoint on its own is not the bypass this CLI applies, so the skip range is
+    # stored as it was typed rather than widened into the full set.
+    warning = MagicMock()
+    monkeypatch.setattr(custom.logger, "warning", warning)
+    result, _ = _resolve(
+        monkeypatch,
+        no_proxy="192.168.0.0/16,.his.arc.azure.com",
+        cluster="10.0.0.0/8,.his.arc.azure.com",
+    )
+    assert result is None
+    assert warning.called is False
