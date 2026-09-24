@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "agentfabric cluster-association",
+    "agentfabric aks",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Cluster Association resources that are children of an Agent Fabric. The parent Fabric name is required.
+    """Manage AKS cluster enrollment with an Agent Fabric. Commands use the AKS cluster name as the association child name and require the parent Fabric name.
     """
     pass
 

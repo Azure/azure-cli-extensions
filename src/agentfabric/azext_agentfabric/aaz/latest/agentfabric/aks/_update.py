@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "agentfabric cluster-association update",
+    "agentfabric aks update",
 )
 class Update(AAZCommand):
-    """Update a Cluster Association resource that is a child of an Agent Fabric. The parent Fabric name is required.
+    """Update the SKU for an AKS cluster enrollment. The parent Fabric name and AKS cluster name are required.
 
-    :example: ClusterAssociations_CreateOrUpdate
-        az agentfabric cluster-association update --resource-group rgnetworksecurity --fabric-name testAIFabric --cluster-association-name testClusterAssociation --sku Premium
+    :example: Update an AKS cluster enrollment SKU
+        az agentfabric aks update --resource-group rgnetworksecurity --fabric-name testAIFabric --cluster-name testCluster --sku Premium
     """
 
     _aaz_info = {
@@ -56,9 +56,9 @@ class Update(AAZCommand):
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
-        _args_schema.cluster_association_name = AAZStrArg(
-            options=["-n", "--name", "--cluster-association-name"],
-            help="The name of the Cluster Association.",
+        _args_schema.cluster_name = AAZStrArg(
+            options=["--cluster-name"],
+            help="The name of the AKS cluster. This value is used as the Cluster Association ARM child resource name.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -145,7 +145,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "clusterAssociationName", self.ctx.args.cluster_association_name,
+                    "clusterAssociationName", self.ctx.args.cluster_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -248,7 +248,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "clusterAssociationName", self.ctx.args.cluster_association_name,
+                    "clusterAssociationName", self.ctx.args.cluster_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

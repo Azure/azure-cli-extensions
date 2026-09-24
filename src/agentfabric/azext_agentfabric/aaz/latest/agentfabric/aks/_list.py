@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "agentfabric cluster-association list",
+    "agentfabric aks list",
 )
 class List(AAZCommand):
-    """List Cluster Association resources that are children of an Agent Fabric. The parent Fabric name is required.
+    """List AKS cluster enrollments for an Agent Fabric. The parent Fabric name is required.
 
-    :example: ClusterAssociations_ListByParent
-        az agentfabric cluster-association list --resource-group rgnetworksecurity --fabric-name testAIFabric
+    :example: List AKS cluster enrollments
+        az agentfabric aks list --resource-group rgnetworksecurity --fabric-name testAIFabric
     """
 
     _aaz_info = {

@@ -12,22 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "agentfabric cluster-association wait",
+    "agentfabric aks attach",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class Attach(AAZCommand):
+    """Attach an AKS cluster to an Agent Fabric. The parent Fabric name and AKS cluster name are required.
+
+    :example: Attach an AKS cluster
+        az agentfabric aks attach --resource-group rgnetworksecurity --fabric-name testAIFabric --cluster-name testCluster --cluster-resource-id /subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/rgaks/providers/Microsoft.ContainerService/managedClusters/testCluster --sku Standard
     """
 
     _aaz_info = {
+        "version": "2026-09-10-preview",
         "resources": [
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/clusterassociations/{}", "2026-09-10-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -49,9 +54,9 @@ class Wait(AAZWaitCommand):
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
-        _args_schema.cluster_association_name = AAZStrArg(
-            options=["-n", "--name", "--cluster-association-name"],
-            help="The name of the Cluster Association.",
+        _args_schema.cluster_name = AAZStrArg(
+            options=["--cluster-name"],
+            help="The name of the AKS cluster. This value is used as the Cluster Association ARM child resource name.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -61,11 +66,27 @@ class Wait(AAZWaitCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.cluster_resource_id = AAZResourceIdArg(
+            options=["--cluster-resource-id"],
+            arg_group="Properties",
+            help="The AKS managed cluster to enroll. The cluster must be in the same subscription as the AgentFabric; a different resource group is allowed. Set at creation and immutable thereafter; to enroll a different cluster, delete and recreate the association.",
+            required=True,
+        )
+        _args_schema.sku = AAZStrArg(
+            options=["--sku"],
+            arg_group="Properties",
+            help="Determines which AgentFabric components are deployed to the cluster. Defaults to Standard when omitted at creation and remains unchanged when omitted during an update.",
+            enum={"Premium": "Premium", "Standard": "Standard"},
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ClusterAssociationsGet(ctx=self.ctx)()
+        yield self.ClusterAssociationsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,17 +98,33 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ClusterAssociationsGet(AAZHttpOperation):
+    class ClusterAssociationsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
@@ -100,7 +137,7 @@ class Wait(AAZWaitCommand):
 
         @property
         def method(self):
-            return "GET"
+            return "PUT"
 
         @property
         def error_format(self):
@@ -114,7 +151,7 @@ class Wait(AAZWaitCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "clusterAssociationName", self.ctx.args.cluster_association_name,
+                    "clusterAssociationName", self.ctx.args.cluster_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -142,45 +179,64 @@ class Wait(AAZWaitCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
 
-        def on_200(self, session):
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType)
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("clusterResourceId", AAZStrType, ".cluster_resource_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("sku", AAZStrType, ".sku")
+
+            return self.serialize_content(_content_value)
+
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_200 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_200 = AAZObjectType()
+            cls._schema_on_200_201 = AAZObjectType()
 
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
+            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200_201.properties
             properties.cluster_resource_id = AAZStrType(
                 serialized_name="clusterResourceId",
                 flags={"required": True},
@@ -194,7 +250,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
 
-            status = cls._schema_on_200.properties.status
+            status = cls._schema_on_200_201.properties.status
             status.code = AAZStrType(
                 flags={"read_only": True},
             )
@@ -202,7 +258,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -222,11 +278,11 @@ class Wait(AAZWaitCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            return cls._schema_on_200
+            return cls._schema_on_200_201
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _AttachHelper:
+    """Helper class for Attach"""
 
 
-__all__ = ["Wait"]
+__all__ = ["Attach"]
