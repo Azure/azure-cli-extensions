@@ -27,18 +27,22 @@ STEP_TYPE_VALUES = [
 STEP_ACTION_APPROVE = "Approve"
 STEP_ACTION_COMPLETE = "Complete"
 
-# ``DownloadMode`` for the Artifact Service GenerateDownloadUrl request:
-# a single file or a whole directory (subtree) of the artifact.
-ARTIFACT_DOWNLOAD_MODE_FILE = "file"
-ARTIFACT_DOWNLOAD_MODE_DIRECTORY = "directory"
+# GenerateDownloadUrl ``mode`` (verified 2026-08-23): Directory returns the
+# whole artifact as a ZIP (body ``{"mode": "Directory"}``); File returns a
+# single blob by path (body ``{"mode": "File", "path": ...}``).
+ARTIFACT_DOWNLOAD_MODE_FILE = "File"
+ARTIFACT_DOWNLOAD_MODE_DIRECTORY = "Directory"
 
-# Runbook definition artifact fetch strategy. The service currently returns
-# individual blobs (file mode, raw JSON). Set this True once the service
-# packages the whole artifact as a downloadable ZIP so the CLI switches to
-# directory mode without touching call sites.
-RUNBOOK_ARTIFACT_DOWNLOAD_AS_ZIP = True
-RUNBOOK_DEFINITION_FILE = "runbook.json"
-RUNBOOK_INPUT_FILE = "input.json"
+# Blob paths within an artifact, used for File-mode download/upload.
+RUNBOOK_INPUT_FILE = "inputs.json"
+# The service renamed the user-parameters artifact member inputs.json ->
+# parameters.json (2026-09). Downloads are content-classified (name-agnostic,
+# see shared/files.py); File-mode UPLOAD is name-sensitive and the service now
+# accepts ONLY parameters.json (both runbook and execution inputs), so uploads
+# always target RUNBOOK_PARAMETERS_FILE regardless of the local file name.
+RUNBOOK_PARAMETERS_FILE = "parameters.json"
+RUNBOOK_STATUS_FILE = "executionStatus.json"
+
 
 # ``stepRef`` value the AddStep body binds per step type. These correlate
 # the CLI step with the partner runbook step used for execution.
@@ -47,12 +51,27 @@ STEP_REF_BY_TYPE = {
     STEP_TYPE_APPROVAL: "common.approval",
 }
 
+# Step refs that never take inputs (Manual/Approval gates); their
+# configuration status is "NA" regardless of the parameters document.
+INPUTLESS_STEP_REFS = frozenset(STEP_REF_BY_TYPE.values())
+
 # A step dependency in the AddStep/UpdateStep write model (service
-# ``RunbookStepDependency``) is ``{"mode": <string>, "stepId": <step-id>}``.
-# ``mode`` is the ``RunbookStepDependencyMode`` enum (string values). The
-# CLI ``--depends-on`` takes step ids only and maps each to a Step gate.
-STEP_DEPENDENCY_MODE_STEP = "Step"
-STEP_DEPENDENCY_MODE_MIGRATION_ENTITY = "MigrationEntity"
+# ``RunbookStepDependency``) is ``{"waitFor": <string>, "stepId": <step-id>}``.
+# ``waitFor`` is the polymorphic discriminator (first key); its full enum is
+# ``Step``/``Entity``/``MappedEntities`` (the latter two carry an
+# ``entityPairs`` ``[{"dependentEntity", "waitsFor"}]`` list and are invalid
+# for Manual steps). The CLI authors all three via --depends-on-whole-step
+# (Step), --depends-on-per-entity (Entity), and --depends-on-mapped-entities
+# (MappedEntities).
+# NOTE (F-verify 2026-08-28): the WRITE enum (``Step``/``Entity``/
+# ``MappedEntities``) is deliberately distinct from the READ projections the
+# service emits — spec.json uses ``wholeStep``/``sameEntity``/``mappedEntities``
+# and executionStatus.json uses ``step``/``entity``/``mappedEntities``. Read
+# code maps those forms (see visualize/viewmodel ``_WAIT_FOR_LABELS``); do NOT
+# "align" this write value to a read form.
+STEP_WAITFOR_STEP = "Step"
+STEP_WAITFOR_ENTITY = "Entity"
+STEP_WAITFOR_MAPPED = "MappedEntities"
 
 
 class RunbookStatus(str, Enum):

@@ -40,5 +40,6 @@ setup(
     package_data={'azext_migrate': [
         'azext_metadata.json',
         'runbook/visualize/templates/*.tmpl',
+        'runbook/configure/templates/*.tmpl',
     ]}
 )
