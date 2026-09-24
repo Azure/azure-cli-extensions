@@ -50,12 +50,17 @@ class TunnelServer:
         self.bastion_endpoint = bastion_endpoint
         self.client = None
         self.ws = None
+        # last_token / node_id remain as "most recently minted" for debug; cleanup uses
+        # _session_tokens so concurrent accepts do not lose earlier Bastion sessions.
+        # See https://github.com/Azure/azure-cli-extensions/issues/10137
         self.last_token = None
         self.node_id = None
         self.host_name = None
         self.cli_ctx = cli_ctx
         self.active_connections = 0
         self.connection_lock = Lock()
+        # session authToken -> nodeId for every outstanding Bastion tunnel session
+        self._session_tokens = {}
         logger.info('Creating a socket on port: %s', self.local_port)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         logger.info('Setting socket options')
@@ -78,22 +83,27 @@ class TunnelServer:
             return is_port_open
 
     def _get_auth_token(self):
+        """Mint a Bastion tunnel token for one local TCP connection.
+
+        Returns (websocket_token, session_token, node_id). Each concurrent accept
+        gets its own session token; tokens are tracked in _session_tokens and
+        deleted when that connection ends (or in cleanup()).
+        """
         profile = Profile(cli_ctx=self.cli_ctx)
         # Generate an Azure token with the VSTS resource app id
         auth_token, _, _ = profile.get_raw_token()
+        # Do not pass a shared last_token under concurrency — that raced and left
+        # earlier sessions orphaned (issue 10137). Each accept mints independently.
         content = {
             'resourceId': self.remote_host,
             'protocol': 'tcptunnel',
             'workloadHostPort': self.remote_port,
             'aztoken': auth_token[1],
-            'token': self.last_token,
+            'token': None,
         }
         if self.host_name:
             content['hostname'] = self.host_name
-        if self.node_id:
-            custom_header = {'X-Node-Id': self.node_id}
-        else:
-            custom_header = {}
+        custom_header = {}
 
         logger.debug("Content: %s", str(content))
         web_address = f"https://{self.bastion_endpoint}/api/tokens"
@@ -109,9 +119,14 @@ class TunnelServer:
                 raise HttpResponseError(response=response, message=response_json["message"])
             raise HttpResponseError(response=response)
 
-        self.last_token = response_json["authToken"]
-        self.node_id = response_json["nodeId"]
-        return response_json["websocketToken"]
+        session_token = response_json["authToken"]
+        node_id = response_json["nodeId"]
+        websocket_token = response_json["websocketToken"]
+        with self.connection_lock:
+            self._session_tokens[session_token] = node_id
+            self.last_token = session_token
+            self.node_id = node_id
+        return websocket_token, session_token, node_id
 
     def _listen(self):
         self.sock.setblocking(True)
@@ -127,13 +142,15 @@ class TunnelServer:
             index += 1
 
     def _handle_client(self, client, index):
+        session_token = None
+        node_id = None
         try:
-            auth_token = self._get_auth_token()
+            websocket_token, session_token, node_id = self._get_auth_token()
             if self.bastion['sku']['name'] == BastionSku.QuickConnect.name or \
                self.bastion['sku']['name'] == BastionSku.Developer.name:
-                host = f"wss://{self.bastion_endpoint}/omni/webtunnel/{auth_token}"
+                host = f"wss://{self.bastion_endpoint}/omni/webtunnel/{websocket_token}"
             else:
-                host = f"wss://{self.bastion_endpoint}/webtunnelv2/{auth_token}?X-Node-Id={self.node_id}"
+                host = f"wss://{self.bastion_endpoint}/webtunnelv2/{websocket_token}?X-Node-Id={node_id}"
 
             verify_mode = ssl.CERT_NONE if should_disable_connection_verify() else ssl.CERT_REQUIRED
             ws = create_connection(host,
@@ -153,10 +170,16 @@ class TunnelServer:
         except Exception as ex:  # pylint: disable=broad-except
             logger.info('Exception in handling client: %s', ex)
         finally:
+            # Delete this connection's Bastion session immediately (not only the
+            # last token when active_connections hits 0).
+            self._delete_session_token(session_token, node_id)
+            should_cleanup_remaining = False
             with self.connection_lock:
                 self.active_connections -= 1
                 if self.active_connections == 0:
-                    self.cleanup()
+                    should_cleanup_remaining = True
+            if should_cleanup_remaining:
+                self.cleanup()
             logger.info('Both debugger and websocket threads stopped...')
             logger.info('Stopped local server..')
 
@@ -207,27 +230,52 @@ class TunnelServer:
     def start_server(self):
         self._listen()
 
+    def _delete_session_token(self, session_token, node_id):
+        """DELETE one Bastion session token. Safe to call with None / already-deleted."""
+        if not session_token:
+            return
+        with self.connection_lock:
+            tracked_node = self._session_tokens.pop(session_token, None)
+            if tracked_node is not None:
+                node_id = tracked_node
+            if self.last_token == session_token:
+                self.last_token = None
+                self.node_id = None
+        try:
+            self._delete_session_token_request(session_token, node_id)
+        except Exception as ex:  # pylint: disable=broad-except
+            # Per-connection cleanup must not abort other connections' teardown.
+            logger.warning('Failed to delete Bastion session token: %s', ex)
+
+    def _delete_session_token_request(self, session_token, node_id):
+        logger.info('Cleaning up Bastion session')
+        if node_id:
+            custom_header = {'X-Node-Id': node_id}
+        else:
+            custom_header = {}
+        web_address = f"https://{self.bastion_endpoint}/api/tokens/{session_token}"
+        response = requests.delete(web_address, headers=custom_header,
+                                   verify=not should_disable_connection_verify())
+        if response.status_code == 404:
+            logger.info('Session already deleted')
+        elif response.status_code not in [200, 204]:
+            raise HttpResponseError(response=response)
+
     def cleanup(self):
-        if self.last_token:
-            logger.info('Cleaning up session')
-
-            if self.node_id:
-                custom_header = {'X-Node-Id': self.node_id}
-            else:
-                custom_header = {}
-
-            web_address = f"https://{self.bastion_endpoint}/api/tokens/{self.last_token}"
-            response = requests.delete(web_address, headers=custom_header,
-                                       verify=not should_disable_connection_verify())
-            if response.status_code == 404:
-                logger.info('Session already deleted')
-            elif response.status_code not in [200, 204]:
-                raise HttpResponseError(response=response)
-
+        """Delete any remaining Bastion session tokens (process exit / last client)."""
+        with self.connection_lock:
+            pending = list(self._session_tokens.items())
+            self._session_tokens.clear()
             self.last_token = None
             self.node_id = None
-        else:
+        if not pending:
             logger.debug('Nothing to clean up.')
+            return
+        for session_token, node_id in pending:
+            try:
+                self._delete_session_token_request(session_token, node_id)
+            except Exception as ex:  # pylint: disable=broad-except
+                logger.warning('Failed to delete Bastion session token during cleanup: %s', ex)
 
     def get_port(self):
         return self.local_port
