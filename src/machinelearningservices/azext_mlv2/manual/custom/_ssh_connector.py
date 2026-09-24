@@ -9,15 +9,15 @@
 # --------------------------------------------------------------------------
 # pylint: disable=protected-access
 
-import asyncio
-import concurrent
-import concurrent.futures
+import asyncio  # pylint: disable=import-error
+import concurrent  # pylint: disable=import-error
+import concurrent.futures  # pylint: disable=import-error
 import io  # pylint: disable=import-error
-import os
-import os.path
-import sys
-import typing
-from typing import TYPE_CHECKING
+import os  # pylint: disable=import-error
+import os.path  # pylint: disable=import-error
+import sys  # pylint: disable=import-error
+import typing  # pylint: disable=import-error
+from typing import TYPE_CHECKING  # pylint: disable=import-error
 
 import websockets  # pylint: disable=import-error
 import websockets.client  # pylint: disable=import-error
