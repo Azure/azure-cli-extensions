@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a GoldenGateConnection
+
+    :example: Update a GoldenGate connection's display name.
+        az oracle-database golden-gate-connection update -g MyResourceGroup -n myConnection --display-name updatedConnection
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a GoldenGateDeployment
+
+    :example: Create a GoldenGate deployment.
+        az oracle-database golden-gate-deployment create -g MyResourceGroup -n myDeployment --location eastus --display-name myDeployment --resource-anchor-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Oracle.Database/resourceAnchors/myResourceAnchor --network-anchor-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Oracle.Database/networkAnchors/myNetworkAnchor --zones 1 --ogg-data deployment-name=myDeployment admin-username=admin admin-password=Password123!
     """
 
     _aaz_info = {

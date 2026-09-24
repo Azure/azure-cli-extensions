@@ -74,7 +74,7 @@ class OracleDatabaseGoldenGateScenario(ScenarioTest):
             '--name {}'.format(resource_group, deployment_name)
         )
 
-    # @live_only()
+    @live_only()
     @serial_test()
     @AllowLargeResponse(size_kb=10240)
     def test_oracledatabase_golden_gate_connection_create_show(self):

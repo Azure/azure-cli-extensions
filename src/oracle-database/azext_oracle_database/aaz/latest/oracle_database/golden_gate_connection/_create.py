@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a GoldenGateConnection
+
+    :example: Create an Oracle GoldenGate connection.
+        az oracle-database golden-gate-connection create -g MyResourceGroup -n myConnection --location eastus --display-name myConnection --resource-anchor-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Oracle.Database/resourceAnchors/myResourceAnchor --network-anchor-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Oracle.Database/networkAnchors/myNetworkAnchor --zones 1 --oracle "{technology-type:ORACLE_DATABASE,username:admin}"
     """
 
     _aaz_info = {

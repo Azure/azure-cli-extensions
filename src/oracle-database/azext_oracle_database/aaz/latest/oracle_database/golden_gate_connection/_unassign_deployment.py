@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class UnassignDeployment(AAZCommand):
     """Unassign a GoldenGate deployment from a connection.
+
+    :example: Unassign a deployment from a GoldenGate connection.
+        az oracle-database golden-gate-connection unassign-deployment -g MyResourceGroup --golden-gate-connection-name myConnection --deployment-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Oracle.Database/goldenGateDeployments/myDeployment
     """
 
     _aaz_info = {

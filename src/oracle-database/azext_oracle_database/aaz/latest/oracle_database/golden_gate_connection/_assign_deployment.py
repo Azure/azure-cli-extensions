@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class AssignDeployment(AAZCommand):
     """Assign a GoldenGate deployment to a connection.
+
+    :example: Assign a deployment to a GoldenGate connection.
+        az oracle-database golden-gate-connection assign-deployment -g MyResourceGroup --golden-gate-connection-name myConnection --deployment-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Oracle.Database/goldenGateDeployments/myDeployment
     """
 
     _aaz_info = {

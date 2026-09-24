@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a GoldenGateDeployment
+
+    :example: Update a GoldenGate deployment's display name.
+        az oracle-database golden-gate-deployment update -g MyResourceGroup -n myDeployment --display-name updatedDeployment
     """
 
     _aaz_info = {
