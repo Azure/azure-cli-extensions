@@ -18,7 +18,7 @@ from azure.cli.core.aaz import *
 class Acknowledge(AAZCommand):
     """Acknowledge a single ScheduledEvents Id.
 
-    Approves the event on ScheduledEvents resource before timeout when it is safe to procced. Supported resource types are VirtualMachines, VirtualMachineScaleSets, AvailabilitySets.
+    Approves the event on ScheduledEvents resource before timeout when it is safe to proceed. Supported resource types are VirtualMachines, VirtualMachineScaleSets, AvailabilitySets.
 
     :example: Acknowledge a single Scheduled Events on a VirtualMachines
         az maintenance scheduledevents acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachines" --resource-name {VMname} --scheduled-events-id {scheduledEventsId} --subscription {subscriptionId}
