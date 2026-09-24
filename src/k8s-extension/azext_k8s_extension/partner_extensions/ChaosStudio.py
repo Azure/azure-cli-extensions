@@ -19,6 +19,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request, sdk_no_wait
 from knack.log import get_logger
 from knack.util import CLIError
+from packaging.version import InvalidVersion, Version
 from ..vendored_sdks.models import Extension, PatchExtension, Scope, ScopeCluster
 from .._client_factory import cf_k8s_extension_types
 from .DefaultExtension import DefaultExtension
@@ -104,7 +105,6 @@ class ChaosStudio(DefaultExtension):
     DEFAULT_CLUSTER_TYPE = "managedclusters"
     DEFAULT_RELEASE_NAMESPACE = "chaos-infrastructure"
     DEFAULT_RELEASE_TRAIN = "dev"
-    DEFAULT_VERSION = "0.1.6"
     WORKSPACE_ID_KEY = "chaos-workspace-id"
     EXISTING_ROLE_KEY = "chaos-existing-role-definition-id"
 
@@ -191,7 +191,12 @@ class ChaosStudio(DefaultExtension):
         )
         if not workspace_id:
             raise InvalidArgumentValueError("'chaos-workspace-id' is required.")
-        self._validate_version(version or self.DEFAULT_VERSION)
+        release_train = release_train or self.DEFAULT_RELEASE_TRAIN
+        if not version:
+            # auto-upgrade is forced off, so the extension RP needs an explicit version.
+            version = self._latest_registered_version(
+                cmd, resource_group_name, cluster_rp, cluster_type, cluster_name, release_train
+            )
         release_namespace = self._resolve_release_namespace(
             release_namespace
         )
@@ -207,23 +212,33 @@ class ChaosStudio(DefaultExtension):
             extension_type=extension_type,
             auto_upgrade_minor_version=False,
             auto_upgrade_mode=None,
-            release_train=release_train or self.DEFAULT_RELEASE_TRAIN,
-            version=version or self.DEFAULT_VERSION,
+            release_train=release_train,
+            version=version,
             scope=extension_scope,
             configuration_settings=configuration_settings,
             configuration_protected_settings=configuration_protected_settings,
         )
         return extension, name, False
 
-    @classmethod
-    def _validate_version(cls, version):
-        # Only the coordinated bootstrap contract is known compatible. Availability
-        # remains an extension-RP registration check, not a version-number inference.
-        if version != cls.DEFAULT_VERSION:
+    @staticmethod
+    def _latest_registered_version(cmd, resource_group_name, cluster_rp, cluster_type, cluster_name, release_train):
+        versions = cf_k8s_extension_types(cmd.cli_ctx).cluster_list_versions(
+            resource_group_name, cluster_rp, cluster_type, cluster_name,
+            "Microsoft.ChaosStudio", release_train=release_train,
+        )
+        candidates = []
+        for item in versions or []:
+            value = getattr(getattr(item, "properties", None), "version", None)
+            try:
+                candidates.append((Version(value), value))
+            except (InvalidVersion, TypeError):
+                continue
+        if not candidates:
             raise InvalidArgumentValueError(
-                "Microsoft.ChaosStudio staged installation requires chart {}. "
-                "It must be published and registered before installation.".format(cls.DEFAULT_VERSION)
+                "No Microsoft.ChaosStudio version is registered for this cluster on release train '{}'. "
+                "Pass --version once one is available.".format(release_train)
             )
+        return max(candidates)[1]
 
     @classmethod
     def _reject_managed_overrides(cls, *settings):
@@ -264,7 +279,6 @@ class ChaosStudio(DefaultExtension):
                 "The existing extension is not a staged platform-identity installation. "
                 "Automatic migration of older manual identities is not supported."
             )
-        cls._validate_version(extension.version)
         return value
 
     def Install(self, cmd, client, resource_group_name, cluster_rp, cluster_type,
@@ -451,7 +465,6 @@ class ChaosStudio(DefaultExtension):
             configuration_protected_settings or {}
         )
         self._reject_managed_overrides(supplied_settings, configuration_protected_settings)
-        self._validate_version(version or original_extension.version)
         if self._stage(original_extension) != "true":
             raise InvalidArgumentValueError("Resume bootstrap with create before updating settings.")
         self._require_success(original_extension)
@@ -504,11 +517,7 @@ class ChaosStudio(DefaultExtension):
                 or getattr(original_extension, "release_train", None)
                 or self.DEFAULT_RELEASE_TRAIN
             ),
-            version=(
-                version
-                or getattr(original_extension, "version", None)
-                or self.DEFAULT_VERSION
-            ),
+            version=version or getattr(original_extension, "version", None),
             configuration_settings=configuration_settings,
             configuration_protected_settings=configuration_protected_settings,
         )
