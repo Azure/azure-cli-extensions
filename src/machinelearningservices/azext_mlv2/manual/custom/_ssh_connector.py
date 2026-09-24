@@ -19,9 +19,9 @@ import sys  # pylint: disable=unused-import
 import typing  # pylint: disable=unused-import
 from typing import TYPE_CHECKING  # pylint: disable=unused-import
 
-import websockets  # pylint: disable=import-error
-import websockets.client  # pylint: disable=import-error
-import websockets.exceptions  # pylint: disable=import-error
+import websockets  # pylint: disable=unused-import
+import websockets.client  # pylint: disable=unused-import
+import websockets.exceptions  # pylint: disable=unused-import
 
 from azure.cli.core import get_default_cli
 
