@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ model.jobName }}
+spec:
+  template:
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      imagePullSecrets:
+      - name: {{ model.imagePullSecret }}
+      containers:
+      - name: bootstrapper
+        image: {{ model.bootstrapper }}
+        imagePullPolicy: {{ model.imagePullPolicy }}
+        command: ["/opt/bootstrapper/bin/bootstrapper"]
+        args: ["-image", "{{ model.bootstrapper }}", "-policy", "{{ model.imagePullPolicy }}", "-chart", "/opt/helm/arcdataservices", "-{{ model.jobOperation }}"]
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      restartPolicy: Never
+      serviceAccountName: {{ model.serviceAccountName }}
+  ttlSecondsAfterFinished: 86400
+  backoffLimit: 0
