@@ -1,0 +1,66 @@
+interactions:
+- request:
+    body: '{"properties": {"enrollmentDetails": {"poNumber": "PO123456"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing account update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '63'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --billing-account-name --enrollment-details
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: PATCH
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/6575495?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Billing/billingAccounts/6575495","name":"6575495","properties":{"accountStatus":"Extended","accountType":"Enterprise","accountSubType":"Other","agreementType":"EnterpriseAgreement","displayName":"BVT
+        Invoice Testing Customer1 (DO NOT USE)","enrollmentDetails":{"startDate":"6/1/2020
+        12:00:00 AM +00:00","endDate":"5/31/2023 12:00:00 AM +00:00","currency":"USD","channel":"EaDirect","language":"en","countryCode":"US
+        ","billingCycle":"Monthly","extendedTermOption":"Opted-In","supportLevel":"Standard","supportCoverage":"04/01/2024
+        - 06/30/2027","cloud":"Azure Commercial","poNumber":"PO123456","invoiceRecipient":"ace@testea.onmicrosoft.com"},"hasReadAccess":false,"soldTo":{"companyName":"BVT
+        Invoice Testing Customer1 (DO NOT USE)","country":"US ","isValidAddress":true}},"type":"Microsoft.Billing/billingAccounts"}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview,
+        2022-10-01-privatepreview, 2024-04-01, 2024-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '845'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 18 Nov 2024 03:39:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '800'
+      x-ms-service-version:
+      - 10.6.2873.826
+      x-msedge-ref:
+      - 'Ref A: DF682F67363D4AF9B1A2EC794F199096 Ref B: MAA201060514047 Ref C: 2024-11-18T03:39:12Z'
+    status:
+      code: 200
+      message: OK
+version: 1
