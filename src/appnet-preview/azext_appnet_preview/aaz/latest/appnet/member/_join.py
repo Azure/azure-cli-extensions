@@ -25,7 +25,7 @@ class Join(AAZCommand):
         az appnet member join --resource-group test_rg --appnet-name appnet-test-01 --member-name member-01 --cluster-type AKS --member-resource-id /subscriptions/bc7e0da9-5e4c-4a91-9252-9658837006cf/resourcegroups/test-rg/providers/Microsoft.ContainerService/managedClusters/test-member1 --upgrade-mode SelfManaged --version 1.4 --member-location westus2
 
     :example: Join an AKS cluster using a named network
-        az appnet member join --resource-group test_rg --appnet-name appnet-test-01 --member-name member-01 --cluster-type AKS --member-resource-id /subscriptions/bc7e0da9-5e4c-4a91-9252-9658837006cf/resourcegroups/test-rg/providers/Microsoft.ContainerService/managedClusters/test-member1 --network-name shared-network-1 --member-location westus2
+        az appnet member join --resource-group test_rg --appnet-name appnet-test-01 --member-name member-01 --cluster-type AKS --member-resource-id /subscriptions/bc7e0da9-5e4c-4a91-9252-9658837006cf/resourcegroups/test-rg/providers/Microsoft.ContainerService/managedClusters/test-member1 --upgrade-mode SelfManaged --version 1.4 --network-name shared-network --member-location westus2
     """
 
     _aaz_info = {
