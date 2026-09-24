@@ -648,7 +648,7 @@ def _fetch_compatible_windows_os_urn(source_vm, source_vm_instance_view):
     logger.debug('Fetched Urns:\n%s', urns)
     # temp fix to mitigate Windows disk signature collision error
     os_image_ref = source_vm.get('storageProfile', {}).get('imageReference', {})
-    if os_image_ref and os_image_ref.get('version') in urns[0]:
+    if os_image_ref and isinstance(os_image_ref.get('version'), str) and os_image_ref.get('version') in urns[0]:
         if len(urns) < 2:
             logger.debug('Avoiding Win2022-datacenter-smalldisk latest image due to expected disk collision. But no other image available.')
             raise WindowsOsNotAvailableError()
