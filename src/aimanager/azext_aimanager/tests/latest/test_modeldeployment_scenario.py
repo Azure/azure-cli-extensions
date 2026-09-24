@@ -7,7 +7,6 @@ from unittest.mock import MagicMock, patch
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.testsdk import ScenarioTest
-from azure.core.exceptions import ResourceNotFoundError
 
 from azext_aimanager.vendored_sdks.v2026_05_02_preview import models
 
@@ -36,8 +35,8 @@ class ModelDeploymentScenarioTest(ScenarioTest):
 
         operations = MagicMock()
         operations.get.side_effect = [
-            ResourceNotFoundError(),
-            ResourceNotFoundError(),
+            # create issues an idempotent PUT without a pre-check GET; wait / show / update /
+            # delete each read the resource.
             deployment,
             deployment,
             deployment,
@@ -57,13 +56,13 @@ class ModelDeploymentScenarioTest(ScenarioTest):
                     InvalidArgumentValueError,
                     '--replicas cannot be combined with --min-replicas or --max-replicas'):
                 self.cmd(
-                    command_prefix.format('add') +
+                    command_prefix.format('create') +
                     ' -n deployment --model-resource-id {} '
                     '--vm-size Standard_NC24ads_A100_v4 '
                     '--replicas 1 --min-replicas 1'.format(model_resource_id))
 
             self.cmd(
-                command_prefix.format('add') +
+                command_prefix.format('create') +
                 ' -n deployment --model-resource-id {} '
                 '--source-id {} '
                 '--vm-size Standard_NC24ads_A100_v4 --replicas 0 '

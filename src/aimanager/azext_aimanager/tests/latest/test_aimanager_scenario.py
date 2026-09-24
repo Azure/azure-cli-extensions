@@ -57,9 +57,9 @@ class AIManagerScenarioTest(ScenarioTest):
 
         # region AI Manager namespace
 
-        # add
+        # create
         self.cmd(
-            'aimanager namespace add -g {rg} -m {ai_manager_name} -n {namespace_name} '
+            'aimanager namespace create -g {rg} -m {ai_manager_name} -n {namespace_name} '
             '--labels team=alpha --annotations owner=alice',
             checks=[
                 self.check('name', '{namespace_name}'),

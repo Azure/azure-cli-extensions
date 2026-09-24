@@ -1,53 +1,5 @@
 interactions:
 - request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aimanager create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n -l --delete-policy
-      User-Agent:
-      - AZURECLI/2.89.0 (DOCKER) azsdk-python-core/1.39.0 Python/3.12.9 (Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.38)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-aimgr-000001/providers/Microsoft.ContainerService/aiManagers/aim000002?api-version=2026-05-02-preview
-  response:
-    body:
-      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.ContainerService/aiManagers/aim000002''
-        under resource group ''cli-aimgr-000001'' was not found. For more details
-        please go to https://aka.ms/ARMResourceNotFoundFix"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '235'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 11 Aug 2026 16:04:30 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - gateway
-      x-msedge-ref:
-      - 'Ref A: E3A7C0F987764C9999FD4EC2AFC24128 Ref B: CO1AA3060816040 Ref C: 2026-08-11T16:04:30Z'
-    status:
-      code: 404
-      message: Not Found
-- request:
     body: '{"location": "eastus2", "properties": {"deletePolicy": "Keep"}}'
     headers:
       Accept:
@@ -3085,54 +3037,6 @@ interactions:
     status:
       code: 200
       message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aimanager namespace add
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -m -n --labels --annotations
-      User-Agent:
-      - AZURECLI/2.89.0 (DOCKER) azsdk-python-core/1.39.0 Python/3.12.9 (Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.38)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-aimgr-000001/providers/Microsoft.ContainerService/aiManagers/aim000002/namespaces/aimns000003?api-version=2026-05-02-preview
-  response:
-    body:
-      string: '{"error":{"code":"NotFound","message":"The entity was not found."}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '67'
-      content-type:
-      - application/json
-      date:
-      - Tue, 11 Aug 2026 16:30:48 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f9c85099-3ba6-4765-85fc-b1d5dcfd3b77/eastus2/5b7d823e-563f-4dd5-8ef6-08aaf11e24e5
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-      x-msedge-ref:
-      - 'Ref A: 7C209DE20FE54C5F9F8ADAD7617A246C Ref B: CO6AA3150217033 Ref C: 2026-08-11T16:30:48Z'
-    status:
-      code: 404
-      message: Not Found
 - request:
     body: '{"properties": {"labels": {"team": "alpha"}, "annotations": {"owner": "alice"}}}'
     headers:

@@ -38,12 +38,28 @@ class TestModelSource(unittest.TestCase):
 
         self.assertEqual(source.properties.credential.inline.value, "hf_token")
 
-    def test_add_rejects_existing_source(self):
-        self.client.get.return_value = object()
+    @patch.object(custom, "sdk_no_wait")
+    @patch.object(custom, "_construct_modelsource")
+    def test_create_is_idempotent_when_source_exists(self, construct_modelsource, sdk_no_wait):
+        # 'create' must not fail if the resource already exists: it issues an idempotent PUT
+        # and returns the resource, never pre-checking with a GET.
+        construct_modelsource.return_value = "model-source"
+        sdk_no_wait.return_value = "result"
 
-        with self.assertRaises(ClientRequestError):
-            custom.add_modelsource(
-                self.cmd, self.client, "rg", "manager", "source", "HuggingFace")
+        result = custom.create_modelsource(
+            self.cmd, self.client, "rg", "manager", "source", "HuggingFace")
+
+        self.assertEqual(result, "result")
+        self.client.get.assert_not_called()
+        sdk_no_wait.assert_called_once_with(
+            False,
+            self.client.begin_create_or_update,
+            "rg",
+            "manager",
+            "source",
+            "model-source",
+            headers={},
+        )
 
     def test_update_rejects_missing_source(self):
         self.client.get.side_effect = ResourceNotFoundError()

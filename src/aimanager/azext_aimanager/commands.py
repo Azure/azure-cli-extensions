@@ -64,7 +64,9 @@ def load_command_table(self, _):
 
     # aimanager namespace command group
     with self.command_group("aimanager namespace", ai_manager_namespaces_sdk, client_factory=cf_ai_manager_namespaces, is_preview=True) as g:
-        g.custom_command("add", "add_aimanager_namespace", supports_no_wait=True)
+        g.custom_command("create", "create_aimanager_namespace", supports_no_wait=True)
+        g.custom_command("add", "create_aimanager_namespace", supports_no_wait=True,
+                         deprecate_info=g.deprecate(redirect="aimanager namespace create", hide=True))
         g.custom_command("update", "update_aimanager_namespace", supports_no_wait=True)
         g.custom_show_command("show", "show_aimanager_namespace", table_transformer=namespace_table_format)
         g.custom_command("list", "list_aimanager_namespace", table_transformer=namespace_list_table_format)
@@ -82,7 +84,9 @@ def load_command_table(self, _):
 
     # aimanager modelsource command group
     with self.command_group("aimanager modelsource", model_sources_sdk, client_factory=cf_model_sources) as g:
-        g.custom_command("add", "add_modelsource", supports_no_wait=True)
+        g.custom_command("create", "create_modelsource", supports_no_wait=True)
+        g.custom_command("add", "create_modelsource", supports_no_wait=True,
+                         deprecate_info=g.deprecate(redirect="aimanager modelsource create", hide=True))
         g.custom_command("update", "update_modelsource", supports_no_wait=True)
         g.custom_show_command("show", "show_modelsource")
         g.custom_command("list", "list_modelsource")
@@ -92,7 +96,9 @@ def load_command_table(self, _):
     # aimanager namespace modeldeployment command group
     with self.command_group("aimanager namespace modeldeployment", model_deployments_sdk,
                             client_factory=cf_model_deployments, is_preview=True) as g:
-        g.custom_command("add", "add_modeldeployment", supports_no_wait=True)
+        g.custom_command("create", "create_modeldeployment", supports_no_wait=True)
+        g.custom_command("add", "create_modeldeployment", supports_no_wait=True,
+                         deprecate_info=g.deprecate(redirect="aimanager namespace modeldeployment create", hide=True))
         g.custom_command("update", "update_modeldeployment", supports_no_wait=True)
         g.custom_show_command("show", "show_modeldeployment", table_transformer=modeldeployment_table_format)
         g.custom_command("list", "list_modeldeployment", table_transformer=modeldeployment_list_table_format)

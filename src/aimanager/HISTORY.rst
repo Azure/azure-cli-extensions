@@ -3,6 +3,16 @@
 Release History
 ===============
 
+2.0.1b1
++++++++
+* ``az aimanager create``, ``az aimanager namespace create``, ``az aimanager modelsource
+  create`` and ``az aimanager namespace modeldeployment create``: These commands are now
+  idempotent. Re-running them for an existing resource updates it and returns the resource,
+  instead of failing with an "already exists" error.
+* ``az aimanager namespace``, ``az aimanager modelsource`` and ``az aimanager namespace
+  modeldeployment``: Rename the ``add`` command to ``create`` to follow the Azure CLI command
+  guidelines. The ``add`` command is retained as a hidden, deprecated alias.
+
 2.0.0b1
 +++++++
 * Rename ``--aks-custom-headers`` to ``--custom-headers`` across all AIManager commands.
