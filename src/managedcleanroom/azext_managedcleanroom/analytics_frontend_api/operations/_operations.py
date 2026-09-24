@@ -315,6 +315,32 @@ def build_collaboration_oidc_keys_get_request(  # pylint: disable=name-too-long
         **kwargs)
 
 
+def build_collaboration_collaborators_get_request(  # pylint: disable=name-too-long
+    collaboration_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = "/collaborations/{collaborationId}/collaborators"
+    path_format_arguments = {
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+
+
 def build_collaboration_invitations_get_request(  # pylint: disable=name-too-long
     collaboration_id: str, *, pending_only: bool = False, **kwargs: Any
 ) -> HttpRequest:
@@ -880,6 +906,34 @@ def build_collaboration_analytics_queries_document_id_runs_get_request(  # pylin
         params=_params,
         headers=_headers,
         **kwargs)
+
+
+def build_collaboration_analytics_queries_document_id_runs_run_id_cancel_post_request(  # pylint: disable=name-too-long
+    collaboration_id: str, document_id: str, run_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = "/collaborations/{collaborationId}/analytics/queries/{documentId}/runs/{runId}/cancel"
+    path_format_arguments = {
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+        "documentId": _SERIALIZER.url("document_id", document_id, "str"),
+        "runId": _SERIALIZER.url("run_id", run_id, "str"),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_analytics_datasets_document_id_queries_get_request(  # pylint: disable=name-too-long
@@ -1853,6 +1907,84 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                 {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
+
+    @distributed_trace
+    def collaborators_get(self, collaboration_id: str, **kwargs: Any) -> Optional[JSON]:
+        """List all collaborators in a collaboration.
+
+        List all collaborators in a collaboration.
+
+        :param collaboration_id: Required.
+        :type collaboration_id: str
+        :return: JSON object or None
+        :rtype: JSON or None
+        :raises ~azure.core.exceptions.HttpResponseError:
+
+        Example:
+            .. code-block:: python
+
+                # response body for status code(s): 200
+                response == {
+                    "collaborators": [
+                        {
+                            "isOwner": bool,
+                            "objectId": "str",
+                            "tenantId": "str",
+                            "userIdentifier": "str"
+                        }
+                    ]
+                }
+                # response body for status code(s): 422
+                response == {
+                    "loc": [
+                        {}
+                    ],
+                    "msg": "str",
+                    "type": "str"
+                }
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[Optional[JSON]] = kwargs.pop("cls", None)
+
+        _request = build_collaboration_collaborators_get_request(
+            collaboration_id=collaboration_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 404, 422]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response)
+
+        deserialized = None
+        if response.content:
+            deserialized = response.json()
+        else:
+            deserialized = None
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
 
     @distributed_trace
     def invitations_get(
@@ -3944,6 +4076,85 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                 Union[list[JSON], JSON], deserialized), {})  # type: ignore
 
         return cast(Union[list[JSON], JSON], deserialized)  # type: ignore
+
+    @distributed_trace
+    def analytics_queries_document_id_runs_run_id_cancel_post(  # pylint: disable=name-too-long
+        self, collaboration_id: str, document_id: str, run_id: str, **kwargs: Any
+    ) -> JSON:
+        """Cancel query run by run id.
+
+        Cancel query run by run id.
+
+        :param collaboration_id: Required.
+        :type collaboration_id: str
+        :param document_id: Required.
+        :type document_id: str
+        :param run_id: Required.
+        :type run_id: str
+        :return: JSON object
+        :rtype: JSON
+        :raises ~azure.core.exceptions.HttpResponseError:
+
+        Example:
+            .. code-block:: python
+
+                # response body for status code(s): 200
+                response == {
+                    "id": "str",
+                    "status": "str"
+                }
+                # response body for status code(s): 422
+                response == {
+                    "loc": [
+                        {}
+                    ],
+                    "msg": "str",
+                    "type": "str"
+                }
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[JSON] = kwargs.pop("cls", None)
+
+        _request = build_collaboration_analytics_queries_document_id_runs_run_id_cancel_post_request(
+            collaboration_id=collaboration_id,
+            document_id=document_id,
+            run_id=run_id,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 422]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response)
+
+        if response.content:
+            deserialized = response.json()
+        else:
+            deserialized = None
+
+        if cls:
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+
+        return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace
     def analytics_datasets_document_id_queries_get(  # pylint: disable=name-too-long

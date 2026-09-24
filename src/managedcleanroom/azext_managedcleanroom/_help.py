@@ -269,6 +269,19 @@ helps['managedcleanroom frontend oidc issuerinfo show'] = """
 # Invitation Help
 # ============================================================================
 
+helps['managedcleanroom frontend collaborator'] = """
+    type: group
+    short-summary: View collaborators in a collaboration
+"""
+
+helps['managedcleanroom frontend collaborator list'] = """
+    type: command
+    short-summary: List collaborators in a collaboration
+    examples:
+        - name: List collaborators
+          text: az managedcleanroom frontend collaborator list -c <collaboration-id>
+"""
+
 helps['managedcleanroom frontend invitation'] = """
     type: group
     short-summary: Manage collaboration invitations
@@ -708,6 +721,14 @@ helps['managedcleanroom frontend analytics query runhistory list'] = """
     examples:
         - name: List query runs
           text: az managedcleanroom frontend analytics query runhistory list -c <cid> --document-id <document-id>
+"""
+
+helps['managedcleanroom frontend analytics query runhistory cancel'] = """
+    type: command
+    short-summary: Cancel a query run
+    examples:
+        - name: Cancel a query run
+          text: az managedcleanroom frontend analytics query runhistory cancel -c <cid> --document-id <document-id> --run-id <run-id>
 """
 
 helps['managedcleanroom frontend analytics query runresult'] = """

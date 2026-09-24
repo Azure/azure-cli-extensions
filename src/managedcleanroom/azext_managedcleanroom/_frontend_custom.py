@@ -63,6 +63,18 @@ def frontend_collaboration_report_show(cmd, collaboration_id, api_version=None):
     return client.collaboration.report_get(collaboration_id)
 
 
+def frontend_collaboration_collaborators_list(cmd, collaboration_id, api_version=None):
+    """List collaborators in a collaboration
+
+    :param cmd: CLI command context
+    :param collaboration_id: Collaboration identifier
+    :param api_version: API version to use for this request
+    :return: Collaborators object with array of collaborator details
+    """
+    client = get_frontend_client(cmd, api_version=api_version)
+    return client.collaboration.collaborators_get(collaboration_id)
+
+
 # ============================================================================
 # Analytics Commands
 # ============================================================================
@@ -847,6 +859,24 @@ def frontend_collaboration_query_runhistory_list(
     client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_queries_document_id_runs_get(
         collaboration_id, document_id
+    )
+
+
+def frontend_collaboration_query_runhistory_cancel(
+    cmd, collaboration_id, document_id, run_id, api_version=None
+):
+    """Cancel a query run
+
+    :param cmd: CLI command context
+    :param collaboration_id: Collaboration identifier
+    :param document_id: Query document identifier
+    :param run_id: Query run identifier
+    :param api_version: API version to use for this request
+    :return: Cancellation result with id and status
+    """
+    client = get_frontend_client(cmd, api_version=api_version)
+    return client.collaboration.analytics_queries_document_id_runs_run_id_cancel_post(
+        collaboration_id, document_id, run_id
     )
 
 

@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.0.0b7
++++++++
+* Update commands to reflect new API version 2026-09-30-preview
+* Added: ``--target-config`` alias for ``az managedcleanroom collaboration create --target-resource-configuration``
+* Added: ``az managedcleanroom consortium-view contract wait``
+* Added: ``az managedcleanroom frontend collaborator list`` to list collaborators in a collaboration
+* Added: ``az managedcleanroom frontend analytics query runhistory cancel`` to cancel a query run
+
 1.0.0b6
 +++++++
 * Update commands to reflect new API version 2026-04-30-preview
