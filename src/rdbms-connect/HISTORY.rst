@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.8
+++++++
++ Add instructions to install the extension.
+
 1.0.7
 ++++++
 + Remove msrestazure dependency
