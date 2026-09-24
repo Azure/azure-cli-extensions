@@ -11,10 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* `az aks create/update`: Add `distributedAccelerator` storage option to `--enable-azure-container-storage` and `--disable-azure-container-storage` to install/uninstall the Azure Container Storage distributed accelerator controller.
 
 22.0.0b9
 +++++++++
+* `az aks create/update`: Add `distributedAccelerator` storage option to `--enable-azure-container-storage` and `--disable-azure-container-storage` to install/uninstall the Azure Container Storage distributed accelerator controller.
 * `az aks nodepool update`: Preserve the existing GPU management mode when `--enable-managed-gpu` is omitted, including when enabling, updating, or disabling the cluster autoscaler.
 * `az aks alert-config add`: Reject an empty `--name` before looking up existing configurations instead of reporting that it already exists.
 * `az aks nodepool scale`: add `--use-patch-api` to optionally scale a VMSS node pool via the new dedicated PATCH agent pool API (scales to the target count without triggering full reconciliation). The default behavior continues to use the PUT agent pool API.

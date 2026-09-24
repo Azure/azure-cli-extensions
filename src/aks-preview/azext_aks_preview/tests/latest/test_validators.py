@@ -2005,14 +2005,14 @@ class TestValidateEnableDistributedAccelerator(unittest.TestCase):
     def test_enable_distributed_accelerator(self):
         acstor_validator.validate_enable_distributed_accelerator_params(
             acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
-            False, None, None, None, None, None, None, None,
+            False, None, None, None, None, None, None, None, None,
         )
 
     def test_enable_when_already_installed(self):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_enable_distributed_accelerator_params(
                 acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
-                True, None, None, None, None, None, None, None,
+                True, None, None, None, None, None, None, None, None,
             )
         err = (
             'Cannot enable distributed accelerator as it is already enabled on the cluster.'
@@ -2024,7 +2024,7 @@ class TestValidateEnableDistributedAccelerator(unittest.TestCase):
         storage_types = [acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR, other_type]
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_enable_distributed_accelerator_params(
-                storage_types, False, None, None, None, None, None, None, None,
+                storage_types, False, None, None, None, None, None, None, None, None,
             )
         err = (
             f"'{acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR}' cannot be combined with other storage "
@@ -2039,10 +2039,24 @@ class TestValidateEnableDistributedAccelerator(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_enable_distributed_accelerator_params(
                 acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
-                False, storage_pool_name, None, None, None, None, None, None,
+                False, storage_pool_name, None, None, None, None, None, None, None,
             )
         err = (
             '--storage-pool-name cannot be used with '
+            '--enable-azure-container-storage distributedAccelerator. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_nodepool_list(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_distributed_accelerator_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
+                False, None, None, None, None, None, None, "pool1", None,
+            )
+        err = (
+            '--azure-container-storage-nodepools cannot be used with '
             '--enable-azure-container-storage distributedAccelerator. '
             'Distributed accelerator does not require or support any storage pool configuration. '
             'Please remove these parameters and try again.'
@@ -2053,7 +2067,7 @@ class TestValidateEnableDistributedAccelerator(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_enable_distributed_accelerator_params(
                 acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
-                False, None, None, None, None, None, None, "1",
+                False, None, None, None, None, None, None, None, "1",
             )
         err = (
             '--container-storage-version cannot be used with '
@@ -2068,14 +2082,14 @@ class TestValidateDisableDistributedAccelerator(unittest.TestCase):
     def test_disable_distributed_accelerator(self):
         acstor_validator.validate_disable_distributed_accelerator_params(
             acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
-            True, None, None, None, None, None, None, None,
+            True, None, None, None, None, None, None, None, None,
         )
 
     def test_disable_when_not_installed(self):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_disable_distributed_accelerator_params(
                 acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
-                False, None, None, None, None, None, None, None,
+                False, None, None, None, None, None, None, None, None,
             )
         err = (
             'Cannot disable distributed accelerator as it could not be found on the cluster.'
@@ -2087,7 +2101,7 @@ class TestValidateDisableDistributedAccelerator(unittest.TestCase):
         storage_types = [acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR, other_type]
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_disable_distributed_accelerator_params(
-                storage_types, True, None, None, None, None, None, None, None,
+                storage_types, True, None, None, None, None, None, None, None, None,
             )
         err = (
             f"'{acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR}' cannot be combined with other storage "
@@ -2102,7 +2116,7 @@ class TestValidateDisableDistributedAccelerator(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_disable_distributed_accelerator_params(
                 acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
-                True, storage_pool_name, None, None, None, None, None, None,
+                True, storage_pool_name, None, None, None, None, None, None, None,
             )
         err = (
             '--storage-pool-name cannot be used with '
@@ -2116,7 +2130,7 @@ class TestValidateDisableDistributedAccelerator(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_disable_distributed_accelerator_params(
                 acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
-                True, None, None, None, None, "EphemeralVolumeOnly", None, None,
+                True, None, None, None, None, "EphemeralVolumeOnly", None, None, None,
             )
         err = (
             '--ephemeral-disk-volume-type cannot be used with '
@@ -2130,10 +2144,24 @@ class TestValidateDisableDistributedAccelerator(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_disable_distributed_accelerator_params(
                 acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
-                True, None, None, None, None, None, "Premium", None,
+                True, None, None, None, None, None, "Premium", None, None,
             )
         err = (
             '--ephemeral-disk-nvme-perf-tier cannot be used with '
+            '--disable-azure-container-storage distributedAccelerator. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_with_nodepool_list(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_distributed_accelerator_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
+                True, None, None, None, None, None, None, "pool1", None,
+            )
+        err = (
+            '--azure-container-storage-nodepools cannot be used with '
             '--disable-azure-container-storage distributedAccelerator. '
             'Distributed accelerator does not require or support any storage pool configuration. '
             'Please remove these parameters and try again.'
@@ -2144,11 +2172,44 @@ class TestValidateDisableDistributedAccelerator(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_disable_distributed_accelerator_params(
                 acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
-                True, None, None, None, None, None, None, "1",
+                True, None, None, None, None, None, None, None, "1",
             )
         err = (
             '--container-storage-version cannot be used with '
             '--disable-azure-container-storage distributedAccelerator. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+
+class TestValidateDisableAllDistributedAccelerator(unittest.TestCase):
+    def test_disable_all_no_params(self):
+        acstor_validator.validate_disable_all_distributed_accelerator_params(
+            None, None, None, None, None, None, None, None,
+        )
+
+    def test_disable_all_with_storage_pool_name(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_all_distributed_accelerator_params(
+                "bogus", None, None, None, None, None, None, None,
+            )
+        err = (
+            '--storage-pool-name cannot be used with '
+            '--disable-azure-container-storage on a distributed accelerator cluster. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_all_with_nodepool_list(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_all_distributed_accelerator_params(
+                None, None, None, None, None, None, "pool1", None,
+            )
+        err = (
+            '--azure-container-storage-nodepools cannot be used with '
+            '--disable-azure-container-storage on a distributed accelerator cluster. '
             'Distributed accelerator does not require or support any storage pool configuration. '
             'Please remove these parameters and try again.'
         )
