@@ -61,6 +61,7 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_V1_EXT_INSTALLATION_NAME,
     CONST_ACSTOR_VERSION_V1,
     CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAME,
+    CONST_DISTRIBUTED_ACCELERATOR_K8S_EXTENSION_NAME,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -5392,6 +5393,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     self.context.raw_param.get("storage_pool_size"),
                     self.context.raw_param.get("ephemeral_disk_volume_type"),
                     self.context.raw_param.get("ephemeral_disk_nvme_perf_tier"),
+                    self.context.raw_param.get("azure_container_storage_nodepools"),
                     self.context.raw_param.get("container_storage_version"),
                 )
                 self.context.set_intermediate(
@@ -6833,6 +6835,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         self.context.get_resource_group_name(),
                         self.context.get_name(),
                         CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAME,
+                        expected_extension_type=CONST_DISTRIBUTED_ACCELERATOR_K8S_EXTENSION_NAME,
                     )
                 except Exception as ex:
                     raise UnknownError(
@@ -6844,6 +6847,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 pool_sku = self.context.raw_param.get("storage_pool_sku")
                 pool_option = self.context.raw_param.get("storage_pool_option")
                 pool_size = self.context.raw_param.get("storage_pool_size")
+                nodepool_list = self.context.raw_param.get("azure_container_storage_nodepools")
 
                 if dc_enable_requested:
                     from azext_aks_preview.azurecontainerstorage._validators import (
@@ -6858,6 +6862,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         pool_size,
                         self.context.raw_param.get("ephemeral_disk_volume_type"),
                         self.context.raw_param.get("ephemeral_disk_nvme_perf_tier"),
+                        nodepool_list,
                         self.context.raw_param.get("container_storage_version"),
                     )
                     self.context.set_intermediate(
@@ -6876,6 +6881,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         pool_size,
                         self.context.raw_param.get("ephemeral_disk_volume_type"),
                         self.context.raw_param.get("ephemeral_disk_nvme_perf_tier"),
+                        nodepool_list,
                         self.context.raw_param.get("container_storage_version"),
                     )
                     self.context.set_intermediate(
@@ -6920,6 +6926,22 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     # Distributed-cache-only cluster: teardown already queued,
                     # nothing more to disable.
                     if is_distributed_accelerator_installed:
+                        # This bare/`all` teardown returns before the storage pool
+                        # validation runs, so reject any storage pool scoping
+                        # parameters that would otherwise be silently ignored.
+                        from azext_aks_preview.azurecontainerstorage._validators import (
+                            validate_disable_all_distributed_accelerator_params,
+                        )
+                        validate_disable_all_distributed_accelerator_params(
+                            storage_pool_name,
+                            pool_sku,
+                            pool_option,
+                            pool_size,
+                            self.context.raw_param.get("ephemeral_disk_volume_type"),
+                            self.context.raw_param.get("ephemeral_disk_nvme_perf_tier"),
+                            nodepool_list,
+                            container_storage_version,
+                        )
                         return mc
                     raise InvalidArgumentValueError(
                         'Cannot disable Azure Container Storage as it could not be found on the cluster.'

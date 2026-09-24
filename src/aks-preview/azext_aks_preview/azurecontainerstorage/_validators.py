@@ -572,6 +572,46 @@ def validate_disable_azure_container_storage_params(
         )
 
 
+def _reject_unsupported_distributed_accelerator_params(
+    command_display,
+    storage_pool_name,
+    storage_pool_sku,
+    storage_pool_option,
+    storage_pool_size,
+    ephemeral_disk_volume_type,
+    ephemeral_disk_nvme_perf_tier,
+    nodepool_list,
+    container_storage_version,
+):
+    # Distributed accelerator has no storage pool construct, so none of the storage
+    # pool scoping parameters are supported on the distributed accelerator paths.
+    unsupported_params = []
+    if storage_pool_name is not None:
+        unsupported_params.append('--storage-pool-name')
+    if storage_pool_sku is not None:
+        unsupported_params.append('--storage-pool-sku')
+    if storage_pool_option is not None:
+        unsupported_params.append('--storage-pool-option')
+    if storage_pool_size is not None:
+        unsupported_params.append('--storage-pool-size')
+    if ephemeral_disk_volume_type is not None:
+        unsupported_params.append('--ephemeral-disk-volume-type')
+    if ephemeral_disk_nvme_perf_tier is not None:
+        unsupported_params.append('--ephemeral-disk-nvme-perf-tier')
+    if nodepool_list is not None:
+        unsupported_params.append('--azure-container-storage-nodepools')
+    if container_storage_version is not None:
+        unsupported_params.append('--container-storage-version')
+
+    if unsupported_params:
+        params_defined = ', '.join(unsupported_params)
+        raise InvalidArgumentValueError(
+            f'{params_defined} cannot be used with {command_display}. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+
+
 def validate_enable_distributed_accelerator_params(
     enablement_option,
     is_extension_installed,
@@ -581,6 +621,7 @@ def validate_enable_distributed_accelerator_params(
     storage_pool_size,
     ephemeral_disk_volume_type,
     ephemeral_disk_nvme_perf_tier,
+    nodepool_list=None,
     container_storage_version=None,
 ):
     # Distributed accelerator has no storage pool construct, so none of the storage
@@ -604,30 +645,17 @@ def validate_enable_distributed_accelerator_params(
             'Cannot enable distributed accelerator as it is already enabled on the cluster.'
         )
 
-    unsupported_params = []
-    if storage_pool_name is not None:
-        unsupported_params.append('--storage-pool-name')
-    if storage_pool_sku is not None:
-        unsupported_params.append('--storage-pool-sku')
-    if storage_pool_option is not None:
-        unsupported_params.append('--storage-pool-option')
-    if storage_pool_size is not None:
-        unsupported_params.append('--storage-pool-size')
-    if ephemeral_disk_volume_type is not None:
-        unsupported_params.append('--ephemeral-disk-volume-type')
-    if ephemeral_disk_nvme_perf_tier is not None:
-        unsupported_params.append('--ephemeral-disk-nvme-perf-tier')
-    if container_storage_version is not None:
-        unsupported_params.append('--container-storage-version')
-
-    if unsupported_params:
-        params_defined = ', '.join(unsupported_params)
-        raise InvalidArgumentValueError(
-            f'{params_defined} cannot be used with '
-            f'--enable-azure-container-storage {CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR}. '
-            'Distributed accelerator does not require or support any storage pool configuration. '
-            'Please remove these parameters and try again.'
-        )
+    _reject_unsupported_distributed_accelerator_params(
+        f'--enable-azure-container-storage {CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR}',
+        storage_pool_name,
+        storage_pool_sku,
+        storage_pool_option,
+        storage_pool_size,
+        ephemeral_disk_volume_type,
+        ephemeral_disk_nvme_perf_tier,
+        nodepool_list,
+        container_storage_version,
+    )
 
 
 def validate_disable_distributed_accelerator_params(
@@ -639,6 +667,7 @@ def validate_disable_distributed_accelerator_params(
     storage_pool_size,
     ephemeral_disk_volume_type,
     ephemeral_disk_nvme_perf_tier,
+    nodepool_list=None,
     container_storage_version=None,
 ):
     disablement_option_arr = disablement_option if isinstance(disablement_option, list) else [disablement_option]
@@ -660,30 +689,44 @@ def validate_disable_distributed_accelerator_params(
             'Cannot disable distributed accelerator as it could not be found on the cluster.'
         )
 
-    unsupported_params = []
-    if storage_pool_name is not None:
-        unsupported_params.append('--storage-pool-name')
-    if storage_pool_sku is not None:
-        unsupported_params.append('--storage-pool-sku')
-    if storage_pool_option is not None:
-        unsupported_params.append('--storage-pool-option')
-    if storage_pool_size is not None:
-        unsupported_params.append('--storage-pool-size')
-    if ephemeral_disk_volume_type is not None:
-        unsupported_params.append('--ephemeral-disk-volume-type')
-    if ephemeral_disk_nvme_perf_tier is not None:
-        unsupported_params.append('--ephemeral-disk-nvme-perf-tier')
-    if container_storage_version is not None:
-        unsupported_params.append('--container-storage-version')
+    _reject_unsupported_distributed_accelerator_params(
+        f'--disable-azure-container-storage {CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR}',
+        storage_pool_name,
+        storage_pool_sku,
+        storage_pool_option,
+        storage_pool_size,
+        ephemeral_disk_volume_type,
+        ephemeral_disk_nvme_perf_tier,
+        nodepool_list,
+        container_storage_version,
+    )
 
-    if unsupported_params:
-        params_defined = ', '.join(unsupported_params)
-        raise InvalidArgumentValueError(
-            f'{params_defined} cannot be used with '
-            f'--disable-azure-container-storage {CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR}. '
-            'Distributed accelerator does not require or support any storage pool configuration. '
-            'Please remove these parameters and try again.'
-        )
+
+def validate_disable_all_distributed_accelerator_params(
+    storage_pool_name,
+    storage_pool_sku,
+    storage_pool_option,
+    storage_pool_size,
+    ephemeral_disk_volume_type,
+    ephemeral_disk_nvme_perf_tier,
+    nodepool_list=None,
+    container_storage_version=None,
+):
+    # A bare `--disable-azure-container-storage` or `all` teardown of a
+    # distributed-accelerator-only cluster removes the controller directly and
+    # returns before the storage pool validation runs, so reject the storage
+    # pool scoping parameters here as well.
+    _reject_unsupported_distributed_accelerator_params(
+        '--disable-azure-container-storage on a distributed accelerator cluster',
+        storage_pool_name,
+        storage_pool_sku,
+        storage_pool_option,
+        storage_pool_size,
+        ephemeral_disk_volume_type,
+        ephemeral_disk_nvme_perf_tier,
+        nodepool_list,
+        container_storage_version,
+    )
 
 
 # _Validate_storage_pool_size validates that the storage_pool_size is

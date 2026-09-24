@@ -319,6 +319,7 @@ def get_container_storage_extension_installed(
     resource_group,
     cluster_name,
     extension_name,
+    expected_extension_type=None,
 ) -> Tuple[bool, str]:
 
     client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
@@ -335,6 +336,13 @@ def get_container_storage_extension_installed(
             extension_name,
             "managedClusters",
         )
+        # show_k8s_extension only matches on the instance name, so an unrelated
+        # extension that happens to share the name would otherwise be treated as
+        # installed. When an expected extension type is supplied, verify it before
+        # reporting the extension as installed to avoid acting on the wrong resource.
+        if expected_extension_type is not None and \
+                (getattr(extension, "extension_type", None) or "").lower() != expected_extension_type.lower():
+            return False, ""
         is_extension_installed = True
         extension_version = extension.current_version
     except ResourceNotFoundError:
