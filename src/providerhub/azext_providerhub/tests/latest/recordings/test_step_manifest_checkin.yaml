@@ -5,7 +5,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - providerhub manifest checkin
       Connection:
@@ -17,23 +17,65 @@ interactions:
       ParameterSetName:
       - --provider-namespace --environment
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26100-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/checkinManifest?api-version=2024-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/checkinManifest?api-version=2026-02-01-preview
   response:
     body:
-      string: '{"isCheckedIn":true,"statusMessage":"Manifest is successfully merged.
-        Use the Default/Custom rollout (http://aka.ms/rpaasrollout) to roll out the
-        manifest in ARM.","commitId":"c2479b885f8ce82534183eaef1689d9d2ec2e73c"}'
+      string: '{"latestManifest":"{\"providerAuthorizations\":[{\"applicationId\":\"3cfadeba-63f1-46f4-8086-786a3f24045f\"}],\"namespace\":\"Private.VPTest\",\"providerVersion\":\"2.0\",\"providerType\":\"Internal,
+        Hidden\",\"requiredFeatures\":[\"Private.VPTest/EnableProvider\"],\"resourceTypes\":[{\"name\":\"billedItems\",\"routingType\":\"BypassEndpointSelectionOptimization\",\"resourceValidation\":\"ReservedWords,
+        ProfaneWords\",\"defaultApiVersion\":\"2024-09-01-preview\",\"throttlingRules\":[{\"action\":\"Private.VPTest/billedItems/write\",\"metrics\":[{\"type\":\"NumberOfRequests\",\"limit\":400,\"interval\":\"PT1H\"}]},{\"action\":\"Private.VPTest/billedItems/read\",\"metrics\":[{\"type\":\"NumberOfRequests\",\"limit\":4000,\"interval\":\"PT1H\"}]},{\"action\":\"Private.VPTest/billedItems/delete\",\"metrics\":[{\"type\":\"NumberOfRequests\",\"limit\":5000,\"interval\":\"PT1H\"}]}],\"endpoints\":[{\"apiVersions\":[\"2024-09-01-preview\"],\"endpointUri\":\"https://westus.metarp.azure.com/rolelocation/westus/\",\"locations\":[\"West
+        US\"],\"requiredFeatures\":[],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"}],\"marketplaceType\":\"ProviderHub\",\"metadata\":{\"providerHubMetadata\":{\"providerExtendsPreflight\":false}},\"requestHeaderOptions\":{\"optInHeaders\":\"SignedUserToken\",\"optOutHeaders\":\"NotSpecified\"},\"templateDeploymentPolicy\":{\"capabilities\":\"Preflight\",\"preflightOptions\":\"ValidationRequests,
+        DeploymentRequests, RegisteredOnly\",\"preflightNotifications\":\"None\"},\"linkedOperationRules\":[{\"linkedOperation\":\"CrossResourceGroupResourceMove\",\"linkedAction\":\"Blocked\"},{\"linkedOperation\":\"CrossSubscriptionResourceMove\",\"linkedAction\":\"Blocked\"}]},{\"name\":\"testBridge\",\"routingType\":\"BypassEndpointSelectionOptimization\",\"resourceValidation\":\"ReservedWords,
+        ProfaneWords\",\"endpoints\":[{\"apiVersions\":[\"2021-10-01-privatepreview\"],\"endpointUri\":\"https://westcentralus.metarp.azure.com/rolelocation/westcentralus/\",\"locations\":[\"West
+        Central US\"],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"}],\"metadata\":{\"providerHubMetadata\":{\"providerExtendsPreflight\":false}},\"templateDeploymentPolicy\":{\"capabilities\":\"Preflight\",\"preflightOptions\":\"ValidationRequests,
+        DeploymentRequests, RegisteredOnly\",\"preflightNotifications\":\"None\"},\"linkedOperationRules\":[{\"linkedOperation\":\"CrossResourceGroupResourceMove\",\"linkedAction\":\"Blocked\"},{\"linkedOperation\":\"CrossSubscriptionResourceMove\",\"linkedAction\":\"Blocked\"}]},{\"name\":\"Ingredients\",\"routingType\":\"BypassEndpointSelectionOptimization\",\"resourceValidation\":\"ReservedWords,
+        ProfaneWords\",\"endpoints\":[{\"apiVersions\":[\"2022-09-23-preview\"],\"endpointUri\":\"https://westus.metarp.azure.com/rolelocation/westus/\",\"locations\":[\"West
+        US\"],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"},{\"apiVersions\":[\"2022-09-23-preview\"],\"endpointUri\":\"https://eastus.metarp.azure.com/rolelocation/eastus/\",\"locations\":[\"East
+        US\"],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"},{\"apiVersions\":[\"2021-10-01-privatepreview\",\"2022-09-23-preview\"],\"endpointUri\":\"https://westcentralus.metarp.azure.com/rolelocation/westcentralus/\",\"locations\":[\"West
+        Central US\"],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"}],\"metadata\":{\"providerHubMetadata\":{\"providerExtendsPreflight\":true}},\"templateDeploymentPolicy\":{\"capabilities\":\"Preflight\",\"preflightOptions\":\"ValidationRequests,
+        DeploymentRequests, RegisteredOnly\",\"preflightNotifications\":\"None\"},\"linkedOperationRules\":[{\"linkedOperation\":\"CrossResourceGroupResourceMove\",\"linkedAction\":\"Blocked\"},{\"linkedOperation\":\"CrossSubscriptionResourceMove\",\"linkedAction\":\"Blocked\"}]},{\"name\":\"employees\",\"routingType\":\"BypassEndpointSelectionOptimization\",\"resourceValidation\":\"ReservedWords,
+        ProfaneWords\",\"defaultApiVersion\":\"2021-09-01\",\"endpoints\":[{\"apiVersions\":[\"2021-09-01\"],\"endpointUri\":\"https://westus.metarp.azure.com/rolelocation/westus/\",\"locations\":[\"West
+        US\"],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"}],\"metadata\":{\"providerHubMetadata\":{\"providerExtendsPreflight\":true}},\"disallowedActionVerbs\":[\"write\"],\"templateDeploymentPolicy\":{\"capabilities\":\"Preflight\",\"preflightOptions\":\"ValidationRequests,
+        DeploymentRequests, RegisteredOnly\",\"preflightNotifications\":\"None\"},\"linkedOperationRules\":[{\"linkedOperation\":\"CrossResourceGroupResourceMove\",\"linkedAction\":\"Blocked\"},{\"linkedOperation\":\"CrossSubscriptionResourceMove\",\"linkedAction\":\"Blocked\"}]},{\"name\":\"tables\",\"routingType\":\"BypassEndpointSelectionOptimization\",\"resourceValidation\":\"ReservedWords,
+        ProfaneWords\",\"defaultApiVersion\":\"2021-09-01\",\"endpoints\":[{\"apiVersions\":[\"2021-09-01\"],\"endpointUri\":\"https://westus.metarp.azure.com/rolelocation/westus/\",\"locations\":[\"West
+        US\"],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"}],\"metadata\":{\"providerHubMetadata\":{\"providerExtendsPreflight\":true}},\"disallowedActionVerbs\":[\"write\"],\"templateDeploymentPolicy\":{\"capabilities\":\"Preflight\",\"preflightOptions\":\"ValidationRequests,
+        DeploymentRequests, RegisteredOnly\",\"preflightNotifications\":\"None\"},\"linkedOperationRules\":[{\"linkedOperation\":\"CrossResourceGroupResourceMove\",\"linkedAction\":\"Blocked\"},{\"linkedOperation\":\"CrossSubscriptionResourceMove\",\"linkedAction\":\"Blocked\"}]},{\"name\":\"Chairs\",\"routingType\":\"BypassEndpointSelectionOptimization\",\"resourceValidation\":\"ReservedWords,
+        ProfaneWords\",\"defaultApiVersion\":\"2021-09-01\",\"endpoints\":[{\"apiVersions\":[\"2021-09-01\"],\"endpointUri\":\"https://westus.metarp.azure.com/rolelocation/westus/\",\"locations\":[\"West
+        US\"],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"}],\"metadata\":{\"providerHubMetadata\":{\"providerExtendsPreflight\":true}},\"disallowedActionVerbs\":[\"write\"],\"templateDeploymentPolicy\":{\"capabilities\":\"Preflight\",\"preflightOptions\":\"ValidationRequests,
+        DeploymentRequests, RegisteredOnly\",\"preflightNotifications\":\"None\"},\"linkedOperationRules\":[{\"linkedOperation\":\"CrossResourceGroupResourceMove\",\"linkedAction\":\"Blocked\"},{\"linkedOperation\":\"CrossSubscriptionResourceMove\",\"linkedAction\":\"Blocked\"}]},{\"name\":\"Ingredients2\",\"routingType\":\"BypassEndpointSelectionOptimization\",\"resourceValidation\":\"ReservedWords,
+        ProfaneWords\",\"endpoints\":[{\"apiVersions\":[\"2022-09-23-preview\"],\"endpointUri\":\"https://westus.metarp.azure.com/rolelocation/westus/\",\"locations\":[\"West
+        US\"],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"},{\"apiVersions\":[\"2022-09-23-preview\"],\"endpointUri\":\"https://eastus.metarp.azure.com/rolelocation/eastus/\",\"locations\":[\"East
+        US\"],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"}],\"metadata\":{\"providerHubMetadata\":{\"providerExtendsPreflight\":true}},\"templateDeploymentPolicy\":{\"capabilities\":\"Preflight\",\"preflightOptions\":\"ValidationRequests,
+        DeploymentRequests, RegisteredOnly\",\"preflightNotifications\":\"None\"},\"linkedOperationRules\":[{\"linkedOperation\":\"CrossResourceGroupResourceMove\",\"linkedAction\":\"Blocked\"},{\"linkedOperation\":\"CrossSubscriptionResourceMove\",\"linkedAction\":\"Blocked\"}]},{\"name\":\"testCLI\",\"routingType\":\"BypassEndpointSelectionOptimization\",\"resourceValidation\":\"ReservedWords,
+        ProfaneWords\",\"defaultApiVersion\":\"2021-09-01\",\"endpoints\":[{\"apiVersions\":[\"2021-09-01\"],\"endpointUri\":\"https://eastus.metarp.azure.com/rolelocation/eastus/\",\"locations\":[\"East
+        US\"],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"}],\"metadata\":{\"providerHubMetadata\":{\"providerExtendsPreflight\":true}},\"disallowedActionVerbs\":[\"write\"],\"templateDeploymentPolicy\":{\"capabilities\":\"Preflight\",\"preflightOptions\":\"ValidationRequests,
+        DeploymentRequests, RegisteredOnly\",\"preflightNotifications\":\"None\"},\"linkedOperationRules\":[{\"linkedOperation\":\"CrossResourceGroupResourceMove\",\"linkedAction\":\"Blocked\"},{\"linkedOperation\":\"CrossSubscriptionResourceMove\",\"linkedAction\":\"Blocked\"}]},{\"name\":\"employees/nestedResourceTypeFirst\",\"routingType\":\"BypassEndpointSelectionOptimization\",\"resourceValidation\":\"ReservedWords,
+        ProfaneWords\",\"defaultApiVersion\":\"2019-01-01\",\"endpoints\":[{\"apiVersions\":[\"2019-01-01\"],\"endpointUri\":\"https://westus.metarp.azure.com/rolelocation/westus/\",\"locations\":[\"West
+        US\"],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"}],\"metadata\":{\"providerHubMetadata\":{\"providerExtendsPreflight\":true}},\"templateDeploymentPolicy\":{\"capabilities\":\"Preflight\",\"preflightOptions\":\"ValidationRequests,
+        DeploymentRequests, RegisteredOnly\",\"preflightNotifications\":\"None\"},\"linkedOperationRules\":[]},{\"name\":\"employees/nestedResourceTypeFirst/nestedResourceTypeSecond\",\"routingType\":\"BypassEndpointSelectionOptimization\",\"resourceValidation\":\"ReservedWords,
+        ProfaneWords\",\"defaultApiVersion\":\"2019-01-01\",\"endpoints\":[{\"apiVersions\":[\"2019-01-01\"],\"endpointUri\":\"https://westus.metarp.azure.com/rolelocation/westus/\",\"locations\":[\"West
+        US\"],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"}],\"metadata\":{\"providerHubMetadata\":{\"providerExtendsPreflight\":true}},\"templateDeploymentPolicy\":{\"capabilities\":\"Preflight\",\"preflightOptions\":\"ValidationRequests,
+        DeploymentRequests, RegisteredOnly\",\"preflightNotifications\":\"None\"},\"linkedOperationRules\":[]},{\"name\":\"employees/nestedResourceTypeFirst/nestedResourceTypeSecond/nestedResourceTypeThird\",\"routingType\":\"BypassEndpointSelectionOptimization\",\"resourceValidation\":\"ReservedWords,
+        ProfaneWords\",\"defaultApiVersion\":\"2019-01-01\",\"endpoints\":[{\"apiVersions\":[\"2019-01-01\"],\"endpointUri\":\"https://westus.metarp.azure.com/rolelocation/westus/\",\"locations\":[\"West
+        US\"],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"}],\"metadata\":{\"providerHubMetadata\":{\"providerExtendsPreflight\":true}},\"templateDeploymentPolicy\":{\"capabilities\":\"Preflight\",\"preflightOptions\":\"ValidationRequests,
+        DeploymentRequests, RegisteredOnly\",\"preflightNotifications\":\"None\"},\"linkedOperationRules\":[]},{\"name\":\"locations\",\"routingType\":\"ProxyOnly\",\"resourceValidation\":\"ReservedWords,
+        ProfaneWords\",\"defaultApiVersion\":\"2024-09-01-preview\",\"endpoints\":[{\"apiVersions\":[\"2024-09-01-preview\"],\"endpointUri\":\"https://global.metarp.azure.com/\",\"locations\":[\"\"],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"}],\"metadata\":{\"providerHubMetadata\":{\"providerExtendsPreflight\":true}},\"templateDeploymentPolicy\":{\"capabilities\":\"Preflight\",\"preflightOptions\":\"ValidationRequests,
+        DeploymentRequests, RegisteredOnly\",\"preflightNotifications\":\"None\"},\"linkedOperationRules\":[]},{\"name\":\"locations/operationstatuses\",\"routingType\":\"ProxyOnly,
+        LocationBased\",\"resourceValidation\":\"ReservedWords, ProfaneWords\",\"defaultApiVersion\":\"2024-09-01-preview\",\"endpoints\":[{\"apiVersions\":[\"2024-09-01-preview\"],\"endpointUri\":\"https://westus.metarp.azure.com/rolelocation/westus/\",\"locations\":[\"West
+        US\"],\"timeout\":\"PT20S\",\"endpointType\":\"NotSpecified\"}],\"subscriptionStateRules\":[{\"state\":\"Disabled\",\"allowedActions\":[\"Private.VPTest/locations/OperationStatuses/write\"]},{\"state\":\"Warned\",\"allowedActions\":[\"Private.VPTest/locations/OperationStatuses/write\"]}],\"linkedOperationRules\":[],\"additionalOptions\":\"ProtectedAsyncOperationPolling\"}],\"management\":{\"manifestOwners\":[\"SPARTA-PlatformServiceAdministrator\"],\"incidentRoutingService\":\"Resource
+        Provider Service as a Service\",\"incidentRoutingTeam\":\"RPaaS\",\"incidentContactEmail\":\"test@example.com\",\"serviceTreeInfos\":[{\"serviceId\":\"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69\",\"componentId\":\"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69\"}],\"resourceAccessPolicy\":\"NotSpecified\"},\"capabilities\":[{\"quotaId\":\"CSP_2015-05-01\",\"effect\":\"Allow\"},{\"quotaId\":\"CSP_MG_2017-12-01\",\"effect\":\"Allow\"}],\"metadata\":{\"BypassManifestValidation\":true,\"onboardedVia\":\"ProviderHub\"},\"globalNotificationEndpoints\":[{\"enabled\":true,\"endpointUri\":\"https://global.metarp.azure.com\"},{\"enabled\":true,\"endpointUri\":\"https://eastus2euap.metarp.azure.com\"}],\"reRegisterSubscriptionMetadata\":{\"enabled\":true,\"concurrencyLimit\":100},\"tokenAuthConfiguration\":{\"authenticationScheme\":\"PoP\",\"signedRequestScope\":\"ResourceUri\",\"disableCertificateAuthenticationFallback\":true}}","isCheckedIn":true,"statusMessage":"Manifest
+        is successfully merged. Use the Default/Custom rollout (http://aka.ms/rpaasrollout)
+        to roll out the manifest in ARM.","commitId":"104e4f1274c010ed740601e8574c111063accc79"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '218'
+      - '13005'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 21:12:51 GMT
+      - Wed, 16 Sep 2026 22:37:42 GMT
       expires:
       - '-1'
       pragma:
@@ -45,11 +87,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/b72316c6-1c6a-45b2-8da6-34b3b027d50a
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a8b084de-bd0c-4bcd-a642-71b9016ddd0a/southcentralus/441b3f79-60c9-4c76-acc9-97c9ee26dc43
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '12000'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '800'
       x-msedge-ref:
-      - 'Ref A: B085E695ACEF422DA05985C3750B07ED Ref B: DM2EDGE0817 Ref C: 2024-06-04T21:12:30Z'
+      - 'Ref A: 1ABD35D9F7974E048051818E1D036767 Ref B: SN4AA2022305033 Ref C: 2026-09-16T22:37:28Z'
     status:
       code: 200
       message: OK
