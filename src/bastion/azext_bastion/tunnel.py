@@ -179,7 +179,9 @@ class TunnelServer:
                 if self.active_connections == 0:
                     should_cleanup_remaining = True
             if should_cleanup_remaining:
-                self.cleanup()
+                # Idle path: re-check under lock inside cleanup so a new accept
+                # that raced in is not deleted while still in use.
+                self.cleanup(force=False)
             logger.info('Both debugger and websocket threads stopped...')
             logger.info('Stopped local server..')
 
@@ -231,21 +233,27 @@ class TunnelServer:
         self._listen()
 
     def _delete_session_token(self, session_token, node_id):
-        """DELETE one Bastion session token. Safe to call with None / already-deleted."""
+        """DELETE one Bastion session token. Keeps the map entry until DELETE succeeds
+        (or 404 already-deleted) so cleanup() can retry transient failures."""
         if not session_token:
             return
         with self.connection_lock:
-            tracked_node = self._session_tokens.pop(session_token, None)
-            if tracked_node is not None:
-                node_id = tracked_node
-            if self.last_token == session_token:
-                self.last_token = None
-                self.node_id = None
+            if session_token in self._session_tokens:
+                node_id = self._session_tokens[session_token]
+            elif node_id is None:
+                # Already removed after a successful delete — nothing to do.
+                return
         try:
             self._delete_session_token_request(session_token, node_id)
         except Exception as ex:  # pylint: disable=broad-except
-            # Per-connection cleanup must not abort other connections' teardown.
-            logger.warning('Failed to delete Bastion session token: %s', ex)
+            # Leave token in _session_tokens for a later cleanup() retry.
+            logger.warning('Failed to delete Bastion session token (will retry on cleanup): %s', ex)
+            return
+        with self.connection_lock:
+            self._session_tokens.pop(session_token, None)
+            if self.last_token == session_token:
+                self.last_token = None
+                self.node_id = None
 
     def _delete_session_token_request(self, session_token, node_id):
         logger.info('Cleaning up Bastion session')
@@ -261,21 +269,26 @@ class TunnelServer:
         elif response.status_code not in [200, 204]:
             raise HttpResponseError(response=response)
 
-    def cleanup(self):
-        """Delete any remaining Bastion session tokens (process exit / last client)."""
+    def cleanup(self, force=True):
+        """Delete remaining Bastion session tokens.
+
+        force=True (default): process exit / SIGINT — delete everything tracked.
+        force=False: idle path after last client — only if still no active
+        connections, so a raced new accept is not torn down early.
+        """
         with self.connection_lock:
+            if not force and self.active_connections != 0:
+                logger.debug(
+                    'Skipping idle cleanup; %s connection(s) active again',
+                    self.active_connections)
+                return
             pending = list(self._session_tokens.items())
-            self._session_tokens.clear()
-            self.last_token = None
-            self.node_id = None
         if not pending:
             logger.debug('Nothing to clean up.')
             return
         for session_token, node_id in pending:
-            try:
-                self._delete_session_token_request(session_token, node_id)
-            except Exception as ex:  # pylint: disable=broad-except
-                logger.warning('Failed to delete Bastion session token during cleanup: %s', ex)
+            # _delete_session_token only removes from the map after a successful DELETE.
+            self._delete_session_token(session_token, node_id)
 
     def get_port(self):
         return self.local_port
