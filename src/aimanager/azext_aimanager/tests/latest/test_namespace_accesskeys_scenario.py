@@ -59,9 +59,9 @@ class NamespaceAccessKeysScenarioTest(ScenarioTest):
             operations.list_access_keys.assert_called_with(
                 'rg', 'manager', 'namespace', headers={})
 
-            # --aks-custom-headers is parsed and forwarded to the request
+            # --custom-headers is parsed and forwarded to the request
             self.cmd(
-                command_prefix.format('list-accesskeys') + ' --aks-custom-headers a=1,b=2',
+                command_prefix.format('list-accesskeys') + ' --custom-headers a=1,b=2',
                 checks=[self.check('primaryKey', 'primary-key-value')])
 
         operations.list_access_keys.assert_called_with(

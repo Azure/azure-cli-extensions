@@ -38,7 +38,12 @@ from azure.cli.command_modules.acr._utils import prepare_source_location
 from azure.cli.command_modules.acr._archive_utils import logger as acr_archive_utils_logger
 from azure.core.exceptions import HttpResponseError
 from azure.mgmt.core.tools import parse_resource_id
-from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs
+from azext_acrcssc._client_factory import (
+    cf_acr_tasks,
+    cf_authorization,
+    cf_acr_registries_tasks,
+    cf_acr_runs,
+    get_acr_tasks_models)
 from azext_acrcssc.helper._deployment import validate_and_deploy_template
 from azext_acrcssc._validators import check_continuous_task_exists, check_continuous_task_config_exists
 from datetime import datetime, timezone, timedelta
@@ -47,6 +52,27 @@ from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_cont
 from ._workflow_status import WorkflowTaskStatus
 
 logger = get_logger(__name__)
+
+
+def _get_task_operation(client, operation_name):
+    legacy_operation = getattr(client, f"begin_{operation_name}", None)
+    if legacy_operation is not None:
+        return legacy_operation, True
+
+    return getattr(client, operation_name), False
+
+
+def _get_file_task_run_values_parameter(file_task_run_request):
+    annotations = getattr(file_task_run_request, "__annotations__", {})
+    if isinstance(annotations, dict) and "values_property" in annotations:
+        return "values_property"
+
+    attribute_map = getattr(file_task_run_request, "_attribute_map", {})
+    if isinstance(attribute_map, dict) and "values" in attribute_map:
+        return "values"
+
+    raise TypeError(
+        "FileTaskRunRequest defines neither values_property nor values")
 
 
 def create_update_continuous_patch_v1(cmd,
@@ -128,15 +154,30 @@ def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
     # if we need to update the tasks, we will update the cron expression from it
     # if not we just update the cron expression from the given parameter
     acr_task_client = cf_acr_tasks(cmd.cli_ctx)
+    acr_tasks_models = get_acr_tasks_models(cmd.cli_ctx)
     for task in task_list:
         deployed_task = task.step.encoded_task_content
         extension_task = _create_encoded_task(CONTINUOUSPATCH_TASK_DEFINITION[task.name]["template_file"])
         if deployed_task != extension_task:
             logger.debug(f"Task {task.name} is different from the extension task, updating the task")
-            _update_task_yaml(acr_task_client, registry, resource_group, task, extension_task)
+            _update_task_yaml(
+                cmd,
+                acr_task_client,
+                acr_tasks_models,
+                registry,
+                resource_group,
+                task,
+                extension_task)
 
     if schedule_cron_expression:
-        _update_task_schedule(acr_task_client, registry, resource_group, schedule_cron_expression, dry_run)
+        _update_task_schedule(
+            cmd,
+            acr_task_client,
+            acr_tasks_models,
+            registry,
+            resource_group,
+            schedule_cron_expression,
+            dry_run)
 
 
 def _eval_trigger_run(cmd, registry, resource_group, run_immediately):
@@ -165,7 +206,7 @@ def delete_continuous_patch_v1(cmd, registry, yes):
     if running_tasks:
         from knack.prompting import prompt_y_n
         if yes or prompt_y_n("There are currently running tasks for this workflow. Do you want to cancel their execution?"):
-            _cancel_task_runs(acr_run_client, registry.name, resource_group_name, running_tasks)
+            _cancel_task_runs(cmd, acr_run_client, registry.name, resource_group_name, running_tasks)
 
     if cssc_tasks_exists:
         cssc_tasks = ', '.join(task_list_names)
@@ -223,6 +264,7 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
         resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
         acr_registries_task_client = cf_acr_registries_tasks(cmd.cli_ctx)
         acr_run_client = cf_acr_runs(cmd.cli_ctx)
+        acr_tasks_models = get_acr_tasks_models(cmd.cli_ctx)
 
         # This removes the internal logging from the acr module, reenables it after the setup is completed.
         # Because it is an external logger, the only way to control the output is by changing the level
@@ -243,8 +285,8 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
             if remove_internal_statements:
                 acr_archive_utils_logger.setLevel(acr_archive_utils_logger_level)
 
-        OS = acr_run_client.models.OS
-        Architecture = acr_run_client.models.Architecture
+        OS = acr_tasks_models.OS
+        Architecture = acr_tasks_models.Architecture
 
         # TODO: when the extension merges back into the acr module, we need to reuse the 'get_validate_platform()' from ACR modules (src\azure-cli\azure\cli\command_modules\acr\_utils.py)
         platform_os = OS.linux.value
@@ -252,13 +294,15 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
         platform_variant = None
 
         value_pair = [{"name": "CONFIGPATH", "value": f"{file_name}"}]
-        request = acr_registries_task_client.models.FileTaskRunRequest(
+        values_parameter = _get_file_task_run_values_parameter(
+            acr_tasks_models.FileTaskRunRequest)
+        request = acr_tasks_models.FileTaskRunRequest(
             task_file_path=TMP_DRY_RUN_FILE_NAME,
             values_file_path=None,
-            values=value_pair,
+            **{values_parameter: value_pair},
             source_location=source_location,
             timeout=None,
-            platform=acr_registries_task_client.models.PlatformProperties(
+            platform=acr_tasks_models.PlatformProperties(
                 os=platform_os,
                 architecture=platform_arch,
                 variant=platform_variant
@@ -267,10 +311,17 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True, remove_int
             agent_pool_name=None,
             log_template=None
         )
-        queued = LongRunningOperation(cmd.cli_ctx, start_msg=WORKFLOW_VALIDATION_MESSAGE)(acr_registries_task_client.begin_schedule_run(
+        schedule_run, is_long_running = _get_task_operation(
+            acr_registries_task_client,
+            "schedule_run")
+        queued = schedule_run(
             resource_group_name=resource_group_name,
             registry_name=registry.name,
-            run_request=request))
+            run_request=request)
+        if is_long_running:
+            queued = LongRunningOperation(
+                cmd.cli_ctx,
+                start_msg=WORKFLOW_VALIDATION_MESSAGE)(queued)
         run_id = queued.run_id
         logger.info("Performing dry-run check for filter policy using acr task run id: %s", run_id)
         return WorkflowTaskStatus.remove_internal_acr_statements(
@@ -296,16 +347,24 @@ def cancel_continuous_patch_runs(cmd, resource_group_name, registry_name):
         status_filter=[TaskRunStatus.Running.value, TaskRunStatus.Queued.value, TaskRunStatus.Started.value],
         taskname_filter=[CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME, CONTINUOUSPATCH_TASK_SCANIMAGE_NAME, CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME])
 
-    _cancel_task_runs(acr_task_run_client, registry_name, resource_group_name, running_tasks)
+    _cancel_task_runs(cmd, acr_task_run_client, registry_name, resource_group_name, running_tasks)
     logger.warning("All active running workflow tasks have been cancelled.")
 
 
-def _cancel_task_runs(acr_task_run_client, registry_name, resource_group_name, running_tasks):
+def _cancel_task_runs(cmd, acr_task_run_client, registry_name, resource_group_name, running_tasks):
     for task in running_tasks:
         try:
             logger.warning("Sending request to cancel task %s", task.name)
             logger.debug("Cancel Task run, name %s run id: %s", task.name, task.run_id)
-            acr_task_run_client.begin_cancel(resource_group_name, registry_name, task.name)
+            cancel, is_long_running = _get_task_operation(
+                acr_task_run_client,
+                "cancel")
+            cancel_result = cancel(
+                resource_group_name,
+                registry_name,
+                task.run_id)
+            if is_long_running:
+                LongRunningOperation(cmd.cli_ctx)(cancel_result)
         except Exception as exception:
             logger.error(f"Failed to cancel task {task.name} from registry {registry_name}: {exception}")
 
@@ -376,13 +435,18 @@ def _retrieve_logs_for_image(cmd, registry, resource_group_name, schedule, workf
 
 def _trigger_task_run(cmd, registry, resource_group, task_name):
     acr_task_registries_client = cf_acr_registries_tasks(cmd.cli_ctx)
-    request = acr_task_registries_client.models.TaskRunRequest(
+    acr_tasks_models = get_acr_tasks_models(cmd.cli_ctx)
+    request = acr_tasks_models.TaskRunRequest(
         task_id=f"{registry.id}/tasks/{task_name}")
-    queued_run = LongRunningOperation(cmd.cli_ctx)(
-        acr_task_registries_client.begin_schedule_run(
-            resource_group,
-            registry.name,
-            request))
+    schedule_run, is_long_running = _get_task_operation(
+        acr_task_registries_client,
+        "schedule_run")
+    queued_run = schedule_run(
+        resource_group,
+        registry.name,
+        request)
+    if is_long_running:
+        queued_run = LongRunningOperation(cmd.cli_ctx)(queued_run)
     run_id = queued_run.run_id
     print(f"Queued {CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task '{task_name}' with run ID: {run_id}. Use 'az acr task logs --registry {registry.name} --run-id {run_id}' to view the logs.")
 
@@ -400,29 +464,47 @@ def _create_encoded_task(task_file):
         return base64_content.decode('utf-8')
 
 
-def _update_task_yaml(acr_task_client, registry, resource_group_name, task, encoded_task):
+def _update_task_yaml(
+        cmd,
+        acr_task_client,
+        acr_tasks_models,
+        registry,
+        resource_group_name,
+        task,
+        encoded_task):
     logger.debug("Entering update_task_yaml for task %s", task.name)
     try:
-        taskUpdateParameters = acr_task_client.models.TaskUpdateParameters(
-            step=acr_task_client.models.EncodedTaskStepUpdateParameters(
+        taskUpdateParameters = acr_tasks_models.TaskUpdateParameters(
+            step=acr_tasks_models.EncodedTaskStepUpdateParameters(
                 encoded_task_content=encoded_task))
 
-        acr_task_client.begin_update(resource_group_name,
-                                     registry.name,
-                                     task.name,
-                                     taskUpdateParameters)
+        update, is_long_running = _get_task_operation(acr_task_client, "update")
+        update_result = update(
+            resource_group_name,
+            registry.name,
+            task.name,
+            taskUpdateParameters)
+        if is_long_running:
+            LongRunningOperation(cmd.cli_ctx)(update_result)
 
         logger.debug(f"Task {task.name} updated successfully")
     except HttpResponseError as exception:
         logger.warning(f"Failed to update task {task.name} in registry {registry.name}: {exception}")
 
 
-def _update_task_schedule(acr_task_client, registry, resource_group_name, cron_expression, dryrun):
+def _update_task_schedule(
+        cmd,
+        acr_task_client,
+        acr_tasks_models,
+        registry,
+        resource_group_name,
+        cron_expression,
+        dryrun):
     logger.debug(f"Using cron_expression: {cron_expression}")
-    taskUpdateParameters = acr_task_client.models.TaskUpdateParameters(
-        trigger=acr_task_client.models.TriggerUpdateParameters(
+    taskUpdateParameters = acr_tasks_models.TaskUpdateParameters(
+        trigger=acr_tasks_models.TriggerUpdateParameters(
             timer_triggers=[
-                acr_task_client.models.TimerTriggerUpdateParameters(
+                acr_tasks_models.TimerTriggerUpdateParameters(
                     name='azcli_defined_schedule',
                     schedule=cron_expression)
             ]))
@@ -431,10 +513,14 @@ def _update_task_schedule(acr_task_client, registry, resource_group_name, cron_e
         logger.debug("Dry run, skipping the update of the task schedule")
         return
     try:
-        acr_task_client.begin_update(resource_group_name,
-                                     registry.name,
-                                     CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
-                                     taskUpdateParameters)
+        update, is_long_running = _get_task_operation(acr_task_client, "update")
+        update_result = update(
+            resource_group_name,
+            registry.name,
+            CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
+            taskUpdateParameters)
+        if is_long_running:
+            LongRunningOperation(cmd.cli_ctx)(update_result)
         print("Schedule has been successfully updated.")
     except HttpResponseError as exception:
         raise AzCLIError(f"Failed to update the task schedule: {exception}")
@@ -449,11 +535,13 @@ def _delete_task(cmd, registry, task_name):
         _delete_task_role_assignment(cmd.cli_ctx, acr_tasks_client, registry, resource_group, task_name)
 
         logger.debug(f"Deleting task {task_name}")
-        LongRunningOperation(cmd.cli_ctx)(
-            acr_tasks_client.begin_delete(
-                resource_group,
-                registry.name,
-                task_name))
+        delete, is_long_running = _get_task_operation(acr_tasks_client, "delete")
+        delete_result = delete(
+            resource_group,
+            registry.name,
+            task_name)
+        if is_long_running:
+            LongRunningOperation(cmd.cli_ctx)(delete_result)
         logger.debug(f"Task {task_name} deleted successfully")
 
     except AzCLIError as exception:
@@ -527,8 +615,8 @@ def _transform_task_list(tasks):
 
 
 def _get_custom_registry_credentials(cmd):
-    acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
-    return acr_tasks_client.models.Credentials(
+    acr_tasks_models = get_acr_tasks_models(cmd.cli_ctx)
+    return acr_tasks_models.Credentials(
         source_registry=None,
         custom_registries=None
     )
