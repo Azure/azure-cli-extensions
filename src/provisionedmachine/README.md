@@ -84,9 +84,14 @@ az provisionedmachine show-status -n myProvisionedMachine -g myResourceGroup -o 
 
 ### List available OS images
 
+The `-o table` output includes an `Architecture` column (`amd64` or `arm64`) so you can pick the image that matches your hardware.
+
 ```bash
 az provisionedmachine os-image list --os-image-type HCI
 az provisionedmachine os-image list --location australiaeast --os-image-type AzureLinux -o table
+
+# Filter by CPU architecture (AzureLinux only)
+az provisionedmachine os-image list --os-image-type AzureLinux --architecture arm64
 ```
 
 ### Install OS on a provisioned machine

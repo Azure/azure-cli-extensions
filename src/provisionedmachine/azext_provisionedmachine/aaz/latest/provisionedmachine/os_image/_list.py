@@ -24,12 +24,15 @@ class List(AAZCommand):
 
     :example: List available HCI OS images in a specific region with table output
         az provisionedmachine os-image list --location australiaeast --os-image-type HCI -o table
+
+    :example: List arm64 AzureLinux OS images
+        az provisionedmachine os-image list --os-image-type AzureLinux --architecture arm64
     """
 
     _aaz_info = {
-        "version": "2026-05-01-preview",
+        "version": "2026-10-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.azurestackhci/locations/{}/osimages", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.azurestackhci/locations/{}/osimages", "2026-10-15-preview"],
         ]
     }
 
@@ -59,6 +62,11 @@ class List(AAZCommand):
             enum={"HCI": "HCI", "AzureLinux": "AzureLinux"},
             required=True,
         )
+        _args_schema.architecture = AAZStrArg(
+            options=["--architecture"],
+            help="Filter the results by CPU architecture. Only applied to AzureLinux images; ignored for other OS image types. Allowed values: amd64, arm64.",
+            enum={"amd64": "amd64", "arm64": "arm64"},
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -77,14 +85,6 @@ class List(AAZCommand):
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        
-        # Inject os_image_type from command args into each result item for table transformer
-        os_image_type = self.ctx.args.os_image_type.to_serialized_data()
-        if result and isinstance(result, list):
-            for item in result:
-                if isinstance(item, dict):
-                    item['_os_image_type'] = os_image_type
-        
         return result, next_link
 
     class OsImagesList(AAZHttpOperation):
@@ -133,11 +133,13 @@ class List(AAZCommand):
             os_image_type_lower = self.ctx.args.os_image_type.to_serialized_data().lower()
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-10-15-preview",
                     required=True,
                 ),
                 "solution-type": os_image_type_lower,
             }
+            if has_value(self.ctx.args.architecture):
+                parameters["architecture"] = self.ctx.args.architecture.to_serialized_data()
             return parameters
 
         @property

@@ -30,9 +30,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-05-01-preview",
+        "version": "2026-10-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/edgemachines/{}", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/edgemachines/{}", "2026-10-15-preview"],
         ]
     }
 
@@ -694,7 +694,7 @@ class Create(AAZCommand):
                 f"/subscriptions/{self.ctx.subscription_id}"
                 f"/resourceGroups/{args.resource_group.to_serialized_data()}"
                 f"/providers/Microsoft.AzureStackHCI/edgeMachines/{args.edge_machine_name.to_serialized_data()}"
-                f"?api-version=2026-05-01-preview"
+                f"?api-version=2026-10-15-preview"
             )
             
             # Make GET request using ctx.cli_ctx
@@ -767,7 +767,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-10-15-preview",
                     required=True,
                 ),
             }
@@ -870,7 +870,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-10-15-preview",
                     required=True,
                 ),
             }
