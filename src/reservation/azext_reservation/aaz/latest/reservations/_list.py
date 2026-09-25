@@ -24,7 +24,7 @@ class List(AAZCommand):
         az reservations list --selected-state "Failed"
 
     :example: List all "VirtualMachines" reservations under the current tenant
-        az az reservations list --filter "properties/reservedResourceType eq 'VirtualMachines'"
+        az reservations list --filter "properties/reservedResourceType eq 'VirtualMachines'"
 
     :example: List reservation and order the result by quantity in descending order
         az reservations list --orderby 'properties/quantity desc'
