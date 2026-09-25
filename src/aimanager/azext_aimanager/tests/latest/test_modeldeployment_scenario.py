@@ -9,7 +9,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.testsdk import ScenarioTest
 from azure.core.exceptions import ResourceNotFoundError
 
-from azext_aimanager.vendored_sdks.v2026_05_02_preview import models
+from azext_aimanager.vendored_sdks.v2026_09_02_preview import models
 
 
 class ModelDeploymentScenarioTest(ScenarioTest):

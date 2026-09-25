@@ -29,25 +29,25 @@ from azext_aimanager._client_factory import (
 def load_command_table(self, _):
 
     ai_managers_sdk = CliCommandType(
-        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#AIManagersOperations.{}",
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_09_02_preview.operations._operations#AIManagersOperations.{}",
         operation_group="ai_managers",
         client_factory=cf_ai_managers
     )
 
     ai_manager_namespaces_sdk = CliCommandType(
-        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#AIManagerNamespacesOperations.{}",
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_09_02_preview.operations._operations#AIManagerNamespacesOperations.{}",
         operation_group="ai_manager_namespaces",
         client_factory=cf_ai_manager_namespaces
     )
 
     model_deployments_sdk = CliCommandType(
-        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#ModelDeploymentsOperations.{}",
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_09_02_preview.operations._operations#ModelDeploymentsOperations.{}",
         operation_group="model_deployments",
         client_factory=cf_model_deployments
     )
 
     ai_models_sdk = CliCommandType(
-        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#AIModelsOperations.{}",
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_09_02_preview.operations._operations#AIModelsOperations.{}",
         operation_group="ai_models",
         client_factory=cf_ai_models
     )
@@ -75,7 +75,7 @@ def load_command_table(self, _):
         g.wait_command("wait")
 
     model_sources_sdk = CliCommandType(
-        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#ModelSourcesOperations.{}",
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_09_02_preview.operations._operations#ModelSourcesOperations.{}",
         operation_group="model_sources",
         client_factory=cf_model_sources
     )
