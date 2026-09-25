@@ -348,12 +348,38 @@ def validate_functionapp_kind(cmd, resource_group_name, container_app_name):
 
     if kind and kind.lower() == "functionapp":
         logger.debug("Container app '%s' validated as Azure Function App", container_app_name)
-        return
+        return containerapp_def
 
     logger.debug("Container app '%s' is not a function app - validation failed", container_app_name)
     raise ValidationError(
         f"The containerapp '{container_app_name}' is not an Azure Functions on Container App."
     )
+
+
+def validate_functionapp_ingress_enabled(cmd, resource_group_name, container_app_name, containerapp_def=None):
+    # Listing/showing functions reads function metadata that the platform only populates
+    # while ingress is enabled, so the underlying API fails with a generic server error
+    # when ingress is disabled. Detect that case up front and surface an actionable message
+    # instead of the opaque error the service returns.
+    # Callers that have already retrieved the Container App can pass it via `containerapp_def`
+    # to avoid an extra ARM GET.
+    if containerapp_def is None:
+        containerapp_def = validate_container_app_exists(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            container_app_name=container_app_name
+        )
+
+    ingress = safe_get(containerapp_def, "properties", "configuration", "ingress")
+
+    if not ingress:
+        logger.debug("Container app '%s' has ingress disabled - functions cannot be listed", container_app_name)
+        raise ValidationError(
+            f"Ingress must be enabled to view functions for the containerapp '{container_app_name}'. "
+            f"Enable ingress on the container app and try again."
+        )
+
+    logger.debug("Container app '%s' has ingress enabled", container_app_name)
 
 
 def validate_basic_arguments(resource_group_name, container_app_name, **kwargs):
