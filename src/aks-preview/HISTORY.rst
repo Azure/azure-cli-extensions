@@ -14,6 +14,28 @@ Pending
 * `az aks nodepool update`: Preserve the existing GPU management mode when `--enable-managed-gpu` is omitted, including when enabling, updating, or disabling the cluster autoscaler.
 * `az aks alert-config add`: Reject an empty `--name` before looking up existing configurations instead of reporting that it already exists.
 * `az aks nodepool scale`: add `--use-patch-api` to optionally scale a VMSS node pool via the new dedicated PATCH agent pool API (scales to the target count without triggering full reconciliation). The default behavior continues to use the PUT agent pool API.
+* `az aks create` and `az aks update`: Reject `--enable-azure-monitor-logs` on clusters using service principal authentication, since the Azure Monitor profile onboards with managed identity only.
+* `az aks update`: Reject `--enable-azure-monitor-logs` when Azure Monitor logs is already enabled on the cluster, matching `az aks enable-addons -a monitoring`. Run `--disable-azure-monitor-logs` first to change the configuration.
+* `az aks update`: `--disable-azure-monitor-logs` now removes the data collection rule association and resets the Container Insights settings (syslog port, Prometheus scraping and container network logs) back to their defaults, and asks for confirmation when OpenTelemetry logs and traces are enabled.
+* `az aks update`: Fix `--enable-azure-monitor-logs` not creating the data collection rule and association unless the Log Analytics workspace changed, which left the agent running with no data collection rule attached so no logs were ingested.
+* `az aks update`: Create the data collection rule and association before the cluster update when enabling with `--enable-azure-monitor-logs`, matching `az aks enable-addons -a monitoring`. Provisioning them afterwards meant the agent started before the association existed and then stayed idle for several minutes before restarting once the configuration arrived.
+* `az aks update`: Declining the OpenTelemetry confirmation prompt for `--disable-azure-monitor-metrics` now leaves the cluster unchanged and exits without an error, matching every other confirmation prompt, instead of failing the command.
+* `az aks enable-addons`, `az aks addon enable` and `az aks addon update`: Warn that shared key authentication for the monitoring addon is deprecated when `--enable-msi-auth-for-monitoring false` is passed, and point to `--enable-azure-monitor-logs`. The warning reflects the value you supply, so it stays silent when the flag is omitted on a cluster using service principal authentication.
+* `az aks update`: Fix `--enable-syslog`, `--data-collection-settings` and `--ampls-resource-id` being silently ignored when supplied on their own, as none of them re-provisioned the data collection rule that carries them, so the command reported success while the agent kept using the previous rule.
+* `az aks update`: Reject the OpenTelemetry port flags (`--opentelemetry-metrics-port-http`, `--opentelemetry-metrics-port-grpc`, `--opentelemetry-logs-traces-port-http` and `--opentelemetry-logs-traces-port-grpc`) when the matching receiver is being disabled in the same command, instead of accepting the port and then silently dropping it.
+* `az aks update`: Collect every monitoring disable confirmation before any of them deletes collection resources. Combining `--disable-azure-monitor-logs` with `--disable-azure-monitor-metrics` used to delete the logs data collection rule and association before asking about metrics, so declining that prompt aborted the command with Container Insights still enabled on the cluster but its collection objects already removed.
+* `az aks disable-addons`: Disabling the `monitoring` addon now resets the Container Insights settings (syslog port, Prometheus scraping and container network logs) back to their defaults and turns off OpenTelemetry logs and traces, matching `az aks update --disable-azure-monitor-logs`. The addon settings used to survive the disable and were silently inherited by the next onboarding.
+* `az aks disable-addons`: Ask for confirmation before disabling the `monitoring` addon when OpenTelemetry logs and traces are enabled, since that collection is disabled along with it. Add `--yes` to skip the prompt.
+* `az aks disable-addons`: Fix the monitoring cleanup being skipped when `monitoring` was passed alongside other addons, for example `--addons monitoring,azure-policy`.
+* `az aks update`: Reset the Container Insights settings to their defaults when `--enable-azure-monitor-logs` re-onboards a cluster, so a previous onboarding's syslog port, Prometheus scraping and container network logs settings are no longer inherited.
+* `az aks update`: Preserve the existing data collection rule settings when reconfiguring a cluster that is already onboarded, so that changing one setting no longer drops the others. `--enable-syslog` on its own used to rebuild the rule without the cluster's high log scale mode, custom data collection settings and ingestion data collection endpoint, and `--data-collection-settings` on its own used to drop syslog. Enabling Azure Monitor logs still starts from the documented defaults.
+* `az aks create` and `az aks update`: Reject the OpenTelemetry port flags at argument validation time when the matching receiver is being disabled in the same command. The conflict was previously caught only after the Azure Monitor collection resources had already been removed, so the command failed with the cluster partially torn down.
+* `az aks disable-addons`: Validate every addon name and its installed state before any cleanup runs. Disabling an unknown or not-installed addon alongside `monitoring` used to delete the monitoring data collection rule association first and only then fail, skipping the cluster update and leaving monitoring enabled with nothing to collect into.
+* Fix `--enable-high-log-scale-mode` mutating the shared list of Container Insights streams, so the stream set leaked between data collection rules built in the same command invocation.
+* `az aks create` and `az aks update`: Fix the `--data-collection-settings` size limit being applied to the file path instead of the settings it holds, which let an oversized file through to fail the data collection rule call with `Request Header Fields Too Large`.
+* `az aks update`: Fix `--enable-syslog false` being rejected with `Please specify one or more of "--enable-syslog"` after prompting to reconcile the cluster. Explicitly turning syslog collection off is a real update request, but the falsy value made the command treat it as though no argument had been supplied.
+* `az aks update`: Stop reopening public network access on the ingestion data collection endpoint of a cluster that is linked to an Azure Monitor Private Link Scope. The endpoint is created or updated on every reconfiguration, but `--ampls-resource-id` is only supplied on the command that links the scope, so an unrelated update such as `--enable-syslog` used to flip an existing private endpoint back to public. The existing network configuration is now preserved unless the caller explicitly asks to change it.
+* `az aks update`: Fix `--ampls-resource-id` being rejected with `--ampls-resource-id can only be used with private cluster in MSI mode.` on a cluster that is already private. The private state was only read from the command line, so it was invisible unless `--enable-private-cluster` happened to be supplied again in the same command; it is now read from the cluster as well.
 
 22.0.0b8
 +++++++++
@@ -793,7 +815,6 @@ Pending
 * Update --enable-advanced-network-observability description to note additional costs and add missing flag to create command.
 * Change default value of `--vm-set-type` to VirtualMachines when `--vm-sizes` is set.
 
-
 4.0.0b5
 ++++++++
 * Add warnings to `az aks mesh` commands for out of support asm revision in use.
@@ -887,7 +908,6 @@ Pending
 * Add `--sku` to the `az aks create` command.
 * Add `--sku` to the `az aks update` command.
 * Support cluster service health probe mode by `--cluster-service-load-balancer-health-probe-mode {Shared, Servicenodeport}`
-
 
 3.0.0b1
 +++++++
@@ -1009,7 +1029,6 @@ Pending
 * Add --disable-network-observability to `az aks update` cluster command.
 * Add `--node-soak-duration` to the `az aks nodepool add/update/upgrade` commands.
 * Add `--drain-timeout` to the `az aks nodepool add/update/upgrade` commands (already in [azure-cli](https://github.com/Azure/azure-cli/pull/27475)).
-
 
 0.5.168
 +++++++
