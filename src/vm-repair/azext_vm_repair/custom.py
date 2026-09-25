@@ -13,7 +13,7 @@ import requests
 
 from knack.log import get_logger
 
-from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
+from azure.cli.command_modules.vm.custom import get_vm_by_aaz, _is_linux_os_aaz
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.mgmt.core.tools import parse_resource_id
@@ -123,10 +123,9 @@ def _set_source_resource_context(command, source_vm, source_vm_instance_view=Non
             logger.debug('Could not determine source VM Hyper-V generation for telemetry: %s', exception)
 
     if hasattr(command, 'set_resource_context'):
-        hardware_profile = getattr(source_vm, 'hardware_profile', None)
         command.set_resource_context(
-            os_family='linux' if _is_linux_os(source_vm) else 'windows',
-            vm_size=getattr(hardware_profile, 'vm_size', None),
+            os_family='linux' if _is_linux_os_aaz(source_vm) else 'windows',
+            vm_size=source_vm.get('hardwareProfile', {}).get('vmSize'),
             disk_controller_type=source_controller,
             hyperv_generation=hyperv_generation)
     return source_controller
@@ -135,7 +134,7 @@ def _set_source_resource_context(command, source_vm, source_vm_instance_view=Non
 def _enrich_source_resource_context(command, cmd, source_vm, resource_group_name, vm_name):
     """Add instance-view telemetry when available without changing command success or failure."""
     try:
-        source_vm_instance_view = get_vm(cmd, resource_group_name, vm_name, 'instanceView')
+        source_vm_instance_view = get_vm_by_aaz(cmd, resource_group_name, vm_name, 'instanceView')
     except Exception as exception:
         logger.debug('Could not fetch source VM instance view for telemetry: %s', exception)
         source_vm_instance_view = None
@@ -147,7 +146,7 @@ def _enrich_repair_controller_context(command, cmd, resource_group_name, vm_name
     if not hasattr(command, 'set_resource_context'):
         return
     try:
-        repair_vm = get_vm(cmd, resource_group_name, vm_name)
+        repair_vm = get_vm_by_aaz(cmd, resource_group_name, vm_name)
         repair_controller = _fetch_source_disk_controller_type(repair_vm)
         command.set_resource_context(repair_vm_disk_controller_type=repair_controller)
     except Exception as exception:
@@ -203,25 +202,25 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         copy_disk_id = None
 
         # Fetching the data of the source VM.
-        source_vm = get_vm(cmd, resource_group_name, vm_name)
-        source_vm_instance_view = get_vm(cmd, resource_group_name, vm_name, 'instanceView')
+        source_vm = get_vm_by_aaz(cmd, resource_group_name, vm_name)
+        source_vm_instance_view = get_vm_by_aaz(cmd, resource_group_name, vm_name, 'instanceView')
 
         # Checking if the OS of the source VM is Linux and what the Hyper-V generation is.
-        is_linux = _is_linux_os(source_vm)
+        is_linux = _is_linux_os_aaz(source_vm)
         vm_hypervgen = _is_gen2(source_vm_instance_view)
         source_controller = _fetch_source_disk_controller_type(source_vm)
         _set_source_resource_context(command, source_vm, source_vm_instance_view,
                                      disk_controller_type=source_controller)
 
         # Fetching the name of the OS disk and checking if it's managed.
-        target_disk_name = source_vm.storage_profile.os_disk.name
+        target_disk_name = source_vm.get('storageProfile', {}).get('osDisk', {}).get('name')
         is_managed = _uses_managed_disk(source_vm)
 
         # Set up tags variable with passed data and resource.  Passed variable 'merged_tags' will be the holding location for the data throughout.
         merged_tags = {}
         # Optionally copy existing VM tags from the source VM.
-        if copy_tags and source_vm.tags:
-            merged_tags.update(source_vm.tags)
+        if copy_tags and source_vm.get('tags'):
+            merged_tags.update(source_vm['tags'])
         # Merge user-provided tags
         if isinstance(tags, dict):
             merged_tags.update(tags)
@@ -332,7 +331,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
         supported_controllers = []
         if not disk_controller_type and source_controller and str(source_controller).lower() == 'nvme':
-            supported_controllers = _fetch_sku_disk_controller_types(sku, source_vm.location)
+            supported_controllers = _fetch_sku_disk_controller_types(sku, source_vm.get('location'))
         selected_controller, level, message = _select_repair_disk_controller_type(
             source_controller, supported_controllers, disk_controller_type)
         getattr(logger, level)(message)
@@ -345,8 +344,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
         # Setting the availability zone for the repair VM.
         # If the source VM has availability zones, the first one is chosen for the repair VM.
-        if source_vm.zones:
-            zone = source_vm.zones[0]
+        if source_vm.get('zones'):
+            zone = source_vm['zones'][0]
             create_repair_vm_command += ' --zone {zone}'.format(zone=zone)
 
         if disable_trusted_launch:
@@ -381,7 +380,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         existing_rg = _check_existing_rg(repair_group_name)
         if not existing_rg:
             create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
-                .format(loc=source_vm.location, group_name=repair_group_name)
+                .format(loc=source_vm.get('location'), group_name=repair_group_name)
             logger.info('Creating resource group for repair VM and its resources...')
             _call_az_command(create_resource_group_command)
 
@@ -412,8 +411,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                 copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation_linux)
 
             # If the source VM has availability zones, get the first one and add it to the copy disk command.
-            if source_vm.zones:
-                zone = source_vm.zones[0]
+            if source_vm.get('zones'):
+                zone = source_vm['zones'][0]
                 copy_disk_command += ' --zone {zone}'.format(zone=zone)
 
             # Execute the command to create a copy of the OS disk of the source VM.
@@ -458,7 +457,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             logger.info('Source VM uses unmanaged disks. Creating repair VM with unmanaged disks.\n')
 
             # Get the URI of the OS disk from the source VM.
-            os_disk_uri = source_vm.storage_profile.os_disk.vhd.uri
+            os_disk_uri = source_vm.get('storageProfile', {}).get('osDisk', {}).get('vhd', {}).get('uri')
 
             # Create the name of the copy disk by appending '.vhd' to the existing name.
             copy_disk_name = copy_disk_name + '.vhd'
@@ -621,7 +620,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
     try:
         # Fetch source and repair VM data
-        source_vm = get_vm(cmd, resource_group_name, vm_name)  # Fetch the source VM data
+        source_vm = get_vm_by_aaz(cmd, resource_group_name, vm_name)  # Fetch the source VM data
         _enrich_source_resource_context(
             command, cmd, source_vm, resource_group_name, vm_name)
         is_managed = _uses_managed_disk(source_vm)  # Check if the source VM uses managed disks
@@ -635,7 +634,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
             # For MANAGED DISK
             if is_managed:
-                source_disk = source_vm.storage_profile.os_disk.name
+                source_disk = source_vm.get('storageProfile', {}).get('osDisk', {}).get('name')
                 # Retrieve required data from the repair disk before doing the disk swap, we need the full disk URI (id), not just the name
                 _, _, _, _, disk_id = _fetch_disk_info(resource_group_name, disk_name)
                 # Commands to detach the repaired data disk from the repair VM and os-disk-swap it onto the source VM
@@ -652,13 +651,17 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
             # For UNMANAGED DISK
             else:
-                source_disk = source_vm.storage_profile.os_disk.vhd.uri
+                source_disk = source_vm.get('storageProfile', {}).get('osDisk', {}).get('vhd', {}).get('uri')
                 # Fetch disk uri from disk name
-                repair_vm = get_vm(cmd, repair_vm_id['resource_group'], repair_vm_id['name'])
-                data_disks = repair_vm.storage_profile.data_disks
+                repair_vm = get_vm_by_aaz(cmd, repair_vm_id['resource_group'], repair_vm_id['name'])
+                data_disks = repair_vm.get('storageProfile', {}).get('dataDisks', [])
 
                 # The params went through validator so no need for existence checks
-                disk_uri = [disk.vhd.uri for disk in data_disks if disk.name == disk_name][0]
+                disk_uri = [
+                    disk.get('vhd', {}).get('uri')
+                    for disk in data_disks
+                    if disk.get('name') == disk_name
+                ][0]
 
                 # Commands to detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
                 detach_unamanged_command = 'az vm unmanaged-disk detach -g {g} --vm-name {repair} --name {disk}' \
@@ -739,10 +742,10 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
 
     try:
         # Fetch data of the VM on which the script is to be run
-        source_vm = get_vm(cmd, resource_group_name, vm_name)
+        source_vm = get_vm_by_aaz(cmd, resource_group_name, vm_name)
 
         # Determine the OS of the source VM
-        is_linux = _is_linux_os(source_vm)
+        is_linux = _is_linux_os_aaz(source_vm)
         _enrich_source_resource_context(
             command, cmd, source_vm, resource_group_name, vm_name)
 
@@ -945,7 +948,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         # VM must be running to reset its NIC.
         VM_OFF_MESSAGE = 'VM is not running. The VM must be in running to reset its NIC.\n'
 
-        vm_instance_view = get_vm(cmd, resource_group_name, vm_name, 'instanceView')
+        vm_instance_view = get_vm_by_aaz(cmd, resource_group_name, vm_name, 'instanceView')
         VM_started = _check_n_start_vm(vm_name, resource_group_name, not yes, VM_OFF_MESSAGE, vm_instance_view)
 
         # If VM is not started, raise an error
@@ -1121,7 +1124,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     command = command_helper(logger, cmd, 'vm repair repair-and-restore')
 
     try:
-        source_vm = get_vm(cmd, resource_group_name, vm_name)
+        source_vm = get_vm_by_aaz(cmd, resource_group_name, vm_name)
         _enrich_source_resource_context(
             command, cmd, source_vm, resource_group_name, vm_name)
     except Exception as exception:

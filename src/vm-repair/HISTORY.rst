@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.4.4
+++++++
+Migrate code from Azure SDK to AAZ based commands for compute operations
+
 2.4.3
 ++++++
 Advisory warnings raised by a command are now also returned in its output, under a ``warnings`` key. Until now the only warning ``az vm repair create`` raises — that the repair VM size supports NVMe but not SCSI, so repair scripts which locate the attached OS disk by its SCSI model name will not find it — was written to the log and nowhere else. A script or portal experience driving the command received a success payload with no indication that the repair VM it just created is one several repair scripts cannot work on. The key is only present when a warning was raised, so existing output is unchanged otherwise.
