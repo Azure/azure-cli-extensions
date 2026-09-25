@@ -295,7 +295,9 @@ def ml_job_restore(cmd, resource_group_name, workspace_name, name):
         log_and_raise_error(err, debug)
 
 
-def ml_job_connect_ssh(cmd, resource_group_name, workspace_name, name, node_index=0, private_key_file_path=None):
+def ml_job_connect_ssh(
+    cmd, resource_group_name, workspace_name, name, node_index=0, private_key_file_path=None, ssh_args=None
+):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
@@ -310,7 +312,7 @@ def ml_job_connect_ssh(cmd, resource_group_name, workspace_name, name, node_inde
                 error_type=ValidationErrorType.FILE_OR_FOLDER_NOT_FOUND,
             )
         services_dict = ml_client.jobs.show_services(name, node_index)
-        ssh_command = get_ssh_command(services_dict, node_index, private_key_file_path)
+        ssh_command = get_ssh_command(services_dict, node_index, private_key_file_path, ssh_args=ssh_args)
         if not has_ssh_dependencies_installed():
             return
 

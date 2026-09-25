@@ -42,11 +42,13 @@ def native_proxy_command(monkeypatch):
             "--is-compute", "argument with spaces", "O'Brien", 'quoted"value',
             "literal $HOME", "100%h", "%USERPROFILE%", "\u00e9", "", "trailing\\",
         ]
+        ssh_arguments = ["-N", "-L", "8080:localhost:80", "-o", "ServerAliveInterval=17"]
         services = {"ssh": ServiceInstance(type="SSH", status="Running", properties={"ProxyEndpoint": endpoint})}
         monkeypatch.setattr(_ssh_command, "sys", SimpleNamespace(executable=str(executable)))
         monkeypatch.setattr(_ssh_command, "__file__", str(root / "_ssh_command.py"))
-        command = _ssh_command.get_ssh_command(services, 0, None, connector_args=arguments)
+        command = _ssh_command.get_ssh_command(services, 0, None, ssh_args=ssh_arguments, connector_args=arguments)
         assert isinstance(command, list)
+        assert command[-len(ssh_arguments) - 1:] == [*ssh_arguments, "azureuser@" + endpoint]
         proxy = command[command.index("-o") + 1].removeprefix("ProxyCommand=")
         environment = dict(os.environ, HOME=str(root))
         environment.pop("BASH_ENV", None)
@@ -69,6 +71,8 @@ def test_native_openssh_validates_proxy_command_without_connecting(native_proxy_
     assert result.returncode == 0, result.stderr
     actual = next(line for line in result.stdout.splitlines() if line.startswith("proxycommand "))
     assert actual.removeprefix("proxycommand ") == probe.proxy
+    assert "serveraliveinterval 17" in result.stdout.splitlines()
+    assert any(line.startswith("localforward ") and "8080" in line for line in result.stdout.splitlines())
 
 
 @pytest.mark.skipif(os.name == "nt", reason="Requires a native POSIX shell")

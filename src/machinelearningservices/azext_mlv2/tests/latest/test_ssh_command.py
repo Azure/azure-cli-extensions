@@ -40,6 +40,7 @@ VALID_ENDPOINTS = [
     "wss://proxy.example/run%20files/%25id/%E2%82%AC",
     "wss://xn--caf-dma.example",
     "wss://caf\u00e9.example",
+    "wss://cafe\u0301.example",
 ]
 INVALID_ENDPOINTS = [
     None,
@@ -69,6 +70,12 @@ INVALID_ENDPOINTS = [
     "wss://proxy-.example",
     "wss://proxy..example",
     "wss://proxy_example",
+    "wss://proxy\u034f.example",
+    "wss://proxy\u180b.example",
+    "wss://proxy\u180c.example",
+    "wss://proxy\u180d.example",
+    "wss://proxy\ufe00.example",
+    "wss://proxy\ufe0f.example",
     "wss://" + "a" * 64 + ".example",
     "wss://" + ".".join(["a" * 63] * 4),
     "wss://999.1.2.3",
@@ -276,16 +283,19 @@ def test_posix_ssh_executable_selection(target_platform):
 def test_key_and_extra_arguments_keep_boundaries(target_platform, tmp_path):
     key = tmp_path / "private key \u00e9 %h"
     key.write_text("test-only key placeholder", encoding="utf-8")
-    ssh_args = ["-L", "8080:localhost:80", "-o", "ServerAliveInterval=30", "remote argument"]
+    ssh_args = ["-L", "8080:localhost:80", "-o", "ServerAliveInterval=30", "-o", "IdentityFile=path with spaces"]
     connector_args = ["--is-compute", "one argument", "", "literal $HOME; & ' \" ` ( )", "100%h %r %%"]
     command = _ssh_command.get_ssh_command(_services(), 0, str(key), ssh_args, connector_args)
 
     assert command[command.index("-i") + 1] == str(key)
-    assert command[-len(ssh_args):] == ssh_args
+    assert command[-len(ssh_args) - 1:-1] == ssh_args
+    assert command[-1] == "azureuser@" + ENDPOINT
     assert _proxy_arguments(command, target_platform) == [
         target_platform.python, target_platform.connector, ENDPOINT, *connector_args
     ]
-    assert ssh_args == ["-L", "8080:localhost:80", "-o", "ServerAliveInterval=30", "remote argument"]
+    assert ssh_args == [
+        "-L", "8080:localhost:80", "-o", "ServerAliveInterval=30", "-o", "IdentityFile=path with spaces",
+    ]
     assert connector_args[-1] == "100%h %r %%"
     if os.name == "nt":
         assert _windows_split(subprocess.list2cmdline(command)) == command
@@ -442,6 +452,72 @@ def test_job_caller_forwards_node_selection(monkeypatch, target_platform):
     job.ml_job_connect_ssh(SimpleNamespace(cli_ctx=Mock()), "group", "workspace", "name", node_index=7)
     client.jobs.show_services.assert_called_once_with("name", 7)
     assert _proxy_arguments(launch.call_args.args[0], target_platform)[2] == "wss://node-7.example"
+
+
+def test_job_caller_forwards_ssh_arguments(monkeypatch, target_platform):
+    client = Mock()
+    client.jobs.show_services.return_value = _services()
+    monkeypatch.setattr(job, "get_ml_client", Mock(return_value=(client, False)))
+    monkeypatch.setattr(job, "has_ssh_dependencies_installed", Mock(return_value=True))
+    launch = Mock(return_value=0)
+    monkeypatch.setattr(job.subprocess, "call", launch)
+    ssh_args = ["-N", "-L", "8080:localhost:80", "-o", "IdentityFile=path with spaces"]
+
+    job.ml_job_connect_ssh(
+        SimpleNamespace(cli_ctx=Mock()), "group", "workspace", "name", ssh_args=ssh_args,
+    )
+
+    command = launch.call_args.args[0]
+    assert launch.call_args.kwargs == {"shell": False}
+    assert command[-len(ssh_args) - 1:] == [*ssh_args, "azureuser@" + ENDPOINT]
+    assert _proxy_arguments(command, target_platform)[2:] == [ENDPOINT]
+
+
+def test_job_cli_forwards_repeatable_ssh_arguments(monkeypatch, tmp_path):
+    from azure.cli.core import _config, extension
+    from azure.cli.core.mock import DummyCli
+    from azext_mlv2 import __file__ as extension_file
+    from azext_mlv2.generated import _client_factory
+
+    source = str(pathlib.Path(extension_file).parent.parent)
+    local_extension = extension.DevExtension("ml", source)
+    monkeypatch.setattr(
+        local_extension, "get_metadata",
+        lambda: {"name": "ml", "version": "2.45.0", **extension.DevExtension.get_azext_metadata(source)},
+    )
+    monkeypatch.setattr(extension, "get_extensions", lambda *args, **kwargs: [local_extension])
+    monkeypatch.setattr(_config, "GLOBAL_CONFIG_DIR", str(tmp_path))
+    monkeypatch.setenv("AZURE_CONFIG_DIR", str(tmp_path))
+    monkeypatch.setenv("AZURE_CORE_COLLECT_TELEMETRY", "false")
+    monkeypatch.setattr(_client_factory, "cf_ml_cl", Mock())
+    client = Mock()
+    client.jobs.show_services.return_value = _services()
+    monkeypatch.setattr(job, "get_ml_client", Mock(return_value=(client, False)))
+    monkeypatch.setattr(job, "has_ssh_dependencies_installed", Mock(return_value=True))
+    launch = Mock(return_value=0)
+    monkeypatch.setattr(job.subprocess, "call", launch)
+
+    result = DummyCli().invoke([
+        "ml", "job", "connect-ssh", "--resource-group", "group", "--workspace-name", "workspace", "--name", "name",
+        "--ssh-args=-N", "--ssh-args=-L", "--ssh-args=8080:localhost:80",
+        "-c=-o", "-c=IdentityFile=path with spaces",
+    ])
+
+    assert result == 0
+    launch.assert_called_once()
+    assert launch.call_args.kwargs == {"shell": False}
+    assert launch.call_args.args[0][-6:] == [
+        "-N", "-L", "8080:localhost:80", "-o", "IdentityFile=path with spaces", "azureuser@" + ENDPOINT,
+    ]
+
+
+def test_invalid_endpoint_message_applies_to_both_callers(caller):
+    _set_caller_endpoint(caller, "not-a-websocket-url")
+    with pytest.raises((CLIError, ValidationException), match="SSH ProxyEndpoint") as error:
+        caller.invoke(SimpleNamespace(cli_ctx=Mock()), "group", "workspace", "name")
+    assert "JobService" not in str(error.value)
+    caller.dependencies.assert_not_called()
+    caller.launch.assert_not_called()
 
 
 def test_declining_dependencies_does_not_launch_ssh(caller, target_platform):

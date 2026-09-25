@@ -1,6 +1,7 @@
 ## Unreleased
 
 - Improve SSH connection argument handling and endpoint validation for jobs and compute instances.
+- Honor repeatable `az ml job connect-ssh --ssh-args` options.
 
 ## 2026-09-10
 

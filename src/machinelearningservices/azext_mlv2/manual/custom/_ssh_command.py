@@ -13,6 +13,7 @@ import os
 import pathlib
 import platform
 import re
+import stringprep
 import subprocess
 import sys
 from typing import Dict, List, Sequence, Optional
@@ -50,7 +51,7 @@ def get_ssh_command(
     command = [ssh_path, "-v", "-o", f"ProxyCommand={proxy_command}"]
     if private_key_file_path:
         command.extend(["-i", private_key_file_path])
-    command.extend([f"azureuser@{proxy_endpoint}", *(ssh_args or [])])
+    command.extend([*(ssh_args or []), f"azureuser@{proxy_endpoint}"])
     return command
 
 
@@ -91,6 +92,9 @@ def _validate_proxy_endpoint(proxy_endpoint: str, node_index: int) -> str:
         if ":" in hostname:
             ipaddress.IPv6Address(hostname)
         else:
+            # IDNA silently removes these characters, hiding malformed service endpoints.
+            if any(stringprep.in_table_b1(char) for char in hostname):
+                raise ValueError
             hostname = hostname.encode("idna").decode("ascii").removesuffix(".")
             if len(hostname) > 253 or any(
                 not re.fullmatch(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?", label)
@@ -107,7 +111,7 @@ def _validate_proxy_endpoint(proxy_endpoint: str, node_index: int) -> str:
             raise ValueError
     except ValueError:
         msg = (
-            "The ssh JobService.properties ProxyEndpoint must be a valid ws:// or wss:// URL "
+            "The SSH ProxyEndpoint must be a valid ws:// or wss:// URL "
             "with a host, optional port and path."
         )
         raise ValidationException(
@@ -159,7 +163,7 @@ def _get_proxy_endpoint(services_dict: Dict[str, ServiceInstance], node_index: i
         )
 
     if not first_ssh_service.properties or not first_ssh_service.properties.get("ProxyEndpoint"):
-        msg = "The ssh JobService.properties is missing ProxyEndpoint."
+        msg = "The SSH service is missing ProxyEndpoint."
         raise JobException(
             message=msg,
             no_personal_data_message=msg,
