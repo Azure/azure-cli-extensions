@@ -16,6 +16,7 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
     FileOperationError,
     InvalidArgumentValueError,
+    ManualInterrupt,
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
     ValidationError,
@@ -77,10 +78,16 @@ class ArcError:
             lines.append(f"Troubleshooting: {self.tsg_link}")
         return "\n".join(lines)
 
-    def as_error(self, **context: object) -> AzCLIError:
+    def as_error(
+        self, *, recommendation: str | None = None, **context: object
+    ) -> AzCLIError:
         """Build, but do not raise, the configured Azure CLI exception."""
         if self.az_error_cls is None:
             raise ValueError(f"{self.code} is a non-raising diagnostic error")
+        if recommendation:
+            return self.az_error_cls(
+                self.format(**context), recommendation=recommendation
+            )
         return self.az_error_cls(self.format(**context))
 
 
@@ -583,12 +590,14 @@ CLIENT_PROXY_DOWNLOAD_FAILED = _define(
     name="ClientProxyDownloadFailed",
     description="Failed to download the client proxy binary.",
     fault_type=consts.Download_Exe_Fault_Type,
+    fault_type_aliases=(consts.Create_CSPExe_Fault_Type,),
 )
 CLIENT_PROXY_PORT_IN_USE = _define(
     code="AZK8S0801",
     name="ClientProxyPortInUse",
     description="The client proxy port is already in use.",
     fault_type=consts.Client_Proxy_Port_Fault_Type,
+    az_error_cls=ClientRequestError,
 )
 CLIENT_PROXY_START_FAILED = _define(
     code="AZK8S0802",
@@ -602,12 +611,14 @@ CLIENT_PROXY_CONFIG_CREATE_FAILED = _define(
     description="Failed to create the client proxy configuration file.",
     fault_type=consts.Create_Config_Fault_Type,
     az_error_cls=FileOperationError,
+    fault_type_aliases=(consts.Remove_Config_Fault_Type,),
 )
 CLIENT_PROXY_CLOSED = _define(
     code="AZK8S0804",
     name="ClientProxyClosed",
     description="The client proxy process was closed externally.",
     fault_type=consts.Proxy_Closed_Externally_Fault_Type,
+    az_error_cls=ManualInterrupt,
 )
 CLUSTER_CREDENTIALS_GET_FAILED = _define(
     code="AZK8S0805",

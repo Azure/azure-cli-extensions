@@ -4608,9 +4608,12 @@ def client_side_proxy_wrapper(
         client_proxy_port = int(api_server_port) - 1
 
     if int(client_proxy_port) == int(api_server_port):
-        raise ClientRequestError(
-            f"Proxy uses port {client_proxy_port} internally.",
-            recommendation="Please pass some other unused port through --port option.",
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.CLIENT_PROXY_PORT_IN_USE,
+            user_fault=True,
+            recommendation="Please pass another unused port through --port.",
+            details=f"Proxy uses port {client_proxy_port} internally.",
         )
 
     args = []
@@ -4627,26 +4630,36 @@ def client_side_proxy_wrapper(
             "The proxy port is already in use, potentially by another proxy instance."
         )
         reco_msg = "Please stop the existing proxy instance or pass a different port through --port option."
-        raise ClientRequestError(err_msg, recommendation=reco_msg)
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.CLIENT_PROXY_PORT_IN_USE,
+            user_fault=True,
+            recommendation=reco_msg,
+            details=err_msg,
+        )
 
     port_error_string = ""
+    port_recommendations = []
     if clientproxyutils.check_if_port_is_open(api_server_port):
-        port_error_string += (
-            f"Port {api_server_port} is already in use. Please select a different port with "
-            "--port option.\n"
-        )
+        port_error_string += f"Port {api_server_port} is already in use.\n"
+        port_recommendations.append("Select a different port with the --port option.")
     if clientproxyutils.check_if_port_is_open(client_proxy_port):
-        telemetry.set_exception(
-            exception=Exception("Client proxy port was in use."),
-            fault_type=consts.Client_Proxy_Port_Fault_Type,
-            summary="Client proxy port was in use.",
-        )
         port_error_string += (
             f"Port {client_proxy_port} is already in use. This is an internal port that proxy "
-            "uses. Please ensure that this port is open before running 'az connectedk8s proxy'.\n"
+            "uses.\n"
+        )
+        port_recommendations.append(
+            f"Ensure port {client_proxy_port} is available before running "
+            "'az connectedk8s proxy'."
         )
     if port_error_string != "":
-        raise ClientRequestError(port_error_string)
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.CLIENT_PROXY_PORT_IN_USE,
+            user_fault=True,
+            recommendation=" ".join(port_recommendations),
+            details=port_error_string,
+        )
 
     debug_mode = False
     if "--debug" in cmd.cli_ctx.data["safe_params"]:
@@ -4663,12 +4676,13 @@ def client_side_proxy_wrapper(
         try:
             os.remove(config_file_location)
         except Exception as e:
-            telemetry.set_exception(
+            raise utils.report_connectedk8s_error(
+                cmd,
+                errors.CLIENT_PROXY_CONFIG_CREATE_FAILED,
                 exception=e,
                 fault_type=consts.Remove_Config_Fault_Type,
-                summary="Unable to remove old config file",
-            )
-            raise FileOperationError("Failed to remove old config." + str(e)) from e
+                details=f"Failed to remove the old configuration: {e}",
+            ) from e
 
     # initializations
     user_type = "sat"
@@ -4729,12 +4743,12 @@ def client_side_proxy_wrapper(
         with open(config_file_location, "w", encoding="utf-8") as f:
             yaml.dump(dict_file, f, default_flow_style=False)
     except Exception as e:
-        telemetry.set_exception(
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.CLIENT_PROXY_CONFIG_CREATE_FAILED,
             exception=e,
-            fault_type=consts.Create_Config_Fault_Type,
-            summary="Unable to create config file for proxy.",
-        )
-        raise FileOperationError("Failed to create config for proxy." + str(e)) from e
+            details=str(e),
+        ) from e
 
     args.append("-c")
     args.append(config_file_location)
@@ -4825,12 +4839,11 @@ def client_side_proxy_main(
                     at_expiry = new_at_expiry
 
         else:
-            telemetry.set_exception(
-                exception=Exception("Process closed externally."),
-                fault_type=consts.Proxy_Closed_Externally_Fault_Type,
-                summary="Process closed externally.",
+            raise utils.report_connectedk8s_error(
+                cmd,
+                errors.CLIENT_PROXY_CLOSED,
+                details="Restart the proxy command to reconnect.",
             )
-            raise ManualInterrupt("Proxy closed externally.")
 
 
 def client_side_proxy(
@@ -4879,12 +4892,12 @@ def client_side_proxy(
             print(f"Proxy is listening on port {api_server_port}")
 
         except Exception as e:
-            telemetry.set_exception(
+            raise utils.report_connectedk8s_error(
+                cmd,
+                errors.CLIENT_PROXY_START_FAILED,
                 exception=e,
-                fault_type=consts.Run_Clientproxy_Fault_Type,
-                summary="Unable to run client proxy executable",
-            )
-            raise CLIInternalError(f"Failed to start proxy process: {e}") from e
+                details=str(e),
+            ) from e
 
     assert clientproxy_process is not None
 

@@ -22,7 +22,7 @@ their existing call sites are migrated.
 | Component | Location | Purpose |
 |---|---|---|
 | ARM ID context | `_utils.py :: set_connected_cluster_arm_id_telemetry_context` | Builds and stores the connected-cluster ARM ID for the command |
-| Event wrapper | `_utils.py :: add_connectedk8s_telemetry_event` | Adds the stored ARM ID to extension event properties |
+| Event wrapper | `_utils.py :: add_connectedk8s_telemetry_event` | Sanitizes telemetry properties and adds the stored ARM ID to extension event properties |
 | Error catalog | `_errors.py` | Defines stable error codes, names, messages, fault types, exception classes, and optional TSG links |
 | Error reporter | `_utils.py :: report_connectedk8s_error` | Emits standardized telemetry and returns the matching CLI exception |
 | Helm timeout reporter | `_utils.py :: report_helm_timeout_error` | Reports classified Helm timeout diagnostics through the standard reporter |
@@ -102,7 +102,9 @@ utils.add_connectedk8s_telemetry_event(
 )
 ```
 
-The wrapper copies the supplied dictionary and adds:
+The wrapper copies the supplied dictionary, recursively redacts sensitive values,
+removes apostrophes from strings to keep Azure CLI telemetry JSON parseable, and
+adds:
 
 ```text
 Context.Default.AzureCLI.resourceid
@@ -345,7 +347,10 @@ When migrating an existing error path:
 The shared reporter is currently used by the command catch-all, agent-state
 timeouts, Helm operation failures, and classified Helm timeout failures.
 Pre-onboarding and troubleshoot extension events use the ARM ID-aware event
-wrapper.
+wrapper. Client proxy download, port, startup, configuration, unexpected
+closure failures use the `AZK8S0800` through `AZK8S0804` classifications.
+The `AZK8S0805` cluster-credential definition is reserved for migration after
+the shared ARM error-classification changes land.
 
 The catalog contains the supplied error-code allocation across the
 `AZK8S0001` through `AZK8S0805` ranges, but not every historical call site has

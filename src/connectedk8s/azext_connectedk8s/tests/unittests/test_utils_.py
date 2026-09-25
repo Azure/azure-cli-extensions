@@ -19,6 +19,7 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
     FileOperationError,
     InvalidArgumentValueError,
+    ManualInterrupt,
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
     ValidationError,
@@ -573,7 +574,9 @@ def test_error_catalog_uses_proposed_exception_classes():
         "AZK8S0508": ClientRequestError,
         "AZK8S0602": ValidationError,
         "AZK8S0603": ValidationError,
+        "AZK8S0801": ClientRequestError,
         "AZK8S0803": FileOperationError,
+        "AZK8S0804": ManualInterrupt,
     }
     non_raising_codes = {
         "AZK8S0301",
@@ -733,6 +736,7 @@ def test_report_connectedk8s_error_sanitizes_telemetry(monkeypatch):
         None,
         error,
         exception=RuntimeError(details),
+        telemetry_properties={"customDetail": "proxy's connection failed"},
         details=details,
     )
 
@@ -745,6 +749,7 @@ def test_report_connectedk8s_error_sanitizes_telemetry(monkeypatch):
         "[AZK8S0009] TestError: Test message: cant connect to "
         "http://[REDACTED]:[REDACTED]@example.com:8080"
     )
+    assert properties["customDetail"] == "proxys connection failed"
     telemetry_exception = mock_telemetry.set_exception.call_args.kwargs["exception"]
     assert type(telemetry_exception).__name__ == "RuntimeError"
     assert str(telemetry_exception) == (

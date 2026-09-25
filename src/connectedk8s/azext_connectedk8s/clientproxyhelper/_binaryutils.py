@@ -16,10 +16,15 @@ from knack import log
 from knack.commands import CLICommand
 
 import azext_connectedk8s._constants as consts
+import azext_connectedk8s._errors as errors
 import azext_connectedk8s._fileutils as file_utils
 import azext_connectedk8s._utils as utils
 
 logger = log.get_logger(__name__)
+
+
+class _ClientProxyDownloadError(Exception):
+    """Marks download and artifact failures for classification at the install boundary."""
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
@@ -58,13 +63,22 @@ def install_client_side_proxy(
             )
             _check_proxy_installation(install_dir, proxy_name, debug)
 
+    except _ClientProxyDownloadError as e:
+        cause = e.__cause__ if isinstance(e.__cause__, Exception) else e
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.CLIENT_PROXY_DOWNLOAD_FAILED,
+            exception=cause,
+            details=str(e),
+        ) from cause
     except Exception as e:
-        telemetry.set_exception(
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.CLIENT_PROXY_DOWNLOAD_FAILED,
             exception=e,
             fault_type=consts.Create_CSPExe_Fault_Type,
-            summary="Unable to create proxy executable",
-        )
-        raise e
+            details=str(e),
+        ) from e
 
     return install_location
 
@@ -92,14 +106,7 @@ def _download_proxy_from_MCR(
             target=f"{mar_target}:{consts.CLIENT_PROXY_VERSION}", outdir=dest_dir
         )
     except Exception as e:
-        telemetry.set_exception(
-            exception=e,
-            fault_type=consts.Download_Exe_Fault_Type,
-            summary="Unable to download clientproxy executable.",
-        )
-        raise azclierror.CLIInternalError(
-            f"Failed to download Arc Connectivity proxy with error {e!s}. Please try again."
-        )
+        raise _ClientProxyDownloadError(f"{e!s} Please try again.") from e
 
     time_elapsed = time.time() - t0
 
@@ -109,13 +116,16 @@ def _download_proxy_from_MCR(
     }
     utils.add_connectedk8s_telemetry_event(cmd, proxy_data)
 
-    proxy_package_path = _get_proxy_package_path_from_oras_response(response)
-    _extract_proxy_tar_files(proxy_package_path, dest_dir, proxy_name)
-    file_utils.delete_file(
-        proxy_package_path,
-        f"Failed to delete {proxy_package_path}. Please delete manually.",
-        True,
-    )
+    try:
+        proxy_package_path = _get_proxy_package_path_from_oras_response(response)
+        _extract_proxy_tar_files(proxy_package_path, dest_dir, proxy_name)
+        file_utils.delete_file(
+            proxy_package_path,
+            f"Failed to delete {proxy_package_path}. Please delete manually.",
+            True,
+        )
+    except Exception as e:
+        raise _ClientProxyDownloadError(str(e)) from e
 
 
 def _get_proxy_package_path_from_oras_response(pull_response: List[str]) -> str:

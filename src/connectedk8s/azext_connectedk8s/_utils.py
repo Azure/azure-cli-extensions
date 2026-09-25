@@ -627,6 +627,7 @@ def report_connectedk8s_error(
     user_fault: bool = False,
     telemetry_properties: dict[str, Any] | None = None,
     fault_type: str | None = None,
+    recommendation: str | None = None,
     **context: object,
 ) -> AzCLIError:
     """Report one standardized error to telemetry and return its console exception."""
@@ -639,7 +640,7 @@ def report_connectedk8s_error(
         fault_type=fault_type,
         **context,
     )
-    return error.as_error(**context)
+    return error.as_error(recommendation=recommendation, **context)
 
 
 def _get_underlying_exception_type(exception: BaseException) -> str:
