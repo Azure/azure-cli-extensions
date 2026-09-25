@@ -425,6 +425,26 @@ class ChaosStudioTests(unittest.TestCase):
         with self.assertRaisesRegex(InvalidArgumentValueError, "No Microsoft.ChaosStudio version"):
             self.prepare()
 
+    def test_latest_registered_uses_semver_precedence(self):
+        cases = (
+            (("0.1.6", "0.1.8"), "0.1.8"),
+            (("0.1.8", "v0.1.9"), "v0.1.9"),
+            (("1.0.0-rc.1", "1.0.0-beta.11", "1.0.0-beta.2"), "1.0.0-rc.1"),
+            (("1.0.0-foo", "0.9.0"), "1.0.0-foo"),
+            (("1.0.0-0.3.7", "1.0.0-alpha"), "1.0.0-alpha"),
+            (("1.0.0-rc.1", "1.0.0"), "1.0.0"),
+            (("1.0.0+build.9", "1.0.1-x.7.z.92"), "1.0.1-x.7.z.92"),
+            (("1.1", "1.0.9"), "1.1"),
+            (("1.0.0", "bad", "1.x.0", "2.0.0-", "2.0.0-a..b", ""), "1.0.0"),
+        )
+        for registered, expected in cases:
+            with self.subTest(registered=registered):
+                self.registered(*registered)
+                self.assertEqual(self.prepare().version, expected)
+        self.registered("latest", "x.y.z")
+        with self.assertRaisesRegex(InvalidArgumentValueError, "No Microsoft.ChaosStudio version"):
+            self.prepare()
+
     def test_create_update_delete_at_registered_non_pinned_version(self):
         self.registered("0.1.6", "0.2.0", "0.3.0")
         result = self.run_install(version="0.2.0")

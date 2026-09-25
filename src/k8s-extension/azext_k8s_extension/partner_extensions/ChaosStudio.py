@@ -19,7 +19,6 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request, sdk_no_wait
 from knack.log import get_logger
 from knack.util import CLIError
-from packaging.version import InvalidVersion, Version
 from ..vendored_sdks.models import Extension, PatchExtension, Scope, ScopeCluster
 from .._client_factory import cf_k8s_extension_types
 from .DefaultExtension import DefaultExtension
@@ -229,16 +228,32 @@ class ChaosStudio(DefaultExtension):
         candidates = []
         for item in versions or []:
             value = getattr(getattr(item, "properties", None), "version", None)
-            try:
-                candidates.append((Version(value), value))
-            except (InvalidVersion, TypeError):
-                continue
+            key = ChaosStudio._semver_key(value)
+            if key is not None:
+                candidates.append((key, value))
         if not candidates:
             raise InvalidArgumentValueError(
                 "No Microsoft.ChaosStudio version is registered for this cluster on release train '{}'. "
                 "Pass --version once one is available.".format(release_train)
             )
         return max(candidates)[1]
+
+    @staticmethod
+    def _semver_key(value):
+        # SemVer 2.0 precedence: build metadata is ignored and a release outranks its prereleases.
+        if not isinstance(value, str):
+            return None
+        core, dash, prerelease = value.strip().lstrip("vV").split("+", 1)[0].partition("-")
+        parts = core.split(".")
+        if not all(part.isdigit() for part in parts):
+            return None
+        numbers = tuple(int(part) for part in parts) + (0,) * max(0, 3 - len(parts))
+        if not dash:
+            return numbers, 1, ()
+        identifiers = prerelease.split(".")
+        if not all(identifiers):
+            return None
+        return numbers, 0, tuple((0, int(i), "") if i.isdigit() else (1, 0, i) for i in identifiers)
 
     @classmethod
     def _reject_managed_overrides(cls, *settings):
