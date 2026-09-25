@@ -25,15 +25,18 @@ class NvmeRecoveryDocumentationTest(unittest.TestCase):
         self.assertIn('GEN1_TO_GEN2_CONVERSION_REQUIRED', self.readme)
         self.assertIn('Azure Trusted Launch upgrade', self.readme)
         self.assertIn('not performed by a repair-library run ID', self.readme)
+        self.assertIn('creates no recovery evidence\nor backup directory', self.readme)
+        self.assertIn('`NoChangeNeeded` creates no backup', self.readme)
 
     def test_help_preserves_report_before_repair_and_rollback(self):
         report_command = '--run-id win-enable-nvme-boot-driver --run-on-repair --verbose'
         repair_command = '--run-id win-enable-nvme-boot-driver --run-on-repair --parameters Mode=Repair'
-        rollback_command = '--parameters Mode=Rollback BackupFile='
+        rollback_command = '--parameters Mode=Rollback "BackupFile=<full-path-emitted-by-Repair>"'
 
         self.assertIn(report_command, self.help_text)
         self.assertIn(repair_command, self.help_text)
         self.assertIn(rollback_command, self.help_text)
+        self.assertNotIn('BackupFile=C:\\\\Users\\\\Public\\\\Desktop\\\\nvme-repair-backup.reg', self.help_text)
         self.assertLess(self.help_text.index(report_command), self.help_text.index(repair_command))
 
 

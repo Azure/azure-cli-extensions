@@ -99,7 +99,7 @@ helps['vm repair run'] = """
             az vm repair run -g MyResourceGroup -n MyBrokenVM --run-id win-enable-nvme-boot-driver --run-on-repair --parameters Mode=Repair --verbose
         - name: Roll back a Windows NVMe boot-driver repair using the full backup path emitted by Repair.
           text: >
-            az vm repair run -g MyResourceGroup -n MyBrokenVM --run-id win-enable-nvme-boot-driver --run-on-repair --parameters Mode=Rollback BackupFile=C:\\Users\\Public\\Desktop\\nvme-repair-backup.reg --verbose
+            az vm repair run -g MyResourceGroup -n MyBrokenVM --run-id win-enable-nvme-boot-driver --run-on-repair --parameters Mode=Rollback "BackupFile=<full-path-emitted-by-Repair>" --verbose
         - name: Run a local custom script on the VM.
           text: >
             az vm repair run -g MyResourceGroup -n MySourceWinVM --custom-script-file ./file.ps1 --verbose
