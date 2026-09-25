@@ -127,6 +127,13 @@ def load_arguments(self, _):
             choices=["linux/amd64", "windows/amd64"],
         )
         c.argument(
+            "prerelease_policy_api",
+            options_list=("--prerelease-policy-api",),
+            action="store_true",
+            help="Generate a Linux policy using the latest bundled prerelease policy API and framework. "
+                 "Windows policies always use the latest bundled policy versions.",
+        )
+        c.argument(
             "tar_mapping_location",
             options_list=("--tar",),
             required=False,

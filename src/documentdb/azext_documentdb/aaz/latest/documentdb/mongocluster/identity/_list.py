@@ -14,7 +14,6 @@ from ._show import _ShowHelper
 
 @register_command(
     "documentdb mongocluster identity list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List the managed identities assigned to a mongo cluster.

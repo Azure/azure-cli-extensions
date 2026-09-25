@@ -2736,6 +2736,60 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
             },
         )
 
+    def test_construct_flexnodes_omits_unspecified_node_taints(self):
+        import inspect
+
+        from azext_aks_preview.custom import aks_agentpool_add
+
+        raw_param_dict = {
+            name: parameter.default
+            for name, parameter in inspect.signature(aks_agentpool_add).parameters.items()
+            if parameter.default is not parameter.empty
+        }
+        raw_param_dict.update({
+            "resource_group_name": "test_rg_name",
+            "cluster_name": "test_cluster_name",
+            "nodepool_name": "flexpool",
+            "vm_set_type": CONST_FLEX_NODES,
+        })
+        dec = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            raw_param_dict,
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+
+        with patch(
+            "azext_aks_preview.agentpool_decorator.cf_agent_pools",
+            return_value=Mock(list=Mock(return_value=[])),
+        ):
+            agentpool = dec.construct_agentpool_profile_preview()
+
+        self.assertNotIn("nodeTaints", agentpool.as_dict()["properties"])
+
+    def test_construct_flexnodes_rejects_empty_node_taints(self):
+        raw_param_dict = {
+            "resource_group_name": "test_rg_name",
+            "cluster_name": "test_cluster_name",
+            "nodepool_name": "flexpool",
+            "vm_set_type": CONST_FLEX_NODES,
+            "node_taints": "",
+        }
+        dec = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            raw_param_dict,
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+
+        with self.assertRaisesRegex(
+            InvalidArgumentValueError,
+            "--node-taints must contain at least one taint for FlexNodes pools",
+        ):
+            dec.construct_agentpool_profile_preview()
+
     def test_construct_flexnodes_rejects_explicit_unsupported_options(self):
         raw_param_dict = {
             "resource_group_name": "test_rg_name",

@@ -34,7 +34,7 @@ def merged_dep_ids(step):
     step = step or {}
     ids = []
     seen = set()
-    for key in ('prerequisite', 'dependsOn'):
+    for key in ('prerequisites', 'dependsOn'):
         for dep in step.get(key) or []:
             dep_id = _dep_id(dep)
             if dep_id and dep_id not in seen:
@@ -53,12 +53,12 @@ def _step_name(step):
 
 
 def _iter_ws_steps(document):
-    """Yield ``(workstream_name, step)`` for every step in a definition or
-    execution document.
+    """Yield ``(workstream_id, workstream_name, step)`` for every step in a
+    definition or execution document.
 
     Unwraps an execution ``properties`` envelope and covers both the grouped
     ``workstreams[].steps[]`` and flat ``steps[]`` shapes. Steps that live
-    outside any workstream yield a ``None`` workstream name.
+    outside any workstream yield ``None`` for the workstream id and name.
     """
     root = document or {}
     if isinstance(root, dict) and isinstance(root.get('properties'), dict):
@@ -72,42 +72,54 @@ def _iter_ws_steps(document):
         for workstream in workstreams:
             if not isinstance(workstream, dict):
                 continue
+            ws_id = workstream.get('id')
             name = (workstream.get('displayName') or workstream.get('name')
-                    or workstream.get('id'))
+                    or ws_id)
             for step in workstream.get('steps') or []:
                 if isinstance(step, dict):
-                    yield name, step
+                    yield ws_id, name, step
         return
     for step in root.get('steps') or []:
         if isinstance(step, dict):
-            yield None, step
+            yield None, None, step
 
 
 def build_dep_labels(document):
-    """Map each step id to a readable ``"Workstream:Step name"`` label.
+    """Map each step id to a ``(workstream_id, workstream_name, step_name)``.
 
-    A dependency is stored as a step id, which is opaque to a reader. This
-    builds a single lookup (one per document) so every surface -- the
-    ``--output table`` views and the visualize grid -- can render dependency
-    references as ``workstream:step name`` instead of the raw id. Steps
-    outside any workstream map to just their display name; ids not present
-    here (e.g. dangling references) fall back to the raw id via
-    :func:`label_deps`.
+    A dependency is stored as an opaque step id. This single lookup (built once
+    per document) lets every surface -- the ``--output table`` views and the
+    visualize grid -- render a dependency as ``workstream:step name`` when it
+    crosses workstreams and as just ``step name`` within the same workstream
+    (see :func:`label_deps`). Steps outside any workstream carry a ``None``
+    workstream; ids absent here (dangling references) fall back to the raw id.
     """
     labels = {}
-    for ws_name, step in _iter_ws_steps(document):
+    for ws_id, ws_name, step in _iter_ws_steps(document):
         step_id = _step_id(step)
         if not step_id:
             continue
-        name = _step_name(step)
-        labels[step_id] = '%s:%s' % (ws_name, name) if ws_name else name
+        labels[step_id] = (ws_id, ws_name, _step_name(step))
     return labels
 
 
-def label_deps(step, labels):
-    """Return ``step``'s merged dependency ids mapped through ``labels``.
+def label_deps(step, labels, current_ws_id=None):
+    """Return ``step``'s merged dependency ids as readable labels.
 
-    Ids missing from ``labels`` (dangling references, or a single-step
-    projection with no sibling context) fall back to the raw id.
+    A dependency in a *different* workstream renders as ``workstream:step
+    name``; one in the *same* workstream (``current_ws_id``), or a step outside
+    any workstream, renders as just the step name. Ids missing from ``labels``
+    (dangling references, or a single-step projection) fall back to the raw id.
     """
-    return [labels.get(dep_id, dep_id) for dep_id in merged_dep_ids(step)]
+    out = []
+    for dep_id in merged_dep_ids(step):
+        entry = labels.get(dep_id)
+        if not entry:
+            out.append(dep_id)
+            continue
+        ws_id, ws_name, step_name = entry
+        if ws_name and ws_id != current_ws_id:
+            out.append('%s:%s' % (ws_name, step_name))
+        else:
+            out.append(step_name)
+    return out

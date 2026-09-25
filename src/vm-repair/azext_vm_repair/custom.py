@@ -336,6 +336,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         selected_controller, level, message = _select_repair_disk_controller_type(
             source_controller, supported_controllers, disk_controller_type)
         getattr(logger, level)(message)
+        if level == 'warning':
+            command.warnings.append(message)
         if selected_controller:
             create_repair_vm_command += ' --disk-controller-type {controller}'.format(controller=selected_controller)
         if hasattr(command, 'set_resource_context'):

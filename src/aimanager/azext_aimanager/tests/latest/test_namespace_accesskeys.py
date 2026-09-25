@@ -42,7 +42,7 @@ class TestNamespaceAccessKeys(unittest.TestCase):
     def test_custom_headers_are_forwarded(self):
         custom.aimanager_namespace_list_accesskeys(
             self.cmd, self.client, "rg", "manager", "namespace",
-            aks_custom_headers="a=1,b=2")
+            custom_headers="a=1,b=2")
 
         self.client.list_access_keys.assert_called_once_with(
             "rg", "manager", "namespace", headers={"a": "1", "b": "2"})

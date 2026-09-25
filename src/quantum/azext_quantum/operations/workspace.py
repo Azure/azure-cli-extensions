@@ -19,8 +19,7 @@ from azure.mgmt.resource.deployments.models import DeploymentMode
 
 from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError, AzureResponseError, ServiceError,
                                        ClientRequestError, ForbiddenError, UnauthorizedError,
-                                       RequiredArgumentMissingError, ResourceNotFoundError,
-                                       MutuallyExclusiveArgumentError)
+                                       RequiredArgumentMissingError, ResourceNotFoundError)
 from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 
 from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, cf_suite_offers, _get_data_credentials
@@ -54,6 +53,11 @@ QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID = "c1410b24-3e69-4857-8f86-4d0a2e6032
 # Built-in "Quantum Workspace Owner" role.
 QUANTUM_WORKSPACE_OWNER_ROLE_ID = "30b3bcf2-670a-4bdc-8669-7e0ae0c0dfda"
 
+QUANTUM_WORKSPACE_USER_ROLE_IDS = {
+    QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID,
+    QUANTUM_WORKSPACE_OWNER_ROLE_ID,
+}
+
 C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
                                "Microsoft can share your account details with the provider for their transactional purposes.\n\n" \
                                "https://privacy.microsoft.com/privacystatement\n" \
@@ -69,7 +73,9 @@ _WORKSPACE_QUOTA_PERIOD = MeterPeriod.NONE.value
 
 
 class WorkspaceInfo:
-    def __init__(self, cmd, resource_group_name=None, workspace_name=None, endpoint=None):
+    _ENDPOINT_CACHE_KEY = 'workspace_endpoint_cache'
+
+    def __init__(self, cmd, resource_group_name=None, workspace_name=None):
         from azure.cli.core.commands.client_factory import get_subscription_id
 
         # Hierarchically selects the value for the given key.
@@ -84,7 +90,23 @@ class WorkspaceInfo:
         self.subscription = get_subscription_id(cmd.cli_ctx)
         self.resource_group = select_value('group', resource_group_name)
         self.name = select_value('workspace', workspace_name)
-        self.endpoint = select_value('endpoint', endpoint)
+        self.endpoint = self._get_cached_endpoint(cmd)
+
+    def _normalized_resource_id(self):
+        return _get_workspace_resource_id(self).lower()
+
+    def _get_cached_endpoint(self, cmd):
+        value = cmd.cli_ctx.config.get('quantum', self._ENDPOINT_CACHE_KEY, None)
+        if not value:
+            return None
+        try:
+            cache = json.loads(value)
+        except ValueError:
+            return None
+        if not isinstance(cache, dict) or cache.get('resource_id') != self._normalized_resource_id():
+            return None
+        endpoint = cache.get('endpoint')
+        return endpoint if isinstance(endpoint, str) and endpoint else None
 
     def clear(self):
         self.subscription = ''
@@ -93,13 +115,22 @@ class WorkspaceInfo:
         self.endpoint = ''
 
     def save(self, cmd, endpoint=''):
+        """
+        Persist this workspace's group/name defaults in global CLI config.
+
+        Cache the supplied endpoint with the workspace identity, or remove the cache if empty.
+        Local configuration is left unchanged.
+        """
         from azure.cli.core.util import ConfiguredDefaultSetter
 
-        # Save in the global [defaults] section of the .azure\config file
-        with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
+        with ConfiguredDefaultSetter(cmd.cli_ctx.config, use_local_config=False):
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'group', self.resource_group)
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'workspace', self.name)
-            cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'endpoint', endpoint)
+            if endpoint:
+                cache = {'resource_id': self._normalized_resource_id(), 'endpoint': endpoint}
+                cmd.cli_ctx.config.set_value('quantum', self._ENDPOINT_CACHE_KEY, json.dumps(cache))
+            else:
+                cmd.cli_ctx.config.remove_option('quantum', self._ENDPOINT_CACHE_KEY)
 
 
 def _show_tip(msg):
@@ -533,10 +564,11 @@ def delete(cmd, resource_group_name, workspace_name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
     client.begin_delete(info.resource_group, info.name, polling=False)
     # If we deleted the current workspace, clear it
-    curr_ws = WorkspaceInfo(cmd)
-    if (curr_ws.resource_group == info.resource_group and curr_ws.name == info.name):
-        curr_ws.clear()
-        curr_ws.save(cmd)
+    default_ws = WorkspaceInfo(cmd)
+    if (info.endpoint and
+            (default_ws.resource_group or '').lower() == info.resource_group.lower() and
+            (default_ws.name or '').lower() == info.name.lower()):
+        clear(cmd)
     # Get updated information from the affected workspace
     ws = client.get(info.resource_group, info.name)
     return ws
@@ -653,7 +685,7 @@ def _merge_workspace_quotas(workspace, usages, v1_quotas=None):
 
 def set(cmd, workspace_name, resource_group_name):
     """
-    Set the default Azure Quantum workspace.
+    Save resource-group and workspace-name defaults and the workspace's data-plane endpoint cache.
     """
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
@@ -715,7 +747,7 @@ def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type
 
 def update(cmd, resource_group_name=None, workspace_name=None, enable_key=None, quota=None):
     """
-    Update the default Azure Quantum workspace.
+    Update the given (or current) Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
@@ -742,7 +774,6 @@ def update(cmd, resource_group_name=None, workspace_name=None, enable_key=None, 
     lropoller = client.begin_create_or_update(info.resource_group, info.name, ws)
     if lropoller:
         ws = lropoller.result()
-        info.save(cmd, ws.properties.endpoint_uri)
     return ws
 
 
@@ -752,38 +783,107 @@ def _get_workspace_resource_id(info):
             f"/providers/Microsoft.Quantum/Workspaces/{info.name}")
 
 
-def _validate_assignee_args(assignee, assignee_object_id):
-    if not assignee and not assignee_object_id:
-        raise RequiredArgumentMissingError("Please provide either '--assignee' or '--assignee-object-id'.")
-    if assignee and assignee_object_id:
-        raise MutuallyExclusiveArgumentError("Only one of '--assignee' or '--assignee-object-id' can be specified.")
+def _resolve_user_id(cmd, email):
+    from azure.cli.command_modules.role import graph_client_factory
+    from azure.cli.command_modules.role.custom import GraphError
+
+    try:
+        user = graph_client_factory(cmd.cli_ctx).user_get(email)
+    except GraphError as ex:
+        if getattr(ex.response, "status_code", None) == 404:
+            raise ResourceNotFoundError(
+                f"No user with the email address '{email}' was found in the directory. "
+                "Check that the user is in the tenant and the email address is spelled correctly."
+            ) from ex
+        raise
+
+    return user["id"]
 
 
-def add_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, assignee_principal_type=None, role=None):
+def _list_user_workspace_role_assignments(cmd, user_id, scope):
+    from azure.cli.command_modules.role.custom import list_role_assignments
+
+    assignments = list_role_assignments(cmd, assignee_object_id=user_id, scope=scope,
+                                        include_inherited=True, fill_principal_name=False,
+                                        fill_role_definition_name=False)
+    return [assignment for assignment in assignments
+            if assignment["roleDefinitionId"].rsplit("/", 1)[-1].lower() in QUANTUM_WORKSPACE_USER_ROLE_IDS]
+
+
+def _scope_parts(scope):
+    return scope.lower().strip("/").split("/")
+
+
+def _is_workspace_scope(assignment, scope):
+    return _scope_parts(assignment["scope"]) == _scope_parts(scope)
+
+
+def _scope_distance(assignment_scope, workspace_scope):
+    """ARM path segments between the workspace and an assignment's scope; unrelated scopes sort last."""
+    workspace_parts = _scope_parts(workspace_scope)
+    assignment_parts = _scope_parts(assignment_scope)
+    if workspace_parts[:len(assignment_parts)] != assignment_parts:
+        return len(workspace_parts)
+    return len(workspace_parts) - len(assignment_parts)
+
+
+def _select_user_workspace_role_assignment(assignments, scope):
+    # Nearest scope wins, then Data Contributor over Owner; scope and ID make remaining ties deterministic.
+    def sort_key(assignment):
+        role_id = assignment["roleDefinitionId"].rsplit("/", 1)[-1].lower()
+        return (_scope_distance(assignment["scope"], scope),
+                0 if role_id == QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID else 1,
+                assignment["scope"].lower(),
+                assignment["id"].lower())
+
+    return min(assignments, key=sort_key)
+
+
+def add_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     """
-    Grant a user, group, or service principal access to an Azure Quantum workspace.
+    Grant a user access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import create_role_assignment
 
-    _validate_assignee_args(assignee, assignee_object_id)
+    user_id = _resolve_user_id(cmd, email)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
-    return create_role_assignment(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id,
-                                  assignee_principal_type=assignee_principal_type)
+    assignments = _list_user_workspace_role_assignments(cmd, user_id, scope)
+    if assignments:
+        logger.warning("User '%s' already has access to this Azure Quantum workspace. No new role assignment was "
+                       "created.", email)
+        return _select_user_workspace_role_assignment(assignments, scope)
+
+    return create_role_assignment(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope,
+                                  assignee_object_id=user_id, assignee_principal_type="User")
 
 
-def remove_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, role=None):
+def remove_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     """
-    Remove a user, group, or service principal's access to an Azure Quantum workspace.
+    Remove a user's access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import delete_role_assignments
 
-    _validate_assignee_args(assignee, assignee_object_id)
+    user_id = _resolve_user_id(cmd, email)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
-    return delete_role_assignments(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id)
+    assignments = _list_user_workspace_role_assignments(cmd, user_id, scope)
+    direct_assignments = [assignment for assignment in assignments if _is_workspace_scope(assignment, scope)]
+    inherited_assignments = [assignment for assignment in assignments if not _is_workspace_scope(assignment, scope)]
+
+    if not direct_assignments:
+        if inherited_assignments:
+            raise ResourceNotFoundError(
+                f"User '{email}' has no access assigned directly on this workspace. Their access is inherited "
+                "from the resource group or subscription and must be removed at that scope."
+            )
+        raise ResourceNotFoundError(f"User '{email}' does not have access to this Azure Quantum workspace.")
+
+    delete_role_assignments(cmd, ids=[assignment["id"] for assignment in direct_assignments])
+    if inherited_assignments:
+        logger.warning("Workspace-level access was removed for '%s', but inherited access from the resource "
+                       "group or subscription remains. Remove the inherited assignment at its scope to revoke "
+                       "access.", email)
 
 
 def list_users(cmd, resource_group_name=None, workspace_name=None, include_inherited=True):

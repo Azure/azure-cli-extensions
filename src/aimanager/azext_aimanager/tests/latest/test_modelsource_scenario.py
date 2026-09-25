@@ -35,7 +35,7 @@ class ModelSourceScenarioTest(ScenarioTest):
         service_client = MagicMock()
         service_client.model_sources = operations
 
-        command_prefix = 'aimanager modelsource {} -g rg --aimanager-name manager'
+        command_prefix = 'aimanager modelsource {} -g rg --aimanager manager'
 
         with patch('azext_aimanager._client_factory.get_aimanager_client',
                    return_value=service_client):
