@@ -606,10 +606,15 @@ class QuantumJobsScenarioTest(ScenarioTest):
             self.assertFalse(storage_info["allowSharedKeyAccess"], "Access keys should be disabled on the newly created storage account for new workspace")
 
             self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp}")
-            time.sleep(60) # wait for role assignments to propagate so the new workspace can access the storage account
 
-            # Test that job submission works with disabled access keys on linked storage (/sasUri returns user delegation SAS)
-            results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+            # Test that job submission works with disabled access keys on linked storage (/sasUri returns user delegation SAS),
+            # polling while the new workspace's storage role assignment propagates.
+            results = self._cmd_with_retry(
+                "az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json",
+                retry_error_code='StorageAccountInaccessible',
+                retries=13,
+                delay=10,
+            ).get_output_in_json()
             self.assertIn("id", results)
 
             job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
@@ -620,9 +625,14 @@ class QuantumJobsScenarioTest(ScenarioTest):
             self.assert_contains_user_delegation_sas_params(job["inputDataUri"])
             self.assert_contains_user_delegation_sas_params(job["outputDataUri"])
 
-            # Enable access keys on the storage account
-            updated = self.cmd(f"az storage account update -g {test_resource_group} -n {test_storage_temp} --allow-shared-key-access true -o json").get_output_in_json()
+            # Enable access keys on this disposable account to verify the legacy service SAS path.
+            updated = self.cmd(
+                f'az storage account update -g {test_resource_group} -n {test_storage_temp} '
+                '--allow-shared-key-access true '
+                '--tags "Az.Sec.DisableLocalAuth.Storage::Skip=true" -o json'
+            ).get_output_in_json()
             self.assertTrue(updated["allowSharedKeyAccess"], "Access keys should be enabled after update")
+            self.assertEqual(updated["tags"]["Az.Sec.DisableLocalAuth.Storage::Skip"], "true")
 
             time.sleep(300) # wait for the cache to update
 
