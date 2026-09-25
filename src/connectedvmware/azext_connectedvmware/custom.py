@@ -806,6 +806,8 @@ def create_from_machines(
 ):
     vcenter_id = vcenter
     machine_id = resource_name
+    # The global --subscription argument sets the machine subscription.
+    machine_subscription = get_subscription_id(cmd.cli_ctx)
     if resource_name is not None:
         if rg_name is None:
             raise RequiredArgumentMissingError(
@@ -826,6 +828,7 @@ def create_from_machines(
     assert isinstance(vcenter_id, str)
 
     logger = get_logger(__name__)
+    logger.info("Creating VM from machines on Subscription %s ...", machine_subscription)
     arg_client = cf_resource_graph(cmd.cli_ctx)
     machine_client = cf_machine(cmd.cli_ctx)
     vcenter_sub = vcenter_id.split("/")[2]
@@ -835,6 +838,7 @@ def create_from_machines(
 
     query = f"""
 Resources
+{machine_subscription and "| where subscriptionId =~ '{}'".format(machine_subscription) or ""}
 {rg_name and "| where resourceGroup =~ '{}'".format(rg_name) or ""}
 {machine_id and "| where id =~ '{}'".format(machine_id) or ""}
 | where type =~ 'Microsoft.HybridCompute/machines'
@@ -871,8 +875,13 @@ ConnectedVMwareVsphereResources
     vm_list = []
     while True:
         query_options = QueryRequestOptions(skip_token=skip_token)
+        # Include the vCenter subscription so ARG can join its inventory items.
+        query_subscriptions = [machine_subscription]
+        if vcenter_sub.lower() != machine_subscription.lower():
+            query_subscriptions.append(vcenter_sub)
+        logger.debug("Querying subscriptions: %s", query_subscriptions)
         query_request = QueryRequest(
-            subscriptions=[get_subscription_id(cmd.cli_ctx)],
+            subscriptions=query_subscriptions,
             query=query,
             options=query_options,
         )
@@ -896,6 +905,7 @@ ConnectedVMwareVsphereResources
         inventoryId = vm["inventoryId"]
         managedResourceId = vm["managedResourceId"]
         biosId = vm["biosId"]
+        logger.info("Processing machine %s in resource group %s | machineId: %s", machineName, machineRG, machineId)
         if len(biosId2VM[biosId]) > 1:
             logger.warning(
                 "%s Skipping machine %s with biosId %s "
