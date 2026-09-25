@@ -19,7 +19,7 @@ from knack.log import get_logger
 
 from ._constants import ACR_IMAGE_SUFFIX
 from ._models import (RegistryCredentials as RegistryCredentialsModel)
-from ._utils import env_has_managed_identity
+from ._utils import env_has_managed_identity, is_acr_registry
 from ._validators import validate_create
 
 logger = get_logger(__name__)
@@ -39,7 +39,7 @@ class ContainerAppJobRegistryPreviewSetDecorator(ContainerAppJobRegistrySetDecor
 
         if (not self.get_argument_username() or not self.get_argument_password()) and not self.get_argument_identity():
             # If registry is Azure Container Registry, we can try inferring credentials
-            if ACR_IMAGE_SUFFIX not in self.get_argument_server():
+            if not is_acr_registry(self.get_argument_server()):
                 raise RequiredArgumentMissingError(
                     'Registry username and password are required if you are not using Azure Container Registry.')
             if not self.get_argument_disable_warnings():
