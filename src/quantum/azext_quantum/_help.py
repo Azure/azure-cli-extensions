@@ -367,7 +367,6 @@ helps['quantum workspace clear'] = """
 helps['quantum workspace create'] = """
     type: command
     short-summary: Create a new Azure Quantum workspace.
-    long-summary: Use '--workspace-kind V2' to configure V2 providers. Target quota allocation through '--quota' is supported only for V2 workspaces.
     examples:
       - name: Create a new Azure Quantum workspace with the providers that offer free credit.
         text: |-

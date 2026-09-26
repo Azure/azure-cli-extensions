@@ -21,8 +21,6 @@ from .utils import get_test_resource_group, get_test_workspace, get_test_workspa
 from ..._version_check_helper import check_version
 from ..._params import QuotaAction
 from ..._validators import validate_email, validate_workspace_user
-from datetime import datetime
-from ...__init__ import CLI_REPORTED_VERSION
 from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_target_quota_bounds, _validate_storage_account, _autoadd_providers, create, _resolve_user_id, _list_user_workspace_role_assignments, _scope_distance, _select_user_workspace_role_assignment, add_user, remove_user, list_users, update, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
 from ...operations.workspace import _merge_workspace_quotas
 from ...commands import transform_workspace_quotas
@@ -92,6 +90,28 @@ def _get_workspace_quota_row(quotas, provider_id, target_id, dimension):
             f"and dimension '{dimension}', but found {matching_rows}. All rows: {quotas}"
         )
     return matching_rows[0]
+
+
+def _wait_for_workspace_provisioned(test_case, resource_group, workspace_name,
+                                    attempts=6, delay=11):
+    last_state = None
+    for attempt in range(attempts):
+        workspace = test_case.cmd(
+            f'az quantum workspace show -g {resource_group} -w {workspace_name} -o json'
+        ).get_output_in_json()
+        last_state = (workspace.get('properties') or {}).get('provisioningState')
+        if (last_state or '').lower() == 'succeeded':
+            return workspace
+        if (last_state or '').lower() in ('failed', 'canceled'):
+            raise AssertionError(
+                f"Workspace '{workspace_name}' provisioning ended in state '{last_state}'."
+            )
+        if attempt < attempts - 1:
+            time.sleep(delay)
+    raise AssertionError(
+        f"Workspace '{workspace_name}' did not finish provisioning after {attempts} attempts "
+        f"(last state: '{last_state}')."
+    )
 
 
 # Classes patterned after classes in azext_quantum.vendored_sdks.azure_mgmt_quantum.models._models_py3.py
@@ -174,6 +194,7 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
                     time.sleep(11)
         raise last_error
 
+    @live_only()
     def test_workspace_v2_create_destroy(self):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
@@ -191,10 +212,10 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
             self.cmd(f'az quantum workspace create --workspace-kind V2 --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r "{test_provider_sku_list}" --quota {create_quota} -o json', checks=[
                 self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp)
             ])
-            self.cmd(f'az quantum workspace show -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-                self.check("properties.workspaceKind", "V2")
-            ])
-
+            workspace = _wait_for_workspace_provisioned(
+                self, test_resource_group, test_workspace_temp
+            )
+            self.assertEqual(workspace['properties']['workspaceKind'], 'V2')
             self._wait_for_workspace_quota_limit(
                 test_resource_group, test_workspace_temp, provider_id, target_id, 1
             )
@@ -233,8 +254,59 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
             cleanup_commands.append(('workspace defaults', 'az quantum workspace clear'))
             run_cleanup_commands(self, cleanup_commands)
 
+    def _test_workspace_user(self, workspace_kind=None):
+        account = self.cmd('az account show -o json').get_output_in_json()
+        if account.get("user", {}).get("type", "").lower() != "user":
+            self.skipTest("Workspace user management requires an interactive user login.")
 
-class QuantumWorkspacesScenarioTest(ScenarioTest):
+        test_location = get_test_workspace_location()
+        test_resource_group = get_test_resource_group()
+        test_workspace_temp = self.create_random_name(prefix='e2e-test-w', length=18)
+        test_storage_account = get_test_workspace_storage()
+        workspace_kind_args = '--skip-autoadd'
+        if workspace_kind == 'V2':
+            provider_id, _ = self._get_v2_provider_and_target(test_location)
+            test_provider_sku_list = f'{provider_id}/default'
+            workspace_kind_args = '--workspace-kind V2 --skip-autoadd'
+        else:
+            test_provider_sku_list = get_test_workspace_provider_sku_list()
+
+        try:
+            self.cmd(f'az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r "{test_provider_sku_list}" {workspace_kind_args} -o json', checks=[
+                self.check("properties.provisioningState", "Succeeded")
+            ])
+
+            signed_in_user = self.cmd('az ad signed-in-user show -o json').get_output_in_json()
+            test_object_id = signed_in_user["id"]
+            test_email = signed_in_user["userPrincipalName"]
+
+            self.cmd(f'az quantum workspace user add -g {test_resource_group} --workspace-name {test_workspace_temp} --email {test_email} -o json', checks=[
+                self.check("principalId", test_object_id),
+                self.check("ends_with(roleDefinitionId, 'c1410b24-3e69-4857-8f86-4d0a2e603250')", True)
+            ])
+
+            self.cmd(f'az quantum workspace user list -g {test_resource_group} --workspace-name {test_workspace_temp} --include-inherited false -o json', checks=[
+                self.check(f"length([?principalId=='{test_object_id}'])", 1)
+            ])
+
+            self.cmd(f'az quantum workspace user remove -g {test_resource_group} --workspace-name {test_workspace_temp} --email {test_email} --yes')
+        finally:
+            run_cleanup_commands(self, [
+                ('temporary workspace',
+                 f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}'),
+                ('workspace defaults', 'az quantum workspace clear'),
+            ])
+
+    @live_only()
+    def test_workspace_user(self):
+        self._test_workspace_user()
+
+    @live_only()
+    def test_workspace_user_v2(self):
+        self._test_workspace_user(workspace_kind='V2')
+
+
+class QuantumWorkspacesUnitTest(unittest.TestCase):
 
     def test_run_cleanup_commands_attempts_all_commands(self):
         test_case = SimpleNamespace(cmd=Mock(side_effect=[RuntimeError('first cleanup failed'), None]))
@@ -389,6 +461,63 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             _get_workspace_quota_row([], 'provider-a', 'target-a', 'StandardMinutesLifetime')
         with self.assertRaisesRegex(AssertionError, 'Expected one quota row'):
             _get_workspace_quota_row([quota, quota], 'provider-a', 'target-a', 'StandardMinutesLifetime')
+
+    @patch('azext_quantum.tests.latest.test_quantum_workspace.time.sleep')
+    def test_wait_for_workspace_provisioned_succeeds_immediately(self, sleep_mock):
+        test_case = Mock()
+        test_case.cmd.return_value.get_output_in_json.return_value = {
+            'properties': {'provisioningState': 'Succeeded'}
+        }
+
+        workspace = _wait_for_workspace_provisioned(test_case, 'group', 'workspace')
+
+        self.assertEqual(workspace['properties']['provisioningState'], 'Succeeded')
+        test_case.cmd.assert_called_once()
+        sleep_mock.assert_not_called()
+
+    @patch('azext_quantum.tests.latest.test_quantum_workspace.time.sleep')
+    def test_wait_for_workspace_provisioned_retries(self, sleep_mock):
+        test_case = Mock()
+        test_case.cmd.return_value.get_output_in_json.side_effect = [
+            {'properties': {'provisioningState': 'Accepted'}},
+            {'properties': {'provisioningState': 'Succeeded'}},
+        ]
+
+        _wait_for_workspace_provisioned(test_case, 'group', 'workspace')
+
+        self.assertEqual(test_case.cmd.call_count, 2)
+        sleep_mock.assert_called_once_with(11)
+
+    @patch('azext_quantum.tests.latest.test_quantum_workspace.time.sleep')
+    def test_wait_for_workspace_provisioned_fails_fast(self, sleep_mock):
+        test_case = Mock()
+        test_case.cmd.return_value.get_output_in_json.return_value = {
+            'properties': {'provisioningState': 'Failed'}
+        }
+
+        with self.assertRaisesRegex(AssertionError, "ended in state 'Failed'"):
+            _wait_for_workspace_provisioned(test_case, 'group', 'workspace')
+
+        test_case.cmd.assert_called_once()
+        sleep_mock.assert_not_called()
+
+    @patch('azext_quantum.tests.latest.test_quantum_workspace.time.sleep')
+    def test_wait_for_workspace_provisioned_times_out(self, sleep_mock):
+        test_case = Mock()
+        test_case.cmd.return_value.get_output_in_json.return_value = {
+            'properties': {'provisioningState': 'Accepted'}
+        }
+
+        with self.assertRaisesRegex(AssertionError, 'did not finish provisioning after 3 attempts'):
+            _wait_for_workspace_provisioned(
+                test_case, 'group', 'workspace', attempts=3, delay=1
+            )
+
+        self.assertEqual(test_case.cmd.call_count, 3)
+        self.assertEqual(sleep_mock.call_count, 2)
+
+
+class QuantumWorkspacesScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @live_only()
@@ -616,50 +745,6 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             cleanup_commands.append(('workspace defaults', 'az quantum workspace clear'))
             run_cleanup_commands(self, cleanup_commands)
 
-    @live_only()
-    def test_workspace_user(self):
-        account = self.cmd('az account show -o json').get_output_in_json()
-        if account.get("user", {}).get("type", "").lower() != "user":
-            self.skipTest("Workspace user management requires an interactive user login.")
-
-        # initialize values
-        test_location = get_test_workspace_location()
-        test_resource_group = get_test_resource_group()
-        test_workspace_temp = get_test_workspace_random_name()
-        test_storage_account = get_test_workspace_storage()
-        test_provider_sku_list = get_test_workspace_provider_sku_list()
-
-        # create a workspace to manage users on
-        self.cmd(f'az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
-            self.check("properties.provisioningState", "Succeeded")
-        ])
-
-        # Use the signed-in user because workspace access is user-only.
-        signed_in_user = self.cmd('az ad signed-in-user show -o json').get_output_in_json()
-        test_object_id = signed_in_user["id"]
-        test_email = signed_in_user["userPrincipalName"]
-
-        # grant access by email address. Verify the
-        # default 'Quantum Workspace Data Contributor' role was assigned.
-        self.cmd(f'az quantum workspace user add -g {test_resource_group} --workspace-name {test_workspace_temp} --email {test_email} -o json', checks=[
-            self.check("principalId", test_object_id),
-            self.check("ends_with(roleDefinitionId, 'c1410b24-3e69-4857-8f86-4d0a2e603250')", True)
-        ])
-
-        # list users and verify the new assignment appears
-        self.cmd(f'az quantum workspace user list -g {test_resource_group} --workspace-name {test_workspace_temp} --include-inherited false -o json', checks=[
-            self.check(f"length([?principalId=='{test_object_id}'])", 1)
-        ])
-
-        # remove access by email address
-        self.cmd(f'az quantum workspace user remove -g {test_resource_group} --workspace-name {test_workspace_temp} --email {test_email} --yes')
-
-        # delete the workspace
-        self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-            self.check("name", test_workspace_temp),
-            self.check("properties.provisioningState", "Deleting")
-        ])
-
     # @pytest.fixture(autouse=True)
     # def _pass_fixtures(self, capsys):
     #     self.capsys = capsys
@@ -675,29 +760,29 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         # Attempt to create workspace, but omit the storage account parameter
         issue_cmd_with_param_missing(self, f'az quantum workspace create -w {test_workspace_temp} -l {test_location} -g {test_resource_group} -r "microsoft-qc/learn-and-develop"', 'az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" -a MyStorageAccountName To display a list of available providers and their SKUs, use the following command: az quantum offerings list -l MyLocation -o table\nCreate a new Azure Quantum workspace with a specific list of providers.')
 
-    @live_only()
-    def test_version_check(self):
-        print("test_version_check")
-        # initialize values
+
+class QuantumWorkspaceOperationsTest(unittest.TestCase):
+
+    @patch('azext_quantum._version_check_helper.list_versions')
+    def test_version_check(self, list_versions_mock):
         test_old_date = "2021-04-01"
-        test_today = str(datetime.today()).split(' ')[0]
         test_old_reported_version = "0.1.0"
-        test_current_reported_version = CLI_REPORTED_VERSION
-        test_none_version = None
-        test_config = None
+        test_current_reported_version = "1.0.0"
+        list_versions_mock.return_value = [{"version": test_current_reported_version}]
 
-        message = check_version(test_config, test_current_reported_version, test_old_date)
-        assert message is None
+        message = check_version(None, test_current_reported_version, test_old_date)
+        self.assertIsNone(message)
 
-        message = check_version(test_config, test_old_reported_version, test_old_date)
-        assert message is None
-        # NOTE: The behavior of this test case changed during April 2022, cause unknown.
-        # Temporary fix was:
-        # assert message == f"\nVersion {test_old_reported_version} of the quantum extension is installed locally, but version {test_current_reported_version} is now available.\nYou can use 'az extension update -n quantum' to upgrade.\n"
+        message = check_version(None, test_old_reported_version, test_old_date)
+        self.assertEqual(
+            message,
+            f"\nVersion {test_old_reported_version} of the quantum extension is installed locally,"
+            f" but version {test_current_reported_version} is now available.\n"
+            "You can use 'az extension update -n quantum' to upgrade.\n",
+        )
 
-        # No message is generated if either version number is unavailable.
-        message = check_version(test_config, test_none_version, test_today)
-        assert message is None
+        message = check_version(None, None, test_old_date)
+        self.assertIsNone(message)
 
     def test_validate_storage_account(self):
         print("test_validate_storage_account")
