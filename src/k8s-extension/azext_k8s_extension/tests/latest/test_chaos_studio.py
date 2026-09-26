@@ -405,12 +405,72 @@ class ChaosStudioTests(unittest.TestCase):
             self.run_install()
         self.assertFalse(any(e[0] in ("create", "update", "arm-put") for e in self.events))
 
-    def test_old_or_unregistered_version_rejected_before_writes(self):
-        with self.assertRaises(InvalidArgumentValueError):
-            self.prepare(version="0.1.3")
-        self.versions.return_value = []
+    def registered(self, *versions):
+        self.versions.return_value = [SimpleNamespace(properties=SimpleNamespace(version=v)) for v in versions]
+
+    def test_unregistered_version_rejected_before_writes(self):
+        self.registered("0.1.6")
         with self.assertRaisesRegex(AzureResponseError, "not registered"):
-            self.run_install()
+            self.run_install(version="0.1.3")
+        self.assertFalse(any(e[0] in ("create", "update", "arm-put") for e in self.events))
+
+    def test_omitted_version_resolves_to_latest_registered(self):
+        self.registered("0.1.6", "0.2.10", "0.2.9", "not-a-version")
+        extension = self.prepare()
+        self.assertEqual(extension.version, "0.2.10")
+        self.assertFalse(extension.auto_upgrade_minor_version)
+        self.versions.assert_called_with("rg", "Microsoft.ContainerService", "managedClusters", "cluster",
+                                         "Microsoft.ChaosStudio", release_train="dev")
+        self.registered()
+        with self.assertRaisesRegex(InvalidArgumentValueError, "No Microsoft.ChaosStudio version"):
+            self.prepare()
+
+    def test_latest_registered_uses_semver_precedence(self):
+        cases = (
+            (("0.1.6", "0.1.8"), "0.1.8"),
+            (("0.1.8", "v0.1.9"), "v0.1.9"),
+            (("1.0.0-rc.1", "1.0.0-beta.11", "1.0.0-beta.2"), "1.0.0-rc.1"),
+            (("1.0.0-foo", "0.9.0"), "1.0.0-foo"),
+            (("1.0.0-0.3.7", "1.0.0-alpha"), "1.0.0-alpha"),
+            (("1.0.0-rc.1", "1.0.0"), "1.0.0"),
+            (("1.0.0+build.9", "1.0.1-x.7.z.92"), "1.0.1-x.7.z.92"),
+            (("1.1", "1.0.9"), "1.1"),
+            (("1.0.0", "bad", "1.x.0", "2.0.0-", "2.0.0-a..b", ""), "1.0.0"),
+        )
+        for registered, expected in cases:
+            with self.subTest(registered=registered):
+                self.registered(*registered)
+                self.assertEqual(self.prepare().version, expected)
+        self.registered("latest", "x.y.z")
+        with self.assertRaisesRegex(InvalidArgumentValueError, "No Microsoft.ChaosStudio version"):
+            self.prepare()
+
+    def test_create_update_delete_at_registered_non_pinned_version(self):
+        self.registered("0.1.6", "0.2.0", "0.3.0")
+        result = self.run_install(version="0.2.0")
+        self.assertEqual(result.version, "0.2.0")
+        create = next(e[1] for e in self.events if e[0] == "create")
+        self.assertEqual(create.version, "0.2.0")
+        update = self.partner.Update(self.cmd, "rg", "cluster", None, None, None, "0.3.0",
+                                     {}, {}, self.client.extension)
+        self.assertEqual(update.version, "0.3.0")
+        update = self.partner.Update(self.cmd, "rg", "cluster", None, None, None, None,
+                                     {}, {}, self.client.extension)
+        self.assertEqual(update.version, "0.2.0")
+        self.events.clear()
+        with patch("azext_k8s_extension.partner_extensions.DefaultExtension.DefaultExtension.Delete"):
+            self.partner.Delete(self.cmd, self.client, "rg", "cluster", "chaos",
+                                "managedClusters", "Microsoft.ContainerService", True)
+        self.assertIn(("arm-delete", CONNECTION), [e[0:2] for e in self.events])
+
+    def test_resume_rejects_version_mismatch(self):
+        self.registered("0.2.0", "0.3.0")
+        self.client.fail_after_create = True
+        with self.assertRaises(AzureResponseError):
+            self.run_install(version="0.2.0")
+        self.events.clear()
+        with self.assertRaisesRegex(AzureResponseError, "version or state conflicts"):
+            self.run_install(version="0.3.0")
         self.assertFalse(any(e[0] in ("create", "update", "arm-put") for e in self.events))
 
     def test_customer_cannot_override_stage_identity_or_endpoint(self):
