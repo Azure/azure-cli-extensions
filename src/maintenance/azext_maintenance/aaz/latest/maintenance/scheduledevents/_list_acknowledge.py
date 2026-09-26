@@ -12,22 +12,25 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "maintenance scheduledevents list acknowledge",
+    "maintenance scheduledevents list-acknowledge",
+    is_preview=True,
 )
-class Acknowledge(AAZCommand):
-    """Post List of Scheduled Events Acknowledgement
+class ListAcknowledge(AAZCommand):
+    """Acknowledge a list of ScheduledEvents Id.
+
+    Approves list of events on ScheduledEvents resource before timeout when it is safe to procced. Supported resource types are VirtualMachines, VirtualMachineScaleSets, AvailabilitySets.
 
     :example: Acknowledge list of Scheduled Events on VirtualMachineScaleSets
-        az maintenance scheduledevents list acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachineScaleSets" --resource-name {VMSSName} --subscription {subscriptionId} --value []
-        az maintenance scheduledevents list acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/virtualMachineScaleSets/{VMSSName}/providers/microsoft.maintenance/scheduledevents --body "{value:[]}"
+        az maintenance scheduledevents list-acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachineScaleSets" --resource-name {VMSSName} --subscription {subscriptionId} --value scheduledEventsId1 scheduledEventsId2 .... scheduledEventsIdN
+        az maintenance scheduledevents list-acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachineScaleSets" --resource-name {VMSSName} --subscription {subscriptionId} --value '["scheduledEventsId1","scheduledEventsId2",..,"scheduledEventsIdN"]'
 
     :example: Acknowledge list of ScheduledEvents on AvailabilitySets
-        az maintenance scheduledevents list acknowledge --resource-group {resourceGroupName} --resource-type "availabilitySets" --resource-name {AvSetname} --value []
-        az maintenance scheduledevents list acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/availabilitySets/{AvSetName}/providers/microsoft.maintenance/scheduledevents --body "{value:[]}"
+        az maintenance scheduledvents list-acknowledge --resource-group {resourceGroupName} --resource-type "availabilitySets"--resource-name {AvSetname} --value scheduledEventsId1 scheduledEventsId2 .... scheduledEventsIdN
+        az maintenance scheduledvents list-acknowledge --resource-group {resourceGroupName} --resource-type "availabilitySets"--resource-name {AvSetname} --value '["scheduledEventsId1","scheduledEventsId2",..,"scheduledEventsIdN"]'
 
-    :example: Acknowledge a single Scheduled Events on VirtualMachine
-        az maintenance scheduledevents list acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachines" --resource-name {VMname} --value []
-        az maintenance scheduledevents list acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/virtualMachines/{virtualMachineName}/providers/microsoft.maintenance/scheduledevents --body "{value:[]}"
+    :example: Acknowledge a single Scheduled Events on VirtualMachines
+        az maintenance scheduledevents list-acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachines" --resource-name {VMname} --value scheduledEventsId1 scheduledEventsId2 .... scheduledEventsIdN
+        az maintenance scheduledevents list-acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachines" --resource-name {VMname} --value '["scheduledEventsId1","scheduledEventsId2",..,"scheduledEventsIdN"]'
     """
 
     _aaz_info = {
@@ -54,18 +57,22 @@ class Acknowledge(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="ResourceGroupName",
             required=True,
+            is_preview=True,
         )
         _args_schema.resource_name = AAZStrArg(
-            options=["--resource-name"],
-            help="Resource name",
+            options=["-n", "--name", "--resource-name"],
+            help="Resource Name",
             required=True,
+            is_preview=True,
             id_part="name",
         )
         _args_schema.resource_type = AAZStrArg(
             options=["--resource-type"],
-            help="Resource type",
+            help="Resource Type",
             required=True,
+            is_preview=True,
             id_part="type",
         )
 
@@ -75,8 +82,9 @@ class Acknowledge(AAZCommand):
         _args_schema.value = AAZListArg(
             options=["--value"],
             arg_group="ScheduledEventsIdList",
-            help="The list of Scheduled Events Id.",
+            help="The list of Scheduled Events Id",
             required=True,
+            is_preview=True,
         )
 
         value = cls._args_schema.value
@@ -85,7 +93,7 @@ class Acknowledge(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ScheduledEventsOperationGroupAcknowledgeList(ctx=self.ctx)()
+        self.ScheduledEventOperationGroupAcknowledgeList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -97,10 +105,10 @@ class Acknowledge(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class ScheduledEventsOperationGroupAcknowledgeList(AAZHttpOperation):
+    class ScheduledEventOperationGroupAcknowledgeList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -208,8 +216,8 @@ class Acknowledge(AAZCommand):
             return cls._schema_on_200
 
 
-class _AcknowledgeHelper:
-    """Helper class for Acknowledge"""
+class _ListAcknowledgeHelper:
+    """Helper class for ListAcknowledge"""
 
 
-__all__ = ["Acknowledge"]
+__all__ = ["ListAcknowledge"]

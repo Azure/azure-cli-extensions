@@ -64,7 +64,7 @@
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
 |[az maintenance scheduledevents acknowledge](#ScheduledEventsAcknowledge)|Acknowledge|[Parameters](#ParametersScheduledEventsAcknowledge)|[Example](#ExamplesScheduledEventsAcknowledge)|
-|[az maintenance scheduledevents list acknowledge](#ScheduledEventsListAcknowledge)|AcknowledgeList|[Parameters](#ParametersScheduledEventsListAcknowledge)|[Example](#ExamplesScheduledEventsListAcknowledge)|
+|[az maintenance scheduledevents list-acknowledge](#ScheduledEventsListAcknowledge)|AcknowledgeList|[Parameters](#ParametersScheduledEventsListAcknowledge)|[Example](#ExamplesScheduledEventsListAcknowledge)|
 
 ## COMMAND DETAILS
 ### group `az maintenance applyupdate`
@@ -465,11 +465,17 @@ az maintenance update list-parent --provider-name "Microsoft.Compute" --resource
 |**--resource-type**|string|Resource type|resource_type|resourceType|
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 
+### group `az maintenance scheduledevents`
+
+These commands acknowledge Scheduled Events before timeout when it is safe to proceed. Supported resource types are `virtualMachines`, `virtualMachineScaleSets`, and `availabilitySets`.
+
 #### <a name="ScheduledEventsAcknowledge">Command `az maintenance scheduledevents acknowledge`</a>
+
+Acknowledge a single Scheduled Event ID.
 
 ##### <a name="ExamplesScheduledEventsAcknowledge">Example</a>
 ```
-az maintenance scheduledevents acknowledge --resource-group "examplerg"  --resource-type "virtualMachinesScaleSets" \
+az maintenance scheduledevents acknowledge --resource-group "examplerg" --resource-type "virtualMachineScaleSets" \
  --resource-name "exampleres" --subscription "examplesubid" --scheduled-events-id "eventid"
 ```
 ##### <a name="ParametersScheduledEventsAcknowledge">Parameters</a> 
@@ -477,22 +483,30 @@ az maintenance scheduledevents acknowledge --resource-group "examplerg"  --resou
 |------|----|-----------|----------|------------|
 |**--subscription**|string|Subscription|subscription_id|subscriptionId|
 |**--resource-group**|string|Resource group name|resource_group_name|resourceGroupName|
-|**--resource-type**|string|Resource type|resource_type|resourceType|
-|**--resource-name**|string|Resource identifier|resource_name|resourceName|
-|**--scheduled-events-id**|string|ScheduledEvents Id|scheduled_events_id|scheduledEventId|
+|**--resource-type**|string|Resource type: virtualMachines, virtualMachineScaleSets, or availabilitySets|resource_type|resourceType|
+|**--resource-name**, **--name**, **-n**|string|Resource identifier|resource_name|resourceName|
+|**--scheduled-events-id**|string|Scheduled Event ID in GUID format|scheduled_events_id|scheduledEventId|
 
-#### <a name="ScheduledEventsListAcknowledge">Command `az maintenance scheduledevents list acknowledge`</a>
+#### <a name="ScheduledEventsListAcknowledge">Command `az maintenance scheduledevents list-acknowledge`</a>
 
 ##### <a name="ExamplesScheduledEventsListAcknowledge">Example</a>
 ```
-az maintenance scheduledevents list acknowledge --resource-group "examplerg"  --resource-type "virtualMachinesScaleSets" \
- --resource-name "exampleres" --subscription "examplesubid" --value ["eventid1", "eventid2"]
+az maintenance scheduledevents list-acknowledge --resource-group "examplerg" --resource-type "virtualMachineScaleSets" \
+ --resource-name "exampleres" --subscription "examplesubid" \
+ --value "eventid1" "eventid2"
+```
+
+Alternatively, pass the IDs as a quoted JSON array (shown using Bash quoting):
+```
+az maintenance scheduledevents list-acknowledge --resource-group "examplerg" --resource-type "virtualMachineScaleSets" \
+ --resource-name "exampleres" --subscription "examplesubid" \
+ --value '["eventid1", "eventid2"]'
 ```
 ##### <a name="ParametersScheduledEventsListAcknowledge">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--subscription**|string|Subscription|subscription_id|subscriptionId|
 |**--resource-group**|string|Resource group name|resource_group_name|resourceGroupName|
-|**--resource-type**|string|Resource type|resource_type|resourceType|
-|**--resource-name**|string|Resource identifier|resource_name|resourceName|
-|**--value**|array|List of ScheduledEvents|value|value|
+|**--resource-type**|string|Resource type: virtualMachines, virtualMachineScaleSets, or availabilitySets|resource_type|resourceType|
+|**--resource-name**, **--name**, **-n**|string|Resource identifier|resource_name|resourceName|
+|**--value**|array|List of Scheduled Event IDs, supplied as space-separated values or a quoted JSON array|value|value|

@@ -46,6 +46,9 @@ class MaintenanceManagementClientCommandsLoader(AzCommandsLoader):
                 pass
             else:
                 raise e
+        from azext_maintenance.manual.scheduledevents import Acknowledge, ListAcknowledge
+        self.command_table['maintenance scheduledevents acknowledge'] = Acknowledge(loader=self)
+        self.command_table['maintenance scheduledevents list-acknowledge'] = ListAcknowledge(loader=self)
         return self.command_table
 
     def load_arguments(self, command):
