@@ -415,33 +415,14 @@ class ChaosStudioTests(unittest.TestCase):
         self.assertFalse(any(e[0] in ("create", "update", "arm-put") for e in self.events))
 
     def test_omitted_version_resolves_to_latest_registered(self):
-        self.registered("0.1.6", "0.2.10", "0.2.9", "not-a-version")
+        self.registered("0.2.10")
         extension = self.prepare()
         self.assertEqual(extension.version, "0.2.10")
+        self.assertIsNone(extension.release_train)
         self.assertFalse(extension.auto_upgrade_minor_version)
         self.versions.assert_called_with("rg", "Microsoft.ContainerService", "managedClusters", "cluster",
-                                         "Microsoft.ChaosStudio", release_train="dev")
+                                         "Microsoft.ChaosStudio", release_train=None, show_latest=True)
         self.registered()
-        with self.assertRaisesRegex(InvalidArgumentValueError, "No Microsoft.ChaosStudio version"):
-            self.prepare()
-
-    def test_latest_registered_uses_semver_precedence(self):
-        cases = (
-            (("0.1.6", "0.1.8"), "0.1.8"),
-            (("0.1.8", "v0.1.9"), "v0.1.9"),
-            (("1.0.0-rc.1", "1.0.0-beta.11", "1.0.0-beta.2"), "1.0.0-rc.1"),
-            (("1.0.0-foo", "0.9.0"), "1.0.0-foo"),
-            (("1.0.0-0.3.7", "1.0.0-alpha"), "1.0.0-alpha"),
-            (("1.0.0-rc.1", "1.0.0"), "1.0.0"),
-            (("1.0.0+build.9", "1.0.1-x.7.z.92"), "1.0.1-x.7.z.92"),
-            (("1.1", "1.0.9"), "1.1"),
-            (("1.0.0", "bad", "1.x.0", "2.0.0-", "2.0.0-a..b", ""), "1.0.0"),
-        )
-        for registered, expected in cases:
-            with self.subTest(registered=registered):
-                self.registered(*registered)
-                self.assertEqual(self.prepare().version, expected)
-        self.registered("latest", "x.y.z")
         with self.assertRaisesRegex(InvalidArgumentValueError, "No Microsoft.ChaosStudio version"):
             self.prepare()
 

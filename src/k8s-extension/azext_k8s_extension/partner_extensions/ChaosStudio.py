@@ -103,7 +103,6 @@ class ChaosStudio(DefaultExtension):
 
     DEFAULT_CLUSTER_TYPE = "managedclusters"
     DEFAULT_RELEASE_NAMESPACE = "chaos-infrastructure"
-    DEFAULT_RELEASE_TRAIN = "dev"
     WORKSPACE_ID_KEY = "chaos-workspace-id"
     EXISTING_ROLE_KEY = "chaos-existing-role-definition-id"
 
@@ -190,7 +189,6 @@ class ChaosStudio(DefaultExtension):
         )
         if not workspace_id:
             raise InvalidArgumentValueError("'chaos-workspace-id' is required.")
-        release_train = release_train or self.DEFAULT_RELEASE_TRAIN
         if not version:
             # auto-upgrade is forced off, so the extension RP needs an explicit version.
             version = self._latest_registered_version(
@@ -223,37 +221,16 @@ class ChaosStudio(DefaultExtension):
     def _latest_registered_version(cmd, resource_group_name, cluster_rp, cluster_type, cluster_name, release_train):
         versions = cf_k8s_extension_types(cmd.cli_ctx).cluster_list_versions(
             resource_group_name, cluster_rp, cluster_type, cluster_name,
-            "Microsoft.ChaosStudio", release_train=release_train,
+            "Microsoft.ChaosStudio", release_train=release_train, show_latest=True,
         )
-        candidates = []
         for item in versions or []:
             value = getattr(getattr(item, "properties", None), "version", None)
-            key = ChaosStudio._semver_key(value)
-            if key is not None:
-                candidates.append((key, value))
-        if not candidates:
-            raise InvalidArgumentValueError(
-                "No Microsoft.ChaosStudio version is registered for this cluster on release train '{}'. "
-                "Pass --version once one is available.".format(release_train)
-            )
-        return max(candidates)[1]
-
-    @staticmethod
-    def _semver_key(value):
-        # SemVer 2.0 precedence: build metadata is ignored and a release outranks its prereleases.
-        if not isinstance(value, str):
-            return None
-        core, dash, prerelease = value.strip().lstrip("vV").split("+", 1)[0].partition("-")
-        parts = core.split(".")
-        if not all(part.isdigit() for part in parts):
-            return None
-        numbers = tuple(int(part) for part in parts) + (0,) * max(0, 3 - len(parts))
-        if not dash:
-            return numbers, 1, ()
-        identifiers = prerelease.split(".")
-        if not all(identifiers):
-            return None
-        return numbers, 0, tuple((0, int(i), "") if i.isdigit() else (1, 0, i) for i in identifiers)
+            if value:
+                return value
+        raise InvalidArgumentValueError(
+            "No Microsoft.ChaosStudio version is registered for this cluster. "
+            "Pass --version once one is available."
+        )
 
     @classmethod
     def _reject_managed_overrides(cls, *settings):
@@ -527,11 +504,7 @@ class ChaosStudio(DefaultExtension):
         return PatchExtension(
             auto_upgrade_minor_version=False,
             auto_upgrade_mode=None,
-            release_train=(
-                release_train
-                or getattr(original_extension, "release_train", None)
-                or self.DEFAULT_RELEASE_TRAIN
-            ),
+            release_train=release_train or getattr(original_extension, "release_train", None),
             version=version or getattr(original_extension, "version", None),
             configuration_settings=configuration_settings,
             configuration_protected_settings=configuration_protected_settings,

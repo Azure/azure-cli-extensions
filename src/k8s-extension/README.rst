@@ -30,10 +30,11 @@ must have a system-assigned identity or exactly one user-assigned identity.
 The extension platform owns the subscriber identity and federation; the CLI
 never creates, modifies or deletes them.
 
-The partner defaults to the ``dev`` train and namespace ``chaos-infrastructure``,
-with automatic upgrades disabled. ``--version`` is passed through to the extension
-service; when it's omitted on create, the CLI uses the latest version registered
-for the cluster and release train. The CLI checks cluster/train registration
+The partner installs into namespace ``chaos-infrastructure`` with automatic
+upgrades disabled, and leaves the release train to the extension service default
+(``stable``) unless ``--release-train`` is passed. ``--version`` is passed through
+to the extension service; when it's omitted on create, the CLI asks the service
+for the latest version registered for the cluster and release train. The CLI checks cluster/train registration
 before workspace or extension writes, and update keeps the installed version
 unless ``--version`` is passed. The chart must support the ``subscriber.enabled``
 switch and platform Workload Identity. ``chaos-workspace-id`` is required.
@@ -76,7 +77,6 @@ configuration, replacing resource placeholders with your own values:
         --extension-type Microsoft.ChaosStudio \
         --scope cluster \
         --release-namespace chaos-infrastructure \
-        --release-train dev \
         --configuration-settings \
             "chaos-workspace-id=/subscriptions/<subscription-id>/resourceGroups/<workspace-group>/providers/Microsoft.Chaos/workspaces/<workspace-name>" \
             "experiments.stressToolsImage=PLACEHOLDER.invalid/never-pulled:0"
