@@ -24,10 +24,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-12-01",
+        "version": "2027-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridconnectivity/solutiontypes", "2024-12-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/solutiontypes", "2024-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridconnectivity/solutiontypes", "2027-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/solutiontypes", "2027-01-01"],
         ]
     }
 
@@ -118,7 +118,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-12-01",
+                    "api-version", "2027-01-01",
                     required=True,
                 ),
             }
@@ -179,6 +179,9 @@ class List(AAZCommand):
 
             properties = cls._schema_on_200.value.Element.properties
             properties.description = AAZStrType()
+            properties.host_types = AAZListType(
+                serialized_name="hostTypes",
+            )
             properties.solution_settings = AAZListType(
                 serialized_name="solutionSettings",
             )
@@ -188,6 +191,9 @@ class List(AAZCommand):
             properties.supported_azure_regions = AAZListType(
                 serialized_name="supportedAzureRegions",
             )
+
+            host_types = cls._schema_on_200.value.Element.properties.host_types
+            host_types.Element = AAZStrType()
 
             solution_settings = cls._schema_on_200.value.Element.properties.solution_settings
             solution_settings.Element = AAZObjectType()
@@ -208,6 +214,10 @@ class List(AAZCommand):
                 serialized_name="displayName",
                 flags={"required": True},
             )
+            _element.host_types = AAZListType(
+                serialized_name="hostTypes",
+                flags={"required": True},
+            )
             _element.name = AAZStrType(
                 flags={"required": True},
             )
@@ -217,6 +227,9 @@ class List(AAZCommand):
 
             allowed_values = cls._schema_on_200.value.Element.properties.solution_settings.Element.allowed_values
             allowed_values.Element = AAZStrType()
+
+            host_types = cls._schema_on_200.value.Element.properties.solution_settings.Element.host_types
+            host_types.Element = AAZStrType()
 
             supported_azure_regions = cls._schema_on_200.value.Element.properties.supported_azure_regions
             supported_azure_regions.Element = AAZStrType()
@@ -283,7 +296,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-12-01",
+                    "api-version", "2027-01-01",
                     required=True,
                 ),
             }
@@ -344,6 +357,9 @@ class List(AAZCommand):
 
             properties = cls._schema_on_200.value.Element.properties
             properties.description = AAZStrType()
+            properties.host_types = AAZListType(
+                serialized_name="hostTypes",
+            )
             properties.solution_settings = AAZListType(
                 serialized_name="solutionSettings",
             )
@@ -353,6 +369,9 @@ class List(AAZCommand):
             properties.supported_azure_regions = AAZListType(
                 serialized_name="supportedAzureRegions",
             )
+
+            host_types = cls._schema_on_200.value.Element.properties.host_types
+            host_types.Element = AAZStrType()
 
             solution_settings = cls._schema_on_200.value.Element.properties.solution_settings
             solution_settings.Element = AAZObjectType()
@@ -373,6 +392,10 @@ class List(AAZCommand):
                 serialized_name="displayName",
                 flags={"required": True},
             )
+            _element.host_types = AAZListType(
+                serialized_name="hostTypes",
+                flags={"required": True},
+            )
             _element.name = AAZStrType(
                 flags={"required": True},
             )
@@ -382,6 +405,9 @@ class List(AAZCommand):
 
             allowed_values = cls._schema_on_200.value.Element.properties.solution_settings.Element.allowed_values
             allowed_values.Element = AAZStrType()
+
+            host_types = cls._schema_on_200.value.Element.properties.solution_settings.Element.host_types
+            host_types.Element = AAZStrType()
 
             supported_azure_regions = cls._schema_on_200.value.Element.properties.supported_azure_regions
             supported_azure_regions.Element = AAZStrType()

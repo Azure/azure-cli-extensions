@@ -10,3 +10,4 @@
 
 from .__cmd_group import *
 from ._generate_aws_template import *
+from ._generate_gcp_template import *
