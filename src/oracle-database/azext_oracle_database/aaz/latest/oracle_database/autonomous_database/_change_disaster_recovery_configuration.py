@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database change-disaster-recovery-configuration",
 )
 class ChangeDisasterRecoveryConfiguration(AAZCommand):
-    """Change the disaster recovery configuration of a cross-region disaster recovery peer Autonomous Database
+    """Change the disaster recovery configuration of a cross-region disaster recovery peer Autonomous Database.
 
     :example: Change the disaster recovery configuration of a cross-region disaster recovery peer
         az oracle-database autonomous-database change-disaster-recovery-configuration --resource-group MyResourceGroup --autonomousdatabasename MyCrossRegionPeerDB --disaster-recovery-type Adg --is-replicate-automatic-backups false
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/changedisasterrecoveryconfiguration", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/changedisasterrecoveryconfiguration", "2026-06-01"],
         ]
     }
 
@@ -83,6 +83,9 @@ class ChangeDisasterRecoveryConfiguration(AAZCommand):
             options=["--time-snapshot-standby-enabled-till"],
             arg_group="Body",
             help="Time and date stored as an RFC 3339 formatted timestamp string. For example, 2022-01-01T12:00:00.000Z would set a limit for the snapshot standby to be converted back to a cross-region standby database.",
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         return cls._args_schema
 
@@ -167,7 +170,7 @@ class ChangeDisasterRecoveryConfiguration(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -258,6 +261,9 @@ class ChangeDisasterRecoveryConfiguration(AAZCommand):
             properties.available_upgrade_versions = AAZListType(
                 serialized_name="availableUpgradeVersions",
                 flags={"read_only": True},
+            )
+            properties.backup_destination = AAZStrType(
+                serialized_name="backupDestination",
             )
             properties.backup_retention_period_in_days = AAZIntType(
                 serialized_name="backupRetentionPeriodInDays",
@@ -367,6 +373,9 @@ class ChangeDisasterRecoveryConfiguration(AAZCommand):
             properties.ncharacter_set = AAZStrType(
                 serialized_name="ncharacterSet",
             )
+            properties.network_anchor_id = AAZStrType(
+                serialized_name="networkAnchorId",
+            )
             properties.next_long_term_backup_time_stamp = AAZStrType(
                 serialized_name="nextLongTermBackupTimeStamp",
                 flags={"read_only": True},
@@ -413,6 +422,9 @@ class ChangeDisasterRecoveryConfiguration(AAZCommand):
             properties.remote_disaster_recovery_configuration = AAZObjectType(
                 serialized_name="remoteDisasterRecoveryConfiguration",
                 flags={"read_only": True},
+            )
+            properties.resource_anchor_id = AAZStrType(
+                serialized_name="resourceAnchorId",
             )
             properties.role = AAZStrType()
             properties.scheduled_operations_list = AAZListType(
@@ -495,6 +507,7 @@ class ChangeDisasterRecoveryConfiguration(AAZCommand):
             properties.whitelisted_ips = AAZListType(
                 serialized_name="whitelistedIps",
             )
+            properties.zone = AAZStrType()
 
             apex_details = cls._schema_on_200.properties.apex_details
             apex_details.apex_version = AAZStrType(
@@ -666,9 +679,7 @@ class ChangeDisasterRecoveryConfiguration(AAZCommand):
             whitelisted_ips = cls._schema_on_200.properties.whitelisted_ips
             whitelisted_ips.Element = AAZStrType()
 
-            cls._schema_on_200.properties.data_base_type = AAZStrType(
-                serialized_name="dataBaseType",
-            )
+            cls._schema_on_200.properties.data_base_type = AAZStrType(serialized_name="dataBaseType")
             disc_clone = cls._schema_on_200.properties.discriminate_by("data_base_type", "Clone")
             disc_clone.is_reconnect_clone_enabled = AAZBoolType(
                 serialized_name="isReconnectCloneEnabled",

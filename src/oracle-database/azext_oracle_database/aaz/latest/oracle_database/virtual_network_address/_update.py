@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}/virtualnetworkaddresses/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}/virtualnetworkaddresses/{}", "2026-06-01"],
         ]
     }
 
@@ -154,7 +154,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -185,72 +185,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.domain = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.ip_address = AAZStrType(
-                serialized_name="ipAddress",
-            )
-            properties.lifecycle_details = AAZStrType(
-                serialized_name="lifecycleDetails",
-                flags={"read_only": True},
-            )
-            properties.lifecycle_state = AAZStrType(
-                serialized_name="lifecycleState",
-                flags={"read_only": True},
-            )
-            properties.ocid = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.time_assigned = AAZStrType(
-                serialized_name="timeAssigned",
-                flags={"read_only": True},
-            )
-            properties.vm_ocid = AAZStrType(
-                serialized_name="vmOcid",
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            _UpdateHelper._build_schema_virtual_network_address_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -322,7 +257,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -365,72 +300,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.properties = AAZObjectType()
-            _schema_on_200_201.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200_201.properties
-            properties.domain = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.ip_address = AAZStrType(
-                serialized_name="ipAddress",
-            )
-            properties.lifecycle_details = AAZStrType(
-                serialized_name="lifecycleDetails",
-                flags={"read_only": True},
-            )
-            properties.lifecycle_state = AAZStrType(
-                serialized_name="lifecycleState",
-                flags={"read_only": True},
-            )
-            properties.ocid = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.time_assigned = AAZStrType(
-                serialized_name="timeAssigned",
-                flags={"read_only": True},
-            )
-            properties.vm_ocid = AAZStrType(
-                serialized_name="vmOcid",
-            )
-
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            _UpdateHelper._build_schema_virtual_network_address_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -459,6 +329,94 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    _schema_virtual_network_address_read = None
+
+    @classmethod
+    def _build_schema_virtual_network_address_read(cls, _schema):
+        if cls._schema_virtual_network_address_read is not None:
+            _schema.id = cls._schema_virtual_network_address_read.id
+            _schema.name = cls._schema_virtual_network_address_read.name
+            _schema.properties = cls._schema_virtual_network_address_read.properties
+            _schema.system_data = cls._schema_virtual_network_address_read.system_data
+            _schema.type = cls._schema_virtual_network_address_read.type
+            return
+
+        cls._schema_virtual_network_address_read = _schema_virtual_network_address_read = AAZObjectType()
+
+        virtual_network_address_read = _schema_virtual_network_address_read
+        virtual_network_address_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        virtual_network_address_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        virtual_network_address_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        virtual_network_address_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        virtual_network_address_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_virtual_network_address_read.properties
+        properties.domain = AAZStrType(
+            flags={"read_only": True},
+        )
+        properties.ip_address = AAZStrType(
+            serialized_name="ipAddress",
+        )
+        properties.lifecycle_details = AAZStrType(
+            serialized_name="lifecycleDetails",
+            flags={"read_only": True},
+        )
+        properties.lifecycle_state = AAZStrType(
+            serialized_name="lifecycleState",
+            flags={"read_only": True},
+        )
+        properties.ocid = AAZStrType(
+            flags={"read_only": True},
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.time_assigned = AAZStrType(
+            serialized_name="timeAssigned",
+            flags={"read_only": True},
+        )
+        properties.vm_ocid = AAZStrType(
+            serialized_name="vmOcid",
+        )
+
+        system_data = _schema_virtual_network_address_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        _schema.id = cls._schema_virtual_network_address_read.id
+        _schema.name = cls._schema_virtual_network_address_read.name
+        _schema.properties = cls._schema_virtual_network_address_read.properties
+        _schema.system_data = cls._schema_virtual_network_address_read.system_data
+        _schema.type = cls._schema_virtual_network_address_read.type
 
 
 __all__ = ["Update"]

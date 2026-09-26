@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/giversions", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/giversions", "2026-06-01"],
         ]
     }
 
@@ -51,7 +51,7 @@ class List(AAZCommand):
         _args_schema.shape = AAZStrArg(
             options=["--shape"],
             help="If provided, filters the results for the given shape",
-            enum={"ExaDbXS": "ExaDbXS", "Exadata.X11M": "Exadata.X11M", "Exadata.X9M": "Exadata.X9M"},
+            enum={"ExaDbXS": "ExaDbXS", "Exadata.X11M": "Exadata.X11M", "Exadata.X11MV": "Exadata.X11MV", "Exadata.X9M": "Exadata.X9M"},
             fmt=AAZStrArgFormat(
                 max_length=255,
                 min_length=1,
@@ -138,7 +138,7 @@ class List(AAZCommand):
                     "zone", self.ctx.args.zone,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -188,7 +188,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},

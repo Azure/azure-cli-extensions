@@ -10,24 +10,23 @@
 
 from azure.cli.core.aaz import *
 
+from ._list import List
+
 
 @register_command(
     "oracle-database autonomous-database backup show",
 )
 class Show(AAZCommand):
-    """Get an Autonomous Database backup
+    """Get an Autonomous Database backup.
 
     :example: Get an Autonomous Database backup
-        az oracle-database autonomous-database backup show --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id>
-
-    :example: Get a backup using the Azure backup resource name/id returned by backup create or backup list
-        az oracle-database autonomous-database backup show --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <backup_resource_id>
+        az oracle-database autonomous-database backup show --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <backup_resource_name>
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/autonomousdatabasebackups/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/autonomousdatabasebackups/{}", "2026-06-01"],
         ]
     }
 
@@ -49,7 +48,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.adbbackupid = AAZStrArg(
             options=["-n", "--name", "--adbbackupid"],
-            help="Azure backup resource name/id. Use the value returned by backup create or backup list.",
+            help="Azure backup resource name. Use the final segment of the id returned by backup create or backup list, not the full Azure resource ID.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -122,204 +121,29 @@ class Show(AAZCommand):
                     return backup
         return None
 
-    class AutonomousDatabaseBackupsListByParent(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
+    class AutonomousDatabaseBackupsListByParent(List.AutonomousDatabaseBackupsListByParent):
 
         @property
         def url(self):
             if has_value(self.ctx.next_link):
                 return self.ctx.next_link
 
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Oracle.Database/autonomousDatabases/{autonomousdatabasename}/autonomousDatabaseBackups",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "autonomousdatabasename", self.ctx.args.autonomousdatabasename,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
+            return super().url
 
         @property
         def query_parameters(self):
             if has_value(self.ctx.next_link):
                 return {}
 
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2025-09-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
+            return super().query_parameters
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "backup_list",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=List.AutonomousDatabaseBackupsListByParent._build_schema_on_200
             )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.autonomous_database_ocid = AAZStrType(
-                serialized_name="autonomousDatabaseOcid",
-                flags={"read_only": True},
-            )
-            properties.backup_type = AAZStrType(
-                serialized_name="backupType",
-                flags={"read_only": True},
-            )
-            properties.database_size_in_tbs = AAZFloatType(
-                serialized_name="databaseSizeInTbs",
-                flags={"read_only": True},
-            )
-            properties.db_version = AAZStrType(
-                serialized_name="dbVersion",
-                flags={"read_only": True},
-            )
-            properties.display_name = AAZStrType(
-                serialized_name="displayName",
-            )
-            properties.is_automatic = AAZBoolType(
-                serialized_name="isAutomatic",
-                flags={"read_only": True},
-            )
-            properties.is_restorable = AAZBoolType(
-                serialized_name="isRestorable",
-                flags={"read_only": True},
-            )
-            properties.lifecycle_details = AAZStrType(
-                serialized_name="lifecycleDetails",
-                flags={"read_only": True},
-            )
-            properties.lifecycle_state = AAZStrType(
-                serialized_name="lifecycleState",
-                flags={"read_only": True},
-            )
-            properties.ocid = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.retention_period_in_days = AAZIntType(
-                serialized_name="retentionPeriodInDays",
-            )
-            properties.size_in_tbs = AAZFloatType(
-                serialized_name="sizeInTbs",
-                flags={"read_only": True},
-            )
-            properties.time_available_til = AAZStrType(
-                serialized_name="timeAvailableTil",
-                flags={"read_only": True},
-            )
-            properties.time_ended = AAZStrType(
-                serialized_name="timeEnded",
-                flags={"read_only": True},
-            )
-            properties.time_started = AAZStrType(
-                serialized_name="timeStarted",
-                flags={"read_only": True},
-            )
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            return cls._schema_on_200
-
 
 class _ShowHelper:
     """Helper class for Show"""

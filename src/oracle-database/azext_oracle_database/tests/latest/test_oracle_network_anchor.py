@@ -8,24 +8,21 @@ import os
 import unittest
 import time
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
+from azure.cli.testsdk import ScenarioTest, live_only
 
 class OracleNetworkAnchorScenarioTest(ScenarioTest):
-    @live_only()
-    @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def setUp(self):
         subscription_id = self.get_subscription_id()
         self.kwargs.update({
-            'resource_group': 'azCliTest',
-            'network_anchor_name': 'AzureCliTestM',
-            'location': 'eastus',
-            'resource_anchor_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azCliTest/providers/Oracle.Database/resourceAnchors/AzureCliTestMi',
-            'subnet_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzureCli/providers/Microsoft.Network/virtualNetworks/AzureCliVnet/subnets/delegated',
-            'zone': '2',
+            'resource_group': 'AzClitets2026',
+            'network_anchor_name': 'AzCliNA2026',
+            'location': 'eastus2',
+            'resource_anchor_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzClitets2026/providers/Oracle.Database/resourceAnchors/azCli2026RA',
+            'subnet_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzClitets2026/providers/Microsoft.Network/virtualNetworks/azCliVnet2026/subnets/default2',
+            'zone': '1',
         })
 
+    @live_only()
     def test_create_network_anchor(self):
         self.cmd(
             'az oracle-database network-anchor create '

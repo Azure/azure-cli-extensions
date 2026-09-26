@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}/dbnodes", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}/dbnodes", "2026-06-01"],
         ]
     }
 
@@ -60,7 +60,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.DbNodesListByCloudVmCluster(ctx=self.ctx)()
+        self.DbNodesListByParent(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +76,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class DbNodesListByCloudVmCluster(AAZHttpOperation):
+    class DbNodesListByParent(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -124,7 +124,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -188,7 +188,6 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.additional_details = AAZStrType(
                 serialized_name="additionalDetails",
-                flags={"read_only": True},
             )
             properties.backup_ip_id = AAZStrType(
                 serialized_name="backupIpId",
@@ -201,11 +200,9 @@ class List(AAZCommand):
             )
             properties.cpu_core_count = AAZIntType(
                 serialized_name="cpuCoreCount",
-                flags={"read_only": True},
             )
             properties.db_node_storage_size_in_gbs = AAZIntType(
                 serialized_name="dbNodeStorageSizeInGbs",
-                flags={"read_only": True},
             )
             properties.db_server_id = AAZStrType(
                 serialized_name="dbServerId",
@@ -216,27 +213,23 @@ class List(AAZCommand):
             )
             properties.fault_domain = AAZStrType(
                 serialized_name="faultDomain",
-                flags={"read_only": True},
             )
             properties.host_ip_id = AAZStrType(
                 serialized_name="hostIpId",
             )
-            properties.hostname = AAZStrType(
-                flags={"read_only": True},
-            )
+            properties.hostname = AAZStrType()
             properties.lifecycle_details = AAZStrType(
                 serialized_name="lifecycleDetails",
-                flags={"read_only": True},
             )
             properties.lifecycle_state = AAZStrType(
                 serialized_name="lifecycleState",
+                flags={"required": True},
             )
             properties.maintenance_type = AAZStrType(
                 serialized_name="maintenanceType",
             )
             properties.memory_size_in_gbs = AAZIntType(
                 serialized_name="memorySizeInGbs",
-                flags={"read_only": True},
             )
             properties.ocid = AAZStrType(
                 flags={"required": True},
@@ -247,25 +240,23 @@ class List(AAZCommand):
             )
             properties.software_storage_size_in_gb = AAZIntType(
                 serialized_name="softwareStorageSizeInGb",
-                flags={"read_only": True},
             )
             properties.time_created = AAZStrType(
                 serialized_name="timeCreated",
-                flags={"read_only": True},
+                flags={"required": True},
             )
             properties.time_maintenance_window_end = AAZStrType(
                 serialized_name="timeMaintenanceWindowEnd",
-                flags={"read_only": True},
             )
             properties.time_maintenance_window_start = AAZStrType(
                 serialized_name="timeMaintenanceWindowStart",
-                flags={"read_only": True},
             )
             properties.vnic2_id = AAZStrType(
                 serialized_name="vnic2Id",
             )
             properties.vnic_id = AAZStrType(
                 serialized_name="vnicId",
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

@@ -15,12 +15,15 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database backup wait",
 )
 class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+    """Wait until an Autonomous Database backup meets a condition.
+
+    :example: Wait for an Autonomous Database backup to be created
+        az oracle-database autonomous-database backup wait --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <backup_resource_name> --created
     """
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/autonomousdatabasebackups/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/autonomousdatabasebackups/{}", "2026-06-01"],
         ]
     }
 
@@ -42,7 +45,7 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.adbbackupid = AAZStrArg(
             options=["-n", "--name", "--adbbackupid"],
-            help="Azure backup resource id. Use the value returned by backup create or backup list.",
+            help="Azure backup resource name. Use the final segment of the id returned by backup create or backup list, not the full Azure resource ID.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -134,7 +137,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -173,7 +176,9 @@ class Wait(AAZWaitCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -185,6 +190,10 @@ class Wait(AAZWaitCommand):
             properties = cls._schema_on_200.properties
             properties.autonomous_database_ocid = AAZStrType(
                 serialized_name="autonomousDatabaseOcid",
+                flags={"read_only": True},
+            )
+            properties.backup_destination = AAZStrType(
+                serialized_name="backupDestination",
                 flags={"read_only": True},
             )
             properties.backup_type = AAZStrType(

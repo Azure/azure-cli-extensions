@@ -3690,3 +3690,98 @@ cosmosdb sql softdeleted-database list:
 cosmosdb sql softdeleted-container list:
   rule_exclusions:
     - no_ids_for_list_commands
+
+oracle-database autonomous-database update:
+  parameters:
+    is_schedule_az_update_to_earliest:
+      rule_exclusions: [option_length_too_long]
+    time_scheduled_az_update:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database cloud-exadata-infrastructure create:
+  parameters:
+    proximity_placement_group:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database cloud-vm-cluster create:
+  parameters:
+    is_accelerated_network_enabled:
+      rule_exclusions: [option_length_too_long]
+    proximity_placement_group:
+      rule_exclusions: [option_length_too_long]
+    reco_storage_percentage:
+      rule_exclusions: [option_length_too_long]
+    sparse_storage_percentage:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database cloud-vm-cluster update:
+  parameters:
+    is_accelerated_network_enabled:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database db-system create:
+  parameters:
+    data_collection_options:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database gi-minor-version list:
+  parameters:
+    is_gi_version_for_provisioning:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database golden-gate-connection assign-deployment:
+  parameters:
+    golden_gate_connection_name:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database golden-gate-connection assigned-deployment list:
+  parameters:
+    golden_gate_connection_name:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database golden-gate-connection assigned-deployment show:
+  parameters:
+    golden_gate_connection_name:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database golden-gate-connection unassign-deployment:
+  parameters:
+    golden_gate_connection_name:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database golden-gate-deployment assign-connection:
+  parameters:
+    golden_gate_deployment_name:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database golden-gate-deployment assigned-connection list:
+  parameters:
+    golden_gate_deployment_name:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database golden-gate-deployment assigned-connection show:
+  parameters:
+    golden_gate_deployment_name:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database golden-gate-deployment create:
+  parameters:
+    is_auto_scaling_enabled:
+      rule_exclusions: [option_length_too_long]
+    maintenance_configuration:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database golden-gate-deployment unassign-connection:
+  parameters:
+    golden_gate_deployment_name:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database golden-gate-deployment update:
+  parameters:
+    maintenance_configuration:
+      rule_exclusions: [option_length_too_long]
+
+oracle-database network-anchor create:
+  parameters:
+    proximity_placement_group:
+      rule_exclusions: [option_length_too_long]
