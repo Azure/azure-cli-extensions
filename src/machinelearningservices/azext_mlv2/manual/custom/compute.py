@@ -28,7 +28,7 @@ from azure.ai.ml.exceptions import (
 
 from .raise_error import log_and_raise_error
 from .utils import _dump_entity_with_warnings, get_ml_client
-from ._ssh_command import get_ssh_command, has_ssh_dependencies_installed, ssh_connector_file_path_space_message
+from ._ssh_command import get_ssh_command, has_ssh_dependencies_installed
 
 module_logger = get_logger(__name__)
 
@@ -278,11 +278,6 @@ def ml_compute_connect_ssh(cmd, resource_group_name, workspace_name, name, priva
         compute = ml_client.compute.get(name=name)
         if compute.type != ComputeType.COMPUTEINSTANCE:
             log_and_raise_error("connect-ssh is only for compute instance")
-        if not has_ssh_dependencies_installed():
-            return
-
-        print("passed websockets package check")
-
         # create proxy endpoint for CI based on endpoint for jupyter
         # TODO: Improve with a call to get proxyendpoint from CI, requires API
         jupyter = [f["endpoint_uri"] for f in compute.services if f["display_name"] == "Jupyter"][0]
@@ -291,14 +286,15 @@ def ml_compute_connect_ssh(cmd, resource_group_name, workspace_name, name, priva
         services_dict = {
             "ssh": ServiceInstance(type="SSH", status="Running", properties={"ProxyEndpoint": proxyEndpoint})
         }
-        path_has_space, ssh_command = get_ssh_command(
+        ssh_command = get_ssh_command(
             services_dict, 0, private_key_file_path, connector_args=["--is-compute"]
         )
+        if not has_ssh_dependencies_installed():
+            return
+
+        print("passed websockets package check")
         print(f"ssh_command: {ssh_command}")
-        if path_has_space:
-            module_logger.error(ssh_connector_file_path_space_message())
-        else:
-            subprocess.call(ssh_command, shell=True)
+        subprocess.call(ssh_command, shell=False)
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
