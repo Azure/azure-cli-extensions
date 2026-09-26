@@ -3,11 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import unittest
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
+from azure.cli.testsdk import LiveScenarioTest
 from azure.cli.testsdk.scenario_tests import live_only
-from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
 from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 
@@ -64,7 +65,14 @@ def _usage(target_id=None, standard=None, high=None, last_modified_time=None,
     )
 
 
-class QuantumSuiteOffersScenarioTest(ScenarioTest):
+def _find_offer_with_target_quotas(offers):
+    return next(
+        (item for item in offers if (item.get('properties') or {}).get('targetQuotas')),
+        None,
+    )
+
+
+class QuantumSuiteOffersTest(unittest.TestCase):
 
     def test_get_suite_offer(self):
         offer = _offer(provider_id='IonQ')
@@ -477,21 +485,46 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
         self.assertEqual(rows[0]['targetId'], 'ionq.qpu')
         self.assertEqual(rows[0]['usage'], {'standardMinutesLifetime': 0, 'highMinutesLifetime': 0})
 
+    def test_find_offer_with_target_quotas(self):
+        offers = [
+            {'properties': {}},
+            {'properties': None},
+            {'properties': {'targetQuotas': []}},
+            {'properties': {'providerId': 'provider-a', 'targetQuotas': [{'targetId': 'target-a'}]}},
+        ]
+
+        self.assertIs(_find_offer_with_target_quotas(offers), offers[-1])
+
+    def test_find_offer_with_target_quotas_returns_none(self):
+        self.assertIsNone(_find_offer_with_target_quotas([
+            {},
+            {'properties': {'targetQuotas': []}},
+        ]))
+
+
+class QuantumSuiteOffersLiveScenarioTest(LiveScenarioTest):
+
+    def _get_offer_with_target_quotas(self):
+        offers = self.cmd('az quantum suite-offer list').get_output_in_json()
+        self.assertTrue(offers, 'No suite offers are available in the subscription.')
+        offer = _find_offer_with_target_quotas(offers)
+        self.assertIsNotNone(offer, 'No suite offer has target quota allocations.')
+        return offer
+
     @live_only()
     def test_quantum_suite_offer_list(self):
         offers = self.cmd('az quantum suite-offer list').get_output_in_json()
-        assert isinstance(offers, list)
+        self.assertIsInstance(offers, list)
+        self.assertTrue(offers)
 
     @live_only()
     def test_quantum_suite_offer_quotas(self):
-        offers = self.cmd('az quantum suite-offer list').get_output_in_json()
-        if not offers:
-            self.skipTest('No suite offers available in the subscription.')
-
-        provider_id = offers[0]['properties']['providerId']
+        offer = self._get_offer_with_target_quotas()
+        provider_id = offer['properties']['providerId']
         quotas = self.cmd(f'az quantum suite-offer quotas -p {provider_id}').get_output_in_json()
 
-        assert isinstance(quotas, list)
+        self.assertIsInstance(quotas, list)
+        self.assertTrue(quotas)
         for row in quotas:
             self.assertEqual(set(row.keys()), {'providerId', 'scope', 'targetId', 'allocation', 'usage'})
             self.assertEqual(row['scope'], 'SubscriptionTarget')
@@ -501,17 +534,16 @@ class QuantumSuiteOffersScenarioTest(ScenarioTest):
 
     @live_only()
     def test_quantum_suite_offer_target_list(self):
-        offers = self.cmd('az quantum suite-offer list').get_output_in_json()
-        if not offers:
-            self.skipTest('No suite offers available in the subscription.')
-
-        provider_id = offers[0]['properties']['providerId']
+        offer = self._get_offer_with_target_quotas()
+        provider_id = offer['properties']['providerId']
         providers = self.cmd(f'az quantum suite-offer target list -p {provider_id}').get_output_in_json()
 
-        assert isinstance(providers, list)
+        self.assertIsInstance(providers, list)
+        self.assertTrue(providers)
         for provider in providers:
             self.assertIn('id', provider)
             self.assertIn('targets', provider)
+            self.assertTrue(provider['targets'])
             for target in provider['targets']:
                 self.assertIn('id', target)
                 self.assertIn('currentAvailability', target)
