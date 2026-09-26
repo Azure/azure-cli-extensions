@@ -61,10 +61,10 @@ class TestCallerRoleWiring(unittest.TestCase):
     @patch(SUB_PATCH, return_value="sub")
     @patch.object(custom, "assign_caller_roles")
     @patch.object(custom, "_construct_namespace", return_value=object())
-    def test_namespace_add_assigns_roles_on_namespace_scope(self, _construct, mock_assign, _sub, mock_lro):
+    def test_namespace_create_assigns_roles_on_namespace_scope(self, _construct, mock_assign, _sub, mock_lro):
         mock_lro.return_value = lambda poller: poller
 
-        custom.add_aimanager_namespace(self.cmd, self.client, "rg", "aim", "team-alpha")
+        custom.create_aimanager_namespace(self.cmd, self.client, "rg", "aim", "team-alpha")
 
         mock_lro.assert_called_once()
         mock_assign.assert_called_once()
@@ -77,8 +77,8 @@ class TestCallerRoleWiring(unittest.TestCase):
     @patch(SUB_PATCH, return_value="sub")
     @patch.object(custom, "assign_caller_roles")
     @patch.object(custom, "_construct_namespace", return_value=object())
-    def test_namespace_add_skips_roles_with_no_wait(self, _construct, mock_assign, _sub, mock_lro, mock_warn):
-        custom.add_aimanager_namespace(
+    def test_namespace_create_skips_roles_with_no_wait(self, _construct, mock_assign, _sub, mock_lro, mock_warn):
+        custom.create_aimanager_namespace(
             self.cmd, self.client, "rg", "aim", "team-alpha", no_wait=True)
 
         mock_assign.assert_not_called()
