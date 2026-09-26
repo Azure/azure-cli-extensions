@@ -6,7 +6,7 @@
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
-from azure.cli.core.azclierror import CLIInternalError
+from azure.cli.core.azclierror import CLIInternalError, HTTPError, ResourceNotFoundError
 
 
 # pylint: disable=inconsistent-return-statements
@@ -61,6 +61,16 @@ def handle_raw_exception(e):
             message = jsonError["message"]
             raise CLIInternalError(message)
     raise e
+
+
+def handle_show_exception(e):
+    # The generic REST client keeps the status on the response, not on the exception.
+    if isinstance(e, HTTPError) and getattr(e.response, 'status_code', None) == 404:
+        raise ResourceNotFoundError(str(e)) from e
+
+    # Preserve the error handling previously provided by the core show decorators.
+    from azure.cli.command_modules.containerapp._client_factory import handle_raw_exception as handle_core_exception
+    handle_core_exception(e)
 
 
 def handle_non_404_exception(e):
