@@ -316,6 +316,11 @@ class ScVmmScenarioTest(ScenarioTest):
         )
 
         self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} -y')
+        machine = self.cmd(
+            'az resource show -g {resource_group} -n {vm_name}'
+            ' --resource-type Microsoft.HybridCompute/machines --api-version 2023-04-25-preview'
+        ).get_output_in_json()
+        self.assertIn(machine.get('kind'), (None, ''))
         
         with self.assertRaisesRegex(SystemExit, "3"):
             self.cmd('az scvmm vm show -g {resource_group} --name {vm_name}')
@@ -333,6 +338,11 @@ class ScVmmScenarioTest(ScenarioTest):
         ])
 
         self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} --delete-from-host -y')
+        machine = self.cmd(
+            'az resource show -g {resource_group} -n {vm_name}'
+            ' --resource-type Microsoft.HybridCompute/machines --api-version 2023-04-25-preview'
+        ).get_output_in_json()
+        self.assertIn(machine.get('kind'), (None, ''))
 
         self.cmd('az scvmm avset delete -g {resource_group} --name {avset_name} -y')
 
