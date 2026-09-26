@@ -9,7 +9,6 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
-from ..private_endpoint_util import PrivateEndpointUtil
 
 
 @register_command(
@@ -23,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-04-30-preview",
+        "version": "2026-09-30-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}", "2026-04-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}", "2026-09-30-preview"],
         ]
     }
 
@@ -71,6 +70,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Gets or sets the resource location for the collaboration.",
         )
+        _args_schema.target_resource_configuration = AAZObjectArg(
+            options=["--target-resource-configuration", "--target-config"],
+            arg_group="Properties",
+            help="Create-time configuration for the Azure resources that host the collaboration.",
+        )
 
         collaborators = cls._args_schema.collaborators
         collaborators.Element = AAZObjectArg()
@@ -87,6 +91,45 @@ class Create(AAZCommand):
         _element.user_identifier = AAZStrArg(
             options=["user-identifier"],
             help="User identifier of the collaborator. This can be specified as an email (no OID/TID should be specified) or an SPN (OID/TID required).",
+        )
+
+        target_resource_configuration = cls._args_schema.target_resource_configuration
+        target_resource_configuration.aks_sku = AAZStrArg(
+            options=["aks-sku"],
+            help="Virtual machine SKU used by the Azure Kubernetes Service node pool for a VN2OnAKS collaboration. The default is Standard_D4ds_v5.",
+            default="Standard_D4ds_v5",
+            enum={"Standard_D16ds_v5": "Standard_D16ds_v5", "Standard_D32ds_v5": "Standard_D32ds_v5", "Standard_D4ds_v5": "Standard_D4ds_v5", "Standard_D8ds_v5": "Standard_D8ds_v5"},
+        )
+        target_resource_configuration.i_p_tag_configuration = AAZObjectArg(
+            options=["i-p-tag-configuration"],
+            help="Tag applied to the target resources.",
+        )
+        target_resource_configuration.node_pool_size = AAZIntArg(
+            options=["node-pool-size"],
+            help="Number of nodes in the Azure Kubernetes Service node pool for a VN2OnAKS collaboration. The default is 3.",
+            default=3,
+            fmt=AAZIntArgFormat(
+                maximum=10,
+                minimum=3,
+            ),
+        )
+
+        i_p_tag_configuration = cls._args_schema.target_resource_configuration.i_p_tag_configuration
+        i_p_tag_configuration.type = AAZStrArg(
+            options=["type"],
+            help="Tag type applied to the target resources.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+        i_p_tag_configuration.value = AAZStrArg(
+            options=["value"],
+            help="Tag value applied to the target resources.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
 
         # define Arg Group "Resource"
@@ -165,7 +208,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                f"/subscriptions/{{subscriptionId}}/resourceGroups/{{resourceGroupName}}/providers/{PrivateEndpointUtil.get_configured_namespace()}/collaborations/{{collaborationName}}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CleanRoom/collaborations/{collaborationName}",
                 **self.url_parameters
             )
 
@@ -199,7 +242,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-30-preview",
+                    "api-version", "2026-09-30-preview",
                     required=True,
                 ),
             }
@@ -233,6 +276,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("collaborators", AAZListType, ".collaborators")
                 properties.set_prop("resourceLocation", AAZStrType, ".resource_location")
+                properties.set_prop("targetResourceConfiguration", AAZObjectType, ".target_resource_configuration")
 
             collaborators = _builder.get(".properties.collaborators")
             if collaborators is not None:
@@ -243,6 +287,17 @@ class Create(AAZCommand):
                 _elements.set_prop("objectId", AAZStrType, ".object_id")
                 _elements.set_prop("tenantId", AAZStrType, ".tenant_id")
                 _elements.set_prop("userIdentifier", AAZStrType, ".user_identifier")
+
+            target_resource_configuration = _builder.get(".properties.targetResourceConfiguration")
+            if target_resource_configuration is not None:
+                target_resource_configuration.set_prop("aksSku", AAZStrType, ".aks_sku")
+                target_resource_configuration.set_prop("iPTagConfiguration", AAZObjectType, ".i_p_tag_configuration")
+                target_resource_configuration.set_prop("nodePoolSize", AAZIntType, ".node_pool_size")
+
+            i_p_tag_configuration = _builder.get(".properties.targetResourceConfiguration.iPTagConfiguration")
+            if i_p_tag_configuration is not None:
+                i_p_tag_configuration.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+                i_p_tag_configuration.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -318,6 +373,9 @@ class Create(AAZCommand):
             properties.resource_location = AAZStrType(
                 serialized_name="resourceLocation",
             )
+            properties.target_resource_configuration = AAZObjectType(
+                serialized_name="targetResourceConfiguration",
+            )
             properties.workloads = AAZListType(
                 flags={"read_only": True},
             )
@@ -370,6 +428,25 @@ class Create(AAZCommand):
 
             _element = cls._schema_on_200_201.properties.managed_on_behalf_of_configuration.mobo_broker_resources.Element
             _element.id = AAZStrType()
+
+            target_resource_configuration = cls._schema_on_200_201.properties.target_resource_configuration
+            target_resource_configuration.aks_sku = AAZStrType(
+                serialized_name="aksSku",
+            )
+            target_resource_configuration.i_p_tag_configuration = AAZObjectType(
+                serialized_name="iPTagConfiguration",
+            )
+            target_resource_configuration.node_pool_size = AAZIntType(
+                serialized_name="nodePoolSize",
+            )
+
+            i_p_tag_configuration = cls._schema_on_200_201.properties.target_resource_configuration.i_p_tag_configuration
+            i_p_tag_configuration.type = AAZStrType(
+                flags={"required": True},
+            )
+            i_p_tag_configuration.value = AAZStrType(
+                flags={"required": True},
+            )
 
             workloads = cls._schema_on_200_201.properties.workloads
             workloads.Element = AAZObjectType()

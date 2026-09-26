@@ -47,6 +47,10 @@ def load_frontend_command_table(loader, _):
         g.custom_show_command(
             'show', 'frontend_collaboration_oidc_issuerinfo_show')
 
+    # Collaborator commands
+    with loader.command_group('managedcleanroom frontend collaborator', custom_command_type=frontend_custom) as g:
+        g.custom_command('list', 'frontend_collaboration_collaborators_list')
+
     # Invitation commands
     with loader.command_group('managedcleanroom frontend invitation', custom_command_type=frontend_custom) as g:
         g.custom_command('list', 'frontend_collaboration_invitation_list')
@@ -81,6 +85,8 @@ def load_frontend_command_table(loader, _):
             custom_command_type=frontend_custom) as g:
         g.custom_command(
             'list', 'frontend_collaboration_query_runhistory_list')
+        g.custom_command(
+            'cancel', 'frontend_collaboration_query_runhistory_cancel')
 
     # Query run result commands
     with loader.command_group(

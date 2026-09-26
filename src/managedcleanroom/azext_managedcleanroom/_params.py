@@ -44,6 +44,11 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         help='Query job identifier (for run results)'
     )
 
+    run_id_type = CLIArgumentType(
+        options_list=['--run-id', '-r'],
+        help='Query run identifier'
+    )
+
     consent_action_type = CLIArgumentType(
         options_list=['--consent-action', '-a'],
         help="Consent action: 'enable' or 'disable'"
@@ -91,6 +96,10 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
 
     # OIDC keys context
     with self.argument_context('managedcleanroom frontend oidc keys') as c:
+        c.argument('collaboration_id', collaboration_id_type)
+
+    # Collaborator context
+    with self.argument_context('managedcleanroom frontend collaborator') as c:
         c.argument('collaboration_id', collaboration_id_type)
 
     # Invitation context
@@ -300,6 +309,10 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
 
     with self.argument_context('managedcleanroom frontend analytics query runhistory list') as c:
         c.argument('document_id', document_id_type)
+
+    with self.argument_context('managedcleanroom frontend analytics query runhistory cancel') as c:
+        c.argument('document_id', document_id_type)
+        c.argument('run_id', run_id_type)
 
     # Query runresult context
     with self.argument_context('managedcleanroom frontend analytics query runresult') as c:

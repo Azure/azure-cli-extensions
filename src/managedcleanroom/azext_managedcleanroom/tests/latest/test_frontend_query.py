@@ -18,6 +18,7 @@ from azext_managedcleanroom._frontend_custom import (
     frontend_collaboration_query_run,
     frontend_collaboration_query_vote,
     frontend_collaboration_query_runhistory_list,
+    frontend_collaboration_query_runhistory_cancel,
     frontend_collaboration_query_runresult_show
 )
 
@@ -26,6 +27,24 @@ class TestFrontendQuery(unittest.TestCase):
     """Test cases for query commands"""
 
     # Query CRUD Tests
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_runhistory_cancel_success(self, mock_get_client):
+        """Test cancelling a query run"""
+        mock_client = Mock()
+        mock_client.collaboration.analytics_queries_document_id_runs_run_id_cancel_post.return_value = {
+            "id": "run-1", "status": "cancelled"
+        }
+        mock_get_client.return_value = mock_client
+
+        result = frontend_collaboration_query_runhistory_cancel(
+            cmd=Mock(), collaboration_id="collab-1", document_id="query-1", run_id="run-1"
+        )
+
+        self.assertEqual(result["status"], "cancelled")
+        mock_client.collaboration.analytics_queries_document_id_runs_run_id_cancel_post.assert_called_once_with(
+            "collab-1", "query-1", "run-1"
+        )
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_list_queries_success(self, mock_get_client):
