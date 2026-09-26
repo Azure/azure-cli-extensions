@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a mongo cluster. Only the properties specified in the request are modified; all other properties are left unchanged (HTTP PATCH). Generic update arguments (--set, --add, --remove) are supported.
@@ -22,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-01",
+        "version": "2026-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}", "2026-06-15-preview"],
         ]
     }
 
@@ -325,7 +326,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-06-15-preview",
                     required=True,
                 ),
             }
@@ -424,7 +425,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-06-15-preview",
                     required=True,
                 ),
             }
