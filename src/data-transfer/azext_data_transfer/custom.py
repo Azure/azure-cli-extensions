@@ -9,6 +9,122 @@
 # pylint: disable=too-many-statements
 
 from knack.log import get_logger
+from azure.cli.core.aaz import has_value
+from azext_data_transfer.aaz.latest.data_transfer.pipeline import ExecuteAction
 
 
 logger = get_logger(__name__)
+
+
+def pipeline_disable(cmd, resource_group, pipeline_name, justification=None, no_wait=False):
+    """Disable a pipeline."""
+    args = [
+        '--resource-group', resource_group,
+        '--pipeline-name', pipeline_name,
+        '--action-type', 'ForceDisable',
+        '--target-type', 'Pipeline',
+        '--targets', '[]'
+    ]
+    
+    if justification:
+        args.extend(['--justification', justification])
+    
+    if no_wait:
+        args.append('--no-wait')
+    
+    return cmd.cli_ctx.invoke(['data-transfer', 'pipeline', 'execute-action'] + args)
+
+
+def pipeline_enable(cmd, resource_group, pipeline_name, justification=None, no_wait=False):
+    """Enable a pipeline to allow updates."""
+    args = [
+        '--resource-group', resource_group,
+        '--pipeline-name', pipeline_name,
+        '--action-type', 'AllowUpdates',
+        '--target-type', 'Pipeline',
+        '--targets', '[]'
+    ]
+    
+    if justification:
+        args.extend(['--justification', justification])
+    
+    if no_wait:
+        args.append('--no-wait')
+    
+    return cmd.cli_ctx.invoke(['data-transfer', 'pipeline', 'execute-action'] + args)
+
+
+def pipeline_connection_disable(cmd, resource_group, pipeline_name, connection_ids, justification=None, no_wait=False):
+    """Disable specific connections in a pipeline."""
+    args = [
+        '--resource-group', resource_group,
+        '--pipeline-name', pipeline_name,
+        '--action-type', 'ForceDisable',
+        '--target-type', 'Connection',
+        '--targets'
+    ] + connection_ids
+    
+    if justification:
+        args.extend(['--justification', justification])
+    
+    if no_wait:
+        args.append('--no-wait')
+    
+    return cmd.cli_ctx.invoke(['data-transfer', 'pipeline', 'execute-action'] + args)
+
+
+def pipeline_connection_enable(cmd, resource_group, pipeline_name, connection_ids, justification=None, no_wait=False):
+    """Enable specific connections in a pipeline to allow updates."""
+    args = [
+        '--resource-group', resource_group,
+        '--pipeline-name', pipeline_name,
+        '--action-type', 'AllowUpdates',
+        '--target-type', 'Connection',
+        '--targets'
+    ] + connection_ids
+    
+    if justification:
+        args.extend(['--justification', justification])
+    
+    if no_wait:
+        args.append('--no-wait')
+    
+    return cmd.cli_ctx.invoke(['data-transfer', 'pipeline', 'execute-action'] + args)
+
+
+def pipeline_flowtype_disable(cmd, resource_group, pipeline_name, flow_types, justification=None, no_wait=False):
+    """Disable specific flow types in a pipeline."""
+    args = [
+        '--resource-group', resource_group,
+        '--pipeline-name', pipeline_name,
+        '--action-type', 'ForceDisable',
+        '--target-type', 'FlowType',
+        '--targets'
+    ] + flow_types
+    
+    if justification:
+        args.extend(['--justification', justification])
+    
+    if no_wait:
+        args.append('--no-wait')
+    
+    return cmd.cli_ctx.invoke(['data-transfer', 'pipeline', 'execute-action'] + args)
+
+
+def pipeline_flowtype_enable(cmd, resource_group, pipeline_name, flow_types, justification=None, no_wait=False):
+    """Enable specific flow types in a pipeline to allow updates."""
+    args = [
+        '--resource-group', resource_group,
+        '--pipeline-name', pipeline_name,
+        '--action-type', 'AllowUpdates',
+        '--target-type', 'FlowType',
+        '--targets'
+    ] + flow_types
+    
+    if justification:
+        args.extend(['--justification', justification])
+    
+    if no_wait:
+        args.append('--no-wait')
+    
+    return cmd.cli_ctx.invoke(['data-transfer', 'pipeline', 'execute-action'] + args)
