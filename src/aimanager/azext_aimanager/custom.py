@@ -67,14 +67,17 @@ def _grant_caller_roles_on_success(cmd, poller, no_wait, scope):
 
 # region AI Manager
 
-def _construct_aimanager(cmd, location, tags, delete_policy, identity=None):
+def _construct_aimanager(cmd, location, tags, delete_policy, cluster_id=None, identity=None):
     ai_manager_properties_model = _get_model(cmd, "AIManagerProperties", "ai_managers")
     ai_manager_model = _get_model(cmd, "AIManager", "ai_managers")
 
     ai_manager = ai_manager_model()
     ai_manager.location = location
     ai_manager.tags = tags
-    ai_manager.properties = ai_manager_properties_model(delete_policy=delete_policy)
+    ai_manager.properties = ai_manager_properties_model(
+        delete_policy=delete_policy,
+        cluster_resource_id=cluster_id,
+    )
     if identity is not None:
         ai_manager.identity = identity
     return ai_manager
@@ -88,6 +91,7 @@ def create_aimanager(cmd,
                      location=None,
                      tags=None,
                      delete_policy=None,
+                     cluster_id=None,
                      custom_headers=None,
                      no_wait=False):
     existing = None
@@ -101,7 +105,7 @@ def create_aimanager(cmd,
             "Please use 'az aimanager update' to update it.")
 
     headers = get_custom_headers(custom_headers)
-    ai_manager = _construct_aimanager(cmd, location, tags, delete_policy)
+    ai_manager = _construct_aimanager(cmd, location, tags, delete_policy, cluster_id)
 
     poller = sdk_no_wait(
         no_wait,
@@ -140,8 +144,6 @@ def update_aimanager(cmd,
         delete_policy = existing_properties.delete_policy
 
     headers = get_custom_headers(custom_headers)
-    # Preserve the existing identity so a tags/delete-policy update does not drop a
-    # managed identity configured through ARM or another client on the create-or-replace PUT.
     ai_manager = _construct_aimanager(
         cmd, existing.location, tags, delete_policy, identity=existing.identity)
 
@@ -754,7 +756,6 @@ def list_aimodel(cmd, client, location):  # pylint: disable=unused-argument
 
 
 def calculate_aimodel_cost(cmd, client, location, ai_model_name):
-    request_model = _get_model(cmd, "CalculateCostRequest", "ai_models")
-    return client.calculate_cost(location, ai_model_name, request_model())
+    return client.calculate_cost(location, ai_model_name)
 
 # endregion

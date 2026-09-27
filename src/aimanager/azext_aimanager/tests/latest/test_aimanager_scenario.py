@@ -3,11 +3,28 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from unittest.mock import MagicMock, patch
+
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 class AIManagerScenarioTest(ScenarioTest):
+
+    def setUp(self):
+        super().setUp()
+        if not self.is_live:
+            credential = MagicMock()
+            credential.acquire_token.return_value = {
+                'access_token': 'top-secret-token-for-you',
+                'token_type': 'Bearer',
+                'expires_in': 3600,
+            }
+            patcher = patch(
+                'azure.cli.core.auth.identity.Identity.get_user_credential',
+                return_value=credential)
+            patcher.start()
+            self.addCleanup(patcher.stop)
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='cli-aimgr-', random_name_length=16, location='eastus2')
@@ -27,6 +44,7 @@ class AIManagerScenarioTest(ScenarioTest):
                 self.check('name', '{ai_manager_name}'),
                 self.check('location', '{location}'),
                 self.check('properties.deletePolicy', 'Keep'),
+                self.check('properties.clusterResourceId', None),
             ])
 
         # wait

@@ -24,6 +24,8 @@ helps['aimanager create'] = """
           text: az aimanager create --name my-ai-manager -g myrg -l eastus2
         - name: Create an AI Manager with the Keep delete policy
           text: az aimanager create --name my-ai-manager -g myrg -l eastus2 --delete-policy Keep
+        - name: Create an AI Manager using an existing AKS cluster
+          text: az aimanager create --name my-ai-manager -g myrg -l eastus2 --cluster-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myrg/providers/Microsoft.ContainerService/managedClusters/my-aks
 """
 
 helps['aimanager update'] = """
