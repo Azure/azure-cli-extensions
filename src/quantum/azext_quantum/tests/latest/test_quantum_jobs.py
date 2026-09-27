@@ -16,7 +16,7 @@ from urllib.parse import urlparse, parse_qs
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
-from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, AzureInternalError, ResourceNotFoundError as CliResourceNotFoundError
+from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, ResourceNotFoundError as CliResourceNotFoundError
 from azure.core.exceptions import HttpResponseError, ResourceNotFoundError as AzureResourceNotFoundError
 
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, run_cleanup_commands
@@ -541,10 +541,8 @@ class QuantumJobsScenarioTest(ScenarioTest):
                     self.assertEqual(actual_file.read(), expected_file.read())
 
             # Update the submitted job's name, priority, and tags, then confirm all three changes were applied.
-            # Retry the service-side failure tracked by Bug 55216 until the JobScheduler fix reaches production.
-            updated_job = self._cmd_with_retry(
-                f'az quantum job update -j {results["id"]} --job-name "Updated job name" --job-priority High --job-tags tag1 tag2 -o json',
-                retry_error_code='InternalError',
+            updated_job = self.cmd(
+                f'az quantum job update -j {results["id"]} --job-name "Updated job name" --job-priority High --job-tags tag1 tag2 -o json'
             ).get_output_in_json()
             self.assertEqual(updated_job["name"], "Updated job name")
             self.assertEqual(updated_job["priority"], "High")
