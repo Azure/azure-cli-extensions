@@ -62,6 +62,7 @@ def acipolicygen_confcom(
     include_fragments: bool = False,
     fragments_json: str = None,
     exclude_default_fragments: bool = False,
+    prerelease_policy_api: bool = False,
 ):
     if print_existing_policy or outraw or outraw_pretty_print:
         logger.warning(
@@ -134,6 +135,7 @@ def acipolicygen_confcom(
             exclude_default_fragments=exclude_default_fragments,
             platform=platform,
             tar_mapping=tar_mapping,
+            prerelease_policy_api=prerelease_policy_api,
         )
     elif arm_template:
         container_group_policies = security_policy.load_policy_from_arm_template_file(
@@ -148,11 +150,13 @@ def acipolicygen_confcom(
             exclude_default_fragments=exclude_default_fragments,
             platform=platform,
             tar_mapping=tar_mapping,
+            prerelease_policy_api=prerelease_policy_api,
         )
     elif image_name:
         container_group_policies = security_policy.load_policy_from_image_name(
             image_name, debug_mode=debug_mode, disable_stdio=(not stdio_enabled),
             platform=platform, tar_mapping=tar_mapping,
+            prerelease_policy_api=prerelease_policy_api,
         )
     elif virtual_node_yaml_path:
         container_group_policies = security_policy.load_policy_from_virtual_node_yaml_file(
@@ -166,6 +170,7 @@ def acipolicygen_confcom(
             infrastructure_svn=infrastructure_svn,
             platform=platform,
             tar_mapping=tar_mapping,
+            prerelease_policy_api=prerelease_policy_api,
         )
     elif container_definitions:
         container_group_policies = AciPolicy(
@@ -176,6 +181,7 @@ def acipolicygen_confcom(
             debug_mode=debug_mode,
             disable_stdio=disable_stdio,
             container_definitions=container_definitions,
+            prerelease_policy_api=prerelease_policy_api,
         )
 
     exit_code = 0

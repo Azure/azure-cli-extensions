@@ -9,7 +9,7 @@ Release History
 * Add ``az migrate runbook definition`` commands (show, download,
   visualize).
 * Add ``az migrate runbook definition step`` commands (add, update,
-  remove) and ``az migrate runbook definition workstream`` commands
+  remove) and ``az migrate runbook definition step-group`` commands
   (split, merge).
 * Add ``az migrate runbook parameter`` and
   ``az migrate runbook execution parameter`` commands (download, upload).

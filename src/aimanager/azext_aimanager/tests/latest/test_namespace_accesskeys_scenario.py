@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 
 from azure.cli.testsdk import ScenarioTest
 
-from azext_aimanager.vendored_sdks.v2026_05_02_preview import models
+from azext_aimanager.vendored_sdks.v2026_09_02_preview import models
 
 
 class NamespaceAccessKeysScenarioTest(ScenarioTest):
@@ -59,9 +59,9 @@ class NamespaceAccessKeysScenarioTest(ScenarioTest):
             operations.list_access_keys.assert_called_with(
                 'rg', 'manager', 'namespace', headers={})
 
-            # --aks-custom-headers is parsed and forwarded to the request
+            # --custom-headers is parsed and forwarded to the request
             self.cmd(
-                command_prefix.format('list-accesskeys') + ' --aks-custom-headers a=1,b=2',
+                command_prefix.format('list-accesskeys') + ' --custom-headers a=1,b=2',
                 checks=[self.check('primaryKey', 'primary-key-value')])
 
         operations.list_access_keys.assert_called_with(

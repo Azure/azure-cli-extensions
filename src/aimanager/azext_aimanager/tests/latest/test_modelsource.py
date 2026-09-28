@@ -12,7 +12,7 @@ from azure.core.exceptions import ResourceNotFoundError
 
 from azext_aimanager import custom
 from azext_aimanager._validators import validate_model_source_name
-from azext_aimanager.vendored_sdks.v2026_05_02_preview import models
+from azext_aimanager.vendored_sdks.v2026_09_02_preview import models
 
 
 class MockCmd:

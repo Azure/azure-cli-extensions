@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-07-01",
+        "version": "2026-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2026-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2026-08-01-preview"],
         ]
     }
 
@@ -173,7 +173,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-01",
+                    "api-version", "2026-08-01-preview",
                     required=True,
                 ),
             }
@@ -653,6 +653,10 @@ class Update(AAZCommand):
             )
 
             secret_archive_reference = cls._schema_on_200.properties.secret_rotation_status.Element.secret_archive_reference
+            secret_archive_reference.encryption_public_key = AAZStrType(
+                serialized_name="encryptionPublicKey",
+                flags={"read_only": True},
+            )
             secret_archive_reference.key_vault_id = AAZStrType(
                 serialized_name="keyVaultId",
                 flags={"read_only": True},
