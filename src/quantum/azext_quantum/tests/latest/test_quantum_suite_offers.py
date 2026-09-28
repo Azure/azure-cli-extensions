@@ -8,7 +8,6 @@ from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 from azure.cli.testsdk import LiveScenarioTest
-from azure.cli.testsdk.scenario_tests import live_only
 from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
 from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 
@@ -511,13 +510,11 @@ class QuantumSuiteOffersLiveScenarioTest(LiveScenarioTest):
         self.assertIsNotNone(offer, 'No suite offer has target quota allocations.')
         return offer
 
-    @live_only()
     def test_quantum_suite_offer_list(self):
         offers = self.cmd('az quantum suite-offer list').get_output_in_json()
         self.assertIsInstance(offers, list)
         self.assertTrue(offers)
 
-    @live_only()
     def test_quantum_suite_offer_quotas(self):
         offer = self._get_offer_with_target_quotas()
         provider_id = offer['properties']['providerId']
@@ -532,7 +529,6 @@ class QuantumSuiteOffersLiveScenarioTest(LiveScenarioTest):
             self.assertEqual(set(row['allocation'].keys()), {'standardMinutesLifetime', 'highMinutesLifetime'})
             self.assertEqual(set(row['usage'].keys()), {'standardMinutesLifetime', 'highMinutesLifetime'})
 
-    @live_only()
     def test_quantum_suite_offer_target_list(self):
         offer = self._get_offer_with_target_quotas()
         provider_id = offer['properties']['providerId']

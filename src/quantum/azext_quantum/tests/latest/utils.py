@@ -99,6 +99,28 @@ def all_providers_are_in_capabilities(provider_sku_string, capabilities_string):
             return False
     return True
 
+
+def get_offer_targets_with_quota(offers, location, min_quota=1):
+    # Shared by test_quantum_jobs.py and test_quantum_workspace.py V2 target discovery.
+    normalized_location = location.replace(' ', '').lower()
+    results = []
+    for offer in offers:
+        properties = offer.get('properties') or {}
+        if (properties.get('location') or '').replace(' ', '').lower() != normalized_location:
+            continue
+        provider_id = properties.get('providerId')
+        if not provider_id:
+            continue
+        targets_with_quota = {
+            quota['targetId']: quota.get('standardMinutesLifetime')
+            for quota in properties.get('targetQuotas') or []
+            if quota.get('targetId')
+            and (quota.get('standardMinutesLifetime') or 0) >= min_quota
+        }
+        if targets_with_quota:
+            results.append((provider_id, targets_with_quota))
+    return results
+
 # import pytest
 # import sys
 # import traceback

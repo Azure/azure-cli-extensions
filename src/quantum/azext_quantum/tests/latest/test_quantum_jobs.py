@@ -19,7 +19,7 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, ResourceNotFoundError as CliResourceNotFoundError
 from azure.core.exceptions import HttpResponseError, ResourceNotFoundError as AzureResourceNotFoundError
 
-from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, run_cleanup_commands
+from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, run_cleanup_commands, get_offer_targets_with_quota
 from ...commands import transform_output
 from ...operations.job import (
     list_files,
@@ -35,6 +35,9 @@ from ...operations.job import (
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+# Temporary V2 workspaces only run short simulator jobs in this test; cap the allocation request accordingly.
+TEST_V2_QUOTA_ALLOCATION_MINUTES = 2
+
 
 class QuantumJobsScenarioTest(ScenarioTest):
 
@@ -48,6 +51,28 @@ class QuantumJobsScenarioTest(ScenarioTest):
                         or attempt == retries - 1:
                     raise
                 time.sleep(delay)
+
+    def _get_available_v2_simulator_with_quota(self, location):
+        offers = self.cmd('az quantum suite-offer list -o json').get_output_in_json()
+        for provider_id, targets_with_quota in get_offer_targets_with_quota(offers, location, min_quota=1):
+            targets_with_quota = {
+                target_id.lower(): quota for target_id, quota in targets_with_quota.items()
+            }
+            providers = self.cmd(
+                f'az quantum suite-offer target list -p {provider_id} -o json'
+            ).get_output_in_json()
+            for provider in providers:
+                for target in provider.get('targets', []):
+                    target_id = target.get('id') or ''
+                    available_quota = targets_with_quota.get(target_id.lower())
+                    if available_quota \
+                            and '.sim.' in target_id.lower() \
+                            and (target.get('currentAvailability') or '').lower() == 'available':
+                        # Keep the temporary allocation small without exceeding the available quota.
+                        return provider_id, target_id, min(TEST_V2_QUOTA_ALLOCATION_MINUTES, available_quota)
+        self.skipTest(
+            f"No V2 simulator target with allocated quota is currently available in '{location}'."
+        )
 
     @unittest.mock.patch('azext_quantum.tests.latest.test_quantum_jobs.time.sleep')
     def test_cmd_with_retry(self, mock_sleep):
@@ -76,6 +101,94 @@ class QuantumJobsScenarioTest(ScenarioTest):
                 self._cmd_with_retry('az quantum job submit', 'StorageAccountInaccessible', retries=3, delay=10)
         mock_cmd.assert_called_once_with('az quantum job submit')
         mock_sleep.assert_not_called()
+
+    def test_get_available_v2_simulator_with_quota(self):
+        offers = [{
+            'properties': {
+                'providerId': 'provider-a',
+                'location': 'East US',
+                'targetQuotas': [
+                    {'targetId': 'provider-a.sim.zero', 'standardMinutesLifetime': 0},
+                    {'targetId': 'Provider-A.Sim.One', 'standardMinutesLifetime': 1},
+                    {'targetId': 'provider-a.sim.large', 'standardMinutesLifetime': 20},
+                ],
+            },
+        }]
+        providers = [{
+            'targets': [
+                {'id': 'provider-a.sim.zero', 'currentAvailability': 'Available'},
+                {'id': 'provider-a.qpu', 'currentAvailability': 'Available'},
+                {'id': 'provider-a.sim.unavailable', 'currentAvailability': 'Unavailable'},
+                {'id': 'Provider-A.Sim.One', 'currentAvailability': 'Available'},
+            ],
+        }]
+        with unittest.mock.patch.object(
+                self,
+                'cmd',
+                side_effect=[
+                    unittest.mock.Mock(get_output_in_json=unittest.mock.Mock(return_value=offers)),
+                    unittest.mock.Mock(get_output_in_json=unittest.mock.Mock(return_value=providers)),
+                ]):
+            result = self._get_available_v2_simulator_with_quota('eastus')
+
+        self.assertEqual(result, ('provider-a', 'Provider-A.Sim.One', 1))
+
+    def test_get_available_v2_simulator_with_quota_caps_allocation(self):
+        offers = [{
+            'properties': {
+                'providerId': 'provider-a',
+                'location': 'eastus',
+                'targetQuotas': [
+                    {'targetId': 'provider-a.sim.large', 'standardMinutesLifetime': 20},
+                ],
+            },
+        }]
+        providers = [{
+            'targets': [
+                {'id': 'provider-a.sim.large', 'currentAvailability': 'Available'},
+            ],
+        }]
+        with unittest.mock.patch.object(
+                self,
+                'cmd',
+                side_effect=[
+                    unittest.mock.Mock(get_output_in_json=unittest.mock.Mock(return_value=offers)),
+                    unittest.mock.Mock(get_output_in_json=unittest.mock.Mock(return_value=providers)),
+                ]):
+            result = self._get_available_v2_simulator_with_quota('East US')
+
+        self.assertEqual(result, ('provider-a', 'provider-a.sim.large', 2))
+
+    def test_get_available_v2_simulator_with_quota_skips_when_no_target_matches(self):
+        offers = [{
+            'properties': {
+                'providerId': 'provider-a',
+                'location': 'eastus',
+                'targetQuotas': [
+                    {'targetId': 'provider-a.sim.zero', 'standardMinutesLifetime': 0},
+                    {'targetId': 'provider-a.sim.unavailable', 'standardMinutesLifetime': 1},
+                    {'targetId': 'provider-a.qpu', 'standardMinutesLifetime': 10},
+                ],
+            },
+        }]
+        providers = [{
+            'targets': [
+                {'id': 'provider-a.sim.zero', 'currentAvailability': 'Available'},
+                {'id': 'provider-a.sim.unavailable', 'currentAvailability': 'Unavailable'},
+                {'id': 'provider-a.qpu', 'currentAvailability': 'Available'},
+            ],
+        }]
+        with unittest.mock.patch.object(
+                self,
+                'cmd',
+                side_effect=[
+                    unittest.mock.Mock(get_output_in_json=unittest.mock.Mock(return_value=offers)),
+                    unittest.mock.Mock(get_output_in_json=unittest.mock.Mock(return_value=providers)),
+                ]):
+            with self.assertRaisesRegex(
+                    unittest.SkipTest,
+                    "No V2 simulator target with allocated quota is currently available in 'eastus'"):
+                self._get_available_v2_simulator_with_quota('eastus')
 
     @live_only()
     def test_jobs(self):
@@ -598,48 +711,15 @@ class QuantumJobsScenarioTest(ScenarioTest):
         job_output_format = 'rigetti.quil-results.v1'
         workspace_kind_args = ''
         if workspace_kind == 'V2':
-            offers = self.cmd('az quantum suite-offer list -o json').get_output_in_json()
-            provider_id = None
-            normalized_location = test_location.replace(' ', '').lower()
-            for offer in offers:
-                properties = offer.get('properties') or {}
-                if (properties.get('location') or '').replace(' ', '').lower() != normalized_location:
-                    continue
-                candidate_provider_id = properties.get('providerId')
-                if not candidate_provider_id:
-                    continue
-                allocatable_targets = {
-                    quota['targetId'].lower(): quota['targetId']
-                    for quota in properties.get('targetQuotas') or []
-                    if quota.get('targetId')
-                    and (quota.get('standardMinutesLifetime') or 0) >= 2
-                }
-                providers = self.cmd(
-                    f'az quantum suite-offer target list -p {candidate_provider_id} -o json'
-                ).get_output_in_json()
-                target_id = next(
-                    (
-                        target['id']
-                        for provider in providers
-                        for target in provider.get('targets', [])
-                        if (target.get('id') or '').lower() in allocatable_targets
-                        and '.sim.' in target['id'].lower()
-                        and (target.get('currentAvailability') or '').lower() == 'available'
-                    ),
-                    None,
-                )
-                if target_id:
-                    provider_id = candidate_provider_id
-                    break
-            if provider_id is None:
-                self.skipTest(f"No allocatable V2 simulator is available in '{test_location}'.")
+            provider_id, target_id, workspace_quota_minutes = \
+                self._get_available_v2_simulator_with_quota(test_location)
             test_provider_sku_list = f'{provider_id}/default'
             job_input_file = "src/quantum/azext_quantum/tests/latest/input_data/Program.qs"
             job_input_format = 'qir.v1'
             job_output_format = 'microsoft.quantum-results.v1'
             workspace_kind_args = (
                 f'--workspace-kind V2 --quota provider-id={provider_id} target-id={target_id} '
-                'standard-minutes-lifetime=2'
+                f'standard-minutes-lifetime={workspace_quota_minutes}'
             )
         else:
             test_provider_sku_list = "rigetti/azure-basic-qvm-only-unlimited"

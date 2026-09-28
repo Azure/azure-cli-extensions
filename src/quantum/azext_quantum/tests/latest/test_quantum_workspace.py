@@ -17,7 +17,7 @@ from azure.cli.testsdk import (LiveScenarioTest, ScenarioTest, ResourceGroupPrep
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError, ForbiddenError, ServiceError
 from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 from azure.cli.command_modules.role._msgrpah._graph_client import GraphError
-from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_capabilities, get_test_workspace_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing, run_cleanup_commands
+from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_workspace_random_name, get_test_capabilities, get_test_workspace_provider_sku_list, all_providers_are_in_capabilities, issue_cmd_with_param_missing, run_cleanup_commands, get_offer_targets_with_quota
 from ..._version_check_helper import check_version
 from ..._params import QuotaAction
 from ..._validators import validate_email, validate_workspace_user
@@ -39,25 +39,10 @@ def _not_found_pager():
 
 
 def _get_v2_offer_candidates(offers, location):
-    normalized_location = location.replace(' ', '').lower()
-    candidates = []
-    for offer in offers:
-        properties = offer.get('properties') or {}
-        if properties.get('location', '').replace(' ', '').lower() != normalized_location:
-            continue
-        provider_id = properties.get('providerId')
-        if not provider_id:
-            continue
-        target_ids = [
-            quota['targetId']
-            for quota in properties.get('targetQuotas') or []
-            if quota.get('targetId')
-            and quota.get('standardMinutesLifetime') is not None
-            and quota['standardMinutesLifetime'] >= 2
-        ]
-        if target_ids:
-            candidates.append((provider_id, target_ids))
-    return candidates
+    return [
+        (provider_id, list(targets_with_quota.keys()))
+        for provider_id, targets_with_quota in get_offer_targets_with_quota(offers, location, min_quota=2)
+    ]
 
 
 def _find_available_target(target_ids, providers):
@@ -164,7 +149,7 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
             if target_id:
                 return provider_id, target_id
 
-        self.fail(f"No V2 suite offer with an allocatable target is available in location '{location}'.")
+        self.fail(f"No V2 suite offer with an available target found in '{location}'.")
 
     def _assert_workspace_quota_limit(self, quotas, provider_id, target_id, expected_limit):
         dimension = 'StandardMinutesLifetime'
@@ -175,26 +160,6 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
             f"Expected quota limit {expected_limit}, but found {quota['limit']} in row {quota}",
         )
 
-    def _wait_for_workspace_quota_limit(self, resource_group, workspace_name,
-                                        provider_id, target_id, expected_limit):
-        attempts = 6
-        last_error = None
-        for attempt in range(attempts):
-            try:
-                quotas = self.cmd(
-                    f'az quantum workspace quotas -g {resource_group} -w {workspace_name} -o json'
-                ).get_output_in_json()
-                self._assert_workspace_quota_limit(
-                    quotas, provider_id, target_id, expected_limit
-                )
-                return
-            except AssertionError as error:
-                last_error = error
-                if attempt < attempts - 1:
-                    time.sleep(11)
-        raise last_error
-
-    @live_only()
     def test_workspace_v2_create_destroy(self):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
@@ -216,13 +181,22 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
                 self, test_resource_group, test_workspace_temp
             )
             self.assertEqual(workspace['properties']['workspaceKind'], 'V2')
-            self._wait_for_workspace_quota_limit(
-                test_resource_group, test_workspace_temp, provider_id, target_id, 1
+            quotas = self.cmd(
+                f'az quantum workspace quotas -g {test_resource_group} -w {test_workspace_temp} -o json'
+            ).get_output_in_json()
+            self._assert_workspace_quota_limit(
+                quotas, provider_id, target_id, 1
             )
 
             self.cmd(f'az quantum workspace update -g {test_resource_group} -w {test_workspace_temp} --quota {update_quota} -o json')
-            self._wait_for_workspace_quota_limit(
-                test_resource_group, test_workspace_temp, provider_id, target_id, 2
+            _wait_for_workspace_provisioned(
+                self, test_resource_group, test_workspace_temp
+            )
+            quotas = self.cmd(
+                f'az quantum workspace quotas -g {test_resource_group} -w {test_workspace_temp} -o json'
+            ).get_output_in_json()
+            self._assert_workspace_quota_limit(
+                quotas, provider_id, target_id, 2
             )
 
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
@@ -297,11 +271,9 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
                 ('workspace defaults', 'az quantum workspace clear'),
             ])
 
-    @live_only()
     def test_workspace_user(self):
         self._test_workspace_user()
 
-    @live_only()
     def test_workspace_user_v2(self):
         self._test_workspace_user(workspace_kind='V2')
 
@@ -350,58 +322,37 @@ class QuantumWorkspacesUnitTest(unittest.TestCase):
                 test_failed=False,
             )
 
-    @patch('azext_quantum.tests.latest.test_quantum_workspace.time.sleep')
-    def test_wait_for_workspace_quota_limit_succeeds_immediately(self, sleep_mock):
-        test_case = Mock()
-        test_case.cmd.return_value.get_output_in_json.return_value = []
+    def test_get_offer_targets_with_quota_filters_by_location_and_min_quota(self):
+        offers = [
+            {'properties': None},
+            {'properties': {
+                'providerId': 'wrong-location',
+                'location': 'westus',
+                'targetQuotas': [{'targetId': 'target-a', 'standardMinutesLifetime': 5}],
+            }},
+            {'properties': {
+                'providerId': 'no-capacity',
+                'location': 'East US',
+                'targetQuotas': [{'targetId': 'target-b', 'standardMinutesLifetime': 1}],
+            }},
+            {'properties': {
+                'providerId': 'provider-a',
+                'location': 'eastus',
+                'targetQuotas': [
+                    {'targetId': 'target-c', 'standardMinutesLifetime': None},
+                    {'targetId': 'target-d', 'standardMinutesLifetime': 2},
+                ],
+            }},
+        ]
 
-        QuantumWorkspacesLiveScenarioTest._wait_for_workspace_quota_limit(
-            test_case, 'group', 'workspace', 'provider', 'target', 1
+        self.assertEqual(
+            get_offer_targets_with_quota(offers, 'East US', min_quota=2),
+            [('provider-a', {'target-d': 2})],
         )
-
-        test_case.cmd.assert_called_once()
-        test_case._assert_workspace_quota_limit.assert_called_once_with([], 'provider', 'target', 1)
-        sleep_mock.assert_not_called()
-
-    @patch('azext_quantum.tests.latest.test_quantum_workspace.time.sleep')
-    def test_wait_for_workspace_quota_limit_retries_then_succeeds(self, sleep_mock):
-        test_case = Mock()
-        test_case.cmd.return_value.get_output_in_json.return_value = []
-        test_case._assert_workspace_quota_limit.side_effect = [AssertionError('not ready'), None]
-
-        QuantumWorkspacesLiveScenarioTest._wait_for_workspace_quota_limit(
-            test_case, 'group', 'workspace', 'provider', 'target', 1
+        self.assertEqual(
+            get_offer_targets_with_quota(offers, 'East US', min_quota=1),
+            [('no-capacity', {'target-b': 1}), ('provider-a', {'target-d': 2})],
         )
-
-        self.assertEqual(test_case.cmd.call_count, 2)
-        sleep_mock.assert_called_once_with(11)
-
-    @patch('azext_quantum.tests.latest.test_quantum_workspace.time.sleep')
-    def test_wait_for_workspace_quota_limit_raises_after_last_attempt(self, sleep_mock):
-        test_case = Mock()
-        test_case.cmd.return_value.get_output_in_json.return_value = []
-        test_case._assert_workspace_quota_limit.side_effect = AssertionError('still not ready')
-
-        with self.assertRaisesRegex(AssertionError, 'still not ready'):
-            QuantumWorkspacesLiveScenarioTest._wait_for_workspace_quota_limit(
-                test_case, 'group', 'workspace', 'provider', 'target', 1
-            )
-
-        self.assertEqual(test_case.cmd.call_count, 6)
-        self.assertEqual(sleep_mock.call_count, 5)
-
-    @patch('azext_quantum.tests.latest.test_quantum_workspace.time.sleep')
-    def test_wait_for_workspace_quota_limit_fails_fast_on_command_error(self, sleep_mock):
-        test_case = Mock()
-        test_case.cmd.side_effect = RuntimeError('command failed')
-
-        with self.assertRaisesRegex(RuntimeError, 'command failed'):
-            QuantumWorkspacesLiveScenarioTest._wait_for_workspace_quota_limit(
-                test_case, 'group', 'workspace', 'provider', 'target', 1
-            )
-
-        test_case.cmd.assert_called_once()
-        sleep_mock.assert_not_called()
 
     def test_get_v2_offer_candidates(self):
         offers = [
