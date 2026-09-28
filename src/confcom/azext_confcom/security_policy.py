@@ -71,6 +71,12 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         is_vn2: bool = False,
         fragment_contents: Any = None,
         container_definitions: Optional[list] = None,
+        allowed_log_providers: Optional[list] = None,
+        allow_log_provider_dropping: Optional[bool] = None,
+        allow_host_network: Optional[bool] = None,
+        allow_registry_changes_dropping: Optional[bool] = None,
+        mapped_directories: Optional[list] = None,
+        prerelease_policy_api: bool = False,
     ) -> None:
         self._rootfs_proxy = None
         self._platform = None
@@ -79,7 +85,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self._disable_stdio = disable_stdio
         self._fragments = rego_fragments
         self._existing_fragments = existing_rego_fragments
-        self._api_version = config.API_VERSION
+        self._prerelease_policy_api = prerelease_policy_api
         self._fragment_contents = fragment_contents
         self._container_definitions = container_definitions or []
 
@@ -117,6 +123,38 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             self._allow_environment_variable_dropping = True
             self._allow_unencrypted_scratch = False
             self._allow_capability_dropping = True
+
+        # allowed_log_providers is the list of ETW log providers that CWCOW
+        # containers may keep. It has no ARM property, so it is only settable
+        # through the --input JSON. allow_log_provider_dropping mirrors the
+        # other *_dropping switches (defaults to True) so that providers not in
+        # the allow-list are dropped rather than denied.
+        self._allowed_log_providers = allowed_log_providers or []
+        if allow_log_provider_dropping is not None:
+            self._allow_log_provider_dropping = allow_log_provider_dropping
+        else:
+            self._allow_log_provider_dropping = True
+
+        # C-WCOW enforcement points added in hcsshim PR #2842. These default to
+        # False, matching the hcsshim policy producer, and have no ARM property
+        # so they are only settable through the --input JSON. allow_host_network
+        # has no framework default, so it must always be emitted when
+        # host_network is wired in the policy template. On Linux it is forced on
+        # when an elasticSan mount is present (see _has_elastic_san_mount).
+        if allow_host_network is not None:
+            self._allow_host_network = allow_host_network
+        else:
+            self._allow_host_network = False
+        if allow_registry_changes_dropping is not None:
+            self._allow_registry_changes_dropping = allow_registry_changes_dropping
+        else:
+            self._allow_registry_changes_dropping = False
+
+        # mapped_directories is the top-level --input allow-list for dynamic
+        # VSMB mapped-directory operations in a Windows utility VM. Generated
+        # Windows policies always include the corresponding enforcement
+        # bindings; an omitted or empty list authorizes no such operations.
+        self._mapped_directories = mapped_directories or []
 
         self.version = case_insensitive_dict_get(
             deserialized_config, config.ACI_FIELD_VERSION
@@ -220,11 +258,60 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             self.get_serialized_output(output_type, rego_boilerplate=False, include_sidecars=False, omit_id=omit_id),
         )
 
+    def _get_mapped_directory_rego(self) -> str:
+        return (
+            f"mapped_directories := {pretty_print_func(self._mapped_directories)}\n"
+            "mapped_directory_mount := data.framework.mapped_directory_mount\n"
+            "mapped_directory_unmount := data.framework.mapped_directory_unmount\n"
+        )
+
+    def _has_elastic_san_mount(self) -> bool:
+        # Compute-ACI puts a Linux pod that mounts an Elastic SAN volume on the
+        # host network (iscsid needs the UVM init netns), so its generated
+        # policy must allow host_network. Detect the elasticSan mount type here
+        # and force allow_host_network on for that case.
+        for image in self._images:
+            for mount in image.get_mounts():
+                mount_type = case_insensitive_dict_get(
+                    mount, config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE
+                )
+                if mount_type == config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE_ELASTIC_SAN:
+                    return True
+        return False
+
     def _add_rego_boilerplate(self, output: str) -> str:
+        requires_host_network = (
+            self._allow_host_network or self._has_elastic_san_mount()
+        )
+        if (
+            self._platform.startswith("linux")
+            and requires_host_network
+            and not self._prerelease_policy_api
+        ):
+            eprint(
+                "Linux host-network policy generation requires "
+                "--prerelease-policy-api."
+            )
+
+        use_prerelease_policy = (
+            self._platform.startswith("windows") or self._prerelease_policy_api
+        )
+        api_version = (
+            config.PRERELEASE_POLICY_API_VERSION
+            if use_prerelease_policy
+            else config.DEFAULT_POLICY_API_VERSION
+        )
+        framework_version = (
+            config.PRERELEASE_POLICY_FRAMEWORK_VERSION
+            if use_prerelease_policy
+            else config.DEFAULT_POLICY_FRAMEWORK_VERSION
+        )
+
         # determine if we're outputting for a sidecar or not
         if self._images and self._images[0].get_id() and is_sidecar(self._images[0].get_id()):
             return config.SIDECAR_REGO_POLICY % (
-                pretty_print_func(self._api_version),
+                pretty_print_func(api_version),
+                pretty_print_func(framework_version),
                 output
             )
 
@@ -232,8 +319,23 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         sanitized_fragments = sanitize_fragment_fields(self.get_fragments())
 
         if self._platform.startswith("linux"):
+            if self._prerelease_policy_api:
+                return config.CUSTOMER_REGO_POLICY_PRERELEASE % (
+                    pretty_print_func(api_version),
+                    pretty_print_func(framework_version),
+                    pretty_print_func(sanitized_fragments),
+                    output,
+                    pretty_print_func(self._allow_properties_access),
+                    pretty_print_func(self._allow_dump_stacks),
+                    pretty_print_func(self._allow_runtime_logging),
+                    pretty_print_func(self._allow_environment_variable_dropping),
+                    pretty_print_func(self._allow_unencrypted_scratch),
+                    pretty_print_func(self._allow_capability_dropping),
+                    pretty_print_func(requires_host_network),
+                )
             return config.CUSTOMER_REGO_POLICY % (
-                pretty_print_func(self._api_version),
+                pretty_print_func(api_version),
+                pretty_print_func(framework_version),
                 pretty_print_func(sanitized_fragments),
                 output,
                 pretty_print_func(self._allow_properties_access),
@@ -245,13 +347,21 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             )
         if self._platform.startswith("windows"):
             return config.CUSTOMER_REGO_POLICY_WINDOWS % (
-                pretty_print_func(self._api_version),
+                pretty_print_func(api_version),
+                pretty_print_func(framework_version),
                 pretty_print_func(sanitized_fragments),
                 output,
                 pretty_print_func(self._allow_properties_access),
                 pretty_print_func(self._allow_dump_stacks),
                 pretty_print_func(self._allow_runtime_logging),
                 pretty_print_func(self._allow_environment_variable_dropping),
+                pretty_print_func(self._allow_log_provider_dropping),
+                pretty_print_func(self._allow_host_network),
+                pretty_print_func(self._allow_unencrypted_scratch),
+                pretty_print_func(self._allow_capability_dropping),
+                pretty_print_func(self._allow_registry_changes_dropping),
+                pretty_print_func(self._allowed_log_providers),
+                self._get_mapped_directory_rego(),
             )
         eprint(f'Unsupported platform: "{self._platform}". '
                f'Supported platforms are linux/amd64 and windows/amd64.')
@@ -445,7 +555,9 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                     container[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS] = False
 
         policy += [
-            TypeAdapter(Container).dump_python(Container(**c), mode="json")
+            TypeAdapter(Container).dump_python(
+                Container(**c), mode="json", exclude_none=True
+            )
             for c in self._container_definitions
         ]
 
@@ -766,6 +878,7 @@ def load_policy_from_arm_template_str(
     exclude_default_fragments: bool = False,
     platform: str = "linux/amd64",
     tar_mapping=None,
+    prerelease_policy_api: bool = False,
 ) -> List[AciPolicy]:
     """Function that converts ARM template string to an ACI Policy"""
     input_arm_json = os_util.load_json_from_str(template_data)
@@ -960,6 +1073,7 @@ def load_policy_from_arm_template_str(
                 existing_rego_fragments=fragments,
                 debug_mode=debug_mode,
                 fragment_contents=fragment_contents,
+                prerelease_policy_api=prerelease_policy_api,
             )
         )
     return container_groups
@@ -978,6 +1092,7 @@ def load_policy_from_arm_template_file(
     exclude_default_fragments: bool = False,
     platform: str = "linux/amd64",
     tar_mapping=None,
+    prerelease_policy_api: bool = False,
 ) -> List[AciPolicy]:
     """Utility function: generate policy object from given arm template and parameter file paths"""
     input_arm_json = os_util.load_str_from_file(template_path)
@@ -997,12 +1112,13 @@ def load_policy_from_arm_template_file(
         exclude_default_fragments=exclude_default_fragments,
         platform=platform,
         tar_mapping=tar_mapping,
+        prerelease_policy_api=prerelease_policy_api,
     )
 
 
 def load_policy_from_image_name(
     image_names: Union[List[str], str], debug_mode: bool = False, disable_stdio: bool = False,
-    platform: str = "linux/amd64", tar_mapping=None,
+    platform: str = "linux/amd64", tar_mapping=None, prerelease_policy_api: bool = False,
 ) -> AciPolicy:
     # can either take a list of image names or a single image name
     if isinstance(image_names, str):
@@ -1037,6 +1153,7 @@ def load_policy_from_image_name(
         },
         debug_mode=debug_mode,
         disable_stdio=disable_stdio,
+        prerelease_policy_api=prerelease_policy_api,
     )
 
 
@@ -1048,6 +1165,7 @@ def load_policy_from_json_file(
     exclude_default_fragments: bool = False,
     platform: str = "linux/amd64",
     tar_mapping=None,
+    prerelease_policy_api: bool = False,
 ) -> AciPolicy:
     json_content = os_util.load_str_from_file(data)
     return load_policy_from_json(
@@ -1058,9 +1176,11 @@ def load_policy_from_json_file(
         exclude_default_fragments=exclude_default_fragments,
         platform=platform,
         tar_mapping=tar_mapping,
+        prerelease_policy_api=prerelease_policy_api,
     )
 
 
+# pylint: disable=too-many-branches
 def load_policy_from_json(
     data: str,
     debug_mode: bool = False,
@@ -1069,6 +1189,7 @@ def load_policy_from_json(
     exclude_default_fragments: bool = False,
     platform: str = "linux/amd64",
     tar_mapping=None,
+    prerelease_policy_api: bool = False,
 ) -> AciPolicy:
     output_containers = []
     # 1) Parse incoming string as JSON
@@ -1100,6 +1221,65 @@ def load_policy_from_json(
     scenario = case_insensitive_dict_get(
         policy_input_json, config.ACI_FIELD_SCENARIO
     ) or ""
+
+    allowed_log_providers = case_insensitive_dict_get(
+        policy_input_json, config.ACI_FIELD_ALLOWED_LOG_PROVIDERS
+    ) or []
+
+    allow_log_provider_dropping = case_insensitive_dict_get(
+        policy_input_json, config.ACI_FIELD_ALLOW_LOG_PROVIDER_DROPPING
+    )
+
+    allow_host_network = case_insensitive_dict_get(
+        policy_input_json, config.ACI_FIELD_ALLOW_HOST_NETWORK
+    )
+
+    allow_registry_changes_dropping = case_insensitive_dict_get(
+        policy_input_json, config.ACI_FIELD_ALLOW_REGISTRY_CHANGES_DROPPING
+    )
+
+    raw_mapped_directories = case_insensitive_dict_get(
+        policy_input_json, config.ACI_FIELD_MAPPED_DIRECTORIES
+    )
+    if raw_mapped_directories is None:
+        raw_mapped_directories = []
+    if not isinstance(raw_mapped_directories, list):
+        eprint(f'Field ["{config.ACI_FIELD_MAPPED_DIRECTORIES}"] must be a list')
+
+    mapped_directories = []
+    for index, entry in enumerate(raw_mapped_directories):
+        field_name = f'{config.ACI_FIELD_MAPPED_DIRECTORIES}[{index}]'
+        if not isinstance(entry, dict):
+            eprint(f'Field ["{field_name}"] must be an object')
+
+        container_path = case_insensitive_dict_get(
+            entry, config.ACI_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH
+        )
+        if not isinstance(container_path, str) or not container_path.strip():
+            eprint(
+                f'Field ["{field_name}.'
+                f'{config.ACI_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH}"] '
+                "must be a non-empty string"
+            )
+
+        read_only = case_insensitive_dict_get(
+            entry, config.ACI_FIELD_MAPPED_DIRECTORIES_READONLY
+        )
+        if read_only is None:
+            read_only = False
+        elif not isinstance(read_only, bool):
+            eprint(
+                f'Field ["{field_name}.'
+                f'{config.ACI_FIELD_MAPPED_DIRECTORIES_READONLY}"] '
+                "must be a boolean"
+            )
+
+        mapped_directories.append(
+            {
+                config.POLICY_FIELD_MAPPED_DIRECTORIES_CONTAINER_PATH: container_path,
+                config.POLICY_FIELD_MAPPED_DIRECTORIES_READONLY: read_only,
+            }
+        )
 
     # 3) Process rego_fragments
     standalone_rego_fragments = case_insensitive_dict_get(
@@ -1164,7 +1344,7 @@ def load_policy_from_json(
             scenario.lower() == config.VN2 and
             case_insensitive_dict_get(container_security_context, config.ACI_FIELD_CONTAINERS_PRIVILEGED)
         ):
-            mounts += config.DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE
+            mounts += config.get_default_mounts_privileged_virtual_node(platform)
 
         labels = case_insensitive_dict_get(policy_input_json, config.VIRTUAL_NODE_YAML_LABELS) or []
         envs = []
@@ -1175,7 +1355,7 @@ def load_policy_from_json(
             case_insensitive_dict_get(labels, config.VIRTUAL_NODE_YAML_LABEL_WORKLOAD_IDENTITY)
         ):
             envs += config.VIRTUAL_NODE_ENV_RULES_WORKLOAD_IDENTITY
-            mounts += config.DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE
+            mounts += config.get_default_mounts_workload_identity_virtual_node(platform)
 
         envs += process_env_vars_from_config(container_properties)
 
@@ -1195,6 +1375,9 @@ def load_policy_from_json(
                 ),
                 config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
                 config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: not disable_stdio,
+                config.ACI_FIELD_CONTAINERS_REGISTRY_CHANGES: case_insensitive_dict_get(
+                    container_properties, config.ACI_FIELD_CONTAINERS_REGISTRY_CHANGES
+                ),
                 config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: case_insensitive_dict_get(
                     container_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
                 ),
@@ -1223,6 +1406,12 @@ def load_policy_from_json(
         rego_fragments=rego_fragments,
         debug_mode=debug_mode,
         is_vn2=scenario.lower() == config.VN2,
+        allowed_log_providers=allowed_log_providers,
+        allow_log_provider_dropping=allow_log_provider_dropping,
+        allow_host_network=allow_host_network,
+        allow_registry_changes_dropping=allow_registry_changes_dropping,
+        mapped_directories=mapped_directories,
+        prerelease_policy_api=prerelease_policy_api,
     )
 
 
@@ -1238,6 +1427,7 @@ def load_policy_from_virtual_node_yaml_file(
         infrastructure_svn: str = None,
         platform: str = "linux/amd64",
         tar_mapping=None,
+        prerelease_policy_api: bool = False,
 ) -> List[AciPolicy]:
     yaml_contents_str = os_util.load_str_from_file(virtual_node_yaml_path)
     return load_policy_from_virtual_node_yaml_str(
@@ -1252,6 +1442,7 @@ def load_policy_from_virtual_node_yaml_file(
         infrastructure_svn=infrastructure_svn,
         platform=platform,
         tar_mapping=tar_mapping,
+        prerelease_policy_api=prerelease_policy_api,
     )
 
 
@@ -1268,6 +1459,7 @@ def load_policy_from_virtual_node_yaml_str(
         infrastructure_svn: str = None,
         platform: str = "linux/amd64",
         tar_mapping=None,
+        prerelease_policy_api: bool = False,
 ) -> List[AciPolicy]:
     """
     Load a virtual node yaml file and generate a policy object
@@ -1370,7 +1562,7 @@ def load_policy_from_virtual_node_yaml_str(
 
             if use_workload_identity:
                 envs += config.VIRTUAL_NODE_ENV_RULES_WORKLOAD_IDENTITY
-                mounts += config.DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE
+                mounts += config.get_default_mounts_workload_identity_virtual_node(platform)
 
             # there can be implicit volumes from volumeClaimTemplates
             # We need to add them to the list of volumes and note if they are readonly
@@ -1442,7 +1634,7 @@ def load_policy_from_virtual_node_yaml_str(
             ) or {}
 
             if case_insensitive_dict_get(container_security_context, config.ACI_FIELD_CONTAINERS_PRIVILEGED) is True:
-                mounts += config.DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE
+                mounts += config.get_default_mounts_privileged_virtual_node(platform)
 
             # security context
             security_context = pod_security_context.copy()
@@ -1491,6 +1683,7 @@ def load_policy_from_virtual_node_yaml_str(
                 is_vn2=True,
                 existing_rego_fragments=existing_fragments,
                 fragment_contents=fragment_contents,
+                prerelease_policy_api=prerelease_policy_api,
             )
         )
     return all_policies

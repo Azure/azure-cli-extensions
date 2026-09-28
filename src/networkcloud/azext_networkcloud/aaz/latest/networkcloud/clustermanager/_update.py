@@ -29,9 +29,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-07-01",
+        "version": "2026-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-08-01-preview"],
         ]
     }
 
@@ -119,6 +119,18 @@ class Update(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.rollout_ring = AAZIntArg(
+            options=["--rollout-ring"],
+            arg_group="Properties",
+            help="The relative ordering group used to apply software updates to associated clusters. The minimum accepted value is 1; the service enforces the upper bound currently in effect, which may change over time.",
+            fmt=AAZIntArgFormat(
+                minimum=1,
+            ),
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -186,7 +198,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-01",
+                    "api-version", "2026-08-01-preview",
                     required=True,
                 ),
             }
@@ -218,6 +230,7 @@ class Update(AAZCommand):
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
             _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
@@ -234,6 +247,10 @@ class Update(AAZCommand):
             user_assigned = _builder.get(".identity.userAssigned")
             if user_assigned is not None:
                 user_assigned.set_elements(AAZStrType, ".")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("rolloutRing", AAZIntType, ".rollout_ring")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -353,6 +370,9 @@ class Update(AAZCommand):
             properties.relay_configuration = AAZObjectType(
                 serialized_name="relayConfiguration",
                 flags={"read_only": True},
+            )
+            properties.rollout_ring = AAZIntType(
+                serialized_name="rolloutRing",
             )
             properties.vm_size = AAZStrType(
                 serialized_name="vmSize",

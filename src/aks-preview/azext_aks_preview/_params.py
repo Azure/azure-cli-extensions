@@ -2762,6 +2762,14 @@ def load_arguments(self, _):
             help="Space-separated machine names to delete.",
         )
 
+    with self.argument_context("aks nodepool scale") as c:
+        c.argument(
+            "use_patch_api",
+            action="store_true",
+            is_preview=True,
+            help="Scale a VMSS node pool using the preview PATCH agent pool API instead of the default PUT API.",
+        )
+
     with self.argument_context("aks nodepool manual-scale add") as c:
         c.argument("vm_sizes", is_preview=True)
 

@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 from azure.cli.testsdk import ScenarioTest
 from azure.core.exceptions import ResourceNotFoundError
 
-from azext_aimanager.vendored_sdks.v2026_05_02_preview import models
+from azext_aimanager.vendored_sdks.v2026_09_02_preview import models
 
 
 class ModelSourceScenarioTest(ScenarioTest):
@@ -35,7 +35,7 @@ class ModelSourceScenarioTest(ScenarioTest):
         service_client = MagicMock()
         service_client.model_sources = operations
 
-        command_prefix = 'aimanager modelsource {} -g rg --aimanager-name manager'
+        command_prefix = 'aimanager modelsource {} -g rg --aimanager manager'
 
         with patch('azext_aimanager._client_factory.get_aimanager_client',
                    return_value=service_client):

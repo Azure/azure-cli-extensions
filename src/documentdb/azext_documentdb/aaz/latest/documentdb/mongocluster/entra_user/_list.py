@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster microsoft-entra-user list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List the Microsoft Entra ID users on a mongo cluster.

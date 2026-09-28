@@ -46,6 +46,7 @@ from .partner_extensions.AzureMLKubernetes import AzureMLKubernetes
 from .partner_extensions.DataProtectionKubernetes import DataProtectionKubernetes
 from .partner_extensions.Dapr import Dapr
 from .partner_extensions.VirtualNodes import VirtualNodes
+from .partner_extensions.ChaosStudio import ChaosStudio
 from .partner_extensions.DefaultExtension import (
     DefaultExtension,
     user_confirmation_factory,
@@ -78,6 +79,7 @@ def ExtensionFactory(extension_name):
         "microsoft.dapr": Dapr,
         "microsoft.dataprotection.kubernetes": DataProtectionKubernetes,
         "microsoft.virtualnodes": VirtualNodes,
+        "microsoft.chaosstudio": ChaosStudio,
     }
 
     # Return the extension if we find it in the map, else return the default
@@ -247,6 +249,12 @@ def create_k8s_extension(
                 identity_object,
                 location,
             )
+
+    if isinstance(extension_class, ChaosStudio):
+        return extension_class.Install(
+            cmd, client, resource_group_name, cluster_rp, cluster_type,
+            cluster_name, name, extension_instance, no_wait=no_wait,
+        )
 
     # Try to create the resource
     return sdk_no_wait(

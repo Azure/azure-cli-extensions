@@ -8,18 +8,18 @@
 PROVIDER_NAMESPACE = "Microsoft.Migrate"
 
 # API version for the Runbooks resource provider surface.
-RUNBOOKS_API_VERSION = "2020-06-01-preview"
+RUNBOOKS_API_VERSION = "2026-08-01-preview"
 
 # The runbook definition/parameters archive is delivered by the separate
 # Artifact Service (Microsoft.Migrate artifacts), which is versioned
 # independently of the runbooks surface.
 ARTIFACTS_API_VERSION = "2020-06-01-preview"
 
-# Runbook create/delete are long-running operations whose async status
-# is served by the migrateProjects/waveOperations type. That type is NOT
-# registered at RUNBOOKS_API_VERSION; the async-operation status URL must
-# be polled at this newer API version instead.
-WAVE_OPERATIONS_API_VERSION = "2025-03-30-preview"
+# Runbook create/delete are long-running operations whose async status is
+# served by the migrateProjects/waveOperations type. The async-operation
+# status URL is polled at this API version (kept as its own constant so the
+# LRO poll version can move independently of the runbooks surface if needed).
+WAVE_OPERATIONS_API_VERSION = "2026-08-01-preview"
 
 # Canonical ARM ID templates (camelCase per the confirmed spec):
 #   /subscriptions/{s}/resourceGroups/{rg}/providers/Microsoft.Migrate

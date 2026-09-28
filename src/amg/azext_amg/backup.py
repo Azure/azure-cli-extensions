@@ -17,6 +17,7 @@ from knack.log import get_logger
 
 from .backup_core import (get_all_dashboards, get_all_library_panels, get_all_folders, get_all_snapshots,
                           get_all_annotations, get_all_datasources, print_an_empty_line)
+from .dashboard_v2 import dashboard_identity
 
 logger = get_logger(__name__)
 
@@ -80,13 +81,13 @@ def _save_dashboards(grafana_url, backup_dir, timestamp, http_headers, **kwargs)
     dashboards = get_all_dashboards(grafana_url, http_headers, **kwargs)
     # now go through all the dashboards and save them
     for dashboard_content in dashboards:
-        dashboard = dashboard_content['dashboard']
-        board_uri = "uid/" + dashboard['uid']
-        _save_dashboard_setting(dashboard['title'], board_uri, dashboard_content, folder_path)
+        uid, title = dashboard_identity(dashboard_content)
+        board_uri = "uid/" + uid
+        _save_dashboard_setting(title, board_uri, dashboard_content, folder_path)
 
         log_file_path = folder_path + '/' + log_file
         with open(log_file_path, 'w', encoding="utf8") as f:
-            f.write(board_uri + '\t' + dashboard['title'] + '\n')
+            f.write(board_uri + '\t' + title + '\n')
 
 
 def _save_dashboard_setting(dashboard_name, file_name, dashboard_settings, folder_path):

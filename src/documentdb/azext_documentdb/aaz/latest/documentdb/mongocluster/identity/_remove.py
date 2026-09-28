@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster identity remove",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Remove(AAZCommand):

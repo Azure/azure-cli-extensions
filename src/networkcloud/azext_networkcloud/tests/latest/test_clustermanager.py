@@ -174,7 +174,8 @@ def step_create_scenario1(test, checks=None):
         "--fabric-controller-id {fabricControllerId} "
         "--tags {tags} "
         "--managed-resource-group-configuration name={mrg_name} "
-        "--analytics-workspace-id {analyticsWorkspaceId} ",
+        "--analytics-workspace-id {analyticsWorkspaceId} "
+        "--rollout-ring {rolloutRing}",
         checks=checks,
     )
 
@@ -286,7 +287,7 @@ def step_delete(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud clustermanager delete --name {name} "
-        "--resource-group {rg} -y",
+        "--resource-group {rg} --yes",
         checks=checks,
     )
 
@@ -347,7 +348,8 @@ def step_update(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud clustermanager update --name {name} "
-        "--tags {tagsUpdate} --resource-group {rg}"
+        "--tags {tagsUpdate} --resource-group {rg} "
+        "--rollout-ring {rolloutRingUpdate}"
     )
 
 
@@ -386,6 +388,10 @@ class ClusterManagerScenarioTest(ScenarioTest):
                 "vmSize": CONFIG.get("CLUSTER_MANAGER", "vm_size"),
                 "availabilityZones": CONFIG.get(
                     "CLUSTER_MANAGER", "availability_zones"
+                ),
+                "rolloutRing": CONFIG.get("CLUSTER_MANAGER", "rollout_ring"),
+                "rolloutRingUpdate": CONFIG.get(
+                    "CLUSTER_MANAGER", "rollout_ring_update"
                 ),
                 "connectionState": CONFIG.get(
                     "CLUSTER_MANAGER", "update_relay_connection_state"
