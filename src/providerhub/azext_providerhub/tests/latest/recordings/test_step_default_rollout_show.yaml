@@ -5,7 +5,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - providerhub default-rollout show
       Connection:
@@ -13,21 +13,21 @@ interactions:
       ParameterSetName:
       - --provider-namespace --rollout-name
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/defaultRollouts/cliDefaultRollout?api-version=2024-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/defaultRollouts/cliDefaultRollout?api-version=2026-02-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["BRAZILUS","CENTRALUSEUAP","EASTUS2EUAP"]},"lowTraffic":{"waitDuration":"P1D","regions":["EASTUSSTG","WESTCENTRALUS"]},"mediumTraffic":{"waitDuration":"P1D","regions":["CENTRALINDIA","NORTHCENTRALUS","SOUTHCENTRALUSSTG"]},"highTraffic":{"waitDuration":"P1D","regions":["WESTUS2"]},"restOfTheWorldGroupOne":{"waitDuration":"P1D","regions":["AUSTRALIACENTRAL","AUSTRALIASOUTHEAST","BRAZILSOUTHEAST","CANADACENTRAL","EASTASIA","EASTUS","FRANCECENTRAL","GERMANYWESTCENTRAL","ITALYNORTH","JAPANWEST","JIOINDIACENTRAL","KOREACENTRAL","MALAYSIASOUTH","NORWAYWEST","SOUTHAFRICAWEST","SOUTHCENTRALUS","SWEDENCENTRAL","SWEDENSOUTH","SWITZERLANDWEST","TAIWANNORTH","UAECENTRAL","UKSOUTH","WESTEUROPE","WESTINDIA","WESTUS","MALAYSIAWEST","NEWZEALANDNORTH","SOUTHCENTRALUS2"]},"restOfTheWorldGroupTwo":{"waitDuration":"P1D","regions":["AUSTRALIACENTRAL2","AUSTRALIAEAST","BRAZILSOUTH","CANADAEAST","CENTRALUS","CENTRALUSFOUNDATIONAL","EASTUS2","FRANCESOUTH","GERMANYNORTH","ISRAELCENTRAL","JAPANEAST","JIOINDIAWEST","KOREASOUTH","MEXICOCENTRAL","NORTHEUROPE","NORTHEUROPEFOUNDATIONAL","NORWAYEAST","POLANDCENTRAL","QATARCENTRAL","SOUTHAFRICANORTH","SOUTHEASTASIA","SOUTHEASTASIAFOUNDATIONAL","SOUTHINDIA","SPAINCENTRAL","SWITZERLANDNORTH","TAIWANNORTHWEST","UAENORTH","UKWEST","WESTEUROPEFOUNDATIONAL","WESTUS3","AUSTRALIAEASTFOUNDATIONAL","AUSTRIAEAST","CHILECENTRAL","EASTUSFOUNDATIONAL","EASTUSSLV","INDONESIACENTRAL","ISRAELNORTHWEST","SOUTHEASTUS","SOUTHWESTUS","UKSOUTHFOUNDATIONAL"]},"autoProvisionConfig":{"storage":true,"resourceGraph":true},"manifestCheckinSpecification":{"manifestCheckinOption":"DoNotAttemptAutomaticManifestCheckin","manifestCheckinSync":false,"manifestGeneratedMatchesRepo":true}},"status":{"nextTrafficRegion":"None","subscriptionReregistrationResult":"NotApplicable","completedRegions":["BRAZILUS","EASTUS2EUAP","CENTRALUSEUAP"],"failedOrSkippedRegions":{}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/defaultRollouts/cliDefaultRollout","type":"Microsoft.ProviderHub/providerRegistrations/defaultRollouts","name":"cliDefaultRollout","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-04T16:34:14.8005518Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T16:34:14.8005518Z"}}'
+      string: '{"properties":{"provisioningState":"Canceled","specification":{"canary":{"regions":["BRAZILUS","CENTRALUSEUAP","EASTUS2EUAP"]},"lowTraffic":{"waitDuration":"P1D","regions":["EASTUSSTG","WESTCENTRALUS"]},"mediumTraffic":{"waitDuration":"P1D","regions":["CENTRALINDIA","NORTHCENTRALUS","SOUTHCENTRALUSSTG"]},"highTraffic":{"waitDuration":"P1D","regions":["WESTUS2"]},"restOfTheWorldGroupOne":{"waitDuration":"P1D","regions":["AUSTRALIACENTRAL","AUSTRALIASOUTHEAST","BRAZILSOUTHEAST","CANADACENTRAL","EASTASIA","EASTUS","FRANCECENTRAL","GERMANYWESTCENTRAL","INDONESIACENTRAL","ISRAELNORTHWEST","ITALYNORTH","JAPANWEST","JIOINDIACENTRAL","KOREACENTRAL","MALAYSIASOUTH","MALAYSIAWEST","NEWZEALANDNORTH","NORWAYWEST","SOUTHAFRICAWEST","SOUTHCENTRALUS","SOUTHEASTUS","SWEDENCENTRAL","SWEDENSOUTH","SWITZERLANDWEST","TAIWANNORTH","UAECENTRAL","UKSOUTH","WESTEUROPE","WESTINDIA","WESTUS","EASTUS3","SOUTHEASTUS3"]},"restOfTheWorldGroupTwo":{"waitDuration":"P1D","regions":["AUSTRALIACENTRAL2","AUSTRALIAEAST","AUSTRALIAEASTFOUNDATIONAL","AUSTRIAEAST","BELGIUMCENTRAL","BRAZILSOUTH","CANADAEAST","CENTRALUS","CENTRALUSFOUNDATIONAL","CHILECENTRAL","DENMARKEAST","EASTUS2","EASTUSFOUNDATIONAL","FRANCESOUTH","GERMANYNORTH","INDIASOUTHCENTRAL","ISRAELCENTRAL","JAPANEAST","JIOINDIAWEST","KOREASOUTH","MEXICOCENTRAL","NORTHEUROPE","NORTHEUROPEFOUNDATIONAL","NORWAYEAST","POLANDCENTRAL","QATARCENTRAL","SAUDIARABIAEAST","SOUTHAFRICANORTH","SOUTHCENTRALUS2","SOUTHEASTASIA","SOUTHEASTASIA3","SOUTHEASTASIAFOUNDATIONAL","SOUTHINDIA","SPAINCENTRAL","SWITZERLANDNORTH","TAIWANNORTHWEST","UAENORTH","UKSOUTHFOUNDATIONAL","UKWEST","WESTEUROPEFOUNDATIONAL","WESTUS3","EASTUSSLV","NETHERLANDSNORTHEAST","NORTHEASTUS5","SOUTHEASTUS5","SOUTHWESTUS","WESTCENTRALUSFRE"]},"autoProvisionConfig":{"storage":true,"resourceGraph":true},"manifestCheckinSpecification":{"manifestCheckinOption":"DoNotAttemptAutomaticManifestCheckin","manifestCheckinSync":false,"manifestGeneratedMatchesRepo":true}},"status":{"nextTrafficRegion":"Canary","nextTrafficRegionScheduledTime":"2026-09-17T05:27:10.9607991Z","completedRegions":[],"completedRegionsInfo":[],"failedOrSkippedRegions":{"AUSTRALIACENTRAL":null,"AUSTRALIASOUTHEAST":null,"BRAZILSOUTHEAST":null,"CANADACENTRAL":null,"EASTASIA":null,"EASTUS":null,"FRANCECENTRAL":null,"GERMANYWESTCENTRAL":null,"INDONESIACENTRAL":null,"ISRAELNORTHWEST":null,"ITALYNORTH":null,"JAPANWEST":null,"JIOINDIACENTRAL":null,"KOREACENTRAL":null,"MALAYSIASOUTH":null,"MALAYSIAWEST":null,"NEWZEALANDNORTH":null,"NORWAYWEST":null,"SOUTHAFRICAWEST":null,"SOUTHCENTRALUS":null,"SOUTHEASTUS":null,"SWEDENCENTRAL":null,"SWEDENSOUTH":null,"SWITZERLANDWEST":null,"TAIWANNORTH":null,"UAECENTRAL":null,"UKSOUTH":null,"WESTEUROPE":null,"WESTINDIA":null,"WESTUS":null,"EASTUS3":null,"SOUTHEASTUS3":null,"AUSTRALIACENTRAL2":null,"AUSTRALIAEAST":null,"AUSTRALIAEASTFOUNDATIONAL":null,"AUSTRIAEAST":null,"BELGIUMCENTRAL":null,"BRAZILSOUTH":null,"CANADAEAST":null,"CENTRALUS":null,"CENTRALUSFOUNDATIONAL":null,"CHILECENTRAL":null,"DENMARKEAST":null,"EASTUS2":null,"EASTUSFOUNDATIONAL":null,"FRANCESOUTH":null,"GERMANYNORTH":null,"INDIASOUTHCENTRAL":null,"ISRAELCENTRAL":null,"JAPANEAST":null,"JIOINDIAWEST":null,"KOREASOUTH":null,"MEXICOCENTRAL":null,"NORTHEUROPE":null,"NORTHEUROPEFOUNDATIONAL":null,"NORWAYEAST":null,"POLANDCENTRAL":null,"QATARCENTRAL":null,"SAUDIARABIAEAST":null,"SOUTHAFRICANORTH":null,"SOUTHCENTRALUS2":null,"SOUTHEASTASIA":null,"SOUTHEASTASIA3":null,"SOUTHEASTASIAFOUNDATIONAL":null,"SOUTHINDIA":null,"SPAINCENTRAL":null,"SWITZERLANDNORTH":null,"TAIWANNORTHWEST":null,"UAENORTH":null,"UKSOUTHFOUNDATIONAL":null,"UKWEST":null,"WESTEUROPEFOUNDATIONAL":null,"WESTUS3":null,"EASTUSSLV":null,"NETHERLANDSNORTHEAST":null,"NORTHEASTUS5":null,"SOUTHEASTUS5":null,"SOUTHWESTUS":null,"WESTCENTRALUSFRE":null,"BRAZILUS":null,"CENTRALUSEUAP":null,"EASTUS2EUAP":null,"CENTRALINDIA":null,"NORTHCENTRALUS":null,"SOUTHCENTRALUSSTG":null,"EASTUSSTG":null,"WESTCENTRALUS":null,"WESTUS2":null}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/defaultRollouts/cliDefaultRollout","type":"Microsoft.ProviderHub/providerRegistrations/defaultRollouts","name":"cliDefaultRollout","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-17T05:27:08.7374602Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-17T05:27:16.4591071Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2464'
+      - '4459'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 17:10:23 GMT
+      - Thu, 17 Sep 2026 06:22:04 GMT
       expires:
       - '-1'
       pragma:
@@ -39,9 +39,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/0af169b0-0276-4f15-a637-8a7a403847ea
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a8b084de-bd0c-4bcd-a642-71b9016ddd0a/southcentralus/079b408d-ab4a-4581-bea3-5b20005c4dcf
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 1852FAAEBB2648C08B61110A24007D58 Ref B: CH1AA2020615049 Ref C: 2024-06-04T17:10:20Z'
+      - 'Ref A: 5B66BB98A6224FC19CE4A61F89F795E9 Ref B: SN4AA2022305047 Ref C: 2026-09-17T06:22:04Z'
     status:
       code: 200
       message: OK
