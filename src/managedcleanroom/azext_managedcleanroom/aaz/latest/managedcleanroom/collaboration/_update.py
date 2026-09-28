@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update tags on a collaboration.
+
+    :example: Update collaboration tags
+        az managedcleanroom collaboration update --resource-group testrg --collaboration-name ContosoCollaboration --tags env=test
     """
 
     _aaz_info = {
