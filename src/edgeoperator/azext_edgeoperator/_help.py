@@ -21,3 +21,14 @@ helps["aldo system-readiness show"] = """
     short-summary: Show the current ALDO system readiness status.
     long-summary: Retrieves the read-only system readiness singleton for the current subscription.
 """
+
+helps["aldo observability-configuration"] = """
+    type: group
+    short-summary: Manage ALDO observability configuration.
+"""
+
+helps["aldo observability-configuration show"] = """
+    type: command
+    short-summary: Show the active ALDO observability configuration.
+    long-summary: Retrieves the read-only observability configuration singleton for the current subscription.
+"""
