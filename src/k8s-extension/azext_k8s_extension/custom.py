@@ -27,6 +27,7 @@ from azure.cli.core.azclierror import (
     ClientRequestError,
     CLIInternalError,
     FileOperationError,
+    InvalidArgumentValueError,
     ResourceNotFoundError,
     ManualInterrupt,
     MutuallyExclusiveArgumentError,
@@ -148,6 +149,15 @@ def create_k8s_extension(
     """Create a new Extension Instance."""
 
     extension_type_lower = extension_type.lower()
+    if (
+        cluster_type.lower() == consts.FLEET_TYPE
+        and extension_type_lower != consts.FLEET_EXTENSION_TYPE
+    ):
+        raise InvalidArgumentValueError(
+            "Extension type '{}' is not supported for cluster type 'fleets'. "
+            "The supported extension type is 'microsoft.flux'.".format(extension_type)
+        )
+
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_resource_provider)
 
     # Configuration Settings & Configuration Protected Settings

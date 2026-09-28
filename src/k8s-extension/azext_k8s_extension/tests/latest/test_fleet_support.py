@@ -7,6 +7,8 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
+from azure.cli.core.azclierror import InvalidArgumentValueError
+
 from azext_k8s_extension import consts, custom
 from azext_k8s_extension._params import load_arguments
 from azext_k8s_extension.utils import get_cluster_rp_api_version
@@ -113,7 +115,7 @@ class TestFleetResourceMapping(unittest.TestCase):
             "fleet-1",
             "flux",
             "fleets",
-            "microsoft.flux",
+            "Microsoft.Flux",
         )
 
         args = mock_sdk_no_wait.call_args.args
@@ -129,6 +131,25 @@ class TestFleetResourceMapping(unittest.TestCase):
             ),
             args[:7],
         )
+
+    def test_fleet_create_rejects_non_flux_extension_type(self):
+        client = MagicMock()
+
+        with self.assertRaisesRegex(
+            InvalidArgumentValueError,
+            "The supported extension type is 'microsoft.flux'",
+        ):
+            custom.create_k8s_extension(
+                MockCommand(),
+                client,
+                "fleet-rg",
+                "fleet-1",
+                "extension-1",
+                "fleets",
+                "contoso.extension",
+            )
+
+        client.begin_create.assert_not_called()
 
     @patch.object(custom, "sdk_no_wait")
     def test_fleet_update_passes_provider_and_resource_type(self, mock_sdk_no_wait):
