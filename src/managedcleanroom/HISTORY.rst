@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.0b7
+1.0.0b9
 +++++++
 * Update commands to reflect new API version 2026-09-30-preview
 * Added: ``--target-config`` alias for ``az managedcleanroom collaboration create --target-resource-configuration``
