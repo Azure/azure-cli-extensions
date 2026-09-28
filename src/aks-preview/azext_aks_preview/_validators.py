@@ -1227,10 +1227,42 @@ def validate_opentelemetry_logs_dependencies_for_update(namespace):
     # to the cluster's Azure Monitor profile
 
 
+def validate_opentelemetry_ports_not_disabled(namespace):
+    """Reject OpenTelemetry port flags that target a receiver being disabled.
+
+    The decorator's port getters enforce this too, but only after cleanup of the
+    Azure Monitor collection resources has already run. Validating here fails the
+    command before any destructive work happens.
+    """
+    metrics_disables = (
+        ("--disable-azure-monitor-metrics", "disable_azure_monitor_metrics"),
+        ("--disable-opentelemetry-metrics", "disable_opentelemetry_metrics"),
+    )
+    logs_traces_disables = (
+        ("--disable-azure-monitor-logs", "disable_azure_monitor_logs"),
+        ("--disable-opentelemetry-logs-traces", "disable_opentelemetry_logs"),
+    )
+    ports = (
+        ("--opentelemetry-metrics-port-http", "opentelemetry_metrics_port", metrics_disables),
+        ("--opentelemetry-metrics-port-grpc", "opentelemetry_metrics_port_grpc", metrics_disables),
+        ("--opentelemetry-logs-traces-port-http", "opentelemetry_logs_port", logs_traces_disables),
+        ("--opentelemetry-logs-traces-port-grpc", "opentelemetry_logs_traces_port_grpc", logs_traces_disables),
+    )
+    for port_flag, port_attr, disables in ports:
+        if getattr(namespace, port_attr, None) is None:
+            continue
+        for disable_flag, disable_attr in disables:
+            if getattr(namespace, disable_attr, False):
+                raise InvalidArgumentValueError(
+                    f"{port_flag} cannot be specified when {disable_flag} is used."
+                )
+
+
 def validate_azure_monitor_and_opentelemetry_for_create(namespace):
     """Main validator for Azure Monitor and OpenTelemetry configurations for create operations."""
     # Run all OpenTelemetry-related validations
     validate_opentelemetry_ports(namespace)
+    validate_opentelemetry_ports_not_disabled(namespace)
     validate_opentelemetry_metrics_dependencies(namespace)
     validate_opentelemetry_logs_dependencies(namespace)
 
@@ -1239,6 +1271,7 @@ def validate_azure_monitor_and_opentelemetry_for_update(namespace):
     """Main validator for Azure Monitor and OpenTelemetry configurations for update operations."""
     # Run all OpenTelemetry-related validations
     validate_opentelemetry_ports(namespace)
+    validate_opentelemetry_ports_not_disabled(namespace)
     validate_opentelemetry_metrics_dependencies_for_update(namespace)
     validate_opentelemetry_logs_dependencies_for_update(namespace)
 
@@ -1262,6 +1295,59 @@ def validate_azure_monitor_logs_enable_disable(namespace):
             "Cannot specify both '--enable-azure-monitor-logs' and '--disable-azure-monitor-logs'. "
             "Use either '--enable-azure-monitor-logs' or '--disable-azure-monitor-logs'."
         )
+
+
+def _specified_container_insights_setting_flags(namespace):
+    """Return the AMP containerInsights tuning flags explicitly present on the command line."""
+    flags = []
+    if getattr(namespace, 'syslog_port', None) is not None:
+        flags.append("--syslog-port")
+    if getattr(namespace, 'enable_prometheus_metrics_scraping', False):
+        flags.append("--enable-prometheus-metrics-scraping")
+    if getattr(namespace, 'disable_prometheus_metrics_scraping', False):
+        flags.append("--disable-prometheus-metrics-scraping")
+    return flags
+
+
+def _validate_container_insights_settings_common(namespace):
+    """Validations for the containerInsights tuning flags that do not depend on cluster state."""
+    if (getattr(namespace, 'enable_prometheus_metrics_scraping', False) and
+            getattr(namespace, 'disable_prometheus_metrics_scraping', False)):
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify both --enable-prometheus-metrics-scraping and "
+            "--disable-prometheus-metrics-scraping at the same time."
+        )
+
+    syslog_port = getattr(namespace, 'syslog_port', None)
+    if syslog_port is not None and not 1 <= syslog_port <= 65535:
+        raise InvalidArgumentValueError(
+            f"--syslog-port must be a valid TCP port between 1 and 65535, got {syslog_port}."
+        )
+
+    flags = _specified_container_insights_setting_flags(namespace)
+    if flags and getattr(namespace, 'disable_azure_monitor_logs', False):
+        raise ArgumentUsageError(
+            f"{', '.join(flags)} cannot be specified with --disable-azure-monitor-logs."
+        )
+
+
+def validate_container_insights_settings_for_create(namespace):
+    """Validate the containerInsights tuning flags for create operations."""
+    _validate_container_insights_settings_common(namespace)
+
+    flags = _specified_container_insights_setting_flags(namespace)
+    if flags and not getattr(namespace, 'enable_azure_monitor_logs', False):
+        raise ArgumentUsageError(
+            f"{', '.join(flags)} requires Azure Monitor logs to be enabled. "
+            "Please add --enable-azure-monitor-logs to your command."
+        )
+
+
+def validate_container_insights_settings_for_update(namespace):
+    """Validate the containerInsights tuning flags for update operations."""
+    _validate_container_insights_settings_common(namespace)
+    # Whether Azure Monitor logs is already enabled on the cluster is only visible once the
+    # ManagedCluster has been fetched, so that dependency check is deferred to the decorator.
 
 
 def validate_nat_gateway_managed_outbound_ipv6_count(namespace):
