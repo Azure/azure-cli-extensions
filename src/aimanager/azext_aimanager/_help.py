@@ -17,7 +17,7 @@ helps['aimanager create'] = """
     short-summary: Create an AI Manager resource.
     long-summary: >
         Once creation succeeds the caller is granted the built-in 'Azure AIManager Contributor'
-        and 'Azure AIManager and namespace RBAC Reader' roles on the new AI Manager (best-effort;
+        and 'Azure AIManager RBAC Reader' roles on the new AI Manager (best-effort;
         requires Owner or User Access Administrator). Skipped with --no-wait.
     examples:
         - name: Create an AI Manager
@@ -153,7 +153,7 @@ helps['aimanager namespace add'] = """
     short-summary: Add a namespace to an AI Manager.
     long-summary: >
         Once creation succeeds the caller is granted the built-in 'Azure AIManager Contributor'
-        and 'Azure AIManager and namespace RBAC Reader' roles on the new namespace (best-effort;
+        and 'Azure AIManager RBAC Reader' roles on the new namespace (best-effort;
         requires Owner or User Access Administrator). Skipped with --no-wait.
     examples:
         - name: Add a namespace
