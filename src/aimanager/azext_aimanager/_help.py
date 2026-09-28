@@ -18,8 +18,8 @@ helps['aimanager create'] = """
     long-summary: >
         This command is idempotent: running it again with the same name updates the AI Manager
         and returns it, rather than failing because it already exists. Once creation succeeds the
-        caller is granted the built-in 'Azure AIManager Contributor' and 'Azure AIManager and
-        namespace RBAC Reader' roles on the new AI Manager (best-effort; requires Owner or User
+        caller is granted the built-in 'Azure AIManager Contributor' and 'Azure AIManager RBAC
+        Reader' roles on the new AI Manager (best-effort; requires Owner or User
         Access Administrator). Skipped with --no-wait.
     examples:
         - name: Create an AI Manager
@@ -88,7 +88,7 @@ helps['aimanager modelsource'] = """
     long-summary: |-
         A model source tells the platform where to pull model artifacts from and, for gated or
         private sources, which credential to authenticate with. Model sources are referenced by
-        'az aimanager namespace modeldeployment add --model-source-resource-id'.
+        'az aimanager namespace modeldeployment create --model-source-resource-id'.
 """
 
 helps['aimanager modelsource create'] = """
@@ -102,11 +102,6 @@ helps['aimanager modelsource create'] = """
           text: az aimanager modelsource create -g myrg --aimanager my-ai-manager -n hf --source-type HuggingFace
         - name: Create a Hugging Face model source with an access token for gated models
           text: az aimanager modelsource create -g myrg --aimanager my-ai-manager -n hf -s HuggingFace --token hf_xxx --description "Gated models"
-"""
-
-helps['aimanager modelsource add'] = """
-    type: command
-    short-summary: Create a model source in an AI Manager. Deprecated alias of 'create'.
 """
 
 helps['aimanager modelsource update'] = """
@@ -162,19 +157,14 @@ helps['aimanager namespace create'] = """
     long-summary: >
         This command is idempotent: running it again with the same name updates the namespace
         and returns it, rather than failing because it already exists. Once creation succeeds the
-        caller is granted the built-in 'Azure AIManager Contributor' and 'Azure AIManager and
-        namespace RBAC Reader' roles on the new namespace (best-effort; requires Owner or User
+        caller is granted the built-in 'Azure AIManager Contributor' and 'Azure AIManager RBAC
+        Reader' roles on the new namespace (best-effort; requires Owner or User
         Access Administrator). Skipped with --no-wait.
     examples:
         - name: Create a namespace
           text: az aimanager namespace create -m my-ai-manager -g myrg --name team-alpha
         - name: Create a namespace with labels and annotations
           text: az aimanager namespace create -m my-ai-manager -g myrg --name team-alpha --labels team=alpha --annotations owner=alice
-"""
-
-helps['aimanager namespace add'] = """
-    type: command
-    short-summary: Create a namespace in an AI Manager. Deprecated alias of 'create'.
 """
 
 helps['aimanager namespace update'] = """
@@ -272,11 +262,6 @@ helps['aimanager namespace modeldeployment create'] = """
           text: az aimanager namespace modeldeployment create -g myrg --aimanager my-ai-manager --namespace team-alpha -n phi --model-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2/aiModels/phi --vm-size Standard_NC24ads_A100_v4 --min-replicas 1 --max-replicas 3
 """
 
-helps['aimanager namespace modeldeployment add'] = """
-    type: command
-    short-summary: Create a model deployment in an AI Manager namespace. Deprecated alias of 'create'.
-"""
-
 helps['aimanager namespace modeldeployment update'] = """
     type: command
     short-summary: Update a model deployment within an AI Manager namespace.
@@ -334,7 +319,7 @@ helps['aimanager model'] = """
         AI models are read-only, platform-maintained catalog entries scoped to an Azure region.
         Use 'az aimanager model list' to discover the models available in a region and their
         resource names, which can then be passed to
-        'az aimanager namespace modeldeployment add --model-resource-id'.
+        'az aimanager namespace modeldeployment create --model-resource-id'.
 """
 
 helps['aimanager model show'] = """

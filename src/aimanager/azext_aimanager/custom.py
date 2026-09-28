@@ -60,7 +60,7 @@ def _grant_caller_roles_on_success(cmd, poller, no_wait, scope):
     try:
         assign_caller_roles(cmd, scope, AIMANAGER_CALLER_ROLE_IDS)
     except Exception as ex:  # pylint: disable=broad-except
-        # Role assignment is best-effort: never fail a successful create/add because of it.
+        # Role assignment is best-effort: never fail a successful create because of it.
         logger.warning("Could not assign the caller's roles on %s: %s", scope, ex)
     return result
 

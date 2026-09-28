@@ -11,7 +11,7 @@ Release History
   instead of failing with an "already exists" error.
 * ``az aimanager namespace``, ``az aimanager modelsource`` and ``az aimanager namespace
   modeldeployment``: Rename the ``add`` command to ``create`` to follow the Azure CLI command
-  guidelines. The ``add`` command is retained as a hidden, deprecated alias.
+  guidelines.
 
 2.0.0b1
 +++++++
