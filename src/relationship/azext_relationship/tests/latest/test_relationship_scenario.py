@@ -11,8 +11,9 @@ from azure.cli.testsdk import (
     live_only,
 )
 
-# Tests that target a real Service Group require AZURE_RELATIONSHIP_TEST_TARGET_SG
-# to be explicitly configured in the live environment.
+# Tests that use a real Service Group require AZURE_RELATIONSHIP_TEST_TARGET_SG
+# to be explicitly configured in the live environment. It is the target for
+# dependencyOf relationships and the source for serviceGroupMember relationships.
 SDK_TESTS_SG = os.environ.get('AZURE_RELATIONSHIP_TEST_TARGET_SG')
 
 
@@ -22,7 +23,7 @@ class RelationshipScenarioTest(ScenarioTest):
         super().setUp()
         tests_not_requiring_target_sg = {
             'test_dependency_of_same_source_target',
-            'test_sgm_invalid_target',
+            'test_sgm_invalid_source',
             'test_sgm_nonexistent_sg',
         }
         if (
@@ -32,7 +33,7 @@ class RelationshipScenarioTest(ScenarioTest):
         ):
             self.skipTest(
                 'Set AZURE_RELATIONSHIP_TEST_TARGET_SG to run live tests '
-                'that require a pre-existing Service Group target.'
+                'that require a pre-existing Service Group.'
             )
 
     @live_only()
@@ -130,7 +131,7 @@ class RelationshipScenarioTest(ScenarioTest):
 
     @live_only()
     def test_service_group_member_crud(self):
-        """Full CRUD lifecycle for a serviceGroupMember relationship (RG → ServiceGroup)."""
+        """Full CRUD lifecycle for a serviceGroupMember relationship (ServiceGroup → RG)."""
         rg_name = self.create_random_name('rg-sgm-', 20)
         rel_name = 'sgmrel' + self.create_random_name('', 6).replace('-', '')
         sub_id = self.get_subscription_id()
@@ -144,10 +145,12 @@ class RelationshipScenarioTest(ScenarioTest):
                 f'az relationship service-group-member create '
                 f'--resource-uri "{rg_uri}" '
                 f'--name {rel_name} '
-                f'--target-id "{SDK_TESTS_SG}"',
+                f'--source-id "{SDK_TESTS_SG}"',
                 checks=[
                     self.check('name', rel_name),
                     self.check('type', 'Microsoft.Relationships/serviceGroupMember'),
+                    self.check('properties.sourceId', SDK_TESTS_SG),
+                    self.check('properties.targetId', rg_uri),
                     self.exists('properties.provisioningState'),
                 ]
             )
@@ -159,7 +162,8 @@ class RelationshipScenarioTest(ScenarioTest):
                 f'--name {rel_name}',
                 checks=[
                     self.check('name', rel_name),
-                    self.check('properties.targetId', SDK_TESTS_SG),
+                    self.check('properties.sourceId', SDK_TESTS_SG),
+                    self.check('properties.targetId', rg_uri),
                     self.exists('properties.metadata.targetType'),
                 ]
             )
@@ -183,7 +187,7 @@ class RelationshipScenarioTest(ScenarioTest):
 
     @live_only()
     def test_sgm_subscription_scope(self):
-        """ServiceGroupMember with subscription as the source scope."""
+        """ServiceGroupMember with subscription as the target scope."""
         rel_name = 'sgmsub' + self.create_random_name('', 6).replace('-', '')
         sub_id = self.get_subscription_id()
         sub_uri = f'/subscriptions/{sub_id}'
@@ -194,8 +198,10 @@ class RelationshipScenarioTest(ScenarioTest):
                 f'az relationship service-group-member create '
                 f'--resource-uri "{sub_uri}" '
                 f'--name {rel_name} '
-                f'--target-id "{SDK_TESTS_SG}"',
+                f'--source-id "{SDK_TESTS_SG}"',
                 checks=[
+                    self.check('properties.sourceId', SDK_TESTS_SG),
+                    self.check('properties.targetId', sub_uri),
                     self.exists('properties.provisioningState'),
                     self.check('type', 'Microsoft.Relationships/serviceGroupMember'),
                 ]
@@ -208,7 +214,8 @@ class RelationshipScenarioTest(ScenarioTest):
                 f'--name {rel_name}',
                 checks=[
                     self.check('name', rel_name),
-                    self.check('properties.targetId', SDK_TESTS_SG),
+                    self.check('properties.sourceId', SDK_TESTS_SG),
+                    self.check('properties.targetId', sub_uri),
                 ]
             )
         finally:
@@ -243,8 +250,8 @@ class RelationshipScenarioTest(ScenarioTest):
             self.cmd(f'az group delete --name {rg_name} --yes --no-wait')
 
     @live_only()
-    def test_sgm_invalid_target(self):
-        """ServiceGroupMember should fail when target is not a Service Group."""
+    def test_sgm_invalid_source(self):
+        """ServiceGroupMember should fail when source is not a Service Group."""
         rg_name = self.create_random_name('rg-err-tgt-', 20)
         rel_name = 'badsgm' + self.create_random_name('', 6).replace('-', '')
         sub_id = self.get_subscription_id()
@@ -253,12 +260,12 @@ class RelationshipScenarioTest(ScenarioTest):
         self.cmd(f'az group create --name {rg_name} --location eastus')
 
         try:
-            # CREATE SGM targeting a resource group (not a SG) should fail
+            # CREATE SGM sourced from a resource group (not a SG) should fail
             self.cmd(
                 f'az relationship service-group-member create '
                 f'--resource-uri "{rg_uri}" '
                 f'--name {rel_name} '
-                f'--target-id "{rg_uri}"',
+                f'--source-id "{rg_uri}"',
                 expect_failure=True
             )
         finally:
@@ -266,7 +273,7 @@ class RelationshipScenarioTest(ScenarioTest):
 
     @live_only()
     def test_sgm_nonexistent_sg(self):
-        """ServiceGroupMember should fail when target SG does not exist."""
+        """ServiceGroupMember should fail when source SG does not exist."""
         rg_name = self.create_random_name('rg-err-nosg-', 20)
         rel_name = 'badnosg' + self.create_random_name('', 6).replace('-', '')
         sub_id = self.get_subscription_id()
@@ -276,12 +283,12 @@ class RelationshipScenarioTest(ScenarioTest):
         self.cmd(f'az group create --name {rg_name} --location eastus')
 
         try:
-            # CREATE SGM targeting non-existent SG should fail
+            # CREATE SGM sourced from a non-existent SG should fail
             self.cmd(
                 f'az relationship service-group-member create '
                 f'--resource-uri "{rg_uri}" '
                 f'--name {rel_name} '
-                f'--target-id "{fake_sg}"',
+                f'--source-id "{fake_sg}"',
                 expect_failure=True
             )
         finally:

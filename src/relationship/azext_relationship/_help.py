@@ -75,9 +75,8 @@ helps['relationship service-group-member'] = """
     type: group
     short-summary: Manage serviceGroupMember relationships.
     long-summary: |
-        ServiceGroupMember relationships associate resources with Service Groups.
-        Valid sources: Service Groups, Subscriptions, Resource Groups, Resources.
-        Valid targets: Service Groups ONLY.
+  ServiceGroupMember relationships associate Azure resources with Service Groups.
+  The source must be a Service Group. The target is the resource identified by --resource-uri.
 """
 
 helps['relationship service-group-member create'] = """
@@ -85,18 +84,18 @@ helps['relationship service-group-member create'] = """
     short-summary: Create a serviceGroupMember relationship.
     long-summary: Create or update a serviceGroupMember relationship. This is a long-running operation.
     examples:
-      - name: Create a service group membership from a resource group
+      - name: Add a resource group to a service group
         text: >
             az relationship service-group-member create
             --resource-uri "/subscriptions/{sub}/resourceGroups/{rg}"
             --name myMembership
-            --target-id "/providers/Microsoft.Management/serviceGroups/mySG"
-      - name: Create a service group membership from a subscription
+            --source-id "/providers/Microsoft.Management/serviceGroups/mySG"
+      - name: Add a subscription to a service group
         text: >
             az relationship service-group-member create
             --resource-uri "/subscriptions/{sub}"
             --name subMembership
-            --target-id "/providers/Microsoft.Management/serviceGroups/mySG"
+            --source-id "/providers/Microsoft.Management/serviceGroups/mySG"
 """
 
 helps['relationship service-group-member show'] = """
