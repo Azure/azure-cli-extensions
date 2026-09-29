@@ -77,3 +77,32 @@ class ModelSourceScenarioTest(ScenarioTest):
         update_payload = operations.begin_create_or_update.call_args_list[1][0][3]
         self.assertEqual(update_payload.properties.source_type, 'HuggingFace')
         self.assertEqual(update_payload.properties.credential.inline.value, 'hf_yyy')
+
+    def test_modelsource_create_is_idempotent(self):
+        # Re-running 'create' for an existing model source must not fail; it issues another
+        # create-or-update PUT that updates the resource in place.
+        operations = MagicMock()
+        service_client = MagicMock()
+        service_client.model_sources = operations
+
+        command_prefix = 'aimanager modelsource {} -g rg --aimanager manager'
+
+        with patch('azext_aimanager._client_factory.get_aimanager_client',
+                   return_value=service_client):
+            # first create
+            self.cmd(
+                command_prefix.format('create') +
+                ' -n hf -s HuggingFace --description "first" --no-wait',
+                checks=[self.is_empty()])
+            # create the same name again with a different description -> updated, not rejected
+            self.cmd(
+                command_prefix.format('create') +
+                ' -n hf -s HuggingFace --description "second" --no-wait',
+                checks=[self.is_empty()])
+
+        # No pre-check GET, and both calls issue a PUT (the second updates the resource).
+        operations.get.assert_not_called()
+        self.assertEqual(operations.begin_create_or_update.call_count, 2)
+        second_payload = operations.begin_create_or_update.call_args_list[1][0][3]
+        self.assertEqual(second_payload.properties.description, 'second')
+

@@ -11,8 +11,18 @@ from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
 
 from azext_aimanager import custom
 from azext_aimanager.constants import AIMANAGER_CALLER_ROLE_IDS
+from azext_aimanager.vendored_sdks.v2026_05_02_preview import models
 
 SUB_PATCH = "azure.cli.core.commands.client_factory.get_subscription_id"
+
+
+class MockCmd:
+    def __init__(self):
+        self.cli_ctx = object()
+
+    def get_models(self, name, **_):
+        return getattr(models, name)
+
 
 AIMANAGER_SCOPE = ("/subscriptions/sub/resourceGroups/rg"
                    "/providers/Microsoft.ContainerService/aiManagers/aim")
@@ -113,6 +123,51 @@ class TestCallerRoleWiring(unittest.TestCase):
         with self.assertRaises(HttpResponseError):
             custom.create_aimanager(self.cmd, self.client, "rg", "aim", location="eastus2")
         mock_assign.assert_not_called()
+
+
+class TestIdempotentCreate(unittest.TestCase):
+    """Re-running 'create' for an existing resource must update it via another PUT, not fail.
+
+    These use --no-wait so create issues the create-or-update PUT and returns without entering
+    the role-grant/LRO path, keeping the assertions focused on idempotency.
+    """
+
+    def setUp(self):
+        self.cmd = MockCmd()
+        self.client = MagicMock()
+
+    @patch(SUB_PATCH, return_value="sub")
+    @patch.object(custom, "warn_roles_skipped_no_wait")
+    def test_aimanager_create_is_idempotent(self, _warn, _sub):
+        custom.create_aimanager(
+            self.cmd, self.client, "rg", "aim", location="eastus2",
+            tags={"env": "one"}, no_wait=True)
+        custom.create_aimanager(
+            self.cmd, self.client, "rg", "aim", location="eastus2",
+            tags={"env": "two"}, no_wait=True)
+
+        # No pre-check GET, and both calls issue a PUT (the second updates the resource).
+        self.client.get.assert_not_called()
+        self.assertEqual(self.client.begin_create_or_update.call_count, 2)
+        second_payload = self.client.begin_create_or_update.call_args_list[1][0][2]
+        self.assertEqual(second_payload.tags, {"env": "two"})
+
+    @patch(SUB_PATCH, return_value="sub")
+    @patch.object(custom, "warn_roles_skipped_no_wait")
+    def test_namespace_create_is_idempotent(self, _warn, _sub):
+        custom.create_aimanager_namespace(
+            self.cmd, self.client, "rg", "aim", "team-alpha",
+            labels=["team=alpha"], no_wait=True)
+        # create the same namespace again with a different label and no annotations
+        custom.create_aimanager_namespace(
+            self.cmd, self.client, "rg", "aim", "team-alpha",
+            labels=["team=beta"], no_wait=True)
+
+        # No pre-check GET, and both calls issue a PUT (the second updates the resource).
+        self.client.get.assert_not_called()
+        self.assertEqual(self.client.begin_create_or_update.call_count, 2)
+        second_payload = self.client.begin_create_or_update.call_args_list[1][0][3]
+        self.assertEqual(second_payload.properties.labels, {"team": "beta"})
 
 
 if __name__ == '__main__':
