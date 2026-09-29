@@ -60,7 +60,7 @@ def _grant_caller_roles_on_success(cmd, poller, no_wait, scope):
     try:
         assign_caller_roles(cmd, scope, AIMANAGER_CALLER_ROLE_IDS)
     except Exception as ex:  # pylint: disable=broad-except
-        # Role assignment is best-effort: never fail a successful create/add because of it.
+        # Role assignment is best-effort: never fail a successful create because of it.
         logger.warning("Could not assign the caller's roles on %s: %s", scope, ex)
     return result
 
@@ -94,16 +94,8 @@ def create_aimanager(cmd,
                      cluster_id=None,
                      custom_headers=None,
                      no_wait=False):
-    existing = None
-    try:
-        existing = client.get(resource_group_name, ai_manager_name)
-    except ResourceNotFoundError:
-        pass
-    if existing:
-        raise ClientRequestError(
-            f"AI Manager '{ai_manager_name}' already exists. "
-            "Please use 'az aimanager update' to update it.")
-
+    # 'create' is idempotent (PUT via begin_create_or_update): re-running with the same name
+    # updates the resource and returns it, rather than failing if it already exists.
     headers = get_custom_headers(custom_headers)
     ai_manager = _construct_aimanager(cmd, location, tags, delete_policy, cluster_id)
 
@@ -231,25 +223,16 @@ def _construct_namespace(cmd, labels, annotations):
 
 
 # pylint: disable=unused-argument
-def add_aimanager_namespace(cmd,
-                            client,
-                            resource_group_name,
-                            ai_manager_name,
-                            namespace_name,
-                            labels=None,
-                            annotations=None,
-                            custom_headers=None,
-                            no_wait=False):
-    existing = None
-    try:
-        existing = client.get(resource_group_name, ai_manager_name, namespace_name)
-    except ResourceNotFoundError:
-        pass
-    if existing:
-        raise ClientRequestError(
-            f"Namespace '{namespace_name}' already exists. "
-            "Please use 'az aimanager namespace update' to update it.")
-
+def create_aimanager_namespace(cmd,
+                               client,
+                               resource_group_name,
+                               ai_manager_name,
+                               namespace_name,
+                               labels=None,
+                               annotations=None,
+                               custom_headers=None,
+                               no_wait=False):
+    # Idempotent create (PUT): re-running updates the namespace and returns it.
     headers = get_custom_headers(custom_headers)
     namespace_config = _construct_namespace(
         cmd, parse_key_value_list(labels), parse_key_value_list(annotations))
@@ -391,25 +374,17 @@ def _construct_modelsource(cmd, source_type, description=None, token=None):
 
 
 # pylint: disable=unused-argument
-def add_modelsource(cmd,
-                    client,
-                    resource_group_name,
-                    ai_manager_name,
-                    model_source_name,
-                    source_type,
-                    description=None,
-                    token=None,
-                    custom_headers=None,
-                    no_wait=False):
-    try:
-        client.get(resource_group_name, ai_manager_name, model_source_name)
-    except ResourceNotFoundError:
-        pass
-    else:
-        raise ClientRequestError(
-            f"Model source '{model_source_name}' already exists. "
-            "Please use 'az aimanager modelsource update' to update it.")
-
+def create_modelsource(cmd,
+                       client,
+                       resource_group_name,
+                       ai_manager_name,
+                       model_source_name,
+                       source_type,
+                       description=None,
+                       token=None,
+                       custom_headers=None,
+                       no_wait=False):
+    # Idempotent create (PUT): re-running updates the model source and returns it.
     model_source = _construct_modelsource(cmd, source_type, description, token)
     headers = get_custom_headers(custom_headers)
     return sdk_no_wait(
@@ -536,20 +511,12 @@ def _construct_modeldeployment(cmd, model_resource_id, vm_size, model_source_res
 
 
 # pylint: disable=unused-argument
-def add_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
-                        model_deployment_name, model_resource_id, vm_size,
-                        model_source_resource_id=None, performance_mode=None, replicas=None,
-                        min_replicas=None, max_replicas=None, overrides=None,
-                        custom_headers=None, no_wait=False):
-    try:
-        client.get(resource_group_name, ai_manager_name, namespace_name, model_deployment_name)
-    except ResourceNotFoundError:
-        pass
-    else:
-        raise ClientRequestError(
-            f"Model deployment '{model_deployment_name}' already exists. "
-            "Please use 'az aimanager namespace modeldeployment update' to update it.")
-
+def create_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
+                           model_deployment_name, model_resource_id, vm_size,
+                           model_source_resource_id=None, performance_mode=None, replicas=None,
+                           min_replicas=None, max_replicas=None, overrides=None,
+                           custom_headers=None, no_wait=False):
+    # Idempotent create (PUT): re-running updates the model deployment and returns it.
     scale = _construct_scaling_profile(
         cmd, replicas, min_replicas, max_replicas, required=True)
     deployment = _construct_modeldeployment(
