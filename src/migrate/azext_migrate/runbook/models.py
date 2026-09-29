@@ -226,13 +226,21 @@ def build_artifact_upload_url_body(path):
 
 
 def build_perform_action_body(action, target_id=None, entity_ids=None):
-    """Build the PerformAction POST body (string action value)."""
-    return {
+    """Build the PerformAction POST body (string action value).
+
+    ``targetId`` is omitted when empty: execution-level actions (pause/
+    resume/cancel) have no target step, and the service rejects an
+    empty-but-present target id ("Target ID cannot be empty ... when
+    specified").
+    """
+    body = {
         "action": action.value if isinstance(action, ExecutionAction)
         else action,
-        "targetId": target_id or "",
         "entities": entity_ids or [],
     }
+    if target_id:
+        body["targetId"] = target_id
+    return body
 
 
 def build_retry_step_body(step_id, entity_ids=None):
