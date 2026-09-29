@@ -18,6 +18,7 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group(
             "cognitiveservices account",
             client_factory=cf_accounts) as group:
+        group.custom_show_command("show", "account_show")
         group.custom_command("update", "account_update")
 
     with self.command_group(
