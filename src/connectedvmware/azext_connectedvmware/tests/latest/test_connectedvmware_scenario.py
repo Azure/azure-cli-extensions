@@ -15,6 +15,111 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ConnectedvmwareScenarioTest(ScenarioTest):
+    def test_create_from_machines_cross_subscription(self):
+        self.kwargs.update(
+            {
+                'machine_subscription': 'contoso-sub',
+                'machine_rg': 'contoso-subscription-test-rg',
+                'machine_name': 'vm-diff-sub-test',
+                'vcenter_id': (
+                    '/subscriptions/aaaa0a0a-bb1b-cc2c-dd3d-eeeeee4e4e4e4e/'
+                    'resourceGroups/allhands-demo/providers/'
+                    'Microsoft.ConnectedVMwareVsphere/vcenters/contoso-vcenter'
+                ),
+            }
+        )
+
+        machine_subscription_id = self.cmd(
+            'az account show --subscription {machine_subscription} --query id -o tsv'
+        ).output.strip()
+        self.assertRegex(
+            machine_subscription_id,
+            r'^[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$',
+        )
+        vcenter_subscription_id = self.kwargs['vcenter_id'].split('/')[2]
+        self.assertNotEqual(
+            machine_subscription_id.lower(),
+            vcenter_subscription_id.lower(),
+            'The machine and vCenter must be in different subscriptions.',
+        )
+        machine_id = (
+            f'/subscriptions/{machine_subscription_id}/resourceGroups/{self.kwargs["machine_rg"]}/'
+            f'providers/Microsoft.HybridCompute/machines/{self.kwargs["machine_name"]}'
+        )
+        self.kwargs.update({
+            'machine_subscription_id': machine_subscription_id,
+            'machine_id': machine_id,
+            'vm_instance_id': (
+                f'{machine_id}/providers/'
+                'Microsoft.ConnectedVMwareVsphere/virtualMachineInstances/default'
+            ),
+        })
+
+        with self.assertLogs('azext_connectedvmware.custom', level='DEBUG') as logs:
+            self.cmd(
+                'az connectedvmware vm create-from-machines '
+                '--subscription {machine_subscription} '
+                '--resource-group {machine_rg} '
+                '--name {machine_name} '
+                '--vcenter-id {vcenter_id}'
+            )
+        messages = [record.getMessage() for record in logs.records]
+        self.assertIn(
+            f'Creating VM from machines on Subscription {machine_subscription_id} ...',
+            messages,
+        )
+        self.assertIn(
+            f'Querying subscriptions: {[machine_subscription_id, vcenter_subscription_id]}',
+            messages,
+        )
+        self.assertIn(
+            (
+                f'Processing machine {self.kwargs["machine_name"]} '
+                f'in resource group {self.kwargs["machine_rg"]} | machineId: {machine_id}'
+            ).lower(),
+            [message.lower() for message in messages],
+        )
+        vcenter_name = self.kwargs['vcenter_id'].rsplit('/', 1)[1]
+        # The command catches per-machine failures, so exit code zero is not enough.
+        self.assertIn(
+            f'[1/1] machines were successfully linked to the vCenter {vcenter_name} .',
+            messages,
+        )
+        self.assertIn(
+            f'[0/1] machines failed to be linked to the vCenter {vcenter_name} .',
+            messages,
+        )
+        self.assertIn('[0/1] machines were skipped.', messages)
+
+        self.cmd(
+            'az connectedvmware vm show '
+            '--subscription {machine_subscription} '
+            '--resource-group {machine_rg} '
+            '--name {machine_name}',
+            checks=[
+                self.check('id', '{vm_instance_id}', case_sensitive=False),
+                self.check('infrastructureProfile.vCenterId', '{vcenter_id}', case_sensitive=False),
+                self.check('provisioningState', 'Succeeded'),
+            ],
+        )
+
+        self.cmd(
+            'az connectedvmware vm delete '
+            '--subscription {machine_subscription} '
+            '--resource-group {machine_rg} '
+            '--name {machine_name} '
+            '--retain-machine --yes'
+        )
+
+        self.cmd(
+            'az resource show --ids {machine_id}',
+            checks=[
+                self.check('id', '{machine_id}', case_sensitive=False),
+                self.check('name', '{machine_name}'),
+                self.check('type', 'Microsoft.HybridCompute/machines', case_sensitive=False),
+            ],
+        )
+
     def test_connectedvmware(self):
         self.kwargs.update(
             {
