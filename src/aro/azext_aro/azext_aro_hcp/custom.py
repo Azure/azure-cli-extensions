@@ -172,6 +172,7 @@ class ClusterCreate(_ClusterCreate):
 
         args_schema.user_assigned_identities._registered = False
         args_schema.operators_authentication._registered = False
+        args_schema.container_registry_managed_identity._registered = False
 
         args_schema.assign_control_plane_operator_identity = _build_operator_identity_arg(
             ["--control-plane-identity", "--assign-control-plane-operator-identity"],
@@ -194,6 +195,15 @@ class ClusterCreate(_ClusterCreate):
                  "or by name when it is in the cluster subnet's resource group.",
             required=True,
         )
+        args_schema.assign_container_registry_managed_identity = AAZStrArg(
+            options=[
+                "--registry-identity",
+                "--assign-container-registry-managed-identity",
+            ],
+            arg_group="Identity",
+            help="Assign the user-assigned identity used for container registry image pulls "
+                 "by resource ID or by name when it is in the cluster subnet's resource group.",
+        )
         return args_schema
 
     def pre_operations(self):
@@ -215,6 +225,11 @@ class ClusterCreate(_ClusterCreate):
             args.assign_service_managed_identity.to_serialized_data(),
             subnet_id,
         )
+        if has_value(args.assign_container_registry_managed_identity):
+            args.container_registry_managed_identity = _resolve_identity_resource_id(
+                args.assign_container_registry_managed_identity.to_serialized_data(),
+                subnet_id,
+            )
 
         args.user_assigned_identities = {
             resource_id: {}
@@ -269,7 +284,8 @@ class ClusterUpdate(_ClusterUpdate):
             return args_schema
 
         args_schema.user_assigned_identities._registered = False
-        args_schema.platform._registered = False
+        args_schema.operators_authentication._registered = False
+        args_schema.container_registry_managed_identity._registered = False
 
         args_schema.assign_control_plane_operator_identity = _build_operator_identity_arg(
             ["--control-plane-identity", "--assign-control-plane-operator-identity"],
@@ -293,6 +309,15 @@ class ClusterUpdate(_ClusterUpdate):
             help="Assign the user-assigned identity used for service-level actions by resource ID "
                  "or by name when it is in the cluster subnet's resource group.",
         )
+        args_schema.assign_container_registry_managed_identity = AAZStrArg(
+            options=[
+                "--registry-identity",
+                "--assign-container-registry-managed-identity",
+            ],
+            arg_group="Identity",
+            help="Assign the user-assigned identity used for container registry image pulls "
+                 "by resource ID or by name when it is in the cluster subnet's resource group.",
+        )
         return args_schema
 
     def pre_instance_update(self, instance):
@@ -300,11 +325,26 @@ class ClusterUpdate(_ClusterUpdate):
         control_plane_arg = args.assign_control_plane_operator_identity
         data_plane_arg = args.assign_data_plane_operator_identity
         service_arg = args.assign_service_managed_identity
-        if not any(has_value(arg) for arg in (control_plane_arg, data_plane_arg, service_arg)):
+        container_registry_arg = args.assign_container_registry_managed_identity
+        has_operator_identity_arg = any(has_value(arg) for arg in (
+            control_plane_arg,
+            data_plane_arg,
+            service_arg,
+        ))
+        if not has_operator_identity_arg and not has_value(container_registry_arg):
             return
 
         platform = instance.properties.platform
         subnet_id = platform.subnet_id
+        if has_value(container_registry_arg):
+            args.container_registry_managed_identity = _resolve_identity_resource_id(
+                container_registry_arg.to_serialized_data(),
+                subnet_id,
+            )
+
+        if not has_operator_identity_arg:
+            return
+
         operator_identities = platform.operators_authentication.user_assigned_identities
 
         if has_value(control_plane_arg):
