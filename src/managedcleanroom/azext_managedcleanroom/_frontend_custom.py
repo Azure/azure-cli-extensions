@@ -862,7 +862,7 @@ def frontend_collaboration_query_runhistory_list(
     )
 
 
-def frontend_collaboration_query_runhistory_cancel(
+def frontend_collaboration_query_cancel_run(
     cmd, collaboration_id, document_id, run_id, api_version=None
 ):
     """Cancel a query run

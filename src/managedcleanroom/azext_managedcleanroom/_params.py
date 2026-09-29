@@ -310,7 +310,8 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     with self.argument_context('managedcleanroom frontend analytics query runhistory list') as c:
         c.argument('document_id', document_id_type)
 
-    with self.argument_context('managedcleanroom frontend analytics query runhistory cancel') as c:
+    with self.argument_context('managedcleanroom frontend analytics query cancel-run') as c:
+        c.argument('collaboration_id', collaboration_id_type)
         c.argument('document_id', document_id_type)
         c.argument('run_id', run_id_type)
 

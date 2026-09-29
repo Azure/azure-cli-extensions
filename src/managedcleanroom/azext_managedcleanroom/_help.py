@@ -723,12 +723,12 @@ helps['managedcleanroom frontend analytics query runhistory list'] = """
           text: az managedcleanroom frontend analytics query runhistory list -c <cid> --document-id <document-id>
 """
 
-helps['managedcleanroom frontend analytics query runhistory cancel'] = """
+helps['managedcleanroom frontend analytics query cancel-run'] = """
     type: command
     short-summary: Cancel a query run
     examples:
         - name: Cancel a query run
-          text: az managedcleanroom frontend analytics query runhistory cancel -c <cid> --document-id <document-id> --run-id <run-id>
+          text: az managedcleanroom frontend analytics query cancel-run -c <cid> --document-id <document-id> --run-id <run-id>
 """
 
 helps['managedcleanroom frontend analytics query runresult'] = """

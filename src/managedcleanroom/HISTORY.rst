@@ -9,7 +9,7 @@ Release History
 * Added: ``--target-config`` alias for ``az managedcleanroom collaboration create --target-resource-configuration``
 * Added: ``az managedcleanroom consortium-view contract wait``
 * Added: ``az managedcleanroom frontend collaborator list`` to list collaborators in a collaboration
-* Added: ``az managedcleanroom frontend analytics query runhistory cancel`` to cancel a query run
+* Added: ``az managedcleanroom frontend analytics query cancel-run`` to cancel a query run
 
 1.0.0b6
 +++++++

@@ -77,6 +77,7 @@ def load_frontend_command_table(loader, _):
         g.custom_show_command('show', 'frontend_collaboration_query_show')
         g.custom_command('publish', 'frontend_collaboration_query_publish')
         g.custom_command('run', 'frontend_collaboration_query_run')
+        g.custom_command('cancel-run', 'frontend_collaboration_query_cancel_run')
         g.custom_command('vote', 'frontend_collaboration_query_vote')
 
     # Query run history commands
@@ -85,8 +86,6 @@ def load_frontend_command_table(loader, _):
             custom_command_type=frontend_custom) as g:
         g.custom_command(
             'list', 'frontend_collaboration_query_runhistory_list')
-        g.custom_command(
-            'cancel', 'frontend_collaboration_query_runhistory_cancel')
 
     # Query run result commands
     with loader.command_group(
