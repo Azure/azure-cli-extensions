@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.9.2
++++++++++++++++++++
+* Reject unsupported Fleet extension types before sending extension create or discovery requests.
+
 1.9.1
 +++++++++++++++++++
 * Add Fleet support for Kubernetes extension and cluster-scoped extension type commands.
