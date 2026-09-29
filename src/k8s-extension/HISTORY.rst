@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.9.2
++++++++++++++++++++
+* Migrate code from the Compute SDK to AAZ.
+
 1.9.1
 +++++++++++++++++++
 * Add Fleet support for Kubernetes extension and cluster-scoped extension type commands.
