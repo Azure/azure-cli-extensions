@@ -91,14 +91,11 @@ class ValidateRestoreMutualExclusionTest(unittest.TestCase):
         namespace = self._namespace(yes=False, no_cleanup=True)
         namespace.repair_vm_id = REPAIR_VM_ID
         namespace.disk_name = 'fixed-disk'
-        repair_vm = mock.MagicMock()
-        disk = mock.MagicMock()
-        disk.name = 'fixed-disk'
-        repair_vm.storage_profile.data_disks = [disk]
+        repair_vm = {'storageProfile': {'dataDisks': [{'name': 'fixed-disk'}]}}
 
         with mock.patch('azext_vm_repair._validators.check_extension_version'), \
                 mock.patch('azext_vm_repair._validators._validate_and_get_vm'), \
-                mock.patch('azext_vm_repair._validators.get_vm', return_value=repair_vm):
+                mock.patch('azext_vm_repair._validators.get_vm_by_aaz', return_value=repair_vm):
             validate_restore(mock.MagicMock(), namespace)
 
 
@@ -109,12 +106,10 @@ class ValidateRestoreMutualExclusionTest(unittest.TestCase):
 class RestoreNoCleanupTest(unittest.TestCase):
 
     def _source_vm(self):
-        source_vm = mock.MagicMock()
-        source_vm.storage_profile.os_disk.name = 'source-osdisk'
-        return source_vm
+        return {'storageProfile': {'osDisk': {'name': 'source-osdisk'}}}
 
     def _restore(self, **kwargs):
-        with mock.patch('azext_vm_repair.custom.get_vm', return_value=self._source_vm()), \
+        with mock.patch('azext_vm_repair.custom.get_vm_by_aaz', return_value=self._source_vm()), \
                 mock.patch('azext_vm_repair.custom._clean_up_resources') as mock_clean_up:
             result = restore(mock.MagicMock(), 'source-vm', 'source-rg', disk_name='fixed-disk', repair_vm_id=REPAIR_VM_ID, **kwargs)
         return result, mock_clean_up

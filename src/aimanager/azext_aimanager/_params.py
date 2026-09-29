@@ -45,6 +45,8 @@ def load_arguments(self, _):
     with self.argument_context('aimanager create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
+        c.argument('cluster_id', options_list=['--cluster-id'],
+                   help='The resource ID of an existing AKS cluster to attach.')
 
     with self.argument_context('aimanager list') as c:
         c.ignore('ai_manager_name')

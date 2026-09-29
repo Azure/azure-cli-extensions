@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.9.1
++++++++++++++++++++
+* Add Fleet support for Kubernetes extension and cluster-scoped extension type commands.
+
 1.9.0
 +++++++++++++++++++
 * Add Microsoft.ChaosStudio partner customization for AKS workspace connectivity and owned prerequisite lifecycle management.

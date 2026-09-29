@@ -13,6 +13,15 @@ Release History
   modeldeployment``: Rename the ``add`` command to ``create`` to follow the Azure CLI command
   guidelines.
 
+2.0.0b3
++++++++
+* Replace all occurrences of ``Azure AIManager and namespace RBAC Reader`` with ``Azure AIManager RBAC Reader`` across AIManager commands help message.
+
+2.0.0b2
+++++++++
+* Update the vendored SDK to API version ``2026-09-02-preview`` and add ``--cluster-id`` to
+  ``az aimanager create`` for attaching an existing AKS cluster.
+
 2.0.0b1
 +++++++
 * Rename ``--aks-custom-headers`` to ``--custom-headers`` across all AIManager commands.
