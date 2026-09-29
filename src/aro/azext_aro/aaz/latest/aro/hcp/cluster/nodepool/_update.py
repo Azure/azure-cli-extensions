@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-09-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.redhatopenshift/hcpopenshiftclusters/{}/nodepools/{}", "2026-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.redhatopenshift/hcpopenshiftclusters/{}/nodepools/{}", "2026-10-01"],
         ]
     }
 
@@ -282,7 +282,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
@@ -385,7 +385,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
@@ -643,7 +643,19 @@ class _UpdateHelper:
         )
 
         status = _schema_node_pool_read.properties.status
+        status.active_versions = AAZListType(
+            serialized_name="activeVersions",
+            flags={"read_only": True},
+        )
         status.conditions = AAZListType(
+            flags={"read_only": True},
+        )
+
+        active_versions = _schema_node_pool_read.properties.status.active_versions
+        active_versions.Element = AAZObjectType()
+
+        _element = _schema_node_pool_read.properties.status.active_versions.Element
+        _element.version = AAZStrType(
             flags={"read_only": True},
         )
 

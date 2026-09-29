@@ -81,13 +81,15 @@ class ClusterCreateTest(unittest.TestCase):
         )
         return parser, schema
 
-    def _command(self, control_plane, data_plane, service):
+    def _command(self, control_plane, data_plane, service, container_registry=None):
         command = object.__new__(ClusterCreate)
         command.ctx = types.SimpleNamespace(args=types.SimpleNamespace(
             subnet_id=_Arg(SUBNET_ID),
             assign_control_plane_operator_identity=control_plane,
             assign_data_plane_operator_identity=data_plane,
             assign_service_managed_identity=_Arg(service),
+            assign_container_registry_managed_identity=_Arg(container_registry),
+            container_registry_managed_identity=_Arg(None),
         ))
         return command
 
@@ -121,6 +123,7 @@ class ClusterCreateTest(unittest.TestCase):
             [_OperatorIdentity("control-plane", "control")],
             [_OperatorIdentity("disk-csi-driver", "data")],
             "service",
+            "registry",
         )
 
         command.pre_operations()
@@ -137,6 +140,25 @@ class ClusterCreateTest(unittest.TestCase):
                 "service_managed_identity": _identity_id("service"),
             }
         }, args.operators_authentication)
+        self.assertEqual(
+            _identity_id("registry"),
+            args.container_registry_managed_identity,
+        )
+
+    def test_container_registry_identity_replaces_generated_argument(self):
+        schema = ClusterCreate._build_arguments_schema()
+        command_arg = schema.assign_container_registry_managed_identity.to_cmd_arg(
+            "assign_container_registry_managed_identity"
+        )
+
+        self.assertFalse(schema.container_registry_managed_identity._registered)
+        self.assertEqual(
+            [
+                "--registry-identity",
+                "--assign-container-registry-managed-identity",
+            ],
+            command_arg.options_list,
+        )
 
     def test_pre_operations_rejects_duplicate_name(self):
         command = self._command(
@@ -224,12 +246,14 @@ class ClusterUpdateTest(unittest.TestCase):
         self.assertIn("--assign-service-managed-identity", example_text)
 
     @staticmethod
-    def _command(control_plane=None, data_plane=None, service=None):
+    def _command(control_plane=None, data_plane=None, service=None, container_registry=None):
         command = object.__new__(ClusterUpdate)
         command.ctx = types.SimpleNamespace(args=types.SimpleNamespace(
             assign_control_plane_operator_identity=_Arg(control_plane),
             assign_data_plane_operator_identity=_Arg(data_plane),
             assign_service_managed_identity=_Arg(service),
+            assign_container_registry_managed_identity=_Arg(container_registry),
+            container_registry_managed_identity=_Arg(None),
         ))
         return command
 
@@ -300,6 +324,33 @@ class ClusterUpdateTest(unittest.TestCase):
             _identity_id("data-two"): {},
             _identity_id("service-two"): {},
         }, instance.identity.user_assigned_identities)
+
+    @mock.patch("azext_aro.azext_aro_hcp.custom.has_value", side_effect=lambda arg: arg.to_serialized_data() is not None)
+    def test_pre_instance_update_preserves_container_registry_identity_resource_id(self, _):
+        registry_id = _identity_id("registry")
+        command = self._command(container_registry=registry_id)
+
+        command.pre_instance_update(self._instance())
+
+        self.assertEqual(
+            registry_id,
+            command.ctx.args.container_registry_managed_identity,
+        )
+
+    def test_container_registry_identity_replaces_generated_argument(self):
+        schema = ClusterUpdate._build_arguments_schema()
+        command_arg = schema.assign_container_registry_managed_identity.to_cmd_arg(
+            "assign_container_registry_managed_identity"
+        )
+
+        self.assertFalse(schema.container_registry_managed_identity._registered)
+        self.assertEqual(
+            [
+                "--registry-identity",
+                "--assign-container-registry-managed-identity",
+            ],
+            command_arg.options_list,
+        )
 
     @mock.patch("azext_aro.azext_aro_hcp.custom.has_value", side_effect=lambda arg: arg.to_serialized_data() is not None)
     def test_pre_instance_update_preserves_identities_when_arguments_are_omitted(self, _):
