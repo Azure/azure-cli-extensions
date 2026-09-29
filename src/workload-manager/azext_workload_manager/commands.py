@@ -8,4 +8,7 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    from azext_workload_manager.custom import RuntimeBindingCreate
+    self.command_table[
+        'workload-manager workload-space runtime-binding create'
+    ] = RuntimeBindingCreate(loader=self)

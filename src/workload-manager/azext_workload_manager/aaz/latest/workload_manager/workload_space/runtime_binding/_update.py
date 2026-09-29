@@ -15,10 +15,7 @@ from azure.cli.core.aaz import *
     "workload-manager workload-space runtime-binding update",
 )
 class Update(AAZCommand):
-    """Update a runtime binding.
-
-    :example: Update mutable runtime binding network configuration
-        az workload-manager workload-space runtime-binding update --resource-group rg-workload --space-name managed-agents-prod --binding-name serverless-default --network-profile "{subnet-resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/workload-vnet/subnets/execution,egress-mode:CustomerManaged}"
+    """Update mutable runtime binding properties.
     """
 
     _aaz_info = {
@@ -29,8 +26,6 @@ class Update(AAZCommand):
     }
 
     AZ_SUPPORT_NO_WAIT = True
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -72,46 +67,26 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.managed = AAZObjectArg(
-            options=["--managed"],
-            arg_group="Properties",
-        )
         _args_schema.identity_profile = AAZObjectArg(
             options=["--identity-profile"],
             arg_group="Properties",
-            help="The runtime identity configuration for a managed runtime.",
-            nullable=True,
+            help="The runtime identity configuration.",
         )
         _args_schema.network_profile = AAZObjectArg(
             options=["--network-profile"],
             arg_group="Properties",
-            help="The runtime network configuration for a managed runtime.",
-            nullable=True,
+            help="The runtime network configuration.",
         )
-
-        managed = cls._args_schema.managed
-        managed.managed_profile = AAZObjectArg(
-            options=["managed-profile"],
-            help="The limited service-managed runtime configuration.",
-        )
-
-        managed_profile = cls._args_schema.managed.managed_profile
-        managed_profile.offering = AAZStrArg(
-            options=["offering"],
-            help="The required product offering when the runtime binding kind is Kubernetes.",
-            nullable=True,
-        )
-        managed_profile.provider = AAZStrArg(
-            options=["provider"],
-            help="The required provider when the runtime binding kind is ServerlessContainers.",
-            nullable=True,
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Properties",
+            help="Resource tags.",
         )
 
         identity_profile = cls._args_schema.identity_profile
         identity_profile.execution_identity = AAZObjectArg(
             options=["execution-identity"],
             help="The identity made available to the execution runtime.",
-            nullable=True,
         )
 
         execution_identity = cls._args_schema.identity_profile.execution_identity
@@ -125,39 +100,20 @@ class Update(AAZCommand):
         network_profile.egress_mode = AAZStrArg(
             options=["egress-mode"],
             help="Indicates who manages runtime egress.",
-            nullable=True,
             enum={"CustomerManaged": "CustomerManaged"},
         )
         network_profile.subnet_resource_id = AAZResourceIdArg(
             options=["subnet-resource-id"],
             help="The customer-provided subnet used by the runtime.",
-            nullable=True,
-        )
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-            nullable=True,
         )
 
         tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.RuntimeBindingsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        yield self.RuntimeBindingsCreateOrUpdate(ctx=self.ctx)()
+        yield self.RuntimeBindingsUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -168,106 +124,11 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class RuntimeBindingsGet(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/workloadSpaces/{spaceName}/runtimeBindings/{bindingName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "bindingName", self.ctx.args.binding_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "spaceName", self.ctx.args.space_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2026-11-01-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_runtime_binding_read(cls._schema_on_200)
-
-            return cls._schema_on_200
-
-    class RuntimeBindingsCreateOrUpdate(AAZHttpOperation):
+    class RuntimeBindingsUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -277,16 +138,16 @@ class Update(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200, 201]:
+            if session.http_response.status_code in [200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
@@ -303,7 +164,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -357,41 +218,8 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_runtime_binding_read(cls._schema_on_200_201)
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
@@ -400,7 +228,6 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("identityProfile", AAZObjectType, ".identity_profile")
                 properties.set_prop("networkProfile", AAZObjectType, ".network_profile")
-                properties.discriminate_by("provisioningMode", "Managed")
 
             identity_profile = _builder.get(".properties.identityProfile")
             if identity_profile is not None:
@@ -408,179 +235,155 @@ class Update(AAZCommand):
 
             execution_identity = _builder.get(".properties.identityProfile.executionIdentity")
             if execution_identity is not None:
-                execution_identity.set_prop("scope", AAZStrType, ".scope", typ_kwargs={"flags": {"required": True}})
+                execution_identity.set_prop("scope", AAZStrType, ".scope")
 
             network_profile = _builder.get(".properties.networkProfile")
             if network_profile is not None:
                 network_profile.set_prop("egressMode", AAZStrType, ".egress_mode")
                 network_profile.set_prop("subnetResourceId", AAZStrType, ".subnet_resource_id")
 
-            disc_managed = _builder.get(".properties{provisioningMode:Managed}")
-            if disc_managed is not None:
-                disc_managed.set_prop("managedProfile", AAZObjectType, ".managed.managed_profile", typ_kwargs={"flags": {"required": True}})
-
-            managed_profile = _builder.get(".properties{provisioningMode:Managed}.managedProfile")
-            if managed_profile is not None:
-                managed_profile.set_prop("offering", AAZStrType, ".offering")
-                managed_profile.set_prop("provider", AAZStrType, ".provider")
-
             tags = _builder.get(".tags")
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
 
-            return _instance_value
+            return self.serialize_content(_content_value)
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
             )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.kind = AAZStrType()
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.identity_profile = AAZObjectType(
+                serialized_name="identityProfile",
+            )
+            properties.network_profile = AAZObjectType(
+                serialized_name="networkProfile",
+            )
+            properties.provider_resource_id = AAZStrType(
+                serialized_name="providerResourceId",
+                flags={"read_only": True},
+            )
+            properties.provisioning_mode = AAZStrType(
+                serialized_name="provisioningMode",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            identity_profile = cls._schema_on_200.properties.identity_profile
+            identity_profile.execution_identity = AAZObjectType(
+                serialized_name="executionIdentity",
+            )
+
+            execution_identity = cls._schema_on_200.properties.identity_profile.execution_identity
+            execution_identity.provisioning_mode = AAZStrType(
+                serialized_name="provisioningMode",
+                flags={"required": True},
+            )
+            execution_identity.scope = AAZStrType(
+                flags={"required": True},
+            )
+
+            disc_referenced = cls._schema_on_200.properties.identity_profile.execution_identity.discriminate_by("provisioning_mode", "Referenced")
+            disc_referenced.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
+                flags={"required": True},
+            )
+
+            disc_service_managed = cls._schema_on_200.properties.identity_profile.execution_identity.discriminate_by("provisioning_mode", "ServiceManaged")
+            disc_service_managed.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
+                flags={"read_only": True},
+            )
+
+            network_profile = cls._schema_on_200.properties.network_profile
+            network_profile.egress_mode = AAZStrType(
+                serialized_name="egressMode",
+            )
+            network_profile.subnet_resource_id = AAZStrType(
+                serialized_name="subnetResourceId",
+            )
+
+            disc_managed = cls._schema_on_200.properties.discriminate_by("provisioning_mode", "Managed")
+            disc_managed.managed_profile = AAZObjectType(
+                serialized_name="managedProfile",
+                flags={"required": True},
+            )
+
+            managed_profile = cls._schema_on_200.properties.discriminate_by("provisioning_mode", "Managed").managed_profile
+            managed_profile.offering = AAZStrType()
+            managed_profile.provider = AAZStrType()
+
+            disc_referenced = cls._schema_on_200.properties.discriminate_by("provisioning_mode", "Referenced")
+            disc_referenced.resource_id = AAZStrType(
+                serialized_name="resourceId",
+                flags={"required": True},
+            )
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_runtime_binding_read = None
-
-    @classmethod
-    def _build_schema_runtime_binding_read(cls, _schema):
-        if cls._schema_runtime_binding_read is not None:
-            _schema.id = cls._schema_runtime_binding_read.id
-            _schema.kind = cls._schema_runtime_binding_read.kind
-            _schema.location = cls._schema_runtime_binding_read.location
-            _schema.name = cls._schema_runtime_binding_read.name
-            _schema.properties = cls._schema_runtime_binding_read.properties
-            _schema.system_data = cls._schema_runtime_binding_read.system_data
-            _schema.tags = cls._schema_runtime_binding_read.tags
-            _schema.type = cls._schema_runtime_binding_read.type
-            return
-
-        cls._schema_runtime_binding_read = _schema_runtime_binding_read = AAZObjectType()
-
-        runtime_binding_read = _schema_runtime_binding_read
-        runtime_binding_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        runtime_binding_read.kind = AAZStrType()
-        runtime_binding_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        runtime_binding_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        runtime_binding_read.properties = AAZObjectType()
-        runtime_binding_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        runtime_binding_read.tags = AAZDictType()
-        runtime_binding_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        properties = _schema_runtime_binding_read.properties
-        properties.identity_profile = AAZObjectType(
-            serialized_name="identityProfile",
-        )
-        properties.network_profile = AAZObjectType(
-            serialized_name="networkProfile",
-        )
-        properties.provider_resource_id = AAZStrType(
-            serialized_name="providerResourceId",
-            flags={"read_only": True},
-        )
-        properties.provisioning_mode = AAZStrType(
-            serialized_name="provisioningMode",
-            flags={"required": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-
-        identity_profile = _schema_runtime_binding_read.properties.identity_profile
-        identity_profile.execution_identity = AAZObjectType(
-            serialized_name="executionIdentity",
-        )
-
-        execution_identity = _schema_runtime_binding_read.properties.identity_profile.execution_identity
-        execution_identity.provisioning_mode = AAZStrType(
-            serialized_name="provisioningMode",
-            flags={"required": True},
-        )
-        execution_identity.scope = AAZStrType(
-            flags={"required": True},
-        )
-
-        disc_referenced = _schema_runtime_binding_read.properties.identity_profile.execution_identity.discriminate_by("provisioning_mode", "Referenced")
-        disc_referenced.user_assigned_identity_resource_id = AAZStrType(
-            serialized_name="userAssignedIdentityResourceId",
-            flags={"required": True},
-        )
-
-        disc_service_managed = _schema_runtime_binding_read.properties.identity_profile.execution_identity.discriminate_by("provisioning_mode", "ServiceManaged")
-        disc_service_managed.user_assigned_identity_resource_id = AAZStrType(
-            serialized_name="userAssignedIdentityResourceId",
-            flags={"read_only": True},
-        )
-
-        network_profile = _schema_runtime_binding_read.properties.network_profile
-        network_profile.egress_mode = AAZStrType(
-            serialized_name="egressMode",
-        )
-        network_profile.subnet_resource_id = AAZStrType(
-            serialized_name="subnetResourceId",
-        )
-
-        disc_managed = _schema_runtime_binding_read.properties.discriminate_by("provisioning_mode", "Managed")
-        disc_managed.managed_profile = AAZObjectType(
-            serialized_name="managedProfile",
-            flags={"required": True},
-        )
-
-        managed_profile = _schema_runtime_binding_read.properties.discriminate_by("provisioning_mode", "Managed").managed_profile
-        managed_profile.offering = AAZStrType()
-        managed_profile.provider = AAZStrType()
-
-        disc_referenced = _schema_runtime_binding_read.properties.discriminate_by("provisioning_mode", "Referenced")
-        disc_referenced.resource_id = AAZStrType(
-            serialized_name="resourceId",
-            flags={"required": True},
-        )
-
-        system_data = _schema_runtime_binding_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_runtime_binding_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.id = cls._schema_runtime_binding_read.id
-        _schema.kind = cls._schema_runtime_binding_read.kind
-        _schema.location = cls._schema_runtime_binding_read.location
-        _schema.name = cls._schema_runtime_binding_read.name
-        _schema.properties = cls._schema_runtime_binding_read.properties
-        _schema.system_data = cls._schema_runtime_binding_read.system_data
-        _schema.tags = cls._schema_runtime_binding_read.tags
-        _schema.type = cls._schema_runtime_binding_read.type
 
 
 __all__ = ["Update"]

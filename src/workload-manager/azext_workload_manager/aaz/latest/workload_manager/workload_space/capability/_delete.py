@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete and deletes a capability.
+    """Disable and delete a capability.
 
     :example: Delete the Agent Sandbox capability
         az workload-manager workload-space capability delete --resource-group rg-workload --space-name managed-agents-prod --capability-name agentSandbox
