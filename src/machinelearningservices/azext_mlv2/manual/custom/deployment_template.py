@@ -204,7 +204,7 @@ def ml_deployment_template_archive(
     name,
     version=None,
     registry_name=None,
-    no_wait=False,
+    no_wait=False,  # pylint: disable=unused-argument
     **kwargs,  # pylint: disable=unused-argument
 ):
     """Archive a deployment template."""
@@ -222,7 +222,7 @@ def ml_deployment_template_restore(
     name,
     version=None,
     registry_name=None,
-    no_wait=False,
+    no_wait=False,  # pylint: disable=unused-argument
     **kwargs,  # pylint: disable=unused-argument
 ):
     """Restore an archived deployment template."""
