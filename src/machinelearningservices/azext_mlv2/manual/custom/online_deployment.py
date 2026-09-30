@@ -56,7 +56,7 @@ def ml_online_deployment_create(
     web: bool = False,
     skip_script_validation: bool = False,
     package_model: bool = False,
-    **kwargs,  
+    **kwargs,
 ):
     # pylint: disable=unused-argument
     params_override = params_override or []
