@@ -67,7 +67,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.create_afc_control_plane = AAZBoolArg(
-            options=["--create-afc-control-plane"],
+            options=["--create-afc", "--create-afc-control-plane"],
             help="When set to true, creates an AFC control plane for the Azure Firewall.",
         )
         _args_schema.location = AAZResourceLocationArg(

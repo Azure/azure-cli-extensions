@@ -1103,9 +1103,20 @@ class AzureFirewallScenario(ScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='test_azure_firewall_afc', location='westus2')
     def test_azure_firewall_afc_control_plane(self, resource_group):
-        self.kwargs.update({'af': 'af-afc'})
+        self.kwargs.update({
+            'af': 'af-afc',
+            'pubip': 'pubip-afc',
+            'vnet': 'vnet-afc',
+            'conf': 'ipconfig-afc',
+        })
 
-        self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_VNet --tier Standard --create-afc-control-plane true')
+        self.cmd('network public-ip create -g {rg} -n {pubip} --sku Standard --allocation-method Static')
+        self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name AzureFirewallSubnet '
+                 '--address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24')
+
+        # the AFC control plane is only provisioned for a firewall that has an IP configuration
+        self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_VNet --tier Standard '
+                 '--vnet-name {vnet} --public-ip {pubip} --conf-name {conf} --create-afc-control-plane true')
 
         self.cmd('network firewall show -g {rg} -n {af}',
                  checks=self.exists('afcConfiguration.serviceEndpoint'))
