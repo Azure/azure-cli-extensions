@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b29
+++++++++++++++
+* Clarified which suite-offer and workspace quota commands apply to V2 providers and workspaces.
+
 1.0.0b28
 ++++++++++++++
 * Fixed an issue where setting a default workspace with ``az quantum workspace set`` prevented commands from accessing other workspaces.
