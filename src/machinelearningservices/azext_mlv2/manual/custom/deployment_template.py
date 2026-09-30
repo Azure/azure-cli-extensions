@@ -87,6 +87,8 @@ def ml_deployment_template_create(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
 
+    # mark unused CLI passthroughs as used for lint
+    _ = kwargs
     params_override = params_override or []
 
     try:
@@ -208,6 +210,9 @@ def ml_deployment_template_archive(
     **kwargs,  # pylint: disable=unused-argument
 ):
     """Archive a deployment template."""
+    # mark unused params for pylint
+    _ = no_wait
+    _ = kwargs
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
@@ -226,6 +231,9 @@ def ml_deployment_template_restore(
     **kwargs,  # pylint: disable=unused-argument
 ):
     """Restore an archived deployment template."""
+    # mark unused params for pylint
+    _ = no_wait
+    _ = kwargs
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )

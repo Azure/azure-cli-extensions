@@ -69,6 +69,9 @@ def ml_batch_endpoint_create(
     )
     params_override = params_override or []
 
+    # mark unused kwargs for pylint
+    _ = kwargs
+
     try:
         if name:
             # MFE is case-insensitive for Name. So convert the name into lower case here.

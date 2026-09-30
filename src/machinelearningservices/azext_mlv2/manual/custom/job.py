@@ -193,6 +193,9 @@ def ml_job_list_private_preview(
     else:
         print_limited_result_set_warning(max_results)
 
+    # mark unused kwargs to silence pylint unused-argument
+    _ = kwargs
+
     try:
         ret_list = []
         list_view_type = get_list_view_type(include_archived=include_archived, archived_only=archived_only)
