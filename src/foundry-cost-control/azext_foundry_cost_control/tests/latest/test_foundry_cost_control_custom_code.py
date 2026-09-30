@@ -15,6 +15,7 @@ from azext_foundry_cost_control._params import (
     _parse_cost_control_id,
 )
 from azext_foundry_cost_control.custom import (
+    account_show,
     account_update,
     deployment_create,
     deployment_update,
@@ -52,6 +53,34 @@ class FoundryCostControlCustomTest(unittest.TestCase):
     def test_parse_cost_control_id_rejects_other_resource_type(self):
         with self.assertRaises(InvalidArgumentValueError):
             _parse_cost_control_id(ACCOUNT_ID)
+
+    @mock.patch("azext_foundry_cost_control.custom.show_resource")
+    @mock.patch("azext_foundry_cost_control.custom.resource_id", return_value=ACCOUNT_ID)
+    @mock.patch("azext_foundry_cost_control.custom.get_subscription_id", return_value="subscription-id")
+    def test_account_show_uses_preview_api(
+            self, get_subscription_id_mock, resource_id_mock, show_resource_mock):
+        cmd = mock.Mock()
+
+        result = account_show(
+            cmd=cmd,
+            resource_group_name="test-rg",
+            account_name="test-account",
+        )
+
+        self.assertIs(result, show_resource_mock.return_value)
+        get_subscription_id_mock.assert_called_once_with(cmd.cli_ctx)
+        resource_id_mock.assert_called_once_with(
+            subscription="subscription-id",
+            resource_group="test-rg",
+            namespace="Microsoft.CognitiveServices",
+            type="accounts",
+            name="test-account",
+        )
+        show_resource_mock.assert_called_once_with(
+            cmd,
+            resource_ids=[ACCOUNT_ID],
+            api_version="2026-09-15-preview",
+        )
 
     @mock.patch("azext_foundry_cost_control.custom.patch_resource")
     @mock.patch("azext_foundry_cost_control.custom.resource_id", return_value=ACCOUNT_ID)
