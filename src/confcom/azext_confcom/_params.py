@@ -260,6 +260,15 @@ def load_arguments(self, _):
             required=False,
             help='Container definitions to include in the policy'
         )
+        c.argument(
+            "include_kube_proxy",
+            options_list=("--include-kube-proxy",),
+            required=False,
+            help=(
+                "Include the ACI kube-proxy image-attached fragment reference "
+                "in a VN2 policy"
+            ),
+        )
 
     with self.argument_context("confcom acifragmentgen") as c:
         c.argument(

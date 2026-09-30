@@ -359,6 +359,12 @@ To generate a security policy using a policy config file for Virtual Node, the `
 
 This `scenario` field adds the necessary environment variables and mount values to containers in the config file. Currently `vn2` and `aci` are the only supported values for `scenario`, but others may be added in the future as more products onboard to the `confcom` extension. `aci` is the default value.
 
+To include the ACI kube-proxy image-attached fragment reference, use `--include-kube-proxy`:
+
+```bash
+az confcom acipolicygen --virtual-node-yaml pod.yaml --include-kube-proxy
+```
+
 ### Workload Identity
 
 To use workload identities with VN2, the associated label [described here](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview?tabs=dotnet#pod-labels) must be present. Having this will add the requisite environment variables and mounts to each container's policy.
