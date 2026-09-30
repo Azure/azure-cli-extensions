@@ -88,7 +88,7 @@ def ml_online_endpoint_create(
     no_wait=False,
     params_override=None,
     web: bool = False,
-    **kwargs,  
+    **kwargs,
 ):
     # pylint: disable=unused-argument
     ml_client, debug = get_ml_client(
@@ -233,7 +233,7 @@ def ml_online_endpoint_update(
     no_wait=False,
     mirror_traffic=None,
     web: bool = False,
-    **kwargs,  
+    **kwargs,
 ) -> None:
     # pylint: disable=unused-argument
     ml_client, debug = get_ml_client(
