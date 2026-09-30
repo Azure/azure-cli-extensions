@@ -46,7 +46,7 @@ def ml_serverless_endpoint_create(
     name=None,
     no_wait=False,
     params_override=None,
-    **kwargs,  
+    **kwargs,
 ):
     # pylint: disable=unused-argument
     ml_client, debug = get_ml_client(
@@ -126,7 +126,7 @@ def _ml_serverless_endpoint_update(
     workspace_name,
     parameters=None,
     no_wait=False,
-    **kwargs,  
+    **kwargs,
 ) -> None:
     # pylint: disable=unused-argument
     ml_client, debug = get_ml_client(
