@@ -48,8 +48,6 @@ def ml_serverless_endpoint_create(
     params_override=None,
     **kwargs,  # pylint: disable=unused-argument
 ):
-    # mark unused kwargs for pylint
-    _ = kwargs
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
