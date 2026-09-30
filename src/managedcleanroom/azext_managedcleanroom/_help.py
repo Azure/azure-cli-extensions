@@ -626,6 +626,9 @@ helps['managedcleanroom frontend analytics query run'] = """
         - name: --body
           type: string
           short-summary: JSON configuration file path (@file.json) or JSON string (legacy mode)
+          long-summary: |
+            Optional fields: runId (auto-generated if not provided), dryRun, startDate,
+            endDate, useOptimizer, scaleSku (small, medium, or large).
         - name: --dry-run
           type: bool
           short-summary: Perform a dry run without executing the query
@@ -638,6 +641,10 @@ helps['managedcleanroom frontend analytics query run'] = """
         - name: --use-optimizer
           type: bool
           short-summary: Use query optimizer
+        - name: --scale-sku
+          type: string
+          short-summary: Compute size for the run (small, medium, or large)
+          long-summary: If omitted, the service default (small) is used.
     examples:
         - name: Run a query with default settings
           text: |
@@ -658,6 +665,12 @@ helps['managedcleanroom frontend analytics query run'] = """
               --collaboration-id my-collab-123 \
               --document-id my-query \
               --use-optimizer
+        - name: Run a query on a larger compute size
+          text: |
+            az managedcleanroom frontend analytics query run \
+              --collaboration-id my-collab-123 \
+              --document-id my-query \
+              --scale-sku medium
         - name: Run a query using a JSON body file (legacy mode)
           text: |
             az managedcleanroom frontend analytics query run \
@@ -740,11 +753,11 @@ helps['managedcleanroom frontend analytics query runresult show'] = """
     type: command
     short-summary: Show details of a query run result
     long-summary: |
-        Retrieves the status and results of a specific query execution job.
+        Retrieves the status and events of a specific query run.
         Note: This is different from runhistory list which shows all runs for a query.
     examples:
         - name: Show run result
-          text: az managedcleanroom frontend analytics query runresult show -c <cid> --job-id <job-id>
+          text: az managedcleanroom frontend analytics query runresult show -c <cid> --run-id <run-id>
 """
 
 
