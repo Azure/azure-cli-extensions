@@ -87,8 +87,6 @@ def ml_deployment_template_create(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
 
-    # mark unused CLI passthroughs as used for lint
-    _ = kwargs
     params_override = params_override or []
 
     try:
