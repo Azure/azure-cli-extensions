@@ -35,9 +35,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/azurefirewalls/{}", "2024-10-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/azurefirewalls/{}", "2025-09-01"],
         ]
     }
 
@@ -62,13 +62,13 @@ class Create(AAZCommand):
             options=["-n", "--name"],
             help="Azure Firewall name.",
             required=True,
-            fmt=AAZStrArgFormat(
-                max_length=56,
-                min_length=1,
-            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.create_afc_control_plane = AAZBoolArg(
+            options=["--create-afc-control-plane"],
+            help="When set to true, creates an AFC control plane for the Azure Firewall.",
         )
         _args_schema.location = AAZResourceLocationArg(
             help="Resource location.",
@@ -341,7 +341,10 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01",
+                    "createAfcControlPlane", self.ctx.args.create_afc_control_plane,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -497,6 +500,10 @@ class Create(AAZCommand):
             properties.additional_properties = AAZDictType(
                 serialized_name="additionalProperties",
             )
+            properties.afc_configuration = AAZObjectType(
+                serialized_name="afcConfiguration",
+                flags={"read_only": True},
+            )
             properties.application_rule_collections = AAZListType(
                 serialized_name="applicationRuleCollections",
             )
@@ -542,6 +549,12 @@ class Create(AAZCommand):
 
             additional_properties = cls._schema_on_200_201.properties.additional_properties
             additional_properties.Element = AAZStrType()
+
+            afc_configuration = cls._schema_on_200_201.properties.afc_configuration
+            afc_configuration.service_endpoint = AAZStrType(
+                serialized_name="serviceEndpoint",
+                flags={"read_only": True},
+            )
 
             application_rule_collections = cls._schema_on_200_201.properties.application_rule_collections
             application_rule_collections.Element = AAZObjectType()

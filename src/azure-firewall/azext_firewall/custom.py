@@ -754,6 +754,7 @@ class ThreatIntelAllowListCreate(_AzureFirewallUpdate):
         args_schema.virtual_hub._registered = False
         args_schema.zones._registered = False
         args_schema.tags._registered = False
+        args_schema.create_afc_control_plane._registered = False
         return args_schema
 
     def pre_instance_update(self, instance):
@@ -809,6 +810,7 @@ class ThreatIntelAllowListUpdate(_AzureFirewallUpdate):
         args_schema.virtual_hub._registered = False
         args_schema.zones._registered = False
         args_schema.tags._registered = False
+        args_schema.create_afc_control_plane._registered = False
         return args_schema
 
     def pre_instance_update(self, instance):
@@ -871,6 +873,7 @@ class ThreatIntelAllowListDelete(_AzureFirewallUpdate):
         args_schema.virtual_hub._registered = False
         args_schema.zones._registered = False
         args_schema.tags._registered = False
+        args_schema.create_afc_control_plane._registered = False
         return args_schema
 
     def pre_instance_update(self, instance):
