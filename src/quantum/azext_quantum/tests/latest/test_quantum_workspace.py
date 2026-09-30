@@ -21,7 +21,7 @@ from .utils import get_test_resource_group, get_test_workspace, get_test_workspa
 from ..._version_check_helper import check_version
 from ..._params import QuotaAction
 from ..._validators import validate_email, validate_workspace_user
-from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_target_quota_bounds, _validate_storage_account, _autoadd_providers, create, _resolve_user_id, _list_user_workspace_role_assignments, _scope_distance, _select_user_workspace_role_assignment, add_user, remove_user, list_users, update, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
+from ...operations.workspace import _apply_target_quotas, _require_v2_workspace, _validate_target_quota_bounds, _validate_storage_account, _autoadd_providers, _add_quantum_providers, create, _resolve_user_id, _list_user_workspace_role_assignments, _scope_distance, _select_user_workspace_role_assignment, add_user, remove_user, list_users, update, QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, QUANTUM_WORKSPACE_OWNER_ROLE_ID, SUPPORTED_STORAGE_SKU_TIERS, SUPPORTED_STORAGE_KINDS, DEPLOYMENT_NAME_PREFIX
 from ...operations.workspace import _merge_workspace_quotas
 from ...commands import transform_workspace_quotas
 from ...vendored_sdks.azure_mgmt_quantum.models import Provider, TargetQuotaAllocations
@@ -279,6 +279,23 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
 
 
 class QuantumWorkspacesUnitTest(unittest.TestCase):
+
+    @patch('azext_quantum.operations.workspace.cf_offerings')
+    def test_add_quantum_providers_handles_provider_without_managed_application(self, cf_offerings_mock):
+        # Regression test: V2-only providers (e.g. atom-boulder) can have no legacy marketplace
+        # ManagedApplication association at all; workspace create must not crash for them.
+        provider = SimpleNamespace(
+            id='atom-boulder',
+            properties=SimpleNamespace(managed_application=None, skus=[]),
+        )
+        cf_offerings_mock.return_value.list.return_value = [provider]
+        workspace = SimpleNamespace(location='westus', properties=SimpleNamespace(providers=[]))
+
+        _add_quantum_providers(Mock(), workspace, 'atom-boulder/default', auto_accept=True, skip_autoadd=True)
+
+        self.assertEqual(len(workspace.properties.providers), 1)
+        self.assertEqual(workspace.properties.providers[0].provider_id, 'atom-boulder')
+        self.assertEqual(workspace.properties.providers[0].provider_sku, 'default')
 
     def test_run_cleanup_commands_attempts_all_commands(self):
         test_case = SimpleNamespace(cmd=Mock(side_effect=[RuntimeError('first cleanup failed'), None]))
