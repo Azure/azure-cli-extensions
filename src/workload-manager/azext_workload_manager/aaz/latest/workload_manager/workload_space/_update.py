@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update mutable workload space properties.
+
+    :example: Update workload space tags
+        az workload-manager workload-space update --resource-group rg-workload --space-name managed-agents-prod --tags "{environment:Production}"
     """
 
     _aaz_info = {

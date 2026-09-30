@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update mutable runtime link properties.
+
+    :example: Update runtime link capacity
+        az workload-manager workload-space runtime-link update --resource-group rg-workload --space-name managed-agents-prod --link-name default --capacity-profile "{minimum-nodes:2,maximum-nodes:150}"
     """
 
     _aaz_info = {

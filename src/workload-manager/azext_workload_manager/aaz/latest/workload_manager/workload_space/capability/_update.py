@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update mutable capability properties.
+
+    :example: Update the Agent Sandbox capability
+        az workload-manager workload-space capability update --resource-group rg-workload --space-name managed-agents-prod --capability-name agentSandbox --version-policy ServiceManaged
     """
 
     _aaz_info = {

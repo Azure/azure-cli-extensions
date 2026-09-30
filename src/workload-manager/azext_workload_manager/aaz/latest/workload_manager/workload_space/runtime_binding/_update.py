@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update mutable runtime binding properties.
+
+    :example: Update mutable runtime binding network configuration
+        az workload-manager workload-space runtime-binding update --resource-group rg-workload --space-name managed-agents-prod --binding-name serverless-default --network-profile "{subnet-resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/workload-vnet/subnets/execution,egress-mode:CustomerManaged}"
     """
 
     _aaz_info = {
