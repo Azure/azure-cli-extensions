@@ -41,8 +41,9 @@ def ml_batch_deployment_create(
     set_default=False,
     params_override=None,
     skip_script_validation: bool = False,
-    **kwargs,  # pylint: disable=unused-argument
+    **kwargs, 
 ):
+    # pylint: disable=unused-argument
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
