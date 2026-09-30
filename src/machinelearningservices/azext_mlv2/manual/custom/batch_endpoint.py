@@ -137,7 +137,7 @@ def ml_batch_endpoint_update(
     file=None,  # pylint: disable=unused-argument
     no_wait=False,
     parameters=None,
-    **kwargs,  
+    **kwargs,
 ) -> None:
     # pylint: disable=unused-argument
     ml_client, debug = get_ml_client(
