@@ -46,7 +46,6 @@ def ml_batch_deployment_create(
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
-    
     params_override = params_override or []
 
     yaml_dict = _try_load_yaml_dict(file)
