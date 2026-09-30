@@ -130,6 +130,24 @@ class FoundryCostControlScenario(ScenarioTest):
             ]
         )
 
+        # Verify account show returns the preview cost-control properties.
+        self.cmd(
+            'cognitiveservices account show '
+            '--resource-group {resource_group} '
+            '--name {account_name}',
+            checks=[
+                self.check(
+                    'properties.costControlConnections.appInsightsConnectionId',
+                    '{app_insights_connection_id}'
+                ),
+                self.check(
+                    'properties.costControlConnections.eventGridConnectionId',
+                    '{event_grid_connection_id}'
+                ),
+                self.check('properties.costControlIds[0]', '{cost_control_id_1}'),
+            ]
+        )
+
         # Create a deployment with the first cost control attached.
         self.cmd(
             'cognitiveservices account deployment create '

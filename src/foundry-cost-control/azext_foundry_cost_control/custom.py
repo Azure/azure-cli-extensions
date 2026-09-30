@@ -74,6 +74,22 @@ def _deployment_resource_id(cmd, resource_group_name, account_name, deployment_n
     )
 
 
+def account_show(cmd, resource_group_name, account_name):
+    """Get a Cognitive Services account using the preview cost-control API."""
+    account_id = resource_id(
+        subscription=get_subscription_id(cmd.cli_ctx),
+        resource_group=resource_group_name,
+        namespace="Microsoft.CognitiveServices",
+        type="accounts",
+        name=account_name,
+    )
+    return show_resource(
+        cmd,
+        resource_ids=[account_id],
+        api_version=_API_VERSION,
+    )
+
+
 def account_update(
         cmd,
         client,

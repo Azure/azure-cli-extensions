@@ -7,7 +7,6 @@ from unittest.mock import MagicMock, patch
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.testsdk import ScenarioTest
-from azure.core.exceptions import ResourceNotFoundError
 
 from azext_aimanager.vendored_sdks.v2026_09_02_preview import models
 
@@ -36,8 +35,8 @@ class ModelDeploymentScenarioTest(ScenarioTest):
 
         operations = MagicMock()
         operations.get.side_effect = [
-            ResourceNotFoundError(),
-            ResourceNotFoundError(),
+            # create issues an idempotent PUT without a pre-check GET; wait / show / update /
+            # delete each read the resource.
             deployment,
             deployment,
             deployment,
@@ -57,13 +56,13 @@ class ModelDeploymentScenarioTest(ScenarioTest):
                     InvalidArgumentValueError,
                     '--replicas cannot be combined with --min-replicas or --max-replicas'):
                 self.cmd(
-                    command_prefix.format('add') +
+                    command_prefix.format('create') +
                     ' -n deployment --model-resource-id {} '
                     '--vm-size Standard_NC24ads_A100_v4 '
                     '--replicas 1 --min-replicas 1'.format(model_resource_id))
 
             self.cmd(
-                command_prefix.format('add') +
+                command_prefix.format('create') +
                 ' -n deployment --model-resource-id {} '
                 '--source-id {} '
                 '--vm-size Standard_NC24ads_A100_v4 --replicas 0 '
@@ -110,3 +109,42 @@ class ModelDeploymentScenarioTest(ScenarioTest):
         operations.list_by_ai_manager_namespace.assert_called_with(
             'rg', 'manager', 'namespace')
         operations.begin_delete.assert_called_once()
+
+    def test_modeldeployment_create_is_idempotent(self):
+        # Re-running 'create' for an existing model deployment must not fail; it issues another
+        # create-or-update PUT that updates the resource in place.
+        model_resource_id = (
+            '/subscriptions/00000000-0000-0000-0000-000000000000/providers/'
+            'Microsoft.ContainerService/locations/eastus2/aiModels/phi-4')
+
+        operations = MagicMock()
+        service_client = MagicMock()
+        service_client.model_deployments = operations
+
+        command_prefix = (
+            'aimanager namespace modeldeployment {} -g rg '
+            '--aimanager manager --namespace namespace')
+
+        with patch('azext_aimanager._client_factory.get_aimanager_client',
+                   return_value=service_client):
+            # first create with 1 replica
+            self.cmd(
+                command_prefix.format('create') +
+                ' -n deployment --model-resource-id {} '
+                '--vm-size Standard_NC24ads_A100_v4 --replicas 1 --no-wait'.format(
+                    model_resource_id),
+                checks=[self.is_empty()])
+            # create the same name again with 3 replicas -> updated, not rejected
+            self.cmd(
+                command_prefix.format('create') +
+                ' -n deployment --model-resource-id {} '
+                '--vm-size Standard_NC24ads_A100_v4 --replicas 3 --no-wait'.format(
+                    model_resource_id),
+                checks=[self.is_empty()])
+
+        # No pre-check GET, and both calls issue a PUT (the second updates the resource).
+        operations.get.assert_not_called()
+        self.assertEqual(operations.begin_create_or_update.call_count, 2)
+        second_payload = operations.begin_create_or_update.call_args_list[1][0][4]
+        self.assertEqual(second_payload.properties.scale.manual.replicas, 3)
+
