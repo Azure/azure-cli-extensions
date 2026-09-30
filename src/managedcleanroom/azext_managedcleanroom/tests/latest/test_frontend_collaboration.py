@@ -19,6 +19,7 @@ from azext_managedcleanroom._frontend_custom import (
     frontend_collaboration_oidc_set_issuer_url,
     frontend_collaboration_oidc_keys_show,
     frontend_collaboration_report_show,
+    frontend_collaboration_collaborators_list,
     frontend_collaboration_dataset_queries_list
 )
 from azext_managedcleanroom.tests.latest.test_utils import (
@@ -32,6 +33,25 @@ class TestFrontendCollaboration(unittest.TestCase):
     """Test cases for collaboration commands"""
 
     # List Collaborations Tests
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_list_collaborators_success(self, mock_get_client):
+        """Test listing collaborators in a collaboration"""
+        mock_client = Mock()
+        mock_client.collaboration.collaborators_get.return_value = {
+            "collaborators": [
+                {"userIdentifier": "user1@contoso.com", "isOwner": True},
+                {"userIdentifier": "user2@contoso.com", "isOwner": False}
+            ]
+        }
+        mock_get_client.return_value = mock_client
+
+        result = frontend_collaboration_collaborators_list(
+            cmd=Mock(), collaboration_id="collab-1"
+        )
+
+        self.assertEqual(len(result["collaborators"]), 2)
+        mock_client.collaboration.collaborators_get.assert_called_once_with("collab-1")
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_list_collaborations_success(self, mock_get_client):
