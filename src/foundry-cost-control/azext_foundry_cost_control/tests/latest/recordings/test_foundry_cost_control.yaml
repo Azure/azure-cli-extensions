@@ -311,7 +311,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"displayName": "first display name", "rules": [{"amount":
-      200.0, "counterKey": [{"type": "agent"}], "match": {"foundry.caller.agent.id":
+      200.0, "counterKey": [{"type": "agent"}], "match": {"agentIds":
       ["agent-123"]}, "name": "per-agent-monthly", "period": "month", "recurring":
       true, "thresholds": [{"action": "alert", "type": "percentage", "value": 80.0},
       {"action": "audit", "type": "absolute", "value": 0.0}], "unit": "usd"}]}}'
@@ -337,7 +337,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-cli-cost-control-test-rg-000001/providers/Microsoft.CognitiveServices/accounts/test-account-000002/costControls/test-1","type":"Microsoft.CognitiveServices/accounts/costControls","name":"test-1","properties":{"displayName":"first
-        display name","rules":[{"name":"per-agent-monthly","counterKey":[{"type":"agent"}],"unit":"usd","amount":200.0,"period":"month","recurring":true,"match":{"foundry.caller.agent.id":["agent-123"]},"thresholds":[{"type":"percentage","value":80.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:58.1733277Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:33:58.1733277Z"},"etag":"\"8e7a18bc-826a-459c-9f83-b2e149d58590\""}'
+        display name","rules":[{"name":"per-agent-monthly","counterKey":[{"type":"agent"}],"unit":"usd","amount":200.0,"period":"month","recurring":true,"match":{"agentIds":["agent-123"]},"thresholds":[{"type":"percentage","value":80.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:58.1733277Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:33:58.1733277Z"},"etag":"\"8e7a18bc-826a-459c-9f83-b2e149d58590\""}'
     headers:
       cache-control:
       - no-cache
@@ -374,7 +374,7 @@ interactions:
       message: Created
 - request:
     body: '{"properties": {"displayName": "second display name", "rules": [{"amount":
-      500.0, "counterKey": [{"type": "project"}], "match": {"foundry.project.id":
+      500.0, "counterKey": [{"type": "project"}], "match": {"projectIds":
       ["project-456"]}, "name": "per-project-monthly", "period": "month", "recurring":
       true, "thresholds": [{"action": "alert", "type": "percentage", "value": 90.0},
       {"action": "audit", "type": "absolute", "value": 0.0}], "unit": "usd"}]}}'
@@ -400,7 +400,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-cli-cost-control-test-rg-000001/providers/Microsoft.CognitiveServices/accounts/test-account-000002/costControls/test-2","type":"Microsoft.CognitiveServices/accounts/costControls","name":"test-2","properties":{"displayName":"second
-        display name","rules":[{"name":"per-project-monthly","counterKey":[{"type":"project"}],"unit":"usd","amount":500.0,"period":"month","recurring":true,"match":{"foundry.project.id":["project-456"]},"thresholds":[{"type":"percentage","value":90.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:59.3413717Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:33:59.3413717Z"},"etag":"\"1315adf4-6f52-4f57-95a7-e02b14c0463f\""}'
+        display name","rules":[{"name":"per-project-monthly","counterKey":[{"type":"project"}],"unit":"usd","amount":500.0,"period":"month","recurring":true,"match":{"projectIds":["project-456"]},"thresholds":[{"type":"percentage","value":90.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:59.3413717Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:33:59.3413717Z"},"etag":"\"1315adf4-6f52-4f57-95a7-e02b14c0463f\""}'
     headers:
       cache-control:
       - no-cache
@@ -1041,8 +1041,8 @@ interactions:
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-cli-cost-control-test-rg-000001/providers/Microsoft.CognitiveServices/accounts/test-account-000002/costControls/test-1","type":"Microsoft.CognitiveServices/accounts/costControls","name":"test-1","properties":{"displayName":"first
-        display name","rules":[{"name":"per-agent-monthly","counterKey":[{"type":"agent"}],"unit":"usd","amount":200.0,"period":"month","recurring":true,"match":{"foundry.caller.agent.id":["agent-123"]},"thresholds":[{"type":"percentage","value":80.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:58.1733277Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:33:58.1733277Z"},"etag":"\"8e7a18bc-826a-459c-9f83-b2e149d58590\""},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-cli-cost-control-test-rg-000001/providers/Microsoft.CognitiveServices/accounts/test-account-000002/costControls/test-2","type":"Microsoft.CognitiveServices/accounts/costControls","name":"test-2","properties":{"displayName":"second
-        display name","rules":[{"name":"per-project-monthly","counterKey":[{"type":"project"}],"unit":"usd","amount":500.0,"period":"month","recurring":true,"match":{"foundry.project.id":["project-456"]},"thresholds":[{"type":"percentage","value":90.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:59.3413717Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:33:59.3413717Z"},"etag":"\"1315adf4-6f52-4f57-95a7-e02b14c0463f\""}]}'
+        display name","rules":[{"name":"per-agent-monthly","counterKey":[{"type":"agent"}],"unit":"usd","amount":200.0,"period":"month","recurring":true,"match":{"agentIds":["agent-123"]},"thresholds":[{"type":"percentage","value":80.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:58.1733277Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:33:58.1733277Z"},"etag":"\"8e7a18bc-826a-459c-9f83-b2e149d58590\""},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-cli-cost-control-test-rg-000001/providers/Microsoft.CognitiveServices/accounts/test-account-000002/costControls/test-2","type":"Microsoft.CognitiveServices/accounts/costControls","name":"test-2","properties":{"displayName":"second
+        display name","rules":[{"name":"per-project-monthly","counterKey":[{"type":"project"}],"unit":"usd","amount":500.0,"period":"month","recurring":true,"match":{"projectIds":["project-456"]},"thresholds":[{"type":"percentage","value":90.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:59.3413717Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:33:59.3413717Z"},"etag":"\"1315adf4-6f52-4f57-95a7-e02b14c0463f\""}]}'
     headers:
       cache-control:
       - no-cache
@@ -1093,7 +1093,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-cli-cost-control-test-rg-000001/providers/Microsoft.CognitiveServices/accounts/test-account-000002/costControls/test-1","type":"Microsoft.CognitiveServices/accounts/costControls","name":"test-1","properties":{"displayName":"first
-        display name","rules":[{"name":"per-agent-monthly","counterKey":[{"type":"agent"}],"unit":"usd","amount":200.0,"period":"month","recurring":true,"match":{"foundry.caller.agent.id":["agent-123"]},"thresholds":[{"type":"percentage","value":80.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:58.1733277Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:33:58.1733277Z"},"etag":"\"8e7a18bc-826a-459c-9f83-b2e149d58590\""}'
+        display name","rules":[{"name":"per-agent-monthly","counterKey":[{"type":"agent"}],"unit":"usd","amount":200.0,"period":"month","recurring":true,"match":{"agentIds":["agent-123"]},"thresholds":[{"type":"percentage","value":80.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:58.1733277Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:33:58.1733277Z"},"etag":"\"8e7a18bc-826a-459c-9f83-b2e149d58590\""}'
     headers:
       cache-control:
       - no-cache
@@ -1146,7 +1146,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-cli-cost-control-test-rg-000001/providers/Microsoft.CognitiveServices/accounts/test-account-000002/costControls/test-1","type":"Microsoft.CognitiveServices/accounts/costControls","name":"test-1","properties":{"displayName":"first
-        display name","rules":[{"name":"per-agent-monthly","counterKey":[{"type":"agent"}],"unit":"usd","amount":200.0,"period":"month","recurring":true,"match":{"foundry.caller.agent.id":["agent-123"]},"thresholds":[{"type":"percentage","value":80.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:58.1733277Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:33:58.1733277Z"},"etag":"\"8e7a18bc-826a-459c-9f83-b2e149d58590\""}'
+        display name","rules":[{"name":"per-agent-monthly","counterKey":[{"type":"agent"}],"unit":"usd","amount":200.0,"period":"month","recurring":true,"match":{"agentIds":["agent-123"]},"thresholds":[{"type":"percentage","value":80.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:58.1733277Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:33:58.1733277Z"},"etag":"\"8e7a18bc-826a-459c-9f83-b2e149d58590\""}'
     headers:
       cache-control:
       - no-cache
@@ -1181,7 +1181,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"displayName": "updated first display name", "rules": [{"amount":
-      200.0, "counterKey": [{"type": "agent"}], "match": {"foundry.caller.agent.id":
+      200.0, "counterKey": [{"type": "agent"}], "match": {"agentIds":
       ["agent-123"]}, "name": "per-agent-monthly", "period": "month", "recurring":
       true, "thresholds": [{"action": "alert", "type": "percentage", "value": 80.0},
       {"action": "audit", "type": "absolute", "value": 0.0}], "unit": "usd"}]}}'
@@ -1207,7 +1207,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-cli-cost-control-test-rg-000001/providers/Microsoft.CognitiveServices/accounts/test-account-000002/costControls/test-1","type":"Microsoft.CognitiveServices/accounts/costControls","name":"test-1","properties":{"displayName":"updated
-        first display name","rules":[{"name":"per-agent-monthly","counterKey":[{"type":"agent"}],"unit":"usd","amount":200.0,"period":"month","recurring":true,"match":{"foundry.caller.agent.id":["agent-123"]},"thresholds":[{"type":"percentage","value":80.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:58.1733277Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:34:43.3423941Z"},"etag":"\"c51ed070-99a2-4468-be5c-4975e3c51a39\""}'
+        first display name","rules":[{"name":"per-agent-monthly","counterKey":[{"type":"agent"}],"unit":"usd","amount":200.0,"period":"month","recurring":true,"match":{"agentIds":["agent-123"]},"thresholds":[{"type":"percentage","value":80.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:58.1733277Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:34:43.3423941Z"},"etag":"\"c51ed070-99a2-4468-be5c-4975e3c51a39\""}'
     headers:
       cache-control:
       - no-cache
@@ -1262,7 +1262,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-cli-cost-control-test-rg-000001/providers/Microsoft.CognitiveServices/accounts/test-account-000002/costControls/test-1","type":"Microsoft.CognitiveServices/accounts/costControls","name":"test-1","properties":{"displayName":"updated
-        first display name","rules":[{"name":"per-agent-monthly","counterKey":[{"type":"agent"}],"unit":"usd","amount":200.0,"period":"month","recurring":true,"match":{"foundry.caller.agent.id":["agent-123"]},"thresholds":[{"type":"percentage","value":80.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:58.1733277Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:34:43.3423941Z"},"etag":"\"c51ed070-99a2-4468-be5c-4975e3c51a39\""}'
+        first display name","rules":[{"name":"per-agent-monthly","counterKey":[{"type":"agent"}],"unit":"usd","amount":200.0,"period":"month","recurring":true,"match":{"agentIds":["agent-123"]},"thresholds":[{"type":"percentage","value":80.0,"action":"alert"},{"type":"absolute","value":0.0,"action":"audit"}]}]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-28T21:33:58.1733277Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-28T21:34:43.3423941Z"},"etag":"\"c51ed070-99a2-4468-be5c-4975e3c51a39\""}'
     headers:
       cache-control:
       - no-cache
