@@ -58,8 +58,6 @@ def ml_online_deployment_create(
     package_model: bool = False,
     **kwargs,  # pylint: disable=unused-argument
 ):
-    # mark unused kwargs for pylint
-    _ = kwargs
     params_override = params_override or []
     online_deployment_info = OnlineDeploymentInfo()
     try:
