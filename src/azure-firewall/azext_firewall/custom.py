@@ -910,6 +910,10 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
         )
         args_schema.identity_type._registered = False
         args_schema.user_assigned_identities._registered = False
+        # newer aaz codegen also emits --system-assigned/--user-assigned for the
+        # generic AAZIdentityObjectType; disabled to keep the single --identity UX unchanged.
+        args_schema.mi_system_assigned._registered = False
+        args_schema.mi_user_assigned._registered = False
 
         return args_schema
 
