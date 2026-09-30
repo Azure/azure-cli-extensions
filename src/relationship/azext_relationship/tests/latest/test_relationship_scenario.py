@@ -47,17 +47,19 @@ class RelationshipScenarioTest(ScenarioTest):
         self.cmd(f'az group create --name {rg_name} --location eastus')
 
         try:
-            # CREATE
+            # CREATE ASYNCHRONOUSLY AND WAIT
             self.cmd(
                 f'az relationship dependency-of create '
                 f'--resource-uri "{rg_uri}" '
                 f'--name {rel_name} '
-                f'--target-id "{SDK_TESTS_SG}"',
-                checks=[
-                    self.check('name', rel_name),
-                    self.check('type', 'Microsoft.Relationships/dependencyOf'),
-                    self.exists('properties.provisioningState'),
-                ]
+                f'--target-id "{SDK_TESTS_SG}" '
+                f'--no-wait'
+            )
+            self.cmd(
+                f'az relationship dependency-of wait '
+                f'--resource-uri "{rg_uri}" '
+                f'--name {rel_name} '
+                f'--created'
             )
 
             # SHOW
@@ -67,18 +69,26 @@ class RelationshipScenarioTest(ScenarioTest):
                 f'--name {rel_name}',
                 checks=[
                     self.check('name', rel_name),
+                    self.check('type', 'Microsoft.Relationships/dependencyOf'),
+                    self.check('properties.provisioningState', 'Succeeded'),
+                    self.check('properties.sourceId', rg_uri),
                     self.check('properties.targetId', SDK_TESTS_SG),
-                    self.exists('properties.sourceId'),
                     self.exists('properties.metadata.sourceType'),
                     self.exists('properties.metadata.targetType'),
                 ]
             )
 
-            # DELETE
+            # DELETE ASYNCHRONOUSLY AND WAIT
             self.cmd(
                 f'az relationship dependency-of delete '
                 f'--resource-uri "{rg_uri}" '
-                f'--name {rel_name} --yes'
+                f'--name {rel_name} --yes --no-wait'
+            )
+            self.cmd(
+                f'az relationship dependency-of wait '
+                f'--resource-uri "{rg_uri}" '
+                f'--name {rel_name} '
+                f'--deleted'
             )
 
             # VERIFY DELETE (should 404)
@@ -140,19 +150,19 @@ class RelationshipScenarioTest(ScenarioTest):
         self.cmd(f'az group create --name {rg_name} --location eastus')
 
         try:
-            # CREATE
+            # CREATE ASYNCHRONOUSLY AND WAIT
             self.cmd(
                 f'az relationship service-group-member create '
                 f'--resource-uri "{rg_uri}" '
                 f'--name {rel_name} '
-                f'--source-id "{SDK_TESTS_SG}"',
-                checks=[
-                    self.check('name', rel_name),
-                    self.check('type', 'Microsoft.Relationships/serviceGroupMember'),
-                    self.check('properties.sourceId', SDK_TESTS_SG),
-                    self.check('properties.targetId', rg_uri),
-                    self.exists('properties.provisioningState'),
-                ]
+                f'--source-id "{SDK_TESTS_SG}" '
+                f'--no-wait'
+            )
+            self.cmd(
+                f'az relationship service-group-member wait '
+                f'--resource-uri "{rg_uri}" '
+                f'--name {rel_name} '
+                f'--created'
             )
 
             # SHOW
@@ -162,17 +172,26 @@ class RelationshipScenarioTest(ScenarioTest):
                 f'--name {rel_name}',
                 checks=[
                     self.check('name', rel_name),
+                    self.check('type', 'Microsoft.Relationships/serviceGroupMember'),
+                    self.check('properties.provisioningState', 'Succeeded'),
                     self.check('properties.sourceId', SDK_TESTS_SG),
                     self.check('properties.targetId', rg_uri),
+                    self.exists('properties.metadata.sourceType'),
                     self.exists('properties.metadata.targetType'),
                 ]
             )
 
-            # DELETE
+            # DELETE ASYNCHRONOUSLY AND WAIT
             self.cmd(
                 f'az relationship service-group-member delete '
                 f'--resource-uri "{rg_uri}" '
-                f'--name {rel_name} --yes'
+                f'--name {rel_name} --yes --no-wait'
+            )
+            self.cmd(
+                f'az relationship service-group-member wait '
+                f'--resource-uri "{rg_uri}" '
+                f'--name {rel_name} '
+                f'--deleted'
             )
 
             # VERIFY DELETE (should 404)
