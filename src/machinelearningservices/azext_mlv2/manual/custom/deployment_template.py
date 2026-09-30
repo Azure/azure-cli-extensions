@@ -80,8 +80,9 @@ def ml_deployment_template_create(
     registry_name=None,
     no_wait=False,
     params_override=None,
-    **kwargs,  # pylint: disable=unused-argument
+    **kwargs, 
 ):
+    # pylint: disable=unused-argument
     """Create or update a deployment template."""
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
@@ -205,8 +206,9 @@ def ml_deployment_template_archive(
     version=None,
     registry_name=None,
     no_wait=False,  # pylint: disable=unused-argument
-    **kwargs,  # pylint: disable=unused-argument
-):
+    **kwargs,
+): 
+    # pylint: disable=unused-argument
     """Archive a deployment template."""
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
@@ -223,8 +225,9 @@ def ml_deployment_template_restore(
     version=None,
     registry_name=None,
     no_wait=False,  # pylint: disable=unused-argument
-    **kwargs,  # pylint: disable=unused-argument
+    **kwargs,  
 ):
+    # pylint: disable=unused-argument
     """Restore an archived deployment template."""
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
