@@ -359,7 +359,7 @@ To generate a security policy using a policy config file for Virtual Node, the `
 
 This `scenario` field adds the necessary environment variables and mount values to containers in the config file. Currently `vn2` and `aci` are the only supported values for `scenario`, but others may be added in the future as more products onboard to the `confcom` extension. `aci` is the default value.
 
-To include the ACI kube-proxy image-attached fragment reference, use `--allow-kubeproxy`:
+To include the ACI kube-proxy image-attached fragment reference in a Linux VN2 policy, use `--allow-kubeproxy`:
 
 ```bash
 az confcom acipolicygen --virtual-node-yaml pod.yaml --allow-kubeproxy
