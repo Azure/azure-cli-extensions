@@ -23,7 +23,7 @@ from urllib.request import urlopen
 from azure.cli.command_modules.acr.custom import acr_show
 from azure.cli.command_modules.containerapp._utils import safe_get, _ensure_location_allowed, \
     _generate_log_analytics_if_not_provided
-from azure.cli.command_modules.containerapp._clients import ContainerAppClient
+from ._clients import ContainerAppPreviewClient as ContainerAppClient
 from azure.cli.command_modules.containerapp._client_factory import handle_raw_exception
 from azure.cli.core._profile import Profile
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, CLIError, InvalidArgumentValueError)
