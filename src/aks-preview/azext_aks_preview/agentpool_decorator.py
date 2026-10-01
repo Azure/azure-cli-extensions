@@ -1976,7 +1976,10 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         asg_ids = self.context.get_asg_ids()
         allowed_host_ports = self.context.get_allowed_host_ports()
         enable_managed_dranet = self.context.get_enable_managed_dranet()
-        if not agentpool.network_profile and (asg_ids is not None or allowed_host_ports is not None or enable_managed_dranet):
+        node_public_ip_prefix_ids = self.context.get_node_public_ip_prefix_ids()
+        if not agentpool.network_profile and (
+            asg_ids is not None or allowed_host_ports is not None or enable_managed_dranet or node_public_ip_prefix_ids
+        ):
             agentpool.network_profile = self.models.AgentPoolNetworkProfile()  # pylint: disable=no-member
         if asg_ids is not None:
             agentpool.network_profile.application_security_groups = asg_ids
@@ -1986,6 +1989,8 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.network_profile.dranet = self.models.DRANETProfile(
                 mode="Managed"
             )
+        if node_public_ip_prefix_ids:
+            agentpool.network_profile.node_public_ip_prefix_i_ds = node_public_ip_prefix_ids
         return agentpool
 
     def update_gpu_profile(self, agentpool: AgentPool) -> AgentPool:
