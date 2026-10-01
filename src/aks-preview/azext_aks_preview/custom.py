@@ -2403,6 +2403,7 @@ def aks_agentpool_update(
     allowed_host_ports=None,
     asg_ids=None,
     enable_managed_dranet=False,
+    node_public_ip_prefix_ids=None,
     enable_artifact_streaming=False,
     disable_artifact_streaming=False,
     enable_managed_gpu=None,
