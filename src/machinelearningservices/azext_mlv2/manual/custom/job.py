@@ -182,8 +182,9 @@ def ml_job_list_private_preview(
     parent_job_name=None,
     include_archived=False,
     archived_only=False,
-    **kwargs,  # pylint: disable=unused-argument
+    **kwargs,
 ):
+    # pylint: disable=unused-argument
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
@@ -227,7 +228,7 @@ def ml_job_list(
     parent_job_name=None,
     include_archived=False,
     archived_only=False,
-    **kwargs,
+    **kwargs,  # pylint: disable=unused-argument
 ):
     return ml_job_list_private_preview(
         cmd=cmd,
