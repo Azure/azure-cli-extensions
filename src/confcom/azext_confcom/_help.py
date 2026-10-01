@@ -111,7 +111,7 @@ helps[
 
         - name: --allow-kubeproxy
           type: boolean
-          short-summary: 'Include the ACI kube-proxy image-attached fragment reference in a VN2 policy'
+          short-summary: 'Include the ACI kube-proxy image-attached fragment reference in a Linux VN2 policy'
 
     examples:
         - name: Input an ARM Template file to inject a base64 encoded Confidential Container Security Policy into the ARM Template

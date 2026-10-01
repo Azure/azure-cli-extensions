@@ -266,7 +266,7 @@ def load_arguments(self, _):
             required=False,
             help=(
                 "Include the ACI kube-proxy image-attached fragment reference "
-                "in a VN2 policy"
+                "in a Linux VN2 policy"
             ),
         )
 
