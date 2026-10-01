@@ -1,0 +1,1031 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm create-from-machines
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --name --vcenter-id
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwareVsphere/vcenters/azcli-vcenter-scenario?api-version=2023-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/microsoft.connectedvmwarevsphere/vcenters/azcli-vcenter-scenario","name":"azcli-vcenter-scenario","type":"microsoft.connectedvmwarevsphere/vcenters","kind":"VMware","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl"},"tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-01T05:26:05.4063514Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2026-10-01T05:32:36.2759671Z"},"properties":{"credentials":{"username":"criticalinfra@vsphere.local"},"fqdn":"idclab-vcen8.fareast.corp.microsoft.com","port":443,"provisioningState":"Succeeded","uuid":"20e9dc9f-5cdc-4586-a9f2-6ba3fb3954df","statuses":[{"status":"True","type":"Connected","lastUpdatedAt":"2026-10-01T05:27:10Z"},{"status":"True","type":"Ready","lastUpdatedAt":"2026-10-01T05:27:36.620678Z"},{"status":"True","type":"Idle","lastUpdatedAt":"2026-10-01T05:27:36.620678Z"}],"customResourceName":"20e9dc9f-5cdc-4586-a9f2-6ba3fb3954df","version":"8.0.1","instanceUuid":"0fa0baee-4b1f-45fc-b16d-1684789f2634","connectionStatus":"Connected"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1388'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 05:33:00 GMT
+      etag:
+      - '"04005b55-0000-3300-0000-6abdf0740000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 5736A0ADC79E438B84568FD80FB7424A Ref B: SG2AA1040512023 Ref C: 2026-10-01T05:33:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"subscriptions": ["204898ee-cd13-4332-b9d4-55ca5c25496d", "ef8e2098-7ed6-4399-9fb6-556da62b3cf7"],
+      "query": " Resources | where subscriptionId =~ ''204898ee-cd13-4332-b9d4-55ca5c25496d''
+      | where resourceGroup =~ ''azcli-machine-integration-test'' | where id =~ ''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli''
+      | where type =~ ''Microsoft.HybridCompute/machines'' | where isempty(kind) or
+      kind =~ ''VMware'' | extend p=parse_json(properties) | extend u = tolower(tostring(p[''vmUuid'']))
+      | where isnotempty(u) | where location =~ ''eastus2euap'' | extend vmUuidRev
+      = strcat(     substring(u, 6, 2), substring(u, 4, 2), substring(u, 2, 2), substring(u,
+      0, 2), ''-'',     substring(u, 11, 2), substring(u, 9, 2), ''-'',     substring(u,
+      16, 2), substring(u, 14, 2), ''-'',     substring(u, 19)) | extend vmUuid=pack_array(u,
+      vmUuidRev) | mv-expand vmUuid | extend vmUuid=tostring(vmUuid) | project machineId=id,
+      name, resourceGroup, vmUuid, kind | join kind=inner ( ConnectedVMwareVsphereResources
+      | where type =~ ''Microsoft.ConnectedVMwareVsphere/VCenters/InventoryItems''
+      | where kind =~ ''VirtualMachine'' | where id startswith ''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/microsoft.connectedvmwarevsphere/vcenters/azcli-vcenter-scenario/InventoryItems''
+      | extend p=parse_json(properties) | extend biosId = tolower(tostring(p[''smbiosUuid'']))
+      | extend managedResourceId=tolower(tostring(p[''managedResourceId''])) | project
+      inventoryId=id, biosId, managedResourceId ) on $left.vmUuid == $right.biosId
+      | project-away vmUuid", "options": {"allowPartialScopes": false, "authorizationScopeFilter":
+      "AtScopeAndBelow"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm create-from-machines
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1753'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --subscription --resource-group --name --vcenter-id
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2022-10-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"machineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli","name":"test-vm-azcli","resourceGroup":"azcli-machine-integration-test","kind":"","inventoryId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario/InventoryItems/vm-505434","biosId":"42377738-1db9-eb85-a6c5-88b261ec6deb","managedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azcli-machine-integration-test/providers/microsoft.hybridcompute/machines/test-vm-azcli"}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '759'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 05:33:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '14'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.6874710'
+      x-ms-user-quota-remaining:
+      - '14'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+      x-msedge-ref:
+      - 'Ref A: 0DC82DB01118472797B368888BCA042F Ref B: SG2AA1040516025 Ref C: 2026-10-01T05:33:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"kind": "VMware"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm create-from-machines
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '18'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --subscription --resource-group --name --vcenter-id
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PATCH
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli?api-version=2023-04-25-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli","name":"test-vm-azcli","location":"eastus2euap","tags":{"azsecpack":"nonprod"},"kind":"VMware","identity":{"type":"SystemAssigned","principalId":"edae7670-6e12-402b-8303-31c82cd8d9af","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Updating","agentVersion":"1.68.03532.1399","status":"Connected","lastStatusChange":"2026-10-01T05:17:52.2525933Z","errorDetails":[],"displayName":"arcvmware","machineFqdn":"arcvmware","osName":"linux","osVersion":"5.4.0-216-generic","osType":"linux","osProfile":{"computerName":"arcvmware"},"vmId":"95914206-cffb-4b88-bd97-db12b4699304","vmUuid":"38773742-b91d-85eb-a6c5-88b261ec6deb","clientPublicKey":"MIIBCgKCAQEAwClU+XYI/zRle2vO59/1sPs4sdoSzawBZRsKp20MbwH0yuYsIQmSuW6eQlHG/LgSHquf6zItAhTq3/g41Vu1QBlTYvGWJ94Bxx7RlFnc0P21e0yabN5f45nmU5LCItJuIcGgUW8rY/cmtJ49ArEOHkNj/b0Ycb2J9cJRAyMr7vDtjYa7RTOlwBu1mUj4Ho5cwDj6QcariSHrLq+myS6A6fma4kW3xODUlcbR+FQDd/rb4NnbGcbVSvaT9xDNVu1iRa3wpa9snDBIUrlT7q4gSFLfsQkO8SuhC7VEhBGIK0QhnS6cgA1e5bKAAlzTGOPU1e4w19Sfjrc41QRCwitvvQIDAQAB","osSku":"Ubuntu
+        20.04.6 LTS","domainName":"unknown","adFqdn":"unknown","dnsFqdn":"arcvmware","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"architecture":"amd64","cloudprovider":"N/A","coreCount":"2","hypervisorType":"VMware","logicalCoreCount":"2","manufacturer":"VMware,
+        Inc.","model":"VMware20,1","mssqldiscovered":"false","mysqldiscovered":"false","pgsqldiscovered":"false","processorCount":"1","processorNames":"Intel(R)
+        Xeon(R) Gold 5220R CPU @ 2.20GHz","productType":"unknown","serialNumber":"VMware-42
+        37 77 38 1d b9 eb 85-a6 c5 88 b2 61 ec 6d eb","smbiosAssetTag":"No Asset Tag","totalPhysicalMemoryInBytes":"2066485248","totalPhysicalMemoryInGigabytes":"1","tpm_Present":"false","tpm_Ready":"false","tpm_SpecVersion":"","ubuntuPro":"unknown","vmuuidEsu":"","vmuuidEsu2012":""},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"active","startupType":"enabled"},"guestConfigurationService":{"status":"active","startupType":"enabled"}},"agentUpgrade":{"enableAutomaticUpgrade":true},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"10.150.179.189","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.150.176.0/21"}},{"address":"2404:f801:4800:14:250:56ff:feb7:f292","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2404:f801:4800:14::/64"}}]}]}},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-01T05:12:11.2130993Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-01T05:33:06.8618511Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2996'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 05:33:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=485c94a8-4f47-4a21-b5b4-24566d261e07/eastus2euap/b4946cc3-824e-43ae-b955-8bc6bff3a744
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '799'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 788B6B3D03E644A392F9C1D7464CDDB1 Ref B: SG2AA1070305031 Ref C: 2026-10-01T05:33:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"extendedLocation": {"type": "CustomLocation", "name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl"},
+      "properties": {"infrastructureProfile": {"inventoryItemId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario/InventoryItems/vm-505434"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm create-from-machines
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '471'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --subscription --resource-group --name --vcenter-id
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default?api-version=2023-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default","name":"default","type":"microsoft.connectedvmwarevsphere/virtualmachineinstances","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-01T05:33:09.4762892Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-01T05:33:09.4762892Z"},"properties":{"infrastructureProfile":{"inventoryItemId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario/InventoryItems/vm-505434","vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario"},"provisioningState":"Accepted","statuses":[{"status":"False","type":"Ready","reason":"Provisioning","message":"The
+        resource is being provisioned.","severity":"Info","lastUpdatedAt":"2026-10-01T05:33:19.0881125Z"},{"status":"False","type":"Idle","reason":"Provisioning","message":"The
+        resource is being provisioned.","severity":"Info","lastUpdatedAt":"2026-10-01T05:33:19.0881125Z"}]}}'
+    headers:
+      api-supported-versions:
+      - 2020-10-01-preview, 2022-01-10-preview, 2022-07-15-preview, 2023-03-01-preview,
+        2023-10-01, 2023-12-01
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/a393bdf1-e02a-45b7-ab79-cb1e5e13a481*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639264295993046448&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=YImHGMiB-9OnSoxbdMHuIO6l7WW4doTBnNe0eY1myBxp9nBPzLvxfwXmzQqfOOIx7owjQXij56SLlvLj7HQ2_5U1Gv_8J4NAIvuzluSSZl4ZAhc5w6QMxYgKtF9cMv073LRFWCh9g0NVaTXbOrgnSkxXLciF3mp8QCTQgvverGp--65jDN4wA0h2g4YGykv8mt2j1Jr7UqMe2pkl3kYVDQydlR8u_oto85j9ix7A5d0I6C2BeOBU9Im4571OmCrY1UhdFoqnKgpsZ766rQxywrl5yCV2Qcjn-gktjeX8xzPnlT4idvVuwlJKe9VcK6kANYmFFihFbDlwBiPAB9FIHg&h=3RCtQp6d0FBOZ5tgyenoX7_SS2r6Vxr7lhhIhiBw4Tc
+      cache-control:
+      - no-cache
+      content-length:
+      - '1569'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 05:33:18 GMT
+      etag:
+      - '"050091f9-0000-3300-0000-6abdf09f0000"'
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - P6D
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=485c94a8-4f47-4a21-b5b4-24566d261e07/eastus2euap/37e5dfbc-4bd2-48fb-aa05-d12811b87bb2
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '800'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 6027F7BAD1B246B4B38F4324864EBDE5 Ref B: SG2AA1040512062 Ref C: 2026-10-01T05:33:08Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm create-from-machines
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --name --vcenter-id
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/a393bdf1-e02a-45b7-ab79-cb1e5e13a481*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639264295993046448&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=YImHGMiB-9OnSoxbdMHuIO6l7WW4doTBnNe0eY1myBxp9nBPzLvxfwXmzQqfOOIx7owjQXij56SLlvLj7HQ2_5U1Gv_8J4NAIvuzluSSZl4ZAhc5w6QMxYgKtF9cMv073LRFWCh9g0NVaTXbOrgnSkxXLciF3mp8QCTQgvverGp--65jDN4wA0h2g4YGykv8mt2j1Jr7UqMe2pkl3kYVDQydlR8u_oto85j9ix7A5d0I6C2BeOBU9Im4571OmCrY1UhdFoqnKgpsZ766rQxywrl5yCV2Qcjn-gktjeX8xzPnlT4idvVuwlJKe9VcK6kANYmFFihFbDlwBiPAB9FIHg&h=3RCtQp6d0FBOZ5tgyenoX7_SS2r6Vxr7lhhIhiBw4Tc
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/a393bdf1-e02a-45b7-ab79-cb1e5e13a481*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","name":"a393bdf1-e02a-45b7-ab79-cb1e5e13a481*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default","status":"Accepted","startTime":"2026-10-01T05:33:18.7234875Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '613'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 05:33:20 GMT
+      etag:
+      - '"2f005103-0000-3300-0000-6abdf09e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 139FF804963748D4B79C77A3D2B6CA95 Ref B: SG2AA1070306054 Ref C: 2026-10-01T05:33:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm create-from-machines
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --name --vcenter-id
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/a393bdf1-e02a-45b7-ab79-cb1e5e13a481*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639264295993046448&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=YImHGMiB-9OnSoxbdMHuIO6l7WW4doTBnNe0eY1myBxp9nBPzLvxfwXmzQqfOOIx7owjQXij56SLlvLj7HQ2_5U1Gv_8J4NAIvuzluSSZl4ZAhc5w6QMxYgKtF9cMv073LRFWCh9g0NVaTXbOrgnSkxXLciF3mp8QCTQgvverGp--65jDN4wA0h2g4YGykv8mt2j1Jr7UqMe2pkl3kYVDQydlR8u_oto85j9ix7A5d0I6C2BeOBU9Im4571OmCrY1UhdFoqnKgpsZ766rQxywrl5yCV2Qcjn-gktjeX8xzPnlT4idvVuwlJKe9VcK6kANYmFFihFbDlwBiPAB9FIHg&h=3RCtQp6d0FBOZ5tgyenoX7_SS2r6Vxr7lhhIhiBw4Tc
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/a393bdf1-e02a-45b7-ab79-cb1e5e13a481*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","name":"a393bdf1-e02a-45b7-ab79-cb1e5e13a481*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default","status":"Succeeded","startTime":"2026-10-01T05:33:18.7234875Z","endTime":"2026-10-01T05:33:45.710589Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '672'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 05:33:52 GMT
+      etag:
+      - '"2f000d04-0000-3300-0000-6abdf0b90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: ECD30142D96449548FE55F58D2D99D6C Ref B: SG2AA1070305023 Ref C: 2026-10-01T05:33:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm create-from-machines
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --name --vcenter-id
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default?api-version=2023-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default","name":"default","type":"microsoft.connectedvmwarevsphere/virtualmachineinstances","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-01T05:33:09.4762892Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-01T05:33:09.4762892Z"},"properties":{"infrastructureProfile":{"inventoryItemId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario/InventoryItems/vm-505434","vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario","customResourceName":"45694457-5fb8-43ce-9c7d-c25ca7e9cd49","moRefId":"vm-505434","instanceUuid":"50373be8-8dd8-54bf-1b79-cdd875f592d5","moName":"test-vm-azcli","folderPath":"ArcVMwareCriticalInfra/ArcVMwareSynthetics","smbiosUuid":"42377738-1db9-eb85-a6c5-88b261ec6deb","firmwareType":"efi"},"provisioningState":"Succeeded","statuses":[{"status":"True","type":"Ready","lastUpdatedAt":"2026-10-01T05:33:45.2921975Z"},{"status":"True","type":"Idle","lastUpdatedAt":"2026-10-01T05:33:45.2921975Z"}],"placementProfile":{},"resourceUid":"95914206-cffb-4b88-bd97-db12b4699304","networkProfile":{"networkInterfaces":[{"powerOnBoot":"enabled","ipSettings":{"allocationMethod":"unset","dnsServers":["10.50.50.50","10.50.10.50"],"gateway":["10.150.176.1","fe80::201:11ff:fe11:1111"],"ipAddress":"10.150.179.189","subnetMask":"255.255.248.0","ipAddressInfo":[{"ipAddress":"10.150.179.189","subnetMask":"255.255.248.0"},{"ipAddress":"2404:f801:4800:14:250:56ff:feb7:f292","subnetMask":"ffff:ffff:ffff:ffff:0000:0000:0000:0000"},{"ipAddress":"fe80::250:56ff:feb7:f292","subnetMask":"ffff:ffff:ffff:ffff:0000:0000:0000:0000"}]},"label":"Network
+        adapter 1","ipAddresses":["10.150.179.189","2404:f801:4800:14:250:56ff:feb7:f292","fe80::250:56ff:feb7:f292"],"macAddress":"00:50:56:b7:f2:92","networkMoRefId":"network-18983","networkMoName":"VM
+        Network","nicType":"vmxnet3","deviceKey":4000}]},"storageProfile":{"disks":[{"diskObjectId":"62444-2000","label":"Hard
+        disk 1","diskSizeGB":25,"deviceKey":2000,"diskMode":"persistent","controllerKey":1000,"unitNumber":0,"diskType":"flat"}],"scsiControllers":[{"type":"pvscsi","controllerKey":1000,"scsiCtlrUnitNumber":7,"sharing":"noSharing"}]},"securityProfile":{"uefiSettings":{"secureBootEnabled":false}},"osProfile":{"computerName":"arcvmware","osSku":"Ubuntu
+        Linux (64-bit)","osType":"Linux","guestId":"ubuntu64Guest","toolsRunningStatus":"guestToolsRunning","toolsVersionStatus":"guestToolsUnmanaged","toolsVersion":"11360"},"hardwareProfile":{"memorySizeMB":2048,"numCPUs":2,"numCoresPerSocket":2,"cpuHotAddEnabled":false,"cpuHotRemoveEnabled":false,"memoryHotAddEnabled":false},"powerState":"poweredOn"}}'
+    headers:
+      content-length:
+      - '3324'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 05:33:54 GMT
+      etag:
+      - '"1300f595-0000-3400-0000-6abdf0b90000"'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=485c94a8-4f47-4a21-b5b4-24566d261e07/eastus2euap/4f409e15-6592-456c-b597-4b535299eee6
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1099'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 563B5E4F3B0D48A886C2D047063AC9FA Ref B: SG2AA1040517031 Ref C: 2026-10-01T05:33:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default?api-version=2023-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default","name":"default","type":"microsoft.connectedvmwarevsphere/virtualmachineinstances","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-01T05:33:09.4762892Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-01T05:33:09.4762892Z"},"properties":{"infrastructureProfile":{"inventoryItemId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario/InventoryItems/vm-505434","vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario","customResourceName":"45694457-5fb8-43ce-9c7d-c25ca7e9cd49","moRefId":"vm-505434","instanceUuid":"50373be8-8dd8-54bf-1b79-cdd875f592d5","moName":"test-vm-azcli","folderPath":"ArcVMwareCriticalInfra/ArcVMwareSynthetics","smbiosUuid":"42377738-1db9-eb85-a6c5-88b261ec6deb","firmwareType":"efi"},"provisioningState":"Succeeded","statuses":[{"status":"True","type":"Ready","lastUpdatedAt":"2026-10-01T05:33:45.2921975Z"},{"status":"True","type":"Idle","lastUpdatedAt":"2026-10-01T05:33:45.2921975Z"}],"placementProfile":{},"resourceUid":"95914206-cffb-4b88-bd97-db12b4699304","networkProfile":{"networkInterfaces":[{"powerOnBoot":"enabled","ipSettings":{"allocationMethod":"unset","dnsServers":["10.50.50.50","10.50.10.50"],"gateway":["10.150.176.1","fe80::201:11ff:fe11:1111"],"ipAddress":"10.150.179.189","subnetMask":"255.255.248.0","ipAddressInfo":[{"ipAddress":"10.150.179.189","subnetMask":"255.255.248.0"},{"ipAddress":"2404:f801:4800:14:250:56ff:feb7:f292","subnetMask":"ffff:ffff:ffff:ffff:0000:0000:0000:0000"},{"ipAddress":"fe80::250:56ff:feb7:f292","subnetMask":"ffff:ffff:ffff:ffff:0000:0000:0000:0000"}]},"label":"Network
+        adapter 1","ipAddresses":["10.150.179.189","2404:f801:4800:14:250:56ff:feb7:f292","fe80::250:56ff:feb7:f292"],"macAddress":"00:50:56:b7:f2:92","networkMoRefId":"network-18983","networkMoName":"VM
+        Network","nicType":"vmxnet3","deviceKey":4000}]},"storageProfile":{"disks":[{"diskObjectId":"62444-2000","label":"Hard
+        disk 1","diskSizeGB":25,"deviceKey":2000,"diskMode":"persistent","controllerKey":1000,"unitNumber":0,"diskType":"flat"}],"scsiControllers":[{"type":"pvscsi","controllerKey":1000,"scsiCtlrUnitNumber":7,"sharing":"noSharing"}]},"securityProfile":{"uefiSettings":{"secureBootEnabled":false}},"osProfile":{"computerName":"arcvmware","osSku":"Ubuntu
+        Linux (64-bit)","osType":"Linux","guestId":"ubuntu64Guest","toolsRunningStatus":"guestToolsRunning","toolsVersionStatus":"guestToolsUnmanaged","toolsVersion":"11360"},"hardwareProfile":{"memorySizeMB":2048,"numCPUs":2,"numCoresPerSocket":2,"cpuHotAddEnabled":false,"cpuHotRemoveEnabled":false,"memoryHotAddEnabled":false},"powerState":"poweredOn"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3324'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 05:33:56 GMT
+      etag:
+      - '"1300f595-0000-3400-0000-6abdf0b90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=485c94a8-4f47-4a21-b5b4-24566d261e07/eastus2euap/2c7ac5fc-24e4-4e80-a5e3-9672313b9850
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1099'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 68D57E8EF3FB4490927032EF0D708798 Ref B: SG2AA1070305062 Ref C: 2026-10-01T05:33:56Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --subscription --resource-group --name --retain-machine --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: DELETE
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default?api-version=2023-10-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      api-supported-versions:
+      - 2020-10-01-preview, 2022-01-10-preview, 2022-07-15-preview, 2023-03-01-preview,
+        2023-10-01, 2023-12-01
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/3301faba-25e2-45d1-b71e-860d13e8f152*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639264296397536368&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=vUgrrmeJVmj-YlzLXfg9JAsnRhyOyxQqC73Dls1XE41VxVePmH3tuxmkjOg6wLpX-KKa3jJOVNNSoZOlUpc8Ff5PxuQPSa9gnS8q92N0_ZA8phcAtSGm_xSOU-9Uf4fBxCStu5yZlEHrPLciA1XJaD_iMpys07Q-nQe9JbMaK_VHLQIqn3bDvE6lU436SKZrpSSts3VyF7TLkON4XtVlI8fIA-I5NdIkU-pDcTiOpTpchd09EPJC80XQybd1AEUFAJPL7A54B35JbnZxisiJAriKbCnobT6574CDkzRPUfB4W3gcGlFUKldJZgSTwuKiz6GMnVlaBENVx1NwCnJHmw&h=F_rUIcK6x6nKHGLAS4s1lPiYXrAI3I2Jw5qG6VzalL4
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 05:33:59 GMT
+      etag:
+      - '"0500c6f9-0000-3300-0000-6abdf0c70000"'
+      expires:
+      - '-1'
+      location:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/3301faba-25e2-45d1-b71e-860d13e8f152*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639264296397691780&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=XE92g3H7Q1NUaVXuIq8rlrScS49pjleXetVT8u1-VF61IbafjmCrImytzX9GrceN3Rr7mfiNFaFklc71lKX64bw6LO2stoUC0hQzaA5DG_2PVtSOvSBJqHm1BuT11wiW57-eOB7Cte8WZN7kw7fTkM5na7KUklEAytzySw6vYgIbk9oe2RmMz_EQJfhY-UntYHxZ-nFtyoAJc07Qg-8g6KDTGl2nT5dsRYexmDD_MHxZWFCLTwuiMmZdvvpIU3DkAzgP7lVG7b2X23Q3dkATBxNxYRdEt1-UoUugRMTvssfYTCDwztvH4NV335clcnb9qkdZJp2nqjUq_aS_FD_lig&h=qEXznYZ1-bOyHRtBstWl741TKvfO4NHQ5Be_C1gitew
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=485c94a8-4f47-4a21-b5b4-24566d261e07/eastus2euap/21dbbdaf-2bd7-4a75-9447-603f652c808f
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: DB7636AFCE5941C68CD41BD7BCCF842E Ref B: SG2AA1070305023 Ref C: 2026-10-01T05:33:58Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --name --retain-machine --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/3301faba-25e2-45d1-b71e-860d13e8f152*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639264296397536368&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=vUgrrmeJVmj-YlzLXfg9JAsnRhyOyxQqC73Dls1XE41VxVePmH3tuxmkjOg6wLpX-KKa3jJOVNNSoZOlUpc8Ff5PxuQPSa9gnS8q92N0_ZA8phcAtSGm_xSOU-9Uf4fBxCStu5yZlEHrPLciA1XJaD_iMpys07Q-nQe9JbMaK_VHLQIqn3bDvE6lU436SKZrpSSts3VyF7TLkON4XtVlI8fIA-I5NdIkU-pDcTiOpTpchd09EPJC80XQybd1AEUFAJPL7A54B35JbnZxisiJAriKbCnobT6574CDkzRPUfB4W3gcGlFUKldJZgSTwuKiz6GMnVlaBENVx1NwCnJHmw&h=F_rUIcK6x6nKHGLAS4s1lPiYXrAI3I2Jw5qG6VzalL4
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/3301faba-25e2-45d1-b71e-860d13e8f152*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","name":"3301faba-25e2-45d1-b71e-860d13e8f152*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default","status":"Deleting","startTime":"2026-10-01T05:33:58.6929544Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/eastus2euap/operationStatuses/3301faba-25e2-45d1-b71e-860d13e8f152*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639264296415470614&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=N4_OxCn3XP93VWjz3yuf0p54JOfiu-jSBA5KOS93pVJpdbwKxgwhzSu52VFV0hsnS4pr986_s5EfloTIAwBD6eRFF6lWCZ1tsg8MdRh1JBco1YSsh-kFHe4eRW2C5vDZTduPrLynrlavu7cijXoAZ7OtZUq6wmy_6DjTL6-yCHA1tazOEOFwz4YWcb_G7tN6_w9HHqC90_VpslQ2A7xRP4c9EzY6OlAV9LeJcV1NOjcMvLCAprN3DnVsN6wq5xHhEkOEwky9rO2HOWKi4N9Pm6eB04WF-RljAHFrI4PJkxfVkYiJvq2WjstyG9GAoNeZ7ww--WDfv5MQCbdvyrJNCw&h=NpwqLCB8nbpQ_6jG9SZkvi5fB74GnaGL_5L-9HxUI5w
+      cache-control:
+      - no-cache
+      content-length:
+      - '613'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 05:34:01 GMT
+      etag:
+      - '"2f006d04-0000-3300-0000-6abdf0c60000"'
+      expires:
+      - '-1'
+      location:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/eastus2euap/operationStatuses/3301faba-25e2-45d1-b71e-860d13e8f152*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639264296415626906&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=shHfurnil1x-AX5kQ-ED792wOHlm167416ju8pbcLLZogH2u5KymZBWLtNtkSR29_z-G_XRANQFUIFJlx9BUDK0L7UDeWp13TxCFLyxf0aGyIFEMiaADEXSayVPoIG40fXotjyJYc50_OLTRcjqhVFKG9JldMtybYxYGtqNneNKSdbo7_5qjQ2QrmADWmS3AbwmjXn8_NRHGZ-azg00e6Dd74VL7l7QNGY6IRZg8AikPzr-spEdB3D0luU_4wsiz_-B_gx-cGnI2EqfLCcB7jslGz_4gf6og61kb5DweyTnCrB5O2oaTy1q55eOrGjPCvq85G1s4uzM4ceDw3h57Vw&h=i0c0UtUxOrQ1EUXvSTudtiBmChcupMUyB4Yc-XbiIto
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 082F63C40E784218879CCB8A39A6FA4F Ref B: SG2AA1070306052 Ref C: 2026-10-01T05:34:01Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --name --retain-machine --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/3301faba-25e2-45d1-b71e-860d13e8f152*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639264296397536368&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=vUgrrmeJVmj-YlzLXfg9JAsnRhyOyxQqC73Dls1XE41VxVePmH3tuxmkjOg6wLpX-KKa3jJOVNNSoZOlUpc8Ff5PxuQPSa9gnS8q92N0_ZA8phcAtSGm_xSOU-9Uf4fBxCStu5yZlEHrPLciA1XJaD_iMpys07Q-nQe9JbMaK_VHLQIqn3bDvE6lU436SKZrpSSts3VyF7TLkON4XtVlI8fIA-I5NdIkU-pDcTiOpTpchd09EPJC80XQybd1AEUFAJPL7A54B35JbnZxisiJAriKbCnobT6574CDkzRPUfB4W3gcGlFUKldJZgSTwuKiz6GMnVlaBENVx1NwCnJHmw&h=F_rUIcK6x6nKHGLAS4s1lPiYXrAI3I2Jw5qG6VzalL4
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/3301faba-25e2-45d1-b71e-860d13e8f152*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","name":"3301faba-25e2-45d1-b71e-860d13e8f152*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default","status":"Deleting","startTime":"2026-10-01T05:33:58.6929544Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/eastus2euap/operationStatuses/3301faba-25e2-45d1-b71e-860d13e8f152*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639264296740229249&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=j_QRQhx1eCN9QRT49rF_iIi_CkqFtNvdLU0ARPgHbyPzigR1yo-8-UPt1KMNFYai09z_TL7TC6eJsq5l45nA0uYUTBZ0PPLdWqPLTXKrDJ5NKpvLDoiOhzUK7G3NeAR3BWwyYX23gHDQ2jV-vj1W2XUyTrneoGDUwJACHAS2i_K2OvPYxuup3Vvbfn38RYWLYtc68yvuFXtDXOO9FhUm2pIH4GuNPByfxLZxa5gx0m_p5jK1Z52SPqKQwj5qHZ913Cg4oOLt0vq0CgcfBF-G9iPNa8GG3uvKx3UDy-hsXRqTGYKNng6wGCs6LT3zMaTPsdC8zPCqdch89ZHpTSQsjA&h=q4S1R20D0YeLpZhTbBNIKRA_lwbe-c78M2X7X31f4Mw
+      cache-control:
+      - no-cache
+      content-length:
+      - '613'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 05:34:33 GMT
+      etag:
+      - '"2f006d04-0000-3300-0000-6abdf0c60000"'
+      expires:
+      - '-1'
+      location:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/eastus2euap/operationStatuses/3301faba-25e2-45d1-b71e-860d13e8f152*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639264296740229249&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=iF61HWG6KVVwJhTElZVU4Fki2V-_v2WpJYWcgYQ6R8LsqoTE_JDOgOtxU9g-YQ1eJ0cI52N8ckM4fZ-v4BShlzQLSLOUc5ef6xvKFUpA7XiuPIWKNlDIFpe388CSnvCf5YHsjL0A1eF4EOJnRzSF2_ZeXrTDEgHcbmrDMINK6PiujskZhswavHoR_iHM6CoU6GRg5eXUuw7REwX-K5bNTaHrHQeM07eosFGYCj8l4F0nFyOZS49PDYS2Qj-78866HlHAZVlZQPe4u_IN_HZXvsgv6lOMlAtzjbonj7az9gp1V9xhVTlGjKg5fMFJM6LZg8im_g8pYkGEx75ETdCLdA&h=q4S1R20D0YeLpZhTbBNIKRA_lwbe-c78M2X7X31f4Mw
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 00BCF669D32C436B82D2F8E9C91AF928 Ref B: SG2AA1040512054 Ref C: 2026-10-01T05:34:33Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --name --retain-machine --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/3301faba-25e2-45d1-b71e-860d13e8f152*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639264296397536368&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=vUgrrmeJVmj-YlzLXfg9JAsnRhyOyxQqC73Dls1XE41VxVePmH3tuxmkjOg6wLpX-KKa3jJOVNNSoZOlUpc8Ff5PxuQPSa9gnS8q92N0_ZA8phcAtSGm_xSOU-9Uf4fBxCStu5yZlEHrPLciA1XJaD_iMpys07Q-nQe9JbMaK_VHLQIqn3bDvE6lU436SKZrpSSts3VyF7TLkON4XtVlI8fIA-I5NdIkU-pDcTiOpTpchd09EPJC80XQybd1AEUFAJPL7A54B35JbnZxisiJAriKbCnobT6574CDkzRPUfB4W3gcGlFUKldJZgSTwuKiz6GMnVlaBENVx1NwCnJHmw&h=F_rUIcK6x6nKHGLAS4s1lPiYXrAI3I2Jw5qG6VzalL4
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/3301faba-25e2-45d1-b71e-860d13e8f152*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","name":"3301faba-25e2-45d1-b71e-860d13e8f152*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default","status":"Succeeded","startTime":"2026-10-01T05:33:58.6929544Z","endTime":"2026-10-01T05:34:52.7781039Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '673'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 05:35:06 GMT
+      etag:
+      - '"2f004306-0000-3300-0000-6abdf0fc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 2AB9DCD7C55A46D7ABE9A6AA6DA388B2 Ref B: SG2AA1040512034 Ref C: 2026-10-01T05:35:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resource show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute","namespace":"Microsoft.HybridCompute","authorizations":[{"applicationId":"8c420feb-03df-47cc-8a05-55df0cf3064b","roleDefinitionId":"83eeb1c6-47f8-4da2-bbc3-42a7ac767360"},{"applicationId":"d2a590e7-6906-4a45-8f41-cecfdca9bca1","roleDefinitionId":"f32ad452-2b05-4296-bee4-fc9056ed85fa"},{"applicationId":"5e5e43d4-54da-4211-86a4-c6e7f3715801","roleDefinitionId":"ffcd6e5b-8772-457d-bb17-89703c03428f"},{"applicationId":"d00b5d58-cae5-42ad-ae0a-5a2e6f7ee6c9","roleDefinitionId":"4d8fb750-b938-4da8-95ce-557d4d36bd3b"},{"applicationId":"c8f5141d-83e0-4e9a-84d0-bb6677e26f64","roleDefinitionId":"b9872c82-72dd-402b-add5-f99a58f990da"},{"applicationId":"eec53b1f-b9a4-4479-acf5-6b247c6a49f2"},{"applicationId":"61414a6b-7050-4d69-8e88-d6c5646bab20"},{"applicationId":"5a8800f2-f31d-4654-9bed-f5b368c703f8","roleDefinitionId":"f5cff2b7-37d6-4e77-99e8-6e8ad7719923"},{"applicationId":"5bab4c7f-51c3-479b-a199-06b31afecc8f","roleDefinitionId":"f5cff2b7-37d6-4e77-99e8-6e8ad7719923"},{"applicationId":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","roleDefinitionId":"d367c838-4ddb-41b7-b6d8-53d0fe49b19f"},{"applicationId":"e18cedde-9458-482f-9dd1-558c597ac42e","roleDefinitionId":"01ce5666-d866-4fb1-80a1-fc11b2b6f7d5"}],"resourceTypes":[{"resourceType":"machines","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"machines/hybridIdentityMetadata","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/privateLinkScopes","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/extensions","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations","locations":["West
+        Europe","East US 2 EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2026-02-01-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/publishers","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/publishers/extensionTypes","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/publishers/extensionTypes/versions","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/operationStatus","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2026-02-01-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/operationResults","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2026-02-01-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"operations","locations":[],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/assessPatches","locations":["West
+        US 2","West Europe","Southeast Asia","East US","West Central US","South Central
+        US","North Europe","UK South","Australia East","East US 2","Japan East","Canada
+        Central","West US","North Central US","France Central","Korea Central","UK
+        West","West US 3","East Asia","Brazil South","Central US","Switzerland North","South
+        Africa North","Central India","Sweden Central","Canada East","Australia Southeast","Norway
+        East","UAE North","Germany West Central","Italy North","Israel Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/installPatches","locations":["West
+        US 2","West Europe","Southeast Asia","East US","West Central US","South Central
+        US","North Europe","UK South","Australia East","East US 2","Japan East","Canada
+        Central","West US","North Central US","France Central","Korea Central","UK
+        West","West US 3","East Asia","Brazil South","Central US","Switzerland North","South
+        Africa North","Central India","Sweden Central","Canada East","Australia Southeast","Norway
+        East","UAE North","Germany West Central","Italy North","Israel Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/updateCenterOperationResults","locations":["West
+        US 2","West Europe","Southeast Asia","East US","West Central US","South Central
+        US","North Europe","UK South","Australia East","East US 2","japan East","Canada
+        Central","West US","North Central US","France Central","Korea Central","UK
+        West","West US 3","East Asia","Brazil South","Central US","Switzerland North","South
+        Africa North","Central India","Sweden Central","Canada East","Australia Southeast","Norway
+        East","UAE North","Germany West Central","Italy North","Israel Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2025-02-19-preview","2025-01-13","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"privateLinkScopes","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"privateLinkScopes/privateEndpointConnections","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","Switzerland
+        North","UAE North","UK West","Central India","Canada East","South Africa North","Sweden
+        Central","Australia Southeast","Norway East","Italy North","South India","Israel
+        Central","Japan West","Qatar Central","Spain Central","Poland Central","Korea
+        South","Jio India West","Switzerland West","Indonesia Central","Malaysia West","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"privateLinkScopes/privateEndpointConnectionProxies","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","Switzerland
+        North","UAE North","UK West","Central India","Canada East","South Africa North","Sweden
+        Central","Australia Southeast","Norway East","Italy North","South India","Israel
+        Central","Japan West","Qatar Central","Spain Central","Poland Central","Korea
+        South","Jio India West","Switzerland West","Indonesia Central","Malaysia West","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/privateLinkScopes","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","Switzerland
+        North","UAE North","UK West","Central India","Canada East","South Africa North","Sweden
+        Central","Australia Southeast","Norway East","Italy North","South India","Israel
+        Central","Japan West","Qatar Central","Spain Central","Poland Central","Korea
+        South","Jio India West","Switzerland West","Indonesia Central","Malaysia West","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"osType","locations":["West
+        Europe","East US 2 EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"osType/agentVersions","locations":[],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"osType/agentVersions/latest","locations":[],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/runcommands","locations":["West
+        Central US","West US 2","West Europe","East US","Southeast Asia","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"machines/licenseProfiles","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"licenses","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"validateLicense","locations":[],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"networkConfigurations","locations":["Israel
+        Central","Japan West","Qatar Central","Spain Central","Poland Central","Korea
+        South","Jio India West","Switzerland West","Indonesia Central","Malaysia West","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"SupportsExtension"},{"resourceType":"settings","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview"],"defaultApiVersion":"2026-07-15","capabilities":"SupportsExtension"},{"resourceType":"gateways","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"privateLinkScopes/networkSecurityPerimeterConfigurations","locations":["Israel
+        Central","Japan West","Qatar Central","Spain Central","Poland Central","Korea
+        South","Jio India West","Switzerland West","Indonesia Central","Malaysia West","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"privateLinkScopes/networkSecurityPerimeterAssociationProxies","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/notifyNetworkSecurityPerimeterUpdatesAvailable","locations":["East
+        US 2 EUAP","West Central US","West US 2","West Europe","Southeast Asia","East
+        US","Australia East","South Central US","East US 2","North Europe","France
+        Central","Japan East","UK South","East Asia","Canada Central","Central US
+        EUAP","Korea Central","North Central US","West US","West US 3","Central US","Germany
+        West Central","Brazil South","UAE North","Switzerland North","UK West","Central
+        India","Canada East","South Africa North","Sweden Central","Australia Southeast","Norway
+        East","Italy North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/notifyExtension","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/notifyRunCommand","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/applications","locations":["Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2026-02-01-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '39089'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 05:35:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 692E7B6F0B21421E86091E2EA63064D8 Ref B: SG2AA1040518054 Ref C: 2026-10-01T05:35:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resource show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli?api-version=2026-07-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli","name":"test-vm-azcli","location":"eastus2euap","tags":{"azsecpack":"nonprod"},"kind":"VMware","identity":{"type":"SystemAssigned","principalId":"edae7670-6e12-402b-8303-31c82cd8d9af","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.68.03532.1399","status":"Connected","lastStatusChange":"2026-10-01T05:17:52.2525933Z","errorDetails":[],"displayName":"arcvmware","machineFqdn":"arcvmware","osName":"linux","osVersion":"5.4.0-216-generic","osType":"linux","osProfile":{"computerName":"arcvmware"},"vmId":"95914206-cffb-4b88-bd97-db12b4699304","vmUuid":"38773742-b91d-85eb-a6c5-88b261ec6deb","clientPublicKey":"MIIBCgKCAQEAwClU+XYI/zRle2vO59/1sPs4sdoSzawBZRsKp20MbwH0yuYsIQmSuW6eQlHG/LgSHquf6zItAhTq3/g41Vu1QBlTYvGWJ94Bxx7RlFnc0P21e0yabN5f45nmU5LCItJuIcGgUW8rY/cmtJ49ArEOHkNj/b0Ycb2J9cJRAyMr7vDtjYa7RTOlwBu1mUj4Ho5cwDj6QcariSHrLq+myS6A6fma4kW3xODUlcbR+FQDd/rb4NnbGcbVSvaT9xDNVu1iRa3wpa9snDBIUrlT7q4gSFLfsQkO8SuhC7VEhBGIK0QhnS6cgA1e5bKAAlzTGOPU1e4w19Sfjrc41QRCwitvvQIDAQAB","identityKeyStore":"Default","osSku":"Ubuntu
+        20.04.6 LTS","osEdition":"unknown","domainName":"unknown","adFqdn":"unknown","dnsFqdn":"arcvmware","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"architecture":"amd64","cloudprovider":"N/A","coreCount":"2","hypervisorType":"VMware","logicalCoreCount":"2","manufacturer":"VMware,
+        Inc.","model":"VMware20,1","mssqldiscovered":"false","mysqldiscovered":"false","pgsqldiscovered":"false","processorCount":"1","processorNames":"Intel(R)
+        Xeon(R) Gold 5220R CPU @ 2.20GHz","productType":"unknown","serialNumber":"VMware-42
+        37 77 38 1d b9 eb 85-a6 c5 88 b2 61 ec 6d eb","smbiosAssetTag":"No Asset Tag","totalPhysicalMemoryInBytes":"2066485248","totalPhysicalMemoryInGigabytes":"1","tpm_Present":"false","tpm_Ready":"false","tpm_SpecVersion":"","ubuntuPro":"unknown","vmuuidEsu":"","vmuuidEsu2012":""},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"active","startupType":"enabled"},"guestConfigurationService":{"status":"active","startupType":"enabled"}},"agentUpgrade":{"enableAutomaticUpgrade":true},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"10.150.179.189","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.150.176.0/21"}},{"address":"2404:f801:4800:14:250:56ff:feb7:f292","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2404:f801:4800:14::/64"}}],"macAddress":"00:50:56:b7:f2:92","id":"2","name":"ens33"}]},"licenseProfile":{"esuProfile":{"licenseAssignmentState":"NotAssigned","serverType":"Unknown","esuEligibility":"Ineligible","esuKeyState":"Inactive"}},"storageProfile":{"disks":[{"path":"/dev/loop0","diskType":"loop","generatedId":"DataDisk0","id":"/dev/loop0","name":"/dev/loop0","maxSizeInBytes":96292864,"usedSpaceInBytes":94080},{"path":"/dev/loop1","diskType":"loop","generatedId":"DataDisk1","id":"/dev/loop1","name":"/dev/loop1","maxSizeInBytes":66879488,"usedSpaceInBytes":65408},{"path":"/dev/loop2","diskType":"loop","generatedId":"DataDisk2","id":"/dev/loop2","name":"/dev/loop2","maxSizeInBytes":52260864,"usedSpaceInBytes":51072},{"path":"/dev/loop3","diskType":"loop","generatedId":"DataDisk3","id":"/dev/loop3","name":"/dev/loop3","maxSizeInBytes":66359296,"usedSpaceInBytes":64896},{"path":"/dev/loop4","diskType":"loop","generatedId":"DataDisk4","id":"/dev/loop4","name":"/dev/loop4","maxSizeInBytes":96645120,"usedSpaceInBytes":94464},{"path":"/dev/sda","diskType":"disk","generatedId":"RootDisk","id":"/dev/sda","name":"/dev/sda","maxSizeInBytes":26843545600,"usedSpaceInBytes":123572},{"path":"/dev/sr0","diskType":"rom","generatedId":"DataDisk5","id":"/dev/sr0","name":"/dev/sr0","maxSizeInBytes":1073741312},{"path":"/dev/mapper/ubuntu--vg-ubuntu--lv","diskType":"lvm","generatedId":"DataDisk6","id":"/dev/mapper/ubuntu--vg-ubuntu--lv","name":"/dev/mapper/ubuntu--vg-ubuntu--lv","maxSizeInBytes":11781799936,"usedSpaceInBytes":5373112}]},"firmwareProfile":{"serialNumber":"VMware-42
+        37 77 38 1d b9 eb 85-a6 c5 88 b2 61 ec 6d eb","type":"EFI"},"hardwareProfile":{"totalPhysicalMemoryInBytes":2066485248,"numberOfCpuSockets":1,"processors":[{"name":"Intel(R)
+        Xeon(R) Gold 5220R CPU @ 2.20GHz","numberOfCores":2}]}},"resources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/extensions/Microsoft.Azure.Security.Monitoring.AzureSecurityLinuxAgent","name":"Microsoft.Azure.Security.Monitoring.AzureSecurityLinuxAgent","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Azure.Security.Monitoring","type":"AzureSecurityLinuxAgent","typeHandlerVersion":"2.40.1474","autoUpgradeMinorVersion":true,"enableAutomaticUpgrade":true,"settings":{"enableGenevaUpload":true,"enableAutoConfig":true,"reportSuccessOnUnsupportedDistro":true},"provisioningState":"Creating","instanceView":{"name":"Microsoft.Azure.Security.Monitoring.AzureSecurityLinuxAgent","type":"AzureSecurityLinuxAgent","typeHandlerVersion":"2.40.1474","status":{}}},"systemData":{"createdBy":"ce0d719f-3f82-4573-bb20-dc4e8174055c","createdByType":"Application","createdAt":"2026-10-01T05:13:48.350999Z","lastModifiedBy":"ce0d719f-3f82-4573-bb20-dc4e8174055c","lastModifiedByType":"Application","lastModifiedAt":"2026-10-01T05:13:48.350999Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/extensions/Microsoft.Azure.Monitor.AzureMonitorLinuxAgent","name":"Microsoft.Azure.Monitor.AzureMonitorLinuxAgent","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Azure.Monitor","type":"AzureMonitorLinuxAgent","typeHandlerVersion":"1.45.1","autoUpgradeMinorVersion":true,"enableAutomaticUpgrade":true,"settings":{"GCS_AUTO_CONFIG":true},"provisioningState":"Creating","instanceView":{"name":"Microsoft.Azure.Monitor.AzureMonitorLinuxAgent","type":"AzureMonitorLinuxAgent","typeHandlerVersion":"1.45.1","status":{}}},"systemData":{"createdBy":"ce0d719f-3f82-4573-bb20-dc4e8174055c","createdByType":"Application","createdAt":"2026-10-01T05:13:21.3987015Z","lastModifiedBy":"ce0d719f-3f82-4573-bb20-dc4e8174055c","lastModifiedByType":"Application","lastModifiedAt":"2026-10-01T05:13:21.3987015Z"}}],"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-01T05:12:11.2130993Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-01T05:33:06.8618511Z"}}'
+    headers:
+      content-length:
+      - '7025'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 01 Oct 2026 05:35:12 GMT
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: D0F52649127946B0A8B98827C3B207E2 Ref B: SG2AA1040518062 Ref C: 2026-10-01T05:35:12Z'
+    status:
+      code: 200
+      message: OK
+version: 1

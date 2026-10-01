@@ -18,13 +18,13 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
     def test_create_from_machines_cross_subscription(self):
         self.kwargs.update(
             {
-                'machine_subscription': 'contoso-sub',
-                'machine_rg': 'contoso-subscription-test-rg',
-                'machine_name': 'vm-diff-sub-test',
+                'machine_subscription': 'ARC-Testing',
+                'machine_rg': 'azcli-machine-integration-test',
+                'machine_name': 'test-vm-azcli',
                 'vcenter_id': (
-                    '/subscriptions/aaaa0a0a-bb1b-cc2c-dd3d-eeeeee4e4e4e4e/'
-                    'resourceGroups/allhands-demo/providers/'
-                    'Microsoft.ConnectedVMwareVsphere/vcenters/contoso-vcenter'
+                    '/subscriptions/ef8e2098-7ed6-4399-9fb6-556da62b3cf7/'
+                    'resourceGroups/azcli-integration-test/providers/'
+                    'Microsoft.ConnectedVMwareVsphere/vcenters/azcli-vcenter-scenario'
                 ),
             }
         )
