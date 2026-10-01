@@ -1991,6 +1991,8 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             )
         if node_public_ip_prefix_ids:
             agentpool.network_profile.node_public_ip_prefix_i_ds = node_public_ip_prefix_ids
+            # the legacy singular field is mutually exclusive with the plural one on PUT; clear it when migrating
+            agentpool.node_public_ip_prefix_id = None
         return agentpool
 
     def update_gpu_profile(self, agentpool: AgentPool) -> AgentPool:

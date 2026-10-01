@@ -28,6 +28,13 @@ aks nodepool snapshot:
 aks nodepool:
   rule_exclusions:
     - require_wait_command_if_no_wait
+aks nodepool update:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
+  parameters:
+    node_public_ip_prefix_ids:
+      rule_exclusions:
+        - option_length_too_long
 aks snapshot:
   rule_exclusions:
     - require_wait_command_if_no_wait
