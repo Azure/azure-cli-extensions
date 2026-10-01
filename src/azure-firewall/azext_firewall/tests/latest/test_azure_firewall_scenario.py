@@ -548,7 +548,8 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy show -g {rg} -n {policy}', checks=[
             self.check('type', 'Microsoft.Network/FirewallPolicies'),
-            self.check('name', '{policy}')
+            self.check('name', '{policy}'),
+            self.check('afcManaged', False)
         ])
 
         self.cmd('network firewall policy list -g {rg}', checks=[
