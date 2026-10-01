@@ -8,6 +8,15 @@ from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
 from azure.cli.core.azclierror import ValidationError, CLIError
 from azure.cli.testsdk import live_only
 
+import unittest
+
+from azext_firewall.aaz.latest.network.firewall._create import Create as _Create
+from azext_firewall.aaz.latest.network.firewall._list import List as _List
+from azext_firewall.aaz.latest.network.firewall._show import Show as _Show
+from azext_firewall.aaz.latest.network.firewall._update import Update as _Update
+from azext_firewall.custom import (ThreatIntelAllowListCreate, ThreatIntelAllowListUpdate,
+                                   ThreatIntelAllowListDelete)
+
 
 class AzureFirewallScenario(ScenarioTest):
 
@@ -1092,6 +1101,35 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall create -g {rg} -n af --sku AZFW_VNet --tier Premium',
                  checks=self.check('sku.tier', 'Premium'))
 
+    # ponytail: replays from the recording, so it asserts only what the CLI owns: that
+    # --create-afc-control-plane reaches the RP as the createAfcControlPlane query parameter
+    # (playback matches on query parameters, so dropping it breaks this test) and that the
+    # firewall still provisions. The RP returns afcConfiguration only once an AFC control plane
+    # is actually deployed for the firewall, which it is not in the recorded subscription, so
+    # serviceEndpoint is covered offline in AzureFirewallAfcArgumentTest instead.
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_afc', location='westus2')
+    def test_azure_firewall_afc_control_plane(self, resource_group):
+        self.kwargs.update({
+            'af': 'af-afc',
+            'pubip': 'pubip-afc',
+            'vnet': 'vnet-afc',
+            'conf': 'ipconfig-afc',
+        })
+
+        self.cmd('network public-ip create -g {rg} -n {pubip} --sku Standard --allocation-method Static')
+        self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name AzureFirewallSubnet '
+                 '--address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24')
+
+        # the AFC control plane is only provisioned for a firewall that has an IP configuration
+        self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_VNet --tier Standard '
+                 '--vnet-name {vnet} --public-ip {pubip} --conf-name {conf} --create-afc-control-plane true')
+
+        self.cmd('network firewall show -g {rg} -n {af}',
+                 checks=[
+                     self.check('name', '{af}'),
+                     self.check('provisioningState', 'Succeeded'),
+                 ])
+
     # BUG ISSUE: https://github.com/Azure/azure-cli-extensions/issues/4096
     @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_update_premiumonlyproperty_issue', location='westus2')
     def test_azure_firewall_policy_update_premiumonlyproperty_issue(self, resource_group):
@@ -1729,3 +1767,26 @@ class AzureFirewallScenario(ScenarioTest):
 
         #Delete firewall
         self.cmd('network firewall delete -n {firewall_name} -g {rg}')
+
+
+class AzureFirewallAfcArgumentTest(unittest.TestCase):
+
+    def test_create_and_update_expose_afc_control_plane(self):
+        for cls in (_Create, _Update):
+            cls._args_schema = None
+            self.assertTrue(cls._build_arguments_schema().create_afc_control_plane._registered)
+
+    def test_threat_intel_allowlist_hides_afc_control_plane(self):
+        for cls in (ThreatIntelAllowListCreate, ThreatIntelAllowListUpdate, ThreatIntelAllowListDelete):
+            # ponytail: AAZ caches _args_schema on the shared base class, drop it so each class builds its own
+            cls._args_schema = None
+            self.assertFalse(cls._build_arguments_schema().create_afc_control_plane._registered)
+
+    def test_show_and_list_expose_afc_service_endpoint(self):
+        # AAZObjectType raises AAZUnknownFieldError for a field the generated schema does not define,
+        # so this fails if a regeneration drops afcConfiguration from the read commands.
+        show = _Show.AzureFirewallsGet._build_schema_on_200()
+        self.assertTrue(show.properties.afc_configuration.service_endpoint._flags['read_only'])
+        for op in (_List.AzureFirewallsList, _List.AzureFirewallsListAll):
+            listed = op._build_schema_on_200()
+            self.assertTrue(listed.value.Element.properties.afc_configuration.service_endpoint._flags['read_only'])
