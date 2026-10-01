@@ -40,17 +40,17 @@ from packaging.version import Version
 logger = get_logger(__name__)
 
 
-def _validate_include_kube_proxy(
-    include_kube_proxy: bool,
+def _validate_allow_kubeproxy(
+    allow_kubeproxy: bool,
     input_path: str,
     virtual_node_yaml_path: str,
     platform: str,
 ) -> None:
-    if not include_kube_proxy:
+    if not allow_kubeproxy:
         return
 
     if platform != "linux/amd64":
-        raise CLIError("--include-kube-proxy is currently supported only with --platform linux/amd64")
+        raise CLIError("--allow-kubeproxy is currently supported only with --platform linux/amd64")
 
     if virtual_node_yaml_path:
         return
@@ -62,7 +62,7 @@ def _validate_include_kube_proxy(
             return
 
     raise CLIError(
-        "--include-kube-proxy is currently supported only with "
+        "--allow-kubeproxy is currently supported only with "
         "--virtual-node-yaml or --input with scenario set to vn2"
     )
 
@@ -100,7 +100,7 @@ def acipolicygen_confcom(
     fragments_json: str = None,
     exclude_default_fragments: bool = False,
     prerelease_policy_api: bool = False,
-    include_kube_proxy: bool = False,
+    allow_kubeproxy: bool = False,
 ):
     if print_existing_policy or outraw or outraw_pretty_print:
         logger.warning(
@@ -115,8 +115,8 @@ def acipolicygen_confcom(
     if container_definitions is None:
         container_definitions = []
 
-    _validate_include_kube_proxy(
-        include_kube_proxy,
+    _validate_allow_kubeproxy(
+        allow_kubeproxy,
         input_path,
         virtual_node_yaml_path,
         platform,
@@ -254,7 +254,7 @@ def acipolicygen_confcom(
         for policy in container_group_policies:
             policy.set_fragment_contents(fragment_policy_list)
 
-    if include_kube_proxy:
+    if allow_kubeproxy:
         _add_kube_proxy_fragment(container_group_policies)
 
     for count, policy in enumerate(container_group_policies):

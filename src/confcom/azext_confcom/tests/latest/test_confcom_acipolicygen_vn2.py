@@ -11,7 +11,7 @@ import pytest
 
 from azext_confcom import config
 from azext_confcom.custom import (
-    _validate_include_kube_proxy,
+    _validate_allow_kubeproxy,
     acipolicygen_confcom,
 )
 from deepdiff import DeepDiff
@@ -83,7 +83,7 @@ def test_acipolicygen_virtual_node_yaml(sample_directory):
     )
 
 
-def test_acipolicygen_virtual_node_yaml_include_kube_proxy():
+def test_acipolicygen_virtual_node_yaml_allow_kubeproxy():
     os.chdir(CONFCOM_DIR)
     virtual_node_yaml_path = os.path.join(
         SAMPLES_ROOT,
@@ -104,7 +104,7 @@ def test_acipolicygen_virtual_node_yaml_include_kube_proxy():
             outraw_pretty_print=True,
             platform="linux/amd64",
             exclude_default_fragments=True,
-            include_kube_proxy=True,
+            allow_kubeproxy=True,
         )
 
     actual_policy = buffer.getvalue()
@@ -114,19 +114,19 @@ def test_acipolicygen_virtual_node_yaml_include_kube_proxy():
     assert fragments == [config.KUBE_PROXY_REGO_FRAGMENT]
 
 
-def test_include_kube_proxy_accepts_vn2_json(tmp_path):
+def test_allow_kubeproxy_accepts_vn2_json(tmp_path):
     input_path = tmp_path / "input.json"
     input_path.write_text('{"scenario": "vn2"}', encoding="utf-8")
 
-    _validate_include_kube_proxy(
-        include_kube_proxy=True,
+    _validate_allow_kubeproxy(
+        allow_kubeproxy=True,
         input_path=str(input_path),
         virtual_node_yaml_path=None,
         platform="linux/amd64",
     )
 
 
-def test_acipolicygen_vn2_json_include_kube_proxy(tmp_path):
+def test_acipolicygen_vn2_json_allow_kubeproxy(tmp_path):
     input_path = tmp_path / "input.json"
     input_path.write_text(
         json.dumps(
@@ -158,7 +158,7 @@ def test_acipolicygen_vn2_json_include_kube_proxy(tmp_path):
             tar_mapping_location=None,
             outraw_pretty_print=True,
             platform="linux/amd64",
-            include_kube_proxy=True,
+            allow_kubeproxy=True,
         )
 
     actual_policy = buffer.getvalue()
@@ -176,7 +176,7 @@ def test_acipolicygen_vn2_json_include_kube_proxy(tmp_path):
         (None, "pod.yaml", "windows/amd64"),
     ],
 )
-def test_include_kube_proxy_rejects_non_vn2_sources(
+def test_allow_kubeproxy_rejects_non_vn2_sources(
     tmp_path,
     input_contents,
     virtual_node_yaml_path,
@@ -189,8 +189,8 @@ def test_include_kube_proxy_rejects_non_vn2_sources(
         input_path = str(input_file)
 
     with pytest.raises(CLIError):
-        _validate_include_kube_proxy(
-            include_kube_proxy=True,
+        _validate_allow_kubeproxy(
+            allow_kubeproxy=True,
             input_path=input_path,
             virtual_node_yaml_path=virtual_node_yaml_path,
             platform=platform,

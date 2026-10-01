@@ -261,8 +261,8 @@ def load_arguments(self, _):
             help='Container definitions to include in the policy'
         )
         c.argument(
-            "include_kube_proxy",
-            options_list=("--include-kube-proxy",),
+            "allow_kubeproxy",
+            options_list=("--allow-kubeproxy",),
             required=False,
             help=(
                 "Include the ACI kube-proxy image-attached fragment reference "
