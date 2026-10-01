@@ -26,3 +26,17 @@ examples:
     text: >
         az functionapp devops-pipeline create --organization-name AzureDevOpsOrganization --project-name AzureDevOpsProject
 """
+
+helps['functionapp scale config always-ready'] = """
+type: group
+short-summary: Manage always-ready instance settings for a Flex Consumption function app.
+"""
+
+helps['functionapp scale config always-ready delete'] = """
+type: command
+short-summary: Delete always-ready settings for a Flex Consumption function app.
+examples:
+  - name: Delete always-ready settings by name.
+    text: >
+        az functionapp scale config always-ready delete --resource-group MyResourceGroup --name MyFunctionApp --setting-names http function:Function1
+"""
