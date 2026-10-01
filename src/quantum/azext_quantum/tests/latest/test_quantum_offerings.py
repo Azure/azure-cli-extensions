@@ -10,6 +10,7 @@ import pytest
 
 from azure.cli.testsdk import ScenarioTest
 from .utils import issue_cmd_with_param_missing
+from ...commands import transform_offerings
 from ...operations.offerings import (
     _get_publisher_and_offer_from_provider_id,
     PUBLISHER_NOT_AVAILABLE,
@@ -67,18 +68,53 @@ class QuantumOfferingsUnitTest(unittest.TestCase):
         ]
 
         self.assertEqual(
-            _get_publisher_and_offer_from_provider_id(providers, "atom-boulder"),
+            _get_publisher_and_offer_from_provider_id(providers, "contoso-v2-provider"),
             (None, None),
         )
 
     def test_get_publisher_and_offer_from_provider_id_handles_missing_managed_application(self):
-        # V2-only providers (e.g. atom-boulder) have no legacy marketplace ManagedApplication
+        # V2-only providers (e.g. contoso-v2-provider) have no legacy marketplace ManagedApplication
         # association at all; this must not raise and should be treated like the existing
         # "N/A" sentinel (no terms to accept) instead of crashing.
-        providers = [self._make_provider("atom-boulder", None)]
+        providers = [self._make_provider("contoso-v2-provider", None)]
 
         self.assertEqual(
-            _get_publisher_and_offer_from_provider_id(providers, "atom-boulder"),
+            _get_publisher_and_offer_from_provider_id(providers, "contoso-v2-provider"),
             (PUBLISHER_NOT_AVAILABLE, OFFER_NOT_AVAILABLE),
         )
 
+    def test_transform_offerings_handles_missing_managed_application(self):
+        offerings = [
+            {
+                'id': 'rigetti',
+                'properties': {
+                    'skus': [{'id': 'azure-basic-qvm-only-unlimited'}],
+                    'managedApplication': {
+                        'publisherId': 'rigetticoinc1644276861431',
+                        'offerId': 'rigetti-aq',
+                    },
+                },
+            },
+            {
+                'id': 'atom-dev',
+                'properties': {
+                    'skus': [{'id': 'default'}],
+                    'managedApplication': None,
+                },
+            },
+        ]
+
+        table = transform_offerings(offerings)
+
+        self.assertEqual(len(table), 2)
+        self.assertEqual(
+            list(table[0].keys()),
+            ['Provider ID', 'SKU', 'Publisher ID', 'Offer ID'],
+        )
+        self.assertEqual(table[0]['Provider ID'], 'rigetti')
+        self.assertEqual(table[0]['Publisher ID'], 'rigetticoinc1644276861431')
+        self.assertEqual(table[0]['Offer ID'], 'rigetti-aq')
+        self.assertEqual(table[1]['Provider ID'], 'atom-dev')
+        self.assertEqual(table[1]['SKU'], 'default')
+        self.assertEqual(table[1]['Publisher ID'], PUBLISHER_NOT_AVAILABLE)
+        self.assertEqual(table[1]['Offer ID'], OFFER_NOT_AVAILABLE)

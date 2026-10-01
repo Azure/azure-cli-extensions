@@ -282,19 +282,19 @@ class QuantumWorkspacesUnitTest(unittest.TestCase):
 
     @patch('azext_quantum.operations.workspace.cf_offerings')
     def test_add_quantum_providers_handles_provider_without_managed_application(self, cf_offerings_mock):
-        # Regression test: V2-only providers (e.g. atom-boulder) can have no legacy marketplace
+        # Regression test: V2-only providers (e.g. contoso-v2-provider) can have no legacy marketplace
         # ManagedApplication association at all; workspace create must not crash for them.
         provider = SimpleNamespace(
-            id='atom-boulder',
+            id='contoso-v2-provider',
             properties=SimpleNamespace(managed_application=None, skus=[]),
         )
         cf_offerings_mock.return_value.list.return_value = [provider]
         workspace = SimpleNamespace(location='westus', properties=SimpleNamespace(providers=[]))
 
-        _add_quantum_providers(Mock(), workspace, 'atom-boulder/default', auto_accept=True, skip_autoadd=True)
+        _add_quantum_providers(Mock(), workspace, 'contoso-v2-provider/default', auto_accept=True, skip_autoadd=True)
 
         self.assertEqual(len(workspace.properties.providers), 1)
-        self.assertEqual(workspace.properties.providers[0].provider_id, 'atom-boulder')
+        self.assertEqual(workspace.properties.providers[0].provider_id, 'contoso-v2-provider')
         self.assertEqual(workspace.properties.providers[0].provider_sku, 'default')
 
     def test_run_cleanup_commands_attempts_all_commands(self):
