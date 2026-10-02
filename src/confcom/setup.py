@@ -19,7 +19,7 @@ except ImportError:
 
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-VERSION = "2.3.0"
+VERSION = "2.4.0"
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -69,14 +69,18 @@ setup(
     package_data={
         "azext_confcom": [
             "azext_metadata.json",
-            "bin/dmverity-vhd.exe",  # windows for ACI
-            "bin/dmverity-vhd",  # linux for ACI
+            "bin/dmverity-vhd.exe",  # Windows for ACI
+            "bin/dmverity-vhd",  # Linux for ACI
+            "bin/dmverity-vhd-darwin-arm64",  # Apple Silicon for ACI
+            "bin/dmverity-vhd-darwin-amd64",  # Intel Mac for ACI
             "bin/CimWriter.dll",  # C-WCOW cimwriter.dll
             "bin/CimWriter.LICENSE.pdf",  # C-WCOW cimwriter.dll license
-            "bin/genpolicy-windows.exe",  # windows for AKS
-            "bin/genpolicy-linux",  # linux for AKS
-            "bin/sign1util.exe",  # windows for cose tool
-            "bin/sign1util",  # linux for cose tool
+            "bin/genpolicy-windows.exe",  # Windows for AKS
+            "bin/genpolicy-linux",  # Linux for AKS
+            "bin/sign1util.exe",  # Windows for cose tool
+            "bin/sign1util",  # Linux for cose tool
+            "bin/sign1util-darwin-arm64",  # Apple Silicon for cose tool
+            "bin/sign1util-darwin-amd64",  # Intel Mac for cose tool
             "data/*",
         ]
     },
