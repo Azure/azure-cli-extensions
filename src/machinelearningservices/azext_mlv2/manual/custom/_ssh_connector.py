@@ -12,6 +12,7 @@
 import asyncio
 import concurrent
 import concurrent.futures
+import io
 import os
 import os.path
 import sys
@@ -27,7 +28,7 @@ from azure.cli.core import get_default_cli
 
 def run_az_cli(args):
     cli = get_default_cli()
-    cli.invoke(args)
+    cli.invoke(args, out_file=io.StringIO())
     if not cli.result:
         raise Exception("az cli failed")  # pylint: disable=broad-exception-raised
     if cli.result.result:
