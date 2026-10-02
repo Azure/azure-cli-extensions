@@ -3581,8 +3581,12 @@ configuration:
           reviewer: techworldhello
       - requestReview:
           reviewer: PugDeveloper
+      - requestReview:
+          reviewer: Azure/act-observability-squad
       - addLabel:
           label: AKS
+      - addLabel:
+          label: act-observability-squad
       description: '[aks aimanager] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
