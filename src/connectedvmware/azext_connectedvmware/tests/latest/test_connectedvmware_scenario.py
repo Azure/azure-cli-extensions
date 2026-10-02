@@ -4,18 +4,52 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import unittest
+from unittest.mock import patch
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
-from knack.util import CLIError
+from azure.cli.core.azclierror import ResourceNotFoundError as CLIResourceNotFoundError
 from azure.cli.testsdk import ScenarioTest
+from azure.core.exceptions import ResourceNotFoundError
+
+from azext_connectedvmware.vendored_sdks.resourcegraph import ResourceGraphClient
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+NOT_FOUND_ERRORS = (CLIResourceNotFoundError, ResourceNotFoundError)
 
 
 class ConnectedvmwareScenarioTest(ScenarioTest):
+    def _assert_resource_absent(self, show_command):
+        # Authentication and other command failures must not count as successful deletion.
+        with self.assertRaises(NOT_FOUND_ERRORS):
+            self.cmd(show_command)
+
+    def _delete_resource(self, delete_command, show_command):
+        self.cmd(delete_command)
+        self._assert_resource_absent(show_command)
+
+    def _set_subscription(self, subscription_id):
+        self.cmd(f'az account set --subscription {subscription_id}')
+        self.cmd(
+            'az account show',
+            checks=[self.check('id', subscription_id, case_sensitive=False)],
+        )
+
     def test_create_from_machines_cross_subscription(self):
+        self._create_from_machines_cross_subscription()
+
+    def test_create_from_machines_cross_subscription_with_unrelated_default(self):
+        original_subscription = self.cmd('az account show --query id -o tsv').output.strip()
+        self.addCleanup(self._set_subscription, original_subscription)
+        default_subscription = 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae'
+        self._set_subscription(default_subscription)
+
+        self._create_from_machines_cross_subscription()
+
+        self.cmd(
+            'az account show',
+            checks=[self.check('id', default_subscription, case_sensitive=False)],
+        )
+
+    def _create_from_machines_cross_subscription(self):
         self.kwargs.update(
             {
                 'machine_subscription': 'ARC-Testing',
@@ -55,7 +89,20 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
             ),
         })
 
-        with self.assertLogs('azext_connectedvmware.custom', level='DEBUG') as logs:
+        self.cmd(
+            'az resource show --ids {machine_id}',
+            checks=[
+                self.check('id', '{machine_id}', case_sensitive=False),
+                self.check('type', 'Microsoft.HybridCompute/machines', case_sensitive=False),
+            ],
+        )
+
+        original_resources = ResourceGraphClient.resources
+        with patch.object(
+            ResourceGraphClient, 'resources', autospec=True,
+            side_effect=original_resources,
+        ) as queries, self.assertLogs('azext_connectedvmware.custom', level='DEBUG') as logs:
+            queries.metadata = original_resources.metadata
             self.cmd(
                 'az connectedvmware vm create-from-machines '
                 '--subscription {machine_subscription} '
@@ -63,14 +110,30 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
                 '--name {machine_name} '
                 '--vcenter-id {vcenter_id}'
             )
+        self.assertGreater(queries.call_count, 0, 'The command must query ARG.')
+        for query_call in queries.call_args_list:
+            request = query_call.args[1]
+            self.assertEqual(
+                request.subscriptions,
+                [machine_subscription_id, vcenter_subscription_id],
+            )
+            self.assertNotIn('b24cc8ee-df4f-48ac-94cf-46edf36b0fae', request.subscriptions)
+            self.assertIn(f"subscriptionId =~ '{machine_subscription_id}'", request.query)
+            self.assertIn(f"resourceGroup =~ '{self.kwargs['machine_rg']}'", request.query)
+            self.assertIn(f"id =~ '{machine_id}'", request.query)
+            self.assertIn(
+                f"id startswith '{self.kwargs['vcenter_id']}/InventoryItems'".lower(),
+                request.query.lower(),
+            )
         messages = [record.getMessage() for record in logs.records]
         self.assertIn(
             f'Creating VM from machines on Subscription {machine_subscription_id} ...',
             messages,
         )
-        self.assertIn(
-            f'Querying subscriptions: {[machine_subscription_id, vcenter_subscription_id]}',
-            messages,
+        self.assertEqual(
+            [message for message in messages if message.startswith('Querying subscriptions:')],
+            [f'Querying subscriptions: {[machine_subscription_id, vcenter_subscription_id]}']
+            * queries.call_count,
         )
         self.assertIn(
             (
@@ -110,7 +173,9 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
             '--name {machine_name} '
             '--retain-machine --yes'
         )
+        self._assert_machine_retained()
 
+    def _assert_machine_retained(self):
         self.cmd(
             'az resource show --ids {machine_id}',
             checks=[
