@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.2.2
+++++++
+* `az scvmm vm delete`: Clear the retained HybridCompute machine's SCVMM kind before VM instance deletion, including with `--no-wait`.
+
 1.2.1
 ++++++
 * [HotFix] Fixed `az scvmm vm create-from-machines` command for VM Instance creation.
