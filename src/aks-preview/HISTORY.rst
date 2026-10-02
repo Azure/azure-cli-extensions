@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+22.0.0b10
++++++++++
+* Bump API version to 2026-07-02-preview.
+
 22.0.0b9
 +++++++++
 * `az aks create/update`: Add `distributedAccelerator` storage option to `--enable-azure-container-storage` and `--disable-azure-container-storage` to install/uninstall the Azure Container Storage distributed accelerator controller.
