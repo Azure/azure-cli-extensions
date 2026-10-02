@@ -22,9 +22,9 @@ class AddVm(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}/addvms", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}/addvms", "2026-06-01"],
         ]
     }
 
@@ -158,7 +158,7 @@ class AddVm(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -218,7 +218,9 @@ class AddVm(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -292,6 +294,9 @@ class AddVm(AAZCommand):
                 serialized_name="iormConfigCache",
                 flags={"read_only": True},
             )
+            properties.is_accelerated_network_enabled = AAZBoolType(
+                serialized_name="isAcceleratedNetworkEnabled",
+            )
             properties.is_local_backup_enabled = AAZBoolType(
                 serialized_name="isLocalBackupEnabled",
             )
@@ -320,6 +325,9 @@ class AddVm(AAZCommand):
             properties.memory_size_in_gbs = AAZIntType(
                 serialized_name="memorySizeInGbs",
             )
+            properties.network_anchor_id = AAZStrType(
+                serialized_name="networkAnchorId",
+            )
             properties.node_count = AAZIntType(
                 serialized_name="nodeCount",
                 flags={"read_only": True},
@@ -345,6 +353,15 @@ class AddVm(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.proximity_placement_group = AAZObjectType(
+                serialized_name="proximityPlacementGroup",
+            )
+            properties.reco_storage_percentage = AAZIntType(
+                serialized_name="recoStoragePercentage",
+            )
+            properties.resource_anchor_id = AAZStrType(
+                serialized_name="resourceAnchorId",
+            )
             properties.scan_dns_name = AAZStrType(
                 serialized_name="scanDnsName",
                 flags={"read_only": True},
@@ -365,6 +382,9 @@ class AddVm(AAZCommand):
             )
             properties.shape = AAZStrType(
                 flags={"read_only": True},
+            )
+            properties.sparse_storage_percentage = AAZIntType(
+                serialized_name="sparseStoragePercentage",
             )
             properties.ssh_public_keys = AAZListType(
                 serialized_name="sshPublicKeys",
@@ -472,6 +492,19 @@ class AddVm(AAZCommand):
                 flags={"required": True},
             )
             destination_port_range.min = AAZIntType(
+                flags={"required": True},
+            )
+
+            proximity_placement_group = cls._schema_on_200.properties.proximity_placement_group
+            proximity_placement_group.entity_type_intended_to_use = AAZStrType(
+                serialized_name="entityTypeIntendedToUse",
+                flags={"required": True},
+            )
+            proximity_placement_group.proximity_anchor_id = AAZStrType(
+                serialized_name="proximityAnchorId",
+            )
+            proximity_placement_group.proximity_placement_group_id = AAZStrType(
+                serialized_name="proximityPlacementGroupId",
                 flags={"required": True},
             )
 

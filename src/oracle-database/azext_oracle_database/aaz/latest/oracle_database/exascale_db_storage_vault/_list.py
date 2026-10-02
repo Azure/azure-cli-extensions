@@ -22,10 +22,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/exascaledbstoragevaults", "2025-09-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/exascaledbstoragevaults", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/exascaledbstoragevaults", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/exascaledbstoragevaults", "2026-06-01"],
         ]
     }
 
@@ -112,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -165,7 +165,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -184,6 +186,9 @@ class List(AAZCommand):
                 serialized_name="attachedShapeAttributes",
                 flags={"read_only": True},
             )
+            properties.autoscale_limit_in_gbs = AAZIntType(
+                serialized_name="autoscaleLimitInGbs",
+            )
             properties.description = AAZStrType()
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
@@ -195,6 +200,9 @@ class List(AAZCommand):
             properties.high_capacity_database_storage = AAZObjectType(
                 serialized_name="highCapacityDatabaseStorage",
                 flags={"read_only": True},
+            )
+            properties.is_autoscale_enabled = AAZBoolType(
+                serialized_name="isAutoscaleEnabled",
             )
             properties.lifecycle_details = AAZStrType(
                 serialized_name="lifecycleDetails",
@@ -306,7 +314,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -359,7 +367,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -378,6 +388,9 @@ class List(AAZCommand):
                 serialized_name="attachedShapeAttributes",
                 flags={"read_only": True},
             )
+            properties.autoscale_limit_in_gbs = AAZIntType(
+                serialized_name="autoscaleLimitInGbs",
+            )
             properties.description = AAZStrType()
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
@@ -389,6 +402,9 @@ class List(AAZCommand):
             properties.high_capacity_database_storage = AAZObjectType(
                 serialized_name="highCapacityDatabaseStorage",
                 flags={"read_only": True},
+            )
+            properties.is_autoscale_enabled = AAZBoolType(
+                serialized_name="isAutoscaleEnabled",
             )
             properties.lifecycle_details = AAZStrType(
                 serialized_name="lifecycleDetails",

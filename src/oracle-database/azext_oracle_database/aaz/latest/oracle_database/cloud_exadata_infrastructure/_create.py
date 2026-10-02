@@ -19,12 +19,16 @@ class Create(AAZCommand):
 
     :example: Exa Infra Create
         az oracle-database cloud-exadata-infrastructure create --name <name> --resource-group <RG name> --zones <2> --compute-count 2<> --display-name <display name> --shape Exadata.X9M --storage-count <2> --location <location>
+
+    :example: Create a Cloud Exadata Infrastructure with a Resource Anchor
+        az oracle-database cloud-exadata-infrastructure create --name MyExaInfra --resource-group MyResourceGroup --location eastus --zones 1 --resource-anchor-id <resource_anchor_id> --compute-count 2 --storage-count 3 --shape Exadata.X9M --display-name MyExaInfra
+
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudexadatainfrastructures/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudexadatainfrastructures/{}", "2026-06-01"],
         ]
     }
 
@@ -92,6 +96,16 @@ class Create(AAZCommand):
             options=["--maintenance-window"],
             arg_group="Properties",
             help="maintenanceWindow property",
+        )
+        _args_schema.proximity_placement_group = AAZObjectArg(
+            options=["--proximity-placement-group"],
+            arg_group="Properties",
+            help="Proximity placement group settings",
+        )
+        _args_schema.resource_anchor_id = AAZResourceIdArg(
+            options=["--resource-anchor-id"],
+            arg_group="Properties",
+            help="Azure Resource Anchor ID",
         )
         _args_schema.shape = AAZStrArg(
             options=["--shape"],
@@ -202,6 +216,23 @@ class Create(AAZCommand):
 
         weeks_of_month = cls._args_schema.maintenance_window.weeks_of_month
         weeks_of_month.Element = AAZIntArg()
+
+        proximity_placement_group = cls._args_schema.proximity_placement_group
+        proximity_placement_group.entity_type_intended_to_use = AAZStrArg(
+            options=["entity-type-intended-to-use"],
+            help="Entity type intended to use the proximity placement group",
+            required=True,
+            enum={"CloudExadataInfrastructure": "CloudExadataInfrastructure", "OtherProducts": "OtherProducts"},
+        )
+        proximity_placement_group.proximity_anchor_id = AAZStrArg(
+            options=["proximity-anchor-id"],
+            help="Proximity Anchor ID",
+        )
+        proximity_placement_group.proximity_placement_group_id = AAZStrArg(
+            options=["proximity-placement-group-id"],
+            help="Proximity placement group ID",
+            required=True,
+        )
 
         # define Arg Group "Resource"
 
@@ -314,7 +345,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -340,7 +371,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
             _builder.set_prop("zones", AAZListType, ".zones", typ_kwargs={"flags": {"required": True}})
 
@@ -351,6 +382,8 @@ class Create(AAZCommand):
                 properties.set_prop("databaseServerType", AAZStrType, ".database_server_type")
                 properties.set_prop("displayName", AAZStrType, ".display_name", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("maintenanceWindow", AAZObjectType, ".maintenance_window")
+                properties.set_prop("proximityPlacementGroup", AAZObjectType, ".proximity_placement_group")
+                properties.set_prop("resourceAnchorId", AAZStrType, ".resource_anchor_id")
                 properties.set_prop("shape", AAZStrType, ".shape", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("storageCount", AAZIntType, ".storage_count")
                 properties.set_prop("storageServerType", AAZStrType, ".storage_server_type")
@@ -400,6 +433,12 @@ class Create(AAZCommand):
             if weeks_of_month is not None:
                 weeks_of_month.set_elements(AAZIntType, ".")
 
+            proximity_placement_group = _builder.get(".properties.proximityPlacementGroup")
+            if proximity_placement_group is not None:
+                proximity_placement_group.set_prop("entityTypeIntendedToUse", AAZStrType, ".entity_type_intended_to_use", typ_kwargs={"flags": {"required": True}})
+                proximity_placement_group.set_prop("proximityAnchorId", AAZStrType, ".proximity_anchor_id")
+                proximity_placement_group.set_prop("proximityPlacementGroupId", AAZStrType, ".proximity_placement_group_id", typ_kwargs={"flags": {"required": True}})
+
             tags = _builder.get(".tags")
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
@@ -437,7 +476,9 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -566,6 +607,12 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.proximity_placement_group = AAZObjectType(
+                serialized_name="proximityPlacementGroup",
+            )
+            properties.resource_anchor_id = AAZStrType(
+                serialized_name="resourceAnchorId",
+            )
             properties.shape = AAZStrType(
                 flags={"required": True},
             )
@@ -689,6 +736,19 @@ class Create(AAZCommand):
 
             weeks_of_month = cls._schema_on_200_201.properties.maintenance_window.weeks_of_month
             weeks_of_month.Element = AAZIntType()
+
+            proximity_placement_group = cls._schema_on_200_201.properties.proximity_placement_group
+            proximity_placement_group.entity_type_intended_to_use = AAZStrType(
+                serialized_name="entityTypeIntendedToUse",
+                flags={"required": True},
+            )
+            proximity_placement_group.proximity_anchor_id = AAZStrType(
+                serialized_name="proximityAnchorId",
+            )
+            proximity_placement_group.proximity_placement_group_id = AAZStrType(
+                serialized_name="proximityPlacementGroupId",
+                flags={"required": True},
+            )
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
