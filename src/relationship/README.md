@@ -5,7 +5,7 @@ Relationships are ARM extension resources that create semantic associations
 between a source resource and a target resource. Two relationship types are supported:
 
 - **dependencyOf** — creates dependency links between ARM resources
-- **serviceGroupMember** — associates resources with Service Groups
+- **serviceGroupMember** — associates Azure resources with Service Groups, with the Service Group as the relationship source
 
 ## How to use ##
 Install this extension using the below CLI command
@@ -50,7 +50,7 @@ az relationship dependency-of delete \
 az relationship service-group-member create \
     --resource-uri "/subscriptions/{sub}/resourceGroups/{rg}" \
     --name myMembership \
-    --target-id "/providers/Microsoft.Management/serviceGroups/mySG"
+    --source-id "/providers/Microsoft.Management/serviceGroups/mySG"
 ```
 
 #### Show a serviceGroupMember relationship
