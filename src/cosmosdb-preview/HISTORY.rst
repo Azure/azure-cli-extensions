@@ -2,6 +2,10 @@
 Release History
 ===============
 
+1.7.1
+++++++
+* Fix stray brackets in redistribute-partition-throughput help examples.
+
 1.7.0
 ++++++
 * Add ``--skip-safe-rotation`` to ``az cosmosdb keys regenerate`` to optionally bypass the account keys last usage check during key regeneration.
