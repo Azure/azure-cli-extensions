@@ -4,10 +4,14 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+from copy import deepcopy
 from unittest.mock import patch
 
+from azure.cli.core._profile import Profile
 from azure.cli.core.azclierror import ResourceNotFoundError as CLIResourceNotFoundError
+from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD
 from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk.scenario_tests import SubscriptionRecordingProcessor
 from azure.core.exceptions import ResourceNotFoundError
 
 from azext_connectedvmware.vendored_sdks.resourcegraph import ResourceGraphClient
@@ -17,6 +21,48 @@ NOT_FOUND_ERRORS = (CLIResourceNotFoundError, ResourceNotFoundError)
 
 
 class ConnectedvmwareScenarioTest(ScenarioTest):
+    def __init__(self, method_name):
+        super().__init__(method_name)
+        if method_name.startswith('test_create_from_machines_cross_subscription'):
+            # Keep the subscriptions distinct instead of replacing every resource ID with zero.
+            self.recording_processors = [
+                processor for processor in self.recording_processors
+                if not isinstance(processor, SubscriptionRecordingProcessor)
+            ]
+            for original, replacement in (
+                ('204898ee-cd13-4332-b9d4-55ca5c25496d', '00000000-0000-0000-0000-000000000000'),
+                ('ef8e2098-7ed6-4399-9fb6-556da62b3cf7', '11111111-1111-1111-1111-111111111111'),
+                ('b24cc8ee-df4f-48ac-94cf-46edf36b0fae', '22222222-2222-2222-2222-222222222222'),
+            ):
+                self.name_replacer.register_name_pair(original, replacement)
+
+    def setUp(self):
+        super().setUp()
+        if not self.in_recording:
+            cloud = deepcopy(AZURE_PUBLIC_CLOUD)
+            cloud.profile = self.cli_ctx.cloud.profile
+            if self._testMethodName.startswith('test_create_from_machines_cross_subscription'):
+                cloud.endpoints.resource_manager = 'https://eastus2euap.management.azure.com'
+                subscription = Profile(cli_ctx=self.cli_ctx).load_cached_subscriptions()[0]
+                subscriptions = [
+                    dict(subscription, id=subscription_id, name=name, isDefault=index == 0)
+                    for index, (subscription_id, name) in enumerate((
+                        ('00000000-0000-0000-0000-000000000000', 'ARC-Testing'),
+                        ('11111111-1111-1111-1111-111111111111', 'vcenter'),
+                        ('22222222-2222-2222-2222-222222222222', 'unrelated'),
+                    ))
+                ]
+                for patcher in (
+                    patch.object(Profile, 'load_cached_subscriptions', return_value=subscriptions),
+                    patch('azure.cli.core._profile.ACCOUNT', {'subscriptions': subscriptions}),
+                    patch('azure.cli.core._profile.set_cloud_subscription'),
+                ):
+                    patcher.start()
+                    self.addCleanup(patcher.stop)
+            cloud_patch = patch.object(self.cli_ctx, 'cloud', cloud)
+            cloud_patch.start()
+            self.addCleanup(cloud_patch.stop)
+
     def _assert_resource_absent(self, show_command):
         # Authentication and other command failures must not count as successful deletion.
         with self.assertRaises(NOT_FOUND_ERRORS):
@@ -39,7 +85,10 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
     def test_create_from_machines_cross_subscription_with_unrelated_default(self):
         original_subscription = self.cmd('az account show --query id -o tsv').output.strip()
         self.addCleanup(self._set_subscription, original_subscription)
-        default_subscription = 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae'
+        default_subscription = (
+            'b24cc8ee-df4f-48ac-94cf-46edf36b0fae' if self.in_recording
+            else '22222222-2222-2222-2222-222222222222'
+        )
         self._set_subscription(default_subscription)
 
         self._create_from_machines_cross_subscription()
@@ -62,6 +111,10 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
                 ),
             }
         )
+        if not self.in_recording:
+            self.kwargs['vcenter_id'] = self.kwargs['vcenter_id'].replace(
+                'ef8e2098-7ed6-4399-9fb6-556da62b3cf7', '11111111-1111-1111-1111-111111111111'
+            )
 
         machine_subscription_id = self.cmd(
             'az account show --subscription {machine_subscription} --query id -o tsv'
@@ -117,7 +170,11 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
                 request.subscriptions,
                 [machine_subscription_id, vcenter_subscription_id],
             )
-            self.assertNotIn('b24cc8ee-df4f-48ac-94cf-46edf36b0fae', request.subscriptions)
+            self.assertNotIn(
+                'b24cc8ee-df4f-48ac-94cf-46edf36b0fae' if self.in_recording
+                else '22222222-2222-2222-2222-222222222222',
+                request.subscriptions,
+            )
             self.assertIn(f"subscriptionId =~ '{machine_subscription_id}'", request.query)
             self.assertIn(f"resourceGroup =~ '{self.kwargs['machine_rg']}'", request.query)
             self.assertIn(f"id =~ '{machine_id}'", request.query)
