@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.3.0
++++++
+* Add an option to include the kube-proxy image-attached fragment in Linux VN2 policies
+
 2.2.0
 +++++
 * Add log provider support for C-WCOW policies (``allowedLogProviders`` and ``allowLogProviderDropping``)
