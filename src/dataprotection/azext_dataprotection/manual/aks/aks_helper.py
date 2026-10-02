@@ -5,8 +5,9 @@
 # --------------------------------------------------------------------------------------------
 
 import json
-from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
+from azure.cli.core.azclierror import AzureResponseError, InvalidArgumentValueError, ValidationError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.core.exceptions import HttpResponseError, ServiceRequestError, ServiceResponseError
 from azure.mgmt.core.tools import parse_resource_id
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
@@ -463,28 +464,25 @@ def _setup_resource_group(cmd, resource_client, backup_resource_group_id,
     return backup_resource_group, backup_resource_group_name
 
 
-def _find_existing_backup_storage_account(storage_client, cluster_location):
+def _find_existing_backup_storage_account(storage_client, cluster_location, resource_group_name=None):
     """
-    Search for an existing AKS backup storage account in the subscription by tag.
+    Search for an existing AKS backup storage account in the requested scope by tag.
 
     Looks for storage accounts with tag: AKSAzureBackup = <location>
 
     Returns:
         tuple: (storage_account, resource_group_name) if found, (None, None) otherwise
     """
-    try:
-        # List all storage accounts in the subscription
-        for sa in storage_client.storage_accounts.list():
-            if sa.tags:
-                # Check if this SA has the AKS backup tag matching the location
-                tag_value = sa.tags.get(AKS_BACKUP_TAG_KEY)
-                if tag_value and tag_value.lower() == cluster_location.lower():
-                    # Parse resource group from the SA id
-                    sa_parts = parse_resource_id(sa.id)
-                    return sa, sa_parts['resource_group']
-    except Exception:  # pylint: disable=broad-exception-caught
-        # If we can't list storage accounts, we'll create a new one
-        pass
+    accounts = (
+        storage_client.storage_accounts.list_by_resource_group(resource_group_name)
+        if resource_group_name else storage_client.storage_accounts.list()
+    )
+    for sa in accounts:
+        if sa.tags:
+            tag_value = sa.tags.get(AKS_BACKUP_TAG_KEY)
+            if tag_value and tag_value.lower() == cluster_location.lower():
+                sa_parts = parse_resource_id(sa.id)
+                return sa, sa_parts['resource_group']
     return None, None
 
 
@@ -516,8 +514,10 @@ def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id,
                 cluster_name, cluster_resource_group_name)
     else:
         # Search for existing backup storage account with matching tag
-        logger.warning("Searching for existing AKS backup storage account in region %s...", cluster_location)
-        backup_storage_account, existing_rg = _find_existing_backup_storage_account(storage_client, cluster_location)
+        logger.warning("Searching for existing AKS backup storage account in resource group %s...",
+                       backup_resource_group_name)
+        backup_storage_account, existing_rg = _find_existing_backup_storage_account(
+            storage_client, cluster_location, backup_resource_group_name)
 
         if backup_storage_account:
             # Found existing storage account - reuse it
@@ -564,9 +564,9 @@ def _install_backup_extension(cmd, cluster_subscription_id,
                               cluster_resource_group_name, cluster_name,
                               backup_storage_account_name,
                               backup_storage_account_container_name,
-                              backup_resource_group_name,
                               backup_storage_account, yes=False):
     """Install backup extension on the cluster."""
+    storage_account_parts = parse_resource_id(backup_storage_account.id)
     backup_extension = _create_backup_extension(
         cmd,
         cluster_subscription_id,
@@ -574,8 +574,8 @@ def _install_backup_extension(cmd, cluster_subscription_id,
         cluster_name,
         backup_storage_account_name,
         backup_storage_account_container_name,
-        backup_resource_group_name,
-        cluster_subscription_id,
+        storage_account_parts["resource_group"],
+        storage_account_parts["subscription"],
         yes=yes)
 
     _check_and_assign_role(
@@ -695,35 +695,26 @@ def _find_existing_backup_vault(
 
     Looks for backup vaults with tag: AKSAzureBackup = <location>
 
-    Scoping the ``list`` call to ``backup_resource_group_name`` (derived from
-    the caller-supplied ``backupResourceGroupId``, or the per-cluster
-    resource group we just created/validated) is required: without it, every
-    parallel run/test that happens to omit ``backupResourceGroupId`` shares
-    the same subscription-wide, tag-matched vault, so one run's
-    ``aks delete``/vault cleanup can race another run's discovery and lookup
-    (``ResourceGroupBeingDeleted``/404 on the shared vault). Restricting
-    discovery to the caller's own resource group keeps each run isolated.
+    Scoping the ``list`` call to the selected backup resource group prevents
+    reusing a tag-matched vault in another resource group. Listing failures
+    must propagate rather than being treated as an empty result.
 
     Returns:
         backup_vault if found, None otherwise
     """
     from azext_dataprotection.aaz.latest.dataprotection.backup_vault import List as _BackupVaultList
 
-    try:
-        list_args = {"subscription": cluster_subscription_id}
-        if backup_resource_group_name:
-            list_args["resource_group"] = backup_resource_group_name
-        vaults = _BackupVaultList(cli_ctx=cmd.cli_ctx)(command_args=list_args)
+    list_args = {"subscription": cluster_subscription_id}
+    if backup_resource_group_name:
+        list_args["resource_group"] = backup_resource_group_name
+    vaults = _BackupVaultList(cli_ctx=cmd.cli_ctx)(command_args=list_args)
 
-        for vault in vaults:
-            if vault.get('tags'):
-                # Check if this vault has the AKS backup tag matching the location
-                tag_value = vault['tags'].get(AKS_BACKUP_TAG_KEY)
-                if tag_value and tag_value.lower() == cluster_location.lower():
-                    return vault
-    except Exception:  # pylint: disable=broad-exception-caught
-        # If we can't list vaults, we'll create a new one
-        pass
+    for vault in vaults:
+        if vault.get('tags'):
+            # Check if this vault has the AKS backup tag matching the location
+            tag_value = vault['tags'].get(AKS_BACKUP_TAG_KEY)
+            if tag_value and tag_value.lower() == cluster_location.lower():
+                return vault
     return None
 
 
@@ -741,14 +732,15 @@ def _wait_for_backup_vault_ready(
     operations against it will reliably succeed. This uses precise, bounded
     polling against the service-visible state rather than a fixed sleep.
 
-    Returns the latest vault payload (refreshed via Show) when available;
-    falls back to whatever was last observed if polling itself fails.
+    Returns a refreshed vault only when provisioning succeeds. Raises on
+    terminal failure, non-transient lookup errors, or polling exhaustion.
     """
     import time
     from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Show as _BackupVaultShow
 
-    terminal_states = {"succeeded", "failed", "canceled"}
-    latest_vault = None
+    terminal_states = {"succeeded", "failed", "canceled", "cancelled"}
+    state = ""
+    last_error = None
     for attempt in range(retries):
         try:
             latest_vault = _BackupVaultShow(cli_ctx=cmd.cli_ctx)(command_args={
@@ -756,26 +748,30 @@ def _wait_for_backup_vault_ready(
                 "resource_group": backup_resource_group_name,
                 "subscription": cluster_subscription_id,
             })
-            state = (latest_vault.get("properties", {}) or {}).get("provisioningState", "")
+            last_error = None
+            state = (latest_vault.get("properties", {}) or {}).get("provisioningState") or ""
             if state.lower() in terminal_states:
                 if state.lower() != "succeeded":
-                    raise InvalidArgumentValueError(
+                    raise AzureResponseError(
                         f"Backup vault '{backup_vault_name}' reached terminal "
                         f"provisioning state '{state}' instead of 'Succeeded'."
                     )
                 return latest_vault
-        except InvalidArgumentValueError:
-            raise
-        except Exception:  # pylint: disable=broad-exception-caught
-            # Transient lookup failure (e.g. RP propagation delay); keep retrying.
-            pass
+        except HttpResponseError as ex:
+            if ex.status_code not in {404, 408, 429, 500, 502, 503, 504}:
+                raise
+            last_error = ex
+        except (ServiceRequestError, ServiceResponseError) as ex:
+            last_error = ex
         if attempt < retries - 1:
             time.sleep(interval_seconds)
-    logger.warning(
-        "Backup vault '%s' did not report a terminal provisioning state "
-        "after %d retries; proceeding with the last known state.",
-        backup_vault_name, retries)
-    return latest_vault
+    message = (
+        f"Backup vault '{backup_vault_name}' did not reach provisioning state 'Succeeded' "
+        f"after {retries} attempts. Last observed state: '{state or 'Unknown'}'."
+    )
+    if last_error is not None:
+        message += f"\nLast lookup error: {last_error}"
+    raise AzureResponseError(message) from last_error
 
 
 def _try_create_vault_with_storage_type(
@@ -783,10 +779,7 @@ def _try_create_vault_with_storage_type(
         backup_resource_group_name, cluster_location, vault_tags,
         storage_type, cluster_subscription_id=None):
     """
-    Attempt to create a backup vault with the given storage type.
-
-    Returns:
-        backup_vault dict on success, None on failure
+    Create a backup vault with the given storage type, preserving failures.
     """
     backup_vault_args = {
         "vault_name": backup_vault_name,
@@ -808,12 +801,7 @@ def _try_create_vault_with_storage_type(
     if storage_type == 'GeoRedundant':
         backup_vault_args["cross_region_restore_state"] = "Enabled"
 
-    try:
-        backup_vault = vault_create_cls(cli_ctx=cmd.cli_ctx)(command_args=backup_vault_args).result()
-        return backup_vault
-    except Exception as e:  # pylint: disable=broad-exception-caught
-        logger.warning("Vault creation with %s failed: %s", storage_type, str(e)[:120])
-        return None
+    return vault_create_cls(cli_ctx=cmd.cli_ctx)(command_args=backup_vault_args).result()
 
 
 def _setup_backup_vault(
@@ -821,8 +809,9 @@ def _setup_backup_vault(
         cluster_location, backup_resource_group_name, cluster_resource,
         backup_resource_group, resource_tags):
     """Create or use backup vault."""
-    from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Create as _BackupVaultCreate
+    from azext_dataprotection.manual.aaz_operations.backup_vault import AKSCreate as _BackupVaultCreate
 
+    vault_rg = backup_resource_group_name
     if backup_strategy == 'Custom' and backup_vault_id:
         # Use provided vault for Custom strategy
         vault_parts = parse_resource_id(backup_vault_id)
@@ -862,34 +851,36 @@ def _setup_backup_vault(
             # Try storage types in order of preference: GRS → ZRS → LRS
             # Not all regions support all types, so we fall back gracefully.
             backup_vault = None
-            storage_type = None
+            creation_errors = []
+            last_error = None
 
             for try_type in ['GeoRedundant', 'ZoneRedundant', 'LocallyRedundant']:
                 logger.warning("Trying storage type: %s...", try_type)
-                backup_vault = _try_create_vault_with_storage_type(
-                    cmd, _BackupVaultCreate, backup_vault_name, backup_resource_group_name,
-                    cluster_location, vault_tags, try_type, cluster_subscription_id)
+                try:
+                    backup_vault = _try_create_vault_with_storage_type(
+                        cmd, _BackupVaultCreate, backup_vault_name, backup_resource_group_name,
+                        cluster_location, vault_tags, try_type, cluster_subscription_id)
+                except HttpResponseError as ex:
+                    # Preserve service-error fallback, including failures reported by an HTTP 200 LRO poll.
+                    last_error = ex
+                    creation_errors.append(f"{try_type}: {ex}")
+                    logger.warning("Vault creation with %s failed: %s", try_type, ex)
+                    continue
                 if backup_vault:
-                    storage_type = try_type
-                    logger.warning("Vault created with storage type: %s", storage_type)
+                    logger.warning("Vault created with storage type: %s", try_type)
                     break
 
             if not backup_vault:
-                raise InvalidArgumentValueError(
+                raise AzureResponseError(
                     f"Failed to create backup vault '{backup_vault_name}' in region '{cluster_location}' "
                     f"with any storage type (GeoRedundant, ZoneRedundant, LocallyRedundant).\n"
-                    f"Please check region availability and try again."
-                )
+                    + "\n".join(creation_errors)
+                ) from last_error
 
-            # The vault create LRO can return before the vault's own
-            # provisioningState (and downstream role-assignment/backup-instance
-            # eligibility) is fully settled. Wait on the service-visible state
-            # with bounded retries rather than assuming immediate readiness.
-            logger.warning("Waiting for backup vault '%s' to become ready...", backup_vault_name)
-            refreshed_vault = _wait_for_backup_vault_ready(
-                cmd, backup_vault_name, backup_resource_group_name, cluster_subscription_id)
-            if refreshed_vault:
-                backup_vault = refreshed_vault
+    # Reused vaults may still be provisioning after an earlier or concurrent create.
+    logger.warning("Waiting for backup vault '%s' to become ready...", backup_vault_name)
+    backup_vault = _wait_for_backup_vault_ready(
+        cmd, backup_vault_name, vault_rg, cluster_subscription_id)
 
     logger.warning("Backup Vault: %s", backup_vault['id'])
     _check_and_assign_role(
@@ -1212,7 +1203,7 @@ def _setup_extension_and_storage(
             cmd, cluster_subscription_id,
             cluster_resource_group_name, cluster_name,
             sa_result[1], sa_result[2],
-            backup_resource_group_name, backup_storage_account,
+            backup_storage_account,
             yes=yes)
 
     return backup_storage_account

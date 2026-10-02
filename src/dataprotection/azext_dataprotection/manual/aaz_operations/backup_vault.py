@@ -23,6 +23,18 @@ from ..helpers import critical_operation_map, transform_resource_guard_operation
 logger = get_logger(__name__)
 
 
+class AKSCreate(_Create):
+    """Keep reversible soft delete for vaults provisioned by AKS enable-backup."""
+
+    class BackupVaultsCreateOrUpdate(_Create.BackupVaultsCreateOrUpdate):
+
+        @property
+        def query_parameters(self):
+            # The newer API requires irreversible AlwaysOn soft delete. Keep the
+            # existing On contract here without changing the general vault commands.
+            return self.serialize_query_param("api-version", "2025-07-01", required=True)
+
+
 class IdentityRemove(_IdentityRemove):
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
