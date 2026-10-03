@@ -1,15 +1,15 @@
 base_branch: main
-generation_source_repository: Azure/aaz
 kind: cli-ext
+module_root: src
+target_kind: extension
+workflow: full
 live_test: true
 live_test_workflow: live-test.yml
-module_root: src
-needs_info_label: agent-assist-needs-info
-pr_doc_url: https://github.com/Azure/azure-cli/tree/dev/doc/authoring_command_modules#submitting-pull-requests
-target_kind: extension
-title_style: cli
 triage_agent: Fixer
 triage_handoffs: {}
 triage_labels:
 - bug
-workflow: full
+needs_info_label: agent-assist-needs-info
+title_style: cli
+pr_doc_url: https://github.com/Azure/azure-cli/tree/dev/doc/authoring_command_modules#submitting-pull-requests
+generation_source_repository: Azure/aaz
