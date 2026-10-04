@@ -1,0 +1,57 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ model.clusterRoleName }}
+rules:
+- apiGroups: ["apiextensions.k8s.io"]
+  resources: ["customresourcedefinitions"]
+  verbs: ["create", "list", "get"]
+- apiGroups: ["apiextensions.k8s.io"]
+  resources: ["customresourcedefinitions"]
+  resourceNames:
+  - activedirectoryconnectors.arcdata.microsoft.com
+  - sqlmanagedinstancemonitoringprofiles.arcdata.microsoft.com
+  - datacontrollers.arcdata.microsoft.com
+  - exporttasks.tasks.arcdata.microsoft.com
+  - failovergroups.sql.arcdata.microsoft.com
+  - kafkas.arcdata.microsoft.com
+  - monitors.arcdata.microsoft.com
+  - telemetrycollectors.arcdata.microsoft.com
+  - telemetryrouters.arcdata.microsoft.com
+  - postgresqls.arcdata.microsoft.com
+  - postgresqlrestoretasks.tasks.postgresql.arcdata.microsoft.com
+  - sqlmanagedinstancerestoretasks.tasks.sql.arcdata.microsoft.com
+  - sqlmanagedinstancereprovisionreplicatasks.tasks.sql.arcdata.microsoft.com
+  - sqlmanagedinstances.sql.arcdata.microsoft.com
+  verbs: ["update", "patch"]
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources: ["mutatingwebhookconfigurations"]
+  verbs: ["create"]
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources: ["mutatingwebhookconfigurations"]
+  resourceNames: ["arcdata.microsoft.com-webhook-{{ model.namespace }}"]
+  verbs: ["delete", "get", "patch"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["clusterroles"]
+  verbs: ["create", "get"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["clusterroles"]
+  resourceNames: ["{{ model.namespace }}:cr-arc-crd-reader", "{{ model.namespace }}:cr-arc-metricsdc-reader", "cr-arc-webhook-job"]
+  verbs: ["delete", "patch"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["clusterrolebindings"]
+  verbs: ["create", "get"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["clusterrolebindings"]
+  resourceNames: ["{{ model.namespace }}:crb-arc-crd-reader", "{{ model.namespace }}:crb-arc-metricsdc-reader", "crb-arc-webhook-job"]
+  verbs: ["delete", "patch"]
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["create", "list"]
+- apiGroups: [""]
+  resources: ["namespaces"]
+  resourceNames: ["{{ model.namespace }}"]
+  verbs: ["get", "patch"]
+- apiGroups: [""]
+  resources: ["nodes/stats", "nodes/proxy", "pods"]
+  verbs: ["list", "get"]

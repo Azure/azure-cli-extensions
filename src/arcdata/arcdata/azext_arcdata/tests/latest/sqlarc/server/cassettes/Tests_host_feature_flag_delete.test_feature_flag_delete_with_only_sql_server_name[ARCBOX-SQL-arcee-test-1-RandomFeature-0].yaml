@@ -1,0 +1,230 @@
+interactions:
+- request:
+    body: client_id=04b07795-8ddb-461a-bbee-02f9e1bf7b46&grant_type=refresh_token&client_info=1&claims=%7B%22access_token%22%3A+%7B%22xms_cc%22%3A+%7B%22values%22%3A+%5B%22CP1%22%5D%7D%7D%7D&refresh_token=0.AQEAv4j5cvGGr0GRqy180BHbR5V3sATbjRpGu-4C-eG_e0YaAEI.AgABAAEAAAAmoFfGtYxvRrNriQdPKIZ-AgDs_wUA9P-KjrPY7V-_eZ-pYVmu03B7WRWRffXehebY1hIQ55LwUt43I-VGA709W-HmjEAMPw6Hrs8y28zIY7-MGGDpWB-DFvviBgb1zg5am0gBtXAdW0CO7mFyOo_ilue_TlNsE7IcFBn3wreUkIVVeVVCyqe47rhmqrFkGwFPJYXni-1AfYzU6EpEbPLDqaLd-aLOSmDR_uxEBHsaGDvAaFx_qXeCDOitZaq35rU0lYYgvrBoakUB9VZldov9rzPZCM-amEUxY_X74OWvjFnQw5rDK_T1980BiEoYW7AtRiZ-MM9AJvTxh_C-bhbPOeirvtQoHMAIL-YinHr8Wan1mkNcchyY1HpyJhSlrKITMNMPMsAKSoBACsgxwE0gbUt-gtJ8NiQGBxXRFm-Hjel6ls_rk-xelOu8-kVT8o1craYC5KlfeVwGjfKNLkLldH7MV206hJsxejvsQeE0mvmL1de8ra_Rltj8Q9CM5J1FB30azhMPFEWwF42neNSLc3Ol_oPe35u6MX9BN7aW67uTyCoHjofUOLQi0n9CXNlwk1VHBHLoucJsumdSBM03mTgrq4TM3BsKGfA1PvLj9VTL26Nw-I39Kzz606qmGNX9_eiK-5_CmKYpGCpb3CMxQID7VCiquh_qIu9SpakNXh4loQICdtEXoPce7atUvIyhOt89rSExUS0HS-DH_hctuFqpWCPOywze9djBIwzlDHzPhrfH_B2dDTWKmNa2XUVTQp22TsBilujdvW-Vw2uyGO_9KJX9s3gPG0mE0wqwf-Nr1q4vmi9PAV3Hfw5u1QPb3pVWm4sPCRRs_-EmOGyDtWhdR6wXLWqoZOmzGkbjmZtVvuO4zyE5JWRTKSmd1XKQ0cMQtpady32bQXuhpsK6SVkQRgHYL6zPKYlOml5IIUK38y9RWiaO-TdLW3BaSK5AkaYU&scope=https%3A%2F%2Fmanagement.core.windows.net%2F%2F.default+offline_access+openid+profile
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1317'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      User-Agent:
+      - python-requests/2.31.0
+      X-AnchorMailbox:
+      - Oid:1463f5a0-2b3e-4ea7-88ea-662ba7e9d98a@72f988bf-86f1-41af-91ab-2d7cd011db47
+      client-request-id:
+      - 4fc9b32c-bd0f-49b1-8d57-d022f111cc1e
+      x-client-cpu:
+      - x64
+      x-client-current-telemetry:
+      - 4|84,3|
+      x-client-last-telemetry:
+      - 4|0|||
+      x-client-os:
+      - win32
+      x-client-sku:
+      - MSAL.Python
+      x-client-ver:
+      - 1.20.0
+      x-ms-lib-capability:
+      - retry-after, h429
+    method: POST
+    uri: https://mock-host/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token
+  response:
+    body:
+      string: '{"token_type": "Bearer", "scope": "https://management.core.windows.net//user_impersonation
+        https://management.core.windows.net//.default", "expires_in": 4799, "ext_expires_in":
+        4799, "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IjVCM25SeHRRN2ppOGVORGMzRnkwNUtmOTdaRSIsImtpZCI6IjVCM25SeHRRN2ppOGVORGMzRnkwNUtmOTdaRSJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNzAzMjU1MDgyLCJuYmYiOjE3MDMyNTUwODIsImV4cCI6MTcwMzI2MDE4MiwiX2NsYWltX25hbWVzIjp7Imdyb3VwcyI6InNyYzEifSwiX2NsYWltX3NvdXJjZXMiOnsic3JjMSI6eyJlbmRwb2ludCI6Imh0dHBzOi8vZ3JhcGgud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3VzZXJzLzE0NjNmNWEwLTJiM2UtNGVhNy04OGVhLTY2MmJhN2U5ZDk4YS9nZXRNZW1iZXJPYmplY3RzIn19LCJhY3IiOiIxIiwiYWlvIjoiQVZRQXEvOFZBQUFBeXRmWFE1S1hlSG5FZjdDb2ZPY2NoeGdpQVNNeWZPVUR6Vi9XeXRqVURrNFR1SW9iUnhoZVJNbVlJVWdaUjZBUmRMSlMxMkdIQnVJRW1xNi9xdnRzbU9HRFRQK1VRelZLR1g3bzVDT1RXNWs9IiwiYW1yIjpbInB3ZCIsIm1mYSJdLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsImFwcGlkYWNyIjoiMCIsImNhcG9saWRzX2xhdGViaW5kIjpbIjI5Mzk5Y2Y5LTliNmItNDIwNS1iNWIzLTEzYTEzNGU5YjIzMyJdLCJmYW1pbHlfbmFtZSI6IkthdXNoaWsiLCJnaXZlbl9uYW1lIjoiQW51YmhhdiIsImlkdHlwIjoidXNlciIsImlwYWRkciI6IjI0MDQ6ZjgwMTo4MDI4OjM6ZjUzODoyZmRkOjU3ZGI6OWU3NiIsIm5hbWUiOiJBbnViaGF2IEthdXNoaWsiLCJvaWQiOiIxNDYzZjVhMC0yYjNlLTRlYTctODhlYS02NjJiYTdlOWQ5OGEiLCJvbnByZW1fc2lkIjoiUy0xLTUtMjEtMjEyNzUyMTE4NC0xNjA0MDEyOTIwLTE4ODc5Mjc1MjctNTgwNjQ5NDciLCJwdWlkIjoiMTAwMzIwMDIwMEY4NjQyMSIsInJoIjoiMC5BUUVBdjRqNWN2R0dyMEdScXkxODBCSGJSMFpJZjNrQXV0ZFB1a1Bhd2ZqMk1CTWFBRUkuIiwic2NwIjoidXNlcl9pbXBlcnNvbmF0aW9uIiwic3ViIjoiMHhaUTREbFc3RkE1SEdyTGhlSU5KMlJWQXNyUnJMTVdIZ1ZrcTlzd0hUUSIsInRpZCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInVuaXF1ZV9uYW1lIjoiYW5rYXVzaGlrQG1pY3Jvc29mdC5jb20iLCJ1cG4iOiJhbmthdXNoaWtAbWljcm9zb2Z0LmNvbSIsInV0aSI6IkNsLWw4ekktUkVLakhnSWRIdndoQUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfY2FlIjoiMSIsInhtc19jYyI6WyJDUDEiXSwieG1zX2ZpbHRlcl9pbmRleCI6WyIyNiJdLCJ4bXNfcmQiOiIwLjQyTGxZQlJpbEFJQSIsInhtc19zc20iOiIxIiwieG1zX3RjZHQiOjEyODkyNDE1NDd9.O_kwC7G7TCdC2GT7-kiB8-ysqvJHonWAS0gQzlvY24FL8CNttcZKsuC6IfmHjZutaDTqSmaAUn8RymB8zHxnf9KLXHfEcnBR5kbOg79xn6GcJRjjccyWJMagxDMJ-Vf6UbQ2jjO82bnjimRvZyJVl26r-liMaz6UVM-Tz-97ZfNdk3rohnd6HB1CAz1Nz5du-95uajXb6MpY48esl8nZIIqeRM-juAx1EXONMERvBh2inRUisQurpfcDa4vu0xlcwpsc1tNRcFXFo_87-FXHnaI4jsNHA5Z8g3xKv8x1uKPG31Yx7MQUYCwaRZimtZAU_SHrENmwXE50cwOVl5W-HQ",
+        "refresh_token": "0.AQEAv4j5cvGGr0GRqy180BHbR5V3sATbjRpGu-4C-eG_e0YaAEI.AgABAAEAAAAmoFfGtYxvRrNriQdPKIZ-AgDs_wUA9P9JTstmQqAfYJHilG7f1q-R1NLOEOGpcE52SrdJFuqLA_p4coarUO7gv7OfHlCKQ2WAk8j_NVbI0_XfJomxhTMEh1ZdqnM5EsiZiXKX0p5ZPzh-OTnrLpOp_fNEVmqWwUILKc-wO7DKtrBVc5V4nLRaKsdhWZTRjBy1G3Uu2PiKGMRt4OTSEQUsPuxfAshlbz4DbL25gk3k8jczTIg1HC4A1SWRXtCWqeYid_FWbBV_Fy9S9cbLCpkRbF7Vk7MijF0UhFdnQO7_DfiK36KX1C6OGR6moUXlTDG5_vogHy4tZQCamYzfr_-F2fpuP746Jath3-ueN_EULajhZTgQ9100TDuttzSv4gpbCsaQK1XLATMcJAY5c4ood8ibdNoAYMeh5_4u2F_sRRp_aa4aufCX0-U7wypCo1G3-b29r6tBREnEl9HaUeLCSi3f1tOCOB-Ec1ajRugbG7b8x9fYVw2Xgh-nI5d-T_CdU7xyET3qyRcs0xdHux3gip7206P8T99CUEvbXAdWdDRed7fiFBPtlkuaTWBP2nJgpAToS-BsMRr6FN41SRX7LNfMMkmYADgUUWa_745NU6O9t5H_acQDnZLDC1g-qjKPv0sNzB4fJOOcA4a2XZ11Qesp9PjPFRQmqfB48wem7DwQkmJApY6fa7CSRJvaUPoVqL2dSVOraM0sHLFTSNmMJqgcUjsSyFdLUSeRcWjUiIJVNIBgX1HozfLNTf31s6QZUiRGAmxNuskEATltAtI6n_sCGLe2XJxBsmtMnD0aP-TfQvDdD79tRI4vWQPPUN0HNYY-gQxX246jcUSO3vmc_e3Ux1D7rUZeTaa96TerK6ufSGhHHJRaAuwgY-UFnBvDiVVREwXsNnzvA_HMKY8-kF7d8y93BzVYySVGVhwOcHKpPcDusL8lxWLfbySnL8VCgQ91",
+        "foci": "1", "id_token": "eyJxxxx",
+        "client_info": "eyJ1aWQiOiIxNDYzZjVhMC0yYjNlLTRlYTctODhlYS02NjJiYTdlOWQ5OGEiLCJ1dGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3In0"}'
+    headers:
+      Cache-Control:
+      - no-store, no-cache
+      Content-Length:
+      - '5091'
+      Content-Security-Policy-Report-Only:
+      - script-src 'self' 'nonce-H3uOsRx1XPNqFfIbyDZDDw' 'unsafe-eval' 'unsafe-inline'
+        'report-sample'; object-src 'none'; base-uri 'self'; report-uri https://csp.microsoft.com/report/ESTS-UX-All
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 22 Dec 2023 14:29:42 GMT
+      Expires:
+      - '-1'
+      P3P:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - fpc=AgVVh-NzGbtDiDnWH49bIt32qRfnAQAAAFWUF90OAAAA; expires=Sun, 21-Jan-2024
+        14:29:42 GMT; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
+      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-XSS-Protection:
+      - '0'
+      client-request-id:
+      - 4fc9b32c-bd0f-49b1-8d57-d022f111cc1e
+      x-ms-clitelem:
+      - 1,0,0,3559273.4521,
+      x-ms-ests-server:
+      - 2.1.16986.9 - KRSLR1 ProdSlices
+      x-ms-request-id:
+      - f3a55f0a-3e32-4244-a31e-021d1efc2100
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/arcee-test-1/providers/Microsoft.AzureArcData/sqlServerInstances/ARCBOX-SQL/?api-version=2023-12-01-preview
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcpl
+        VmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In7xR8Xs
+        o0cf3W3Wk2ZaF6u2qJbN3ez+zsHeZPfh9kH2ab69P5ne3z44n822D/Lzew9n5/lkeu/h3TpvqnU9
+        zT+vq/WK3qFf8+02b9rt3bururosZnnd3P2imNZVU5234+MfrOv8uJ4+zdrsbvOLytd5fZnXZ8um
+        zZbTvLl7/OrkyZe/9/brn3j+0eijZbbICa/gs/Z6hc8WFmIGiNTvTCE2DLEwEOmVsppmGBK9lmdN
+        u8ZnzXXT5gtg8dGjX/zRlCC0+ezJNTXJdvfyg+l0sr1zPp1t7396frA9+TTb3Z7QmB9kD2cP9u7t
+        EgD7yhtB6Hi1Kgvtx3573NI3ezt797Z397b39t7s7j/auf/o3sPx/s79/Yf793+KmpaE0hfVrDgv
+        AI3a3xKB8L0oFn6TCCq7e4/29se7Dx7sHdwnVH7J6COasVVetwWRjahCZGwA6NFHRPpUZird29l9
+        SKDzWcGdPProaX6Zl3iNPp1WyzYrlnn9Stni7EP56uKWfPXt60ldzE6qxWrd5ncX2XROaHTYSSbl
+        TQGmWq7LcvTR5UlV0x8fgZ5T+pWGLV8Q84BPHn10Ui2X+ZSmklqssnY6f47h0he798c7473dHSIg
+        fTWtylKozsT6/Z/TH8vd3//znGiRlb//ycvd3//k7Pc/fo2m67rOl+1PEv7SXiDt7OyM79PXhnFf
+        CO9/8ZrAvT599ZOnr+jLdrp6ek1SUUxfVnUL/OTD14Su+2x3/949+pzINFtPW56Cr5Zvl9UV80Qx
+        zZdNrvzyrM5z+pBl6Gl+ni+JrAC2bp4T73y1IqGioStRIq0IhAeaXjlbXtLgqvr6q1VZZTMhdoTv
+        7o137j/c/XTnwIjAV012kfsvSZ/zqmkFV/k7K6+y6+bL5auqpM8+Or7MijKbFGXRXrMKepWzABDQ
+        c/qmIo49Kdck6rUBMMmmb9erlxW1ImGTz9arizqb5c+r6dt89tWyLWiC5ZtFtSxoNMXyAgKRL7NJ
+        CXq09ToXcbksMIv0PegBjF6vp8SqM2r1S37J/wOpYBwXWAUAAA==
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 22 Dec 2023 14:29:43 GMT
+      ETag:
+      - '"810bd5fc-0000-0100-0000-658599480000"'
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      x-ms-correlation-request-id:
+      - 523d92ec-239a-44d3-814e-e59ac7a179d2
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99998'
+      x-ms-request-id:
+      - 0f4054b2-6861-4a73-99b1-9fd1286a3eb4
+      x-ms-routing-request-id:
+      - JIOINDIACENTRAL:20231222T142944Z:523d92ec-239a-44d3-814e-e59ac7a179d2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/arcee-test-1/providers/Microsoft.HybridCompute/machines/ARCBOX-SQL/extensions/WindowsAgent.SqlServer?api-version=2023-03-15-preview
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcpl
+        VmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In7xR8Xs
+        o0cf3W3Wk2ZaF6u2qJbN3ez+zsHeZPfh9kH2ab69P5ne3z44n822D/Lzew9n5/lkeu/h3TpvqnU9
+        zT+vq/WK3qFf8+02b9rt3bururosZnnd3P2imNZVU523429fT+pidlItVus2v7vIpvNimTd3j1+d
+        PPny995+/RPP7+bv2nzZMAbfLZaz6qo5vsiX7fj1Lypf5/VlXn80+miZLXJCePD79nqF72/s1vVF
+        L5XVNMPI6cU8a9o1PqMhrPK6LfLmo0e/+KPVelIWzZy68GEf/2Bd50+zNqP22vFGxL6dLWdlXv8k
+        EUZ62x3vjvfu73063t05oDbZuq2+Wl3U2Sz/olhWruF5Vjb56KN8mU3K/JhaLQjfqTb96FFbr+nb
+        Jm/bYnnB+FLPX2TL7CJfEB744Kw55ZdptqX1y6qmL3b37u3/ktFHz4spUSN/QzgSVi+Pf5/PCZtn
+        edbS+J6VGWB+7xd/9EJo/4rm+HhVOPgYIwEA1aQT6eOXjOwrITqDzY4vs6LMJkVZtNfMVk+LZloR
+        /a6H33mSTd9eUNvl7DvV5GZMnmOCX9bFZVHmF3m33fcNjU/BHrN89jqfrmvC5qvVLCPelmbUqFk/
+        Jzjy6exNsSCSZIsVwd/b2bu3vbu3vbf3Znf/0c6DRzsPf+ojojCx02WByaQZet3SW9T29XpKMkO9
+        EBrFkiAsp/lPFvkV5uuWfL7x+5vYjXoEr1Nv0wps9NEOfVjml3lJv58tz6sabEZvjj6iATY0ffQ5
+        Uwbw0i/ks0cpyW4qHafuW0bpUfrtPCvb+fVh2hoiffXmJH2Ugk53d/fu7u2NUiLU7qeP9u6N79/7
+        9DBdr8oqm4FG64Yafvl7HVqGx1yTrnmUvlovQcjDl2ua7/zqZbm+KJaP0l/8Sw5ZJI+nbXGZPy3q
+        fNpW9bX39aP0edEQivRySkiuSAjSnUOI8CRr8i9oeuiF43pqX/l9PwIm+e/70aPf96MXVasd/740
+        pSmRmwfptf3dQHZu21ESqoYwReMviNhlM7ajos9kYCfV8ry4WNf0YbV08H/fj0a/70d1Tljj85d5
+        XVSzs+XT7Lqhnh7Qd8Rb58TO+DPA4fU1DXUxPqnKkghB7zbjz/MlvT8dgwp/wO73vnczmq/nRKM3
+        eb14ZTDoI/5SEHAof//79Lv0DlkjAhIWdf68mPBgfrfLrFwzvt/7/i8hSuo0piul5PfodcYnzQjv
+        yzydmalMpz6NwheahhgSCibFlK2JTYga7tNv05AJAndKOIjcz+hPUa70SV1XtTI1ffz7fsS4viBL
+        8Xo6z2drag1Jp6+W67Kkr4gZpCf6iBp63EFf0jdEN9eehvkl+AyCQirq2xWpIcWe0HSTdlyDrtx0
+        7LU10+F93WEX7xv/RWZVfDjI4K5vxw0ECTDyeuz0tvtQFQugjvGPB7qD1NeAyNQj5buqimX7VV0y
+        ZvO2Jbm/e7fNS3qzra/Hv3jnl4zJ5yAFTJ3zaJvxtFrcDV4/Xq3OMMW/70f39/Z37h/k97b3Huzs
+        be9PHh5sP7y3N9me7M12Z/mnu/fOZ3tEqo9+yS/5Jb/k/wEu9i4GFQkAAA==
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 22 Dec 2023 14:29:44 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Server:
+      - Kestrel
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      x-ms-correlation-request-id:
+      - f75e4443-b530-4e30-9c5f-2d77354e90cb
+      x-ms-ratelimit-remaining-subscription-reads:
+      - '11998'
+      x-ms-request-id:
+      - 122e1f9b-e2a7-418b-bfd0-ff9d989325a3
+      x-ms-routing-request-id:
+      - JIOINDIACENTRAL:20231222T142945Z:f75e4443-b530-4e30-9c5f-2d77354e90cb
+    status:
+      code: 200
+      message: OK
+version: 1
