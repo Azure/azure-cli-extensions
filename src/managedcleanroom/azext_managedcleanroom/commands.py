@@ -12,4 +12,7 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    from .custom import CollaborationCreate, CollaborationUpdate
+
+    self.command_table["managedcleanroom collaboration create"] = CollaborationCreate(loader=self)
+    self.command_table["managedcleanroom collaboration update"] = CollaborationUpdate(loader=self)

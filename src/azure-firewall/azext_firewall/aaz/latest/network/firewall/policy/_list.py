@@ -19,10 +19,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.network/firewallpolicies", "2022-01-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.network/firewallpolicies", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies", "2025-09-01"],
         ]
     }
 
@@ -48,12 +48,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.FirewallPoliciesList(ctx=self.ctx)()
-        if condition_1:
             self.FirewallPoliciesListAll(ctx=self.ctx)()
+        if condition_1:
+            self.FirewallPoliciesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,7 +69,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class FirewallPoliciesList(AAZHttpOperation):
+    class FirewallPoliciesListAll(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -83,7 +83,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/firewallPolicies",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Network/firewallPolicies",
                 **self.url_parameters
             )
 
@@ -99,10 +99,6 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -113,7 +109,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -149,7 +145,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -159,7 +157,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.id = AAZStrType()
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType()
             _element.name = AAZStrType(
                 flags={"read_only": True},
@@ -200,6 +198,10 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.afc_managed = AAZBoolType(
+                serialized_name="afcManaged",
+                flags={"read_only": True},
+            )
             properties.base_policy = AAZObjectType(
                 serialized_name="basePolicy",
             )
@@ -221,12 +223,19 @@ class List(AAZCommand):
             properties.intrusion_detection = AAZObjectType(
                 serialized_name="intrusionDetection",
             )
+            properties.kube_selector_groups = AAZListType(
+                serialized_name="kubeSelectorGroups",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.rule_collection_groups = AAZListType(
                 serialized_name="ruleCollectionGroups",
+                flags={"read_only": True},
+            )
+            properties.size = AAZStrType(
                 flags={"read_only": True},
             )
             properties.sku = AAZObjectType()
@@ -376,6 +385,10 @@ class List(AAZCommand):
             _element = cls._schema_on_200.value.Element.properties.intrusion_detection.configuration.signature_overrides.Element
             _element.id = AAZStrType()
             _element.mode = AAZStrType()
+
+            kube_selector_groups = cls._schema_on_200.value.Element.properties.kube_selector_groups
+            kube_selector_groups.Element = AAZObjectType()
+            _ListHelper._build_schema_sub_resource_read(kube_selector_groups.Element)
 
             rule_collection_groups = cls._schema_on_200.value.Element.properties.rule_collection_groups
             rule_collection_groups.Element = AAZObjectType()
@@ -428,7 +441,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class FirewallPoliciesListAll(AAZHttpOperation):
+    class FirewallPoliciesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -442,7 +455,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.Network/firewallPolicies",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/firewallPolicies",
                 **self.url_parameters
             )
 
@@ -458,6 +471,10 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -468,7 +485,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -504,7 +521,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -514,7 +533,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.id = AAZStrType()
-            _element.identity = AAZObjectType()
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType()
             _element.name = AAZStrType(
                 flags={"read_only": True},
@@ -555,6 +574,10 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.afc_managed = AAZBoolType(
+                serialized_name="afcManaged",
+                flags={"read_only": True},
+            )
             properties.base_policy = AAZObjectType(
                 serialized_name="basePolicy",
             )
@@ -576,12 +599,19 @@ class List(AAZCommand):
             properties.intrusion_detection = AAZObjectType(
                 serialized_name="intrusionDetection",
             )
+            properties.kube_selector_groups = AAZListType(
+                serialized_name="kubeSelectorGroups",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.rule_collection_groups = AAZListType(
                 serialized_name="ruleCollectionGroups",
+                flags={"read_only": True},
+            )
+            properties.size = AAZStrType(
                 flags={"read_only": True},
             )
             properties.sku = AAZObjectType()
@@ -731,6 +761,10 @@ class List(AAZCommand):
             _element = cls._schema_on_200.value.Element.properties.intrusion_detection.configuration.signature_overrides.Element
             _element.id = AAZStrType()
             _element.mode = AAZStrType()
+
+            kube_selector_groups = cls._schema_on_200.value.Element.properties.kube_selector_groups
+            kube_selector_groups.Element = AAZObjectType()
+            _ListHelper._build_schema_sub_resource_read(kube_selector_groups.Element)
 
             rule_collection_groups = cls._schema_on_200.value.Element.properties.rule_collection_groups
             rule_collection_groups.Element = AAZObjectType()
