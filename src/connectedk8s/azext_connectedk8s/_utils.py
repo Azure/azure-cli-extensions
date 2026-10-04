@@ -20,7 +20,6 @@ from typing import TYPE_CHECKING, Any
 
 from azure.cli.core import get_default_cli, telemetry
 from azure.cli.core.azclierror import (
-    ArgumentUsageError,
     AzureInternalError,
     AzureResponseError,
     ClientRequestError,
@@ -760,15 +759,17 @@ def validate_connect_rp_location(cmd: CLICommand, location: str) -> None:
                 for location in resourceTypes.locations  # type: ignore[union-attr]
             ]
             if location.lower() not in rp_locations:
-                telemetry.set_exception(
-                    exception=Exception("Location not supported"),
-                    fault_type=consts.Invalid_Location_Fault_Type,
-                    summary="Provided location is not supported for creating connected clusters",
-                )
-                raise ArgumentUsageError(
+                details = (
                     "Connected cluster resource creation is supported only in the following locations: "
-                    + ", ".join(map(str, rp_locations)),
-                    recommendation="Use the --location flag to specify one of these locations.",
+                    + ", ".join(map(str, rp_locations))
+                    + ". Use the --location flag to specify one of these locations."
+                )
+                raise report_connectedk8s_error(
+                    cmd,
+                    errors.INVALID_LOCATION,
+                    exception=Exception(details),
+                    user_fault=True,
+                    details=details,
                 )
             break
 

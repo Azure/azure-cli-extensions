@@ -1099,6 +1099,34 @@ def _mock_reported_error(monkeypatch):
     return ReportedError, report_error
 
 
+def test_validate_connect_rp_location_reports_invalid_location(monkeypatch):
+    cmd = SimpleNamespace(cli_ctx=SimpleNamespace(data={}))
+    resource_type = SimpleNamespace(
+        resource_type="connectedClusters", locations=["East US", "West US"]
+    )
+    provider_client = MagicMock()
+    provider_client.get.return_value = SimpleNamespace(resource_types=[resource_type])
+    monkeypatch.setattr(utils_module, "get_subscription_id", lambda _cli_ctx: "sub")
+    monkeypatch.setattr(
+        utils_module,
+        "resource_providers_client",
+        MagicMock(return_value=provider_client),
+    )
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(utils_module, "telemetry", mock_telemetry)
+
+    with pytest.raises(InvalidArgumentValueError) as raised:
+        utils_module.validate_connect_rp_location(cmd, "centralus")
+
+    assert str(raised.value).startswith("[AZK8S0104] InvalidLocation:")
+    assert "eastus, westus" in str(raised.value)
+    _, properties = mock_telemetry.add_extension_event.call_args.args
+    assert properties["Context.Default.AzureCLI.errorCode"] == "AZK8S0104"
+    mock_telemetry.add_extension_event.assert_called_once()
+    mock_telemetry.set_exception.assert_called_once()
+    mock_telemetry.set_user_fault.assert_called_once_with()
+
+
 def test_pull_helm_chart_reports_standardized_error(monkeypatch):
     process = MagicMock(returncode=1)
     process.communicate.return_value = (b"", b"pull failed")

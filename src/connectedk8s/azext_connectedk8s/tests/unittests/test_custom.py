@@ -13,6 +13,8 @@ from azure.cli.core.azclierror import (
     ArgumentUsageError,
     AzCLIError,
     FileOperationError,
+    MutuallyExclusiveArgumentError,
+    RequiredArgumentMissingError,
     ValidationError,
 )
 from kubernetes.client.exceptions import ApiException
@@ -113,6 +115,150 @@ def _assert_standardized_telemetry(mock_telemetry, error, user_fault):
         mock_telemetry.set_user_fault.assert_called_once_with()
     else:
         mock_telemetry.set_user_fault.assert_not_called()
+
+
+def test_enable_features_reports_invalid_argument_value(monkeypatch):
+    cmd = _cmd_without_arm_id()
+    client = MagicMock()
+    client.get.return_value = SimpleNamespace(kind=None, private_link_state="Enabled")
+    monkeypatch.setattr(
+        custom.utils, "validate_custom_token", MagicMock(return_value=(False, None))
+    )
+    monkeypatch.setattr(custom, "get_subscription_id", lambda _cli_ctx: "sub")
+    monkeypatch.setattr(
+        custom.utils,
+        "check_features_to_update",
+        MagicMock(return_value=(True, False, False)),
+    )
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(custom.utils, "telemetry", mock_telemetry)
+
+    with pytest.raises(custom.InvalidArgumentValueError) as raised:
+        custom.enable_features(
+            cmd, client, "resource-group", "cluster", ["cluster-connect"]
+        )
+
+    assert str(raised.value).startswith("[AZK8S0100] InvalidArgumentValue:")
+    _assert_standardized_telemetry(
+        mock_telemetry, custom.errors.INVALID_ARGUMENT_VALUE, True
+    )
+
+
+@pytest.mark.parametrize(
+    "https_proxy,disable_proxy,error,exception_type",
+    [
+        (
+            "",
+            False,
+            custom.errors.UPDATE_NO_PARAMETERS,
+            RequiredArgumentMissingError,
+        ),
+        (
+            "https://proxy.example",
+            True,
+            custom.errors.UPDATE_PROXY_PARAMETER_CONFLICT,
+            MutuallyExclusiveArgumentError,
+        ),
+    ],
+    ids=["no-parameters", "proxy-conflict"],
+)
+def test_update_reports_standardized_parameter_errors(
+    monkeypatch, https_proxy, disable_proxy, error, exception_type
+):
+    cmd = _cmd_without_arm_id()
+    client = MagicMock()
+    client.get.return_value = SimpleNamespace(kind=None)
+    monkeypatch.setattr(
+        custom, "send_cloud_telemetry", MagicMock(return_value="AzureCloud")
+    )
+    monkeypatch.setattr(custom, "set_kube_config", lambda value: value)
+    monkeypatch.setattr(custom, "escape_proxy_settings", lambda value: value)
+    monkeypatch.setattr(custom.utils, "get_subscription_id", lambda _cli_ctx: "sub")
+    monkeypatch.setattr(
+        custom,
+        "add_config_protected_settings",
+        MagicMock(return_value=({}, {}, {})),
+    )
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(custom.utils, "telemetry", mock_telemetry)
+
+    with pytest.raises(exception_type) as raised:
+        custom.update_connected_cluster(
+            cmd,
+            client,
+            "resource-group",
+            "cluster",
+            https_proxy=https_proxy,
+            disable_proxy=disable_proxy,
+        )
+
+    assert str(raised.value).startswith(f"[{error.code}] {error.name}:")
+    _assert_standardized_telemetry(mock_telemetry, error, True)
+
+
+def test_proxy_cert_path_reports_not_found(monkeypatch):
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(custom.utils, "telemetry", mock_telemetry)
+    monkeypatch.setattr(custom.os.path, "exists", MagicMock(return_value=False))
+
+    with pytest.raises(custom.InvalidArgumentValueError) as raised:
+        custom._validate_proxy_cert_path(_cmd_without_arm_id(), "missing-cert.pem")
+
+    assert str(raised.value).startswith("[AZK8S0103] ProxyCertificatePathNotFound:")
+    assert "missing-cert.pem" in str(raised.value)
+    _assert_standardized_telemetry(
+        mock_telemetry, custom.errors.PROXY_CERT_PATH_NOT_FOUND, True
+    )
+
+
+def test_private_link_scope_location_reports_mismatch(monkeypatch):
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(custom.utils, "telemetry", mock_telemetry)
+
+    with pytest.raises(custom.ArgumentUsageError) as raised:
+        custom._validate_private_link_scope_location(
+            _cmd_without_arm_id(), "westus", "eastus"
+        )
+
+    assert str(raised.value).startswith("[AZK8S0105] PrivateLinkScopeLocationMismatch:")
+    _assert_standardized_telemetry(
+        mock_telemetry, custom.errors.PRIVATE_LINK_SCOPE_LOCATION_MISMATCH, True
+    )
+
+
+@pytest.mark.parametrize(
+    "gateway_resource_id",
+    [
+        "not-an-arm-id",
+        "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/account",
+    ],
+    ids=["malformed", "wrong-resource-type"],
+)
+def test_gateway_resource_id_reports_invalid_id(monkeypatch, gateway_resource_id):
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(custom.utils, "telemetry", mock_telemetry)
+
+    with pytest.raises(custom.InvalidArgumentValueError) as raised:
+        custom._validate_gateway_resource_id(_cmd_without_arm_id(), gateway_resource_id)
+
+    assert str(raised.value).startswith("[AZK8S0106] InvalidGatewayArmId:")
+    _assert_standardized_telemetry(
+        mock_telemetry, custom.errors.INVALID_GATEWAY_ARM_ID, True
+    )
+
+
+def test_gateway_resource_id_accepts_arc_gateway(monkeypatch):
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(custom.utils, "telemetry", mock_telemetry)
+    gateway_resource_id = (
+        "/subscriptions/00000000-0000-0000-0000-000000000000/"
+        "resourceGroups/rg/providers/Microsoft.HybridCompute/gateways/gateway"
+    )
+
+    custom._validate_gateway_resource_id(_cmd_without_arm_id(), gateway_resource_id)
+
+    mock_telemetry.add_extension_event.assert_not_called()
+    mock_telemetry.set_exception.assert_not_called()
 
 
 @pytest.mark.parametrize("operation", ["create", "update"])

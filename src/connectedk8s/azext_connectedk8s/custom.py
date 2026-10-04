@@ -38,14 +38,13 @@ from azure.cli.core.azclierror import (
     FileOperationError,
     InvalidArgumentValueError,
     ManualInterrupt,
-    MutuallyExclusiveArgumentError,
-    RequiredArgumentMissingError,
     ValidationError,
 )
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from azure.core.exceptions import HttpResponseError
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from Crypto.IO import PEM
 from Crypto.PublicKey import RSA
 from Crypto.Util import asn1
@@ -206,6 +205,67 @@ def _cleanup_stale_arc_agents(
     )
 
 
+def _validate_proxy_cert_path(cmd: CLICommand, proxy_cert: str) -> None:
+    """Reject a non-empty proxy certificate path that does not exist."""
+    if proxy_cert and not os.path.exists(proxy_cert):
+        details = str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert)
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.PROXY_CERT_PATH_NOT_FOUND,
+            exception=Exception(details),
+            user_fault=True,
+            details=details,
+        )
+
+
+def _validate_gateway_resource_id(cmd: CLICommand, gateway_resource_id: str) -> None:
+    """Require gateway IDs to identify Microsoft.HybridCompute gateways."""
+    if not gateway_resource_id:
+        return
+
+    parsed_id = (
+        parse_resource_id(gateway_resource_id)
+        if is_valid_resource_id(gateway_resource_id)
+        else {}
+    )
+    if (
+        str(parsed_id.get("namespace", "")).lower() != "microsoft.hybridcompute"
+        or str(parsed_id.get("type", "")).lower() != "gateways"
+    ):
+        details = (
+            "The gateway resource ID must identify a "
+            "Microsoft.HybridCompute/gateways resource."
+        )
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.INVALID_GATEWAY_ARM_ID,
+            exception=Exception(details),
+            user_fault=True,
+            details=details,
+        )
+
+
+def _validate_private_link_scope_location(
+    cmd: CLICommand, private_link_scope_location: str, cluster_location: str
+) -> None:
+    """Require the Private Link Scope and connected cluster locations to match."""
+    if private_link_scope_location.lower() == cluster_location.lower():
+        return
+
+    details = (
+        "The location of the private link scope resource does not match the location "
+        "of connected cluster resource. Please ensure that both resources are in "
+        "the same Azure location."
+    )
+    raise utils.report_connectedk8s_error(
+        cmd,
+        errors.PRIVATE_LINK_SCOPE_LOCATION_MISMATCH,
+        exception=Exception(details),
+        user_fault=True,
+        details=details,
+    )
+
+
 # pylint: disable=unused-argument,too-many-locals,too-many-branches
 # cmd is required by Azure CLI command signature but may not be used in all command handlers
 # Too many locals and branches are due to complex onboarding logic with multiple branches for
@@ -294,6 +354,8 @@ def create_connectedk8s(
         cmd, resource_group_name, cluster_name, subscription_id
     )
 
+    _validate_gateway_resource_id(cmd, gateway_resource_id)
+
     # Send cloud information to telemetry
     azure_cloud = send_cloud_telemetry(cmd)
 
@@ -335,16 +397,7 @@ def create_connectedk8s(
     # Escaping comma, forward slash present in no proxy urls, needed for helm params.
     no_proxy = escape_proxy_settings(no_proxy)
 
-    # check whether proxy cert path exists
-    if proxy_cert != "" and (not os.path.exists(proxy_cert)):
-        telemetry.set_exception(
-            exception=Exception("Proxy cert path does not exist"),
-            fault_type=consts.Proxy_Cert_Path_Does_Not_Exist_Fault_Type,
-            summary="Proxy cert path does not exist",
-        )
-        raise InvalidArgumentValueError(
-            str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert)
-        )
+    _validate_proxy_cert_path(cmd, proxy_cert)
 
     proxy_cert = proxy_cert.replace("\\", r"\\\\")
 
@@ -677,20 +730,9 @@ def create_connectedk8s(
             pls_arm_id_arr = private_link_scope_resource_id.split("/")
             hc_client = cf_connectedmachine(cmd.cli_ctx, pls_arm_id_arr[2])
             pls_get_result = hc_client.get(pls_arm_id_arr[4], pls_arm_id_arr[8])
-            pls_location = pls_get_result.location.lower()
-            if pls_location != location.lower():
-                ex_msg = "Connected cluster resource and Private link scope resource are present in different locations"
-                telemetry.set_exception(
-                    exception=Exception(ex_msg),
-                    fault_type=consts.Pls_Location_Mismatch_Fault_Type,
-                    summary="Pls resource location mismatch",
-                )
-                err_msg = (
-                    "The location of the private link scope resource does not match the location "
-                    "of connected cluster resource. Please ensure that both the resources are in the same azure "
-                    "location."
-                )
-                raise ArgumentUsageError(err_msg)
+            _validate_private_link_scope_location(
+                cmd, pls_get_result.location, location
+            )
         except ArgumentUsageError:
             raise
         except Exception as ex:
@@ -2903,6 +2945,8 @@ def update_connected_cluster(
     utils.set_connected_cluster_arm_id_telemetry_context(
         cmd, resource_group_name, cluster_name
     )
+    _validate_gateway_resource_id(cmd, gateway_resource_id)
+
     # Prompt for confirmation for few parameters
     if azure_hybrid_benefit == "True":
         confirmation_message = (
@@ -2934,16 +2978,7 @@ def update_connected_cluster(
     # Escaping comma, forward slash present in no proxy urls, needed for helm params.
     no_proxy = escape_proxy_settings(no_proxy)
 
-    # check whether proxy cert path exists
-    if proxy_cert != "" and (not os.path.exists(proxy_cert)):
-        telemetry.set_exception(
-            exception=Exception("Proxy cert path does not exist"),
-            fault_type=consts.Proxy_Cert_Path_Does_Not_Exist_Fault_Type,
-            summary="Proxy cert path does not exist",
-        )
-        raise InvalidArgumentValueError(
-            str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert)
-        )
+    _validate_proxy_cert_path(cmd, proxy_cert)
 
     proxy_cert = proxy_cert.replace("\\", r"\\\\")
 
@@ -3044,22 +3079,22 @@ def update_connected_cluster(
         and gateway_resource_id == ""
         and not disable_gateway
     ):
-        telemetry.set_exception(
-            exception=consts.No_Param_Error,
-            fault_type=consts.Update_No_Params_Fault_Type,
-            summary="No update parameters specified",
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.UPDATE_NO_PARAMETERS,
+            exception=Exception(consts.No_Param_Error),
+            user_fault=True,
+            details=consts.No_Param_Error,
         )
-        telemetry.set_user_fault()
-        raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy or add_proxy_bypass) and disable_proxy:
-        telemetry.set_exception(
-            exception=consts.EnableProxy_Conflict_Error,
-            fault_type=consts.Update_Proxy_Conflict_Fault_Type,
-            summary="Proxy enable and disable specified simultaneously",
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.UPDATE_PROXY_PARAMETER_CONFLICT,
+            exception=Exception(consts.EnableProxy_Conflict_Error),
+            user_fault=True,
+            details=consts.EnableProxy_Conflict_Error,
         )
-        telemetry.set_user_fault()
-        raise MutuallyExclusiveArgumentError(consts.EnableProxy_Conflict_Error)
 
     # Checking whether optional extra values file has been provided.
     values_file = utils.get_values_file()
@@ -3925,16 +3960,17 @@ def enable_features(
     if connected_cluster.private_link_state.lower() == "enabled" and (
         enable_cluster_connect or enable_cl
     ):
-        telemetry.set_exception(
-            exception=Exception("Invalid arguments provided"),
-            fault_type=consts.Invalid_Argument_Fault_Type,
-            summary="Invalid arguments provided",
-        )
         err_msg = (
             "The features 'cluster-connect' and 'custom-locations' cannot be enabled for a private link "
             "enabled connected cluster."
         )
-        raise InvalidArgumentValueError(err_msg)
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.INVALID_ARGUMENT_VALUE,
+            exception=Exception(err_msg),
+            user_fault=True,
+            details=err_msg,
+        )
 
     if enable_azure_rbac:
         if azrbac_skip_authz_check is None:
