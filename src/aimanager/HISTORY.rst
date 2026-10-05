@@ -3,6 +3,13 @@
 Release History
 ===============
 
+2.0.1b2
++++++++
+* ``az aimanager create/update``, ``az aimanager namespace create/update``, ``az aimanager
+  modelsource create/update/show/list`` and ``az aimanager namespace modeldeployment
+  create/update``: ``-o table`` output now uses the same columns as ``show``/``list``, including
+  ``ProvisioningState``.
+
 2.0.1b1
 +++++++
 * ``az aimanager create``, ``az aimanager namespace create``, ``az aimanager modelsource

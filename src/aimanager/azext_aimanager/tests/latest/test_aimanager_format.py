@@ -10,6 +10,8 @@ from azext_aimanager._format import (
     aimanager_list_table_format,
     namespace_table_format,
     namespace_list_table_format,
+    modelsource_table_format,
+    modelsource_list_table_format,
     modeldeployment_table_format,
     modeldeployment_list_table_format,
     calculate_cost_table_format,
@@ -115,6 +117,53 @@ class TestNamespaceTableFormat(unittest.TestCase):
         results = namespace_list_table_format([self._sample(), self._sample()])
         self.assertEqual(len(results), 2)
         self.assertEqual(results[0]["Name"], "ns1")
+
+
+class TestModelSourceTableFormat(unittest.TestCase):
+    """Test cases for model source table output formatting."""
+
+    def _sample(self):
+        return {
+            "id": (
+                "/subscriptions/26fe00f8-0000-0000-0000-bb1d2e00343a"
+                "/resourceGroups/yiralirg"
+                "/providers/Microsoft.ContainerService/aiManagers/aimbyo"
+                "/modelSources/hf1"
+            ),
+            "name": "hf1",
+            "eTag": "ff459bfb-b983-436f-b55b-afe701d1c896",
+            "properties": {
+                "provisioningState": "Succeeded",
+                "sourceType": "HuggingFace",
+                "description": "gated models",
+            },
+        }
+
+    def test_table_format_columns_modelsource(self):
+        result = modelsource_table_format(self._sample())
+        self.assertEqual(
+            list(result.keys()),
+            ["Name", "ProvisioningState", "SourceType", "Description"],
+        )
+
+    def test_table_format_values_modelsource(self):
+        result = modelsource_table_format(self._sample())
+        self.assertEqual(result["Name"], "hf1")
+        self.assertEqual(result["ProvisioningState"], "Succeeded")
+        self.assertEqual(result["SourceType"], "HuggingFace")
+        self.assertEqual(result["Description"], "gated models")
+
+    def test_table_format_null_properties_modelsource(self):
+        result = modelsource_table_format({"name": "hf1", "properties": None})
+        self.assertEqual(result["Name"], "hf1")
+        self.assertEqual(result["ProvisioningState"], "")
+        self.assertEqual(result["SourceType"], "")
+        self.assertEqual(result["Description"], "")
+
+    def test_list_table_format_modelsource(self):
+        results = modelsource_list_table_format([self._sample(), self._sample()])
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results[0]["Name"], "hf1")
 
 
 class TestModelDeploymentTableFormat(unittest.TestCase):
