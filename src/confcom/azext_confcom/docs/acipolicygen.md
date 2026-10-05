@@ -368,6 +368,14 @@ This `scenario` field adds the necessary environment variables and mount values 
 Currently `vn2` and `aci` are the only supported values for `scenario`, but others may be added in the future as more products onboard to the `confcom` extension.
 `aci` is the default value.
 
+To include the ACI kube-proxy image-attached fragment reference, use `--allow-kubeproxy`:
+
+```bash
+az confcom acipolicygen --virtual-node-yaml pod.yaml --allow-kubeproxy
+```
+
+This option is supported only for Linux policies.
+
 ### Workload Identity
 
 To use workload identities with VN2, the associated label [described here](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview?tabs=dotnet#pod-labels) must be present.

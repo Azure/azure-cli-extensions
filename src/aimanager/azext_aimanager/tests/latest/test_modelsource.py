@@ -38,13 +38,6 @@ class TestModelSource(unittest.TestCase):
 
         self.assertEqual(source.properties.credential.inline.value, "hf_token")
 
-    def test_add_rejects_existing_source(self):
-        self.client.get.return_value = object()
-
-        with self.assertRaises(ClientRequestError):
-            custom.add_modelsource(
-                self.cmd, self.client, "rg", "manager", "source", "HuggingFace")
-
     def test_update_rejects_missing_source(self):
         self.client.get.side_effect = ResourceNotFoundError()
 

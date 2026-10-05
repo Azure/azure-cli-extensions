@@ -1,3 +1,10 @@
+1.0.0b3
+++++++++++++++++++
+* Add explicit host fallbacks for Azure Government and Azure China.
+* Use cloud-specific credential scopes to avoid requesting public Azure tokens in clouds.
+* Add regression tests - test_cloud_host_template_fallbacks, test_cloud_specific_credential_scopes
+
+
 1.0.0b2
 ++++++++++++++++++
 * Fix CloudEndpointNotSetException error.
