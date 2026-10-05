@@ -160,6 +160,12 @@ class TestModelSourceTableFormat(unittest.TestCase):
         self.assertEqual(result["SourceType"], "")
         self.assertEqual(result["Description"], "")
 
+    def test_table_format_null_description_modelsource(self):
+        # A null description must still render as a (blank) column: knack drops None cells.
+        sample = self._sample()
+        sample["properties"]["description"] = None
+        self.assertEqual(modelsource_table_format(sample)["Description"], "")
+
     def test_list_table_format_modelsource(self):
         results = modelsource_list_table_format([self._sample(), self._sample()])
         self.assertEqual(len(results), 2)
@@ -232,6 +238,57 @@ class TestModelDeploymentTableFormat(unittest.TestCase):
         results = modeldeployment_list_table_format([self._sample(), self._sample()])
         self.assertEqual(len(results), 2)
         self.assertEqual(results[0]["ModelId"], "meta-llama/Llama-3-8B")
+
+
+class TestCommandTableTransformers(unittest.TestCase):
+    """Every create/update/show/list command must render "-o table" with a formatter, since
+    azure-cli's default table drops nested fields such as properties.provisioningState."""
+
+    def _load(self):
+        from azext_aimanager.commands import load_command_table
+
+        transformers = {}
+
+        class Group:
+            def __init__(self, name):
+                self.name = name
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_):
+                return False
+
+            def _record(self, verb, *_, **kwargs):
+                transformers["{} {}".format(self.name, verb)] = kwargs.get("table_transformer")
+
+            custom_command = custom_show_command = _record
+
+            def wait_command(self, *_, **__):
+                pass
+
+            custom_wait_command = wait_command
+
+        class Loader:
+            def command_group(self, name, *_, **__):
+                return Group(name)
+
+        load_command_table(Loader(), None)
+        return transformers
+
+    def test_create_update_show_list_have_table_transformers(self):
+        transformers = self._load()
+        expected = {
+            "aimanager": (aimanager_table_format, aimanager_list_table_format),
+            "aimanager namespace": (namespace_table_format, namespace_list_table_format),
+            "aimanager modelsource": (modelsource_table_format, modelsource_list_table_format),
+            "aimanager namespace modeldeployment": (
+                modeldeployment_table_format, modeldeployment_list_table_format),
+        }
+        for group, (single, many) in expected.items():
+            for verb in ("create", "update", "show"):
+                self.assertIs(transformers["{} {}".format(group, verb)], single, (group, verb))
+            self.assertIs(transformers["{} list".format(group)], many, group)
 
 
 class TestCalculateCostTableFormat(unittest.TestCase):

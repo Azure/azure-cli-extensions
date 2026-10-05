@@ -93,7 +93,7 @@ def modelsource_table_format(result):
         ('Name', result.get('name', '')),
         ('ProvisioningState', properties.get('provisioningState', '')),
         ('SourceType', properties.get('sourceType', '')),
-        ('Description', properties.get('description', '')),
+        ('Description', properties.get('description') or ''),
     ])
 
 

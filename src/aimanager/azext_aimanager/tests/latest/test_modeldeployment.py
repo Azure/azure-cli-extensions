@@ -219,10 +219,11 @@ class TestModelDeployment(unittest.TestCase):
         self.assertNotIn("--namespace", recs)
         self.assertEqual(2, client.list_by_ai_manager_namespace.call_count)
 
+    @patch.object(custom, "_annotate_model_id_on_completion", side_effect=lambda _cmd, p, _nw: p)
     @patch.object(custom, "sdk_no_wait")
     @patch.object(custom, "_construct_modeldeployment")
     def test_update_preserves_omitted_properties_and_uses_etag(
-            self, construct_modeldeployment, sdk_no_wait):
+            self, construct_modeldeployment, sdk_no_wait, _annotate):
         existing_scale = models.ScalingProfile(
             manual=models.ManualScalingProfile(replicas=2))
         existing_overrides = models.ModelDeploymentOverrides(
@@ -269,6 +270,28 @@ class TestModelDeployment(unittest.TestCase):
             etag='"etag-value"',
             match_condition=MatchConditions.IfNotModified,
         )
+
+    @patch.object(custom, "_annotate_model_ids")
+    @patch.object(custom, "LongRunningOperation")
+    def test_annotate_model_id_on_completion_waits_and_annotates(self, lro, annotate):
+        lro.return_value.return_value = "deployment"
+        annotate.return_value = [{"name": "md1", "modelId": "meta-llama/Llama-3-8B"}]
+        cmd = SimpleNamespace(cli_ctx=object())
+
+        result = custom._annotate_model_id_on_completion(cmd, "poller", False)
+
+        lro.return_value.assert_called_once_with("poller")
+        annotate.assert_called_once_with(cmd, ["deployment"])
+        self.assertEqual(result["modelId"], "meta-llama/Llama-3-8B")
+
+    @patch.object(custom, "_annotate_model_ids")
+    @patch.object(custom, "LongRunningOperation")
+    def test_annotate_model_id_on_completion_no_wait_returns_poller(self, lro, annotate):
+        result = custom._annotate_model_id_on_completion(SimpleNamespace(), "poller", True)
+
+        self.assertEqual(result, "poller")
+        lro.assert_not_called()
+        annotate.assert_not_called()
 
     @patch("azext_aimanager._client_factory.cf_ai_models")
     def test_annotate_model_ids_returns_plain_dicts_with_model_id(self, cf_ai_models):
