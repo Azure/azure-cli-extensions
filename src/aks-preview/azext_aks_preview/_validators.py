@@ -1276,6 +1276,24 @@ def validate_azure_monitor_and_opentelemetry_for_update(namespace):
     validate_opentelemetry_logs_dependencies_for_update(namespace)
 
 
+def _reject_msi_auth_flag_with_azure_monitor_logs(namespace, explicit_values):
+    """Reject --enable-msi-auth-for-monitoring alongside --enable-azure-monitor-logs.
+
+    Onboarding through the Azure Monitor profile is managed identity only, so the auth flag has no
+    meaning there. ``explicit_values`` differs by command because the flag's default does: it is
+    ``True`` on create, where only an explicit ``false`` is distinguishable from the default, and
+    ``None`` on update, where any value is explicit.
+    """
+    if not getattr(namespace, "enable_azure_monitor_logs", False):
+        return
+    if getattr(namespace, "enable_msi_auth_for_monitoring", None) in explicit_values:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify both '--enable-azure-monitor-logs' and "
+            "'--enable-msi-auth-for-monitoring'. '--enable-azure-monitor-logs' onboards through "
+            "the Azure Monitor profile, which always uses managed identity authentication."
+        )
+
+
 def validate_azure_monitor_logs_and_enable_addons(namespace):
     """Validate that enable_azure_monitor_logs and enable_addons don't conflict."""
     if hasattr(namespace, 'enable_azure_monitor_logs') and namespace.enable_azure_monitor_logs:
@@ -1285,6 +1303,8 @@ def validate_azure_monitor_logs_and_enable_addons(namespace):
                     "Cannot specify both '--enable-azure-monitor-logs' and '--enable-addons monitoring'. "
                     "Use either '--enable-azure-monitor-logs' or '--enable-addons monitoring'."
                 )
+    # On create the flag defaults to True, so only an explicit false is detectable here.
+    _reject_msi_auth_flag_with_azure_monitor_logs(namespace, (False,))
 
 
 def validate_azure_monitor_logs_enable_disable(namespace):
@@ -1295,6 +1315,8 @@ def validate_azure_monitor_logs_enable_disable(namespace):
             "Cannot specify both '--enable-azure-monitor-logs' and '--disable-azure-monitor-logs'. "
             "Use either '--enable-azure-monitor-logs' or '--disable-azure-monitor-logs'."
         )
+    # On update the flag defaults to None, so any value is an explicit use.
+    _reject_msi_auth_flag_with_azure_monitor_logs(namespace, (True, False))
 
 
 def _specified_container_insights_setting_flags(namespace):

@@ -2540,6 +2540,76 @@ class TestValidateAzureMonitorLogsEnableDisable(unittest.TestCase):
         validators.validate_azure_monitor_logs_enable_disable(namespace)
 
 
+class TestRejectMsiAuthFlagWithAzureMonitorLogs(unittest.TestCase):
+    """--enable-msi-auth-for-monitoring is meaningless alongside --enable-azure-monitor-logs.
+
+    Onboarding through the Azure Monitor profile is managed identity only. The flag's default
+    differs by command, so what counts as an explicit use differs too: on create it defaults to
+    True and only an explicit false is detectable, while on update it defaults to None so any
+    value is explicit.
+    """
+
+    ERR = (
+        "Cannot specify both '--enable-azure-monitor-logs' and "
+        "'--enable-msi-auth-for-monitoring'. '--enable-azure-monitor-logs' onboards through "
+        "the Azure Monitor profile, which always uses managed identity authentication."
+    )
+
+    @staticmethod
+    def _create_ns(**kwargs):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.enable_addons = None
+        for key, value in kwargs.items():
+            setattr(namespace, key, value)
+        return namespace
+
+    @staticmethod
+    def _update_ns(**kwargs):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.disable_azure_monitor_logs = False
+        for key, value in kwargs.items():
+            setattr(namespace, key, value)
+        return namespace
+
+    def test_create_rejects_explicit_false(self):
+        namespace = self._create_ns(enable_msi_auth_for_monitoring=False)
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+        self.assertEqual(str(cm.exception), self.ERR)
+
+    def test_create_allows_the_default(self):
+        # True is the create default, so it is indistinguishable from the flag being omitted
+        namespace = self._create_ns(enable_msi_auth_for_monitoring=True)
+        validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+
+    def test_update_rejects_both_explicit_values(self):
+        for value in (True, False):
+            namespace = self._update_ns(enable_msi_auth_for_monitoring=value)
+            with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+                validators.validate_azure_monitor_logs_enable_disable(namespace)
+            self.assertEqual(str(cm.exception), self.ERR)
+
+    def test_update_allows_the_flag_being_omitted(self):
+        namespace = self._update_ns(enable_msi_auth_for_monitoring=None)
+        validators.validate_azure_monitor_logs_enable_disable(namespace)
+
+    def test_flag_is_allowed_without_azure_monitor_logs(self):
+        # --enable-msi-auth-for-monitoring remains valid on its own, for the addon route
+        namespace = self._update_ns(
+            enable_azure_monitor_logs=False, enable_msi_auth_for_monitoring=True
+        )
+        validators.validate_azure_monitor_logs_enable_disable(namespace)
+
+    def test_missing_attribute_is_tolerated(self):
+        # the namespace of a command that does not define the flag at all must not raise
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.disable_azure_monitor_logs = False
+        validators.validate_azure_monitor_logs_enable_disable(namespace)
+
+
 class TestAzureMonitorLogsParameters(unittest.TestCase):
     """Test that Azure Monitor logs parameters are processed correctly."""
 
