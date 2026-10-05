@@ -19,9 +19,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01-preview",
+        "version": "2026-08-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.relationships/servicegroupmember/{}", "2023-09-01-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.relationships/servicegroupmember/{}", "2026-08-01"],
         ]
     }
 
@@ -46,9 +46,6 @@ class Create(AAZCommand):
             options=["--name"],
             help="Name of ServiceGroupMember relationship.",
             required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9]{3,64}$",
-            ),
         )
         _args_schema.resource_uri = AAZStrArg(
             options=["--resource-uri"],
@@ -59,16 +56,16 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.target_id = AAZResourceIdArg(
-            options=["--target-id"],
+        _args_schema.source_id = AAZResourceIdArg(
+            options=["--source-id"],
             arg_group="Properties",
-            help="The relationship target resource id.",
+            help="The relationship source resource id. Must be a service group.",
             required=True,
         )
-        _args_schema.target_tenant = AAZStrArg(
-            options=["--target-tenant"],
+        _args_schema.source_tenant = AAZStrArg(
+            options=["--source-tenant"],
             arg_group="Properties",
-            help="The relationship target tenant id.",
+            help="The relationship source tenant id.",
         )
         return cls._args_schema
 
@@ -150,7 +147,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01-preview",
+                    "api-version", "2026-08-01",
                     required=True,
                 ),
             }
@@ -179,8 +176,8 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("targetId", AAZStrType, ".target_id", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("targetTenant", AAZStrType, ".target_tenant")
+                properties.set_prop("sourceId", AAZStrType, ".source_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("sourceTenant", AAZStrType, ".source_tenant")
 
             return self.serialize_content(_content_value)
 
@@ -231,14 +228,14 @@ class Create(AAZCommand):
             )
             properties.source_id = AAZStrType(
                 serialized_name="sourceId",
-                flags={"read_only": True},
+                flags={"required": True},
+            )
+            properties.source_tenant = AAZStrType(
+                serialized_name="sourceTenant",
             )
             properties.target_id = AAZStrType(
                 serialized_name="targetId",
-                flags={"required": True},
-            )
-            properties.target_tenant = AAZStrType(
-                serialized_name="targetTenant",
+                flags={"read_only": True},
             )
 
             metadata = cls._schema_on_200_201.properties.metadata

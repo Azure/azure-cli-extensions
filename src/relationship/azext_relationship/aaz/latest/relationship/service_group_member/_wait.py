@@ -12,24 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "relationship dependency-of create",
+    "relationship service-group-member wait",
 )
-class Create(AAZCommand):
-    """Create a DependencyOfRelationship
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2026-08-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.relationships/dependencyof/{}", "2026-08-01"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.relationships/servicegroupmember/{}", "2026-08-01"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -44,7 +42,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
             options=["--name"],
-            help="Name of dependencyOf relationship.",
+            help="Name of ServiceGroupMember relationship.",
             required=True,
         )
         _args_schema.resource_uri = AAZStrArg(
@@ -52,26 +50,11 @@ class Create(AAZCommand):
             help="The fully qualified Azure Resource manager identifier of the resource.",
             required=True,
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.target_id = AAZResourceIdArg(
-            options=["--target-id"],
-            arg_group="Properties",
-            help="The relationship target resource id.",
-            required=True,
-        )
-        _args_schema.target_tenant = AAZStrArg(
-            options=["--target-tenant"],
-            arg_group="Properties",
-            help="The relationship target tenant id.",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.DependencyOfRelationshipsCreateOrUpdate(ctx=self.ctx)()
+        self.ServiceGroupMemberRelationshipsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -83,46 +66,30 @@ class Create(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class DependencyOfRelationshipsCreateOrUpdate(AAZHttpOperation):
+    class ServiceGroupMemberRelationshipsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/Microsoft.Relationships/dependencyOf/{name}",
+                "/{resourceUri}/providers/Microsoft.Relationships/serviceGroupMember/{name}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PUT"
+            return "GET"
 
         @property
         def error_format(self):
@@ -157,64 +124,45 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
 
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("properties", AAZObjectType)
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("targetId", AAZStrType, ".target_id", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("targetTenant", AAZStrType, ".target_tenant")
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
+            cls._schema_on_200 = AAZObjectType()
 
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType()
-            _schema_on_200_201.system_data = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200_201.type = AAZStrType(
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200_201.properties
+            properties = cls._schema_on_200.properties
             properties.metadata = AAZObjectType(
                 flags={"read_only": True},
             )
@@ -228,17 +176,17 @@ class Create(AAZCommand):
             )
             properties.source_id = AAZStrType(
                 serialized_name="sourceId",
-                flags={"read_only": True},
+                flags={"required": True},
+            )
+            properties.source_tenant = AAZStrType(
+                serialized_name="sourceTenant",
             )
             properties.target_id = AAZStrType(
                 serialized_name="targetId",
-                flags={"required": True},
-            )
-            properties.target_tenant = AAZStrType(
-                serialized_name="targetTenant",
+                flags={"read_only": True},
             )
 
-            metadata = cls._schema_on_200_201.properties.metadata
+            metadata = cls._schema_on_200.properties.metadata
             metadata.source_type = AAZStrType(
                 serialized_name="sourceType",
                 flags={"read_only": True},
@@ -248,7 +196,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
-            origin_information = cls._schema_on_200_201.properties.origin_information
+            origin_information = cls._schema_on_200.properties.origin_information
             origin_information.discovery_engine = AAZStrType(
                 serialized_name="discoveryEngine",
                 flags={"read_only": True},
@@ -258,7 +206,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200_201.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -278,11 +226,11 @@ class Create(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            return cls._schema_on_200_201
+            return cls._schema_on_200
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
-__all__ = ["Create"]
+__all__ = ["Wait"]
