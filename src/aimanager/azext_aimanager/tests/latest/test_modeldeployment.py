@@ -249,6 +249,7 @@ class TestModelDeployment(unittest.TestCase):
             self.cmd, client, "rg", "manager", "namespace", "deployment")
 
         self.assertEqual(result, "result")
+        _annotate.assert_called_once_with(self.cmd, "result", False)
         construct_modeldeployment.assert_called_once_with(
             self.cmd,
             "/models/model-a",
@@ -270,6 +271,18 @@ class TestModelDeployment(unittest.TestCase):
             etag='"etag-value"',
             match_condition=MatchConditions.IfNotModified,
         )
+
+    @patch.object(custom, "_annotate_model_id_on_completion", return_value="annotated")
+    @patch.object(custom, "sdk_no_wait", return_value="poller")
+    @patch.object(custom, "_construct_modeldeployment")
+    def test_create_routes_result_through_model_id_annotation(
+            self, _construct, _sdk_no_wait, annotate):
+        result = custom.create_modeldeployment(
+            self.cmd, MagicMock(), "rg", "manager", "namespace", "deployment",
+            "/models/model-a", "Standard_NC24ads_A100_v4", replicas=1)
+
+        self.assertEqual(result, "annotated")
+        annotate.assert_called_once_with(self.cmd, "poller", False)
 
     @patch.object(custom, "_annotate_model_ids")
     @patch.object(custom, "LongRunningOperation")
