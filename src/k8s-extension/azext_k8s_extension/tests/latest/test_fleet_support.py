@@ -154,7 +154,7 @@ class TestFleetResourceMapping(unittest.TestCase):
     @patch.object(custom, "sdk_no_wait")
     def test_fleet_update_passes_provider_and_resource_type(self, mock_sdk_no_wait):
         client = MagicMock()
-        client.get.return_value = SimpleNamespace(extension_type="microsoft.flux")
+        client.get.return_value = SimpleNamespace(extension_type="Microsoft.Flux")
 
         custom.update_k8s_extension(
             MockCommand(), client, "fleet-rg", "fleet-1", "flux", "fleets"
@@ -174,6 +174,27 @@ class TestFleetResourceMapping(unittest.TestCase):
             args[:7],
         )
 
+    def test_fleet_update_rejects_non_flux_extension_type(self):
+        client = MagicMock()
+        client.get.return_value = SimpleNamespace(
+            extension_type="contoso.extension"
+        )
+
+        with self.assertRaisesRegex(
+            InvalidArgumentValueError,
+            "The supported extension type is 'microsoft.flux'",
+        ):
+            custom.update_k8s_extension(
+                MockCommand(),
+                client,
+                "fleet-rg",
+                "fleet-1",
+                "extension-1",
+                "fleets",
+            )
+
+        client.begin_update.assert_not_called()
+
     @patch.object(custom, "sdk_no_wait")
     @patch(
         "azext_k8s_extension.partner_extensions.DefaultExtension."
@@ -183,7 +204,9 @@ class TestFleetResourceMapping(unittest.TestCase):
         self, _, mock_sdk_no_wait
     ):
         client = MagicMock()
-        client.get.return_value = SimpleNamespace(extension_type="microsoft.flux")
+        client.get.return_value = SimpleNamespace(
+            extension_type="contoso.extension"
+        )
 
         custom.delete_k8s_extension(
             MockCommand(),

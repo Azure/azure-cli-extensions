@@ -4,7 +4,7 @@ Release History
 ===============
 1.9.3
 +++++++++++++++++++
-* Reject unsupported Fleet extension types before sending extension create or discovery requests.
+* Reject unsupported Fleet extension types before sending extension create, update, or discovery requests.
 
 1.9.2
 +++++++++++++++++++
