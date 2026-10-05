@@ -10,6 +10,7 @@ import logging
 from collections import OrderedDict
 from azure.cli.core.commands import CliCommandType
 from ._validators import validate_workspace_info, validate_workspace_user, validate_target_info, validate_workspace_and_target_info, validate_provider_and_sku_info
+from .operations.offerings import OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
 logger = logging.getLogger(__name__)
 
@@ -94,11 +95,14 @@ def transform_file_list(results):
 
 def transform_offerings(offerings):
     def one(offering):
+        properties = offering['properties']
+        managed_application = properties.get('managedApplication') or {}
+
         return OrderedDict([
             ('Provider ID', offering['id']),
-            ('SKU', ', '.join([s['id'] for s in offering['properties']['skus']])),
-            ('Publisher ID', offering['properties']['managedApplication']['publisherId']),
-            ('Offer ID', offering['properties']['managedApplication']['offerId'])
+            ('SKU', ', '.join([s['id'] for s in properties['skus']])),
+            ('Publisher ID', managed_application.get('publisherId') or PUBLISHER_NOT_AVAILABLE),
+            ('Offer ID', managed_application.get('offerId') or OFFER_NOT_AVAILABLE)
         ])
 
     return [one(offering) for offering in offerings]
