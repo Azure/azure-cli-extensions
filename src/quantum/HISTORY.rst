@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b30
+++++++++++++++
+* Fixed crashes in ``az quantum offerings list -o table`` and ``az quantum workspace create`` when a V2-only provider lacks a legacy marketplace ManagedApplication association.
+
 1.0.0b29
 ++++++++++++++
 * Clarified which suite-offer and workspace quota commands apply to V2 providers and workspaces.
