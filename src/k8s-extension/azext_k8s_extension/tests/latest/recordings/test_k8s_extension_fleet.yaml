@@ -1,0 +1,472 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -c --cluster-type --extension-type --scope --no-wait
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration?api-version=2025-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration","namespace":"Microsoft.KubernetesConfiguration","authorizations":[{"applicationId":"c699bf69-fb1d-4eaf-999b-99e6b2ae4d85","roleDefinitionId":"90155430-a360-410f-af5d-89dc284d85c6"},{"applicationId":"03db181c-e9d3-4868-9097-f0b728327182","roleDefinitionId":"DE2ADB97-42D8-49C8-8FCF-DBB53EF936AC"},{"applicationId":"a0f92522-89de-4c5e-9a75-0044ccf66efd","roleDefinitionId":"b3429810-7d5c-420e-8605-cf280f3099f2"},{"applicationId":"bd9b7cd5-dac1-495f-b013-ac871e98fa5f","roleDefinitionId":"0d44c8f0-08b9-44d4-9f59-e51c83f95200"},{"applicationId":"585fc3c3-9a59-4720-8319-53cce041a605","roleDefinitionId":"4a9ce2ee-6de2-43ba-a7bd-8f316de763a7"}],"resourceTypes":[{"resourceType":"sourceControlConfigurations","locations":["East
+        US","Jio India Central","India South Central","West Europe","West Central
+        US","West US 2","West US 3","South Central US","East US 2","North Europe","UK
+        South","Southeast Asia","Australia East","France Central","Central US","North
+        Central US","West US","Korea Central","East Asia","Japan East","Canada East","Canada
+        Central","Norway East","Germany West Central","Italy North","Israel Central","Poland
+        Central","Sweden Central","Switzerland North","Australia Southeast","Central
+        India","South India","Japan West","Uk West","France South","Korea South","South
+        Africa North","Brazil South","Uae North","Norway West","Germany North","Jio
+        India West","West India","Australia Central","Australia Central 2","Switzerland
+        West","South Africa West","Brazil Southeast","Spain Central","New Zealand
+        North","Mexico Central","Austria East","Malaysia West","Chile Central","Belgium
+        Central","Denmark East","Qatar Central","UAE Central","Indonesia Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2023-05-01","2022-11-01","2022-07-01","2022-03-01","2021-03-01","2020-10-01-preview","2020-07-01-preview","2019-11-01-preview"],"defaultApiVersion":"2023-05-01","capabilities":"SupportsExtension"},{"resourceType":"extensions","locations":["East
+        US","Jio India Central","India South Central","West Europe","West Central
+        US","West US 2","West US 3","South Central US","East US 2","North Europe","UK
+        South","Southeast Asia","Australia East","France Central","Central US","North
+        Central US","West US","Korea Central","East Asia","Japan East","Canada East","Canada
+        Central","Norway East","Germany West Central","Italy North","Israel Central","Poland
+        Central","Sweden Central","Switzerland North","Australia Southeast","Central
+        India","South India","Japan West","Uk West","France South","Korea South","South
+        Africa North","Brazil South","Uae North","Norway West","Germany North","Jio
+        India West","West India","Australia Central","Australia Central 2","Switzerland
+        West","South Africa West","Brazil Southeast","Spain Central","New Zealand
+        North","Mexico Central","Austria East","Malaysia West","Chile Central","Belgium
+        Central","Denmark East","Qatar Central","UAE Central","Indonesia Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2025-03-01","2024-11-01","2023-05-01","2022-11-01","2022-07-01","2022-03-01","2020-07-01-preview"],"defaultApiVersion":"2023-05-01","capabilities":"SystemAssignedResourceIdentity,
+        SupportsExtension"},{"resourceType":"fluxConfigurations","locations":["East
+        US","Jio India Central","India South Central","West Europe","West Central
+        US","West US 2","West US 3","South Central US","East US 2","North Europe","UK
+        South","Southeast Asia","Australia East","France Central","Central US","North
+        Central US","West US","Korea Central","East Asia","Japan East","Canada East","Canada
+        Central","Norway East","Germany West Central","Italy North","Israel Central","Poland
+        Central","Sweden Central","Switzerland North","Australia Southeast","Central
+        India","South India","Japan West","Uk West","Korea South","France South","South
+        Africa North","Brazil South","Uae North","Norway West","Germany North","Jio
+        India West","West India","Australia Central","Australia Central 2","Switzerland
+        West","South Africa West","Brazil Southeast","Spain Central","New Zealand
+        North","Mexico Central","Austria East","Malaysia West","Chile Central","Belgium
+        Central","Denmark East","Qatar Central","UAE Central","Indonesia Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2025-04-01","2024-11-01","2024-04-01-preview","2023-05-01","2022-11-01","2022-07-01","2022-03-01","2022-01-01-preview","2021-11-01-preview","2021-06-01-preview"],"defaultApiVersion":"2023-05-01","capabilities":"SupportsExtension"},{"resourceType":"namespaces","locations":["Jio
+        India Central","India South Central","Brazil Southeast"],"apiVersions":["2021-12-01-preview"],"defaultApiVersion":"2021-12-01-preview","capabilities":"SupportsExtension"},{"resourceType":"operations","locations":[],"apiVersions":["2025-04-01","2025-03-01","2024-11-01-preview","2024-11-01","2024-04-01-preview","2023-05-01-preview","2023-05-01","2022-11-01","2022-03-01","2022-01-01-preview","2021-12-01-preview","2021-11-01-preview","2021-09-01","2021-06-01-preview","2021-05-01-preview","2021-03-01","2020-10-01-preview","2020-07-01-preview","2019-11-01-preview"],"capabilities":"None"},{"resourceType":"extensionTypes","locations":["West
+        US 2","East US","Jio India Central","India South Central","West Europe","West
+        Central US","West US 3","South Central US","East US 2","North Europe","UK
+        South","Southeast Asia","Australia East","France Central","Central US","North
+        Central US","West US","Korea Central","East Asia","Japan East","Canada Central","Canada
+        East","Norway East","Central India","South India","Australia Southeast","Germany
+        West Central","Italy North","Israel Central","Poland Central","Switzerland
+        North","Sweden Central","Japan West","Uk West","Korea South","France South","South
+        Africa North","Brazil South","Uae North","Norway West","Germany North","Jio
+        India West","West India","Australia Central","Australia Central 2","Switzerland
+        West","South Africa West","Brazil Southeast","Spain Central","New Zealand
+        North","Mexico Central","Austria East","Malaysia West","Chile Central","Belgium
+        Central","Denmark East","Qatar Central","UAE Central","Indonesia Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2024-11-01-preview","2023-05-01-preview","2022-01-15-preview"],"capabilities":"SupportsExtension"},{"resourceType":"locations","locations":["East
+        US 2 EUAP","West US 2","East US","West Europe","West Central US","West US
+        3","South Central US","East US 2","North Europe","UK South","Southeast Asia","Australia
+        East","France Central","Central US","North Central US","West US","Korea Central","East
+        Asia","Japan East","Canada Central","Canada East","Central India","South India","Norway
+        East","Australia Southeast","Germany West Central","Switzerland North","Sweden
+        Central","Japan West","Uk West","Korea South","France South","South Africa
+        North","Brazil South","Uae North","Norway West","Germany North","Jio India
+        West","West India","Australia Central","Australia Central 2","Switzerland
+        West","South Africa West","Brazil Southeast","Spain Central","Mexico Central","New
+        Zealand North","Indonesia Central","Chile Central","Malaysia West","Denmark
+        East","Austria East","Belgium Central"],"apiVersions":["2023-05-01-preview","2022-01-15-preview"],"capabilities":"None"},{"resourceType":"locations/extensionTypes","locations":["West
+        US 2","East US","Jio India Central","India South Central","West Europe","West
+        Central US","West US 3","South Central US","East US 2","North Europe","UK
+        South","Southeast Asia","Australia East","France Central","Central US","North
+        Central US","West US","Korea Central","East Asia","Japan East","Canada Central","Canada
+        East","Central India","South India","Norway East","Australia Southeast","Germany
+        West Central","Italy North","Israel Central","Poland Central","Switzerland
+        North","Sweden Central","Japan West","Uk West","Korea South","France South","South
+        Africa North","Brazil South","Uae North","Norway West","Germany North","Jio
+        India West","West India","Australia Central","Australia Central 2","Switzerland
+        West","South Africa West","Brazil Southeast","Spain Central","New Zealand
+        North","Mexico Central","Austria East","Malaysia West","Chile Central","Belgium
+        Central","Denmark East","Qatar Central","UAE Central","Indonesia Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2024-11-01-preview","2023-05-01-preview","2022-01-15-preview"],"capabilities":"None"},{"resourceType":"locations/extensionTypes/versions","locations":["West
+        US 2","East US","Jio India Central","India South Central","West Europe","West
+        Central US","West US 3","South Central US","East US 2","North Europe","UK
+        South","Southeast Asia","Australia East","France Central","Central US","North
+        Central US","West US","Korea Central","East Asia","Japan East","Canada Central","Canada
+        East","Central India","Norway East","Australia Southeast","Germany West Central","Italy
+        North","Israel Central","Poland Central","Switzerland North","Sweden Central","Denmark
+        East","Japan West","Uk West","Korea South","France South","South Africa North","South
+        India","Brazil South","Uae North","Norway West","Germany North","Jio India
+        West","West India","Australia Central","Australia Central 2","Switzerland
+        West","South Africa West","Brazil Southeast","Spain Central","East US 2 EUAP","Central
+        US EUAP"],"apiVersions":["2024-11-01-preview","2023-05-01-preview","2022-01-15-preview"],"capabilities":"None"},{"resourceType":"privateLinkScopes","locations":["East
+        US","Jio India Central","India South Central","West Europe","West Central
+        US","West US 2","West US 3","South Central US","East US 2","North Europe","UK
+        South","Southeast Asia","Australia East","France Central","Central US","North
+        Central US","West US","Korea Central","East Asia","Japan East","Canada East","Canada
+        Central","Norway East","Germany West Central","Italy North","Israel Central","Poland
+        Central","Sweden Central","Switzerland North","Australia Southeast","Central
+        India","South India","Japan West","Uk West","Korea South","France South","South
+        Africa North","Brazil South","Uae North","Norway West","Germany North","Jio
+        India West","West India","Australia Central","Australia Central 2","Switzerland
+        West","South Africa West","Brazil Southeast","Spain Central","New Zealand
+        North","Mexico Central","Austria East","Malaysia West","Chile Central","Belgium
+        Central","Denmark East","Qatar Central","UAE Central","Indonesia Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2024-11-01-preview","2022-04-02-preview"],"capabilities":"SupportsTags,
+        SupportsLocation"},{"resourceType":"privateLinkScopes/privateEndpointConnections","locations":["East
+        US","Jio India Central","India South Central","West Europe","West Central
+        US","West US 2","West US 3","South Central US","East US 2","North Europe","UK
+        South","Southeast Asia","Australia East","France Central","Central US","North
+        Central US","West US","Korea Central","East Asia","Japan East","Canada East","Canada
+        Central","Norway East","Germany West Central","Italy North","Israel Central","Poland
+        Central","Sweden Central","Switzerland North","Australia Southeast","Central
+        India","South India","Japan West","Uk West","France South","Korea South","South
+        Africa North","Brazil South","Uae North","Norway West","Germany North","Jio
+        India West","West India","Australia Central","Australia Central 2","Switzerland
+        West","South Africa West","Brazil Southeast","Spain Central","New Zealand
+        North","Mexico Central","Austria East","Malaysia West","Chile Central","Belgium
+        Central","Denmark East","Qatar Central","UAE Central","Indonesia Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2024-11-01-preview","2022-04-02-preview"],"capabilities":"None"},{"resourceType":"privateLinkScopes/privateEndpointConnectionProxies","locations":["East
+        US","Jio India Central","India South Central","West Europe","West Central
+        US","West US 2","West US 3","South Central US","East US 2","North Europe","UK
+        South","Southeast Asia","Australia East","France Central","Central US","North
+        Central US","West US","Korea Central","East Asia","Japan East","Canada East","Canada
+        Central","Norway East","Germany West Central","Italy North","Israel Central","Poland
+        Central","Sweden Central","Switzerland North","Australia Southeast","Central
+        India","South India","Japan West","Uk West","South Africa North","Korea South","France
+        South","Brazil South","Uae North","Norway West","Germany North","Jio India
+        West","West India","Australia Central","Australia Central 2","Switzerland
+        West","South Africa West","Brazil Southeast","Spain Central","New Zealand
+        North","Mexico Central","Austria East","Malaysia West","Chile Central","Belgium
+        Central","Denmark East","Qatar Central","UAE Central","Indonesia Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2024-11-01-preview","2022-04-02-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12928'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Sep 2026 20:17:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -c --cluster-type --extension-type --scope --no-wait
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/britania-flux-test/providers/Microsoft.ContainerService/fleets/cli-test-fleet-hub?api-version=2026-06-01
+  response:
+    body:
+      string: '{"eTag":"\"1100ffe4-0000-0800-0000-6aac4ac50000\"","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/britania-flux-test/providers/Microsoft.ContainerService/fleets/cli-test-fleet-hub","identity":{"type":"None"},"location":"westus2","name":"cli-test-fleet-hub","properties":{"hubProfile":{"agentProfile":{},"apiServerAccessProfile":{"enablePrivateCluster":false,"enableVnetIntegration":false},"fqdn":"hub-vctsqr-vqnwy6m9.hcp.westus2.staging.azmk8s.io","kubernetesVersion":"1.36.4","portalFqdn":"hub-vctsqr-vqnwy6m9.portal.hcp.westus2.staging.azmk8s.io"},"provisioningState":"Succeeded","status":{"lastOperationId":"4851a086-40bf-41d1-9541-9ba8066bae25"}},"systemData":{"createdAt":"2026-09-17T20:11:16.4805056Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-09-17T20:11:16.4805056Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '944'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Sep 2026 20:17:52 GMT
+      expires:
+      - '-1'
+      fleet-configuration-version:
+      - v20260722.1
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"extensionType": "microsoft.flux", "scope": {"cluster":
+      {}}, "configurationSettings": {}, "configurationProtectedSettings": {}}, "identity":
+      {"type": "SystemAssigned"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '184'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -c --cluster-type --extension-type --scope --no-wait
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/britania-flux-test/providers/Microsoft.ContainerService/fleets/cli-test-fleet-hub/providers/Microsoft.KubernetesConfiguration/extensions/cli-test-flux?api-version=2025-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/britania-flux-test/providers/Microsoft.ContainerService/fleets/cli-test-fleet-hub/providers/Microsoft.KubernetesConfiguration/extensions/cli-test-flux","name":"cli-test-flux","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.flux","autoUpgradeMinorVersion":true,"autoUpgradeMode":"compatible","releaseTrain":"Stable","version":null,"currentVersion":null,"scope":{"cluster":{"releaseNamespace":"flux-system"}},"provisioningState":"Creating","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null,"isSystemExtension":false,"extensionState":null,"additionalDetails":{"docs":null,"releaseNotes":null,"troubleshootingGuide":null}},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-09-17T20:17:56.5257594+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-09-17T20:17:57.8364262+00:00"}}'
+    headers:
+      api-supported-versions:
+      - '2025-03-01'
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/britania-flux-test/providers/Microsoft.ContainerService/Fleets/cli-test-fleet-hub/providers/Microsoft.KubernetesConfiguration/extensions/cli-test-flux/operations/58cdf34c-5b6f-4ffa-ac31-6f33e5e4cefc?api-version=2025-03-01&t=639252730781141426&c=MIIHlTCCBn2gAwIBAgIRALL5l5S5oywZFcXHRxM5r3QwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVVTMiBDQSAwMTAeFw0yNjA4MTcwMzIwMzNaFw0yNzAyMTIwOTIwMzNaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtdwMuItv_qhgk-51bllpvlrjpXOkiVW2hERWoh8zybSjxa3fUl5FChxCr8t9gdZlXksKb7bOA4AFEVXk2kmB_4bkUFls4oIClJRneME6AaV5m4rWxgLfWcI7LXzQoiph-JiQ8amECpD6HrtfEytxOEOUTeTunaI48ZT_HIYhsoa4hPyb3DVq4_dvEEs0TdFKGU0ROPT98mtSvJUZzz2Fh32gkFCgXMjWN4YxReh7A38OJjkZK1ebSYqJjSlzmxjqUXZZW2tZVJA_0nDzD6uTel7Gbg2hQLeO9jOg4zYhDmiFwArbKbLckdOcU8H01eaP53JJzBm8q6BhCLf_eRukTQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU_7velGQ9kafWFOVnIMX4WLH-tEEwHwYDVR0jBBgwFoAU_Ow-26p8H4IeBbihBvlD5wKzCrkwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzI4L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NybHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS8yOC9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzI4L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZWVhc3R1czJwa2kuZWFzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyaWNhMDEvMjgvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY2FjZXJ0cy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAawhbsr1c-5lgatQgLWzPAdj09YYgJglF7rSb5QegP5qYq-7oN7NLpdtPYBTX1-4yAEQrf5aHHIRMw7pDXKqkUb7yrxgKOKAqlhoh9Q1I0Ey00cMxSvvBwmre9B5QCl7X3-_cY9o4F5tqzzbpGIn6K4Do7y_DEvhYpzPQJkmxxFFMrdIGuhsgXINGO0iw8TP0lDXQEFzwBPCOMdO0A7NdpEOUvjszTC4fb2oVr6JWkJbigsX_JgJjURg9DEo0erCeg6PpsoLJTYFR_kBbGAH7zZG5cD8eb38ZZ0KpwHcase4L39MVmejYzGq6PjyUydNm507TP4RI2WHF7k58oU_j5Q&s=B7oztAIMv7_Clm-9hdZrSOiWpkhihzLbsMRjFU0JE48SvVHjZQuKeqxG6llEAcx6fBDsTGupqDN8vzYi3TBxNuWW8ls-JLTmp7-0gQzOL7h3Mz_G6qmYGKyseriwaNmcQ6zyKGNkrbPwokjxlsQ9qmUAwQk9D5XDkeOylJCaAr_CywxigA_PXGedFxYn2rea67RCwrEn1vtWNM_XlRO1crSIFDLr_bsiwoaF4cYke-KsQUE7khdT0cuhvHzaEFwl8WvvYpE4i62mRc8ghO4poZxJkDf0QrV7xyQe83-Va56bMsGUvjQIqItUHTB5nzA3XTXRLQHY-IGK2GaSLjXxgg&h=pK5NDB8ORRZZimlRxYDmPwRrz6DmMSckLlE5VGjCnJc
+      cache-control:
+      - no-cache
+      content-length:
+      - '996'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Sep 2026 20:17:57 GMT
+      expires:
+      - '-1'
+      location:
+      - https://westus2.rp.kubernetesconfiguration.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/britania-flux-test/providers/Microsoft.ContainerService/Fleets/cli-test-fleet-hub/providers/Microsoft.KubernetesConfiguration/extensions/cli-test-flux
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/southcentralus/1cf93959-2ab9-4470-93d0-608a379c651d
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -c --cluster-type
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/britania-flux-test/providers/Microsoft.ContainerService/fleets/cli-test-fleet-hub/providers/Microsoft.KubernetesConfiguration/extensions/cli-test-flux?api-version=2025-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/britania-flux-test/providers/Microsoft.ContainerService/fleets/cli-test-fleet-hub/providers/Microsoft.KubernetesConfiguration/extensions/cli-test-flux","name":"cli-test-flux","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.flux","autoUpgradeMinorVersion":true,"autoUpgradeMode":"compatible","releaseTrain":"Stable","version":null,"currentVersion":null,"scope":{"cluster":{"releaseNamespace":"flux-system"}},"provisioningState":"Failed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[{"code":"InstallationFailed","displayStatus":null,"level":null,"message":"The
+        fleet notify operation failed. Please retry the request; if the issue persists,
+        contact support. . For general troubleshooting visit: https://aka.ms/k8s-extensions-TSG
+        ","time":null}],"aksAssignedIdentity":null,"isSystemExtension":false,"extensionState":null,"additionalDetails":{"docs":null,"releaseNotes":null,"troubleshootingGuide":null}},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-09-17T20:17:56.5257594+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-09-17T20:17:57.8364262+00:00"}}'
+    headers:
+      api-supported-versions:
+      - '2025-03-01'
+      cache-control:
+      - no-cache
+      content-length:
+      - '1254'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Sep 2026 20:17:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/southcentralus/a303d056-a14b-452e-a9eb-e05020ad3c11
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c --cluster-type
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/britania-flux-test/providers/Microsoft.ContainerService/fleets/cli-test-fleet-hub/providers/Microsoft.KubernetesConfiguration/extensions?api-version=2025-03-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/britania-flux-test/providers/Microsoft.ContainerService/fleets/cli-test-fleet-hub/providers/Microsoft.KubernetesConfiguration/extensions/cli-test-flux","name":"cli-test-flux","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.flux","autoUpgradeMinorVersion":true,"autoUpgradeMode":"compatible","releaseTrain":"Stable","version":null,"currentVersion":null,"scope":{"cluster":{"releaseNamespace":"flux-system"}},"provisioningState":"Failed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[{"code":"InstallationFailed","displayStatus":null,"level":null,"message":"The
+        fleet notify operation failed. Please retry the request; if the issue persists,
+        contact support. . For general troubleshooting visit: https://aka.ms/k8s-extensions-TSG
+        ","time":null}],"aksAssignedIdentity":null,"isSystemExtension":false,"extensionState":null,"additionalDetails":{"docs":null,"releaseNotes":null,"troubleshootingGuide":null}},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-09-17T20:17:56.5257594+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-09-17T20:17:57.8364262+00:00"}}],"nextLink":null}'
+    headers:
+      api-supported-versions:
+      - '2025-03-01'
+      cache-control:
+      - no-cache
+      content-length:
+      - '1282'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Sep 2026 20:18:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/southcentralus/aa1b8a29-d78a-4f93-9f6f-c6a44a84f8a0
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -c --cluster-type --force --no-wait -y
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/britania-flux-test/providers/Microsoft.ContainerService/fleets/cli-test-fleet-hub/providers/Microsoft.KubernetesConfiguration/extensions/cli-test-flux?api-version=2025-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/britania-flux-test/providers/Microsoft.ContainerService/fleets/cli-test-fleet-hub/providers/Microsoft.KubernetesConfiguration/extensions/cli-test-flux","name":"cli-test-flux","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.flux","autoUpgradeMinorVersion":true,"autoUpgradeMode":"compatible","releaseTrain":"Stable","version":null,"currentVersion":null,"scope":{"cluster":{"releaseNamespace":"flux-system"}},"provisioningState":"Failed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[{"code":"InstallationFailed","displayStatus":null,"level":null,"message":"The
+        fleet notify operation failed. Please retry the request; if the issue persists,
+        contact support. . For general troubleshooting visit: https://aka.ms/k8s-extensions-TSG
+        ","time":null}],"aksAssignedIdentity":null,"isSystemExtension":false,"extensionState":null,"additionalDetails":{"docs":null,"releaseNotes":null,"troubleshootingGuide":null}},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-09-17T20:17:56.5257594+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-09-17T20:17:57.8364262+00:00"}}'
+    headers:
+      api-supported-versions:
+      - '2025-03-01'
+      cache-control:
+      - no-cache
+      content-length:
+      - '1254'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Sep 2026 20:18:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/southcentralus/8cc20fee-224d-4591-a688-de023fe9a5f7
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16498'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n -c --cluster-type --force --no-wait -y
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/britania-flux-test/providers/Microsoft.ContainerService/fleets/cli-test-fleet-hub/providers/Microsoft.KubernetesConfiguration/extensions/cli-test-flux?api-version=2025-03-01&forceDelete=true
+  response:
+    body:
+      string: '{"version":"1.1","content":{"headers":[]},"statusCode":200,"reasonPhrase":"OK","headers":[],"trailingHeaders":[],"requestMessage":null,"isSuccessStatusCode":true}'
+    headers:
+      api-supported-versions:
+      - '2025-03-01'
+      cache-control:
+      - no-cache
+      content-length:
+      - '162'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Sep 2026 20:18:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/southcentralus/b705a9fe-ecbe-440d-9f1d-2d22e7d4f1eb
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+    status:
+      code: 200
+      message: OK
+version: 1

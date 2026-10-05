@@ -11,7 +11,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 
 from azext_aimanager import custom
 from azext_aimanager._validators import validate_ai_model_name
-from azext_aimanager.vendored_sdks.v2026_05_02_preview import models
+from azext_aimanager.vendored_sdks.v2026_09_02_preview import models
 
 
 class MockCmd:
@@ -41,19 +41,14 @@ class TestAIModel(unittest.TestCase):
         self.assertEqual(result, ["model"])
         self.client.list.assert_called_once_with("eastus2")
 
-    def test_calculate_aimodel_cost_sends_empty_request_body(self):
+    def test_calculate_aimodel_cost(self):
         self.client.calculate_cost.return_value = "plans"
 
         result = custom.calculate_aimodel_cost(
             self.cmd, self.client, "eastus2", "9806f0c862fdd920")
 
         self.assertEqual(result, "plans")
-        self.client.calculate_cost.assert_called_once()
-        location, ai_model_name, body = self.client.calculate_cost.call_args[0]
-        self.assertEqual(location, "eastus2")
-        self.assertEqual(ai_model_name, "9806f0c862fdd920")
-        self.assertIsInstance(body, models.CalculateCostRequest)
-        self.assertEqual(dict(body), {})
+        self.client.calculate_cost.assert_called_once_with("eastus2", "9806f0c862fdd920")
 
 
 class TestAIModelValidators(unittest.TestCase):

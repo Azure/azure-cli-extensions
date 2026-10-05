@@ -129,7 +129,7 @@ Command tree from `spec/az migrate runbooks cli - spec.md` (Appendix A) and REST
 | `migrate runbook` | `generate`, `show`, `list`, `update`, `delete`, `wait` | ARM resource `.../migrateProjects/{p}/runbooks/{n}` |
 | `migrate runbook definition` | `show`, `download`, `visualize` | definition document / files / client-side |
 | `migrate runbook definition step` | `add`, `update`, `remove` | sub-objects of definition (read-modify-write) |
-| `migrate runbook definition workstream` | `split`, `merge` | sub-objects of definition |
+| `migrate runbook definition step-group` | `split`, `merge` | sub-objects of definition (display term "step group"; wire/spec.json keys stay `workstreams`/`workstreamId`) |
 | `migrate runbook parameter` | `download`, `upload` | parameters file (SAS blob) |
 | `migrate runbook execution` | `start`, `pause`, `resume`, `cancel`, `show`, `list`, `visualize` | ARM child `.../runbooks/{n}/executions/{id}` |
 | `migrate runbook execution step` | `retry`, `approve`, `complete` | action on a step within an execution |
@@ -246,7 +246,7 @@ src/migrate/
 │       │   ├── runbook.py                 # `migrate runbook`                       generate/show/list/update/delete/wait/regenerate
 │       │   ├── definition.py              # `migrate runbook definition`            show/download/visualize
 │       │   ├── definition_step.py         # `migrate runbook definition step`       add/update/remove   (nested subgroup)
-│       │   ├── definition_workstream.py   # `migrate runbook definition workstream` split/merge         (nested subgroup)
+│       │   ├── definition_workstream.py   # `migrate runbook definition step-group` split/merge         (nested subgroup; file/internal names stay "workstream")
 │       │   ├── parameter.py               # `migrate runbook parameter`             download/upload
 │       │   ├── execution.py               # `migrate runbook execution`             start/show/list/pause/resume/cancel/visualize
 │       │   └── execution_step.py          # `migrate runbook execution step`        retry/approve/complete    (nested subgroup)
@@ -656,8 +656,8 @@ what we explicitly reject:
 **Adopt (layout / view-model ideas):**
 
 - **The intended visualization is a portal-style, workstream-grouped list — not (only) a node-link SVG
-  DAG.** This matches the 4 portal screenshots. The primary view is a grid grouped by workstream with a
-  group header `Workstream: <name> (<count>)`, and a **"Step dependency" text-summary column** rather than
+  DAG.** This matches the 4 portal screenshots. The primary view is a grid grouped by step group with a
+  group header `Step group: <name> (<count>)`, and a **"Step dependency" text-summary column** rather than
   a drawn graph. The SVG DAG (§7.1) becomes secondary/optional; the grouped grid is the default.
 - **Two panels sharing one visual style:** a **Planning** view (definition) and an **Execution** view
   (status). Planning columns: **Steps** (icon + display name + `stepRef` badge), **Configuration status**

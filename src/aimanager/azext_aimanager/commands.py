@@ -29,25 +29,25 @@ from azext_aimanager._client_factory import (
 def load_command_table(self, _):
 
     ai_managers_sdk = CliCommandType(
-        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#AIManagersOperations.{}",
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_09_02_preview.operations._operations#AIManagersOperations.{}",
         operation_group="ai_managers",
         client_factory=cf_ai_managers
     )
 
     ai_manager_namespaces_sdk = CliCommandType(
-        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#AIManagerNamespacesOperations.{}",
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_09_02_preview.operations._operations#AIManagerNamespacesOperations.{}",
         operation_group="ai_manager_namespaces",
         client_factory=cf_ai_manager_namespaces
     )
 
     model_deployments_sdk = CliCommandType(
-        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#ModelDeploymentsOperations.{}",
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_09_02_preview.operations._operations#ModelDeploymentsOperations.{}",
         operation_group="model_deployments",
         client_factory=cf_model_deployments
     )
 
     ai_models_sdk = CliCommandType(
-        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#AIModelsOperations.{}",
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_09_02_preview.operations._operations#AIModelsOperations.{}",
         operation_group="ai_models",
         client_factory=cf_ai_models
     )
@@ -64,7 +64,7 @@ def load_command_table(self, _):
 
     # aimanager namespace command group
     with self.command_group("aimanager namespace", ai_manager_namespaces_sdk, client_factory=cf_ai_manager_namespaces, is_preview=True) as g:
-        g.custom_command("add", "add_aimanager_namespace", supports_no_wait=True)
+        g.custom_command("create", "create_aimanager_namespace", supports_no_wait=True)
         g.custom_command("update", "update_aimanager_namespace", supports_no_wait=True)
         g.custom_show_command("show", "show_aimanager_namespace", table_transformer=namespace_table_format)
         g.custom_command("list", "list_aimanager_namespace", table_transformer=namespace_list_table_format)
@@ -75,14 +75,14 @@ def load_command_table(self, _):
         g.wait_command("wait")
 
     model_sources_sdk = CliCommandType(
-        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#ModelSourcesOperations.{}",
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_09_02_preview.operations._operations#ModelSourcesOperations.{}",
         operation_group="model_sources",
         client_factory=cf_model_sources
     )
 
     # aimanager modelsource command group
     with self.command_group("aimanager modelsource", model_sources_sdk, client_factory=cf_model_sources) as g:
-        g.custom_command("add", "add_modelsource", supports_no_wait=True)
+        g.custom_command("create", "create_modelsource", supports_no_wait=True)
         g.custom_command("update", "update_modelsource", supports_no_wait=True)
         g.custom_show_command("show", "show_modelsource")
         g.custom_command("list", "list_modelsource")
@@ -92,7 +92,7 @@ def load_command_table(self, _):
     # aimanager namespace modeldeployment command group
     with self.command_group("aimanager namespace modeldeployment", model_deployments_sdk,
                             client_factory=cf_model_deployments, is_preview=True) as g:
-        g.custom_command("add", "add_modeldeployment", supports_no_wait=True)
+        g.custom_command("create", "create_modeldeployment", supports_no_wait=True)
         g.custom_command("update", "update_modeldeployment", supports_no_wait=True)
         g.custom_show_command("show", "show_modeldeployment", table_transformer=modeldeployment_table_format)
         g.custom_command("list", "list_modeldeployment", table_transformer=modeldeployment_list_table_format)

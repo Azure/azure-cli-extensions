@@ -40,6 +40,8 @@ def get_cluster_rp_api_version(cluster_type, cluster_rp=None) -> Tuple[str, str]
         )
     if cluster_type.lower() == consts.CONNECTED_CLUSTER_TYPE:
         return consts.CONNECTED_CLUSTER_RP, consts.CONNECTED_CLUSTER_API_VERSION
+    if cluster_type.lower() == consts.FLEET_TYPE:
+        return consts.FLEET_RP, consts.FLEET_API_VERSION
     if cluster_type.lower() == consts.APPLIANCE_TYPE:
         return consts.APPLIANCE_RP, consts.APPLIANCE_API_VERSION
     if (

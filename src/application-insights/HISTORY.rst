@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.0.0b2
+++++++++++++++++++
+* Pre-announce the `az monitor app-insights query` breaking change planned for `3.0.0b1`: the default `--offset` will change from one hour to not set.
+
 2.0.0b1
 ++++++++++++++++++
 * `az monitor app-insights events/metrics/query`: Migrate data-plane using codegen tool

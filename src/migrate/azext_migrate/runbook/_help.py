@@ -14,6 +14,11 @@ helps['migrate runbook'] = """
         executions. This command group is in preview and under active
         development; additional subgroups and commands are added
         incrementally.
+
+        To avoid repeating --resource-group/-g and --project-name/-p on
+        every command, set defaults once. For example:
+        `az configure --defaults group=<rg> migrate_project=<name>`.
+        Once set, -g and -p can be omitted; an explicit flag always wins.
 """
 
 
@@ -108,11 +113,11 @@ helps['migrate runbook definition show'] = """
           text: |
             az migrate runbook definition show -g myRg \\
               --project-name myProject -n myRunbook
-        - name: Show a single workstream in a runbook definition.
+        - name: Show a single step group in a runbook definition.
           text: |
             az migrate runbook definition show -g myRg \\
               --project-name myProject -n myRunbook \\
-              --workstream-id myWorkstream
+              --step-group-id myStepGroup
 """
 
 
@@ -136,10 +141,14 @@ helps['migrate runbook definition visualize'] = """
     type: command
     short-summary: Render the runbook definition as a self-contained HTML page.
     examples:
-        - name: Visualize a runbook definition and open it in the browser.
+        - name: Visualize a runbook definition (opens in the browser).
           text: |
             az migrate runbook definition visualize -g myRg \\
-              --project-name myProject -n myRunbook --open
+              --project-name myProject -n myRunbook
+        - name: Write the HTML without opening a browser.
+          text: |
+            az migrate runbook definition visualize -g myRg \\
+              --project-name myProject -n myRunbook --no-open
         - name: Visualize from a local definition file.
           text: |
             az migrate runbook definition visualize \\
@@ -157,24 +166,38 @@ helps['migrate runbook definition step add'] = """
     type: command
     short-summary: Add a step to the runbook definition.
     examples:
-        - name: Add a manual step to a workstream.
+        - name: Add a manual step to a step group.
           text: |
             az migrate runbook definition step add -g myRg \\
               --project-name myProject -n myRunbook \\
               --step-type Manual --step-name "Verify cutover" \\
-              --workstream-id workstream-0
-        - name: Add an approval step that depends on another step.
+              --step-group-id workstream-0
+        - name: Add an approval step that waits for a whole step.
           text: |
             az migrate runbook definition step add -g myRg \\
               --project-name myProject -n myRunbook \\
               --step-type Approval --step-name "Change approval" \\
-              --workstream-id workstream-0 --depends-on step0
+              --step-group-id workstream-0 --depends-on-whole-step step0
+        - name: Add an approval that waits per entity (same entity upstream).
+          text: |
+            az migrate runbook definition step add -g myRg \\
+              --project-name myProject -n myRunbook \\
+              --step-type Approval --step-name "Approve cutover" \\
+              --step-group-id workstream-0 --migration-entity-ids e1 e2 \\
+              --depends-on-per-entity prepare-1
+        - name: Add an approval with mapped-entity dependencies.
+          text: |
+            az migrate runbook definition step add -g myRg \\
+              --project-name myProject -n myRunbook \\
+              --step-type Approval --step-name "Approve" \\
+              --step-group-id workstream-0 --migration-entity-ids e1 e2 \\
+              --depends-on-mapped-entities "enable-1=e1:f1,e2:f2"
         - name: Add a manual step scoped to specific migration entities.
           text: |
             az migrate runbook definition step add -g myRg \\
               --project-name myProject -n myRunbook \\
               --step-type Manual --step-name "Post checks" \\
-              --workstream-id workstream-0 \\
+              --step-group-id workstream-0 \\
               --migration-entity-ids entity1 entity2
 """
 
@@ -183,12 +206,12 @@ helps['migrate runbook definition step update'] = """
     type: command
     short-summary: Update a step in the runbook definition.
     examples:
-        - name: Rename a step and change its dependencies.
+        - name: Rename a step and replace its dependencies.
           text: |
             az migrate runbook definition step update -g myRg \\
               --project-name myProject -n myRunbook \\
               --step-id step1 --step-name "New name" \\
-              --depends-on step0
+              --depends-on-whole-step step0
 """
 
 
@@ -203,36 +226,36 @@ helps['migrate runbook definition step remove'] = """
 """
 
 
-helps['migrate runbook definition workstream'] = """
+helps['migrate runbook definition step-group'] = """
     type: group
-    short-summary: Manage workstreams in a runbook definition.
+    short-summary: Manage step groups in a runbook definition.
 """
 
 
-helps['migrate runbook definition workstream split'] = """
+helps['migrate runbook definition step-group split'] = """
     type: command
-    short-summary: Split a workstream into two workstreams.
+    short-summary: Split a step group into two step groups.
     examples:
-        - name: Move steps into a new workstream.
+        - name: Move steps into a new step group.
           text: |
-            az migrate runbook definition workstream split -g myRg \\
+            az migrate runbook definition step-group split -g myRg \\
               --project-name myProject -n myRunbook \\
-              --source-workstream-id ws1 \\
-              --new-workstream-name "Database tier" \\
+              --source-step-group-id ws1 \\
+              --new-step-group-name "Database tier" \\
               --step-ids step1 step2
 """
 
 
-helps['migrate runbook definition workstream merge'] = """
+helps['migrate runbook definition step-group merge'] = """
     type: command
-    short-summary: Merge two or more workstreams into a single workstream.
+    short-summary: Merge two or more step groups into a single step group.
     examples:
-        - name: Merge two workstreams.
+        - name: Merge two step groups.
           text: |
-            az migrate runbook definition workstream merge -g myRg \\
+            az migrate runbook definition step-group merge -g myRg \\
               --project-name myProject -n myRunbook \\
-              --source-workstream-ids ws1 ws2 \\
-              --new-workstream-name "Combined tier"
+              --source-step-group-ids ws1 ws2 \\
+              --new-step-group-name "Combined tier"
 """
 
 
@@ -348,11 +371,11 @@ helps['migrate runbook execution visualize'] = """
     type: command
     short-summary: Render an execution's status as a self-contained HTML graph.
     examples:
-        - name: Visualize an execution's status and open it in the browser.
+        - name: Visualize an execution's status (opens in the browser).
           text: |
             az migrate runbook execution visualize -g myRg \\
               --project-name myProject --runbook-name myRunbook \\
-              --execution-id myExecution --open
+              --execution-id myExecution
         - name: Regenerate the snapshot on an interval until it completes.
           text: |
             az migrate runbook execution visualize -g myRg \\
@@ -412,18 +435,26 @@ helps['migrate runbook execution step complete'] = """
 
 helps['migrate runbook parameter'] = """
     type: group
-    short-summary: Download and upload a runbook's parameters (inputs) file.
+    short-summary: Download, upload, and configure a runbook's parameters (inputs) file.
 """
 
 
 helps['migrate runbook parameter download'] = """
     type: command
-    short-summary: Download the runbook's parameters file.
+    short-summary: Download the runbook's parameters files.
+    long-summary: >
+        Downloads the parameters file (inputs.json) and, when the validation
+        schema is shipped separately, schema.json, into a directory.
     examples:
-        - name: Download the parameters file to the current directory.
+        - name: Download the parameters files to the current directory.
           text: |
             az migrate runbook parameter download -g myRg \\
               --project-name myProject --runbook-name myRunbook
+        - name: Download the parameters files to a directory.
+          text: |
+            az migrate runbook parameter download -g myRg \\
+              --project-name myProject --runbook-name myRunbook \\
+              --directory ./params
 """
 
 
@@ -439,21 +470,44 @@ helps['migrate runbook parameter upload'] = """
 """
 
 
+helps['migrate runbook parameter configure'] = """
+    type: command
+    short-summary: Generate an offline HTML editor for the parameters file.
+    long-summary: >
+        Downloads the runbook's inputs and renders a self-contained HTML page
+        for editing them, with fields and validation driven by the schema in
+        the parameters file. The page cannot call Azure; it writes
+        inputs.json locally and shows the parameter upload command to run.
+    examples:
+        - name: Open the parameters editor for a runbook.
+          text: |
+            az migrate runbook parameter configure -g myRg \\
+              --project-name myProject --runbook-name myRunbook
+        - name: Render from a local inputs.json without contacting Azure.
+          text: |
+            az migrate runbook parameter configure \\
+              --from-file ./inputs.json --spec-file ./spec.json
+"""
+
+
 helps['migrate runbook execution parameter'] = """
     type: group
-    short-summary: Download and upload an execution's input-parameters file.
+    short-summary: Download, upload, and configure an execution's input-parameters file.
 """
 
 
 helps['migrate runbook execution parameter download'] = """
     type: command
-    short-summary: Download an execution's input-parameters file.
+    short-summary: Download an execution's parameters files.
+    long-summary: >
+        Downloads the parameters file (inputs.json) and, when the validation
+        schema is shipped separately, schema.json, into a directory.
     examples:
-        - name: Download the execution input file.
+        - name: Download the execution parameters files.
           text: |
             az migrate runbook execution parameter download -g myRg \\
               --project-name myProject --runbook-name myRunbook \\
-              --execution-id myExecution
+              --execution-id myExecution --directory ./params
 """
 
 
@@ -466,4 +520,25 @@ helps['migrate runbook execution parameter upload'] = """
             az migrate runbook execution parameter upload -g myRg \\
               --project-name myProject --runbook-name myRunbook \\
               --execution-id myExecution --file ./input.json
+"""
+
+
+helps['migrate runbook execution parameter configure'] = """
+    type: command
+    short-summary: Generate an offline HTML editor for an execution's parameters.
+    long-summary: >
+        Downloads the execution's inputs and renders a self-contained HTML
+        page for editing them, with fields and validation driven by the
+        schema in the parameters file. The page cannot call Azure; it writes
+        inputs.json locally and shows the parameter upload command to run.
+    examples:
+        - name: Open the parameters editor for an execution.
+          text: |
+            az migrate runbook execution parameter configure -g myRg \\
+              --project-name myProject --runbook-name myRunbook \\
+              --execution-id myExecution
+        - name: Render from a local inputs.json without contacting Azure.
+          text: |
+            az migrate runbook execution parameter configure \\
+              --from-file ./inputs.json
 """

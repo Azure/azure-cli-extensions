@@ -11,9 +11,6 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* `az aks nodepool update`: Preserve the existing GPU management mode when `--enable-managed-gpu` is omitted, including when enabling, updating, or disabling the cluster autoscaler.
-* `az aks alert-config add`: Reject an empty `--name` before looking up existing configurations instead of reporting that it already exists.
-* `az aks nodepool scale`: add `--use-patch-api` to optionally scale a VMSS node pool via the new dedicated PATCH agent pool API (scales to the target count without triggering full reconciliation). The default behavior continues to use the PUT agent pool API.
 * `az aks create` and `az aks update`: Reject `--enable-azure-monitor-logs` on clusters using service principal authentication, since the Azure Monitor profile onboards with managed identity only.
 * `az aks update`: Reject `--enable-azure-monitor-logs` when Azure Monitor logs is already enabled on the cluster, matching `az aks enable-addons -a monitoring`. Run `--disable-azure-monitor-logs` first to change the configuration.
 * `az aks update`: `--disable-azure-monitor-logs` now removes the data collection rule association and resets the Container Insights settings (syslog port, Prometheus scraping and container network logs) back to their defaults, and asks for confirmation when OpenTelemetry logs and traces are enabled.
@@ -37,6 +34,14 @@ Pending
 * `az aks update`: Stop reopening public network access on the ingestion data collection endpoint of a cluster that is linked to an Azure Monitor Private Link Scope. The endpoint is created or updated on every reconfiguration, but `--ampls-resource-id` is only supplied on the command that links the scope, so an unrelated update such as `--enable-syslog` used to flip an existing private endpoint back to public. The existing network configuration is now preserved unless the caller explicitly asks to change it.
 * `az aks update`: Fix `--ampls-resource-id` being rejected with `--ampls-resource-id can only be used with private cluster in MSI mode.` on a cluster that is already private. The private state was only read from the command line, so it was invisible unless `--enable-private-cluster` happened to be supplied again in the same command; it is now read from the cluster as well.
 * `az aks create` and `az aks update`: Reject `--enable-msi-auth-for-monitoring` when it is supplied alongside `--enable-azure-monitor-logs`. Onboarding through the Azure Monitor profile always uses managed identity, so the auth flag has no meaning there and was silently ignored, including when it was explicitly set to `false`.
+
+22.0.0b9
++++++++++
+* `az aks create/update`: Add `distributedAccelerator` storage option to `--enable-azure-container-storage` and `--disable-azure-container-storage` to install/uninstall the Azure Container Storage distributed accelerator controller.
+* `az aks nodepool update`: Preserve the existing GPU management mode when `--enable-managed-gpu` is omitted, including when enabling, updating, or disabling the cluster autoscaler.
+* `az aks alert-config add`: Reject an empty `--name` before looking up existing configurations instead of reporting that it already exists.
+* `az aks nodepool scale`: add `--use-patch-api` to optionally scale a VMSS node pool via the new dedicated PATCH agent pool API (scales to the target count without triggering full reconciliation). The default behavior continues to use the PUT agent pool API.
+* Add `az aks operation list` to list historical or active (`--active-only`) operations on a cluster (`--resource-group` and `--name`) or on a node pool (`--nodepool-name`).
 
 22.0.0b8
 +++++++++
@@ -816,6 +821,7 @@ Pending
 * Update --enable-advanced-network-observability description to note additional costs and add missing flag to create command.
 * Change default value of `--vm-set-type` to VirtualMachines when `--vm-sizes` is set.
 
+
 4.0.0b5
 ++++++++
 * Add warnings to `az aks mesh` commands for out of support asm revision in use.
@@ -909,6 +915,7 @@ Pending
 * Add `--sku` to the `az aks create` command.
 * Add `--sku` to the `az aks update` command.
 * Support cluster service health probe mode by `--cluster-service-load-balancer-health-probe-mode {Shared, Servicenodeport}`
+
 
 3.0.0b1
 +++++++
@@ -1030,6 +1037,7 @@ Pending
 * Add --disable-network-observability to `az aks update` cluster command.
 * Add `--node-soak-duration` to the `az aks nodepool add/update/upgrade` commands.
 * Add `--drain-timeout` to the `az aks nodepool add/update/upgrade` commands (already in [azure-cli](https://github.com/Azure/azure-cli/pull/27475)).
+
 
 0.5.168
 +++++++
