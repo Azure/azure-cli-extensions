@@ -78,6 +78,28 @@ def test_telemetry_catch_all_uses_keyword_cmd(monkeypatch):
         command(cmd=cmd)
 
     assert report_error.call_args.args[0] is cmd
+    assert report_error.call_args.kwargs["operation"] == "command"
+    assert report_error.call_args.kwargs["details"] == "failed"
+    assert isinstance(report_error.call_args.kwargs["exception"], RuntimeError)
+
+
+@pytest.mark.parametrize(
+    "handler",
+    [
+        custom.create_connectedk8s,
+        custom.update_connected_cluster,
+        custom.upgrade_agents,
+        custom.delete_connectedk8s,
+        custom.enable_features,
+        custom.disable_features,
+        custom.list_connectedk8s,
+        custom.get_connectedk8s,
+        custom.client_side_proxy_wrapper,
+        custom.troubleshoot,
+    ],
+)
+def test_registered_command_handlers_use_telemetry_catch_all(handler):
+    assert hasattr(handler, "__wrapped__")
 
 
 def test_telemetry_catch_all_does_not_report_classified_error_twice(monkeypatch):

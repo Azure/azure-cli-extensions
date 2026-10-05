@@ -8,6 +8,7 @@ from unittest.mock import MagicMock
 
 import pytest
 from azure.cli.core.azclierror import (
+    AzCLIError,
     ClientRequestError,
     CLIInternalError,
     ManualInterrupt,
@@ -21,7 +22,7 @@ from azext_connectedk8s import custom
 from azext_connectedk8s.clientproxyhelper._enums import ProxyStatus
 
 
-class ClassifiedError(Exception):
+class ClassifiedError(AzCLIError):
     pass
 
 
