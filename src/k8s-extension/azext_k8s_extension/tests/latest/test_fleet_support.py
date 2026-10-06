@@ -7,6 +7,8 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
+from azure.cli.core.azclierror import InvalidArgumentValueError
+
 from azext_k8s_extension import consts, custom
 from azext_k8s_extension._params import load_arguments
 from azext_k8s_extension.utils import get_cluster_rp_api_version
@@ -113,7 +115,7 @@ class TestFleetResourceMapping(unittest.TestCase):
             "fleet-1",
             "flux",
             "fleets",
-            "microsoft.flux",
+            "Microsoft.Flux",
         )
 
         args = mock_sdk_no_wait.call_args.args
@@ -130,10 +132,29 @@ class TestFleetResourceMapping(unittest.TestCase):
             args[:7],
         )
 
+    def test_fleet_create_rejects_non_flux_extension_type(self):
+        client = MagicMock()
+
+        with self.assertRaisesRegex(
+            InvalidArgumentValueError,
+            "The supported extension type is 'microsoft.flux'",
+        ):
+            custom.create_k8s_extension(
+                MockCommand(),
+                client,
+                "fleet-rg",
+                "fleet-1",
+                "extension-1",
+                "fleets",
+                "contoso.extension",
+            )
+
+        client.begin_create.assert_not_called()
+
     @patch.object(custom, "sdk_no_wait")
     def test_fleet_update_passes_provider_and_resource_type(self, mock_sdk_no_wait):
         client = MagicMock()
-        client.get.return_value = SimpleNamespace(extension_type="microsoft.flux")
+        client.get.return_value = SimpleNamespace(extension_type="Microsoft.Flux")
 
         custom.update_k8s_extension(
             MockCommand(), client, "fleet-rg", "fleet-1", "flux", "fleets"
@@ -153,6 +174,27 @@ class TestFleetResourceMapping(unittest.TestCase):
             args[:7],
         )
 
+    def test_fleet_update_rejects_non_flux_extension_type(self):
+        client = MagicMock()
+        client.get.return_value = SimpleNamespace(
+            extension_type="contoso.extension"
+        )
+
+        with self.assertRaisesRegex(
+            InvalidArgumentValueError,
+            "The supported extension type is 'microsoft.flux'",
+        ):
+            custom.update_k8s_extension(
+                MockCommand(),
+                client,
+                "fleet-rg",
+                "fleet-1",
+                "extension-1",
+                "fleets",
+            )
+
+        client.begin_update.assert_not_called()
+
     @patch.object(custom, "sdk_no_wait")
     @patch(
         "azext_k8s_extension.partner_extensions.DefaultExtension."
@@ -162,7 +204,9 @@ class TestFleetResourceMapping(unittest.TestCase):
         self, _, mock_sdk_no_wait
     ):
         client = MagicMock()
-        client.get.return_value = SimpleNamespace(extension_type="microsoft.flux")
+        client.get.return_value = SimpleNamespace(
+            extension_type="contoso.extension"
+        )
 
         custom.delete_k8s_extension(
             MockCommand(),
@@ -191,6 +235,12 @@ class TestFleetResourceMapping(unittest.TestCase):
     def test_fleet_extension_type_commands_pass_provider_and_resource_type(self):
         client = MagicMock()
 
+        custom.list_extension_type_versions_by_location(
+            client,
+            "westus2",
+            "Microsoft.Flux",
+            cluster_type="fleets",
+        )
         custom.list_extension_types_by_cluster(
             client, "fleet-rg", "fleet-1", "fleets"
         )
@@ -207,6 +257,10 @@ class TestFleetResourceMapping(unittest.TestCase):
         self.assertEqual(
             ("fleet-rg", consts.FLEET_RP, "fleets", "fleet-1"),
             client.list.call_args.args[:4],
+        )
+        self.assertEqual(
+            ("westus2", "Microsoft.Flux", None, "fleets"),
+            client.list_versions.call_args.args[:4],
         )
         self.assertEqual(
             ("fleet-rg", consts.FLEET_RP, "fleets", "fleet-1", "microsoft.flux"),
@@ -227,6 +281,48 @@ class TestFleetResourceMapping(unittest.TestCase):
             ),
             client.cluster_get_version.call_args.args,
         )
+
+    def test_fleet_extension_type_commands_reject_non_flux_extension_type(self):
+        client = MagicMock()
+        operations = (
+            lambda: custom.list_extension_type_versions_by_location(
+                client,
+                "westus2",
+                "contoso.extension",
+                cluster_type="fleets",
+            ),
+            lambda: custom.show_extension_type_by_cluster(
+                client,
+                "fleet-rg",
+                "fleet-1",
+                "fleets",
+                "contoso.extension",
+            ),
+            lambda: custom.list_extension_type_versions_by_cluster(
+                client,
+                "fleet-rg",
+                "fleets",
+                "fleet-1",
+                "contoso.extension",
+            ),
+            lambda: custom.show_extension_type_version_by_cluster(
+                client,
+                "fleet-rg",
+                "fleets",
+                "fleet-1",
+                "contoso.extension",
+                "1.0.0",
+            ),
+        )
+
+        for operation in operations:
+            with self.subTest(operation=operation), self.assertRaisesRegex(
+                InvalidArgumentValueError,
+                "The supported extension type is 'microsoft.flux'",
+            ):
+                operation()
+
+        self.assertEqual([], client.method_calls)
 
 
 if __name__ == "__main__":

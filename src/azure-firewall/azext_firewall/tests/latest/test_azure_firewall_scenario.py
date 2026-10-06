@@ -14,6 +14,8 @@ from azext_firewall.aaz.latest.network.firewall._create import Create as _Create
 from azext_firewall.aaz.latest.network.firewall._list import List as _List
 from azext_firewall.aaz.latest.network.firewall._show import Show as _Show
 from azext_firewall.aaz.latest.network.firewall._update import Update as _Update
+from azext_firewall.aaz.latest.network.firewall.policy.kube_selector_group._create import Create as _KsgCreate
+from azext_firewall.aaz.latest.network.firewall.policy.kube_selector_group._update import Update as _KsgUpdate
 from azext_firewall.custom import (ThreatIntelAllowListCreate, ThreatIntelAllowListUpdate,
                                    ThreatIntelAllowListDelete)
 
@@ -1130,6 +1132,60 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('provisioningState', 'Succeeded'),
                  ])
 
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_kube_selector_group', location='westus2')
+    def test_azure_firewall_policy_kube_selector_group(self, resource_group):
+        self.kwargs.update({
+            'policy': 'testpolicy',
+            'ksg': 'testksg',
+            'pod_selector': '{match-labels:{app:web},match-expressions:[{key:tier,operator:In,values:[frontend,backend]}]}',
+            'ns_selector': '{match-labels:{kubernetes.io/metadata.name:production}}',
+            'pod_selector_2': '{match-expressions:[{key:tier,operator:Exists}]}',
+        })
+
+        self.cmd('network firewall policy create -g {rg} -n {policy}')
+
+        self.cmd('network firewall policy kube-selector-group create -g {rg} --policy-name {policy} -n {ksg} '
+                 '--pod-selector "{pod_selector}" --namespace-selector "{ns_selector}"',
+                 checks=[
+                     self.check('name', '{ksg}'),
+                     self.check('properties.podSelector.matchLabels.app', 'web'),
+                     self.check('properties.podSelector.matchExpressions[0].key', 'tier'),
+                     self.check('properties.podSelector.matchExpressions[0].operator', 'In'),
+                     self.check('properties.podSelector.matchExpressions[0].values', ['frontend', 'backend']),
+                     self.check('properties.namespaceSelector.matchLabels."kubernetes.io/metadata.name"', 'production'),
+                 ])
+
+        self.cmd('network firewall policy kube-selector-group show -g {rg} --policy-name {policy} -n {ksg}',
+                 checks=[
+                     self.check('name', '{ksg}'),
+                     self.check('properties.provisioningState', 'Succeeded'),
+                 ])
+
+        self.cmd('network firewall policy kube-selector-group list -g {rg} --policy-name {policy}',
+                 checks=self.check('length(@)', 1))
+
+        # read-modify-write: --namespace-selector is not passed, so it must survive the update
+        self.cmd('network firewall policy kube-selector-group update -g {rg} --policy-name {policy} -n {ksg} '
+                 '--pod-selector "{pod_selector_2}"',
+                 checks=[
+                     self.check('properties.podSelector.matchExpressions[0].operator', 'Exists'),
+                     self.check('properties.podSelector.matchLabels', None),
+                     self.check('properties.namespaceSelector.matchLabels."kubernetes.io/metadata.name"', 'production'),
+                 ])
+
+        # an explicit null is the only way to clear a selector
+        self.cmd('network firewall policy kube-selector-group update -g {rg} --policy-name {policy} -n {ksg} '
+                 '--namespace-selector null',
+                 checks=[
+                     self.check('properties.namespaceSelector', None),
+                     self.check('properties.podSelector.matchExpressions[0].operator', 'Exists'),
+                 ])
+
+        self.cmd('network firewall policy kube-selector-group delete -g {rg} --policy-name {policy} -n {ksg} --yes')
+
+        self.cmd('network firewall policy kube-selector-group list -g {rg} --policy-name {policy}',
+                 checks=self.check('length(@)', 0))
+
     # BUG ISSUE: https://github.com/Azure/azure-cli-extensions/issues/4096
     @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_update_premiumonlyproperty_issue', location='westus2')
     def test_azure_firewall_policy_update_premiumonlyproperty_issue(self, resource_group):
@@ -1767,6 +1823,30 @@ class AzureFirewallScenario(ScenarioTest):
 
         #Delete firewall
         self.cmd('network firewall delete -n {firewall_name} -g {rg}')
+
+
+class AzureFirewallKubeSelectorGroupArgumentTest(unittest.TestCase):
+
+    def test_selectors_are_registered_on_create_and_update(self):
+        for cls in (_KsgCreate, _KsgUpdate):
+            cls._args_schema = None
+            schema = cls._build_arguments_schema()
+            self.assertTrue(schema.pod_selector._registered)
+            self.assertTrue(schema.namespace_selector._registered)
+            operator = schema.pod_selector.match_expressions.Element.operator
+            self.assertEqual(sorted(operator.enum.items), ['DoesNotExist', 'Exists', 'In', 'NotIn'])
+
+    def test_update_is_read_modify_write_and_nullable(self):
+        # the GET before the PUT is what keeps a selector that was not passed on this invocation
+        _KsgUpdate._args_schema = None
+        schema = _KsgUpdate._build_arguments_schema()
+        self.assertTrue(schema.pod_selector._nullable)
+        self.assertTrue(schema.namespace_selector._nullable)
+        operations = [op.__name__ for op in (_KsgUpdate.FirewallPolicyKubeSelectorGroupsGet,
+                                             _KsgUpdate.InstanceUpdateByJson,
+                                             _KsgUpdate.FirewallPolicyKubeSelectorGroupsCreateOrUpdate)]
+        self.assertEqual(operations, ['FirewallPolicyKubeSelectorGroupsGet', 'InstanceUpdateByJson',
+                                      'FirewallPolicyKubeSelectorGroupsCreateOrUpdate'])
 
 
 class AzureFirewallAfcArgumentTest(unittest.TestCase):
