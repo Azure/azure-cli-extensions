@@ -854,6 +854,7 @@ def load_arguments(self, _):
         c.argument("k8s_support_plan", arg_type=get_enum_type(k8s_support_plans))
         c.argument("enable_defender", action="store_true")
         c.argument("defender_config", validator=validate_defender_config_parameter)
+        c.argument("enable_disk_driver", action="store_true")
         c.argument("disable_disk_driver", action="store_true")
         c.argument("disable_file_driver", action="store_true")
         c.argument("enable_blob_driver", action="store_true")

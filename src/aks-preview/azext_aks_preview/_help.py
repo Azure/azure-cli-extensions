@@ -459,6 +459,10 @@ helps['aks create'] = f"""
         - name: --enable-workload-identity
           type: bool
           short-summary: (PREVIEW) Enable workload identity addon.
+        - name: --enable-disk-driver
+          type: bool
+          short-summary: Enable AzureDisk CSI Driver.
+          long-summary: The AzureDisk CSI Driver is enabled by default, but the property is left out of the create request unless this flag is given. Pass it to set the property explicitly, which is required by features that validate storageProfile.diskCSIDriver.enabled on the request body.
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
