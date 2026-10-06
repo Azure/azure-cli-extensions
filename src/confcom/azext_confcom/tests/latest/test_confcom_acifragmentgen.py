@@ -205,6 +205,83 @@ def test_acifragmentgen_fragment_push(docker_image, cert_chain, capsysbinary):
         assert f.read() == signed_fragment
 
 
+# Unit tests for ORAS path resolution
+
+
+def test_resolve_oras_path_uses_absolute_path_entries(monkeypatch, tmp_path):
+    """A planted CWD executable is ignored in favor of another absolute PATH entry."""
+    from azext_confcom.oras_proxy import resolve_oras_path
+
+    current_directory = tmp_path / "work"
+    trusted_directory = tmp_path / "tools"
+    current_directory.mkdir()
+    trusted_directory.mkdir()
+    oras_name = "oras.exe" if os.name == "nt" else "oras"
+    planted_oras = current_directory / oras_name
+    trusted_oras = trusted_directory / oras_name
+    planted_oras.touch()
+    trusted_oras.touch()
+    planted_oras.chmod(0o755)
+    trusted_oras.chmod(0o755)
+
+    monkeypatch.chdir(current_directory)
+    if os.name == "nt":
+        monkeypatch.setenv("PATHEXT", ".EXE")
+    monkeypatch.setenv(
+        "PATH",
+        os.pathsep.join(["", ".", str(current_directory), "relative-tools", str(trusted_directory)]),
+    )
+
+    assert resolve_oras_path() == os.path.realpath(trusted_oras)
+
+
+def test_resolve_oras_path_errors_when_no_safe_candidate(monkeypatch, tmp_path):
+    """Resolution fails instead of executing ORAS from the current directory."""
+    from azext_confcom.oras_proxy import resolve_oras_path
+
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("PATH", os.pathsep.join(["", ".", str(tmp_path), "relative-tools"]))
+
+    with patch("azext_confcom.oras_proxy.shutil.which") as mock_which:
+        with pytest.raises(SystemExit):
+            resolve_oras_path()
+
+    mock_which.assert_not_called()
+
+
+def test_call_oras_cli_executes_resolved_absolute_path():
+    """The shared ORAS runner never passes a bare executable name to subprocess."""
+    from azext_confcom.oras_proxy import call_oras_cli
+
+    with patch(
+        "azext_confcom.oras_proxy.resolve_oras_path",
+        return_value=os.path.abspath(os.path.join("trusted-tools", "oras.exe")),
+    ) as mock_resolve, patch("azext_confcom.oras_proxy.subprocess.run") as mock_run:
+        call_oras_cli(["discover", "example.azurecr.io/image:tag"])
+
+    mock_resolve.assert_called_once_with()
+    command = mock_run.call_args.args[0]
+    assert os.path.isabs(command[0])
+    assert command[1:] == ["discover", "example.azurecr.io/image:tag"]
+
+
+@patch("azext_confcom.command.fragment_push.subprocess.run")
+def test_oras_push_executes_resolved_absolute_path(mock_run):
+    """The fragment push command executes the resolved ORAS path."""
+    from azext_confcom.command.fragment_push import oras_push
+
+    resolved_path = os.path.abspath(os.path.join("trusted-tools", "oras.exe"))
+    with patch(
+        "azext_confcom.command.fragment_push.oras_proxy.resolve_oras_path",
+        return_value=resolved_path,
+    ):
+        oras_push("fragment.rego.cose", "example.azurecr.io/fragments:test")
+
+    command = mock_run.call_args.args[0]
+    assert command[0] == resolved_path
+    assert command[1] == "push"
+
+
 # ── Unit tests for prepend_docker_registry ─────────────────────────────────
 
 
@@ -361,14 +438,19 @@ def test_oras_attach_explicit_platform(mock_run):
 
     mock_run.return_value = MagicMock(returncode=0)
 
-    oras_attach(
-        signed_fragment_path="/tmp/fragment.cose",
-        manifest_tag="myregistry.io/myimage:latest",
-        platform="linux/amd64",
-    )
+    with patch(
+        "azext_confcom.command.fragment_attach.oras_proxy.resolve_oras_path",
+        return_value=os.path.abspath(os.path.join("trusted-tools", "oras.exe")),
+    ):
+        oras_attach(
+            signed_fragment_path="/tmp/fragment.cose",
+            manifest_tag="myregistry.io/myimage:latest",
+            platform="linux/amd64",
+        )
 
     mock_run.assert_called_once()
     cmd = mock_run.call_args[0][0]
+    assert os.path.isabs(cmd[0])
     assert "--platform" in cmd
     assert "linux/amd64" in cmd
     assert "application/cose-x509+rego" in " ".join(cmd)
@@ -385,13 +467,18 @@ def test_oras_attach_auto_detected_platform(mock_platforms, mock_run):
 
     mock_run.return_value = MagicMock(returncode=0)
 
-    oras_attach(
-        signed_fragment_path="/tmp/fragment.cose",
-        manifest_tag="myregistry.io/myimage:latest",
-    )
+    with patch(
+        "azext_confcom.command.fragment_attach.oras_proxy.resolve_oras_path",
+        return_value=os.path.abspath(os.path.join("trusted-tools", "oras.exe")),
+    ):
+        oras_attach(
+            signed_fragment_path="/tmp/fragment.cose",
+            manifest_tag="myregistry.io/myimage:latest",
+        )
 
     mock_run.assert_called_once()
     cmd = mock_run.call_args[0][0]
+    assert os.path.isabs(cmd[0])
     assert "--platform" in cmd
     assert "linux/amd64" in cmd
     assert "application/cose-x509+rego" in " ".join(cmd)
