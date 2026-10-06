@@ -18,6 +18,7 @@ from ._auto_upgrade_profiles_operations import AutoUpgradeProfilesOperations  # 
 from ._auto_upgrade_profile_operations_operations import AutoUpgradeProfileOperationsOperations  # type: ignore
 from ._cluster_mesh_profiles_operations import ClusterMeshProfilesOperations  # type: ignore
 from ._gates_operations import GatesOperations  # type: ignore
+from ._identity_binding_profiles_operations import IdentityBindingProfilesOperations  # type: ignore
 from ._fleet_managed_namespaces_operations import FleetManagedNamespacesOperations  # type: ignore
 from ._fleet_members_operations import FleetMembersOperations  # type: ignore
 from ._update_runs_operations import UpdateRunsOperations  # type: ignore
@@ -34,6 +35,7 @@ __all__ = [
     "AutoUpgradeProfileOperationsOperations",
     "ClusterMeshProfilesOperations",
     "GatesOperations",
+    "IdentityBindingProfilesOperations",
     "FleetManagedNamespacesOperations",
     "FleetMembersOperations",
     "UpdateRunsOperations",
