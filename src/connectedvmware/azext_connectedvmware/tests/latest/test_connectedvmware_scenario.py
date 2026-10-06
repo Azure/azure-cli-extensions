@@ -29,6 +29,8 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
                 processor for processor in self.recording_processors
                 if not isinstance(processor, SubscriptionRecordingProcessor)
             ]
+            # Use stable placeholders for the machine, vCenter, and unrelated subscriptions,
+            # including IDs in query bodies as well as resource paths.
             for original, replacement in (
                 ('204898ee-cd13-4332-b9d4-55ca5c25496d', '00000000-0000-0000-0000-000000000000'),
                 ('ef8e2098-7ed6-4399-9fb6-556da62b3cf7', '11111111-1111-1111-1111-111111111111'),
@@ -39,9 +41,11 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
     def setUp(self):
         super().setUp()
         if not self.in_recording:
+            # Isolate playback from the active cloud without modifying the shared cloud definition.
             cloud = deepcopy(AZURE_PUBLIC_CLOUD)
             cloud.profile = self.cli_ctx.cloud.profile
             if self._testMethodName.startswith('test_create_from_machines_cross_subscription'):
+                # Playback request URLs must match the endpoint captured in the recordings.
                 cloud.endpoints.resource_manager = 'https://eastus2euap.management.azure.com'
                 subscription = Profile(cli_ctx=self.cli_ctx).load_cached_subscriptions()[0]
                 subscriptions = [
@@ -52,6 +56,8 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
                         ('22222222-2222-2222-2222-222222222222', 'unrelated'),
                     ))
                 ]
+                # Keep account lookup and switching in memory so playback does not persist
+                # fake subscription IDs to the local cloud configuration.
                 for patcher in (
                     patch.object(Profile, 'load_cached_subscriptions', return_value=subscriptions),
                     patch('azure.cli.core._profile.ACCOUNT', {'subscriptions': subscriptions}),
@@ -85,6 +91,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
     def test_create_from_machines_cross_subscription_with_unrelated_default(self):
         original_subscription = self.cmd('az account show --query id -o tsv').output.strip()
         self.addCleanup(self._set_subscription, original_subscription)
+        # Select the real account when recording, or its matching placeholder during playback.
         default_subscription = (
             'b24cc8ee-df4f-48ac-94cf-46edf36b0fae' if self.in_recording
             else '22222222-2222-2222-2222-222222222222'
@@ -112,6 +119,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
             }
         )
         if not self.in_recording:
+            # Command inputs must use the same vCenter ID as the sanitized HTTP recording.
             self.kwargs['vcenter_id'] = self.kwargs['vcenter_id'].replace(
                 'ef8e2098-7ed6-4399-9fb6-556da62b3cf7', '11111111-1111-1111-1111-111111111111'
             )
