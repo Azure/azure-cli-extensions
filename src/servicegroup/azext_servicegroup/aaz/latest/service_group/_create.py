@@ -19,12 +19,14 @@ class Create(AAZCommand):
         az service-group create --name MyServiceGroup --display-name "My Service Group" --parent resource-id="/providers/Microsoft.Management/serviceGroups/<tenantId>"
     :example: Create a child service group under an existing parent
         az service-group create --name ChildGroup --display-name "Child" --parent resource-id="/providers/Microsoft.Management/serviceGroups/ParentGroup"
+    :example: Create a service group with a criticality attribute
+        az service-group create --name CriticalGroup --display-name "Critical Group" --attributes criticality=1 --parent resource-id="/providers/Microsoft.Management/serviceGroups/<tenantId>"
     """
 
     _aaz_info = {
-        "version": "2024-02-01-preview",
+        "version": "2026-08-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.management/servicegroups/{}", "2024-02-01-preview"],
+            ["mgmt-plane", "/providers/microsoft.management/servicegroups/{}", "2026-08-01"],
         ]
     }
 
@@ -74,6 +76,11 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.attributes = AAZObjectArg(
+            options=["--attributes"],
+            arg_group="Properties",
+            help="The attributes of the service group.",
+        )
         _args_schema.display_name = AAZStrArg(
             options=["--display-name"],
             arg_group="Properties",
@@ -83,6 +90,16 @@ class Create(AAZCommand):
             options=["--parent"],
             arg_group="Properties",
             help="The details of the parent service group.",
+        )
+
+        attributes = cls._args_schema.attributes
+        attributes.criticality = AAZIntArg(
+            options=["criticality"],
+            help="The criticality designation of the service group. Valid values range from 0 through 4.",
+            fmt=AAZIntArgFormat(
+                maximum=4,
+                minimum=0,
+            ),
         )
 
         parent = cls._args_schema.parent
@@ -123,7 +140,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "original-uri"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200, 201]:
@@ -132,7 +149,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "original-uri"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -167,7 +184,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01-preview",
+                    "api-version", "2026-08-01",
                     required=True,
                 ),
             }
@@ -198,8 +215,13 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("attributes", AAZObjectType, ".attributes")
                 properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("parent", AAZObjectType, ".parent")
+
+            attributes = _builder.get(".properties.attributes")
+            if attributes is not None:
+                attributes.set_prop("criticality", AAZIntType, ".criticality")
 
             parent = _builder.get(".properties.parent")
             if parent is not None:
@@ -249,6 +271,7 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.attributes = AAZObjectType()
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
             )
@@ -257,6 +280,9 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            attributes = cls._schema_on_200_201.properties.attributes
+            attributes.criticality = AAZFloatType()
 
             parent = cls._schema_on_200_201.properties.parent
             parent.resource_id = AAZStrType(

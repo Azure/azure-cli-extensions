@@ -33,6 +33,11 @@ helps['service-group create'] = """
         text: >
             az service-group create --name ChildGroup --display-name "Child Group"
             --parent resource-id="/providers/Microsoft.Management/serviceGroups/ParentGroup"
+      - name: Create a service group with a criticality attribute
+        text: >
+            az service-group create --name CriticalGroup --display-name "Critical Group"
+            --attributes criticality=1
+            --parent resource-id="/providers/Microsoft.Management/serviceGroups/<tenantId>"
 """
 
 helps['service-group show'] = """
@@ -62,16 +67,6 @@ helps['service-group delete'] = """
       - name: Delete a service group
         text: >
             az service-group delete --name MyServiceGroup --yes
-"""
-
-helps['service-group list-ancestors'] = """
-    type: command
-    short-summary: List the ancestors of a service group.
-    long-summary: Get the details of the service group's ancestors in the hierarchy.
-    examples:
-      - name: List ancestors of a service group
-        text: >
-            az service-group list-ancestors --name MyServiceGroup
 """
 
 helps['service-group wait'] = """

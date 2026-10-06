@@ -25,6 +25,13 @@ az service-group create --name ChildGroup --display-name "Child Group" \
     --parent resource-id="/providers/Microsoft.Management/serviceGroups/ParentGroup"
 ```
 
+#### Create a service group with a criticality attribute
+```
+az service-group create --name CriticalGroup --display-name "Critical Group" \
+    --attributes criticality=1 \
+    --parent resource-id="/providers/Microsoft.Management/serviceGroups/<tenantId>"
+```
+
 #### Show a service group
 ```
 az service-group show --name MyServiceGroup
@@ -33,11 +40,6 @@ az service-group show --name MyServiceGroup
 #### Update a service group
 ```
 az service-group update --name MyServiceGroup --display-name "Updated Name"
-```
-
-#### List ancestors of a service group
-```
-az service-group list-ancestors --name MyServiceGroup
 ```
 
 #### Delete a service group
