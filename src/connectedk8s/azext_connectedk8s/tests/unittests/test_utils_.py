@@ -5,6 +5,7 @@
 import json
 import os
 import sys
+from base64 import b64encode
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 from urllib.parse import urlunsplit
@@ -487,7 +488,7 @@ def test_arc_error_formats_optional_tsg_link():
 def test_error_catalog_contains_allocated_codes_and_fault_type_aliases():
     expected_codes = {
         *(f"AZK8S{code:04d}" for code in range(1, 4)),
-        *(f"AZK8S{code:04d}" for code in range(100, 107)),
+        *(f"AZK8S{code:04d}" for code in range(100, 108)),
         *(f"AZK8S{code:04d}" for code in range(200, 210)),
         *(f"AZK8S{code:04d}" for code in range(300, 310)),
         *(f"AZK8S{code:04d}" for code in range(400, 410)),
@@ -560,6 +561,7 @@ def test_error_catalog_uses_proposed_exception_classes():
         "AZK8S0104": InvalidArgumentValueError,
         "AZK8S0105": ArgumentUsageError,
         "AZK8S0106": InvalidArgumentValueError,
+        "AZK8S0107": ValidationError,
         "AZK8S0200": FileOperationError,
         "AZK8S0201": ValidationError,
         "AZK8S0202": ValidationError,
@@ -1528,6 +1530,79 @@ def test_helm_update_agent_reports_real_values_error(monkeypatch, tmp_path):
     _assert_standardized_telemetry(
         mock_telemetry, errors_module.HELM_VALUES_GET_FAILED, True
     )
+
+
+@pytest.mark.parametrize("action", ["unrelated", "replace", "clear"])
+def test_helm_update_agent_preserves_and_serializes_arc_ownership(
+    monkeypatch, tmp_path, action
+):
+    azure_dir = tmp_path / ".azure"
+    azure_dir.mkdir()
+    user_values_file = azure_dir / "userValues.txt"
+    monkeypatch.setattr(utils_module.os.path, "expanduser", lambda _path: str(tmp_path))
+    endpoints = ",".join(
+        endpoint.format(cloud_based_domain="com")
+        for endpoint in consts.Arc_Service_Endpoints
+    )
+    old_range = "10.0.0.0/8," + endpoints
+    old_state = b64encode(
+        json.dumps({"userNoProxy": "10.0.0.0/8", "noProxy": old_range}).encode("ascii")
+    ).decode("ascii")
+    existing_values = {
+        "global": {"noProxy": old_range},
+        "connectedk8sCli": {"arcProxyBypass": old_state},
+        "unrelated": {"setting": "preserved"},
+    }
+    overrides = {"global.isProxyEnabled": "False"}
+    if action == "replace":
+        new_range = "192.168.0.0/16," + endpoints
+        new_state = b64encode(
+            json.dumps({"userNoProxy": "192.168.0.0/16", "noProxy": new_range}).encode(
+                "ascii"
+            )
+        ).decode("ascii")
+        overrides = {
+            "global.noProxy": new_range.replace(",", r"\,").replace("/", r"\/"),
+            consts.Proxy_Bypass_Arc_Helm_Value: new_state,
+        }
+    elif action == "clear":
+        overrides = {"global.noProxy": "", consts.Proxy_Bypass_Arc_Helm_Value: "null"}
+
+    def run_helm(command, **kwargs):
+        process = MagicMock(returncode=0)
+        process.communicate.return_value = (b"", b"")
+        if command[1] == "get":
+            json.dump(existing_values, kwargs["stdout"])
+        else:
+            assert command[1] == "upgrade"
+            assert command[command.index("-f") + 1] == str(user_values_file)
+            assert (
+                json.loads(user_values_file.read_text(encoding="utf-8"))
+                == existing_values
+            )
+            set_values = [
+                command[index + 1]
+                for index, argument in enumerate(command)
+                if argument == "--set"
+            ]
+            assert set_values == [f"{key}={value}" for key, value in overrides.items()]
+        return process
+
+    popen = MagicMock(side_effect=run_helm)
+    monkeypatch.setattr(utils_module, "Popen", popen)
+    utils_module.helm_update_agent(
+        "helm",
+        None,
+        None,
+        overrides,
+        None,
+        "cluster",
+        "azure-arc",
+        "chart",
+        cmd=_cmd_without_arm_id(),
+    )
+    assert popen.call_count == 2
+    assert not user_values_file.exists()
 
 
 def test_validate_helm_client_defers_real_client_execution_error(monkeypatch):

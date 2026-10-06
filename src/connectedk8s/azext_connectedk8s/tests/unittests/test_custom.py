@@ -2,8 +2,11 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import json
 import os
 import sys
+from base64 import b64decode, b64encode
+from copy import deepcopy
 from types import SimpleNamespace
 from typing import Dict, Optional
 from unittest.mock import MagicMock, create_autospec
@@ -38,9 +41,7 @@ from azext_connectedk8s.custom import (
     get_kubernetes_distro,
     get_kubernetes_infra,
     has_arc_proxy_skip_range_endpoints,
-    remove_arc_proxy_skip_range_endpoints,
     resolve_arc_proxy_bypass,
-    validate_arc_proxy_bypass_clear,
 )
 
 
@@ -1016,6 +1017,10 @@ ARC_SKIP_RANGE = (
     ",.dp.kubernetesconfiguration.azure.com"
     ",.guestconfiguration.azure.com"
 )
+GATEWAY_RESOURCE_ID = (
+    "/subscriptions/00000000-0000-0000-0000-000000000000/"
+    "resourceGroups/rg/providers/Microsoft.HybridCompute/gateways/gateway"
+)
 
 ARC_ENDPOINTS_TEXT = ", ".join(ARC_SKIP_RANGE.split(","))
 ARC_APPLIED_MESSAGE = consts.Proxy_Bypass_Arc_Applied_Message.format(
@@ -1102,7 +1107,7 @@ def test_has_arc_endpoints(no_proxy, expected):
     ],
 )
 def test_has_every_arc_endpoint(no_proxy, expected):
-    # The bypass always writes every endpoint, so only the full set marks it as applied.
+    # Presence alone does not establish ownership.
     assert (
         has_arc_proxy_skip_range_endpoints(_proxy_cmd(), no_proxy, require_all=True)
         is expected
@@ -1117,110 +1122,48 @@ def test_has_arc_endpoints_without_a_skip_range():
     assert has_arc_proxy_skip_range_endpoints(cmd, None, require_all=True) is False
 
 
-# ---------------- Tests for remove_arc_proxy_skip_range_endpoints ----------------
-@pytest.mark.parametrize(
-    "no_proxy,expected",
-    [
-        ("", ""),
-        ("10.0.0.0/8", "10.0.0.0/8"),
-        (ARC_SKIP_RANGE, ""),
-        ("10.0.0.0/8," + ARC_SKIP_RANGE, "10.0.0.0/8"),
-        (".HIS.ARC.AZURE.COM,10.0.0.0/8", "10.0.0.0/8"),
-        ("eastus.his.arc.azure.com," + ARC_SKIP_RANGE, "eastus.his.arc.azure.com"),
-    ],
-    ids=[
-        "empty",
-        "nothing-to-remove",
-        "all-three",
-        "keeps-entry",
-        "any-case",
-        "keeps-narrower-customer-entry",
-    ],
-)
-def test_remove_arc_endpoints(no_proxy, expected):
-    assert remove_arc_proxy_skip_range_endpoints(_proxy_cmd(), no_proxy) == expected
-
-
-# ---------------- Tests for validate_arc_proxy_bypass_clear ----------------
-@pytest.mark.parametrize(
-    "no_proxy",
-    [
-        ".his.arc.azure.com",
-        ".guestconfiguration.azure.com,10.0.0.0/8",
-        ".his.arc.azure.com,.dp.kubernetesconfiguration.azure.com",
-        ARC_SKIP_RANGE,
-        "10.0.0.0/8," + ARC_SKIP_RANGE,
-        ".HIS.ARC.AZURE.COM",
-        " .his.arc.azure.com ",
-    ],
-    ids=[
-        "one-endpoint",
-        "one-endpoint-beside-a-customer-entry",
-        "two-endpoints",
-        "all-three",
-        "all-three-beside-a-customer-entry",
-        "any-case",
-        "surrounding-spaces",
-    ],
-)
-def test_validate_clear_refuses_a_skip_range_holding_arc_endpoints(no_proxy):
-    # The skip range the caller typed has to survive, so the overlap is refused however many
-    # endpoints it holds. The full set too, since it cannot be told from an applied bypass.
-    with pytest.raises(ArgumentUsageError):
-        validate_arc_proxy_bypass_clear(_proxy_cmd(), no_proxy, "Arc")
-
-
-@pytest.mark.parametrize(
-    "clear",
-    ["Arc", " aRc ", "Arc,Microsoft.AzureMonitor.Containers"],
-    ids=["exact", "any-case-and-spaces", "beside-the-extension-keyword"],
-)
-def test_validate_clear_refuses_however_the_keyword_is_written(clear):
-    with pytest.raises(ArgumentUsageError):
-        validate_arc_proxy_bypass_clear(_proxy_cmd(), ARC_SKIP_RANGE, clear)
-
-
-@pytest.mark.parametrize(
-    "no_proxy,clear",
-    [
-        ("", "Arc"),
-        (None, "Arc"),
-        ("10.0.0.0/8", "Arc"),
-        ("eastus.his.arc.azure.com", "Arc"),
-        (ARC_SKIP_RANGE, ""),
-        (ARC_SKIP_RANGE, "Microsoft.AzureMonitor.Containers"),
-    ],
-    ids=[
-        "clearing-on-its-own",
-        "no-skip-range-at-all",
-        "skip-range-without-arc-endpoints",
-        "narrower-customer-entry",
-        "nothing-cleared",
-        "only-the-extension-cleared",
-    ],
-)
-def test_validate_clear_allows_everything_else(no_proxy, clear):
-    # Only the overlap is refused, so clearing on its own keeps working.
-    assert validate_arc_proxy_bypass_clear(_proxy_cmd(), no_proxy, clear) is None
-
-
-def test_validate_clear_recommends_the_order_that_works():
-    # Setting the skip range first re-applies the bypass, so the order has to be named.
-    with pytest.raises(ArgumentUsageError) as raised:
-        validate_arc_proxy_bypass_clear(_proxy_cmd(), ARC_SKIP_RANGE, "Arc")
-    assert (
-        consts.Proxy_Bypass_Arc_Clear_Conflict_Recommendation
-        in raised.value.recommendations
-    )
-
-
 # ---------------- Tests for resolve_arc_proxy_bypass ----------------
-def _resolve(monkeypatch, no_proxy="", add="", clear="", cluster="", announce=True):
-    # Autospec so a call that does not match the real signature fails here instead of
-    # silently passing, which is how a missing 'cmd' argument once reached the CLI.
-    helm = create_autospec(
-        custom.get_all_helm_values, return_value={"global": {"noProxy": cluster}}
+def _arc_release_values(result):
+    no_proxy, encoded_state = result
+    namespace, key = consts.Proxy_Bypass_Arc_Helm_Value.split(".")
+    return {
+        "global": {"noProxy": no_proxy},
+        namespace: {key: None if encoded_state == "null" else encoded_state},
+    }
+
+
+def _owned_arc_values(user_no_proxy):
+    return _arc_release_values(
+        custom.build_arc_proxy_bypass_settings(_proxy_cmd(), user_no_proxy)
     )
+
+
+def _assert_arc_result(result, no_proxy, user_no_proxy):
+    assert result is not None
+    assert result[0] == no_proxy
+    assert json.loads(b64decode(result[1], validate=True)) == {
+        "userNoProxy": user_no_proxy,
+        "noProxy": no_proxy,
+    }
+
+
+def _resolve(
+    monkeypatch,
+    no_proxy=None,
+    add="",
+    clear="",
+    cluster=None,
+    owned_range=None,
+    announce=True,
+):
+    values = (
+        {"global": {"noProxy": cluster or ""}}
+        if owned_range is None
+        else _owned_arc_values(owned_range)
+    )
+    if cluster is not None:
+        values["global"]["noProxy"] = cluster
+    helm = create_autospec(custom.get_all_helm_values, return_value=values)
     monkeypatch.setattr(custom, "get_all_helm_values", helm)
     result = resolve_arc_proxy_bypass(
         _proxy_cmd(),
@@ -1237,208 +1180,873 @@ def _resolve(monkeypatch, no_proxy="", add="", clear="", cluster="", announce=Tr
 
 
 def test_resolve_leaves_the_skip_range_alone_when_the_update_says_nothing(monkeypatch):
-    result, helm = _resolve(monkeypatch, cluster=ARC_SKIP_RANGE)
+    result, helm = _resolve(monkeypatch, owned_range="10.0.0.0/8")
     assert result is None
-    assert helm.called is False
+    helm.assert_not_called()
 
 
 @pytest.mark.parametrize(
-    "keyword", ["Arc", " aRc "], ids=["exact", "any-case-and-spaces"]
+    "keyword",
+    ["Arc", " aRc ", "Arc,Arc", "Arc,Microsoft.AzureMonitor.Containers"],
 )
 def test_resolve_add_merges_into_the_current_skip_range(monkeypatch, keyword):
     result, _ = _resolve(monkeypatch, add=keyword, cluster="10.0.0.0/8")
-    assert result == "10.0.0.0/8," + ARC_SKIP_RANGE
-
-
-def test_resolve_add_applies_once_when_the_keyword_is_repeated(monkeypatch):
-    result, _ = _resolve(monkeypatch, add="Arc,Arc", cluster="10.0.0.0/8")
-    assert result == "10.0.0.0/8," + ARC_SKIP_RANGE
-
-
-def test_resolve_add_applies_arc_when_combined_with_the_extension_keyword(monkeypatch):
-    result, _ = _resolve(
-        monkeypatch, add="Arc,Microsoft.AzureMonitor.Containers", cluster="10.0.0.0/8"
-    )
-    assert result == "10.0.0.0/8," + ARC_SKIP_RANGE
+    _assert_arc_result(result, "10.0.0.0/8," + ARC_SKIP_RANGE, "10.0.0.0/8")
 
 
 def test_resolve_ignores_the_extension_keyword_on_its_own(monkeypatch):
-    # The two keywords control separate settings, so asking for the Container Insights
-    # bypass on its own must leave the skip range untouched.
     result, helm = _resolve(monkeypatch, add="Microsoft.AzureMonitor.Containers")
     assert result is None
-    assert helm.called is False
+    helm.assert_not_called()
 
 
-def test_resolve_add_does_not_duplicate_an_endpoint_the_user_typed(monkeypatch):
-    # The customer can list one of our endpoints in --proxy-skip-range and still ask for
-    # the bypass. It is not added twice, and their casing is left as they wrote it.
-    result, helm = _resolve(
-        monkeypatch, no_proxy=".his.ARC.azure.com,10.0.0.0/8", add="Arc"
+@pytest.mark.parametrize(
+    "skip_range,expected",
+    [
+        (".his.arc.azure.com", ARC_SKIP_RANGE),
+        (
+            ".his.arc.azure.com,.dp.kubernetesconfiguration.azure.com",
+            ARC_SKIP_RANGE,
+        ),
+        (ARC_SKIP_RANGE, ARC_SKIP_RANGE),
+        (
+            ".his.ARC.azure.com,10.0.0.0/8,.HIS.ARC.AZURE.COM",
+            (
+                ".his.ARC.azure.com,10.0.0.0/8,"
+                ".dp.kubernetesconfiguration.azure.com,.guestconfiguration.azure.com"
+            ),
+        ),
+    ],
+)
+def test_resolve_overlap_is_deduplicated_warned_and_preserved_on_clear(
+    monkeypatch, skip_range, expected
+):
+    warning = MagicMock()
+    monkeypatch.setattr(custom.logger, "warning", warning)
+    result, helm = _resolve(monkeypatch, no_proxy=skip_range, add="Arc")
+    _assert_arc_result(result, expected, skip_range)
+    warning.assert_called_once_with(consts.Proxy_Bypass_Arc_Overlap_Warning)
+
+    helm.return_value = _arc_release_values(result)
+    cleared = resolve_arc_proxy_bypass(
+        _proxy_cmd(), None, "", "Arc", "azure-arc", None, None, "helm"
     )
-    assert result == (
-        ".his.ARC.azure.com,10.0.0.0/8"
-        ",.dp.kubernetesconfiguration.azure.com"
-        ",.guestconfiguration.azure.com"
-    )
-    assert helm.called is False
+    assert cleared == (skip_range, "null")
 
 
 def test_resolve_add_on_a_cluster_with_no_skip_range(monkeypatch):
     monkeypatch.setattr(custom, "get_all_helm_values", MagicMock(return_value={}))
     result = resolve_arc_proxy_bypass(
-        _proxy_cmd(), "", "Arc", "", "azure-arc", None, None, "helm"
+        _proxy_cmd(), None, "Arc", "", "azure-arc", None, None, "helm"
     )
-    assert result == ARC_SKIP_RANGE
+    _assert_arc_result(result, ARC_SKIP_RANGE, "")
 
 
-def test_resolve_add_with_a_new_skip_range_does_not_read_the_cluster(monkeypatch):
-    # The new skip range replaces the old one outright, so there is nothing to merge.
-    result, helm = _resolve(monkeypatch, no_proxy="192.168.0.0/16", add="Arc")
-    assert result == "192.168.0.0/16," + ARC_SKIP_RANGE
-    assert helm.called is False
+def test_resolve_add_with_a_new_range_replaces_only_the_range(monkeypatch):
+    result, helm = _resolve(
+        monkeypatch, no_proxy="192.168.0.0/16", add="Arc", owned_range="10.0.0.0/8"
+    )
+    _assert_arc_result(result, "192.168.0.0/16," + ARC_SKIP_RANGE, "192.168.0.0/16")
+    helm.assert_called_once()
 
 
 def test_resolve_announces_the_bypass_when_it_is_applied(monkeypatch, capsys):
     _resolve(monkeypatch, add="Arc", cluster="10.0.0.0/8")
     out = capsys.readouterr().out
-    # The endpoints are named in the message, so each one has to appear as written.
     assert ARC_APPLIED_MESSAGE in out
-    for endpoint in ARC_SKIP_RANGE.split(","):
-        assert endpoint in out
-    # The flag was dropped from this message, so it must not creep back in.
-    assert "--proxy-skip-range" not in out
+    assert "--clear-proxy-bypass Arc" in out
 
 
 def test_resolve_leaves_the_announcement_to_connect(monkeypatch, capsys):
-    # connect announces this itself once it knows the agents are updated, so the
-    # resolver stays quiet rather than reporting the same thing twice.
     result, _ = _resolve(monkeypatch, add="Arc", cluster="10.0.0.0/8", announce=False)
-    assert result == "10.0.0.0/8," + ARC_SKIP_RANGE
+    _assert_arc_result(result, "10.0.0.0/8," + ARC_SKIP_RANGE, "10.0.0.0/8")
     assert ARC_APPLIED_MESSAGE not in capsys.readouterr().out
 
 
-def test_resolve_clear_names_the_endpoints_it_removes(monkeypatch, capsys):
-    # Clearing reports the same endpoints the bypass named when it was applied.
-    _resolve(monkeypatch, clear="Arc", cluster="10.0.0.0/8," + ARC_SKIP_RANGE)
-    out = capsys.readouterr().out
-    assert ARC_CLEARED_MESSAGE in out
-    for endpoint in ARC_SKIP_RANGE.split(","):
-        assert endpoint in out
+def test_resolve_clear_reports_the_disabled_arc_contribution(monkeypatch, capsys):
+    _resolve(monkeypatch, clear="Arc", owned_range="10.0.0.0/8")
+    assert ARC_CLEARED_MESSAGE in capsys.readouterr().out
 
 
-def test_resolve_clear_removes_only_the_arc_endpoints(monkeypatch):
-    result, _ = _resolve(
-        monkeypatch, clear="Arc", cluster="10.0.0.0/8," + ARC_SKIP_RANGE
-    )
-    assert result == "10.0.0.0/8"
+@pytest.mark.parametrize(
+    "skip_range",
+    ["", "10.0.0.0/8"],
+)
+def test_resolve_clear_keeps_the_saved_skip_range(monkeypatch, skip_range):
+    result, _ = _resolve(monkeypatch, clear="Arc", owned_range=skip_range)
+    assert result == (skip_range, "null")
 
 
-def test_resolve_clear_leaves_a_cluster_without_the_bypass_alone(monkeypatch):
-    result, _ = _resolve(monkeypatch, clear="Arc", cluster="10.0.0.0/8")
+@pytest.mark.parametrize(
+    "cluster",
+    ["", "10.0.0.0/8", ".his.arc.azure.com", ARC_SKIP_RANGE],
+)
+def test_resolve_clear_without_ownership_does_not_remove_matching_entries(
+    monkeypatch, cluster
+):
+    warning = MagicMock()
+    monkeypatch.setattr(custom.logger, "warning", warning)
+    result, _ = _resolve(monkeypatch, clear="Arc", cluster=cluster)
     assert result is None
+    warning.assert_called_once_with(consts.Proxy_Bypass_Arc_Nothing_To_Clear_Warning)
 
 
-def test_resolve_clear_uses_the_new_skip_range_as_the_base(monkeypatch):
-    # --proxy-skip-range replaces the skip range, so the clear applies to what the
-    # command ends up with rather than to the skip range being replaced.
-    result, helm = _resolve(
-        monkeypatch,
-        no_proxy="192.168.0.0/16",
-        clear="Arc",
-        cluster="10.0.0.0/8," + ARC_SKIP_RANGE,
-    )
-    assert result == "192.168.0.0/16"
-    assert helm.called is True
-
-
-def test_resolve_clear_removes_the_endpoints_typed_into_the_new_skip_range(monkeypatch):
+@pytest.mark.parametrize("skip_range", ["", "192.168.0.0/16", ARC_SKIP_RANGE])
+def test_resolve_clear_keeps_all_entries_in_a_new_skip_range(monkeypatch, skip_range):
     result, _ = _resolve(
         monkeypatch,
-        no_proxy="192.168.0.0/16," + ARC_SKIP_RANGE,
+        no_proxy=skip_range,
         clear="Arc",
-        cluster="10.0.0.0/8," + ARC_SKIP_RANGE,
+        owned_range="10.0.0.0/8",
     )
-    assert result == "192.168.0.0/16"
+    assert result == (skip_range, "null")
 
 
-def test_resolve_clear_removes_the_endpoints_even_when_only_the_range_has_them(
+def test_resolve_clear_without_ownership_leaves_new_range_to_the_normal_path(
     monkeypatch,
 ):
-    # Nothing to clear on the cluster, but the customer typed the endpoints into the new
-    # skip range, so honouring the clear still has to strip them.
     result, _ = _resolve(
         monkeypatch,
         no_proxy="192.168.0.0/16," + ARC_SKIP_RANGE,
         clear="Arc",
         cluster="10.0.0.0/8",
     )
-    assert result == "192.168.0.0/16"
-
-
-def test_resolve_clear_with_a_new_skip_range_that_has_nothing_to_remove(monkeypatch):
-    warning = MagicMock()
-    monkeypatch.setattr(custom.logger, "warning", warning)
-    result, _ = _resolve(
-        monkeypatch, no_proxy="192.168.0.0/16", clear="Arc", cluster="10.0.0.0/8"
-    )
     assert result is None
-    warning.assert_called_once_with(consts.Proxy_Bypass_Arc_Nothing_To_Clear_Warning)
 
 
-def test_resolve_clear_keeps_an_endpoint_the_customer_listed(monkeypatch):
-    # One endpoint on its own is not the bypass this CLI applies, so the clear leaves it
-    # for the customer to remove through --proxy-skip-range.
-    warning = MagicMock()
-    monkeypatch.setattr(custom.logger, "warning", warning)
-    result, _ = _resolve(
-        monkeypatch, clear="Arc", cluster="10.0.0.0/8,.his.arc.azure.com"
-    )
-    assert result is None
-    warning.assert_called_once_with(consts.Proxy_Bypass_Arc_Nothing_To_Clear_Warning)
-
-
-def test_resolve_reapplies_the_bypass_when_the_skip_range_changes(monkeypatch):
-    # --proxy-skip-range replaces the whole skip range, so a cluster that has the bypass
-    # keeps it instead of silently losing the endpoints.
-    result, _ = _resolve(
-        monkeypatch, no_proxy="192.168.0.0/16", cluster="10.0.0.0/8," + ARC_SKIP_RANGE
-    )
-    assert result == "192.168.0.0/16," + ARC_SKIP_RANGE
+@pytest.mark.parametrize(
+    "skip_range,expected",
+    [("", ARC_SKIP_RANGE), ("192.168.0.0/16", "192.168.0.0/16," + ARC_SKIP_RANGE)],
+)
+def test_resolve_range_replacement_preserves_enabled_arc(
+    monkeypatch, skip_range, expected
+):
+    result, _ = _resolve(monkeypatch, no_proxy=skip_range, owned_range="10.0.0.0/8")
+    _assert_arc_result(result, expected, skip_range)
 
 
 def test_resolve_reports_the_carry_over_even_when_it_stays_quiet(monkeypatch):
-    # Only the announcement is silenced, so a connect that changes the skip range still
-    # reports the bypass it carried over.
     warning = MagicMock()
     monkeypatch.setattr(custom.logger, "warning", warning)
     result, _ = _resolve(
-        monkeypatch,
-        no_proxy="192.168.0.0/16",
-        cluster="10.0.0.0/8," + ARC_SKIP_RANGE,
-        announce=False,
+        monkeypatch, no_proxy="192.168.0.0/16", owned_range="10.0.0.0/8", announce=False
     )
-    assert result == "192.168.0.0/16," + ARC_SKIP_RANGE
-    # The warning names the endpoints it kept, rather than describing them.
+    _assert_arc_result(result, "192.168.0.0/16," + ARC_SKIP_RANGE, "192.168.0.0/16")
     warning.assert_called_once_with(ARC_PRESERVED_WARNING)
-    for endpoint in ARC_SKIP_RANGE.split(","):
-        assert endpoint in ARC_PRESERVED_WARNING
 
 
-def test_resolve_skip_range_change_without_the_bypass_stays_untouched(monkeypatch):
-    result, _ = _resolve(monkeypatch, no_proxy="192.168.0.0/16", cluster="10.0.0.0/8")
-    assert result is None
-
-
-def test_resolve_skip_range_change_keeps_an_endpoint_the_customer_listed(monkeypatch):
-    # One endpoint on its own is not the bypass this CLI applies, so the skip range is
-    # stored as it was typed rather than widened into the full set.
+@pytest.mark.parametrize(
+    "cluster", ["10.0.0.0/8", ".his.arc.azure.com", ARC_SKIP_RANGE]
+)
+def test_resolve_replacement_does_not_infer_ownership_from_endpoints(
+    monkeypatch, cluster
+):
     warning = MagicMock()
     monkeypatch.setattr(custom.logger, "warning", warning)
-    result, _ = _resolve(
-        monkeypatch,
-        no_proxy="192.168.0.0/16,.his.arc.azure.com",
-        cluster="10.0.0.0/8,.his.arc.azure.com",
-    )
+    result, _ = _resolve(monkeypatch, no_proxy="192.168.0.0/16", cluster=cluster)
     assert result is None
-    assert warning.called is False
+    warning.assert_not_called()
+
+
+def test_resolve_add_records_ownership_when_all_endpoints_already_exist(monkeypatch):
+    result, _ = _resolve(monkeypatch, add="Arc", cluster=ARC_SKIP_RANGE)
+    _assert_arc_result(result, ARC_SKIP_RANGE, ARC_SKIP_RANGE)
+
+
+def test_resolve_repeated_add_does_not_transfer_arc_entries_to_the_skip_range(
+    monkeypatch,
+):
+    result, _ = _resolve(monkeypatch, add="Arc", owned_range="10.0.0.0/8")
+    _assert_arc_result(result, "10.0.0.0/8," + ARC_SKIP_RANGE, "10.0.0.0/8")
+
+
+def test_resolve_replacement_then_clear_does_not_restore_previous_overlap(monkeypatch):
+    result, helm = _resolve(
+        monkeypatch, no_proxy="1.1.1.1", owned_range=".his.arc.azure.com"
+    )
+    _assert_arc_result(result, "1.1.1.1," + ARC_SKIP_RANGE, "1.1.1.1")
+    helm.return_value = _arc_release_values(result)
+    cleared = resolve_arc_proxy_bypass(
+        _proxy_cmd(), None, "", "Arc", "azure-arc", None, None, "helm"
+    )
+    assert cleared == ("1.1.1.1", "null")
+    helm.return_value = _arc_release_values(cleared)
+    assert (
+        resolve_arc_proxy_bypass(
+            _proxy_cmd(), None, "", "Arc", "azure-arc", None, None, "helm"
+        )
+        is None
+    )
+
+
+@pytest.mark.parametrize(
+    "skip_range",
+    ["", "10.0.0.0/8,192.168.0.0/16", "true", "null", "123", "{example}", r"a\b"],
+)
+def test_arc_ownership_record_round_trips_without_a_state_version(skip_range):
+    result = custom.build_arc_proxy_bypass_settings(_proxy_cmd(), skip_range)
+    state = json.loads(b64decode(result[1], validate=True))
+    assert set(state) == {"userNoProxy", "noProxy"}
+    assert state["userNoProxy"] == skip_range
+    assert "," not in result[1]
+    assert "\\" not in result[1]
+    assert (
+        custom.get_arc_proxy_bypass_user_range(
+            _proxy_cmd(), _arc_release_values(result), result[0]
+        )
+        == skip_range
+    )
+
+
+@pytest.mark.parametrize("namespace_value", [None, {}, {"arcProxyBypass": None}])
+def test_missing_or_cleared_arc_record_is_not_an_error(namespace_value):
+    assert (
+        custom.get_arc_proxy_bypass_user_range(
+            _proxy_cmd(), {"connectedk8sCli": namespace_value}, ARC_SKIP_RANGE
+        )
+        is None
+    )
+
+
+@pytest.mark.parametrize("encoded", ["", "not-base64", "e30=", True])
+def test_malformed_arc_ownership_is_not_treated_as_absent(encoded):
+    with pytest.raises(ValidationError, match=r"\[AZK8S0107\]"):
+        custom.get_arc_proxy_bypass_user_range(
+            _proxy_cmd(),
+            {"connectedk8sCli": {"arcProxyBypass": encoded}},
+            ARC_SKIP_RANGE,
+        )
+
+
+@pytest.mark.parametrize(
+    "record",
+    [
+        [],
+        {"userNoProxy": "1.1.1.1"},
+        {"userNoProxy": False, "noProxy": ARC_SKIP_RANGE},
+        {"userNoProxy": "", "noProxy": None},
+        {"userNoProxy": "", "noProxy": ARC_SKIP_RANGE, "unknown": True},
+    ],
+)
+def test_arc_ownership_requires_the_expected_string_fields(record):
+    encoded = b64encode(json.dumps(record).encode("utf-8")).decode("ascii")
+    with pytest.raises(ValidationError, match=r"\[AZK8S0107\]"):
+        custom.get_arc_proxy_bypass_user_range(
+            _proxy_cmd(),
+            {"connectedk8sCli": {"arcProxyBypass": encoded}},
+            ARC_SKIP_RANGE,
+        )
+
+
+def test_arc_ownership_rejects_an_invalid_namespace():
+    with pytest.raises(ValidationError, match=r"\[AZK8S0107\]"):
+        custom.get_arc_proxy_bypass_user_range(
+            _proxy_cmd(), {"connectedk8sCli": "invalid"}, ARC_SKIP_RANGE
+        )
+
+
+@pytest.mark.parametrize(
+    "action", [{"no_proxy": "2.2.2.2"}, {"add": "Arc"}, {"clear": "Arc"}]
+)
+def test_resolve_rejects_stale_ownership(monkeypatch, action):
+    with pytest.raises(ValidationError, match="does not match"):
+        _resolve(
+            monkeypatch,
+            owned_range="1.1.1.1",
+            cluster="2.2.2.2," + ARC_SKIP_RANGE,
+            **action,
+        )
+
+
+def test_arc_ownership_comparison_ignores_order_case_and_whitespace():
+    values = _owned_arc_values("1.1.1.1")
+    current = " , ".join(reversed(values["global"]["noProxy"].upper().split(",")))
+    current += ",1.1.1.1"
+    assert (
+        custom.get_arc_proxy_bypass_user_range(_proxy_cmd(), values, current)
+        == "1.1.1.1"
+    )
+
+
+@pytest.mark.parametrize(
+    "no_proxy,add,clear",
+    [(None, "Arc", ""), ("1.1.1.1", "", ""), (None, "", "Arc")],
+)
+def test_resolve_preserves_helm_read_errors(monkeypatch, no_proxy, add, clear):
+    expected = AzCLIError("Helm values could not be read")
+    monkeypatch.setattr(custom, "get_all_helm_values", MagicMock(side_effect=expected))
+    with pytest.raises(AzCLIError) as raised:
+        resolve_arc_proxy_bypass(
+            _proxy_cmd(), no_proxy, add, clear, "azure-arc", None, None, "helm"
+        )
+    assert raised.value is expected
+
+
+def test_arc_ownership_error_is_registered():
+    assert (
+        custom.errors.ERROR_CATALOG["AZK8S0107"]
+        is custom.errors.PROXY_BYPASS_STATE_INVALID
+    )
+    assert (
+        custom.errors.FAULT_TYPE_CATALOG[consts.Proxy_Bypass_Arc_State_Fault_Type]
+        is custom.errors.PROXY_BYPASS_STATE_INVALID
+    )
+
+
+@pytest.mark.parametrize("explicit", [False, True])
+def test_empty_proxy_range_is_only_written_when_explicit(explicit):
+    settings, protected, redacted = custom.add_config_protected_settings(
+        "", "", "", "", None, None, None, no_proxy_explicit=explicit
+    )
+    if explicit:
+        assert settings == {"proxy": {}}
+        assert protected == {"proxy": {"no_proxy": ""}}
+        assert redacted == {"proxy": {"no_proxy": "redacted:proxy:no_proxy"}}
+    else:
+        assert settings == protected == redacted == {}
+
+
+@pytest.fixture
+def proxy_command_environment(monkeypatch):
+    cluster = SimpleNamespace(
+        kind=None,
+        id="/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Kubernetes/connectedClusters/cluster",
+        name="cluster",
+        location="eastus",
+        distribution="generic",
+        infrastructure="generic",
+        agent_version="1.35.3",
+        agent_public_key_certificate="test-public-key",
+        identity=SimpleNamespace(principal_id="test-principal"),
+    )
+    dp_payload = SimpleNamespace()
+    helm_dp = {"repositoryPath": "example.invalid/arc:1.35.3", "helmValuesContent": {}}
+    custom_results = {
+        "send_cloud_telemetry": "AZUREPUBLICCLOUD",
+        "get_subscription_id": "sub",
+        "get_config_dp_endpoint": ("https://dp.example", "stable"),
+        "load_kube_config": None,
+        "check_kube_connection": "v1.31.0",
+        "check_arm64_node": False,
+        "check_linux_node": True,
+        "check_aks_cluster": False,
+        "get_kubernetes_distro": "generic",
+        "get_kubernetes_infra": "generic",
+        "_get_kubernetes_client_locations": ("kubectl", "helm"),
+        "get_helm_client_location": "helm",
+        "cf_resource_groups": MagicMock(),
+        "connected_cluster_exists": False,
+        "resource_group_exists": True,
+        "crd_cleanup_force_delete": None,
+        "_generate_key_pair": MagicMock(),
+        "get_public_key": "test-public-key",
+        "get_private_key": "test-private-key",
+        "check_cl_registration_and_get_oid": (False, None),
+        "validate_release_namespace": "azure-arc",
+        "get_all_helm_values": {},
+        "get_cc_resource": cluster,
+        "update_connected_cluster_internal": cluster,
+        "put_cc_resource": (dp_payload, cluster),
+        "poll_for_agent_state": (True, cluster),
+        "check_operation_support": None,
+    }
+    utils_results = {
+        "validate_custom_token": (False, "eastus"),
+        "set_connected_cluster_arm_id_telemetry_context": None,
+        "check_provider_registrations": None,
+        "get_values_file": None,
+        "get_metadata": {},
+        "validate_node_api_response": MagicMock(),
+        "can_create_clusterrolebindings": True,
+        "add_connectedk8s_telemetry_event": None,
+        "validate_connect_rp_location": None,
+        "get_release_namespace": None,
+        "get_helm_values": helm_dp,
+        "health_check_dp": True,
+        "get_helm_registry": helm_dp["repositoryPath"],
+        "get_chart_path": "chart",
+        "inject_onboarding_private_key_secret": None,
+        "helm_install_release": None,
+        "helm_update_agent": None,
+        "update_gateway_cluster_link": None,
+    }
+    for module, results in [(custom, custom_results), (custom.utils, utils_results)]:
+        for name, result in results.items():
+            monkeypatch.setattr(
+                module,
+                name,
+                create_autospec(getattr(module, name), return_value=result),
+            )
+    api = MagicMock()
+    api.read_namespaced_config_map.return_value = SimpleNamespace(
+        data={
+            "AZURE_RESOURCE_GROUP": "rg",
+            "AZURE_RESOURCE_NAME": "cluster",
+            "AZURE_ARC_AUTOUPDATE": "false",
+        }
+    )
+    monkeypatch.setattr(custom.kube_client, "CoreV1Api", MagicMock(return_value=api))
+    monkeypatch.setattr(custom.telemetry, "add_extension_event", MagicMock())
+    monkeypatch.setattr(
+        custom.containerinsightsutils,
+        "sync_container_insights_proxy_bypass_configmap",
+        MagicMock(),
+    )
+    monkeypatch.setattr(
+        custom.containerinsightsutils,
+        "remove_container_insights_proxy_bypass_configmap",
+        MagicMock(),
+    )
+    monkeypatch.setenv("AZURE_LOCAL_DISCONNECTED", "true")
+    for name in ("HELMREGISTRY", "HELMREPONAME", "HELMREPOURL"):
+        monkeypatch.delenv(name, raising=False)
+    return SimpleNamespace(
+        cmd=_proxy_cmd(),
+        client=MagicMock(get=MagicMock(return_value=cluster)),
+        cluster=cluster,
+        dp_payload=dp_payload,
+        helm_dp=helm_dp,
+    )
+
+
+def _assert_arc_helm_payload(payload, no_proxy, user_no_proxy):
+    assert payload["global.noProxy"] == no_proxy.replace(",", r"\,").replace("/", r"\/")
+    _assert_arc_result(
+        (no_proxy, payload[consts.Proxy_Bypass_Arc_Helm_Value]), no_proxy, user_no_proxy
+    )
+
+
+def _assert_proxy_configuration_has_no_ownership(environment):
+    configurations = environment.dp_payload.arc_agentry_configurations
+    assert len(configurations) == 1
+    assert configurations[0].feature == "proxy"
+    assert configurations[0].protected_settings == {
+        "no_proxy": "redacted:proxy:no_proxy"
+    }
+
+
+@pytest.mark.parametrize("no_proxy", ["", "1.1.1.1"])
+def test_update_with_only_protected_no_proxy_keeps_the_no_parameters_error(
+    proxy_command_environment, no_proxy
+):
+    env = proxy_command_environment
+    with pytest.raises(
+        RequiredArgumentMissingError, match=r"\[AZK8S0101\] UpdateNoParameters"
+    ):
+        custom.update_connected_cluster(
+            env.cmd,
+            env.client,
+            "rg",
+            "cluster",
+            configuration_protected_settings={"proxy": {"no_proxy": no_proxy}},
+        )
+    custom.get_all_helm_values.assert_not_called()
+    custom.load_kube_config.assert_not_called()
+    custom.update_connected_cluster_internal.assert_not_called()
+    custom.put_cc_resource.assert_not_called()
+    custom.utils.helm_update_agent.assert_not_called()
+
+
+def test_update_generic_proxy_settings_with_other_options_keep_existing_processing(
+    proxy_command_environment,
+):
+    env = proxy_command_environment
+    env.helm_dp["helmValuesContent"]["global.noProxy"] = "redacted:proxy:no_proxy"
+    custom.update_connected_cluster(
+        env.cmd,
+        env.client,
+        "rg",
+        "cluster",
+        auto_upgrade="false",
+        configuration_protected_settings={"proxy": {"no_proxy": "1.1.1.1"}},
+    )
+    payload = custom.utils.helm_update_agent.call_args.args[3]
+    assert payload["global.noProxy"] == "1.1.1.1"
+    assert consts.Proxy_Bypass_Arc_Helm_Value not in payload
+    custom.get_all_helm_values.assert_not_called()
+
+
+@pytest.mark.parametrize("command", ["connect", "update"])
+@pytest.mark.parametrize("no_proxy", ["", "1.1.1.1"])
+def test_proxy_commands_keep_other_protected_settings_with_arc(
+    proxy_command_environment, command, no_proxy
+):
+    env = proxy_command_environment
+    http_proxy = "http://proxy.example:8080"
+    env.helm_dp["helmValuesContent"]["global.httpProxy"] = "redacted:proxy:http_proxy"
+    handler = (
+        custom.create_connectedk8s
+        if command == "connect"
+        else custom.update_connected_cluster
+    )
+    handler(
+        env.cmd,
+        env.client,
+        "rg",
+        "cluster",
+        no_proxy=no_proxy,
+        add_proxy_bypass="Arc",
+        configuration_protected_settings={"proxy": {"http_proxy": http_proxy}},
+    )
+    payload = (
+        custom.utils.helm_install_release.call_args.args[16]
+        if command == "connect"
+        else custom.utils.helm_update_agent.call_args.args[3]
+    )
+    expected = no_proxy + "," + ARC_SKIP_RANGE if no_proxy else ARC_SKIP_RANGE
+    _assert_arc_helm_payload(payload, expected, no_proxy)
+    assert payload["global.httpProxy"] == http_proxy
+    configurations = env.dp_payload.arc_agentry_configurations
+    assert len(configurations) == 1
+    assert configurations[0].feature == "proxy"
+    assert configurations[0].protected_settings == {
+        "http_proxy": "redacted:proxy:http_proxy",
+        "no_proxy": "redacted:proxy:no_proxy",
+    }
+
+
+@pytest.mark.parametrize("dp_returns_proxy", [False, True])
+@pytest.mark.parametrize(
+    "arguments,skip_range",
+    [
+        ({}, ""),
+        ({"no_proxy": "10.0.0.0/8,1.1.1.1"}, "10.0.0.0/8,1.1.1.1"),
+        (
+            {
+                "no_proxy": "1.1.1.1",
+                "configuration_protected_settings": {"proxy": {"no_proxy": "2.2.2.2"}},
+            },
+            "1.1.1.1",
+        ),
+        ({"no_proxy": ARC_SKIP_RANGE}, ARC_SKIP_RANGE),
+    ],
+)
+def test_connect_sends_arc_ownership_and_effective_range_to_helm(
+    proxy_command_environment, arguments, skip_range, dp_returns_proxy
+):
+    env = proxy_command_environment
+    if dp_returns_proxy:
+        env.helm_dp["helmValuesContent"]["global.noProxy"] = "redacted:proxy:no_proxy"
+    result = custom.create_connectedk8s(
+        env.cmd,
+        env.client,
+        "rg",
+        "cluster",
+        add_proxy_bypass="Arc",
+        **deepcopy(arguments),
+    )
+    assert result is env.cluster
+    payload = custom.utils.helm_install_release.call_args.args[16]
+    expected = (
+        ARC_SKIP_RANGE
+        if skip_range in ("", ARC_SKIP_RANGE)
+        else skip_range + "," + ARC_SKIP_RANGE
+    )
+    _assert_arc_helm_payload(payload, expected, skip_range)
+    _assert_proxy_configuration_has_no_ownership(env)
+    custom.get_all_helm_values.assert_not_called()
+    custom.utils.helm_update_agent.assert_not_called()
+
+
+def test_connect_does_not_claim_arc_endpoints_supplied_only_in_the_range(
+    proxy_command_environment,
+):
+    env = proxy_command_environment
+    env.helm_dp["helmValuesContent"]["global.noProxy"] = "redacted:proxy:no_proxy"
+    custom.create_connectedk8s(
+        env.cmd, env.client, "rg", "cluster", no_proxy=ARC_SKIP_RANGE
+    )
+    payload = custom.utils.helm_install_release.call_args.args[16]
+    assert payload["global.noProxy"] == ARC_SKIP_RANGE.replace(",", r"\,")
+    assert consts.Proxy_Bypass_Arc_Helm_Value not in payload
+    custom.get_all_helm_values.assert_not_called()
+
+
+@pytest.mark.parametrize(
+    "arguments,expected",
+    [
+        ({"no_proxy": "1.1.1.1"}, "1.1.1.1"),
+        ({"no_proxy": "10.0.0.0/8"}, r"10.0.0.0\/8"),
+    ],
+)
+def test_update_replaces_manual_arc_endpoints_normally(
+    proxy_command_environment, arguments, expected
+):
+    env = proxy_command_environment
+    custom.get_all_helm_values.return_value = {"global": {"noProxy": ARC_SKIP_RANGE}}
+    env.helm_dp["helmValuesContent"]["global.noProxy"] = "redacted:proxy:no_proxy"
+    custom.update_connected_cluster(
+        env.cmd, env.client, "rg", "cluster", **deepcopy(arguments)
+    )
+    payload = custom.utils.helm_update_agent.call_args.args[3]
+    assert payload["global.noProxy"] == expected
+    assert consts.Proxy_Bypass_Arc_Helm_Value not in payload
+
+
+@pytest.mark.parametrize("command", ["update", "gateway-reconnect"])
+@pytest.mark.parametrize(
+    "arguments,skip_range",
+    [
+        ({"no_proxy": "10.0.0.0/8,1.1.1.1"}, "10.0.0.0/8,1.1.1.1"),
+        ({"no_proxy": "1.1.1.1", "add_proxy_bypass": "Arc"}, "1.1.1.1"),
+        (
+            {
+                "no_proxy": "1.1.1.1",
+                "configuration_protected_settings": {"proxy": {"no_proxy": "2.2.2.2"}},
+            },
+            "1.1.1.1",
+        ),
+        ({"add_proxy_bypass": "Arc"}, "192.168.0.0/16"),
+    ],
+)
+def test_existing_cluster_preserves_arc_while_replacing_the_range(
+    proxy_command_environment, command, arguments, skip_range
+):
+    env = proxy_command_environment
+    custom.get_all_helm_values.return_value = _owned_arc_values("192.168.0.0/16")
+    env.helm_dp["helmValuesContent"]["global.noProxy"] = "redacted:proxy:no_proxy"
+    if command == "gateway-reconnect":
+        custom.utils.get_release_namespace.return_value = "azure-arc"
+        custom.connected_cluster_exists.return_value = True
+        result = custom.create_connectedk8s(
+            env.cmd,
+            env.client,
+            "rg",
+            "cluster",
+            gateway_resource_id=GATEWAY_RESOURCE_ID,
+            **deepcopy(arguments),
+        )
+    else:
+        result = custom.update_connected_cluster(
+            env.cmd, env.client, "rg", "cluster", **deepcopy(arguments)
+        )
+    assert result is env.cluster
+    expected = skip_range + "," + ARC_SKIP_RANGE if skip_range else ARC_SKIP_RANGE
+    payload = custom.utils.helm_update_agent.call_args.args[3]
+    _assert_arc_helm_payload(payload, expected, skip_range)
+    _assert_proxy_configuration_has_no_ownership(env)
+    custom.get_all_helm_values.assert_called_once_with(
+        env.cmd, "azure-arc", None, None, "helm"
+    )
+    custom.utils.helm_install_release.assert_not_called()
+
+
+@pytest.mark.parametrize(
+    "saved_range,arguments,expected",
+    [
+        ("", {}, ""),
+        ("1.1.1.1", {}, "1.1.1.1"),
+        (".his.arc.azure.com", {}, ".his.arc.azure.com"),
+        (ARC_SKIP_RANGE, {}, ARC_SKIP_RANGE),
+        ("1.1.1.1", {"no_proxy": ARC_SKIP_RANGE}, ARC_SKIP_RANGE),
+        ("1.1.1.1", {"no_proxy": ""}, "1.1.1.1"),
+    ],
+)
+def test_update_clear_writes_the_remaining_range_and_null_ownership(
+    proxy_command_environment, saved_range, arguments, expected
+):
+    env = proxy_command_environment
+    custom.get_all_helm_values.return_value = _owned_arc_values(saved_range)
+    custom.update_connected_cluster(
+        env.cmd,
+        env.client,
+        "rg",
+        "cluster",
+        clear_proxy_bypass="Arc",
+        **deepcopy(arguments),
+    )
+    payload = custom.utils.helm_update_agent.call_args.args[3]
+    assert payload["global.noProxy"] == expected.replace(",", r"\,")
+    assert payload[consts.Proxy_Bypass_Arc_Helm_Value] == "null"
+    _assert_proxy_configuration_has_no_ownership(env)
+
+
+@pytest.mark.parametrize("skip_range", [None, "1.1.1.1", ARC_SKIP_RANGE])
+def test_clear_without_arc_ownership_does_not_cancel_other_updates(
+    proxy_command_environment, skip_range
+):
+    env = proxy_command_environment
+    custom.get_all_helm_values.return_value = {"global": {"noProxy": ARC_SKIP_RANGE}}
+    if skip_range is not None:
+        env.helm_dp["helmValuesContent"]["global.noProxy"] = "redacted:proxy:no_proxy"
+    custom.update_connected_cluster(
+        env.cmd,
+        env.client,
+        "rg",
+        "cluster",
+        clear_proxy_bypass="Arc",
+        add_proxy_bypass="Microsoft.AzureMonitor.Containers",
+        tags={"purpose": "test"},
+        no_proxy=skip_range or "",
+    )
+    custom.update_connected_cluster_internal.assert_called_once()
+    custom.utils.helm_update_agent.assert_called_once()
+    custom.containerinsightsutils.sync_container_insights_proxy_bypass_configmap.assert_called_once_with(
+        custom.kube_client.CoreV1Api.return_value, True, cmd=env.cmd
+    )
+    payload = custom.utils.helm_update_agent.call_args.args[3]
+    assert consts.Proxy_Bypass_Arc_Helm_Value not in payload
+    if skip_range is None:
+        assert "global.noProxy" not in payload
+    else:
+        assert payload["global.noProxy"] == skip_range.replace(",", r"\,")
+
+
+@pytest.mark.parametrize(
+    "arguments",
+    [
+        {"http_proxy": "http://proxy.example:8080"},
+        {"disable_proxy": True},
+        {"auto_upgrade": "false"},
+        {"clear_proxy_bypass": "Microsoft.AzureMonitor.Containers"},
+    ],
+)
+def test_unrelated_update_does_not_read_or_rewrite_arc_ownership(
+    proxy_command_environment, arguments
+):
+    env = proxy_command_environment
+    custom.get_all_helm_values.return_value = _owned_arc_values("1.1.1.1")
+    custom.update_connected_cluster(env.cmd, env.client, "rg", "cluster", **arguments)
+    custom.get_all_helm_values.assert_not_called()
+    payload = custom.utils.helm_update_agent.call_args.args[3]
+    assert "global.noProxy" not in payload
+    assert consts.Proxy_Bypass_Arc_Helm_Value not in payload
+    if arguments.get("disable_proxy"):
+        assert payload["global.isProxyEnabled"] == "False"
+
+
+@pytest.mark.parametrize("command", ["update", "gateway-reconnect"])
+@pytest.mark.parametrize("failure", ["malformed", "mismatch", "read"])
+def test_arc_ownership_failure_stops_before_helm_changes(
+    proxy_command_environment, command, failure
+):
+    env = proxy_command_environment
+    values = _owned_arc_values("1.1.1.1")
+    if failure == "malformed":
+        values["connectedk8sCli"]["arcProxyBypass"] = "invalid"
+    elif failure == "mismatch":
+        values["global"]["noProxy"] = "2.2.2.2," + ARC_SKIP_RANGE
+    else:
+        custom.get_all_helm_values.side_effect = custom.CLIInternalError(
+            "[AZK8S0509] HelmValuesGetFailed"
+        )
+    custom.get_all_helm_values.return_value = values
+    with pytest.raises(AzCLIError, match=r"\[AZK8S0(107|509)\]"):
+        if command == "gateway-reconnect":
+            custom.utils.get_release_namespace.return_value = "azure-arc"
+            custom.connected_cluster_exists.return_value = True
+            custom.create_connectedk8s(
+                env.cmd,
+                env.client,
+                "rg",
+                "cluster",
+                no_proxy="1.1.1.1",
+                gateway_resource_id=GATEWAY_RESOURCE_ID,
+                tags={"purpose": "test"},
+            )
+        else:
+            custom.update_connected_cluster(
+                env.cmd,
+                env.client,
+                "rg",
+                "cluster",
+                no_proxy="1.1.1.1",
+                tags={"purpose": "test"},
+            )
+    if command == "update":
+        custom.update_connected_cluster_internal.assert_called_once_with(
+            env.cmd, env.client, "rg", "cluster", {"purpose": "test"}, None, None, None
+        )
+    else:
+        custom.update_connected_cluster_internal.assert_not_called()
+    custom.put_cc_resource.assert_not_called()
+    custom.utils.update_gateway_cluster_link.assert_not_called()
+    custom.utils.helm_update_agent.assert_not_called()
+    custom.utils.helm_install_release.assert_not_called()
+
+
+@pytest.mark.parametrize(
+    "arguments",
+    [
+        {"tags": {"purpose": "test"}},
+        {"azure_hybrid_benefit": "False", "no_proxy": "1.1.1.1"},
+    ],
+)
+def test_arm_update_keeps_original_order_when_kubernetes_is_unreachable(
+    proxy_command_environment, arguments
+):
+    env = proxy_command_environment
+    expected = ValidationError("[AZK8S0202] KubernetesConnectivityFailed")
+    custom.check_kube_connection.side_effect = expected
+    with pytest.raises(ValidationError) as raised:
+        custom.update_connected_cluster(
+            env.cmd, env.client, "rg", "cluster", **arguments
+        )
+    assert raised.value is expected
+    custom.update_connected_cluster_internal.assert_called_once_with(
+        env.cmd,
+        env.client,
+        "rg",
+        "cluster",
+        arguments.get("tags"),
+        None,
+        None,
+        arguments.get("azure_hybrid_benefit"),
+    )
+    custom.get_all_helm_values.assert_not_called()
+    custom.put_cc_resource.assert_not_called()
+    custom.utils.helm_update_agent.assert_not_called()
+
+
+def test_non_gateway_reconnect_still_rejects_adding_arc(proxy_command_environment):
+    env = proxy_command_environment
+    custom.utils.get_release_namespace.return_value = "azure-arc"
+    custom.connected_cluster_exists.return_value = True
+    with pytest.raises(ArgumentUsageError, match="reconnect"):
+        custom.create_connectedk8s(
+            env.cmd, env.client, "rg", "cluster", add_proxy_bypass="Arc"
+        )
+    custom.put_cc_resource.assert_not_called()
+    custom.utils.helm_update_agent.assert_not_called()
+
+
+def test_arm_only_hybrid_benefit_update_does_not_need_proxy_or_helm(
+    proxy_command_environment,
+):
+    env = proxy_command_environment
+    result = custom.update_connected_cluster(
+        env.cmd, env.client, "rg", "cluster", azure_hybrid_benefit="False"
+    )
+    assert result is env.cluster
+    custom.update_connected_cluster_internal.assert_called_once()
+    custom.load_kube_config.assert_not_called()
+    custom.get_all_helm_values.assert_not_called()
+    custom.utils.helm_update_agent.assert_not_called()
+
+
+@pytest.mark.parametrize("skip_range", ["", "10.0.0.0/8,.HIS.ARC.AZURE.COM"])
+def test_manual_upgrade_carries_arc_ownership_and_other_helm_values(
+    proxy_command_environment, monkeypatch, skip_range
+):
+    env = proxy_command_environment
+    values = _owned_arc_values(skip_range)
+    values["unrelated"] = {"setting": "preserved"}
+    custom.utils.get_release_namespace.return_value = "azure-arc"
+    custom.connected_cluster_exists.return_value = True
+    get_values = MagicMock(returncode=0)
+    get_values.communicate.return_value = (json.dumps(values).encode("ascii"), b"")
+    upgrade = MagicMock(returncode=0)
+    upgrade.communicate.return_value = (b"{}", b"")
+    popen = MagicMock(side_effect=[get_values, upgrade])
+    monkeypatch.setattr(custom, "Popen", popen)
+
+    custom.upgrade_agents(env.cmd, env.client, "rg", "cluster")
+
+    command = popen.call_args_list[1].args[0]
+    assert "--atomic" in command
+    assert "unrelated.setting=preserved" in command
+    encoded = values["connectedk8sCli"]["arcProxyBypass"]
+    assert f"{consts.Proxy_Bypass_Arc_Helm_Value}={encoded}" in command
+    no_proxy = values["global"]["noProxy"].replace(",", r"\,").replace("/", r"\/")
+    assert f"global.noProxy={no_proxy}" in command
+    custom.get_all_helm_values.assert_not_called()

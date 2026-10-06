@@ -370,9 +370,10 @@ def create_connectedk8s(
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
-    # no_proxy is about to be merged into and then escaped; the reconnect path further down
-    # needs the skip range exactly as the caller passed it.
-    requested_no_proxy = no_proxy
+    # Preserve the original range for reconnects before merging and escaping.
+    requested_no_proxy = no_proxy or None
+    # None means no ownership override, not that Arc bypass is disabled.
+    arc_proxy_bypass_state: str | None = None
 
     arc_requested = validators.has_proxy_bypass_keyword(
         add_proxy_bypass, consts.Proxy_Bypass_Arc_Keyword
@@ -381,10 +382,11 @@ def create_connectedk8s(
         add_proxy_bypass, consts.Proxy_Bypass_ContainerInsights_Extension_Type
     )
 
-    # Apply the Arc bypass before escaping, so the separator added here is escaped too.
-    # The paths below announce it, since only they know whether it reached the agents.
+    # Merge before escaping; defer announcements until the connect path is known.
     if arc_requested:
-        no_proxy = add_arc_proxy_skip_range_endpoints(cmd, no_proxy)
+        no_proxy, arc_proxy_bypass_state = build_arc_proxy_bypass_settings(
+            cmd, no_proxy
+        )
 
     print(f"Step: {utils.get_utctimestring()}: Escape Proxy Settings, if passed in")
 
@@ -822,58 +824,59 @@ def create_connectedk8s(
                     details=err_msg,
                 )
 
-            # connect does not take --clear-proxy-bypass.
-            clear_proxy_bypass = ""
-
-            # Re-resolve the skip range against the existing release. It was built
-            # from this run's arguments alone, so a reconnect that only adds the bypass
-            # would otherwise overwrite the skip range already on the cluster.
-            resolved_no_proxy = resolve_arc_proxy_bypass(
-                cmd,
-                requested_no_proxy,
-                add_proxy_bypass,
-                clear_proxy_bypass,
-                release_namespace,
-                kube_config,
-                kube_context,
-                helm_client_location,
-                announce_applied=False,
-            )
-            if resolved_no_proxy is not None:
-                no_proxy = escape_proxy_settings(resolved_no_proxy)
-                # Rebuild the settings from the resolved skip range, so the ARM payload and the
-                # agent configuration below both carry the bypass.
-                (
-                    configuration_settings,
-                    configuration_protected_settings,
-                    redacted_protected_values,
-                ) = add_config_protected_settings(
-                    http_proxy,
-                    https_proxy,
-                    no_proxy,
-                    proxy_cert,
-                    container_log_path,
-                    configuration_settings,
-                    configuration_protected_settings,
-                    no_proxy_explicit=True,
-                )
-                arc_agentry_configurations = generate_arc_agent_configuration(
-                    configuration_settings, configuration_protected_settings
-                )
-
             # Without a gateway the agents are not upgraded, so the bypass is refused.
-            if arc_requested:
-                if gateway is None:
-                    telemetry.set_exception(
-                        exception=Exception(consts.Proxy_Bypass_Arc_Reconnect_Error),
-                        fault_type=consts.Proxy_Bypass_Arc_Reconnect_Fault_Type,
-                        summary="Arc proxy bypass cannot be applied while reconnecting",
+            if arc_requested and gateway is None:
+                telemetry.set_exception(
+                    exception=Exception(consts.Proxy_Bypass_Arc_Reconnect_Error),
+                    fault_type=consts.Proxy_Bypass_Arc_Reconnect_Fault_Type,
+                    summary="Arc proxy bypass cannot be applied while reconnecting",
+                )
+                raise ArgumentUsageError(
+                    consts.Proxy_Bypass_Arc_Reconnect_Error,
+                    recommendation=consts.Proxy_Bypass_Arc_Reconnect_Recommendation,
+                )
+
+            if gateway is not None:
+                # connect does not take --clear-proxy-bypass.
+                clear_proxy_bypass = ""
+
+                # Gateway reconnects upgrade Helm, so resolve against the existing
+                # release to preserve its skip range when only adding Arc bypass.
+                resolved_proxy_bypass = resolve_arc_proxy_bypass(
+                    cmd,
+                    requested_no_proxy,
+                    add_proxy_bypass,
+                    clear_proxy_bypass,
+                    release_namespace,
+                    kube_config,
+                    kube_context,
+                    helm_client_location,
+                    announce_applied=False,
+                )
+                if resolved_proxy_bypass is not None:
+                    resolved_no_proxy, arc_proxy_bypass_state = resolved_proxy_bypass
+                    no_proxy = escape_proxy_settings(resolved_no_proxy)
+                    # Refresh protected values and DP placeholders after resolution.
+                    (
+                        configuration_settings,
+                        configuration_protected_settings,
+                        redacted_protected_values,
+                    ) = add_config_protected_settings(
+                        http_proxy,
+                        https_proxy,
+                        no_proxy,
+                        proxy_cert,
+                        container_log_path,
+                        configuration_settings,
+                        configuration_protected_settings,
+                        no_proxy_explicit=True,
                     )
-                    raise ArgumentUsageError(
-                        consts.Proxy_Bypass_Arc_Reconnect_Error,
-                        recommendation=consts.Proxy_Bypass_Arc_Reconnect_Recommendation,
+                    arc_agentry_configurations = generate_arc_agent_configuration(
+                        configuration_settings, configuration_protected_settings
                     )
-                _announce_arc_proxy_bypass(cmd)
+
+                if arc_requested:
+                    _announce_arc_proxy_bypass(cmd)
 
             # Re-put connected cluster
             # If cluster is of kind provisioned cluster, there are several properties that cannot be updated
@@ -1010,6 +1013,13 @@ def create_connectedk8s(
                             configuration_protected_settings[feature][protectedSetting]
                         )
 
+                # Pass CLI ownership and noProxy together to Helm after DP substitution.
+                if arc_proxy_bypass_state is not None:
+                    helm_content_values["global.noProxy"] = no_proxy
+                    helm_content_values[consts.Proxy_Bypass_Arc_Helm_Value] = (
+                        arc_proxy_bypass_state
+                    )
+
                 # Perform helm upgrade
                 utils.helm_update_agent(
                     helm_client_location,
@@ -1069,6 +1079,8 @@ def create_connectedk8s(
 
     # Onboarding installs the agents with the skip range above, so the bypass applies.
     if arc_requested:
+        if has_arc_proxy_skip_range_endpoints(cmd, requested_no_proxy):
+            logger.warning(consts.Proxy_Bypass_Arc_Overlap_Warning)
         _announce_arc_proxy_bypass(cmd)
 
     print(
@@ -1306,6 +1318,13 @@ def create_connectedk8s(
                 helm_content_values[helm_parameter] = configuration_protected_settings[
                     feature
                 ][protectedSetting]
+
+        # Pass CLI ownership and noProxy together to Helm after DP substitution.
+        if arc_proxy_bypass_state is not None:
+            helm_content_values["global.noProxy"] = no_proxy
+            helm_content_values[consts.Proxy_Bypass_Arc_Helm_Value] = (
+                arc_proxy_bypass_state
+            )
 
         print(
             f"Step: {utils.get_utctimestring()}: Starting to install Azure arc agents on the Kubernetes cluster."
@@ -1599,21 +1618,21 @@ def get_arc_proxy_skip_range_endpoints(cmd: CLICommand) -> list[str]:
 
 
 def add_arc_proxy_skip_range_endpoints(cmd: CLICommand, no_proxy: str) -> str:
-    # Add the Arc endpoints to the skip range, leaving any already listed alone.
-    # Re-running changes nothing, so update can re-apply the bypass without duplicates.
-    entries = [entry.strip() for entry in no_proxy.split(",") if entry.strip()]
-    existing = {entry.lower() for entry in entries}
-    for endpoint in get_arc_proxy_skip_range_endpoints(cmd):
-        if endpoint.lower() not in existing:
-            entries.append(endpoint)
-            existing.add(endpoint.lower())
+    # Deduplicate while preserving the first spelling and order of entries.
+    entries = []
+    existing = set()
+    for entry in no_proxy.split(",") + get_arc_proxy_skip_range_endpoints(cmd):
+        entry = entry.strip()
+        if entry and entry.lower() not in existing:
+            entries.append(entry)
+            existing.add(entry.lower())
     return ",".join(entries)
 
 
 def has_arc_proxy_skip_range_endpoints(
     cmd: CLICommand, no_proxy: str | None, require_all: bool = False
 ) -> bool:
-    # The bypass always writes every endpoint, so require_all matches only its own work.
+    # Endpoint matches indicate overlap, not ownership.
     entries = {entry.strip().lower() for entry in (no_proxy or "").split(",")}
     present = [
         endpoint.lower() in entries
@@ -1622,42 +1641,71 @@ def has_arc_proxy_skip_range_endpoints(
     return all(present) if require_all else any(present)
 
 
-def remove_arc_proxy_skip_range_endpoints(cmd: CLICommand, no_proxy: str) -> str:
-    # Remove only the Arc endpoints, so entries the user added to the skip range survive.
-    # They are derived rather than stored, so matching on value is what identifies them.
-    removable = {
-        endpoint.lower() for endpoint in get_arc_proxy_skip_range_endpoints(cmd)
+def build_arc_proxy_bypass_settings(
+    cmd: CLICommand, user_no_proxy: str
+) -> tuple[str, str]:
+    no_proxy = add_arc_proxy_skip_range_endpoints(cmd, user_no_proxy)
+    # Save the original range for clear, and the effective list to detect later edits.
+    state = {"userNoProxy": user_no_proxy, "noProxy": no_proxy}
+    # A single encoded scalar survives the existing Helm --set upgrade path without
+    # interpreting commas, braces, or string-like booleans in the proxy skip range.
+    encoded_state = b64encode(
+        json.dumps(state, separators=(",", ":")).encode("utf-8")
+    ).decode("ascii")
+    return no_proxy, encoded_state
+
+
+def get_arc_proxy_bypass_user_range(
+    cmd: CLICommand, helm_values: dict[str, Any], current_no_proxy: str
+) -> str | None:
+    # Helm stores dotted keys as nested values. Missing/null ownership is valid;
+    # malformed records must not be treated as an unowned release.
+    namespace, key = consts.Proxy_Bypass_Arc_Helm_Value.split(".")
+    cli_values = helm_values.get(namespace)
+    if cli_values is None:
+        return None
+    try:
+        if not isinstance(cli_values, dict):
+            raise TypeError("Invalid CLI Helm values")
+        encoded_state = cli_values.get(key)
+        if encoded_state is None:
+            return None
+        if not isinstance(encoded_state, str):
+            raise TypeError("Invalid Arc proxy bypass ownership value")
+        state = json.loads(b64decode(encoded_state, validate=True).decode("utf-8"))
+        if not isinstance(state, dict) or set(state) != {"userNoProxy", "noProxy"}:
+            raise ValueError("Invalid Arc proxy bypass ownership record")
+        user_no_proxy = state["userNoProxy"]
+        saved_no_proxy = state["noProxy"]
+        if not isinstance(user_no_proxy, str) or not isinstance(saved_no_proxy, str):
+            raise TypeError("Invalid Arc proxy bypass skip range")
+    except (TypeError, ValueError) as ex:
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.PROXY_BYPASS_STATE_INVALID,
+            exception=ex,
+            details=consts.Proxy_Bypass_Arc_State_Invalid_Error,
+        ) from ex
+
+    # Compare entries, not formatting, before trusting the saved skip range.
+    saved_entries = {
+        entry.strip().lower() for entry in saved_no_proxy.split(",") if entry.strip()
     }
-    entries = [entry.strip() for entry in no_proxy.split(",") if entry.strip()]
-    return ",".join(entry for entry in entries if entry.lower() not in removable)
-
-
-def validate_arc_proxy_bypass_clear(
-    cmd: CLICommand, no_proxy: str | None, clear_proxy_bypass: str
-) -> None:
-    # Clearing removes the Arc endpoints by value, so ones typed into the same command would
-    # go too. Refusing is the only outcome that keeps what the caller typed.
-    if not validators.has_proxy_bypass_keyword(
-        clear_proxy_bypass, consts.Proxy_Bypass_Arc_Keyword
-    ):
-        return
-    # One endpoint is removed just like the full set, so any of them is enough.
-    if not has_arc_proxy_skip_range_endpoints(cmd, no_proxy):
-        return
-    telemetry.set_exception(
-        exception=Exception(consts.Proxy_Bypass_Arc_Clear_Conflict_Error),
-        fault_type=consts.Proxy_Bypass_Arc_Clear_Conflict_Fault_Type,
-        summary="Arc proxy bypass cleared while the skip range lists the endpoints",
-    )
-    raise ArgumentUsageError(
-        consts.Proxy_Bypass_Arc_Clear_Conflict_Error,
-        recommendation=consts.Proxy_Bypass_Arc_Clear_Conflict_Recommendation,
-    )
+    current_entries = {
+        entry.strip().lower() for entry in current_no_proxy.split(",") if entry.strip()
+    }
+    if saved_entries != current_entries:
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.PROXY_BYPASS_STATE_INVALID,
+            details=consts.Proxy_Bypass_Arc_State_Mismatch_Error,
+        )
+    return user_no_proxy
 
 
 def resolve_arc_proxy_bypass(
     cmd: CLICommand,
-    no_proxy: str,
+    no_proxy: str | None,
     add_proxy_bypass: str,
     clear_proxy_bypass: str,
     release_namespace: str,
@@ -1665,58 +1713,65 @@ def resolve_arc_proxy_bypass(
     kube_context: str | None,
     helm_client_location: str,
     announce_applied: bool = True,
-) -> str | None:
-    # --proxy-skip-range replaces the whole skip range, so re-apply the Arc bypass here or
-    # changing the skip range would drop the endpoints. Return None to leave the skip range
-    # alone, which keeps updates that say nothing about it untouched.
+) -> tuple[str, str] | None:
     requested = validators.has_proxy_bypass_keyword(
         add_proxy_bypass, consts.Proxy_Bypass_Arc_Keyword
     )
     cleared = validators.has_proxy_bypass_keyword(
         clear_proxy_bypass, consts.Proxy_Bypass_Arc_Keyword
     )
-    if not (cleared or requested or no_proxy):
+    # Unrelated commands must not read or rewrite Arc ownership.
+    if not (cleared or requested or no_proxy is not None):
         return None
 
-    # The cluster's skip range is needed to merge the bypass into it or remove it from it.
-    current_no_proxy = ""
-    if cleared or not (requested and no_proxy):
-        # Read the skip range the agents run with today; helm returns it unescaped. It is
-        # the base when the bypass is added without a new skip range, so entries survive.
-        helm_values = get_all_helm_values(
-            cmd, release_namespace, kube_config, kube_context, helm_client_location
+    helm_values = get_all_helm_values(
+        cmd, release_namespace, kube_config, kube_context, helm_client_location
+    )
+    # Do not mistake an invalid Helm response for missing ownership.
+    if not isinstance(helm_values, dict):
+        raise utils.report_connectedk8s_error(
+            cmd,
+            errors.PROXY_BYPASS_STATE_INVALID,
+            details=consts.Proxy_Bypass_Arc_State_Invalid_Error,
         )
-        current_no_proxy = str(utils.flatten(helm_values).get("global.noProxy") or "")
+    current_no_proxy = str(utils.flatten(helm_values).get("global.noProxy") or "")
+    managed_user_range = get_arc_proxy_bypass_user_range(
+        cmd, helm_values, current_no_proxy
+    )
+    # Only None means unowned; an empty saved range still records enabled Arc bypass.
+    user_no_proxy = (
+        current_no_proxy if managed_user_range is None else managed_user_range
+    )
+    if no_proxy is not None:
+        user_no_proxy = no_proxy
 
     if cleared:
-        # A new skip range replaces the old one, so remove the endpoints from that when
-        # given. Only the full set is the bypass, so endpoints listed alone are kept.
-        if not (
-            has_arc_proxy_skip_range_endpoints(cmd, current_no_proxy, require_all=True)
-            or has_arc_proxy_skip_range_endpoints(cmd, no_proxy, require_all=True)
-        ):
+        if managed_user_range is None:
             logger.warning(consts.Proxy_Bypass_Arc_Nothing_To_Clear_Warning)
             return None
         print(
             f"Step: {utils.get_utctimestring()}: "
             f"{consts.Proxy_Bypass_Arc_Cleared_Message.format(endpoints=_arc_proxy_skip_range_endpoints_text(cmd))}"
         )
-        return remove_arc_proxy_skip_range_endpoints(cmd, no_proxy or current_no_proxy)
+        # Keep the saved/new skip range; Helm's null clears the ownership record.
+        return user_no_proxy, "null"
 
     if requested:
-        # Off for connect, which announces this once it knows the agents are updated.
+        # connect announces this after selecting a supported path.
         if announce_applied:
             _announce_arc_proxy_bypass(cmd)
-    elif has_arc_proxy_skip_range_endpoints(cmd, current_no_proxy, require_all=True):
-        # Only the full set is carried over, so endpoints listed alone are not widened.
+    elif managed_user_range is not None:
         preserved_warning = consts.Proxy_Bypass_Arc_Preserved_Warning.format(
             endpoints=_arc_proxy_skip_range_endpoints_text(cmd)
         )
         logger.warning(preserved_warning)
     else:
+        # No recorded Arc bypass: leave replacement to normal proxy handling.
         return None
 
-    return add_arc_proxy_skip_range_endpoints(cmd, no_proxy or current_no_proxy)
+    if has_arc_proxy_skip_range_endpoints(cmd, user_no_proxy):
+        logger.warning(consts.Proxy_Bypass_Arc_Overlap_Warning)
+    return build_arc_proxy_bypass_settings(cmd, user_no_proxy)
 
 
 def check_kube_connection(cmd: CLICommand | None = None) -> str:
@@ -2969,13 +3024,8 @@ def update_connected_cluster(
     # Escaping comma, forward slash present in http proxy urls, needed for helm params.
     http_proxy = escape_proxy_settings(http_proxy)
 
-    # The Arc bypass is merged with the cluster's current skip range, which helm reports
-    # unescaped, so hold on to this value in the same form until that merge can run.
-    requested_no_proxy = no_proxy
-
-    # The ARM update below runs before the resolver, so a failure there would come too late.
-    # The value is still unescaped here, which is what splitting on commas needs.
-    validate_arc_proxy_bypass_clear(cmd, requested_no_proxy, clear_proxy_bypass)
+    # Preserve the raw range for ownership resolution before Helm escaping.
+    requested_no_proxy = no_proxy or None
 
     # Escaping comma, forward slash present in no proxy urls, needed for helm params.
     no_proxy = escape_proxy_settings(no_proxy)
@@ -3121,7 +3171,8 @@ def update_connected_cluster(
         helm_client_location,
     )
 
-    resolved_no_proxy = resolve_arc_proxy_bypass(
+    arc_proxy_bypass_state: str | None = None
+    resolved_proxy_bypass = resolve_arc_proxy_bypass(
         cmd,
         requested_no_proxy,
         add_proxy_bypass,
@@ -3131,10 +3182,11 @@ def update_connected_cluster(
         kube_context,
         helm_client_location,
     )
-    if resolved_no_proxy is not None:
+    if resolved_proxy_bypass is not None:
+        resolved_no_proxy, arc_proxy_bypass_state = resolved_proxy_bypass
         no_proxy = escape_proxy_settings(resolved_no_proxy)
-        # Rebuild the settings from the resolved skip range, so the ARM payload and the
-        # agent configuration below both carry the bypass.
+        # Refresh protected values and DP placeholders; an empty clear result
+        # must be written rather than treated as an omitted skip range.
         (
             configuration_settings,
             configuration_protected_settings,
@@ -3336,6 +3388,11 @@ def update_connected_cluster(
             helm_content_values[helm_parameter] = configuration_protected_settings[
                 feature
             ][protectedSetting]
+
+    # Pass CLI ownership and noProxy together to Helm after DP substitution.
+    if arc_proxy_bypass_state is not None:
+        helm_content_values["global.noProxy"] = no_proxy
+        helm_content_values[consts.Proxy_Bypass_Arc_Helm_Value] = arc_proxy_bypass_state
 
     # Disable proxy if disable_proxy flag is set
     if disable_proxy:

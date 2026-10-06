@@ -183,6 +183,13 @@ INVALID_GATEWAY_ARM_ID = _define(
     fault_type=consts.Gateway_ArmId_Is_Invalid_Fault_Type,
     az_error_cls=InvalidArgumentValueError,
 )
+PROXY_BYPASS_STATE_INVALID = _define(
+    code="AZK8S0107",
+    name="ProxyBypassStateInvalid",
+    description="Cannot safely determine Azure Arc proxy bypass ownership.",
+    fault_type=consts.Proxy_Bypass_Arc_State_Fault_Type,
+    az_error_cls=ValidationError,
+)
 
 # Kubeconfig & Cluster Access (AZK8S0200-AZK8S0299)
 KUBECONFIG_LOAD_FAILED = _define(
@@ -650,6 +657,7 @@ ALL_ERRORS: tuple[ArcError, ...] = (
     INVALID_LOCATION,
     PRIVATE_LINK_SCOPE_LOCATION_MISMATCH,
     INVALID_GATEWAY_ARM_ID,
+    PROXY_BYPASS_STATE_INVALID,
     KUBECONFIG_LOAD_FAILED,
     CONFIGMAP_READ_FAILED,
     KUBERNETES_CONNECTIVITY_FAILED,

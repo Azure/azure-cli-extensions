@@ -98,7 +98,11 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:  # 
             "no_proxy",
             options_list=["--proxy-skip-range"],
             arg_group="Proxy",
-            help="List of URLs/CIDRs for which proxy should not be used.",
+            help=(
+                "List of URLs/CIDRs for which proxy should not be used. Replaces the "
+                "proxy skip range while preserving endpoints added through "
+                "--add-proxy-bypass Arc."
+            ),
         )
         c.argument(
             "add_proxy_bypass",
@@ -272,7 +276,11 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:  # 
             "no_proxy",
             options_list=["--proxy-skip-range"],
             arg_group="Proxy",
-            help="List of URLs/CIDRs for which proxy should not be used.",
+            help=(
+                "List of URLs/CIDRs for which proxy should not be used. Replaces the "
+                "proxy skip range while preserving endpoints added through "
+                "--add-proxy-bypass Arc."
+            ),
         )
         c.argument(
             "add_proxy_bypass",
@@ -293,7 +301,8 @@ def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:  # 
             help=(
                 "Comma-separated list of values that should stop bypassing the proxy. "
                 "Allowed values: Arc (Azure Arc service endpoints), "
-                "Microsoft.AzureMonitor.Containers (Container Insights agent)."
+                "Microsoft.AzureMonitor.Containers (Container Insights agent). "
+                "Clearing Arc keeps entries supplied through --proxy-skip-range."
             ),
         )
         c.argument(

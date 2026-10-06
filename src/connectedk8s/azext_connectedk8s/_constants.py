@@ -269,7 +269,6 @@ Gateway_ArmId_Is_Invalid = "The provided Gateway ArmID in --gateway-resource-id 
 EnableProxy_Conflict_Error = "Conflict detected: --disable-proxy can not be set with --https-proxy, --http-proxy, --proxy-skip-range, --proxy-cert and --add-proxy-bypass at the same time. Please run az connectedk8s update --help for more information about the parameters"
 
 # Arc service endpoint host suffixes that are bypassed when Arc bypass is requested.
-# A skip range holding all of them marks the bypass as applied, so changing this list stops it being recognised.
 Arc_Service_Endpoints = [
     ".his.arc.azure.{cloud_based_domain}",
     ".dp.kubernetesconfiguration.azure.{cloud_based_domain}",
@@ -278,27 +277,41 @@ Arc_Service_Endpoints = [
 
 # Keyword accepted by --add-proxy-bypass, which bypasses the proxy for the endpoints above.
 Proxy_Bypass_Arc_Keyword = "Arc"
+Proxy_Bypass_Arc_Helm_Value = "connectedk8sCli.arcProxyBypass"
+Proxy_Bypass_Arc_State_Fault_Type = "proxy-bypass-arc-state-invalid"
+Proxy_Bypass_Arc_State_Invalid_Error = (
+    "Cannot read the saved Arc proxy bypass information. "
+    "This command has not changed the proxy settings."
+)
+Proxy_Bypass_Arc_State_Mismatch_Error = (
+    "The saved Arc proxy bypass information does not match the current proxy skip range. "
+    "The proxy settings may have been changed outside this CLI. "
+    "This command has not changed the proxy settings."
+)
 # Announces the Arc bypass, naming the endpoints it covers and the command that clears it.
 Proxy_Bypass_Arc_Applied_Message = (
     "Bypassing the proxy for Azure Arc endpoints {endpoints}. Run 'az connectedk8s update "
     "-n <connected-cluster-name> -g <resource-group-name> --clear-proxy-bypass Arc' "
-    "to stop bypassing them."
+    "to clear the Arc bypass."
 )
 # Names the carry-over and the endpoints kept, so it is not a surprise.
 Proxy_Bypass_Arc_Preserved_Warning = (
-    "Azure Arc endpoints {endpoints} were found in the proxy skip range and have been kept. "
+    "The enabled Arc bypass for Azure Arc endpoints {endpoints} has been kept. "
     "Run 'az connectedk8s update -n <connected-cluster-name> -g <resource-group-name> "
-    "--clear-proxy-bypass Arc' to stop bypassing them."
+    "--clear-proxy-bypass Arc' to clear it."
+)
+Proxy_Bypass_Arc_Overlap_Warning = (
+    "The Azure Arc endpoints were passed through --proxy-skip-range in the "
+    "current or a previous run and will be preserved when "
+    "--clear-proxy-bypass Arc is used."
 )
 # Confirms the clear, naming the endpoints so removing the bypass reads like applying it.
 Proxy_Bypass_Arc_Cleared_Message = (
-    "Removing Azure Arc endpoints {endpoints} from the proxy skip range, so the proxy is no longer "
-    "bypassed for them"
+    "Clearing the Arc bypass for Azure Arc endpoints {endpoints}."
 )
 # Reports a clear that found nothing, so a no-op is not mistaken for a change.
 Proxy_Bypass_Arc_Nothing_To_Clear_Warning = (
-    "No Azure Arc proxy bypass was found in the proxy skip range; there is "
-    "nothing to clear."
+    "No saved Arc proxy bypass is recorded; there is nothing to clear."
 )
 # Reconnecting leaves the agents as they are, so the bypass is refused instead of being applied.
 Proxy_Bypass_Arc_Reconnect_Error = (
@@ -311,19 +324,6 @@ Proxy_Bypass_Arc_Reconnect_Recommendation = (
     "--add-proxy-bypass Arc' to bypass the proxy for the Azure Arc service endpoints."
 )
 Proxy_Bypass_Arc_Reconnect_Fault_Type = "proxy-bypass-arc-reconnect-error"
-
-# Clearing removes the Arc endpoints by value, so it cannot tell ones typed in the same
-# command apart from a bypass already applied. Refusing keeps what was typed.
-Proxy_Bypass_Arc_Clear_Conflict_Error = (
-    "--proxy-skip-range lists Azure Arc service endpoints while --clear-proxy-bypass Arc "
-    "asks for those endpoints to be removed from the proxy skip range."
-)
-# Setting the skip range first re-applies the bypass, so only clearing first works.
-Proxy_Bypass_Arc_Clear_Conflict_Recommendation = (
-    "Run 'az connectedk8s update -n <connected-cluster-name> -g <resource-group-name> "
-    "--clear-proxy-bypass Arc' first, then set --proxy-skip-range in the following command."
-)
-Proxy_Bypass_Arc_Clear_Conflict_Fault_Type = "proxy-bypass-arc-clear-conflict-error"
 
 # Extension type accepted by --add-proxy-bypass, which makes that agent bypass the proxy.
 Proxy_Bypass_ContainerInsights_Extension_Type = "Microsoft.AzureMonitor.Containers"
