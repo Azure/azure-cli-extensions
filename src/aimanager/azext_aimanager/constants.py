@@ -20,10 +20,5 @@ AIMANAGER_ROLE_NAMES = {
 
 MODEL_DEPLOYMENT_PERFORMANCE_MODES = ["Balanced", "Latency", "Throughput"]
 
-# Table output projections for the 'az aimanager model' commands.
-AI_MODEL_TABLE_TRANSFORMER = (
-    "[].{Name:name, ModelId:properties.modelId, Description:properties.description}"
-)
-
 # Supported model source types for an AI Manager model source.
 MODEL_SOURCE_TYPES = ["HuggingFace"]
