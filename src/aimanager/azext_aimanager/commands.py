@@ -5,9 +5,6 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from azext_aimanager.constants import (
-    AI_MODEL_TABLE_TRANSFORMER,
-)
 from azext_aimanager._format import (
     aimanager_table_format,
     aimanager_list_table_format,
@@ -17,6 +14,8 @@ from azext_aimanager._format import (
     modelsource_list_table_format,
     modeldeployment_table_format,
     modeldeployment_list_table_format,
+    aimodel_table_format,
+    aimodel_list_table_format,
     calculate_cost_table_format,
 )
 from azext_aimanager._client_factory import (
@@ -111,8 +110,7 @@ def load_command_table(self, _):
 
     # aimanager model command group
     with self.command_group("aimanager model", ai_models_sdk, client_factory=cf_ai_models) as g:
-        g.custom_show_command("show", "show_aimodel")
-        g.custom_command("list", "list_aimodel",
-                         table_transformer=AI_MODEL_TABLE_TRANSFORMER)
+        g.custom_show_command("show", "show_aimodel", table_transformer=aimodel_table_format)
+        g.custom_command("list", "list_aimodel", table_transformer=aimodel_list_table_format)
         g.custom_command("calculate-cost", "calculate_aimodel_cost",
                          table_transformer=calculate_cost_table_format)

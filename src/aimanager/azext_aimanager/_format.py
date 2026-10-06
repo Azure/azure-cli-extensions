@@ -102,6 +102,21 @@ def modelsource_list_table_format(results):
     return [modelsource_table_format(r) for r in results]
 
 
+def aimodel_table_format(result):
+    """Format a single AI model resource for display with "-o table"."""
+    properties = result.get('properties') or {}
+    return OrderedDict([
+        ('Name', result.get('name', '')),
+        ('ModelId', properties.get('modelId', '')),
+        ('Description', properties.get('description') or ''),
+    ])
+
+
+def aimodel_list_table_format(results):
+    """Format a list of AI model resources for display with "-o table"."""
+    return [aimodel_table_format(r) for r in results]
+
+
 def _replica_display(value):
     """Render a replica count, using '-' when the count is not yet reported."""
     return str(value) if value is not None else '-'

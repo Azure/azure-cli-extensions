@@ -12,6 +12,8 @@ Release History
   resource now includes the top-level ``modelId`` field, matching ``show``.
 * ``az aimanager modelsource create/update/show/list``: Add ``-o table`` output with ``Name``,
   ``ProvisioningState``, ``SourceType`` and ``Description`` columns.
+* ``az aimanager model show``: Add ``-o table`` output with the same ``Name``, ``ModelId`` and
+  ``Description`` columns as ``az aimanager model list``.
 
 2.0.1b1
 +++++++
