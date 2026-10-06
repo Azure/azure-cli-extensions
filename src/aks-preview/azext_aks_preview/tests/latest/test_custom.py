@@ -20,6 +20,9 @@ from azext_aks_preview.custom import (
     aks_machine_update,
     aks_stop,
     aks_scale,
+    aks_operation_show,
+    aks_operation_show_latest,
+    aks_operation_list,
     aks_upgrade,
     aks_enable_addons,
     aks_list_vm_skus,
@@ -78,6 +81,74 @@ class TestCustomCommand(unittest.TestCase):
 
         with self.assertRaisesRegex(CLIError, "no scalable node pools"):
             aks_scale(self.cmd, self.client, "rg", "name", 3, "nodepool1")
+
+    def test_aks_operation_list_cluster_scope(self):
+        client = Mock()
+        client.list = Mock(return_value=["op1"])
+        result = aks_operation_list(self.cmd, client, "rg", "name")
+        self.assertEqual(result, ["op1"])
+        client.list.assert_called_once_with("rg", "name")
+
+    def test_aks_operation_list_agent_pool_scope(self):
+        client = Mock()
+        client.list_by_agent_pool = Mock(return_value=["op1"])
+        result = aks_operation_list(self.cmd, client, "rg", "name", nodepool_name="np1")
+        self.assertEqual(result, ["op1"])
+        client.list_by_agent_pool.assert_called_once_with(
+            "rg", "name", "np1", active_only=False
+        )
+
+    def test_aks_operation_list_agent_pool_active(self):
+        client = Mock()
+        client.list_by_agent_pool = Mock(return_value=["active-op"])
+        result = aks_operation_list(
+            self.cmd, client, "rg", "name", nodepool_name="np1", active_only=True
+        )
+        self.assertEqual(result, ["active-op"])
+        client.list_by_agent_pool.assert_called_once_with(
+            "rg", "name", "np1", active_only=True
+        )
+
+    def test_aks_operation_list_cluster_active_filters_locally(self):
+        op_running = Mock()
+        op_running.status = "ScalingAgentPool: 0/3 nodes completed"
+        op_succeeded = Mock()
+        op_succeeded.status = "Succeeded"
+        op_failed = Mock()
+        op_failed.status = "Failed"
+        client = Mock()
+        client.list = Mock(return_value=[op_running, op_succeeded, op_failed])
+        result = aks_operation_list(self.cmd, client, "rg", "name", active_only=True)
+        self.assertEqual(result, [op_running])
+        client.list.assert_called_once_with("rg", "name")
+
+    def test_aks_operation_show_cluster_scope(self):
+        client = Mock()
+        client.get = Mock(return_value="op")
+        result = aks_operation_show(self.cmd, client, "rg", "name", "", "op-id")
+        self.assertEqual(result, "op")
+        client.get.assert_called_once_with("rg", "name", "op-id")
+
+    def test_aks_operation_show_agent_pool_scope(self):
+        client = Mock()
+        client.get_by_agent_pool = Mock(return_value="op")
+        result = aks_operation_show(self.cmd, client, "rg", "name", "np1", "op-id")
+        self.assertEqual(result, "op")
+        client.get_by_agent_pool.assert_called_once_with("rg", "name", "np1", "op-id")
+
+    def test_aks_operation_show_latest_cluster_scope(self):
+        client = Mock()
+        client.get = Mock(return_value="latest-op")
+        result = aks_operation_show_latest(self.cmd, client, "rg", "name", "")
+        self.assertEqual(result, "latest-op")
+        client.get.assert_called_once_with("rg", "name", "latest")
+
+    def test_aks_operation_show_latest_agent_pool_scope(self):
+        client = Mock()
+        client.get_by_agent_pool = Mock(return_value="latest-op")
+        result = aks_operation_show_latest(self.cmd, client, "rg", "name", "np1")
+        self.assertEqual(result, "latest-op")
+        client.get_by_agent_pool.assert_called_once_with("rg", "name", "np1", "latest")
 
     def test_aks_upgrade_node_image_only_skips_machines_mode_pool(self):
         """Machines mode pools must be skipped during --node-image-only to avoid a known client-side error."""

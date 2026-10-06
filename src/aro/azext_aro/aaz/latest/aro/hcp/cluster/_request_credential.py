@@ -12,35 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "maintenance scheduledevents list acknowledge",
+    "aro hcp cluster request-credential",
+    is_preview=True,
 )
-class Acknowledge(AAZCommand):
-    """Post List of Scheduled Events Acknowledgement
+class RequestCredential(AAZCommand):
+    """Request a temporary credential for your Azure Red Hat OpenShift with hosted control plane cluster
 
-    :example: Acknowledge list of Scheduled Events on VirtualMachineScaleSets
-        az maintenance scheduledevents list acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachineScaleSets" --resource-name {VMSSName} --subscription {subscriptionId} --value []
-        az maintenance scheduledevents list acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/virtualMachineScaleSets/{VMSSName}/providers/microsoft.maintenance/scheduledevents --body "{value:[]}"
-
-    :example: Acknowledge list of ScheduledEvents on AvailabilitySets
-        az maintenance scheduledevents list acknowledge --resource-group {resourceGroupName} --resource-type "availabilitySets" --resource-name {AvSetname} --value []
-        az maintenance scheduledevents list acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/availabilitySets/{AvSetName}/providers/microsoft.maintenance/scheduledevents --body "{value:[]}"
-
-    :example: Acknowledge a single Scheduled Events on VirtualMachine
-        az maintenance scheduledevents list acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachines" --resource-name {VMname} --value []
-        az maintenance scheduledevents list acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/virtualMachines/{virtualMachineName}/providers/microsoft.maintenance/scheduledevents --body "{value:[]}"
+    :example: Request a temporary admin credential
+        az aro hcp cluster request-credential --resource-group MyResourceGroup --name MyCluster
     """
 
     _aaz_info = {
-        "version": "2025-10-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.compute/{}/{}/providers/microsoft.maintenance/scheduledevents", "2025-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.redhatopenshift/hcpopenshiftclusters/{}/requestadmincredential", "2026-09-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -53,39 +46,25 @@ class Acknowledge(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="The name of the Azure Red Hat OpenShift with hosted control plane cluster",
+            required=True,
+            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]([-a-zA-Z0-9]{0,52}[a-zA-Z0-9])?$",
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.resource_name = AAZStrArg(
-            options=["--resource-name"],
-            help="Resource name",
-            required=True,
-            id_part="name",
-        )
-        _args_schema.resource_type = AAZStrArg(
-            options=["--resource-type"],
-            help="Resource type",
-            required=True,
-            id_part="type",
-        )
 
-        # define Arg Group "ScheduledEventsIdList"
-
-        _args_schema = cls._args_schema
-        _args_schema.value = AAZListArg(
-            options=["--value"],
-            arg_group="ScheduledEventsIdList",
-            help="The list of Scheduled Events Id.",
-            required=True,
-        )
-
-        value = cls._args_schema.value
-        value.Element = AAZStrArg()
+        # define Arg Group "Body"
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ScheduledEventsOperationGroupAcknowledgeList(ctx=self.ctx)()
+        yield self.HcpOpenShiftClustersRequestAdminCredential(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -100,21 +79,37 @@ class Acknowledge(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ScheduledEventsOperationGroupAcknowledgeList(AAZHttpOperation):
+    class HcpOpenShiftClustersRequestAdminCredential(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Compute/{resourceType}/{resourceName}/providers/Microsoft.Maintenance/scheduledevents",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RedHatOpenShift/hcpOpenShiftClusters/{hcpOpenShiftClusterName}/requestAdminCredential",
                 **self.url_parameters
             )
 
@@ -124,21 +119,17 @@ class Acknowledge(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "hcpOpenShiftClusterName", self.ctx.args.name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceName", self.ctx.args.resource_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceType", self.ctx.args.resource_type,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -152,7 +143,7 @@ class Acknowledge(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -177,11 +168,6 @@ class Acknowledge(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("value", AAZListType, ".value", typ_kwargs={"flags": {"required": True}})
-
-            value = _builder.get(".value")
-            if value is not None:
-                value.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -203,13 +189,19 @@ class Acknowledge(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.value = AAZStrType()
+            _schema_on_200.expiration_timestamp = AAZStrType(
+                serialized_name="expirationTimestamp",
+                flags={"read_only": True},
+            )
+            _schema_on_200.kubeconfig = AAZStrType(
+                flags={"secret": True, "read_only": True},
+            )
 
             return cls._schema_on_200
 
 
-class _AcknowledgeHelper:
-    """Helper class for Acknowledge"""
+class _RequestCredentialHelper:
+    """Helper class for RequestCredential"""
 
 
-__all__ = ["Acknowledge"]
+__all__ = ["RequestCredential"]
