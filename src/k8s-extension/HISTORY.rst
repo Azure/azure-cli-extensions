@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.9.3
++++++++++++++++++++
+* Reject unsupported Fleet extension types before sending extension create, update, or discovery requests.
+
 1.9.2
 +++++++++++++++++++
 * Microsoft.ChaosStudio: pass --version through to the extension service; default to the latest registered version instead of pinning chart 0.1.6.
