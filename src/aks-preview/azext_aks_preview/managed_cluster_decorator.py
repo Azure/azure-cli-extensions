@@ -104,7 +104,10 @@ from azext_aks_preview.azuremanagedlustre._helpers import (
     check_if_extension_is_installed as check_if_azure_managed_lustre_is_installed,
     get_azure_managed_lustre_extension_client,
 )
-from azext_aks_preview.azuremanagedlustre._validators import validate_azure_managed_lustre_params
+from azext_aks_preview.azuremanagedlustre._validators import (
+    validate_azure_managed_lustre_node_compatibility,
+    validate_azure_managed_lustre_params,
+)
 from azext_aks_preview.azuremanagedlustre.aml_ops import (
     perform_disable_azure_managed_lustre,
     perform_enable_azure_managed_lustre,
@@ -5382,6 +5385,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def set_up_azure_managed_lustre(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
         if self.context.raw_param.get("enable_azure_managed_lustre"):
+            validate_azure_managed_lustre_node_compatibility(self.cmd, mc)
             get_azure_managed_lustre_extension_client(self.cmd)
             self.context.set_intermediate("enable_azure_managed_lustre", True, overwrite_exists=True)
         return mc
@@ -6292,6 +6296,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 True
             )
 
+        if self.context.get_intermediate("enable_azure_managed_lustre", default_value=False):
+            self.context.external_functions.perform_enable_azure_managed_lustre(
+                self.cmd, self.context.get_resource_group_name(), self.context.get_name()
+            )
+
         # enable azure container storage
         enable_azure_container_storage = self.context.get_intermediate("enable_azure_container_storage")
         container_storage_version = self.context.get_intermediate("container_storage_version")
@@ -6378,11 +6387,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     enable_azure_container_storage,
                     is_called_from_extension=True,
                 )
-
-        if self.context.get_intermediate("enable_azure_managed_lustre", default_value=False):
-            self.context.external_functions.perform_enable_azure_managed_lustre(
-                self.cmd, self.context.get_resource_group_name(), self.context.get_name()
-            )
 
         # Add role assignments for automatic sku
         if cluster.sku is not None and cluster.sku.name == "Automatic":
@@ -6824,6 +6828,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 self.cmd, self.context.get_resource_group_name(), self.context.get_name()
             )
             validate_azure_managed_lustre_params(enable, disable, installed)
+            if enable and installed:
+                logger.warning("Azure Managed Lustre is already enabled. The existing configuration was preserved.")
+                enable = False
+            elif enable:
+                validate_azure_managed_lustre_node_compatibility(self.cmd, mc)
             self.context.set_intermediate("enable_azure_managed_lustre", enable, overwrite_exists=True)
             self.context.set_intermediate("disable_azure_managed_lustre", disable, overwrite_exists=True)
         return mc

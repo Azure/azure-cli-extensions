@@ -1294,10 +1294,10 @@ def load_arguments(self, _):
                    )
         c.argument(
             "enable_azure_managed_lustre",
+            options_list=["--enable-azure-managed-lustre", "--enable-amlfs"],
             action="store_true",
             is_preview=True,
-            help="Install the Azure Managed Lustre extension version 0.6.0 on the stable release train "
-                 "with automatic upgrades disabled. Requires the k8s-extension CLI extension.",
+            help="Install the Azure Managed Lustre extension. Requires the k8s-extension CLI extension.",
         )
         # azure container storage
         c.argument(
@@ -2049,13 +2049,14 @@ def load_arguments(self, _):
         c.argument('disable_ai_toolchain_operator', is_preview=True, action='store_true')
         c.argument(
             "enable_azure_managed_lustre",
+            options_list=["--enable-azure-managed-lustre", "--enable-amlfs"],
             action="store_true",
             is_preview=True,
-            help="Install the Azure Managed Lustre extension version 0.6.0 on the stable release train "
-                 "with automatic upgrades disabled. Requires the k8s-extension CLI extension.",
+            help="Install the Azure Managed Lustre extension. Requires the k8s-extension CLI extension.",
         )
         c.argument(
             "disable_azure_managed_lustre",
+            options_list=["--disable-azure-managed-lustre", "--disable-amlfs"],
             action="store_true",
             is_preview=True,
             help="Uninstall the Azure Managed Lustre extension from the cluster.",

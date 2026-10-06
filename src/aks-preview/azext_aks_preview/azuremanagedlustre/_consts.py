@@ -7,3 +7,5 @@ CONST_AML_EXT_INSTALLATION_NAME = "azurelustre"
 CONST_AML_K8S_EXTENSION_NAME = "microsoft.azuremanagedlustre"
 CONST_AML_VERSION = "0.6.0"
 CONST_AML_RELEASE_TRAIN = "stable"
+CONST_AML_UNSUPPORTED_OS_SKUS = frozenset(("flatcar", "ubuntu2604"))
+CONST_AML_ARM64_UNSUPPORTED_OS_SKUS = frozenset(("azurelinux3",))

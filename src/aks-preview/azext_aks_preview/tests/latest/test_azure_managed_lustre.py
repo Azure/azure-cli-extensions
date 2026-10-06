@@ -6,7 +6,7 @@
 import inspect
 import unittest
 from types import SimpleNamespace
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, call, patch
 
 from azure.core.exceptions import HttpResponseError
 from azure.cli.core.parser import AzCliCommandParser
@@ -22,7 +22,10 @@ from azext_aks_preview.azuremanagedlustre._helpers import (
     check_if_extension_is_installed,
     get_azure_managed_lustre_extension_client,
 )
-from azext_aks_preview.azuremanagedlustre._validators import validate_azure_managed_lustre_params
+from azext_aks_preview.azuremanagedlustre._validators import (
+    validate_azure_managed_lustre_node_compatibility,
+    validate_azure_managed_lustre_params,
+)
 from azext_aks_preview.azuremanagedlustre.aml_ops import (
     perform_disable_azure_managed_lustre,
     perform_enable_azure_managed_lustre,
@@ -107,6 +110,53 @@ class AzureManagedLustreValidatorsTestCase(unittest.TestCase):
             with self.subTest(enable=enable, disable=disable, installed=installed):
                 validate_azure_managed_lustre_params(enable, disable, installed)
 
+    def test_supported_node_pool(self):
+        cluster = SimpleNamespace(
+            location="eastus",
+            agent_pool_profiles=[SimpleNamespace(os_sku="Ubuntu2404", vm_size="Standard_D2s_v5")],
+        )
+        validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+
+    def test_unsupported_node_pool_os_skus(self):
+        for os_sku in ["Flatcar", "Ubuntu2604"]:
+            with self.subTest(os_sku=os_sku):
+                cluster = SimpleNamespace(
+                    location="eastus",
+                    agent_pool_profiles=[SimpleNamespace(os_sku=os_sku, vm_size="Standard_D2s_v5")],
+                )
+                with self.assertRaisesRegex(InvalidArgumentValueError, "none of the cluster's node pools"):
+                    validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+
+    def test_azure_linux_3_node_pool_architecture(self):
+        cluster = SimpleNamespace(
+            location="eastus",
+            agent_pool_profiles=[SimpleNamespace(os_sku="AzureLinux3", vm_size="Standard_D2ps_v5")],
+        )
+        with patch(
+            "azext_aks_preview.azuremanagedlustre._validators._get_vm_sku_architectures",
+            return_value={"standard_d2ps_v5": "arm64"},
+        ):
+            with self.assertRaisesRegex(InvalidArgumentValueError, "ARM64"):
+                validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+
+        with patch(
+            "azext_aks_preview.azuremanagedlustre._validators._get_vm_sku_architectures",
+            return_value={"standard_d2ps_v5": "x64"},
+        ):
+            validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+
+    def test_unknown_azure_linux_3_node_pool_architecture(self):
+        cluster = SimpleNamespace(
+            location="eastus",
+            agent_pool_profiles=[SimpleNamespace(os_sku="AzureLinux3", vm_size="Standard_Unknown")],
+        )
+        with patch(
+            "azext_aks_preview.azuremanagedlustre._validators._get_vm_sku_architectures",
+            return_value={},
+        ):
+            with self.assertRaisesRegex(InvalidArgumentValueError, "architecture couldn't be determined"):
+                validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+
 
 class AzureManagedLustreOperationsTestCase(unittest.TestCase):
     def setUp(self):
@@ -186,6 +236,11 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
         raw_params.update(params)
         decorator = decorator_type(self.cmd, self.client, raw_params, CUSTOM_MGMT_AKS_PREVIEW)
         decorator.context.attach_mc(self.models.ManagedCluster(location="eastus"))
+        decorator.context.mc.agent_pool_profiles = [
+            self.models.ManagedClusterAgentPoolProfile(
+                name="nodepool1", os_sku="Ubuntu2404", vm_size="Standard_D2s_v5"
+            )
+        ]
         decorator.context.set_intermediate("subscription_id", "test-subscription")
         return decorator
 
@@ -211,14 +266,16 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
                 parser.load_command_table(loader)
                 args = command_name.split() + ["--resource-group", "rg", "--name", "cluster"]
                 enable = command.arguments["enable_azure_managed_lustre"]
-                self.assertEqual(enable.options_list, ["--enable-azure-managed-lustre"])
+                self.assertEqual(enable.options_list, ["--enable-azure-managed-lustre", "--enable-amlfs"])
                 self.assertFalse(parser.parse_args(args).enable_azure_managed_lustre)
-                self.assertTrue(parser.parse_args(args + enable.options_list).enable_azure_managed_lustre)
+                for option in enable.options_list:
+                    self.assertTrue(parser.parse_args(args + [option]).enable_azure_managed_lustre)
                 if command_name == "aks update":
                     disable = command.arguments["disable_azure_managed_lustre"]
-                    self.assertEqual(disable.options_list, ["--disable-azure-managed-lustre"])
+                    self.assertEqual(disable.options_list, ["--disable-azure-managed-lustre", "--disable-amlfs"])
                     self.assertFalse(parser.parse_args(args).disable_azure_managed_lustre)
-                    self.assertTrue(parser.parse_args(args + disable.options_list).disable_azure_managed_lustre)
+                    for option in disable.options_list:
+                        self.assertTrue(parser.parse_args(args + [option]).disable_azure_managed_lustre)
                 else:
                     self.assertNotIn("disable_azure_managed_lustre", command.arguments)
 
@@ -282,7 +339,7 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
         self.client.begin_create_or_update.assert_not_called()
 
     def test_update_prepares_enable_and_disable(self):
-        for enable, installed in [(True, False), (True, True), (False, True)]:
+        for enable, installed in [(True, False), (False, True)]:
             with self.subTest(enable=enable, installed=installed):
                 decorator = self.make_decorator(
                     False, enable_azure_managed_lustre=enable, disable_azure_managed_lustre=not enable
@@ -295,6 +352,16 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
                 self.assertEqual(decorator.context.get_intermediate("enable_azure_managed_lustre"), enable)
                 self.assertEqual(decorator.context.get_intermediate("disable_azure_managed_lustre"), not enable)
                 self.assertTrue(decorator.check_is_postprocessing_required(mc))
+
+    def test_update_preserves_existing_extension_configuration(self):
+        decorator = self.make_decorator(False, enable_azure_managed_lustre=True)
+        mc = decorator.context.mc
+        with patch(DECORATOR + ".check_if_azure_managed_lustre_is_installed", return_value=True), \
+                patch(DECORATOR + ".validate_azure_managed_lustre_node_compatibility") as validate:
+            self.assertIs(decorator.update_azure_managed_lustre(mc), mc)
+        validate.assert_not_called()
+        self.assertFalse(decorator.context.get_intermediate("enable_azure_managed_lustre"))
+        self.assertFalse(decorator.check_is_postprocessing_required(mc))
 
     def test_postprocessing_performs_requested_operation(self):
         for create, enable in [(True, True), (False, True), (False, False)]:
@@ -310,6 +377,18 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
                     decorator.postprocessing_after_mc_created(decorator.context.mc)
                 (install if enable else uninstall).assert_called_once_with(self.cmd, "rg", "cluster")
                 (uninstall if enable else install).assert_not_called()
+
+    def test_create_installs_lustre_before_container_storage_early_return(self):
+        decorator = self.make_decorator(True)
+        decorator.context.set_intermediate("enable_azure_managed_lustre", True)
+        decorator.context.set_intermediate("enable_azure_container_storage", "ephemeralDisk")
+        decorator.context.set_intermediate("container_storage_version", "1")
+        functions = decorator.context.external_functions
+        with patch.object(functions, "perform_enable_azure_managed_lustre") as install, \
+                patch("azure.cli.command_modules.acs.managed_cluster_decorator."
+                      "AKSManagedClusterUpdateDecorator.postprocessing_after_mc_created"):
+            decorator.postprocessing_after_mc_created(decorator.context.mc)
+        install.assert_called_once_with(self.cmd, "rg", "cluster")
 
     def test_put_waits_for_cluster_before_lustre_even_with_no_wait(self):
         for create in [True, False]:

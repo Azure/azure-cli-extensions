@@ -29,6 +29,9 @@ For an existing AKS cluster, enable or disable the extension with::
 
 Enabling installs ``microsoft.azuremanagedlustre`` as ``azurelustre`` with cluster scope,
 version ``0.6.0``, release train ``stable``, and automatic upgrades disabled.
+Flatcar, Ubuntu 26.04, and Azure Linux 3 on ARM64 node pools are not supported
+by this extension version. The cluster must have at least one compatible node pool.
+Enabling an existing installation leaves its configuration unchanged.
 As with Azure Container Storage, these operations wait for cluster provisioning before
 installing or uninstalling the extension, even when ``--no-wait`` is specified.
 The enable and disable flags cannot be used together. Disabling uninstalls the cluster
