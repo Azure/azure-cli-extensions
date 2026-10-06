@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks kollect`, `az aks kanalyze`, `az aks get-credentials` and `az aks bastion tunnel`: Use resolved executable paths consistently.
 
 22.0.0b10
 +++++++++

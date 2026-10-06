@@ -5,7 +5,7 @@
 
 import asyncio
 import os
-import shutil
+import shlex
 import signal
 import socket
 import subprocess
@@ -15,6 +15,7 @@ from urllib.parse import urlparse
 
 import psutil
 import yaml
+from azext_aks_preview._helpers import which
 from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
 from azure.cli.core.azclierror import (CLIInternalError,
                                        InvalidArgumentValueError,
@@ -276,13 +277,14 @@ async def aks_bastion_runner(
     else:
         task2 = asyncio.create_task(_aks_bastion_launch_subshell(kubeconfig_path, port))
 
-    _, pending = await asyncio.wait([task1, task2], return_when=asyncio.FIRST_COMPLETED)
+    done, pending = await asyncio.wait([task1, task2], return_when=asyncio.FIRST_COMPLETED)
 
     for task in pending:
         task.cancel()
 
     # Wait for the cancellations to finish
     await asyncio.gather(*pending, return_exceptions=True)
+    await asyncio.gather(*done)
 
 
 def aks_batsion_clean_up():
@@ -290,11 +292,12 @@ def aks_batsion_clean_up():
 
 
 def _aks_bastion_get_az_cmd_name():
-    """Get the name of the az command based on system platform."""
+    """Resolve the az command for the current platform."""
 
-    if sys.platform.startswith("win"):
-        return "az.cmd"
-    return "az"
+    executable = which("az.cmd" if sys.platform.startswith("win") else "az")
+    if not executable:
+        raise CLIInternalError("Cannot find Azure CLI executable in PATH.")
+    return executable
 
 
 def _aks_bastion_get_current_shell_cmd():
@@ -380,15 +383,15 @@ def _get_powershell_executable(grandparent):
 
 def _get_powershell_executable_from_path():
     """Try to find PowerShell executable in PATH, preferring pwsh over powershell."""
-    pwsh_path = shutil.which("pwsh")
+    pwsh_path = which("pwsh")
     if pwsh_path:
         logger.debug("Found pwsh at: %s", pwsh_path)
-        return "pwsh"
+        return pwsh_path
 
-    powershell_path = shutil.which("powershell")
+    powershell_path = which("powershell")
     if powershell_path:
         logger.debug("Found powershell at: %s", powershell_path)
-        return "powershell"
+        return powershell_path
 
     return None
 
@@ -396,26 +399,32 @@ def _get_powershell_executable_from_path():
 def _aks_bastion_prepare_shell_cmd(kubeconfig_path):
     """Prepare the shell command to launch a subshell with KUBECONFIG set."""
 
-    shell_cmd = _aks_bastion_get_current_shell_cmd()
-    updated_shell_cmd = shell_cmd
+    detected_shell = _aks_bastion_get_current_shell_cmd()
+    shell_cmd = which(detected_shell)
+    if not shell_cmd:
+        raise CLIInternalError(f"Cannot find shell executable '{detected_shell}' in PATH.")
+    is_windows = sys.platform.startswith("win")
+    quoted_shell_cmd = f'"{shell_cmd}"' if is_windows else shlex.quote(shell_cmd)
+    updated_shell_cmd = quoted_shell_cmd
 
     # Handle different shell types
     if shell_cmd.endswith("bash") and os.path.exists(os.path.expanduser("~/.bashrc")):
-        updated_shell_cmd = (
-            f"""{shell_cmd} -c '{shell_cmd} --rcfile <(cat ~/.bashrc; """
-            f"""echo "export KUBECONFIG={kubeconfig_path}")'"""
+        export_command = f"export KUBECONFIG={shlex.quote(kubeconfig_path)}"
+        bash_command = (
+            f"{quoted_shell_cmd} --rcfile <(cat ~/.bashrc; "
+            f"printf '%s\\n' {shlex.quote(export_command)})"
         )
+        updated_shell_cmd = f"{quoted_shell_cmd} -c {shlex.quote(bash_command)}"
     elif shell_cmd in ["pwsh", "powershell"] or "pwsh" in shell_cmd.lower() or "powershell" in shell_cmd.lower():
         # PowerShell: Set environment variable and start new session
         # Use proper PowerShell syntax for setting environment variables
         escaped_path = kubeconfig_path.replace("'", "''")  # Escape single quotes for PowerShell
-        if shell_cmd == "pwsh" or "pwsh" in shell_cmd.lower():
-            updated_shell_cmd = f'pwsh -NoExit -Command "$env:KUBECONFIG=\'{escaped_path}\'"'
-        else:
-            updated_shell_cmd = f'powershell -NoExit -Command "$env:KUBECONFIG=\'{escaped_path}\'"'
+        powershell_command = f"$env:KUBECONFIG='{escaped_path}'"
+        quoted_command = f'"{powershell_command}"' if is_windows else shlex.quote(powershell_command)
+        updated_shell_cmd = f"{quoted_shell_cmd} -NoExit -Command {quoted_command}"
     elif shell_cmd == "cmd" or "cmd" in shell_cmd.lower():
         # CMD: Set environment variable and keep session open
-        updated_shell_cmd = f'cmd /k "set KUBECONFIG={kubeconfig_path}"'
+        updated_shell_cmd = f'{quoted_shell_cmd} /k set "KUBECONFIG={kubeconfig_path}"'
 
     return shell_cmd, updated_shell_cmd
 
@@ -443,6 +452,11 @@ async def _aks_bastion_launch_subshell(kubeconfig_path, port):
         env = os.environ.copy()
         env.update({"KUBECONFIG": kubeconfig_path})
         shell_cmd, updated_shell_cmd = _aks_bastion_prepare_shell_cmd(kubeconfig_path)
+        shell_executable = None
+        if sys.platform.startswith("win"):
+            shell_executable = which("cmd.exe")
+            if not shell_executable:
+                raise CLIInternalError("Cannot find command processor executable 'cmd.exe' in PATH.")
         logger.warning(
             "Launching subshell with command '%s'. Setting env var KUBECONFIG to '%s'.",
             updated_shell_cmd,
@@ -458,6 +472,7 @@ async def _aks_bastion_launch_subshell(kubeconfig_path, port):
             stderr=None,
             shell=True,
             env=env,
+            executable=shell_executable,
         )
         logger.info("Subshell launched with PID: %s", subshell_process.pid)
 
@@ -493,22 +508,24 @@ async def _aks_bastion_launch_tunnel(bastion_resource, port, mc_id, subscription
     tunnel_proces = None
     try:
         az_cmd_name = _aks_bastion_get_az_cmd_name()
-        cmd = (
-            f"{az_cmd_name} network bastion tunnel --resource-group {bastion_resource.resource_group} "
-            f"--name {bastion_resource.name} --port {port} --target-resource-id {mc_id} --resource-port 443"
-        )
+        cmd = [
+            az_cmd_name, "network", "bastion", "tunnel",
+            "--resource-group", bastion_resource.resource_group,
+            "--name", bastion_resource.name, "--port", str(port),
+            "--target-resource-id", mc_id, "--resource-port", "443",
+        ]
         # the bastion may live in a different subscription than the cluster; prefer the
         # subscription resolved from the bastion resource over the cluster subscription
         bastion_subscription_id = getattr(bastion_resource, "subscription", None) or subscription_id
         if bastion_subscription_id:
-            cmd += f" --subscription {bastion_subscription_id}"
-        logger.warning("Creating bastion tunnel with command: '%s'", cmd)
+            cmd.extend(["--subscription", bastion_subscription_id])
+        logger.warning("Creating bastion tunnel with command: '%s'", subprocess.list2cmdline(cmd))
 
         # Use start_new_session on Unix to create a new process group
         # This allows us to kill the entire process tree when cleaning up
         start_new_session = not sys.platform.startswith("win")
         tunnel_proces = await asyncio.create_subprocess_exec(
-            *(cmd.split()),
+            *cmd,
             stdin=asyncio.subprocess.DEVNULL,
             stdout=asyncio.subprocess.DEVNULL,
             stderr=asyncio.subprocess.DEVNULL,
@@ -564,8 +581,13 @@ def _aks_bastion_kill_process_tree(process):
     if sys.platform.startswith("win"):
         # On Windows, use taskkill with /T flag to kill the process tree
         try:
+            taskkill_path = which("taskkill.exe")
+            if not taskkill_path:
+                logger.warning("Cannot find taskkill.exe in PATH. Terminating the tunnel process directly.")
+                process.terminate()
+                return
             subprocess.run(
-                ["taskkill", "/T", "/F", "/PID", str(pid)],
+                [taskkill_path, "/T", "/F", "/PID", str(pid)],
                 capture_output=True,
                 check=False,
             )
@@ -616,12 +638,15 @@ async def _aks_bastion_test_hook(kubeconfig_path, port, kubectl_path):
     """Test hook to validate the bastion tunnel and run a kubectl command."""
     if not await _aks_bastion_validate_tunnel(port):
         raise CLIInternalError(f"Bastion tunnel failed to set up on port {port}.")
-    kubectl_process = await asyncio.create_subprocess_shell(
-        f"{kubectl_path} --kubeconfig {kubeconfig_path} get nodes",
+    executable = which(kubectl_path)
+    if not executable:
+        raise CLIInternalError(f"Cannot find kubectl executable '{kubectl_path}'.")
+    kubectl_process = await asyncio.create_subprocess_exec(
+        executable, "--kubeconfig", kubeconfig_path, "get", "nodes",
         stdin=asyncio.subprocess.DEVNULL,
         stdout=asyncio.subprocess.DEVNULL,
         stderr=asyncio.subprocess.DEVNULL,
-        shell=True,
+        shell=False,
     )
     await asyncio.wait_for(kubectl_process.wait(), timeout=10)
     if kubectl_process.returncode != 0:

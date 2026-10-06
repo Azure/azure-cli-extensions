@@ -2,7 +2,11 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import os
+import subprocess
+import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
@@ -16,6 +20,7 @@ from azext_aks_preview.managed_cluster_decorator import (
 from azext_aks_preview.custom import (
     aks_agentpool_get_bootstrap_data,
     aks_agentpool_upgrade,
+    aks_get_credentials,
     aks_machine_add,
     aks_machine_update,
     aks_stop,
@@ -37,6 +42,60 @@ from azure.cli.core.azclierror import (
 from azure.core.exceptions import ResourceNotFoundError
 from azext_aks_preview.tests.latest.test_vm_skus import _make_sku, _make_restriction
 from knack.util import CLIError
+
+
+class TestGetCredentialsExecutablePath(unittest.TestCase):
+    def setUp(self):
+        self.path = os.path.join(tempfile.gettempdir(), "test config", "config")
+        self.client = Mock()
+        self.client.list_cluster_user_credentials.return_value = SimpleNamespace(
+            kubeconfigs=[SimpleNamespace(value=(
+                b"users:\n- name: test-user\n  user:\n    exec:\n"
+                b"      command: kubelogin\n      args: [get-token, --login, devicecode]\n"
+            ))]
+        )
+
+    def test_executes_resolved_kubelogin_and_preserves_arguments(self):
+        executable = os.path.join(tempfile.gettempdir(), "installed tools", "kubelogin")
+        with patch("azext_aks_preview.custom.print_or_merge_credentials"), patch(
+            "azext_aks_preview.custom.which", return_value=executable
+        ) as resolve, patch("azext_aks_preview.custom.subprocess.run") as run:
+            aks_get_credentials(None, self.client, "rg", "cluster", path=self.path)
+        resolve.assert_called_once_with("kubelogin")
+        run.assert_called_once_with(
+            [executable, "convert-kubeconfig", "-l", "azurecli"],
+            cwd=os.path.dirname(self.path),
+            check=True,
+        )
+
+    def test_missing_kubelogin_warns_without_execution(self):
+        with patch("azext_aks_preview.custom.print_or_merge_credentials"), patch(
+            "azext_aks_preview.custom.which", return_value=None
+        ), patch("azext_aks_preview.custom.subprocess.run") as run, patch(
+            "azext_aks_preview.custom.logger.warning"
+        ) as warning:
+            aks_get_credentials(None, self.client, "rg", "cluster", path=self.path)
+        run.assert_not_called()
+        self.assertIn("Please install kubelogin", warning.call_args.args[0])
+
+    def test_conversion_failure_keeps_existing_warning_behavior(self):
+        with patch("azext_aks_preview.custom.print_or_merge_credentials"), patch(
+            "azext_aks_preview.custom.which", return_value="/installed/kubelogin"
+        ), patch(
+            "azext_aks_preview.custom.subprocess.run",
+            side_effect=subprocess.CalledProcessError(1, "kubelogin"),
+        ), patch("azext_aks_preview.custom.logger.warning") as warning:
+            aks_get_credentials(None, self.client, "rg", "cluster", path=self.path)
+        self.assertIn("Failed to convert kubeconfig", warning.call_args.args[0])
+
+    def test_other_authentication_does_not_resolve_or_execute_kubelogin(self):
+        self.client.list_cluster_user_credentials.return_value.kubeconfigs[0].value = b"users: []"
+        with patch("azext_aks_preview.custom.print_or_merge_credentials"), patch(
+            "azext_aks_preview.custom.which"
+        ) as resolve, patch("azext_aks_preview.custom.subprocess.run") as run:
+            aks_get_credentials(None, self.client, "rg", "cluster", path=self.path)
+        resolve.assert_not_called()
+        run.assert_not_called()
 
 
 class TestCustomCommand(unittest.TestCase):
