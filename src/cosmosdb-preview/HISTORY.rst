@@ -4,6 +4,8 @@ Release History
 
 1.7.0
 ++++++
+* Support non-pooled fleetspace creation with omitted, null, or empty throughput pool configuration; pooled creation and updates still require both throughput bounds.
+* Tighten fleet throughput and account attachment validation, rejecting boolean throughput values, reversed bounds, malformed account IDs, blank locations, and attachment names that differ from the database account name. Clarify fleet command help.
 * Add ``--skip-safe-rotation`` to ``az cosmosdb keys regenerate`` to optionally bypass the account keys last usage check during key regeneration.
 * Add support for soft-deleted resource operations for SQL API
 * New command group `az cosmosdb softdeleted-account` to list, show, delete (purge), and recover soft-deleted accounts
