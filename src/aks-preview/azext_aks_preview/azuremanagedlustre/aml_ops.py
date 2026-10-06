@@ -8,10 +8,10 @@ from azure.cli.core.commands import LongRunningOperation
 from knack.log import get_logger
 
 from azext_aks_preview.azuremanagedlustre._consts import (
-    CONST_AML_EXT_INSTALLATION_NAME,
-    CONST_AML_K8S_EXTENSION_NAME,
-    CONST_AML_RELEASE_TRAIN,
-    CONST_AML_VERSION,
+    CONST_AMLFS_EXT_INSTALLATION_NAME,
+    CONST_AMLFS_K8S_EXTENSION_NAME,
+    CONST_AMLFS_RELEASE_TRAIN,
+    CONST_AMLFS_VERSION,
 )
 from azext_aks_preview.azuremanagedlustre._helpers import get_azure_managed_lustre_extension_client
 
@@ -25,11 +25,11 @@ def perform_enable_azure_managed_lustre(cmd, resource_group, cluster_name):
         client,
         resource_group,
         cluster_name,
-        CONST_AML_EXT_INSTALLATION_NAME,
+        CONST_AMLFS_EXT_INSTALLATION_NAME,
         "managedClusters",
-        CONST_AML_K8S_EXTENSION_NAME,
-        version=CONST_AML_VERSION,
-        release_train=CONST_AML_RELEASE_TRAIN,
+        CONST_AMLFS_K8S_EXTENSION_NAME,
+        version=CONST_AMLFS_VERSION,
+        release_train=CONST_AMLFS_RELEASE_TRAIN,
         scope="cluster",
         auto_upgrade_minor_version=False,
     )
@@ -46,7 +46,7 @@ def perform_disable_azure_managed_lustre(cmd, resource_group, cluster_name):
         client,
         resource_group,
         cluster_name,
-        CONST_AML_EXT_INSTALLATION_NAME,
+        CONST_AMLFS_EXT_INSTALLATION_NAME,
         "managedClusters",
         yes=True,
     )

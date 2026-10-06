@@ -6,8 +6,8 @@
 from azure.cli.core.azclierror import InvalidArgumentValueError, MutuallyExclusiveArgumentError
 
 from azext_aks_preview.azuremanagedlustre._consts import (
-    CONST_AML_ARM64_UNSUPPORTED_OS_SKUS,
-    CONST_AML_UNSUPPORTED_OS_SKUS,
+    CONST_AMLFS_ARM64_UNSUPPORTED_OS_SKUS,
+    CONST_AMLFS_UNSUPPORTED_OS_SKUS,
 )
 
 
@@ -45,9 +45,9 @@ def validate_azure_managed_lustre_node_compatibility(cmd, cluster):
 
     for pool in pools:
         os_sku = (pool.os_sku or "").lower()
-        if os_sku in CONST_AML_UNSUPPORTED_OS_SKUS:
+        if os_sku in CONST_AMLFS_UNSUPPORTED_OS_SKUS:
             continue
-        if os_sku in CONST_AML_ARM64_UNSUPPORTED_OS_SKUS:
+        if os_sku in CONST_AMLFS_ARM64_UNSUPPORTED_OS_SKUS:
             architecture_sensitive_pools.append(pool)
             continue
         return
