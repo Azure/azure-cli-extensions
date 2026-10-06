@@ -2325,6 +2325,7 @@ def aks_agentpool_add(
     gpu_driver=None,
     driver_type=None,
     gpu_mig_strategy=None,
+    gpu_mig_profiles=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
     enable_secure_boot=False,
@@ -2425,6 +2426,7 @@ def aks_agentpool_update(
     zones=None,
     gpu_driver=None,
     gpu_mig_strategy=None,
+    gpu_mig_profiles=None,
     # crg
     crg_id=None,
     # prepared image specification

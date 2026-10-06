@@ -2516,6 +2516,13 @@ def load_arguments(self, _):
             is_preview=True,
             help="Specify the GPU Multi-Instance GPU (MIG) strategy. Allowed values: Single, Mixed.",
         )
+        c.argument(
+            "gpu_mig_profiles",
+            arg_type=get_enum_type(gpu_instance_profiles),
+            nargs="+",
+            is_preview=True,
+            help="Space-separated ordered list of GPU MIG profiles. Allowed values: MIG1g, MIG2g, MIG3g, MIG4g, MIG7g.",
+        )
         # in creation scenario, use "localuser" as default
         c.argument(
             'ssh_access',
@@ -2713,6 +2720,13 @@ def load_arguments(self, _):
             arg_type=get_enum_type(gpu_mig_strategies),
             is_preview=True,
             help="Specify the GPU Multi-Instance GPU (MIG) strategy. Allowed values: Single, Mixed.",
+        )
+        c.argument(
+            "gpu_mig_profiles",
+            arg_type=get_enum_type(gpu_instance_profiles),
+            nargs="+",
+            is_preview=True,
+            help="Space-separated ordered list of GPU MIG profiles. Allowed values: MIG1g, MIG2g, MIG3g, MIG4g, MIG7g.",
         )
         # prepared image specification
         c.argument(

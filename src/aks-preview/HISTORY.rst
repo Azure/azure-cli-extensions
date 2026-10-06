@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks nodepool add/update`: Add `--gpu-mig-profiles` to configure an ordered list of NVIDIA MIG partition profiles.
 
 22.0.0b10
 +++++++++
