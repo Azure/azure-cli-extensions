@@ -14,6 +14,9 @@ helps[
 type: command
 short-summary: Create a new load test.
 examples:
+    - name: Create a test with load test config file containing testId (--test-id can be omitted).
+      text: |
+        az load test create --load-test-resource sample-alt-resource --resource-group sample-rg --load-test-config-file ~/resources/sample-config.yaml
     - name: Create a test with load test config file.
       text: |
         az load test create --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-test-id --load-test-config-file ~/resources/sample-config.yaml
