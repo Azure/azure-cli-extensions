@@ -89,6 +89,11 @@ def _written_body(api: MagicMock) -> V1ConfigMap:
         ('[agent_settings.proxy_config]\n    other = "1"', (0, None)),
         # The same setting name in another section is not a proxy bypass.
         ('[agent_settings.other]\n    ignore_proxy_settings = "true"', (None, None)),
+        # A longer key in the proxy section is unrelated and must be preserved.
+        (
+            '[agent_settings.proxy_config]\n    ignore_proxy_settings_backup = "true"',
+            (0, None),
+        ),
         # Commented-out settings are inactive and must not be treated as a match.
         (
             '[agent_settings.proxy_config]\n    # ignore_proxy_settings = "true"',

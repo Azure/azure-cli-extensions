@@ -2414,17 +2414,17 @@ def inject_onboarding_private_key_secret(
                 cmd=cmd,
             )
             return
-        # Secret already exists - replace its contents
+        # Secret already exists - patch its contents
         # so the cluster always uses a private key matching the public key in ARM
         try:
-            api_instance.replace_namespaced_secret(
+            api_instance.patch_namespaced_secret(
                 consts.Onboarding_PrivateKey_Secret_Name,
                 consts.Arc_Namespace,
                 secret_body,
             )
-        except ApiException as replace_ex:
+        except ApiException as patch_ex:
             kubernetes_exception_handler(
-                replace_ex,
+                patch_ex,
                 errors.KUBERNETES_PRIVATE_KEY_INJECTION_FAILED.fault_type,
                 error_message=(
                     "Unable to update existing onboarding private key secret "

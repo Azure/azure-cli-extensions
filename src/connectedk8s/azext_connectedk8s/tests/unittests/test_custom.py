@@ -600,6 +600,36 @@ def test_private_key_injection_forwards_command_context(monkeypatch):
     assert exception_handler.call_args.kwargs["cmd"] is cmd
 
 
+def test_private_key_injection_patches_existing_secret(monkeypatch):
+    api_instance = MagicMock()
+    api_instance.create_namespaced_secret.side_effect = ApiException(status=409)
+    monkeypatch.setattr(
+        custom.utils,
+        "ensure_arc_namespace_with_helm_metadata",
+        MagicMock(),
+    )
+    monkeypatch.setattr(
+        custom.utils.kube_client,
+        "CoreV1Api",
+        MagicMock(return_value=api_instance),
+    )
+
+    custom.utils.inject_onboarding_private_key_secret("private-key")
+
+    api_instance.patch_namespaced_secret.assert_called_once()
+    name, namespace, body = api_instance.patch_namespaced_secret.call_args.args
+    assert name == consts.Onboarding_PrivateKey_Secret_Name
+    assert namespace == consts.Arc_Namespace
+    assert body.string_data == {
+        consts.Onboarding_PrivateKey_Secret_Data_Key: "private-key"
+    }
+    assert body.metadata.labels == {"app.kubernetes.io/managed-by": "Helm"}
+    assert body.metadata.annotations["meta.helm.sh/release-name"] == (
+        consts.Helm_Release_Name
+    )
+    api_instance.replace_namespaced_secret.assert_not_called()
+
+
 def test_namespace_cleanup_transient_lookup_failure_is_not_reported(monkeypatch):
     cmd = MagicMock()
     api_instance = MagicMock()
@@ -805,7 +835,7 @@ def test_private_key_failure_retains_status_and_emits_one_fault(monkeypatch, sta
     assert properties[custom.consts.Telemetry_Error_Fault_Type_Key] == (
         custom.errors.KUBERNETES_PRIVATE_KEY_INJECTION_FAILED.fault_type
     )
-    api.replace_namespaced_secret.assert_not_called()
+    api.patch_namespaced_secret.assert_not_called()
 
 
 @pytest.mark.parametrize("check", ["aks", "proxy"])

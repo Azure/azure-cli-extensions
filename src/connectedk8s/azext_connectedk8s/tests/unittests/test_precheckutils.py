@@ -222,24 +222,18 @@ def test_prediagnostics_helm_install_sets_user_fault_once(monkeypatch):
 def test_log_save_failure_reports_azk8s0606_with_command_context(monkeypatch):
     cmd = MagicMock()
     exception = OSError("write failed")
-    add_event = MagicMock()
-    set_exception = MagicMock()
+    diagnostic = MagicMock(return_value="sanitized message")
     monkeypatch.setattr(
-        precheckutils.azext_utils, "add_connectedk8s_telemetry_event", add_event
+        precheckutils.azext_utils, "report_connectedk8s_diagnostic", diagnostic
     )
-    monkeypatch.setattr(precheckutils.telemetry, "set_exception", set_exception)
 
     precheckutils._report_prediagnostic_log_save_failure(cmd, exception)
 
-    add_event.assert_called_once()
-    event_cmd, properties = add_event.call_args.args
-    assert event_cmd is cmd
-    assert properties[consts.Telemetry_Error_Code_Key] == "AZK8S0606"
-    assert "write failed" in properties[consts.Telemetry_Error_Message_Key]
-    set_exception.assert_called_once_with(
+    diagnostic.assert_called_once_with(
+        cmd,
+        precheckutils.errors.PREDIAGNOSTICS_LOG_SAVE_FAILED,
         exception=exception,
         fault_type=consts.Cluster_Diagnostic_Checks_Job_Log_Save_Failed,
-        summary=properties[consts.Telemetry_Error_Message_Key],
     )
 
 
@@ -664,12 +658,21 @@ All PreOnboading Diagnostic Checks passed successfully
 """
 
 
-def _run_completed_prediagnostic_output(monkeypatch, output):
+def _run_completed_prediagnostic_output(
+    monkeypatch,
+    output,
+    *,
+    job_status=consts.Job_Status_Completed,
+    cmd=None,
+):
+    command = cmd or MagicMock()
+
     def execute_job(*_args, **_kwargs):
-        precheckutils.prediagnostic_job_execution_status = consts.Job_Status_Completed
+        precheckutils.prediagnostic_job_execution_status = job_status
         return output
 
-    def parse_dns(log, _path, storage_available, _diagnoser_output):
+    def parse_dns(log, _path, storage_available, _diagnoser_output, **kwargs):
+        assert kwargs["cmd"] is command
         result = (
             consts.Diagnostic_Check_Passed
             if consts.DNS_Check_Result_String in log
@@ -696,7 +699,7 @@ def _run_completed_prediagnostic_output(monkeypatch, output):
     )
 
     result, _ = precheckutils.fetch_diagnostic_checks_results(
-        cmd=MagicMock(),
+        cmd=command,
         corev1_api_instance=MagicMock(),
         batchv1_api_instance=MagicMock(),
         helm_client_location="helm",
@@ -725,6 +728,26 @@ def test_completed_job_parses_healthy_1_36_1_output(monkeypatch):
     assert precheckutils.prediagnostic_outbound_check == consts.Diagnostic_Check_Passed
     assert precheckutils.prediagnostic_entra_check == consts.Diagnostic_Check_Passed
     assert precheckutils.prediagnostic_crd_check == consts.Diagnostic_Check_Passed
+
+
+def test_incomplete_job_with_partial_results_forwards_command_context(monkeypatch):
+    cmd = MagicMock()
+    send_job_error = MagicMock()
+    monkeypatch.setattr(
+        precheckutils,
+        "send_prediagnostic_job_execution_error_telemetry",
+        send_job_error,
+    )
+
+    result = _run_completed_prediagnostic_output(
+        monkeypatch,
+        CONFORMANCE_PREDIAGNOSTIC_OUTPUT,
+        job_status=consts.Job_Status_Not_Completed,
+        cmd=cmd,
+    )
+
+    assert result == consts.Diagnostic_Check_Incomplete
+    send_job_error.assert_called_once_with(cmd=cmd)
 
 
 def test_completed_job_parses_conformance_stringified_bytes(monkeypatch):

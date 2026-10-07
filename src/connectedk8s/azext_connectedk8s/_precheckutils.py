@@ -232,20 +232,11 @@ def send_prediagnostic_job_execution_error_telemetry(
 def _report_prediagnostic_log_save_failure(
     cmd: CLICommand, exception: BaseException
 ) -> None:
-    message = errors.PREDIAGNOSTICS_LOG_SAVE_FAILED.format(details=str(exception))
-    azext_utils.add_connectedk8s_telemetry_event(
+    message = azext_utils.report_connectedk8s_diagnostic(
         cmd,
-        {
-            consts.Telemetry_Error_Code_Key: errors.PREDIAGNOSTICS_LOG_SAVE_FAILED.code,
-            consts.Telemetry_Error_Fault_Type_Key: consts.Cluster_Diagnostic_Checks_Job_Log_Save_Failed,
-            consts.Telemetry_Error_Name_Key: errors.PREDIAGNOSTICS_LOG_SAVE_FAILED.name,
-            consts.Telemetry_Error_Message_Key: message,
-        },
-    )
-    telemetry.set_exception(
+        errors.PREDIAGNOSTICS_LOG_SAVE_FAILED,
         exception=exception,
         fault_type=consts.Cluster_Diagnostic_Checks_Job_Log_Save_Failed,
-        summary=message,
     )
     logger.warning(message)
 
@@ -455,6 +446,7 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
                 filepath_with_timestamp,
                 storage_space_available,
                 diagnoser_output,
+                cmd=cmd,
             )
             prediagnostic_dns_check = dns_check
             outbound_connectivity_check, storage_space_available = (
@@ -546,7 +538,7 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
         # The container may have exited early, causing some checks to appear
         # Passed/NotApplicable while later checks never actually executed.
         if prediagnostic_job_execution_status == consts.Job_Status_Not_Completed:
-            send_prediagnostic_job_execution_error_telemetry()
+            send_prediagnostic_job_execution_error_telemetry(cmd=cmd)
             return consts.Diagnostic_Check_Incomplete, storage_space_available
 
         # All checks passed or not applicable

@@ -11,7 +11,7 @@ The construct provides:
 - Stable `AZK8Snnnn` error codes.
 - Consistent error names and customer-facing messages.
 - Existing `fault_type` compatibility for ADX queries.
-- One rendered message shared by telemetry and the CLI exception shown to the customer.
+- Sanitized telemetry derived from the customer-facing CLI exception.
 - Optional troubleshooting links.
 
 The error catalog is intentionally incremental. Definitions can be added before
@@ -223,8 +223,10 @@ normal Python exception chaining with `raise ... from ex`.
 
 ## What the reporter emits
 
-`report_connectedk8s_error` renders the message once and uses that value for the
-extension event, telemetry summary, and CLI exception.
+`report_connectedk8s_error` renders the customer-facing CLI exception and derives
+a sanitized copy for the extension event and telemetry summary. Telemetry can
+therefore differ from the CLI output when the message contains sensitive values
+or punctuation removed by sanitization.
 
 Example customer output:
 
@@ -339,8 +341,8 @@ When migrating an existing error path:
   `telemetry.set_user_fault()`.
 - Pass existing extension-event properties through `telemetry_properties`.
 - Ensure the command establishes ARM ID context before the failure can occur.
-- Verify the console message, telemetry summary, and extension-event
-  `errorMessage` are identical.
+- Verify the console message is customer-readable and the telemetry summary and
+    extension-event `errorMessage` contain the expected sanitized form.
 
 ## Current scope
 

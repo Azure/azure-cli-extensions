@@ -70,8 +70,10 @@ def find_active_proxy_bypass_setting(lines: list[str]) -> tuple[int | None, int 
             if in_section and first_header is None:
                 first_header = i
             continue
-        if current_header is not None and stripped.startswith(
-            consts.CI_ConfigMap_Proxy_Bypass_Setting
+        setting_name = stripped.partition("=")[0].strip()
+        if (
+            current_header is not None
+            and setting_name == consts.CI_ConfigMap_Proxy_Bypass_Setting
         ):
             return current_header, i
 
