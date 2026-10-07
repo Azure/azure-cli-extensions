@@ -14,15 +14,6 @@ Install this extension using the following CLI command `az extension add --name 
 
 Remove this extension using the following CLI command `az extension remove --name aks-preview`.
 
-External tools
-==============
-
-The ``az aks kollect``, ``az aks kanalyze``, ``az aks get-credentials`` and
-``az aks bastion tunnel`` commands resolve external executables before launching
-them. Install these tools in absolute directories on ``PATH``; empty and relative
-``PATH`` entries are not searched. Explicit executable paths are preserved, and
-paths containing spaces are supported.
-
 Dependency between aks-preview and azure-cli/acs (azure-cli-core)
 =================================================================
 
