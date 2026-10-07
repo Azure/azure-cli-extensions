@@ -27,6 +27,7 @@ from azure.cli.core.azclierror import (
     ClientRequestError,
     CLIInternalError,
     FileOperationError,
+    InvalidArgumentValueError,
     ResourceNotFoundError,
     ManualInterrupt,
     MutuallyExclusiveArgumentError,
@@ -46,6 +47,7 @@ from .partner_extensions.AzureMLKubernetes import AzureMLKubernetes
 from .partner_extensions.DataProtectionKubernetes import DataProtectionKubernetes
 from .partner_extensions.Dapr import Dapr
 from .partner_extensions.VirtualNodes import VirtualNodes
+from .partner_extensions.ChaosStudio import ChaosStudio
 from .partner_extensions.DefaultExtension import (
     DefaultExtension,
     user_confirmation_factory,
@@ -78,6 +80,7 @@ def ExtensionFactory(extension_name):
         "microsoft.dapr": Dapr,
         "microsoft.dataprotection.kubernetes": DataProtectionKubernetes,
         "microsoft.virtualnodes": VirtualNodes,
+        "microsoft.chaosstudio": ChaosStudio,
     }
 
     # Return the extension if we find it in the map, else return the default
@@ -118,6 +121,17 @@ def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_
         raise ex
 
 
+def _validate_fleet_extension_type(cluster_type_lower, extension_type_lower):
+    if (
+        cluster_type_lower == consts.FLEET_TYPE
+        and extension_type_lower != consts.FLEET_EXTENSION_TYPE
+    ):
+        raise InvalidArgumentValueError(
+            "Extension type '{}' is not supported for cluster type 'fleets'. "
+            "The supported extension type is 'microsoft.flux'.".format(extension_type_lower)
+        )
+
+
 def create_k8s_extension(
     cmd,
     client,
@@ -146,6 +160,7 @@ def create_k8s_extension(
     """Create a new Extension Instance."""
 
     extension_type_lower = extension_type.lower()
+    _validate_fleet_extension_type(cluster_type.lower(), extension_type_lower)
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_resource_provider)
 
     # Configuration Settings & Configuration Protected Settings
@@ -248,6 +263,12 @@ def create_k8s_extension(
                 location,
             )
 
+    if isinstance(extension_class, ChaosStudio):
+        return extension_class.Install(
+            cmd, client, resource_group_name, cluster_rp, cluster_type,
+            cluster_name, name, extension_instance, no_wait=no_wait,
+        )
+
     # Try to create the resource
     return sdk_no_wait(
         no_wait,
@@ -309,6 +330,7 @@ def update_k8s_extension(
         client, resource_group_name, cluster_name, name, cluster_type, cluster_rp
     )
     extension_type_lower = extension.extension_type.lower()
+    _validate_fleet_extension_type(cluster_type.lower(), extension_type_lower)
 
     config_settings = {}
     config_protected_settings = {}
@@ -455,6 +477,10 @@ def list_extension_type_versions_by_location(
 
     """ List available versions for a Cluster Extension Type versions in a region. """
 
+    _validate_fleet_extension_type(
+        cluster_type.lower() if cluster_type else None,
+        extension_type.lower(),
+    )
     versions_list = client.list_versions(
         location,
         extension_type,
@@ -514,6 +540,7 @@ def show_extension_type_by_cluster(
         extension_type):
 
     """ Get properties for a Cluster Extension Type for an existing cluster"""
+    _validate_fleet_extension_type(cluster_type.lower(), extension_type.lower())
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
 
     return client.get(
@@ -536,6 +563,7 @@ def list_extension_type_versions_by_cluster(
         show_latest=False):
 
     """ List available versions for a Cluster Extension Type for a given cluster."""
+    _validate_fleet_extension_type(cluster_type.lower(), extension_type.lower())
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
 
     return client.cluster_list_versions(
@@ -560,6 +588,7 @@ def show_extension_type_version_by_cluster(
 
     """ Get properties associated with a Cluster Extension Type version for an existing cluster"""
 
+    _validate_fleet_extension_type(cluster_type.lower(), extension_type.lower())
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
 
     return client.cluster_get_version(

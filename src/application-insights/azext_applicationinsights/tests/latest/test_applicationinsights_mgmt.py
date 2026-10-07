@@ -75,6 +75,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         self.cmd('az monitor app-insights component delete --app {name_a} -g {resource_group}', checks=[self.is_empty()])
         return
 
+    @AllowLargeResponse()
     @ResourceGroupPreparer(parameter_name_for_location='location')
     def test_connect_webapp(self, resource_group, location):
         # Create Application Insights.
@@ -108,7 +109,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             'webapp_name': webapp_name
         })
 
-        self.cmd('az appservice plan create -g {resource_group} -n {plan}')
+        self.cmd('az appservice plan create -g {resource_group} -n {plan} --sku B1 --is-linux false')
         self.cmd('az webapp create -g {resource_group} -n {webapp_name} --plan {plan}', checks=[
             self.check('state', 'Running'),
             self.check('name', webapp_name)
@@ -125,6 +126,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             self.check("[?name=='APPINSIGHTS_CONNECTIONSTRING']|[0].value", app_insights_connection_string)
         ])
 
+    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix="webapp_cross_rg", parameter_name="resource_group", parameter_name_for_location="location")
     @ResourceGroupPreparer(name_prefix="webapp_cross_rg2", parameter_name="resource_group2", parameter_name_for_location="location2")
     def test_connect_webapp_cross_resource_group(self, resource_group, resource_group2, location, location2):
@@ -159,7 +161,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             'webapp_name': webapp_name
         })
 
-        self.cmd('az appservice plan create -g {resource_group2} -n {plan}')
+        self.cmd('az appservice plan create -g {resource_group2} -n {plan} --sku B1 --is-linux false')
         self.kwargs["webapp_id"] = self.cmd('az webapp create -g {resource_group2} -n {webapp_name} --plan {plan}', checks=[
             self.check('state', 'Running'),
             self.check('name', webapp_name)
@@ -177,7 +179,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         ])
 
     @ResourceGroupPreparer(parameter_name_for_location='location')
-    @StorageAccountPreparer()
+    @StorageAccountPreparer(kind='StorageV2')
     def test_connect_function(self, resource_group, storage_account, location):
         # Create Application Insights.
         ai_name = self.create_random_name('clitestai', 24)
@@ -211,7 +213,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             'function_name': function_name
         })
 
-        self.cmd('az appservice plan create -g {resource_group} -n {plan}')
+        self.cmd('az appservice plan create -g {resource_group} -n {plan} --sku B1 --is-linux false')
         self.cmd('az functionapp create -g {resource_group} -n {function_name} --plan {plan} -s {sa} --functions-version 4 --runtime node', checks=[
             self.check('state', 'Running'),
             self.check('name', function_name)
@@ -228,7 +230,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix="connect_function_cross_rg", parameter_name="resource_group", parameter_name_for_location="location")
     @ResourceGroupPreparer(name_prefix="connect_function_cross_rg2", parameter_name="resource_group2", parameter_name_for_location="location2")
-    @StorageAccountPreparer(resource_group_parameter_name='resource_group2')
+    @StorageAccountPreparer(kind='StorageV2', resource_group_parameter_name='resource_group2')
     def test_connect_function_cross_resource_groups(self, resource_group, resource_group2, location, location2, storage_account):
         # Create Application Insights.
         ai_name = self.create_random_name('clitestai', 24)
@@ -260,7 +262,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             'function_name': function_name
         })
 
-        self.cmd('az appservice plan create -g {resource_group2} -n {plan}')
+        self.cmd('az appservice plan create -g {resource_group2} -n {plan} --sku B1 --is-linux false')
         self.kwargs['functionapp_id'] = self.cmd('az functionapp create -g {resource_group2} -n {function_name} --plan {plan} -s {sa} --functions-version 4 --runtime node', checks=[
             self.check('state', 'Running'),
             self.check('name', function_name)
@@ -340,6 +342,8 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
                 self.check('provisioningState', 'Succeeded'),
             ])
 
+        self.cmd('storage account update -g {resource_group} -n {storage_account} --bypass AzureServices')
+        self.cmd('storage account update -g {resource_group} -n {storage_account_2} --bypass AzureServices')
         output_json = self.cmd('monitor app-insights component linked-storage link --app {name_a} -g {resource_group} -s {storage_account}').get_output_in_json()
         assert self.kwargs['storage_account'] in output_json['linkedStorageAccount']
         output_json = self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}').get_output_in_json()

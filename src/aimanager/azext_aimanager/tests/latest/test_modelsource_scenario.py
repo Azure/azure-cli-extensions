@@ -6,9 +6,8 @@
 from unittest.mock import MagicMock, patch
 
 from azure.cli.testsdk import ScenarioTest
-from azure.core.exceptions import ResourceNotFoundError
 
-from azext_aimanager.vendored_sdks.v2026_05_02_preview import models
+from azext_aimanager.vendored_sdks.v2026_09_02_preview import models
 
 
 class ModelSourceScenarioTest(ScenarioTest):
@@ -25,8 +24,8 @@ class ModelSourceScenarioTest(ScenarioTest):
 
         operations = MagicMock()
         operations.get.side_effect = [
-            # add -> not found, then show / update / delete each read the resource once
-            ResourceNotFoundError(),
+            # create issues an idempotent PUT without a pre-check GET; show / update / delete
+            # each read the resource once.
             model_source,
             model_source,
             model_source,
@@ -35,12 +34,12 @@ class ModelSourceScenarioTest(ScenarioTest):
         service_client = MagicMock()
         service_client.model_sources = operations
 
-        command_prefix = 'aimanager modelsource {} -g rg --aimanager-name manager'
+        command_prefix = 'aimanager modelsource {} -g rg --aimanager manager'
 
         with patch('azext_aimanager._client_factory.get_aimanager_client',
                    return_value=service_client):
             self.cmd(
-                command_prefix.format('add') +
+                command_prefix.format('create') +
                 ' -n hf -s HuggingFace --token hf_xxx --description "Hugging Face registry" --no-wait',
                 checks=[self.is_empty()])
 
@@ -68,7 +67,7 @@ class ModelSourceScenarioTest(ScenarioTest):
                 command_prefix.format('delete') + ' -n hf --yes --no-wait',
                 checks=[self.is_empty()])
 
-        self.assertEqual(operations.get.call_count, 4)
+        self.assertEqual(operations.get.call_count, 3)
         self.assertEqual(operations.begin_create_or_update.call_count, 2)
         self.assertEqual(operations.list.call_count, 2)
         operations.list.assert_called_with('rg', 'manager')
@@ -78,3 +77,32 @@ class ModelSourceScenarioTest(ScenarioTest):
         update_payload = operations.begin_create_or_update.call_args_list[1][0][3]
         self.assertEqual(update_payload.properties.source_type, 'HuggingFace')
         self.assertEqual(update_payload.properties.credential.inline.value, 'hf_yyy')
+
+    def test_modelsource_create_is_idempotent(self):
+        # Re-running 'create' for an existing model source must not fail; it issues another
+        # create-or-update PUT that updates the resource in place.
+        operations = MagicMock()
+        service_client = MagicMock()
+        service_client.model_sources = operations
+
+        command_prefix = 'aimanager modelsource {} -g rg --aimanager manager'
+
+        with patch('azext_aimanager._client_factory.get_aimanager_client',
+                   return_value=service_client):
+            # first create
+            self.cmd(
+                command_prefix.format('create') +
+                ' -n hf -s HuggingFace --description "first" --no-wait',
+                checks=[self.is_empty()])
+            # create the same name again with a different description -> updated, not rejected
+            self.cmd(
+                command_prefix.format('create') +
+                ' -n hf -s HuggingFace --description "second" --no-wait',
+                checks=[self.is_empty()])
+
+        # No pre-check GET, and both calls issue a PUT (the second updates the resource).
+        operations.get.assert_not_called()
+        self.assertEqual(operations.begin_create_or_update.call_count, 2)
+        second_payload = operations.begin_create_or_update.call_args_list[1][0][3]
+        self.assertEqual(second_payload.properties.description, 'second')
+

@@ -16,14 +16,18 @@ helps['aimanager create'] = """
     type: command
     short-summary: Create an AI Manager resource.
     long-summary: >
-        Once creation succeeds the caller is granted the built-in 'Azure AIManager Contributor'
-        and 'Azure AIManager and namespace RBAC Reader' roles on the new AI Manager (best-effort;
-        requires Owner or User Access Administrator). Skipped with --no-wait.
+        This command is idempotent: running it again with the same name updates the AI Manager
+        and returns it, rather than failing because it already exists. Once creation succeeds the
+        caller is granted the built-in 'Azure AIManager Contributor' and 'Azure AIManager RBAC
+        Reader' roles on the new AI Manager (best-effort; requires Owner or User
+        Access Administrator). Skipped with --no-wait.
     examples:
         - name: Create an AI Manager
           text: az aimanager create --name my-ai-manager -g myrg -l eastus2
         - name: Create an AI Manager with the Keep delete policy
           text: az aimanager create --name my-ai-manager -g myrg -l eastus2 --delete-policy Keep
+        - name: Create an AI Manager using an existing AKS cluster
+          text: az aimanager create --name my-ai-manager -g myrg -l eastus2 --cluster-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myrg/providers/Microsoft.ContainerService/managedClusters/my-aks
 """
 
 helps['aimanager update'] = """
@@ -86,17 +90,20 @@ helps['aimanager modelsource'] = """
     long-summary: |-
         A model source tells the platform where to pull model artifacts from and, for gated or
         private sources, which credential to authenticate with. Model sources are referenced by
-        'az aimanager namespace modeldeployment add --model-source-resource-id'.
+        'az aimanager namespace modeldeployment create --model-source-resource-id'.
 """
 
-helps['aimanager modelsource add'] = """
+helps['aimanager modelsource create'] = """
     type: command
-    short-summary: Add a model source to an AI Manager.
+    short-summary: Create a model source in an AI Manager.
+    long-summary: >
+        This command is idempotent: running it again with the same name updates the model
+        source and returns it, rather than failing because it already exists.
     examples:
-        - name: Add a public Hugging Face model source
-          text: az aimanager modelsource add -g myrg --aimanager-name my-ai-manager -n hf --source-type HuggingFace
-        - name: Add a Hugging Face model source with an access token for gated models
-          text: az aimanager modelsource add -g myrg --aimanager-name my-ai-manager -n hf -s HuggingFace --token hf_xxx --description "Gated models"
+        - name: Create a public Hugging Face model source
+          text: az aimanager modelsource create -g myrg --aimanager my-ai-manager -n hf --source-type HuggingFace
+        - name: Create a Hugging Face model source with an access token for gated models
+          text: az aimanager modelsource create -g myrg --aimanager my-ai-manager -n hf -s HuggingFace --token hf_xxx --description "Gated models"
 """
 
 helps['aimanager modelsource update'] = """
@@ -107,9 +114,9 @@ helps['aimanager modelsource update'] = """
         keep their current values.
     examples:
         - name: Rotate the access token of a model source
-          text: az aimanager modelsource update -g myrg --aimanager-name my-ai-manager -n hf --token hf_yyy
+          text: az aimanager modelsource update -g myrg --aimanager my-ai-manager -n hf --token hf_yyy
         - name: Update the description of a model source
-          text: az aimanager modelsource update -g myrg --aimanager-name my-ai-manager -n hf --description "Internal mirror"
+          text: az aimanager modelsource update -g myrg --aimanager my-ai-manager -n hf --description "Internal mirror"
 """
 
 helps['aimanager modelsource show'] = """
@@ -117,7 +124,7 @@ helps['aimanager modelsource show'] = """
     short-summary: Show the details of a model source within an AI Manager.
     examples:
         - name: Show a model source
-          text: az aimanager modelsource show -g myrg --aimanager-name my-ai-manager -n hf
+          text: az aimanager modelsource show -g myrg --aimanager my-ai-manager -n hf
 """
 
 helps['aimanager modelsource list'] = """
@@ -125,7 +132,7 @@ helps['aimanager modelsource list'] = """
     short-summary: List the model sources within an AI Manager.
     examples:
         - name: List model sources
-          text: az aimanager modelsource list -g myrg --aimanager-name my-ai-manager
+          text: az aimanager modelsource list -g myrg --aimanager my-ai-manager
 """
 
 helps['aimanager modelsource delete'] = """
@@ -133,7 +140,7 @@ helps['aimanager modelsource delete'] = """
     short-summary: Delete a model source from an AI Manager.
     examples:
         - name: Delete a model source
-          text: az aimanager modelsource delete -g myrg --aimanager-name my-ai-manager -n hf
+          text: az aimanager modelsource delete -g myrg --aimanager my-ai-manager -n hf
 """
 
 helps['aimanager modelsource wait'] = """
@@ -146,18 +153,20 @@ helps['aimanager namespace'] = """
     short-summary: Manage namespaces within an AI Manager.
 """
 
-helps['aimanager namespace add'] = """
+helps['aimanager namespace create'] = """
     type: command
-    short-summary: Add a namespace to an AI Manager.
+    short-summary: Create a namespace in an AI Manager.
     long-summary: >
-        Once creation succeeds the caller is granted the built-in 'Azure AIManager Contributor'
-        and 'Azure AIManager and namespace RBAC Reader' roles on the new namespace (best-effort;
-        requires Owner or User Access Administrator). Skipped with --no-wait.
+        This command is idempotent: running it again with the same name updates the namespace
+        and returns it, rather than failing because it already exists. Once creation succeeds the
+        caller is granted the built-in 'Azure AIManager Contributor' and 'Azure AIManager RBAC
+        Reader' roles on the new namespace (best-effort; requires Owner or User
+        Access Administrator). Skipped with --no-wait.
     examples:
-        - name: Add a namespace
-          text: az aimanager namespace add -m my-ai-manager -g myrg --name team-alpha
-        - name: Add a namespace with labels and annotations
-          text: az aimanager namespace add -m my-ai-manager -g myrg --name team-alpha --labels team=alpha --annotations owner=alice
+        - name: Create a namespace
+          text: az aimanager namespace create -m my-ai-manager -g myrg --name team-alpha
+        - name: Create a namespace with labels and annotations
+          text: az aimanager namespace create -m my-ai-manager -g myrg --name team-alpha --labels team=alpha --annotations owner=alice
 """
 
 helps['aimanager namespace update'] = """
@@ -219,9 +228,9 @@ helps['aimanager namespace list-accesskeys'] = """
         them in plaintext.
     examples:
         - name: List the access keys of a namespace
-          text: az aimanager namespace list-accesskeys -g myrg --aimanager-name my-ai-manager --name team-alpha
+          text: az aimanager namespace list-accesskeys -g myrg --aimanager my-ai-manager --name team-alpha
         - name: Show only the gateway endpoint
-          text: az aimanager namespace list-accesskeys -g myrg --aimanager-name my-ai-manager --name team-alpha --query endpoint -o tsv
+          text: az aimanager namespace list-accesskeys -g myrg --aimanager my-ai-manager --name team-alpha --query endpoint -o tsv
 """
 
 helps['aimanager namespace rotate-accesskeys'] = """
@@ -234,7 +243,7 @@ helps['aimanager namespace rotate-accesskeys'] = """
         authenticate.
     examples:
         - name: Rotate the access keys of a namespace
-          text: az aimanager namespace rotate-accesskeys -g myrg --aimanager-name my-ai-manager --name team-alpha
+          text: az aimanager namespace rotate-accesskeys -g myrg --aimanager my-ai-manager --name team-alpha
 """
 
 helps['aimanager namespace modeldeployment'] = """
@@ -242,14 +251,17 @@ helps['aimanager namespace modeldeployment'] = """
     short-summary: Manage model deployments within an AI Manager namespace.
 """
 
-helps['aimanager namespace modeldeployment add'] = """
+helps['aimanager namespace modeldeployment create'] = """
     type: command
-    short-summary: Add a model deployment to an AI Manager namespace.
+    short-summary: Create a model deployment in an AI Manager namespace.
+    long-summary: >
+        This command is idempotent: running it again with the same name updates the model
+        deployment and returns it, rather than failing because it already exists.
     examples:
-        - name: Add a manually scaled model deployment
-          text: az aimanager namespace modeldeployment add -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi --model-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2/aiModels/phi --vm-size Standard_NC24ads_A100_v4 --replicas 1
-        - name: Add an autoscaled model deployment
-          text: az aimanager namespace modeldeployment add -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi --model-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2/aiModels/phi --vm-size Standard_NC24ads_A100_v4 --min-replicas 1 --max-replicas 3
+        - name: Create a manually scaled model deployment
+          text: az aimanager namespace modeldeployment create -g myrg --aimanager my-ai-manager --namespace team-alpha -n phi --model-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2/aiModels/phi --vm-size Standard_NC24ads_A100_v4 --replicas 1
+        - name: Create an autoscaled model deployment
+          text: az aimanager namespace modeldeployment create -g myrg --aimanager my-ai-manager --namespace team-alpha -n phi --model-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/eastus2/aiModels/phi --vm-size Standard_NC24ads_A100_v4 --min-replicas 1 --max-replicas 3
 """
 
 helps['aimanager namespace modeldeployment update'] = """
@@ -257,9 +269,9 @@ helps['aimanager namespace modeldeployment update'] = """
     short-summary: Update a model deployment within an AI Manager namespace.
     examples:
         - name: Change the fixed replica count
-          text: az aimanager namespace modeldeployment update -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi --replicas 2
+          text: az aimanager namespace modeldeployment update -g myrg --aimanager my-ai-manager --namespace team-alpha -n phi --replicas 2
         - name: Change the performance mode
-          text: az aimanager namespace modeldeployment update -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi --performance-mode Throughput
+          text: az aimanager namespace modeldeployment update -g myrg --aimanager my-ai-manager --namespace team-alpha -n phi --performance-mode Throughput
 """
 
 helps['aimanager namespace modeldeployment show'] = """
@@ -267,15 +279,26 @@ helps['aimanager namespace modeldeployment show'] = """
     short-summary: Show a model deployment within an AI Manager namespace.
     examples:
         - name: Show a model deployment
-          text: az aimanager namespace modeldeployment show -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi
+          text: az aimanager namespace modeldeployment show -g myrg --aimanager my-ai-manager --namespace team-alpha -n phi
 """
 
 helps['aimanager namespace modeldeployment list'] = """
     type: command
     short-summary: List model deployments within an AI Manager namespace.
+    long-summary: >
+        If --namespace/--ns is omitted, model deployments are listed across namespaces of the
+        AI Manager. This first lists the namespaces, which requires namespace read permission on
+        the AI Manager resource; without it, no namespaces can be listed. Model deployments are
+        then listed per namespace, which requires model deployment read permission for each
+        namespace (granted on the namespace resource, or inherited from the AI Manager resource)
+        — you may have this for some namespaces but not others. Namespaces you are not authorized
+        to read model deployments in are skipped with a warning. To list a single namespace you
+        have model deployment read access to, specify --namespace/--ns.
     examples:
-        - name: List model deployments
-          text: az aimanager namespace modeldeployment list -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha
+        - name: List model deployments in a namespace
+          text: az aimanager namespace modeldeployment list -g myrg --aimanager my-ai-manager --namespace team-alpha
+        - name: List model deployments across all readable namespaces (omit --namespace)
+          text: az aimanager namespace modeldeployment list -g myrg --aimanager my-ai-manager
 """
 
 helps['aimanager namespace modeldeployment delete'] = """
@@ -283,7 +306,7 @@ helps['aimanager namespace modeldeployment delete'] = """
     short-summary: Delete a model deployment from an AI Manager namespace.
     examples:
         - name: Delete a model deployment
-          text: az aimanager namespace modeldeployment delete -g myrg --aimanager-name my-ai-manager --namespace-name team-alpha -n phi
+          text: az aimanager namespace modeldeployment delete -g myrg --aimanager my-ai-manager --namespace team-alpha -n phi
 """
 
 helps['aimanager namespace modeldeployment wait'] = """
@@ -298,7 +321,7 @@ helps['aimanager model'] = """
         AI models are read-only, platform-maintained catalog entries scoped to an Azure region.
         Use 'az aimanager model list' to discover the models available in a region and their
         resource names, which can then be passed to
-        'az aimanager namespace modeldeployment add --model-resource-id'.
+        'az aimanager namespace modeldeployment create --model-resource-id'.
 """
 
 helps['aimanager model show'] = """
@@ -328,6 +351,9 @@ helps['aimanager model calculate-cost'] = """
         performance. Feasible plans are returned first, ordered by total hourly price ascending.
         No Azure or Kubernetes resources are provisioned by this command. Prices describe a single
         replica; multiply by the desired replica count, bounded by maxAvailableReplicas.
+        In table output, the Feasible column shows whether each SKU is deployable today; for
+        SKUs that are not, InfeasibilityReason gives the reason (e.g. InsufficientQuota,
+        RegionUnavailable, InefficientDeployment).
     examples:
         - name: Calculate the cost of deploying a model
           text: az aimanager model calculate-cost -l eastus2 -n 9806f0c862fdd920

@@ -218,12 +218,13 @@ helps['quantum job update'] = """
 
 helps['quantum suite-offer'] = """
     type: group
-    short-summary: View Azure Quantum suite offers available to the subscription.
+    short-summary: View Azure Quantum suite offers for V2 providers available to the subscription.
+    long-summary: Suite offers represent providers that use the V2 provider model and can be queried without an Azure Quantum workspace.
 """
 
 helps['quantum suite-offer list'] = """
     type: command
-    short-summary: List the Azure Quantum suite offers available to the current subscription, including provider ID, name, company, and location.
+    short-summary: List V2 provider suite offers available to the current subscription, including provider ID, name, company, and location.
     examples:
       - name: List all suite offers available to the current subscription.
         text: |-
@@ -235,9 +236,9 @@ helps['quantum suite-offer list'] = """
 
 helps['quantum suite-offer quotas'] = """
     type: command
-    short-summary: View quota allocations and their consumed usages for a suite offer in the current subscription.
+    short-summary: View quota allocations and their consumed usages for a V2 provider suite offer in the current subscription.
     long-summary: |
-        Returns the v2 quota allocations (limits) for each target of the suite offer together
+        Returns the V2 quota allocations (limits) for each target of the suite offer together
         with the consumed usages. Each entry reports the allocated and used standard and high priority
         minutes. Table output converts these values to hours. Missing usage values are returned as 0.
     examples:
@@ -251,16 +252,16 @@ helps['quantum suite-offer quotas'] = """
 
 helps['quantum suite-offer target'] = """
     type: group
-    short-summary: List targets available through an Azure Quantum suite offer.
+    short-summary: List targets available through an Azure Quantum suite offer for a V2 provider.
 """
 
 helps['quantum suite-offer target list'] = """
     type: command
-    short-summary: List the targets and their status available through a suite offer, without requiring a workspace.
+    short-summary: List targets and their status available through a V2 provider suite offer, without requiring a workspace.
     long-summary: |
         Returns each target exposed by the suite offer together with its current
         availability and overall average queue time. Standard- and High-priority average queue times
-        are also returned when supplied by the provider. Data is resolved directly from the data plane
+        are also returned when supplied by the V2 provider. Data is resolved directly from the V2 data plane
         without requiring an Azure Quantum workspace.
     examples:
       - name: List the targets available in a suite offer.
@@ -355,6 +356,8 @@ helps['quantum workspace'] = """
 helps['quantum workspace clear'] = """
     type: command
     short-summary: Clear the default Azure Quantum workspace.
+    long-summary: |
+        Clear the saved resource-group and workspace-name defaults. Other settings, including the default subscription, location, and target, are unchanged.
     examples:
       - name: Clear the default Azure Quantum workspace if previously set.
         text: |-
@@ -409,7 +412,7 @@ helps['quantum workspace quotas'] = """
     type: command
     short-summary: List quota allocations and consumed usages for an Azure Quantum workspace.
     long-summary: |
-        Preserves the existing quota dimension response for v1 providers. For v2 providers, returns
+        Preserves the existing quota dimension response for V1 providers. For V2 providers, returns
         separate StandardMinutesLifetime and HighMinutesLifetime rows for each target, with targetId,
         limit, and utilization reported in minutes. Missing allocation or usage values are returned as 0.
     examples:
@@ -421,6 +424,12 @@ helps['quantum workspace quotas'] = """
 helps['quantum workspace set'] = """
     type: command
     short-summary: Select a default Azure Quantum workspace for future commands.
+    long-summary: |
+        Save the resource group and workspace name as persistent Azure CLI flag defaults. The resource-group default is shared with other Azure CLI commands. These settings persist across terminal sessions.
+
+        Explicit --resource-group and --workspace-name arguments override their respective defaults independently. Job commands targeting another workspace do not change the saved defaults.
+
+        This command does not change the default subscription or location. Use 'az quantum workspace clear' to clear the saved resource-group and workspace-name defaults.
     examples:
       - name: Set the default Azure Quantum workspace.
         text: |-
@@ -442,6 +451,7 @@ helps['quantum workspace show'] = """
 helps['quantum workspace update'] = """
     type: command
     short-summary: Update the given (or current) Azure Quantum workspace.
+    long-summary: Target quota allocation through '--quota' is supported only for V2 workspaces.
     examples:
       - name: Enable a provided Azure Quantum workspace api keys.
         text: |-

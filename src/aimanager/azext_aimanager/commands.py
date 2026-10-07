@@ -5,17 +5,18 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from azext_aimanager.constants import (
-    AI_MODEL_TABLE_TRANSFORMER,
-    CALCULATE_COST_TABLE_TRANSFORMER,
-)
 from azext_aimanager._format import (
     aimanager_table_format,
     aimanager_list_table_format,
     namespace_table_format,
     namespace_list_table_format,
+    modelsource_table_format,
+    modelsource_list_table_format,
     modeldeployment_table_format,
     modeldeployment_list_table_format,
+    aimodel_table_format,
+    aimodel_list_table_format,
+    calculate_cost_table_format,
 )
 from azext_aimanager._client_factory import (
     cf_ai_managers,
@@ -29,33 +30,35 @@ from azext_aimanager._client_factory import (
 def load_command_table(self, _):
 
     ai_managers_sdk = CliCommandType(
-        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#AIManagersOperations.{}",
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_09_02_preview.operations._operations#AIManagersOperations.{}",
         operation_group="ai_managers",
         client_factory=cf_ai_managers
     )
 
     ai_manager_namespaces_sdk = CliCommandType(
-        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#AIManagerNamespacesOperations.{}",
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_09_02_preview.operations._operations#AIManagerNamespacesOperations.{}",
         operation_group="ai_manager_namespaces",
         client_factory=cf_ai_manager_namespaces
     )
 
     model_deployments_sdk = CliCommandType(
-        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#ModelDeploymentsOperations.{}",
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_09_02_preview.operations._operations#ModelDeploymentsOperations.{}",
         operation_group="model_deployments",
         client_factory=cf_model_deployments
     )
 
     ai_models_sdk = CliCommandType(
-        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#AIModelsOperations.{}",
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_09_02_preview.operations._operations#AIModelsOperations.{}",
         operation_group="ai_models",
         client_factory=cf_ai_models
     )
 
     # aimanager command group
     with self.command_group("aimanager", ai_managers_sdk, client_factory=cf_ai_managers, is_preview=True) as g:
-        g.custom_command("create", "create_aimanager", supports_no_wait=True)
-        g.custom_command("update", "update_aimanager", supports_no_wait=True)
+        g.custom_command("create", "create_aimanager", supports_no_wait=True,
+                         table_transformer=aimanager_table_format)
+        g.custom_command("update", "update_aimanager", supports_no_wait=True,
+                         table_transformer=aimanager_table_format)
         g.custom_show_command("show", "show_aimanager", table_transformer=aimanager_table_format)
         g.custom_command("list", "list_aimanager", table_transformer=aimanager_list_table_format)
         g.custom_command("delete", "delete_aimanager", supports_no_wait=True, confirmation=True)
@@ -64,8 +67,10 @@ def load_command_table(self, _):
 
     # aimanager namespace command group
     with self.command_group("aimanager namespace", ai_manager_namespaces_sdk, client_factory=cf_ai_manager_namespaces, is_preview=True) as g:
-        g.custom_command("add", "add_aimanager_namespace", supports_no_wait=True)
-        g.custom_command("update", "update_aimanager_namespace", supports_no_wait=True)
+        g.custom_command("create", "create_aimanager_namespace", supports_no_wait=True,
+                         table_transformer=namespace_table_format)
+        g.custom_command("update", "update_aimanager_namespace", supports_no_wait=True,
+                         table_transformer=namespace_table_format)
         g.custom_show_command("show", "show_aimanager_namespace", table_transformer=namespace_table_format)
         g.custom_command("list", "list_aimanager_namespace", table_transformer=namespace_list_table_format)
         g.custom_command("delete", "delete_aimanager_namespace", supports_no_wait=True, confirmation=True)
@@ -75,25 +80,29 @@ def load_command_table(self, _):
         g.wait_command("wait")
 
     model_sources_sdk = CliCommandType(
-        operations_tmpl="azext_aimanager.vendored_sdks.v2026_05_02_preview.operations._operations#ModelSourcesOperations.{}",
+        operations_tmpl="azext_aimanager.vendored_sdks.v2026_09_02_preview.operations._operations#ModelSourcesOperations.{}",
         operation_group="model_sources",
         client_factory=cf_model_sources
     )
 
     # aimanager modelsource command group
     with self.command_group("aimanager modelsource", model_sources_sdk, client_factory=cf_model_sources) as g:
-        g.custom_command("add", "add_modelsource", supports_no_wait=True)
-        g.custom_command("update", "update_modelsource", supports_no_wait=True)
-        g.custom_show_command("show", "show_modelsource")
-        g.custom_command("list", "list_modelsource")
+        g.custom_command("create", "create_modelsource", supports_no_wait=True,
+                         table_transformer=modelsource_table_format)
+        g.custom_command("update", "update_modelsource", supports_no_wait=True,
+                         table_transformer=modelsource_table_format)
+        g.custom_show_command("show", "show_modelsource", table_transformer=modelsource_table_format)
+        g.custom_command("list", "list_modelsource", table_transformer=modelsource_list_table_format)
         g.custom_command("delete", "delete_modelsource", supports_no_wait=True, confirmation=True)
         g.custom_wait_command("wait", "show_modelsource")
 
     # aimanager namespace modeldeployment command group
     with self.command_group("aimanager namespace modeldeployment", model_deployments_sdk,
                             client_factory=cf_model_deployments, is_preview=True) as g:
-        g.custom_command("add", "add_modeldeployment", supports_no_wait=True)
-        g.custom_command("update", "update_modeldeployment", supports_no_wait=True)
+        g.custom_command("create", "create_modeldeployment", supports_no_wait=True,
+                         table_transformer=modeldeployment_table_format)
+        g.custom_command("update", "update_modeldeployment", supports_no_wait=True,
+                         table_transformer=modeldeployment_table_format)
         g.custom_show_command("show", "show_modeldeployment", table_transformer=modeldeployment_table_format)
         g.custom_command("list", "list_modeldeployment", table_transformer=modeldeployment_list_table_format)
         g.custom_command("delete", "delete_modeldeployment", supports_no_wait=True, confirmation=True)
@@ -101,8 +110,7 @@ def load_command_table(self, _):
 
     # aimanager model command group
     with self.command_group("aimanager model", ai_models_sdk, client_factory=cf_ai_models) as g:
-        g.custom_show_command("show", "show_aimodel")
-        g.custom_command("list", "list_aimodel",
-                         table_transformer=AI_MODEL_TABLE_TRANSFORMER)
+        g.custom_show_command("show", "show_aimodel", table_transformer=aimodel_table_format)
+        g.custom_command("list", "list_aimodel", table_transformer=aimodel_list_table_format)
         g.custom_command("calculate-cost", "calculate_aimodel_cost",
-                         table_transformer=CALCULATE_COST_TABLE_TRANSFORMER)
+                         table_transformer=calculate_cost_table_format)

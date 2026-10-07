@@ -188,7 +188,7 @@ def step_delete(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud kubernetescluster agentpool delete --name {name} "
-        "--kubernetes-cluster-name {clusterName} --resource-group {rg} -y"
+        "--kubernetes-cluster-name {clusterName} --resource-group {rg} --yes"
     )
 
 

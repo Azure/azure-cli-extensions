@@ -6,14 +6,14 @@
 # --------------------------------------------------------------------------------------------
 
 from codecs import open
+import logging
 from setuptools import setup, find_packages
 try:
     from azure_bdist_wheel import cmdclass
 except ImportError:
-    from distutils import log as logger
-    logger.warn("Wheel is not available, disabling bdist_wheel hook")
+    logging.warning("Wheel is not available, disabling bdist_wheel hook")
 
-VERSION = '1.0.0b7'
+VERSION = '1.0.0b8'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers

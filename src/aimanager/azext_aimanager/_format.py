@@ -86,6 +86,37 @@ def namespace_list_table_format(results):
     return [namespace_table_format(r) for r in results]
 
 
+def modelsource_table_format(result):
+    """Format a single model source resource for display with "-o table"."""
+    properties = result.get('properties') or {}
+    return OrderedDict([
+        ('Name', result.get('name', '')),
+        ('ProvisioningState', properties.get('provisioningState', '')),
+        ('SourceType', properties.get('sourceType', '')),
+        ('Description', properties.get('description') or ''),
+    ])
+
+
+def modelsource_list_table_format(results):
+    """Format a list of model source resources for display with "-o table"."""
+    return [modelsource_table_format(r) for r in results]
+
+
+def aimodel_table_format(result):
+    """Format a single AI model resource for display with "-o table"."""
+    properties = result.get('properties') or {}
+    return OrderedDict([
+        ('Name', result.get('name', '')),
+        ('ModelId', properties.get('modelId', '')),
+        ('Description', properties.get('description') or ''),
+    ])
+
+
+def aimodel_list_table_format(results):
+    """Format a list of AI model resources for display with "-o table"."""
+    return [aimodel_table_format(r) for r in results]
+
+
 def _replica_display(value):
     """Render a replica count, using '-' when the count is not yet reported."""
     return str(value) if value is not None else '-'
@@ -122,3 +153,45 @@ def modeldeployment_table_format(result):
 def modeldeployment_list_table_format(results):
     """Format a list of model deployment resources for display with "-o table"."""
     return [modeldeployment_table_format(r) for r in results]
+
+
+def _as_bool(value):
+    """Coerce a feasibility value to a strict bool.
+
+    The vendored SDK deserializes ``feasible`` as a real Python bool (``None`` when the
+    service omits it on an infeasible plan). This helper is defensive against a raw-dict
+    code path where the value could arrive as a JSON string: ``bool("false")`` is ``True``
+    in Python (any non-empty string is truthy), so strings are compared explicitly instead.
+    """
+    if isinstance(value, str):
+        return value.strip().lower() == 'true'
+    return bool(value)
+
+
+def _calculate_cost_plan_row(plan):
+    """Format a single ``CalculateCostPlan`` for display with "-o table"."""
+    # ``feasible`` is the most important column, yet the service omits it for infeasible plans.
+    # With a JMESPath projection those cells render blank and — when every plan is infeasible —
+    # azure-cli drops the all-blank column entirely, hiding the answer the user most needs.
+    # Coerce it to an explicit bool here so the column is always populated and never dropped.
+    feasible = _as_bool(plan.get('feasible'))
+    reason = plan.get('infeasibilityReason') or {}
+    # Reason codes come back prefixed (e.g. "InfeasibleCode_InsufficientQuota"); strip the
+    # redundant "InfeasibleCode_" prefix so the column stays short in "-o table" output.
+    reason_code = (reason.get('code') or '')
+    reason_code = reason_code[len('InfeasibleCode_'):] if reason_code.startswith('InfeasibleCode_') else reason_code
+    return OrderedDict([
+        ('VmSize', plan.get('vmSize', '')),
+        ('Feasible', feasible),
+        ('VmsPerReplica', plan.get('vmsPerReplica', '')),
+        ('VmHourlyPrice', plan.get('vmHourlyPrice', '')),
+        ('TotalHourlyPrice', plan.get('totalHourlyPrice', '')),
+        ('MaxAvailableReplicas', plan.get('maxAvailableReplicas', '')),
+        ('Quantization', plan.get('quantization', '')),
+        ('InfeasibilityReason', '' if feasible else reason_code),
+    ])
+
+
+def calculate_cost_table_format(result):
+    """Format a ``calculateCost`` response for display with "-o table"."""
+    return [_calculate_cost_plan_row(p) for p in (result.get('plans') or [])]
