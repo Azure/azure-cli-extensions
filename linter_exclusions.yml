@@ -1643,6 +1643,9 @@ iot hub state migrate:
     resource_group_name:
       rule_exclusions:
       - parameter_should_not_end_in_resource_group
+iot hub topic-group list:
+  rule_exclusions:
+  - no_ids_for_list_commands
 iot edge deployment update:
   parameters:
     auth_type_dataplane:
