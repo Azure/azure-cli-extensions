@@ -98,30 +98,14 @@ def _quote_cmd_arg(arg):
     return result
 
 
-# Characters that cannot be safely carried through a Windows 'cmd /c' command line in ANY token, regardless of which
-# call site or which value (ARM-sourced or otherwise) it comes from. cmd.exe's outer-line parser toggles its in-quote
-# state on every literal '"' it scans and has no concept of a preceding backslash as an escape for it, unlike the
-# CommandLineToArgvW convention _quote_cmd_arg uses for the *child* process's argv parser. There is therefore no way
-# to safely escape a literal double quote for this sink; it must be rejected outright. ASCII control characters are
-# rejected for the same reason. See ICM-558 (sibling of MSRC 115198 / VULN-185362): the July 2026 fix for 115198 only
-# validated tag values (_validate_tags_for_command below); it left every other _call_az_command call site - including
-# storageProfile.osDisk.vhd.uri-derived values - unguarded, which is why a structurally identical injection was found
-# via a different ARM field. Enforcing the invariant once protects every current and future call site without
-# requiring a bespoke validator per untrusted field.
-#
-# '%' and '!' are rejected everywhere, not just in tags, because they let cmd.exe SYNTHESIZE a disallowed character
-# (including a literal '"') after this check has already run, which is a complete bypass of the quote check above:
-# cmd.exe expands '%VAR%' (and '!VAR!' when delayed expansion is enabled) while parsing the quoted command line, and
-# '%CMDCMDLINE%' - a built-in pseudo-variable that always reflects the exact text cmd.exe itself was launched with -
-# is guaranteed to contain a '"' because _call_az_command's own 'cmd /s /c "' prefix is exactly 10 characters, a
-# fixed and therefore attacker-predictable offset. Concretely, a storageProfile.osDisk.vhd.uri of
-#   X%CMDCMDLINE:~10,1% & echo PWNED>marker.txt & rem
-# contains no literal '"' and used to pass this check, but cmd.exe expands '%CMDCMDLINE:~10,1%' to '"' at runtime,
-# closing the quoted argument early and running '& echo PWNED>marker.txt & rem' as live cmd.exe syntax - verified
-# against the real custom.restore() template. Rejecting '%'/'!' unconditionally means a legitimate percent-encoded
-# value (for example a SAS-signed storage blob URI) will now be rejected by this sink; there is no reliable escape
-# for '%'/'!' on a 'cmd /c' line (a leading '^' is preserved as a literal caret and corrupts the value), so the only
-# fully safe long-term fix is to stop building a cmd.exe command string at all (see ICM-558-FIX-SPEC.md section 8).
+# Characters that are never safe in a token on a Windows 'cmd /c' line, regardless of call
+# site. cmd.exe's outer parser toggles in-quote state on every literal '"' with no
+# backslash-escape support, so a quote cannot be escaped and must be rejected outright.
+# '%'/'!' are also rejected: cmd.exe expands '%VAR%'/'!VAR!' while parsing the already-
+# quoted line, which can synthesize a '"' at runtime from a value with none (e.g.
+# '%CMDCMDLINE:~10,1%' - see ICM-558). ASCII control characters are rejected for the same
+# reason a quote is. This is a sibling of MSRC 115198/VULN-185362, which only hardened
+# tag values; the check now applies to every _call_az_command call site.
 def _is_unsafe_cmd_exe_value(value):
     return (
         '"' in value
@@ -133,36 +117,14 @@ def _is_unsafe_cmd_exe_value(value):
 
 def _validate_token_for_cmd_exe(token):
     """
-    Reject a single command-line token that cannot be safely carried through the
-    'cmd /s /c "..."' invocation used on Windows. Raises InvalidArgumentValueError if the
-    token contains a double quote, a percent sign, an exclamation mark, or an ASCII
-    control character; returns None otherwise. The raw token is deliberately omitted from
-    the exception message, since a token can legitimately carry a secret (for example a
-    repair password) that was never added to secure_params by the caller.
+    Reject a command-line token that is unsafe on a Windows 'cmd /s /c "..."' line (see
+    _is_unsafe_cmd_exe_value). Raises InvalidArgumentValueError; omits the token from the
+    message since it may carry a secret (e.g. a password) not listed in secure_params.
 
-    Example of a value this rejects (the actual ICM-558 exploit, reproduced from the
-    'az vm update' command built by custom.py's restore() at the
-    storageProfile.osDisk.vhd.uri attach-back-to-source-VM call site, using a
-    disk_uri read from an untrusted/compromised source VM):
-
-        attach_unmanaged_command = (
-            'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"'
-            .format(g=resource_group_name, n=vm_name, uri=disk_uri)
-        )
-        # where disk_uri == 'https://pwned.blob.core.windows.net/x\\" & calc.exe & rem'
-
-    shlex.split(attach_unmanaged_command) tokenizes the --set argument to:
-
-        'storageProfile.osDisk.vhd.uri=https://pwned.blob.core.windows.net/x" & calc.exe & rem'
-
-    which contains a literal '"'. This function raises InvalidArgumentValueError on that
-    token before _call_az_command ever builds the final cmd.exe command line, preventing
-    '& calc.exe & rem' from being parsed as live cmd.exe syntax.
-
-    A second, more subtle example this also rejects (a disk_uri containing no literal
-    '"' at all, bypassing a quote-only check): 'X%CMDCMDLINE:~10,1% & calc.exe & rem'.
-    cmd.exe expands '%CMDCMDLINE:~10,1%' to a literal '"' at runtime - see the module-level
-    comment above _is_unsafe_cmd_exe_value for why offset 10 is attacker-predictable.
+    Example (ICM-558): a storageProfile.osDisk.vhd.uri of
+    'https://pwned.blob.core.windows.net/x\\" & calc.exe & rem' tokenizes to a value
+    containing a literal '"', which would otherwise close cmd.exe's quoted argument early
+    and run '& calc.exe & rem' as live syntax.
     """
     if _is_unsafe_cmd_exe_value(token):
         raise InvalidArgumentValueError(
@@ -174,22 +136,8 @@ def _validate_token_for_cmd_exe(token):
 
 def _validate_tags_for_command(merged_tags):
     """
-    Reject tag keys and values that contain characters which are unsafe to interpolate
-    into the 'az' command string. Raises InvalidArgumentValueError on the first offending
-    key or value; returns None when every tag is safe.
-
-    Example of a value this rejects (the MSRC 115198 exploit payload, taken from an
-    untrusted source VM tag copied via --copy-tags):
-
-        _validate_tags_for_command({'owner': 'ok&echo PWNED>pwned.txt&rem'})
-
-    does NOT raise ('&' and '>' survive as literal text once quoted by _quote_cmd_arg),
-    but
-
-        _validate_tags_for_command({'owner': 'env=%USERNAME%'})
-
-    DOES raise, because '%USERNAME%' would otherwise be expanded by cmd.exe to the
-    operator's local username even inside double quotes.
+    Reject tag keys/values unsafe to interpolate into the 'az' command string (see
+    _is_unsafe_cmd_exe_value). Raises InvalidArgumentValueError on the first offender.
     """
     for tag_key, tag_value in merged_tags.items():
         for tag_field in (str(tag_key), str(tag_value)):
@@ -202,18 +150,12 @@ def _validate_tags_for_command(merged_tags):
 
 def _validate_command_for_cmd_exe(command_string):
     """
-    Tokenize command_string exactly as _call_az_command will, and - on Windows only -
-    run every token through _validate_token_for_cmd_exe. Raises InvalidArgumentValueError
-    on the first unsafe token; otherwise returns None without running anything.
+    Tokenize command_string like _call_az_command does and, on Windows only, validate
+    every token via _validate_token_for_cmd_exe without running anything.
 
-    Intended for callers that need to pre-flight-check a LATER command before executing
-    an EARLIER, hard-to-reverse one. For example, custom.py's restore() detaches a
-    repaired disk from the repair VM, then attaches it to the source VM; if the attach
-    command's tokens are only validated when _call_az_command actually runs it, a
-    rejected token leaves the disk detached with no automatic reattachment, and a retry
-    of 'az vm repair restore' then fails the attached-data-disk checks in
-    _validators.py. Calling this first lets restore() bail out before the detach ever
-    runs.
+    Lets a caller pre-flight-check a later command before an earlier, hard-to-reverse
+    step: custom.py's restore() validates the attach command before detaching the
+    repaired disk, so a rejected token can't leave it detached with no reattachment.
     """
     if os.name != 'nt':
         return
@@ -242,35 +184,29 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
                 command_string = command_string.replace(param, '********')
     logger.debug("Calling: %s", command_string)
 
-    # On Windows, 'az' resolves to a batch file (az.cmd) so the call must be launched
-    # through cmd.exe. Handing the tokenized list to subprocess would let cmd.exe
-    # re-interpret shell metacharacters: subprocess.list2cmdline only quotes tokens that
-    # contain whitespace, so a token such as 'env=ok&echo' would reach cmd.exe unquoted
-    # and the '&' would be parsed as a command separator. To prevent command injection
-    # from untrusted interpolated values (for example source VM tags), build the command
-    # line explicitly and wrap every argument in double quotes so cmd.exe treats
-    # metacharacters as literal text.
+    # On Windows, 'az' resolves to a batch file, so the call must go through cmd.exe.
+    # Handing subprocess a token list isn't safe: list2cmdline only quotes tokens with
+    # whitespace, so a metacharacter like '&' in an untrusted value (e.g. a tag) would
+    # reach cmd.exe unquoted and be parsed as a command separator. Build the command line
+    # explicitly instead, quoting every argument so metacharacters stay literal.
     #
-    # The 'az' token itself must stay unquoted. Quoting it makes cmd.exe treat it as a
-    # literal path instead of a PATH search, so '%~dp0' inside az.cmd no longer expands to
-    # the launcher directory, the bundled python.exe is not found, and every nested call
-    # fails with 'Failed to load python executable.' on stdout and an empty stderr. The
-    # first token is validated to be exactly 'az' above, so it never carries untrusted
-    # input and does not need quoting.
+    # 'az' itself must stay unquoted so '%~dp0' in az.cmd still expands to the launcher
+    # directory (quoting it breaks the bundled python.exe lookup). It's validated to be
+    # exactly 'az' above, so it carries no untrusted input.
     #
-    # The whole command is additionally wrapped in one outer pair of quotes and invoked
-    # with 'cmd /s /c "..."'. Without '/s', cmd.exe strips the first and last quote on the
-    # line (its documented /c behavior), which would unbalance the quoting around the final
-    # argument and re-expose metacharacters. With '/s' and a leading+trailing quote, cmd.exe
-    # strips exactly those outer quotes and parses the remainder verbatim, keeping every
-    # per-token quote balanced. See MSRC 115198 / VULN-185362.
+    # The whole line is wrapped in one outer quoted pair and run via 'cmd /s /c "..."':
+    # '/s' makes cmd.exe strip only those outer quotes instead of the first/last quote on
+    # the line, keeping every per-token quote balanced. See MSRC 115198 / VULN-185362.
     #
-    # Every token is additionally rejected outright if it contains a double quote or a
-    # control character, regardless of which call site it came from - see
-    # _validate_token_for_cmd_exe above and ICM-558.
+    # Every token is rejected outright if unsafe (quote/%/!/control char) - see
+    # _validate_token_for_cmd_exe and ICM-558. Validation runs against 'tokenized_command'
+    # (built before secure_params masking), not a re-split 'command_string': re-validating
+    # the masked copy would let an unsafe secret (e.g. a password with '%') pass as the
+    # harmless placeholder while the real, unmasked token still reached cmd.exe below.
     windows_os_name = 'nt'
     if os.name == windows_os_name:
-        _validate_command_for_cmd_exe(command_string)
+        for token in tokenized_command[1:]:
+            _validate_token_for_cmd_exe(token)
         quoted_arguments = ' '.join(_quote_cmd_arg(token) for token in tokenized_command[1:])
         quoted_command = ' '.join(part for part in (tokenized_command[0], quoted_arguments) if part)
         command_to_run = 'cmd /s /c "' + quoted_command + '"'

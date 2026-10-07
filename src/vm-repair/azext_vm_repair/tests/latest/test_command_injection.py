@@ -14,13 +14,21 @@ import os
 import shlex
 import subprocess
 import sys
+import unittest
 from unittest import mock
 
 import pytest
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
-from azext_vm_repair.repair_utils import _call_az_command, _quote_cmd_arg, _validate_tags_for_command
+from azext_vm_repair.custom import restore
+from azext_vm_repair.exceptions import AzCommandError
+from azext_vm_repair.repair_utils import (
+    _call_az_command,
+    _quote_cmd_arg,
+    _validate_tags_for_command,
+    _validate_token_for_cmd_exe,
+)
 
 
 class _FakeProcess:
@@ -153,7 +161,6 @@ def test_malicious_tag_is_neutralized_end_to_end(mock_popen):
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
 def test_call_az_command_rejects_non_az_command(mock_popen):
-    from azext_vm_repair.exceptions import AzCommandError
     with pytest.raises(AzCommandError):
         _call_az_command('notaz vm create')
     mock_popen.assert_not_called()
@@ -294,3 +301,216 @@ def test_validate_tags_error_message_names_offending_tag():
     message = str(exc_info.value)
     assert 'owner' in message
     assert 'bad%value' in message
+
+
+# ---------------------------------------------------------------------------
+# ICM-558: command injection via 'storageProfile.osDisk.vhd.uri'
+#
+# Sibling of the tag-based injection above (MSRC 115198): same sink
+# (_call_az_command on Windows), different untrusted ARM field. A principal with
+# write access to the source VM can set osDisk.vhd.uri to a value later
+# interpolated into custom.py's restore():
+#   az vm update --set storageProfile.osDisk.vhd.uri="{uri}"
+#
+# Root cause 1: a backslash-quote in the value survives _quote_cmd_arg's re-quoting,
+# but cmd.exe's outer 'cmd /s /c "..."' parser doesn't honor backslash-escaped
+# quotes, so it closes the quoted region early and runs whatever follows as live
+# cmd.exe syntax.
+# Root cause 2 (found on review): cmd.exe also expands '%VAR%'/'!VAR!' while
+# parsing, which can synthesize a '"' at runtime from a value with none, e.g.
+# '%CMDCMDLINE:~10,1%' (offset 10 = length of the constant 'cmd /s /c "' prefix).
+#
+# Fix: _validate_token_for_cmd_exe rejects '"', '%', '!', and control chars on
+# every token in _call_az_command's Windows branch - covers all call sites, not
+# just osDisk.vhd.uri. See ICM-558-FIX-SPEC.md.
+# ---------------------------------------------------------------------------
+
+# Malicious osDisk.vhd.uri: backslash-quote closes cmd.exe's quoted region early.
+MALICIOUS_DISK_URI = r'https://pwned.blob.core.windows.net/x\" & calc.exe & rem'
+
+# No literal quote; relies on cmd.exe expanding '%CMDCMDLINE:~10,1%' to '"' instead.
+EXPANSION_DISK_URI = r'X%CMDCMDLINE:~10,1% & calc.exe & rem'
+
+# The vulnerable template from custom.py's restore() (unmanaged-disk branch).
+RESTORE_COMMAND_TEMPLATE = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"'
+
+
+@pytest.mark.parametrize('malicious_disk_uri', [MALICIOUS_DISK_URI, EXPANSION_DISK_URI])
+def test_malicious_osdisk_uri_token_is_rejected(malicious_disk_uri):
+    """
+    Covers both the literal-quote and expansion-based exploits. Token must be
+    extracted via shlex.split (same as _call_az_command), not raw string
+    splitting, or the expansion case would accidentally retest quote-rejection.
+    """
+    command = RESTORE_COMMAND_TEMPLATE.format(g='rg', n='vm', uri=malicious_disk_uri)
+    malicious_token = shlex.split(command)[-1]
+
+    with pytest.raises(InvalidArgumentValueError):
+        _validate_token_for_cmd_exe(malicious_token)
+
+
+def test_rejection_error_does_not_leak_the_raw_token():
+    """A token may carry a secret not listed in secure_params, so it must not be echoed."""
+    secret_token = 'repair-******" & calc.exe & rem'
+
+    with pytest.raises(InvalidArgumentValueError) as exc_info:
+        _validate_token_for_cmd_exe(secret_token)
+
+    assert 'hunter2' not in str(exc_info.value)
+
+
+@pytest.mark.parametrize('malicious_disk_uri', [MALICIOUS_DISK_URI, EXPANSION_DISK_URI])
+@pytest.mark.skipif(os.name != 'nt', reason='cmd.exe quoting is Windows-specific')
+def test_osdisk_uri_injection_is_blocked_end_to_end(tmp_path, monkeypatch, malicious_disk_uri):
+    """End-to-end through the real _call_az_command: must raise before cmd.exe runs, no marker file."""
+    monkeypatch.chdir(tmp_path)
+    marker = tmp_path / 'ICM_558_INJECTED.txt'
+    command = RESTORE_COMMAND_TEMPLATE.format(
+        g='rg', n='vm', uri=malicious_disk_uri.replace('calc.exe', 'echo PWNED>{} & rem'.format(marker.name)))
+
+    with pytest.raises((InvalidArgumentValueError, AzCommandError)) as exc_info:
+        _call_az_command(command)
+
+    assert isinstance(exc_info.value, InvalidArgumentValueError), (
+        'Expected the sink-level guard to reject the token, not a failed az invocation.')
+    assert not marker.exists(), 'ICM-558 reproduced: command injection via osDisk.vhd.uri.'
+
+
+def test_unsafe_secure_param_is_rejected_without_leaking_it(monkeypatch):
+    """
+    Regression for a masking-order bug: _call_az_command used to validate the
+    secure_params-MASKED command string, while the real command used the
+    unmasked tokens built before masking. An unsafe secret (e.g. a password with
+    '%') validated as the harmless placeholder and still reached cmd.exe.
+    """
+    from azext_vm_repair import repair_utils
+
+    def _fail_if_called(*_args, **_kwargs):
+        raise AssertionError('subprocess.Popen must not be called for an unsafe secure_param')
+
+    monkeypatch.setattr(repair_utils.os, 'name', 'nt')
+    monkeypatch.setattr(repair_utils.subprocess, 'Popen', _fail_if_called)
+
+    unsafe_password = 'hunter2%CMDCMDLINE:~10,1% & calc.exe & rem'
+    command = 'az vm repair create -g rg -n vm --repair-password "{pwd}"'.format(pwd=unsafe_password)
+
+    with pytest.raises(InvalidArgumentValueError) as exc_info:
+        _call_az_command(command, secure_params=[unsafe_password])
+
+    assert 'hunter2' not in str(exc_info.value)
+
+
+def test_osdisk_uri_injection_is_blocked_before_any_process_is_spawned(monkeypatch):
+    """Portable (non-Windows) check that the Windows validation path can't silently regress."""
+    from azext_vm_repair import repair_utils
+
+    def _fail_if_called(*_args, **_kwargs):
+        raise AssertionError('subprocess.Popen must not be called for a rejected token')
+
+    monkeypatch.setattr(repair_utils.os, 'name', 'nt')
+    monkeypatch.setattr(repair_utils.subprocess, 'Popen', _fail_if_called)
+
+    command = RESTORE_COMMAND_TEMPLATE.format(g='rg', n='vm', uri=MALICIOUS_DISK_URI)
+
+    with pytest.raises(InvalidArgumentValueError):
+        _call_az_command(command)
+
+
+# ---------------------------------------------------------------------------
+# ICM-558: disk-stranding regression tests for custom.py's restore()
+#
+# restore() validates the attach command before detaching the repaired disk, so a
+# rejected attach can't leave it detached with no reattachment. These tests drive
+# restore() end-to-end, since restore() catches the validation error internally
+# rather than propagating it.
+# ---------------------------------------------------------------------------
+
+RESTORE_REPAIR_VM_ID = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/repair-rg/providers/Microsoft.Compute/virtualMachines/repair-vm'
+
+# Contains no literal double quote, but '%' alone is enough to be rejected by the unified
+# cmd.exe guard (see repair_utils._is_unsafe_cmd_exe_value).
+UNSAFE_ATTACH_VALUE = 'evil%CMDCMDLINE:~10,1% & calc.exe & rem'
+
+
+class FakeCommandHelper:
+    """Stands in for command_helper so the tests do not emit telemetry or drive a progress controller."""
+
+    def __init__(self, logger, cmd, command_name):
+        self.message = ''
+        self.error_message = ''
+        self.error_stack_trace = ''
+        self.status = ''
+        self.return_dict = {}
+
+    def set_status_success(self):
+        self.status = 'SUCCESS'
+
+    def set_status_error(self):
+        self.status = 'ERROR'
+
+    def is_status_success(self):
+        return self.status == 'SUCCESS'
+
+    def init_return_dict(self):
+        self.return_dict = {'status': self.status, 'message': self.message}
+        if not self.is_status_success():
+            self.return_dict['error_message'] = self.error_message
+        return self.return_dict
+
+
+@mock.patch('azext_vm_repair.custom.command_helper', FakeCommandHelper)
+class ManagedDiskAttachValidationTest(unittest.TestCase):
+    """Managed-disk branch: an unsafe disk_id must be rejected before detach."""
+
+    def _source_vm(self):
+        return {'storageProfile': {'osDisk': {'name': 'source-osdisk', 'managedDisk': {}}}}
+
+    def _restore(self):
+        with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
+                mock.patch('azext_vm_repair.custom.get_vm_by_aaz', return_value=self._source_vm()), \
+                mock.patch('azext_vm_repair.custom._uses_managed_disk', return_value=True), \
+                mock.patch('azext_vm_repair.custom._fetch_disk_info', return_value=(None, None, None, None, UNSAFE_ATTACH_VALUE)), \
+                mock.patch('azext_vm_repair.custom._call_az_command') as mock_az, \
+                mock.patch('azext_vm_repair.custom._clean_up_resources') as mock_clean_up:
+            result = restore(mock.MagicMock(), 'source-vm', 'source-rg', disk_name='fixed-disk', repair_vm_id=RESTORE_REPAIR_VM_ID)
+        return result, mock_az, mock_clean_up
+
+    def test_unsafe_attach_value_blocks_before_detach(self):
+        result, mock_az, mock_clean_up = self._restore()
+
+        self.assertEqual(result['status'], 'ERROR')
+        # Disk must stay attached to the repair VM when the attach command is rejected.
+        mock_az.assert_not_called()
+        mock_clean_up.assert_not_called()
+
+
+@mock.patch('azext_vm_repair.custom.command_helper', FakeCommandHelper)
+class UnmanagedDiskAttachValidationTest(unittest.TestCase):
+    """Unmanaged-disk branch: an unsafe data-disk vhd URI must be rejected before detach."""
+
+    def _source_vm(self):
+        return {'storageProfile': {'osDisk': {'vhd': {'uri': 'https://clean.blob.core.windows.net/source'}}}}
+
+    def _repair_vm(self):
+        return {'storageProfile': {'dataDisks': [{'name': 'fixed-disk', 'vhd': {'uri': UNSAFE_ATTACH_VALUE}}]}}
+
+    def _get_vm_by_aaz_side_effect(self, _cmd, resource_group_name, _vm_name, *_args, **_kwargs):
+        if resource_group_name == 'repair-rg':
+            return self._repair_vm()
+        return self._source_vm()
+
+    def _restore(self):
+        with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
+                mock.patch('azext_vm_repair.custom.get_vm_by_aaz', side_effect=self._get_vm_by_aaz_side_effect), \
+                mock.patch('azext_vm_repair.custom._uses_managed_disk', return_value=False), \
+                mock.patch('azext_vm_repair.custom._call_az_command') as mock_az, \
+                mock.patch('azext_vm_repair.custom._clean_up_resources') as mock_clean_up:
+            result = restore(mock.MagicMock(), 'source-vm', 'source-rg', disk_name='fixed-disk', repair_vm_id=RESTORE_REPAIR_VM_ID)
+        return result, mock_az, mock_clean_up
+
+    def test_unsafe_attach_value_blocks_before_detach(self):
+        result, mock_az, mock_clean_up = self._restore()
+
+        self.assertEqual(result['status'], 'ERROR')
+        mock_az.assert_not_called()
+        mock_clean_up.assert_not_called()

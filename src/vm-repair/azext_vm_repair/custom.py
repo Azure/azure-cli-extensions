@@ -644,10 +644,8 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
                 attach_fixed_command = 'az vm update -g {g} -n {n} --os-disk {disk}' \
                     .format(g=resource_group_name, n=vm_name, disk=disk_id)
 
-                # Validate the attach command BEFORE detaching: if a later-rejected token
-                # (e.g. one containing '%') were only discovered when attach actually runs,
-                # the disk would already be detached from the repair VM with no automatic
-                # reattachment. See ICM-558 and _validate_command_for_cmd_exe's docstring.
+                # Validate before detaching, so a rejected attach command (e.g. '%' in
+                # disk_id) can't strand the disk detached from the repair VM. See ICM-558.
                 _validate_command_for_cmd_exe(attach_fixed_command)
 
                 # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
@@ -676,10 +674,8 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
                 attach_unmanaged_command = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"' \
                     .format(g=resource_group_name, n=vm_name, uri=disk_uri)
 
-                # Validate the attach command BEFORE detaching: if a later-rejected token
-                # (e.g. one containing '%') were only discovered when attach actually runs,
-                # the disk would already be detached from the repair VM with no automatic
-                # reattachment. See ICM-558 and _validate_command_for_cmd_exe's docstring.
+                # Validate before detaching, so a rejected attach command (e.g. '%' in
+                # disk_uri) can't strand the disk detached from the repair VM. See ICM-558.
                 _validate_command_for_cmd_exe(attach_unmanaged_command)
 
                 # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
