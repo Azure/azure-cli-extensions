@@ -829,7 +829,7 @@ helps['cosmosdb copy create'] = """
             database: Database name.
             collection: Collection name.
       - name: --dest-mongo-vcore
-        short-summary: "Destination Mongo(vCore) collection"
+        short-summary: "Destination Azure DocumentDB collection"
         long-summary: |
             Usage: --dest-mongo-vcore database=XX collection=XX connectionStringKeyVaultUri=XX'
             database: Database name.
@@ -849,7 +849,7 @@ helps['cosmosdb copy create'] = """
       - name: Copy Azure Cosmos DB API for MongoDB collection
         text: |-
           az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --dest-account "acc1" --src-mongo database=d1 collection=c1 --dest-mongo database=d2 collection=c2
-      - name: Copy Azure Cosmos DB API from MongoDB(RU) collection to Mongo(vCore) collection
+      - name: Copy an Azure Cosmos DB for MongoDB (RU) collection to an Azure DocumentDB collection
         text: |-
           az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --src-mongo database=d1 collection=c1 --dest-mongo-vcore database=d2 collection=c2 connectionStringKeyVaultUri=<link_to_Azure_KeyVault_secret>
 """
