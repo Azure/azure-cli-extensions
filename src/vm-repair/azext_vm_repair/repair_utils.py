@@ -200,6 +200,28 @@ def _validate_tags_for_command(merged_tags):
                 )
 
 
+def _validate_command_for_cmd_exe(command_string):
+    """
+    Tokenize command_string exactly as _call_az_command will, and - on Windows only -
+    run every token through _validate_token_for_cmd_exe. Raises InvalidArgumentValueError
+    on the first unsafe token; otherwise returns None without running anything.
+
+    Intended for callers that need to pre-flight-check a LATER command before executing
+    an EARLIER, hard-to-reverse one. For example, custom.py's restore() detaches a
+    repaired disk from the repair VM, then attaches it to the source VM; if the attach
+    command's tokens are only validated when _call_az_command actually runs it, a
+    rejected token leaves the disk detached with no automatic reattachment, and a retry
+    of 'az vm repair restore' then fails the attached-data-disk checks in
+    _validators.py. Calling this first lets restore() bail out before the detach ever
+    runs.
+    """
+    if os.name != 'nt':
+        return
+    tokenized_command = shlex.split(command_string)
+    for token in tokenized_command[1:]:
+        _validate_token_for_cmd_exe(token)
+
+
 def _call_az_command(command_string, run_async=False, secure_params=None):
     """
     Uses subprocess to run a command string. To hide sensitive parameters from logs, add the
@@ -248,8 +270,7 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     # _validate_token_for_cmd_exe above and ICM-558.
     windows_os_name = 'nt'
     if os.name == windows_os_name:
-        for token in tokenized_command[1:]:
-            _validate_token_for_cmd_exe(token)
+        _validate_command_for_cmd_exe(command_string)
         quoted_arguments = ' '.join(_quote_cmd_arg(token) for token in tokenized_command[1:])
         quoted_command = ' '.join(part for part in (tokenized_command[0], quoted_arguments) if part)
         command_to_run = 'cmd /s /c "' + quoted_command + '"'

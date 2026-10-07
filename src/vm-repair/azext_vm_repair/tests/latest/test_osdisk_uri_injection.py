@@ -42,6 +42,7 @@
 # osDisk.vhd.uri.
 
 import os
+import shlex
 
 import pytest
 
@@ -71,9 +72,20 @@ def test_malicious_osdisk_uri_token_is_rejected(malicious_disk_uri):
     must be rejected by the sink-level guard, with no dependency on cmd.exe or a real
     'az' CLI being present. Covers both the literal-quote exploit and the subtler
     cmd.exe expansion-based exploit that synthesizes a quote at runtime.
+
+    Tokenizing via shlex.split (exactly as _call_az_command does) is essential here:
+    RESTORE_COMMAND_TEMPLATE wraps '{uri}' in literal double quotes as part of the
+    template text, which shlex.split consumes as quoting syntax and strips from the
+    resulting token (except for an embedded, backslash-escaped quote, which survives -
+    that survival is the MALICIOUS_DISK_URI exploit). Extracting the token by any other
+    means (e.g. string-splitting the raw command text) would leave those template
+    quotes in place and could make a test pass for the wrong reason: for
+    EXPANSION_DISK_URI specifically, the raw text still contains the template's own
+    '"' characters, so a naive extraction would exercise quote-rejection again instead
+    of proving that '%' alone (with no literal quote) is also rejected.
     """
     command = RESTORE_COMMAND_TEMPLATE.format(g='rg', n='vm', uri=malicious_disk_uri)
-    malicious_token = command.split('--set ', 1)[1]
+    malicious_token = shlex.split(command)[-1]
 
     with pytest.raises(InvalidArgumentValueError):
         _validate_token_for_cmd_exe(malicious_token)
