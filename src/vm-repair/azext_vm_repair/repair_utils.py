@@ -98,23 +98,85 @@ def _quote_cmd_arg(arg):
     return result
 
 
-# Characters that cannot be safely carried through a Windows 'cmd /c' command line when
-# interpolated from an untrusted tag value (for example a source VM tag copied via
-# --copy-tags). Double quotes and ASCII control characters break argument tokenization,
-# and '%' / '!' are expanded by cmd.exe as environment / delayed-expansion variables even
-# inside double quotes -- '%' in particular cannot be reliably escaped on a 'cmd /c' line
-# (a leading '^' is preserved as a literal caret and corrupts the value). Such characters
-# are therefore rejected at the boundary rather than escaped. See MSRC 115198 / VULN-185362.
+# Characters that cannot be safely carried through a Windows 'cmd /c' command line in ANY token, regardless of which
+# call site or which value (ARM-sourced or otherwise) it comes from. cmd.exe's outer-line parser toggles its in-quote
+# state on every literal '"' it scans and has no concept of a preceding backslash as an escape for it, unlike the
+# CommandLineToArgvW convention _quote_cmd_arg uses for the *child* process's argv parser. There is therefore no way
+# to safely escape a literal double quote for this sink; it must be rejected outright. ASCII control characters are
+# rejected for the same reason. See ICM-558 (sibling of MSRC 115198 / VULN-185362): the July 2026 fix for 115198 only
+# validated tag values (_validate_tags_for_command below); it left every other _call_az_command call site - including
+# storageProfile.osDisk.vhd.uri-derived values - unguarded, which is why a structurally identical injection was found
+# via a different ARM field. Enforcing the invariant once protects every current and future call site without
+# requiring a bespoke validator per untrusted field.
+#
+# _validate_token_for_cmd_exe (the general sink guard in _call_az_command) and _validate_tags_for_command (an
+# earlier, tag-specific check with a clearer error message) share this single core check rather than duplicating the
+# quote/control-character logic. Tags additionally reject '%' and '!' via extra_unsafe_chars, because cmd.exe expands
+# those as environment / delayed-expansion variables even inside double quotes and they cannot be reliably escaped on
+# a 'cmd /c' line (a leading '^' is preserved as a literal caret and corrupts the value). The general check does NOT
+# reject '%'/'!' by default, because legitimate values reaching other call sites - for example percent-encoded
+# segments of a storage blob URI - legitimately contain '%'.
+def _is_unsafe_cmd_exe_value(value, extra_unsafe_chars=()):
+    return (
+        '"' in value
+        or any(unsafe_char in value for unsafe_char in extra_unsafe_chars)
+        or any(ord(ch) < 32 or ord(ch) == 127 for ch in value)
+    )
+
+
+def _validate_token_for_cmd_exe(token):
+    """
+    Reject a single command-line token that cannot be safely carried through the
+    'cmd /s /c "..."' invocation used on Windows. Raises InvalidArgumentValueError if the
+    token contains a double quote or an ASCII control character; returns None otherwise.
+
+    Example of a value this rejects (the actual ICM-558 exploit, reproduced from the
+    'az vm update' command built by custom.py's restore() at the
+    storageProfile.osDisk.vhd.uri attach-back-to-source-VM call site, using a
+    disk_uri read from an untrusted/compromised source VM):
+
+        attach_unmanaged_command = (
+            'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"'
+            .format(g=resource_group_name, n=vm_name, uri=disk_uri)
+        )
+        # where disk_uri == 'https://pwned.blob.core.windows.net/x\\" & calc.exe & rem'
+
+    shlex.split(attach_unmanaged_command) tokenizes the --set argument to:
+
+        'storageProfile.osDisk.vhd.uri=https://pwned.blob.core.windows.net/x" & calc.exe & rem'
+
+    which contains a literal '"'. This function raises InvalidArgumentValueError on that
+    token before _call_az_command ever builds the final cmd.exe command line, preventing
+    '& calc.exe & rem' from being parsed as live cmd.exe syntax.
+    """
+    if _is_unsafe_cmd_exe_value(token):
+        raise InvalidArgumentValueError(
+            'A value being passed to a nested az command contains a double quote or '
+            f'control character, which cannot be safely used on Windows: {token}')
+
+
 def _validate_tags_for_command(merged_tags):
     """
     Reject tag keys and values that contain characters which are unsafe to interpolate
     into the 'az' command string. Raises InvalidArgumentValueError on the first offending
     key or value; returns None when every tag is safe.
+
+    Example of a value this rejects (the MSRC 115198 exploit payload, taken from an
+    untrusted source VM tag copied via --copy-tags):
+
+        _validate_tags_for_command({'owner': 'ok&echo PWNED>pwned.txt&rem'})
+
+    does NOT raise ('&' and '>' survive as literal text once quoted by _quote_cmd_arg),
+    but
+
+        _validate_tags_for_command({'owner': 'env=%USERNAME%'})
+
+    DOES raise, because '%USERNAME%' would otherwise be expanded by cmd.exe to the
+    operator's local username even inside double quotes.
     """
     for tag_key, tag_value in merged_tags.items():
         for tag_field in (str(tag_key), str(tag_value)):
-            if any(unsafe_char in tag_field for unsafe_char in ('"', '%', '!')) or \
-                    any(ord(ch) < 32 or ord(ch) == 127 for ch in tag_field):
+            if _is_unsafe_cmd_exe_value(tag_field, extra_unsafe_chars=('%', '!')):
                 raise InvalidArgumentValueError(
                     f'Tag keys and values must not contain double quotes, percent signs, '
                     f'exclamation marks, or control characters. Offending tag: {tag_key}={tag_value}'
@@ -163,8 +225,14 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     # argument and re-expose metacharacters. With '/s' and a leading+trailing quote, cmd.exe
     # strips exactly those outer quotes and parses the remainder verbatim, keeping every
     # per-token quote balanced. See MSRC 115198 / VULN-185362.
+    #
+    # Every token is additionally rejected outright if it contains a double quote or a
+    # control character, regardless of which call site it came from - see
+    # _validate_token_for_cmd_exe above and ICM-558.
     windows_os_name = 'nt'
     if os.name == windows_os_name:
+        for token in tokenized_command[1:]:
+            _validate_token_for_cmd_exe(token)
         quoted_arguments = ' '.join(_quote_cmd_arg(token) for token in tokenized_command[1:])
         quoted_command = ' '.join(part for part in (tokenized_command[0], quoted_arguments) if part)
         command_to_run = 'cmd /s /c "' + quoted_command + '"'
