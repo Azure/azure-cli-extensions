@@ -1477,6 +1477,8 @@ def load_arguments(self, _):
             help='The resource ID of the prepared image specification to use for provisioning nodes in the default '
                  'node pool.'
         )
+        # upgrade gate
+        c.argument("enable_upgrade_gate", action="store_true", is_preview=True)
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1583,6 +1585,9 @@ def load_arguments(self, _):
             validator=validate_force_upgrade_disable_and_enable_parameters,
         )
         c.argument("upgrade_override_until", is_preview=True)
+        # upgrade gate
+        c.argument("enable_upgrade_gate", action="store_true", is_preview=True)
+        c.argument("disable_upgrade_gate", action="store_true", is_preview=True)
         c.argument(
             "cluster_autoscaler_profile",
             nargs="+",
@@ -2570,6 +2575,9 @@ def load_arguments(self, _):
             validator=validate_prepared_image_specification_id,
             help='The resource ID of the prepared image specification to use for provisioning nodes in the node pool.'
         )
+        # upgrade gate
+        c.argument("enable_upgrade_gate", action="store_true", is_preview=True)
+        c.argument("disable_upgrade_gate", action="store_true", is_preview=True)
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -2722,6 +2730,9 @@ def load_arguments(self, _):
             validator=validate_prepared_image_specification_id,
             help='The resource ID of the prepared image specification to use for provisioning nodes in the node pool.'
         )
+        # upgrade gate
+        c.argument("enable_upgrade_gate", action="store_true", is_preview=True)
+        c.argument("disable_upgrade_gate", action="store_true", is_preview=True)
 
     with self.argument_context("aks nodepool upgrade") as c:
         # upgrade strategy
