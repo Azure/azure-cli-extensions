@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.4.6
+++++++
+Hardened nested ``az`` command invocation on Windows: any value interpolated into a command string is now rejected if it contains a double quote or a control character, instead of being passed through to the nested ``cmd.exe`` call. This closes a command-injection gap in the unmanaged-disk repair path (an untrusted, writable VM property could previously reach this sink unvalidated) and applies uniformly to every nested command built by the extension, not only the previously-hardened tag values.
+
 2.4.5
 ++++++
 Documenting the Windows Generation 2 NVMe boot-driver recovery now available through the ``win-enable-nvme-boot-driver`` run id. The README and command help show the read-only report, explicit repair, and rollback flow, including the detector signatures that require the operator to stop instead of modifying the offline disk. Linux recovery and Generation 1 conversion remain unavailable.
