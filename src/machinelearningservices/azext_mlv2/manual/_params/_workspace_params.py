@@ -157,7 +157,7 @@ def load_workspace_params(self):
         c.argument(
             "permanently_delete",
             options_list=["--permanently-delete", "-p"],
-            help="Workspaces are soft-deleted state by default to allow recovery of workspace data. Set this flag to override the soft-delete behavior and permanently delete your workspace.",  # pylint: disable=line-too-long
+            help="Workspaces are soft-deleted state by default to allow recovery of workspace data. Set this flag to override the soft-delete behavior and permanently delete your workspace. If the workspace is already in a soft-deleted state, this flag will purge it, which also unblocks creating a new workspace with the same name.",  # pylint: disable=line-too-long
         )
 
     with self.argument_context("ml workspace list-keys") as c:
