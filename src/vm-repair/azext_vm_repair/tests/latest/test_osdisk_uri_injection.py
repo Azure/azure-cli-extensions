@@ -24,10 +24,22 @@
 # whatever follows (e.g. '& calc.exe & rem') to cmd.exe as live command syntax, in the
 # ADMINISTRATOR's local cmd.exe session when they run the documented repair flow.
 #
+# A second root cause, found during review of the first fix: cmd.exe also expands
+# '%VAR%'/'!VAR!' while parsing the quoted command line, which can SYNTHESIZE a literal
+# '"' at runtime even when the raw value contains none. '%CMDCMDLINE%' - a built-in
+# pseudo-variable reflecting cmd.exe's own invocation text - combined with substring
+# syntax lets an attacker carve out the '"' that _call_az_command's constant
+# 'cmd /s /c "' prefix always places at a fixed, predictable offset (10), with no literal
+# quote ever appearing in the malicious value itself. Verified end-to-end against the
+# real (unmocked) _call_az_command: a storageProfile.osDisk.vhd.uri of
+#   'X%CMDCMDLINE:~10,1% & echo PWNED>marker.txt & rem'
+# passed a quote-only check and still achieved command injection.
+#
 # Fix (see ICM-558-FIX-SPEC.md): a single sink-level guard, _validate_token_for_cmd_exe,
 # is applied to every token on Windows inside _call_az_command, rejecting any value that
-# contains a literal double quote (or an ASCII control character) before a command line
-# is ever built. This covers all ~25 call sites in custom.py, not just osDisk.vhd.uri.
+# contains a literal double quote, '%', '!', or an ASCII control character before a
+# command line is ever built. This covers all ~25 call sites in custom.py, not just
+# osDisk.vhd.uri.
 
 import os
 
@@ -41,25 +53,49 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 # that closes cmd.exe's outer quoted region early, followed by a live command.
 MALICIOUS_DISK_URI = r'https://pwned.blob.core.windows.net/x\" & calc.exe & rem'
 
+# A second malicious osDisk.vhd.uri value containing NO literal double quote at all: it
+# relies on cmd.exe expanding '%CMDCMDLINE:~10,1%' to a '"' at runtime instead. Offset 10
+# is the position, immediately after the constant 'cmd /s /c ' prefix, of the outer quote
+# _call_az_command always emits - so this offset is attacker-predictable, not guessed.
+EXPANSION_DISK_URI = r'X%CMDCMDLINE:~10,1% & calc.exe & rem'
+
 # The exact vulnerable template from custom.py's restore() (unmanaged-disk branch).
 RESTORE_COMMAND_TEMPLATE = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"'
 
 
-def test_malicious_osdisk_uri_token_is_rejected():
+@pytest.mark.parametrize('malicious_disk_uri', [MALICIOUS_DISK_URI, EXPANSION_DISK_URI])
+def test_malicious_osdisk_uri_token_is_rejected(malicious_disk_uri):
     """
     Unit-level regression test: the token that shlex.split() produces for the --set
-    argument once MALICIOUS_DISK_URI is interpolated into RESTORE_COMMAND_TEMPLATE must
-    be rejected by the sink-level guard, with no dependency on cmd.exe or a real 'az'
-    CLI being present.
+    argument once a malicious disk_uri is interpolated into RESTORE_COMMAND_TEMPLATE
+    must be rejected by the sink-level guard, with no dependency on cmd.exe or a real
+    'az' CLI being present. Covers both the literal-quote exploit and the subtler
+    cmd.exe expansion-based exploit that synthesizes a quote at runtime.
     """
-    malicious_token = 'storageProfile.osDisk.vhd.uri=https://pwned.blob.core.windows.net/x" & calc.exe & rem'
+    command = RESTORE_COMMAND_TEMPLATE.format(g='rg', n='vm', uri=malicious_disk_uri)
+    malicious_token = command.split('--set ', 1)[1]
 
     with pytest.raises(InvalidArgumentValueError):
         _validate_token_for_cmd_exe(malicious_token)
 
 
+def test_rejection_error_does_not_leak_the_raw_token():
+    """
+    The raw token must never appear in the exception message: a token can legitimately
+    carry a secret (for example a repair password) that the caller never added to
+    _call_az_command's secure_params list, so the sink itself must not disclose it.
+    """
+    secret_token = 'repair-password=hunter2" & calc.exe & rem'
+
+    with pytest.raises(InvalidArgumentValueError) as exc_info:
+        _validate_token_for_cmd_exe(secret_token)
+
+    assert 'hunter2' not in str(exc_info.value)
+
+
+@pytest.mark.parametrize('malicious_disk_uri', [MALICIOUS_DISK_URI, EXPANSION_DISK_URI])
 @pytest.mark.skipif(os.name != 'nt', reason='cmd.exe quoting is Windows-specific')
-def test_osdisk_uri_injection_is_blocked_end_to_end(tmp_path, monkeypatch):
+def test_osdisk_uri_injection_is_blocked_end_to_end(tmp_path, monkeypatch, malicious_disk_uri):
     """
     End-to-end regression test through the REAL (unmocked) _call_az_command, using the
     exact vulnerable template from custom.restore(). Proves the fix, not just the
@@ -69,8 +105,8 @@ def test_osdisk_uri_injection_is_blocked_end_to_end(tmp_path, monkeypatch):
     """
     monkeypatch.chdir(tmp_path)
     marker = tmp_path / 'ICM_558_INJECTED.txt'
-    malicious_disk_uri = r'X\" & echo PWNED>{marker} & rem'.format(marker=marker.name)
-    command = RESTORE_COMMAND_TEMPLATE.format(g='rg', n='vm', uri=malicious_disk_uri)
+    command = RESTORE_COMMAND_TEMPLATE.format(
+        g='rg', n='vm', uri=malicious_disk_uri.replace('calc.exe', 'echo PWNED>{} & rem'.format(marker.name)))
 
     with pytest.raises((InvalidArgumentValueError, AzCommandError)) as exc_info:
         _call_az_command(command)
@@ -81,3 +117,26 @@ def test_osdisk_uri_injection_is_blocked_end_to_end(tmp_path, monkeypatch):
     assert not marker.exists(), (
         'ICM-558 reproduced: attacker-controlled storageProfile.osDisk.vhd.uri achieved '
         'command injection in the administrator\'s local cmd.exe session.')
+
+
+def test_osdisk_uri_injection_is_blocked_before_any_process_is_spawned(monkeypatch):
+    """
+    Portable regression test (runs on every OS, not just Windows): forces the Windows
+    code path via os.name and replaces subprocess.Popen with a stub that fails the test
+    if called. Guards against a regression where the per-token validation loop in
+    _call_az_command's Windows branch is accidentally removed or short-circuited - such
+    a regression would otherwise only be caught by the Windows-only end-to-end test
+    above, leaving it invisible on non-Windows CI runs.
+    """
+    from azext_vm_repair import repair_utils
+
+    def _fail_if_called(*_args, **_kwargs):
+        raise AssertionError('subprocess.Popen must not be called for a rejected token')
+
+    monkeypatch.setattr(repair_utils.os, 'name', 'nt')
+    monkeypatch.setattr(repair_utils.subprocess, 'Popen', _fail_if_called)
+
+    command = RESTORE_COMMAND_TEMPLATE.format(g='rg', n='vm', uri=MALICIOUS_DISK_URI)
+
+    with pytest.raises(InvalidArgumentValueError):
+        _call_az_command(command)

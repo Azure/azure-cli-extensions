@@ -109,17 +109,24 @@ def _quote_cmd_arg(arg):
 # via a different ARM field. Enforcing the invariant once protects every current and future call site without
 # requiring a bespoke validator per untrusted field.
 #
-# _validate_token_for_cmd_exe (the general sink guard in _call_az_command) and _validate_tags_for_command (an
-# earlier, tag-specific check with a clearer error message) share this single core check rather than duplicating the
-# quote/control-character logic. Tags additionally reject '%' and '!' via extra_unsafe_chars, because cmd.exe expands
-# those as environment / delayed-expansion variables even inside double quotes and they cannot be reliably escaped on
-# a 'cmd /c' line (a leading '^' is preserved as a literal caret and corrupts the value). The general check does NOT
-# reject '%'/'!' by default, because legitimate values reaching other call sites - for example percent-encoded
-# segments of a storage blob URI - legitimately contain '%'.
-def _is_unsafe_cmd_exe_value(value, extra_unsafe_chars=()):
+# '%' and '!' are rejected everywhere, not just in tags, because they let cmd.exe SYNTHESIZE a disallowed character
+# (including a literal '"') after this check has already run, which is a complete bypass of the quote check above:
+# cmd.exe expands '%VAR%' (and '!VAR!' when delayed expansion is enabled) while parsing the quoted command line, and
+# '%CMDCMDLINE%' - a built-in pseudo-variable that always reflects the exact text cmd.exe itself was launched with -
+# is guaranteed to contain a '"' because _call_az_command's own 'cmd /s /c "' prefix is exactly 10 characters, a
+# fixed and therefore attacker-predictable offset. Concretely, a storageProfile.osDisk.vhd.uri of
+#   X%CMDCMDLINE:~10,1% & echo PWNED>marker.txt & rem
+# contains no literal '"' and used to pass this check, but cmd.exe expands '%CMDCMDLINE:~10,1%' to '"' at runtime,
+# closing the quoted argument early and running '& echo PWNED>marker.txt & rem' as live cmd.exe syntax - verified
+# against the real custom.restore() template. Rejecting '%'/'!' unconditionally means a legitimate percent-encoded
+# value (for example a SAS-signed storage blob URI) will now be rejected by this sink; there is no reliable escape
+# for '%'/'!' on a 'cmd /c' line (a leading '^' is preserved as a literal caret and corrupts the value), so the only
+# fully safe long-term fix is to stop building a cmd.exe command string at all (see ICM-558-FIX-SPEC.md section 8).
+def _is_unsafe_cmd_exe_value(value):
     return (
         '"' in value
-        or any(unsafe_char in value for unsafe_char in extra_unsafe_chars)
+        or '%' in value
+        or '!' in value
         or any(ord(ch) < 32 or ord(ch) == 127 for ch in value)
     )
 
@@ -128,7 +135,10 @@ def _validate_token_for_cmd_exe(token):
     """
     Reject a single command-line token that cannot be safely carried through the
     'cmd /s /c "..."' invocation used on Windows. Raises InvalidArgumentValueError if the
-    token contains a double quote or an ASCII control character; returns None otherwise.
+    token contains a double quote, a percent sign, an exclamation mark, or an ASCII
+    control character; returns None otherwise. The raw token is deliberately omitted from
+    the exception message, since a token can legitimately carry a secret (for example a
+    repair password) that was never added to secure_params by the caller.
 
     Example of a value this rejects (the actual ICM-558 exploit, reproduced from the
     'az vm update' command built by custom.py's restore() at the
@@ -148,11 +158,18 @@ def _validate_token_for_cmd_exe(token):
     which contains a literal '"'. This function raises InvalidArgumentValueError on that
     token before _call_az_command ever builds the final cmd.exe command line, preventing
     '& calc.exe & rem' from being parsed as live cmd.exe syntax.
+
+    A second, more subtle example this also rejects (a disk_uri containing no literal
+    '"' at all, bypassing a quote-only check): 'X%CMDCMDLINE:~10,1% & calc.exe & rem'.
+    cmd.exe expands '%CMDCMDLINE:~10,1%' to a literal '"' at runtime - see the module-level
+    comment above _is_unsafe_cmd_exe_value for why offset 10 is attacker-predictable.
     """
     if _is_unsafe_cmd_exe_value(token):
         raise InvalidArgumentValueError(
-            'A value being passed to a nested az command contains a double quote or '
-            f'control character, which cannot be safely used on Windows: {token}')
+            'A value being passed to a nested az command contains a double quote, '
+            'percent sign, exclamation mark, or control character, which cannot be '
+            'safely used on Windows. The value has been omitted from this message '
+            'because it may contain sensitive data.')
 
 
 def _validate_tags_for_command(merged_tags):
@@ -176,7 +193,7 @@ def _validate_tags_for_command(merged_tags):
     """
     for tag_key, tag_value in merged_tags.items():
         for tag_field in (str(tag_key), str(tag_value)):
-            if _is_unsafe_cmd_exe_value(tag_field, extra_unsafe_chars=('%', '!')):
+            if _is_unsafe_cmd_exe_value(tag_field):
                 raise InvalidArgumentValueError(
                     f'Tag keys and values must not contain double quotes, percent signs, '
                     f'exclamation marks, or control characters. Offending tag: {tag_key}={tag_value}'
