@@ -148,6 +148,15 @@ class FleetManagedNamespaceProvisioningState(str, Enum, metaclass=CaseInsensitiv
     """The provisioning state of a fleet managed namespace being deleted."""
 
 
+class FleetMemberCredentialStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The credential retrieval status for a Fleet member."""
+
+    SUCCEEDED = "Succeeded"
+    """The credential request succeeded."""
+    FAILED = "Failed"
+    """The credential request failed."""
+
+
 class FleetMemberProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The provisioning state of the last accepted operation."""
 
@@ -222,6 +231,34 @@ class GateType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """An approval gate is completed by setting its state to be Completed."""
     SCHEDULED_START = "ScheduledStart"
     """A scheduled start gate is automatically completed when the scheduled time is reached."""
+
+
+class IdentityBindingLabelSelectorOperator(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """operator represents a key's relationship to a set of values. Valid operators are In, NotIn,
+    Exists and DoesNotExist.
+    """
+
+    IN = "In"
+    """The value of the key should be in the given list."""
+    NOT_IN = "NotIn"
+    """The value of the key should not be in the given list."""
+    EXISTS = "Exists"
+    """The value of the key should exist."""
+    DOES_NOT_EXIST = "DoesNotExist"
+    """The value of the key should not exist."""
+
+
+class IdentityBindingProfileProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The provisioning state of the identity binding profile resource."""
+
+    SUCCEEDED = "Succeeded"
+    """Resource has been created."""
+    FAILED = "Failed"
+    """Resource creation failed."""
+    CANCELED = "Canceled"
+    """Resource creation was canceled."""
+    APPLYING = "Applying"
+    """The identity binding profile is being applied to the selected fleet members."""
 
 
 class LabelSelectorOperator(str, Enum, metaclass=CaseInsensitiveEnumMeta):

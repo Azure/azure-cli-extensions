@@ -700,3 +700,99 @@ helps['fleet clustermeshprofile wait'] = """
         - name: Wait for the cluster mesh profile to be created.
           text: az fleet clustermeshprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --created
 """
+
+helps['fleet identitybindingprofile'] = """
+    type: group
+    short-summary: Commands to manage identity binding profiles.
+"""
+
+helps['fleet identitybindingprofile create'] = """
+    type: command
+    short-summary: Create or update an identity binding profile.
+    parameters:
+        - name: --member-selector --selector -s
+          type: string
+          short-summary: "Kubernetes-style label selector for selecting Fleet members, e.g. 'env=production'."
+        - name: --managed-identity-resource-id
+          type: string
+          short-summary: The resource ID of the managed identity to use.
+        - name: --allowed-subjects-from-file
+          type: string
+          short-summary: Path to a JSON file with the list of subjects authorized to use this identity binding for token exchange.
+          long-summary: |
+              The file must contain a JSON array (max 100 entries). Each entry has a required
+              'namespaceSelector' and an optional 'serviceAccountSelector', each a Kubernetes label
+              selector supporting 'matchLabels' (an array of "key=value" strings) and/or
+              'matchExpressions'. Use the built-in 'kubernetes.io/metadata.name' label to target
+              specific namespaces by name. When omitted, authorization falls back to
+              ClusterRole/ClusterRoleBinding evaluation on the member clusters.
+    examples:
+        - name: Create an identity binding profile for members labelled env=production.
+          text: |-
+              az fleet identitybindingprofile create -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile \\
+                --selector "env=production" \\
+                --managed-identity-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity"
+        - name: Create an identity binding profile restricted to specific subjects.
+          text: |-
+              az fleet identitybindingprofile create -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile \\
+                --selector "env=production" \\
+                --managed-identity-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity" \\
+                --allowed-subjects-from-file allowed-subjects.json
+"""
+
+helps['fleet identitybindingprofile show'] = """
+    type: command
+    short-summary: Get an identity binding profile.
+    examples:
+        - name: Show the details of an identity binding profile.
+          text: az fleet identitybindingprofile show -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile
+"""
+
+helps['fleet identitybindingprofile list'] = """
+    type: command
+    short-summary: List all identity binding profiles for a fleet.
+    examples:
+        - name: List the identity binding profiles of a fleet.
+          text: az fleet identitybindingprofile list -g MyFleetResourceGroup -f MyFleetName
+"""
+
+helps['fleet identitybindingprofile delete'] = """
+    type: command
+    short-summary: Delete an identity binding profile. The identity binding must be removed from all members before the profile can be deleted.
+    examples:
+        - name: Delete an identity binding profile.
+          text: az fleet identitybindingprofile delete -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile
+"""
+
+helps['fleet identitybindingprofile apply'] = """
+    type: command
+    short-summary: Apply the identity binding profile to selected fleet members.
+    examples:
+        - name: Apply an identity binding profile.
+          text: az fleet identitybindingprofile apply -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile
+        - name: Preview what changes would be made without actually applying.
+          text: az fleet identitybindingprofile apply -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile --what-if --output table
+"""
+
+helps['fleet identitybindingprofile list-members'] = """
+    type: command
+    short-summary: List fleet members for an identity binding profile.
+    long-summary: |
+        Without --selector, lists members the profile is currently applied to.
+        With --selector, lists members that would match the profile's label selector (i.e. candidates for the next apply).
+    examples:
+        - name: List members the profile is currently applied to.
+          text: az fleet identitybindingprofile list-members -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile
+        - name: List members that would match the profile's selector.
+          text: az fleet identitybindingprofile list-members -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile --selector
+"""
+
+helps['fleet identitybindingprofile wait'] = """
+    type: command
+    short-summary: Wait for an identity binding profile to reach a desired state.
+    examples:
+        - name: Wait for the identity binding profile to finish applying.
+          text: az fleet identitybindingprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile --custom "properties.provisioningState=='Succeeded'"
+        - name: Wait for the identity binding profile to be created.
+          text: az fleet identitybindingprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyIdentityBindingProfile --created
+"""

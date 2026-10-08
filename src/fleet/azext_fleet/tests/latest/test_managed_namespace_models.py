@@ -6,7 +6,7 @@
 import unittest
 
 from azext_fleet.custom import _build_propagation_policy
-from azext_fleet.vendored_sdks.v2026_06_02_preview.models import (
+from azext_fleet.vendored_sdks.v2026_11_02_preview.models import (
     PlacementProfile,
     PlacementProfilePatch,
     PlacementV1ClusterResourcePlacementSpec,

@@ -193,3 +193,7 @@ Release History
 1.11.1
 ++++++
 * Improve ``az fleet namespace update`` compatibility by using the corrected managed namespace PATCH models.
+
+1.12.0
+++++++
+* Add 2026-11-02-preview API version and ``az fleet identitybindingprofile`` commands.
