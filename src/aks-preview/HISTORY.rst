@@ -13,6 +13,7 @@ Pending
 +++++++
 * `az aks kollect`, `az aks kanalyze`, `az aks get-credentials` and `az aks bastion tunnel`: Use resolved executable paths consistently.
 * `az aks bastion tunnel`: Report unsuccessful tunnel process exits instead of returning success.
+* `az aks bastion tunnel`: Identify interactive shells by executable name rather than directory names.
 
 22.0.0b10
 +++++++++
