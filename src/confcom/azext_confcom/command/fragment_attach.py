@@ -19,7 +19,6 @@ def oras_attach(
     platform: Optional[str] = None,
 ) -> None:
     cmd = [
-        "oras",
         "attach",
         "--artifact-type", "application/x-ms-ccepolicy-frag",
     ]
@@ -51,7 +50,7 @@ def oras_attach(
     ])
 
     subprocess.run(
-        cmd,
+        [oras_proxy.resolve_oras_path(), *cmd],
         check=True,
         timeout=120,
     )
