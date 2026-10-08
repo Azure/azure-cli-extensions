@@ -16,6 +16,7 @@ from azext_k8s_extension.partner_extensions.ChaosStudio import ChaosStudio
 from azext_k8s_extension.vendored_sdks.models import Extension, PatchExtension
 
 SUB = "00000000-0000-0000-0000-000000000001"
+SUB2 = "00000000-0000-0000-0000-000000000006"
 WORKSPACE = "/subscriptions/{}/resourceGroups/workspace/providers/Microsoft.Chaos/workspaces/test".format(SUB)
 PRINCIPAL = "00000000-0000-0000-0000-000000000002"
 TENANT = "00000000-0000-0000-0000-000000000003"
@@ -29,16 +30,19 @@ PREFIX = "azext_k8s_extension.partner_extensions.ChaosStudio."
 
 
 class Arm:
-    def __init__(self, events):
-        self.subscription_id = SUB
+    def __init__(self, events, subscription_id=SUB, tenant_roles=None):
+        self.subscription_id = subscription_id
         self.events = events
         self.endpoint = "https://dataplane.northeurope.chaos-test.azure.com"
+        # Role definitions are tenant-wide: role GUID -> (roleName, assignableScopes).
+        self.tenant_roles = {} if tenant_roles is None else tenant_roles
         self.resources = {
-            CLUSTER: {"location": "westus2", "properties": {
-                "securityProfile": {"workloadIdentity": {"enabled": True}},
-                "oidcIssuerProfile": {"enabled": True, "issuerURL": "https://issuer.test"},
-                "aadProfile": {"enableAzureRBAC": True},
-            }},
+            ChaosStudio._cluster_resource_id(subscription_id, "rg", "cluster"): {
+                "location": "westus2", "properties": {
+                    "securityProfile": {"workloadIdentity": {"enabled": True}},
+                    "oidcIssuerProfile": {"enabled": True, "issuerURL": "https://issuer.test"},
+                    "aadProfile": {"enableAzureRBAC": True},
+                }},
             WORKSPACE: {"identity": {"type": "SystemAssigned", "principalId": WORKSPACE_PRINCIPAL}},
         }
         self.fail_connection = False
@@ -52,7 +56,16 @@ class Arm:
 
     def put(self, resource_id, _api, _description, body):
         self.events.append(("arm-put", resource_id))
-        if resource_id == CONNECTION:
+        if "/roleDefinitions/" in resource_id:
+            guid = resource_id.rsplit("/", 1)[-1]
+            name = body["properties"]["roleName"]
+            scopes = body["properties"]["assignableScopes"]
+            if any(n == name and g != guid for g, (n, _) in self.tenant_roles.items()):
+                raise AzureResponseError("Conflict: RoleDefinitionWithSameNameExists")
+            if guid in self.tenant_roles and self.tenant_roles[guid][1] != scopes:
+                raise AzureResponseError("Conflict: role definition ID already exists in the tenant")
+            self.tenant_roles[guid] = (name, scopes)
+        if "/connections/" in resource_id:
             if self.fail_connection:
                 raise AzureResponseError("grant publication failed")
             old = self.resources.get(resource_id)
@@ -60,7 +73,7 @@ class Arm:
                 raise AzureResponseError("immutable trust conflict")
             body = {"properties": dict(body["properties"], dataPlaneEndpoint=self.endpoint)}
         self.resources[resource_id] = copy.deepcopy(body)
-        if resource_id == CONNECTION and self.lost_response:
+        if "/connections/" in resource_id and self.lost_response:
             self.lost_response = False
             raise AzureResponseError("connection response lost")
         return copy.deepcopy(body)
@@ -146,9 +159,9 @@ class ChaosStudioTests(unittest.TestCase):
         wait.start()
         self.addCleanup(wait.stop)
 
-    def reset_resources(self):
+    def reset_resources(self, subscription_id=SUB, tenant_roles=None):
         self.events = []
-        self.arm = Arm(self.events)
+        self.arm = Arm(self.events, subscription_id, tenant_roles)
         self.client = Extensions(self.events)
         self.partner = ChaosStudio()
         self.partner._arm_client_factory = lambda _cmd: self.arm
@@ -316,6 +329,88 @@ class ChaosStudioTests(unittest.TestCase):
         })
         self.assertNotIn(("arm-put", role_id), self.events)
         self.assertEqual(self.arm.resources[role_id], role)
+
+    @staticmethod
+    def role_id(subscription_id, guid):
+        return "/subscriptions/{}/providers/Microsoft.Authorization/roleDefinitions/{}".format(
+            subscription_id, guid)
+
+    @staticmethod
+    def role_body(name, subscription_id=SUB, description=ChaosStudio.ROLE_DESCRIPTION):
+        return {"properties": {
+            "roleName": name, "description": description, "type": "CustomRole",
+            "assignableScopes": ["/subscriptions/{}".format(subscription_id)],
+            "permissions": [{"actions": ChaosStudio.ROLE_ACTIONS, "notActions": [],
+                             "dataActions": ChaosStudio.ROLE_DATA_ACTIONS, "notDataActions": []}],
+        }}
+
+    def assigned_role(self):
+        assignment = next(v for k, v in self.arm.resources.items() if "/roleAssignments/" in k)
+        return assignment["properties"]["roleDefinitionId"]
+
+    def test_second_subscription_in_same_tenant_does_not_conflict(self):
+        legacy_guid = ChaosStudio.ROLE_DEFINITION_GUID
+        # Positive control: the fake tenant rejects a second role with the 1.9.2 fixed name.
+        control = Arm([], SUB2, {"other": (ChaosStudio.LEGACY_ROLE_NAME, ["/subscriptions/" + SUB])})
+        with self.assertRaisesRegex(AzureResponseError, "RoleDefinitionWithSameNameExists"):
+            control.put(self.role_id(SUB2, legacy_guid), None, None,
+                        self.role_body(ChaosStudio.LEGACY_ROLE_NAME, SUB2))
+
+        tenant = {}
+        self.reset_resources(SUB, tenant)
+        self.run_install()
+        first_role = self.assigned_role()
+        self.reset_resources(SUB2, tenant)
+        # The tenant-wide legacy role may be readable from the second subscription; it must be ignored.
+        self.arm.resources[self.role_id(SUB2, legacy_guid)] = self.role_body(ChaosStudio.LEGACY_ROLE_NAME, SUB)
+        self.run_install()
+        second_role = self.assigned_role()
+
+        self.assertNotEqual(first_role.rsplit("/", 1)[-1], second_role.rsplit("/", 1)[-1])
+        self.assertNotIn(legacy_guid, (first_role.rsplit("/", 1)[-1], second_role.rsplit("/", 1)[-1]))
+        self.assertEqual(sorted(name for name, _ in tenant.values()), sorted([
+            "Chaos Studio Kubernetes Operator ({})".format(SUB),
+            "Chaos Studio Kubernetes Operator ({})".format(SUB2),
+        ]))
+        self.assertTrue(all(len(name) <= 512 for name, _ in tenant.values()))
+        self.assertEqual(second_role, self.role_id(SUB2, ChaosStudio._role_definition_guid(SUB2)))
+
+    def test_legacy_named_role_is_reused_and_cleaned_up(self):
+        legacy_id = self.role_id(SUB, ChaosStudio.ROLE_DEFINITION_GUID)
+        legacy = self.role_body(ChaosStudio.LEGACY_ROLE_NAME)
+        self.arm.resources[legacy_id] = copy.deepcopy(legacy)
+        self.run_install()
+        self.assertFalse(any(e[0] == "arm-put" and "/roleDefinitions/" in e[1] for e in self.events))
+        self.assertEqual(self.assigned_role(), legacy_id)
+        self.assertEqual(self.arm.resources[legacy_id], legacy)
+
+        self.events.clear()
+        with patch("azext_k8s_extension.partner_extensions.DefaultExtension.DefaultExtension.Delete"):
+            self.partner.Delete(self.cmd, self.client, "rg", "cluster", "chaos",
+                                "managedClusters", "Microsoft.ContainerService", True)
+        deletes = [e[1] for e in self.events if e[0] == "arm-delete"]
+        self.assertTrue(any("/roleAssignments/" in d for d in deletes))
+        self.assertNotIn(legacy_id, deletes)
+
+    def test_explicit_role_with_different_name_is_accepted(self):
+        role_id = self.role_id(SUB, "11111111-2222-3333-4444-555555555555")
+        role = self.role_body("Contoso AKS chaos operator", description="Customer-managed role.")
+        self.arm.resources[role_id] = copy.deepcopy(role)
+        self.run_install(configuration_settings={
+            "chaos-workspace-id": WORKSPACE, "chaos-existing-role-definition-id": role_id,
+        })
+        self.assertFalse(any(e[0] == "arm-put" and "/roleDefinitions/" in e[1] for e in self.events))
+        self.assertEqual(self.assigned_role(), role_id)
+        self.assertEqual(self.arm.resources[role_id], role)
+
+    def test_owned_role_with_wrong_permissions_is_not_overwritten(self):
+        role_id = self.role_id(SUB, ChaosStudio._role_definition_guid(SUB))
+        role = self.role_body(ChaosStudio._role_name(SUB))
+        role["properties"]["permissions"][0]["dataActions"] = ["Microsoft.ContainerService/*"]
+        self.arm.resources[role_id] = role
+        with self.assertRaisesRegex(AzureResponseError, "incompatible"):
+            self.run_install()
+        self.assertFalse(any(e[0] in ("create", "update", "arm-put") for e in self.events))
 
     def test_conflicting_workspace_assignment_is_not_overwritten(self):
         self.run_install()
