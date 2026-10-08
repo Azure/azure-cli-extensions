@@ -2,6 +2,12 @@
 Release History
 ===============
 
+1.7.1
+++++++
+* Fix SQL container, MongoDB collection, and Gremlin graph restore without a timestamp to pass the database resource ID by keyword, supporting the core CLI Cosmos DB SDK.
+* Fix non-pooled fleetspace creation to accept omitted, null, or empty throughput pool configuration; pooled creation and updates still require both throughput bounds.
+* Tighten fleet throughput and account attachment validation, rejecting boolean throughput values, reversed bounds, malformed account IDs, blank locations, and attachment names that differ from the database account name. Clarify fleet command help.
+
 1.7.0
 ++++++
 * Add ``--skip-safe-rotation`` to ``az cosmosdb keys regenerate`` to optionally bypass the account keys last usage check during key regeneration.
