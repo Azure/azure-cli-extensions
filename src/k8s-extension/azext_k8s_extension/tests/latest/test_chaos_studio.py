@@ -47,9 +47,12 @@ class Arm:
         }
         self.fail_connection = False
         self.lost_response = False
+        self.fail_reads = set()
 
     def get(self, resource_id, *_args, allow_not_found=False):
         self.events.append(("arm-get", resource_id))
+        if resource_id in self.fail_reads:
+            raise AzureResponseError("Forbidden: AuthorizationFailed")
         if resource_id not in self.resources and not allow_not_found:
             raise AzureResponseError("read failed")
         return copy.deepcopy(self.resources.get(resource_id))
@@ -570,6 +573,107 @@ class ChaosStudioTests(unittest.TestCase):
         self.assertEqual(deletes[0], CONNECTION)
         self.assertEqual(len(deletes), 2)
         self.assertIn("roleAssignments", deletes[1])
+
+    SAFEGUARDS = CLUSTER + "/providers/Microsoft.ContainerService/deploymentSafeguards/default"
+
+    def set_safeguards(self, level, excluded=None, system_excluded=None):
+        properties = {"level": level}
+        if excluded is not None:
+            properties["excludedNamespaces"] = excluded
+        if system_excluded is not None:
+            properties["systemExcludedNamespaces"] = system_excluded
+        self.arm.resources[self.SAFEGUARDS] = {"properties": properties}
+
+    def daemon_settings(self):
+        create = next(e[1] for e in self.events if e[0] == "create")
+        update = next(e[1] for e in self.events if e[0] == "update")
+        return (create.configuration_settings["chaosDaemon.enabled"],
+                update.configuration_settings["chaosDaemon.enabled"])
+
+    def test_safeguards_enforce_without_exclusion_skips_daemon_before_bootstrap(self):
+        self.set_safeguards("Enforce", excluded=["other"], system_excluded=["kube-system"])
+        with patch(PREFIX + "logger") as log:
+            result = self.run_install()
+        self.assertEqual(self.daemon_settings(), ("false", "false"))
+        self.assertEqual(result.configuration_settings["chaosDaemon.enabled"], "false")
+        events = [e[0:2] for e in self.events]
+        self.assertLess(events.index(("arm-get", self.SAFEGUARDS)),
+                        next(i for i, e in enumerate(self.events) if e[0] == "create"))
+        call = log.warning.call_args_list[0]
+        warning = call.args[0] % call.args[1:]
+        for text in ("'chaos-infrastructure'", "PodNetworkLatency and PodNetworkLoss",
+                     "PodDelete, PodCpuHog and PodMemoryHog still work", "az k8s-extension update"):
+            self.assertIn(text, warning)
+
+    def test_safeguards_exclusion_or_warn_or_absent_keeps_daemon(self):
+        cases = {
+            "customer exclusion": dict(level="Enforce", excluded=["chaos-infrastructure"]),
+            "system exclusion": dict(level="Enforce", system_excluded=["chaos-infrastructure"]),
+            "warn": dict(level="Warn"),
+            "not configured": None,
+        }
+        for name, safeguards in cases.items():
+            with self.subTest(name):
+                self.reset_resources()
+                if safeguards:
+                    self.set_safeguards(**safeguards)
+                self.run_install()
+                self.assertEqual(self.daemon_settings(), ("true", "true"))
+
+    def test_safeguards_uses_custom_release_namespace(self):
+        self.set_safeguards("Enforce", excluded=["chaos-infrastructure"])
+        self.run_install(release_namespace="custom-chaos")
+        self.assertEqual(self.daemon_settings(), ("false", "false"))
+        self.reset_resources()
+        self.set_safeguards("Enforce", excluded=["custom-chaos"])
+        self.run_install(release_namespace="custom-chaos")
+        self.assertEqual(self.daemon_settings(), ("true", "true"))
+
+    def test_safeguards_read_failure_or_malformed_response_fails_before_writes(self):
+        cases = {
+            "forbidden": None,
+            "unknown level": {"properties": {"level": "Audit"}},
+            "missing properties": {},
+            "malformed exclusions": {"properties": {"level": "Enforce", "excludedNamespaces": "chaos-infrastructure"}},
+        }
+        for name, body in cases.items():
+            with self.subTest(name):
+                self.reset_resources()
+                if body is None:
+                    self.arm.fail_reads.add(self.SAFEGUARDS)
+                else:
+                    self.arm.resources[self.SAFEGUARDS] = body
+                with self.assertRaises(AzureResponseError):
+                    self.run_install()
+                self.assertFalse(any(e[0] in ("create", "update") for e in self.events))
+
+    def test_safeguards_daemon_setting_cannot_be_overridden(self):
+        for value in ("true", "false"):
+            with self.subTest(value=value), self.assertRaises(InvalidArgumentValueError):
+                self.prepare(configuration_settings={"chaos-workspace-id": WORKSPACE, "chaosDaemon.enabled": value})
+        self.set_safeguards("Enforce")
+        self.run_install()
+        with self.assertRaises(InvalidArgumentValueError):
+            self.partner.Update(self.cmd, "rg", "cluster", None, None, None, None,
+                                {"chaosDaemon.enabled": "true"}, {}, self.client.extension)
+
+    def test_safeguards_update_reevaluates_and_recovers(self):
+        self.set_safeguards("Enforce")
+        self.run_install()
+        self.assertEqual(self.client.extension.configuration_settings["chaosDaemon.enabled"], "false")
+        self.set_safeguards("Enforce", excluded=["chaos-infrastructure"])
+        update = self.partner.Update(self.cmd, "rg", "cluster", None, None, None, None,
+                                     {}, {}, self.client.extension)
+        self.assertEqual(update.configuration_settings["chaosDaemon.enabled"], "true")
+        self.client.extension.configuration_settings = dict(update.configuration_settings)
+        self.set_safeguards("Enforce")
+        update = self.partner.Update(self.cmd, "rg", "cluster", None, None, None, None,
+                                     {}, {}, self.client.extension)
+        self.assertEqual(update.configuration_settings["chaosDaemon.enabled"], "false")
+        del self.arm.resources[self.SAFEGUARDS]
+        update = self.partner.Update(self.cmd, "rg", "cluster", None, None, None, None,
+                                     {}, {}, self.client.extension)
+        self.assertEqual(update.configuration_settings["chaosDaemon.enabled"], "true")
 
     def test_workspace_identity_variants(self):
         self.assertEqual(ChaosStudio._workspace_principal_id(
