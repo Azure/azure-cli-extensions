@@ -98,27 +98,57 @@ def _quote_cmd_arg(arg):
     return result
 
 
-# Characters that cannot be safely carried through a Windows 'cmd /c' command line when
-# interpolated from an untrusted tag value (for example a source VM tag copied via
-# --copy-tags). Double quotes and ASCII control characters break argument tokenization,
-# and '%' / '!' are expanded by cmd.exe as environment / delayed-expansion variables even
-# inside double quotes -- '%' in particular cannot be reliably escaped on a 'cmd /c' line
-# (a leading '^' is preserved as a literal caret and corrupts the value). Such characters
-# are therefore rejected at the boundary rather than escaped. See MSRC 115198 / VULN-185362.
+# '"', '%', '!', and control characters are never safe in a cmd.exe token: quotes can't be
+# escaped on a 'cmd /c' line, and '%'/'!' trigger cmd.exe variable expansion that can
+# synthesize a quote at runtime even from a value with none (see ICM-558).
+def _is_unsafe_cmd_exe_value(value):
+    return (
+        '"' in value
+        or '%' in value
+        or '!' in value
+        or any(ord(ch) < 32 or ord(ch) == 127 for ch in value)
+    )
+
+
+def _validate_token_for_cmd_exe(token, field_name=None):
+    """
+    Reject a command-line token that is unsafe on Windows (see _is_unsafe_cmd_exe_value).
+    The token itself is never included in the error, since it may carry a secret; an
+    optional field_name names the source property instead, for an actionable message.
+    """
+    if _is_unsafe_cmd_exe_value(token):
+        where = f' (from {field_name})' if field_name else ''
+        raise InvalidArgumentValueError(
+            f'A value being passed to a nested az command{where} contains a double quote, '
+            'percent sign, exclamation mark, or control character, which cannot be safely '
+            'used on Windows. The value has been omitted because it may be sensitive. '
+            'Remove or rename the offending value on the affected resource and retry.')
+
+
 def _validate_tags_for_command(merged_tags):
     """
-    Reject tag keys and values that contain characters which are unsafe to interpolate
-    into the 'az' command string. Raises InvalidArgumentValueError on the first offending
-    key or value; returns None when every tag is safe.
+    Reject tag keys/values unsafe to interpolate into the 'az' command string (see
+    _is_unsafe_cmd_exe_value). Raises InvalidArgumentValueError on the first offender.
     """
     for tag_key, tag_value in merged_tags.items():
         for tag_field in (str(tag_key), str(tag_value)):
-            if any(unsafe_char in tag_field for unsafe_char in ('"', '%', '!')) or \
-                    any(ord(ch) < 32 or ord(ch) == 127 for ch in tag_field):
+            if _is_unsafe_cmd_exe_value(tag_field):
                 raise InvalidArgumentValueError(
                     f'Tag keys and values must not contain double quotes, percent signs, '
                     f'exclamation marks, or control characters. Offending tag: {tag_key}={tag_value}'
                 )
+
+
+def _validate_command_for_cmd_exe(command_string, field_name=None):
+    """
+    Pre-flight-check command_string (tokenized the same way _call_az_command will) without
+    running anything, on Windows only. Lets a caller validate a later, hard-to-reverse step
+    (e.g. a reattach/revert command) before an earlier, one-way step runs.
+    """
+    if os.name != 'nt':
+        return
+    for token in shlex.split(command_string)[1:]:
+        _validate_token_for_cmd_exe(token, field_name=field_name)
 
 
 def _call_az_command(command_string, run_async=False, secure_params=None):
@@ -141,30 +171,29 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
                 command_string = command_string.replace(param, '********')
     logger.debug("Calling: %s", command_string)
 
-    # On Windows, 'az' resolves to a batch file (az.cmd) so the call must be launched
-    # through cmd.exe. Handing the tokenized list to subprocess would let cmd.exe
-    # re-interpret shell metacharacters: subprocess.list2cmdline only quotes tokens that
-    # contain whitespace, so a token such as 'env=ok&echo' would reach cmd.exe unquoted
-    # and the '&' would be parsed as a command separator. To prevent command injection
-    # from untrusted interpolated values (for example source VM tags), build the command
-    # line explicitly and wrap every argument in double quotes so cmd.exe treats
-    # metacharacters as literal text.
+    # On Windows, 'az' resolves to a batch file, so the call must go through cmd.exe.
+    # Handing subprocess a token list isn't safe: list2cmdline only quotes tokens with
+    # whitespace, so a metacharacter like '&' in an untrusted value (e.g. a tag) would
+    # reach cmd.exe unquoted and be parsed as a command separator. Build the command line
+    # explicitly instead, quoting every argument so metacharacters stay literal.
     #
-    # The 'az' token itself must stay unquoted. Quoting it makes cmd.exe treat it as a
-    # literal path instead of a PATH search, so '%~dp0' inside az.cmd no longer expands to
-    # the launcher directory, the bundled python.exe is not found, and every nested call
-    # fails with 'Failed to load python executable.' on stdout and an empty stderr. The
-    # first token is validated to be exactly 'az' above, so it never carries untrusted
-    # input and does not need quoting.
+    # 'az' itself must stay unquoted so '%~dp0' in az.cmd still expands to the launcher
+    # directory (quoting it breaks the bundled python.exe lookup). It's validated to be
+    # exactly 'az' above, so it carries no untrusted input.
     #
-    # The whole command is additionally wrapped in one outer pair of quotes and invoked
-    # with 'cmd /s /c "..."'. Without '/s', cmd.exe strips the first and last quote on the
-    # line (its documented /c behavior), which would unbalance the quoting around the final
-    # argument and re-expose metacharacters. With '/s' and a leading+trailing quote, cmd.exe
-    # strips exactly those outer quotes and parses the remainder verbatim, keeping every
-    # per-token quote balanced. See MSRC 115198 / VULN-185362.
+    # The whole line is wrapped in one outer quoted pair and run via 'cmd /s /c "..."':
+    # '/s' makes cmd.exe strip only those outer quotes instead of the first/last quote on
+    # the line, keeping every per-token quote balanced. See MSRC 115198 / VULN-185362.
+    #
+    # Every token is rejected outright if unsafe (quote/%/!/control char) - see
+    # _validate_token_for_cmd_exe and ICM-558. Validation runs against 'tokenized_command'
+    # (built before secure_params masking), not a re-split 'command_string': re-validating
+    # the masked copy would let an unsafe secret (e.g. a password with '%') pass as the
+    # harmless placeholder while the real, unmasked token still reached cmd.exe below.
     windows_os_name = 'nt'
     if os.name == windows_os_name:
+        for token in tokenized_command[1:]:
+            _validate_token_for_cmd_exe(token)
         quoted_arguments = ' '.join(_quote_cmd_arg(token) for token in tokenized_command[1:])
         quoted_command = ' '.join(part for part in (tokenized_command[0], quoted_arguments) if part)
         command_to_run = 'cmd /s /c "' + quoted_command + '"'

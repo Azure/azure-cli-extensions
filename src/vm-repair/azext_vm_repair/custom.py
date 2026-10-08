@@ -23,6 +23,7 @@ from .command_helper_class import command_helper
 from .repair_utils import (
     _uses_managed_disk,
     _call_az_command,
+    _validate_command_for_cmd_exe,
     _clean_up_resources,
     _fetch_compatible_sku,
     _fetch_source_disk_controller_type,
@@ -643,6 +644,10 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
                 attach_fixed_command = 'az vm update -g {g} -n {n} --os-disk {disk}' \
                     .format(g=resource_group_name, n=vm_name, disk=disk_id)
 
+                # Validate before detaching, so a rejected attach command can't strand the
+                # disk detached from the repair VM. See ICM-558.
+                _validate_command_for_cmd_exe(attach_fixed_command, field_name='source disk ID')
+
                 # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
                 logger.info('Detaching repaired data disk from repair VM...')
                 _call_az_command(detach_disk_command)
@@ -666,8 +671,21 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
                 # Commands to detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
                 detach_unamanged_command = 'az vm unmanaged-disk detach -g {g} --vm-name {repair} --name {disk}' \
                     .format(g=repair_resource_group, repair=repair_vm_name, disk=disk_name)
-                attach_unmanaged_command = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"' \
-                    .format(g=resource_group_name, n=vm_name, uri=disk_uri)
+                # Build the --set assignment as one shlex.quote()'d token, not a hand-quoted
+                # "{uri}" string: shlex.split() (used by both _call_az_command and the
+                # pre-flight guard above) treats embedded '"' characters as its own quoting
+                # syntax and strips them, so a uri containing '"' could inject extra CLI
+                # arguments (e.g. '--remove storageProfile.dataDisks') into the nested az
+                # call while leaving no literal '"' in any token for the guard to catch.
+                # shlex.quote() keeps the whole assignment, including any embedded quote,
+                # as the literal value of a single token, so the guard sees it. See ICM-558.
+                uri_assignment = shlex.quote('storageProfile.osDisk.vhd.uri={uri}'.format(uri=disk_uri))
+                attach_unmanaged_command = 'az vm update -g {g} -n {n} --set {assignment}' \
+                    .format(g=resource_group_name, n=vm_name, assignment=uri_assignment)
+
+                # Validate before detaching, so a rejected attach command can't strand the
+                # disk detached from the repair VM. See ICM-558.
+                _validate_command_for_cmd_exe(attach_unmanaged_command, field_name='storageProfile.osDisk.vhd.uri')
 
                 # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
                 logger.info('Detaching repaired data disk from repair VM...')
@@ -1011,6 +1029,26 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             # Raise available IP not found error
             raise SupportingResourceNotFoundError('Available IP address was not found within the VM subnet.')
 
+        # Build the revert command up front and validate it before swapping the IP, so a
+        # rejected revert token can't strand the NIC on swap_ip_address with no automatic
+        # way back to orig_ip_address. See ICM-558.
+        if orig_ip_allocation_method == DYNAMIC_CONFIG:
+            if application_names:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method} --asgs {asgs}' \
+                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG, asgs=application_names)
+            else:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method}' \
+                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG)
+        else:
+            if application_names:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} --asgs {asgs}' \
+                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address, asgs=application_names)
+            else:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
+                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address)
+        _validate_command_for_cmd_exe(
+            revert_ip_command, field_name='network interface configuration (IP address or application security group name)')
+
         # 3) Update private IP address to another in subnet. This will invoke and wait for a VM restart.
         logger.info('Updating VM IP configuration. This might take a few minutes...\n')
 
@@ -1032,30 +1070,6 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
 
         # 4) Revert the configurations. This will also invoke and wait for a VM restart.
         logger.info('NIC reset is complete. Now reverting back to your original configuration...\n')
-
-        # Initialize the revert IP command variable
-        revert_ip_command = None
-
-        # If the original IP allocation method was dynamic, revert back to dynamic
-        if orig_ip_allocation_method == DYNAMIC_CONFIG:
-            # If there are application security groups, include them in the command
-            if application_names:
-                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method} --asgs {asgs}' \
-                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG, asgs=application_names)
-            else:
-                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method}' \
-                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG)
-        else:
-            # If the original IP allocation method was not dynamic, revert to the original static IP
-            # If there are application security groups, include them in the command
-            if application_names:
-                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} --asgs {asgs}' \
-                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address, asgs=application_names)
-            else:
-                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
-                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address)
-
-        # Execute the revert IP command
         _call_az_command(revert_ip_command)
         logger.info('VM guest NIC reset is complete and all configurations are reverted.')
 
