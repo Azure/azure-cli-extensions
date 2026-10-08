@@ -6,7 +6,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - providerhub custom-rollout create
       Connection:
@@ -18,78 +18,21 @@ interactions:
       ParameterSetName:
       - --provider-namespace --rollout-name --canary
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/canaryTesting01?api-version=2024-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/canaryTesting01?api-version=2026-02-01-preview
   response:
     body:
-      string: '{"error":{"code":"InternalServerError","message":"Http request failed
-        with unhandled exception of type ''SocketException'' and message: ''Operation
-        canceled''."}}'
+      string: '{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["EASTUS2EUAP","CENTRALUSEUAP"]},"releaseScopes":[],"refreshSubscriptionRegistration":false,"skipReleaseScopeValidation":false},"status":{"completedRegions":["EASTUS2EUAP","CENTRALUSEUAP"],"completedRegionsInfo":[{"region":"EASTUS2EUAP","manifestAppliedAt":"2026-09-16T22:43:18.4166438Z","previousCommitId":"104e4f1274c010ed740601e8574c111063accc79","appliedCommitId":"104e4f1274c010ed740601e8574c111063accc79"},{"region":"CENTRALUSEUAP","manifestAppliedAt":"2026-09-16T22:43:18.4024066Z","previousCommitId":"104e4f1274c010ed740601e8574c111063accc79","appliedCommitId":"104e4f1274c010ed740601e8574c111063accc79"}],"failedOrSkippedRegions":{}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/canaryTesting01","type":"Microsoft.ProviderHub/providerRegistrations/customRollouts","name":"canaryTesting01","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-16T22:42:57.7270735Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-16T22:42:57.7270735Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '158'
-      content-type:
-      - application/json
-      date:
-      - Mon, 03 Jun 2024 21:55:52 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-      x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/55618d36-c5e5-4865-81c7-025d737cade8
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
-      x-msedge-ref:
-      - 'Ref A: 62EDC2EB87E74F50A398E8170E511273 Ref B: CH1AA2020610021 Ref C: 2024-06-03T21:54:39Z'
-    status:
-      code: 500
-      message: Internal Server Error
-- request:
-    body: '{"properties": {"specification": {"canary": {"regions": ["EastUS2EUAP",
-      "centraluseuap"]}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - providerhub custom-rollout create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '92'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --provider-namespace --rollout-name --canary
-      User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/canaryTesting01?api-version=2024-04-01-preview
-  response:
-    body:
-      string: '{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["EastUS2EUAP","centraluseuap"]},"refreshSubscriptionRegistration":false,"skipReleaseScopeValidation":false},"status":{"completedRegions":["centraluseuap","EastUS2EUAP"],"failedOrSkippedRegions":{}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/canaryTesting01","type":"Microsoft.ProviderHub/providerRegistrations/customRollouts","name":"canaryTesting01","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-03T21:56:21.0990587Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T21:56:21.0990587Z"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '778'
+      - '1204'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 21:56:56 GMT
+      - Wed, 16 Sep 2026 22:43:20 GMT
       expires:
       - '-1'
       pragma:
@@ -101,11 +44,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/b8fa4f41-4a75-4654-8c4d-dbdec0502142
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a8b084de-bd0c-4bcd-a642-71b9016ddd0a/southcentralus/55e69513-44d2-4eae-a490-617b2b22056f
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '12000'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '800'
       x-msedge-ref:
-      - 'Ref A: B358A1C15BE54A7782040523F8DDD648 Ref B: CH1AA2020610021 Ref C: 2024-06-03T21:55:52Z'
+      - 'Ref A: 66DC182203764CAC86718319DDF0DDD0 Ref B: SN4AA2022305021 Ref C: 2026-09-16T22:42:57Z'
     status:
       code: 200
       message: OK
