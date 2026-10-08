@@ -2755,6 +2755,76 @@ class TestValidateAzureMonitorLogsEnableDisable(unittest.TestCase):
         validators.validate_azure_monitor_logs_enable_disable(namespace)
 
 
+class TestRejectMsiAuthFlagWithAzureMonitorLogs(unittest.TestCase):
+    """--enable-msi-auth-for-monitoring is meaningless alongside --enable-azure-monitor-logs.
+
+    Onboarding through the Azure Monitor profile is managed identity only. The flag's default
+    differs by command, so what counts as an explicit use differs too: on create it defaults to
+    True and only an explicit false is detectable, while on update it defaults to None so any
+    value is explicit.
+    """
+
+    ERR = (
+        "Cannot specify both '--enable-azure-monitor-logs' and "
+        "'--enable-msi-auth-for-monitoring'. '--enable-azure-monitor-logs' onboards through "
+        "the Azure Monitor profile, which always uses managed identity authentication."
+    )
+
+    @staticmethod
+    def _create_ns(**kwargs):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.enable_addons = None
+        for key, value in kwargs.items():
+            setattr(namespace, key, value)
+        return namespace
+
+    @staticmethod
+    def _update_ns(**kwargs):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.disable_azure_monitor_logs = False
+        for key, value in kwargs.items():
+            setattr(namespace, key, value)
+        return namespace
+
+    def test_create_rejects_explicit_false(self):
+        namespace = self._create_ns(enable_msi_auth_for_monitoring=False)
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+        self.assertEqual(str(cm.exception), self.ERR)
+
+    def test_create_allows_the_default(self):
+        # True is the create default, so it is indistinguishable from the flag being omitted
+        namespace = self._create_ns(enable_msi_auth_for_monitoring=True)
+        validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+
+    def test_update_rejects_both_explicit_values(self):
+        for value in (True, False):
+            namespace = self._update_ns(enable_msi_auth_for_monitoring=value)
+            with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+                validators.validate_azure_monitor_logs_enable_disable(namespace)
+            self.assertEqual(str(cm.exception), self.ERR)
+
+    def test_update_allows_the_flag_being_omitted(self):
+        namespace = self._update_ns(enable_msi_auth_for_monitoring=None)
+        validators.validate_azure_monitor_logs_enable_disable(namespace)
+
+    def test_flag_is_allowed_without_azure_monitor_logs(self):
+        # --enable-msi-auth-for-monitoring remains valid on its own, for the addon route
+        namespace = self._update_ns(
+            enable_azure_monitor_logs=False, enable_msi_auth_for_monitoring=True
+        )
+        validators.validate_azure_monitor_logs_enable_disable(namespace)
+
+    def test_missing_attribute_is_tolerated(self):
+        # the namespace of a command that does not define the flag at all must not raise
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.disable_azure_monitor_logs = False
+        validators.validate_azure_monitor_logs_enable_disable(namespace)
+
+
 class TestAzureMonitorLogsParameters(unittest.TestCase):
     """Test that Azure Monitor logs parameters are processed correctly."""
 
@@ -3013,6 +3083,178 @@ class TestValidateOsSku(unittest.TestCase):
 
         self.assertIn("Windows2022", node_os_skus_update)
         self.assertIn("Windows2025", node_os_skus_update)
+
+
+class ContainerInsightsSettingsNamespace(SimpleNamespace):
+    """Namespace for the containerInsights tuning flags, with CLI defaults."""
+
+    def __init__(self, **kwargs):
+        defaults = {
+            "syslog_port": None,
+            "enable_prometheus_metrics_scraping": False,
+            "disable_prometheus_metrics_scraping": False,
+            "enable_azure_monitor_logs": False,
+            "disable_azure_monitor_logs": False,
+        }
+        defaults.update(kwargs)
+        super().__init__(**defaults)
+
+
+class TestValidateContainerInsightsSettings(unittest.TestCase):
+    def test_no_flags_is_valid(self):
+        namespace = ContainerInsightsSettingsNamespace()
+        validators.validate_container_insights_settings_for_create(namespace)
+        validators.validate_container_insights_settings_for_update(namespace)
+
+    def test_scraping_flags_are_mutually_exclusive(self):
+        namespace = ContainerInsightsSettingsNamespace(
+            enable_prometheus_metrics_scraping=True,
+            disable_prometheus_metrics_scraping=True,
+            enable_azure_monitor_logs=True,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            validators.validate_container_insights_settings_for_create(namespace)
+
+    def test_syslog_port_out_of_range(self):
+        for bad_port in (0, -1, 65536):
+            namespace = ContainerInsightsSettingsNamespace(
+                syslog_port=bad_port, enable_azure_monitor_logs=True
+            )
+            with self.assertRaises(InvalidArgumentValueError):
+                validators.validate_container_insights_settings_for_create(namespace)
+
+    def test_syslog_port_boundaries_are_valid(self):
+        for port in (1, 28330, 65535):
+            namespace = ContainerInsightsSettingsNamespace(
+                syslog_port=port, enable_azure_monitor_logs=True
+            )
+            validators.validate_container_insights_settings_for_create(namespace)
+
+    def test_create_requires_enable_azure_monitor_logs(self):
+        # Without the AMP profile these flags would be silently dropped, so fail fast.
+        namespace = ContainerInsightsSettingsNamespace(syslog_port=28331)
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_container_insights_settings_for_create(namespace)
+        self.assertIn("--syslog-port", str(cm.exception))
+        self.assertIn("--enable-azure-monitor-logs", str(cm.exception))
+
+    def test_create_lists_every_specified_flag_in_the_error(self):
+        namespace = ContainerInsightsSettingsNamespace(
+            syslog_port=28331, disable_prometheus_metrics_scraping=True
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_container_insights_settings_for_create(namespace)
+        self.assertIn("--syslog-port", str(cm.exception))
+        self.assertIn("--disable-prometheus-metrics-scraping", str(cm.exception))
+
+    def test_update_defers_dependency_check_to_the_decorator(self):
+        # On update the cluster may already have Azure Monitor logs enabled, which the namespace
+        # validator cannot see, so it must not reject the flag on its own.
+        namespace = ContainerInsightsSettingsNamespace(syslog_port=29000)
+        validators.validate_container_insights_settings_for_update(namespace)
+
+    def test_conflicts_with_disable_azure_monitor_logs(self):
+        namespace = ContainerInsightsSettingsNamespace(
+            syslog_port=29000, disable_azure_monitor_logs=True
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_container_insights_settings_for_update(namespace)
+        self.assertIn("--disable-azure-monitor-logs", str(cm.exception))
+
+
+class TestOpenTelemetryPortsNotDisabled(unittest.TestCase):
+    """A port flag naming a receiver that is being disabled must be rejected at validation time.
+
+    The decorator's port getters catch this too, but only after the Azure Monitor collection
+    resources have already been deleted, so the command fails with the cluster half torn down.
+    """
+
+    PORT_DISABLE_COMBOS = [
+        ("opentelemetry_metrics_port", "--opentelemetry-metrics-port-http",
+         "disable_azure_monitor_metrics", "--disable-azure-monitor-metrics"),
+        ("opentelemetry_metrics_port", "--opentelemetry-metrics-port-http",
+         "disable_opentelemetry_metrics", "--disable-opentelemetry-metrics"),
+        ("opentelemetry_metrics_port_grpc", "--opentelemetry-metrics-port-grpc",
+         "disable_azure_monitor_metrics", "--disable-azure-monitor-metrics"),
+        ("opentelemetry_metrics_port_grpc", "--opentelemetry-metrics-port-grpc",
+         "disable_opentelemetry_metrics", "--disable-opentelemetry-metrics"),
+        ("opentelemetry_logs_port", "--opentelemetry-logs-traces-port-http",
+         "disable_azure_monitor_logs", "--disable-azure-monitor-logs"),
+        ("opentelemetry_logs_port", "--opentelemetry-logs-traces-port-http",
+         "disable_opentelemetry_logs", "--disable-opentelemetry-logs-traces"),
+        ("opentelemetry_logs_traces_port_grpc", "--opentelemetry-logs-traces-port-grpc",
+         "disable_azure_monitor_logs", "--disable-azure-monitor-logs"),
+        ("opentelemetry_logs_traces_port_grpc", "--opentelemetry-logs-traces-port-grpc",
+         "disable_opentelemetry_logs", "--disable-opentelemetry-logs-traces"),
+    ]
+
+    @staticmethod
+    def _namespace(**kwargs):
+        defaults = {
+            "opentelemetry_metrics_port": None,
+            "opentelemetry_metrics_port_grpc": None,
+            "opentelemetry_logs_port": None,
+            "opentelemetry_logs_traces_port_grpc": None,
+            "disable_azure_monitor_metrics": False,
+            "disable_azure_monitor_logs": False,
+            "disable_opentelemetry_metrics": False,
+            "disable_opentelemetry_logs": False,
+            "enable_azure_monitor_metrics": False,
+            "enable_azure_monitor_logs": False,
+            "enable_opentelemetry_metrics": False,
+            "enable_opentelemetry_logs": False,
+            "enable_addons": None,
+        }
+        defaults.update(kwargs)
+        return SimpleNamespace(**defaults)
+
+    def test_port_with_matching_disable_rejected(self):
+        for port_attr, port_flag, disable_attr, disable_flag in self.PORT_DISABLE_COMBOS:
+            with self.subTest(port=port_flag, disable=disable_flag):
+                namespace = self._namespace(**{port_attr: 4318, disable_attr: True})
+                with self.assertRaises(InvalidArgumentValueError) as cm:
+                    validators.validate_opentelemetry_ports_not_disabled(namespace)
+                self.assertIn(port_flag, str(cm.exception))
+                self.assertIn(disable_flag, str(cm.exception))
+
+    def test_port_with_unrelated_disable_allowed(self):
+        # Disabling metrics must not reject a logs/traces port, and vice versa.
+        namespace = self._namespace(
+            opentelemetry_logs_port=4318,
+            disable_azure_monitor_metrics=True,
+            disable_opentelemetry_metrics=True,
+        )
+        validators.validate_opentelemetry_ports_not_disabled(namespace)
+
+        namespace = self._namespace(
+            opentelemetry_metrics_port=4318,
+            disable_azure_monitor_logs=True,
+            disable_opentelemetry_logs=True,
+        )
+        validators.validate_opentelemetry_ports_not_disabled(namespace)
+
+    def test_disable_without_ports_allowed(self):
+        namespace = self._namespace(
+            disable_azure_monitor_metrics=True,
+            disable_azure_monitor_logs=True,
+            disable_opentelemetry_metrics=True,
+            disable_opentelemetry_logs=True,
+        )
+        validators.validate_opentelemetry_ports_not_disabled(namespace)
+
+    def test_port_disable_conflict_rejected_by_aggregate_validators(self):
+        # The aggregate validators are the entry points the commands register. The conflict has to
+        # be reachable through them, otherwise it is only caught in the decorator's port getters,
+        # which run after the Azure Monitor collection resources have already been deleted.
+        for aggregate in (
+            validators.validate_azure_monitor_and_opentelemetry_for_create,
+            validators.validate_azure_monitor_and_opentelemetry_for_update,
+        ):
+            for port_attr, port_flag, disable_attr, disable_flag in self.PORT_DISABLE_COMBOS:
+                with self.subTest(aggregate=aggregate.__name__, port=port_flag, disable=disable_flag):
+                    namespace = self._namespace(**{port_attr: 4318, disable_attr: True})
+                    with self.assertRaises(InvalidArgumentValueError):
+                        aggregate(namespace)
 
 
 if __name__ == "__main__":
