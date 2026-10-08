@@ -671,8 +671,17 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
                 # Commands to detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
                 detach_unamanged_command = 'az vm unmanaged-disk detach -g {g} --vm-name {repair} --name {disk}' \
                     .format(g=repair_resource_group, repair=repair_vm_name, disk=disk_name)
-                attach_unmanaged_command = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"' \
-                    .format(g=resource_group_name, n=vm_name, uri=disk_uri)
+                # Build the --set assignment as one shlex.quote()'d token, not a hand-quoted
+                # "{uri}" string: shlex.split() (used by both _call_az_command and the
+                # pre-flight guard above) treats embedded '"' characters as its own quoting
+                # syntax and strips them, so a uri containing '"' could inject extra CLI
+                # arguments (e.g. '--remove storageProfile.dataDisks') into the nested az
+                # call while leaving no literal '"' in any token for the guard to catch.
+                # shlex.quote() keeps the whole assignment, including any embedded quote,
+                # as the literal value of a single token, so the guard sees it. See ICM-558.
+                uri_assignment = shlex.quote('storageProfile.osDisk.vhd.uri={uri}'.format(uri=disk_uri))
+                attach_unmanaged_command = 'az vm update -g {g} -n {n} --set {assignment}' \
+                    .format(g=resource_group_name, n=vm_name, assignment=uri_assignment)
 
                 # Validate before detaching, so a rejected attach command can't strand the
                 # disk detached from the repair VM. See ICM-558.

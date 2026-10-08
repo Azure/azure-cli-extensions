@@ -517,6 +517,67 @@ class UnmanagedDiskAttachValidationTest(unittest.TestCase):
         mock_clean_up.assert_not_called()
 
 
+# ---------------------------------------------------------------------------
+# Argument-injection regression: an embedded '"' in the disk URI used to be
+# consumed as shlex quoting syntax (stripped before the character check ran),
+# letting it inject extra arguments (e.g. '--remove storageProfile.dataDisks')
+# into the nested 'az vm update' call instead of being rejected. Fixed by
+# building the --set assignment with shlex.quote() so an embedded quote stays
+# part of the token's literal value.
+# ---------------------------------------------------------------------------
+
+QUOTE_INJECTION_URI = 'https://acct.blob.core.windows.net/c/repaired.vhd" --remove "storageProfile.dataDisks'
+
+
+def test_quote_injection_uri_stays_one_token_after_shlex_quote():
+    """The embedded '"' and extra flag text must not become separate tokens."""
+    assignment = shlex.quote('storageProfile.osDisk.vhd.uri={}'.format(QUOTE_INJECTION_URI))
+    command = 'az vm update -g rg -n vm --set {}'.format(assignment)
+
+    tokens = shlex.split(command)
+
+    assert tokens[-1] == 'storageProfile.osDisk.vhd.uri=' + QUOTE_INJECTION_URI
+    assert '--remove' not in tokens
+    assert 'storageProfile.dataDisks' not in tokens
+
+
+def test_quote_injection_uri_is_rejected():
+    assignment = shlex.quote('storageProfile.osDisk.vhd.uri={}'.format(QUOTE_INJECTION_URI))
+    command = 'az vm update -g rg -n vm --set {}'.format(assignment)
+    token = shlex.split(command)[-1]
+
+    with pytest.raises(InvalidArgumentValueError):
+        _validate_token_for_cmd_exe(token)
+
+
+@mock.patch('azext_vm_repair.custom.command_helper', FakeCommandHelper)
+class UnmanagedDiskQuoteInjectionTest(unittest.TestCase):
+    """End-to-end: a disk URI carrying an embedded quote must block before detach, same as UNSAFE_ATTACH_VALUE."""
+
+    def _source_vm(self):
+        return {'storageProfile': {'osDisk': {'vhd': {'uri': 'https://clean.blob.core.windows.net/source'}}}}
+
+    def _repair_vm(self):
+        return {'storageProfile': {'dataDisks': [{'name': 'fixed-disk', 'vhd': {'uri': QUOTE_INJECTION_URI}}]}}
+
+    def _get_vm_by_aaz_side_effect(self, _cmd, resource_group_name, _vm_name, *_args, **_kwargs):
+        if resource_group_name == 'repair-rg':
+            return self._repair_vm()
+        return self._source_vm()
+
+    def test_quote_injection_uri_blocks_before_detach(self):
+        with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
+                mock.patch('azext_vm_repair.custom.get_vm_by_aaz', side_effect=self._get_vm_by_aaz_side_effect), \
+                mock.patch('azext_vm_repair.custom._uses_managed_disk', return_value=False), \
+                mock.patch('azext_vm_repair.custom._call_az_command') as mock_az, \
+                mock.patch('azext_vm_repair.custom._clean_up_resources') as mock_clean_up:
+            result = restore(mock.MagicMock(), 'source-vm', 'source-rg', disk_name='fixed-disk', repair_vm_id=RESTORE_REPAIR_VM_ID)
+
+        self.assertEqual(result['status'], 'ERROR')
+        mock_az.assert_not_called()
+        mock_clean_up.assert_not_called()
+
+
 def test_rejection_error_names_the_field_when_provided():
     with pytest.raises(InvalidArgumentValueError) as exc_info:
         _validate_token_for_cmd_exe('bad%value', field_name='storageProfile.osDisk.vhd.uri')
