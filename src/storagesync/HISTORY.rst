@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.1.0
+++++++
+* `az storagesync check-name-availability`, `az storagesync private-endpoint-connection list`, `az storagesync sync-group cloud-endpoint trigger-change-detection`: Bump API version to 2025-12-01
+
 1.0.1
 ++++++
 * Remove ADAL dependencies
