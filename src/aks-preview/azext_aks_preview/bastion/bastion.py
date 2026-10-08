@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import asyncio
+import ntpath
 import os
 import shlex
 import signal
@@ -404,25 +405,29 @@ def _aks_bastion_prepare_shell_cmd(kubeconfig_path):
     if not shell_cmd:
         raise CLIInternalError(f"Cannot find shell executable '{detected_shell}' in PATH.")
     is_windows = sys.platform.startswith("win")
+    path_module = ntpath if is_windows else os.path
+    shell_name = path_module.basename(shell_cmd).lower()
+    if is_windows:
+        shell_name = path_module.splitext(shell_name)[0]
     quoted_shell_cmd = f'"{shell_cmd}"' if is_windows else shlex.quote(shell_cmd)
     updated_shell_cmd = quoted_shell_cmd
 
     # Handle different shell types
-    if shell_cmd.endswith("bash") and os.path.exists(os.path.expanduser("~/.bashrc")):
+    if not is_windows and shell_name == "bash" and os.path.exists(os.path.expanduser("~/.bashrc")):
         export_command = f"export KUBECONFIG={shlex.quote(kubeconfig_path)}"
         bash_command = (
             f"{quoted_shell_cmd} --rcfile <(cat ~/.bashrc; "
             f"printf '%s\\n' {shlex.quote(export_command)})"
         )
         updated_shell_cmd = f"{quoted_shell_cmd} -c {shlex.quote(bash_command)}"
-    elif shell_cmd in ["pwsh", "powershell"] or "pwsh" in shell_cmd.lower() or "powershell" in shell_cmd.lower():
+    elif shell_name in ("pwsh", "powershell"):
         # PowerShell: Set environment variable and start new session
         # Use proper PowerShell syntax for setting environment variables
         escaped_path = kubeconfig_path.replace("'", "''")  # Escape single quotes for PowerShell
         powershell_command = f"$env:KUBECONFIG='{escaped_path}'"
         quoted_command = f'"{powershell_command}"' if is_windows else shlex.quote(powershell_command)
         updated_shell_cmd = f"{quoted_shell_cmd} -NoExit -Command {quoted_command}"
-    elif shell_cmd == "cmd" or "cmd" in shell_cmd.lower():
+    elif shell_name == "cmd":
         # CMD: Set environment variable and keep session open
         updated_shell_cmd = f'{quoted_shell_cmd} /k set "KUBECONFIG={kubeconfig_path}"'
 
@@ -432,7 +437,7 @@ def _aks_bastion_prepare_shell_cmd(kubeconfig_path):
 def _aks_bastion_restore_shell(shell_cmd):
     """Restore the shell settings after the subshell exits."""
 
-    if shell_cmd.endswith("bash"):
+    if not sys.platform.startswith("win") and os.path.basename(shell_cmd).lower() == "bash":
         subprocess.run(["stty", "sane"], stdin=sys.stdin)
     # PowerShell and CMD on Windows typically don't need special restoration
     # as they handle terminal state management internally

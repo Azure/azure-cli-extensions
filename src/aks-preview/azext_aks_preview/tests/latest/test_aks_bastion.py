@@ -147,6 +147,10 @@ class TestBastionExecutablePaths(unittest.TestCase):
             (r"C:\Program Files\PowerShell\7\pwsh.exe", '-NoExit -Command'),
             (r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe", '-NoExit -Command'),
             (r"C:\Windows\System32\cmd.exe", '/k'),
+            (r"C:\powershell tools\CMD.EXE", '/k'),
+            (r"C:\cmd tools\PWSH.EXE", '-NoExit -Command'),
+            (r"C:\installed tools\pwsh.cmd", '-NoExit -Command'),
+            (r"C:\installed tools\powershell.bat", '-NoExit -Command'),
         ):
             with self.subTest(executable=executable), patch.object(
                 commands, "_aks_bastion_get_current_shell_cmd", return_value=executable
@@ -157,6 +161,43 @@ class TestBastionExecutablePaths(unittest.TestCase):
                 self.assertEqual(shell, executable)
                 self.assertTrue(command.startswith(f'"{executable}" {expected}'))
                 self.assertIn(r"C:\test config\config", command)
+
+    def test_shell_selection_ignores_directory_names_and_partial_name_matches(self):
+        for executable in (
+            "/home/cmduser/bin/zsh",
+            "/home/pwshuser/bin/fish",
+            "/installed powershell tools/dash",
+            "/installed bash tools/zsh",
+            "/installed tools/custombash",
+            "/installed tools/mypwsh",
+            "/installed tools/powershell-wrapper",
+            "/installed tools/customcmd",
+        ):
+            with self.subTest(executable=executable), patch.object(
+                commands, "_aks_bastion_get_current_shell_cmd", return_value=executable
+            ), patch.object(commands, "which", return_value=executable), patch.object(
+                commands.os.path, "exists", return_value=True
+            ), patch.object(commands.sys, "platform", "linux"):
+                shell, command = commands._aks_bastion_prepare_shell_cmd("test-kubeconfig")
+                self.assertEqual(shell, executable)
+                self.assertEqual(shlex.split(command), [executable])
+
+    def test_windows_shell_selection_ignores_directory_names_and_partial_name_matches(self):
+        for executable in (
+            r"C:\powershell tools\zsh.exe",
+            r"C:\pwsh tools\fish.exe",
+            r"C:\cmd tools\other.exe",
+            r"C:\installed tools\mypwsh.exe",
+            r"C:\installed tools\customcmd.exe",
+        ):
+            with self.subTest(executable=executable), patch.object(
+                commands, "_aks_bastion_get_current_shell_cmd", return_value=executable
+            ), patch.object(commands, "which", return_value=executable), patch.object(
+                commands.sys, "platform", "win32"
+            ):
+                shell, command = commands._aks_bastion_prepare_shell_cmd("test-kubeconfig")
+                self.assertEqual(shell, executable)
+                self.assertEqual(command, f'"{executable}"')
 
     def test_posix_powershell_command_does_not_expand_environment_in_outer_shell(self):
         executable = "/installed tools/pwsh"
@@ -196,6 +237,33 @@ class TestBastionExecutablePaths(unittest.TestCase):
             shell, command = commands._aks_bastion_prepare_shell_cmd("test-kubeconfig")
         self.assertEqual(shell, executable)
         self.assertEqual(shlex.split(command), [executable])
+
+    def test_windows_bash_does_not_use_posix_rcfile_command(self):
+        executable = r"C:\Program Files\Git\bin\bash.exe"
+        with patch.object(
+            commands, "_aks_bastion_get_current_shell_cmd", return_value=executable
+        ), patch.object(commands, "which", return_value=executable), patch.object(
+            commands.os.path, "exists", return_value=True
+        ), patch.object(commands.sys, "platform", "win32"):
+            shell, command = commands._aks_bastion_prepare_shell_cmd("test-kubeconfig")
+        self.assertEqual(shell, executable)
+        self.assertEqual(command, f'"{executable}"')
+
+    def test_shell_restoration_only_applies_to_bash(self):
+        for platform, executable, restore in (
+            ("linux", "/installed tools/bash", True),
+            ("linux", "/home/bash/bin/zsh", False),
+            ("linux", "/installed tools/custombash", False),
+            ("win32", r"C:\Program Files\Git\bin\bash.exe", False),
+        ):
+            with self.subTest(platform=platform, executable=executable), patch.object(
+                commands.sys, "platform", platform
+            ), patch.object(commands.subprocess, "run") as run:
+                commands._aks_bastion_restore_shell(executable)
+                if restore:
+                    run.assert_called_once_with(["stty", "sane"], stdin=commands.sys.stdin)
+                else:
+                    run.assert_not_called()
 
     def test_missing_shell_fails_instead_of_executing_bare_name(self):
         with patch.object(commands, "_aks_bastion_get_current_shell_cmd", return_value="pwsh"), patch.object(
