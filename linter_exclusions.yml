@@ -971,6 +971,9 @@ dt data-history connection create adx:
     eh_resource_group:
       rule_exclusions:
       - parameter_should_not_end_in_resource_group
+dt endpoint create:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
 dt endpoint create servicebus:
   parameters:
     servicebus_resource_group:
@@ -1360,6 +1363,9 @@ iot adr ns policy update:
     certificate_validity_days:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot adr ns report:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
 iot central enrollment-group update:
   parameters:
     api_version:
@@ -1487,6 +1493,9 @@ iot dps enrollment-group update:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot dps linked-hub:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
 iot dps linked-hub create:
   parameters:
     apply_allocation_policy:
@@ -1500,9 +1509,15 @@ iot dps linked-hub update:
     apply_allocation_policy:
       rule_exclusions:
       - option_length_too_long
+iot dps policy:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
 iot dps registration list:
   rule_exclusions:
   - no_ids_for_list_commands
+iot hub:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
 iot hub certificate list:
   rule_exclusions:
   - no_ids_for_list_commands
@@ -1603,6 +1618,9 @@ iot hub module-twin update:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot hub policy:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
 iot hub policy list:
   rule_exclusions:
   - no_ids_for_list_commands
@@ -1620,11 +1638,14 @@ iot hub routing-endpoint list:
 iot hub state migrate:
   parameters:
     orig_resource_group_name:
-      rule exclusions:
+      rule_exclusions:
       - parameter_should_not_end_in_resource_group
     resource_group_name:
-      rule exclusions:
+      rule_exclusions:
       - parameter_should_not_end_in_resource_group
+iot hub topic-group list:
+  rule_exclusions:
+  - no_ids_for_list_commands
 iot edge deployment update:
   parameters:
     auth_type_dataplane:
