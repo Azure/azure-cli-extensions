@@ -120,7 +120,11 @@ class ChaosStudio(DefaultExtension):
         "workspaceManagedIdentity.objectId",
         "workloadIdentity.enabled", "workloadIdentity.clientId", "workloadIdentity.tenantId",
         "IsWorkloadIdentityEnabled", "IdentityClientId", "IdentityTenantId",
+        "chaosDaemon.enabled",
     )
+    DAEMON_ENABLED_KEY = "chaosDaemon.enabled"
+    SAFEGUARDS_API_VERSION = "2025-05-02-preview"
+    SAFEGUARDS_LEVELS = ("Warn", "Enforce")
 
     # Custom role names and IDs are unique per Microsoft Entra tenant, so the
     # role the CLI creates carries the subscription ID in both. Roles created by
@@ -633,7 +637,66 @@ class ChaosStudio(DefaultExtension):
             "workspaceManagedIdentity.objectId": workspace_principal_id,
             "subscriber.workspaceId": workspace_id,
             "subscriber.clusterResourceId": cluster_id,
+            self.DAEMON_ENABLED_KEY: self._daemon_enabled(
+                arm, cluster_id, release_namespace
+            ),
         }
+
+    @classmethod
+    def _daemon_enabled(cls, arm, cluster_id, release_namespace):
+        """Skip the daemon when Deployment Safeguards would block it.
+
+        Evaluated on every install and update so the setting recovers once
+        the namespace is excluded or Safeguards is no longer enforcing.
+        """
+        safeguards_id = (
+            "{}/providers/Microsoft.ContainerService/deploymentSafeguards/default"
+        ).format(cluster_id)
+        safeguards = arm.get(
+            safeguards_id,
+            cls.SAFEGUARDS_API_VERSION,
+            "AKS Deployment Safeguards configuration",
+            allow_not_found=True,
+        )
+        if safeguards is None:
+            return "true"
+        properties = safeguards.get("properties") if isinstance(safeguards, dict) else None
+        level = properties.get("level") if isinstance(properties, dict) else None
+        if level not in cls.SAFEGUARDS_LEVELS:
+            raise AzureResponseError(
+                "Deployment Safeguards returned an unrecognized level {!r} for '{}'; "
+                "cannot determine whether the Chaos daemon can run.".format(
+                    level, safeguards_id
+                )
+            )
+        if level == "Warn":
+            return "true"
+        for field in ("excludedNamespaces", "systemExcludedNamespaces"):
+            excluded = properties.get(field)
+            if excluded is None:
+                continue
+            if not isinstance(excluded, list) or not all(
+                isinstance(item, str) for item in excluded
+            ):
+                raise AzureResponseError(
+                    "Deployment Safeguards returned a malformed {} for '{}'.".format(
+                        field, safeguards_id
+                    )
+                )
+            if release_namespace in excluded:
+                return "true"
+        logger.warning(
+            "Deployment Safeguards prevents the Chaos daemon in release namespace "
+            "'%s', so it will not be installed. PodNetworkLatency and PodNetworkLoss "
+            "won't be available; PodDelete, PodCpuHog and PodMemoryHog still work. "
+            "To enable network faults, exclude '%s' in your Deployment Safeguards "
+            "configuration (this removes Safeguards protection from that namespace, "
+            "so it's your decision), then run 'az k8s-extension update' for this "
+            "extension.",
+            release_namespace,
+            release_namespace,
+        )
+        return "false"
 
     @classmethod
     def _reconcile_workspace_connection(
