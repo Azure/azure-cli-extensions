@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.9.4
++++++++++++++++++++
+* Migrate code from the Compute SDK to AAZ.
+
 1.9.3
 +++++++++++++++++++
 * Reject unsupported Fleet extension types before sending extension create, update, or discovery requests.
