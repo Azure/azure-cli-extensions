@@ -2580,6 +2580,15 @@ def load_arguments(self, _):
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
+            "node_public_ip_prefix_ids",
+            validator=validate_node_public_ip_prefix_ids,
+            help="Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs "
+                 "(IPv4 and/or IPv6). At most one IPv4 and one IPv6 prefix may be specified. "
+                 "On an existing node pool this adds or replaces the assigned prefixes; an accepted change "
+                 "rolls the pool so existing nodes are recreated with the new public IPs. "
+                 "Requires the NodePublicIPv6PrefixPreview feature flag to be registered.",
+        )
+        c.argument(
             "enable_cluster_autoscaler",
             options_list=["--enable-cluster-autoscaler", "-e"],
             action="store_true",
