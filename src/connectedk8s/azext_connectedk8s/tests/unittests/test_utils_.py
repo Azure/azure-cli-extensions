@@ -732,6 +732,7 @@ def test_report_connectedk8s_error_sanitizes_telemetry(monkeypatch):
     mock_telemetry = MagicMock()
     monkeypatch.setattr(utils_module, "telemetry", mock_telemetry)
     proxy_url = _build_test_proxy_url("repo-user", "repo-password")
+    redacted_proxy_url = _build_test_proxy_url("[REDACTED]", "[REDACTED]")
     details = f"can't connect to {proxy_url}"
 
     reported_error = report_connectedk8s_error(
@@ -748,15 +749,12 @@ def test_report_connectedk8s_error_sanitizes_telemetry(monkeypatch):
     _, properties = mock_telemetry.add_extension_event.call_args.args
     telemetry_message = properties["Context.Default.AzureCLI.errorMessage"]
     assert telemetry_message == (
-        "[AZK8S0009] TestError: Test message: cant connect to "
-        "http://[REDACTED]:[REDACTED]@example.com:8080"
+        f"[AZK8S0009] TestError: Test message: cant connect to {redacted_proxy_url}"
     )
     assert properties["customDetail"] == "proxys connection failed"
     telemetry_exception = mock_telemetry.set_exception.call_args.kwargs["exception"]
     assert type(telemetry_exception).__name__ == "RuntimeError"
-    assert str(telemetry_exception) == (
-        "cant connect to http://[REDACTED]:[REDACTED]@example.com:8080"
-    )
+    assert str(telemetry_exception) == f"cant connect to {redacted_proxy_url}"
     assert mock_telemetry.set_exception.call_args.kwargs["summary"] == telemetry_message
     mock_telemetry.add_extension_event.assert_called_once()
     mock_telemetry.set_exception.assert_called_once()
@@ -764,7 +762,8 @@ def test_report_connectedk8s_error_sanitizes_telemetry(monkeypatch):
 
 def test_sanitize_telemetry_payload_redacts_nested_sensitive_values():
     proxy_url = _build_test_proxy_url("repo-user", "repo-password")
-    encoded_secret = "U2Vuc2l0aXZlVGVsZW1ldHJ5VmFsdWVGb3JUZXN0aW5nMTIzNDU2"
+    redacted_proxy_url = _build_test_proxy_url("[REDACTED]", "[REDACTED]")
+    encoded_secret = b64encode(("sensitive-value-for-testing-" * 2).encode()).decode()
     payload = {
         "message": f"Couldn't connect to {proxy_url}",
         "details": [f"token: {encoded_secret}", 5],
@@ -772,9 +771,7 @@ def test_sanitize_telemetry_payload_redacts_nested_sensitive_values():
 
     sanitized = sanitize_telemetry_payload(payload)
 
-    assert sanitized["message"] == (
-        "Couldnt connect to http://[REDACTED]:[REDACTED]@example.com:8080"
-    )
+    assert sanitized["message"] == f"Couldnt connect to {redacted_proxy_url}"
     assert sanitized["details"] == ["token: [REDACTED]", 5]
 
 
