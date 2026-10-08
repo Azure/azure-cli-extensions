@@ -329,6 +329,68 @@ class TestBastionSubprocessPaths(unittest.IsolatedAsyncioTestCase):
                 )
         self.assertTrue(cancelled.is_set())
 
+    async def test_runner_propagates_nonzero_tunnel_exit_after_cancelling_subshell(self):
+        for returncode in (1, 17, -15):
+            with self.subTest(returncode=returncode):
+                started = asyncio.Event()
+                cancelled = asyncio.Event()
+                process = MagicMock(returncode=returncode)
+
+                async def wait_for_exit():
+                    await started.wait()
+                    return returncode
+
+                process.wait = AsyncMock(side_effect=wait_for_exit)
+
+                async def wait_for_cancellation(*args):
+                    try:
+                        started.set()
+                        await asyncio.Event().wait()
+                    finally:
+                        cancelled.set()
+
+                with patch.object(
+                    commands, "_aks_bastion_get_az_cmd_name", return_value="/installed tools/az"
+                ), patch.object(
+                    commands.asyncio, "create_subprocess_exec", return_value=process
+                ), patch.object(
+                    commands, "_aks_bastion_launch_subshell", side_effect=wait_for_cancellation
+                ):
+                    with self.assertRaisesRegex(CLIInternalError, f"Bastion tunnel exited with code {returncode}"):
+                        await commands.aks_bastion_runner(
+                            BastionResource("bastion", "rg"), 12345, "test-cluster-id", "test-kubeconfig"
+                        )
+                process.wait.assert_awaited_once()
+                self.assertTrue(cancelled.is_set())
+
+    async def test_runner_cancels_tunnel_normally_when_subshell_exits(self):
+        started = asyncio.Event()
+        process = MagicMock(returncode=-15)
+
+        async def wait_for_exit():
+            if process.wait.await_count == 1:
+                started.set()
+                await asyncio.Event().wait()
+            return process.returncode
+
+        process.wait = AsyncMock(side_effect=wait_for_exit)
+
+        async def exit_subshell(*args):
+            await started.wait()
+
+        with patch.object(
+            commands, "_aks_bastion_get_az_cmd_name", return_value="/installed tools/az"
+        ), patch.object(
+            commands.asyncio, "create_subprocess_exec", return_value=process
+        ), patch.object(
+            commands, "_aks_bastion_launch_subshell", side_effect=exit_subshell
+        ), patch.object(commands, "_aks_bastion_kill_process_tree") as kill_tree:
+            await commands.aks_bastion_runner(
+                BastionResource("bastion", "rg"), 12345, "test-cluster-id", "test-kubeconfig"
+            )
+        kill_tree.assert_called_once_with(process)
+        self.assertEqual(process.wait.await_count, 2)
+
 
 class TestAksBastionTunnel(unittest.TestCase):
     def _run_tunnel(self, bastion_profile, bastion=None):

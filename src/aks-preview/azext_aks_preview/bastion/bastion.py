@@ -536,7 +536,9 @@ async def _aks_bastion_launch_tunnel(bastion_resource, port, mc_id, subscription
 
         # tunnel process must not exit unless it encounters a failure or is deliberately shut down
         await tunnel_proces.wait()
-        logger.error("Bastion tunnel exited with code %s", tunnel_proces.returncode)
+        if tunnel_proces.returncode != 0:
+            raise CLIInternalError(f"Bastion tunnel exited with code {tunnel_proces.returncode}.")
+        logger.debug("Bastion tunnel exited with code %s", tunnel_proces.returncode)
     except asyncio.CancelledError:
         # attempt to terminate the tunnel process and all its children
         if tunnel_proces is not None:
