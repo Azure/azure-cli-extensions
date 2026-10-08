@@ -2097,7 +2097,7 @@ def cli_cosmosdb_sql_container_restore(cmd,
             restorable_containers = restorable_containers_client.list(
                 restorable_database_account.location,
                 restorable_database_account.name,
-                database_rid)
+                restorable_sql_database_rid=database_rid)
 
             latest_container_delete_time, latest_container_create_or_recreate_time = process_restorable_collections(restorable_containers, container_name, database_name)
 
@@ -2288,7 +2288,7 @@ def cli_cosmosdb_mongodb_collection_restore(cmd,
             restorable_collections = restorable_collections_client.list(
                 restorable_database_account.location,
                 restorable_database_account.name,
-                database_rid)
+                restorable_mongodb_database_rid=database_rid)
 
             latest_collection_delete_time, latest_collection_create_or_recreate_time = process_restorable_collections(restorable_collections, collection_name, database_name)
 
@@ -2707,7 +2707,7 @@ def cli_cosmosdb_gremlin_graph_restore(cmd,
             restorable_graphs = restorable_graphs_client.list(
                 restorable_database_account.location,
                 restorable_database_account.name,
-                database_rid)
+                restorable_gremlin_database_rid=database_rid)
 
             latest_graph_delete_time, latest_graph_create_or_recreate_time = process_restorable_collections(restorable_graphs, graph_name, database_name)
 
