@@ -6,8 +6,11 @@
 # --------------------------------------------------------------------------------------------
 
 
+import json
+import os
 from io import open
 from setuptools import setup, find_packages
+from setuptools.command.build_py import build_py
 
 # HISTORY.rst entry.
 VERSION = '2.45.1'
@@ -40,6 +43,24 @@ with open("README.rst", encoding="utf-8") as f:
 with open("CHANGELOG.rst", encoding="utf-8") as f:
     changelog = f.read()
 
+
+class BuildPyWithExtensionMetadata(build_py):
+    def run(self):
+        super().run()
+        self.execute(self._write_extension_metadata, (), "Writing Azure CLI extension identity metadata")
+
+    def _write_extension_metadata(self):
+        metadata_path = os.path.join(self.build_lib, "azext_mlv2", "azext_metadata.json")
+        with open(metadata_path, encoding="utf-8") as metadata_file:
+            metadata = json.load(metadata_file)
+        # Older CLI pkginfo versions cannot read metadata emitted by modern setuptools.
+        metadata["name"] = self.distribution.get_name()
+        metadata["version"] = self.distribution.get_version()
+        with open(metadata_path, "w", encoding="utf-8") as metadata_file:
+            json.dump(metadata, metadata_file, indent=2)
+            metadata_file.write("\n")
+
+
 setup(
     name='ml',
     version=VERSION,
@@ -54,4 +75,5 @@ setup(
     packages=find_packages(),
     install_requires=DEPENDENCIES,
     package_data={'azext_mlv2': ['azext_metadata.json']},
+    cmdclass={'build_py': BuildPyWithExtensionMetadata},
 )
