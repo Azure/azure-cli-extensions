@@ -257,6 +257,7 @@ from azext_aks_preview._validators import (
     validate_system_node_subnet_id,
     validate_node_subnet_id,
     validate_force_upgrade_disable_and_enable_parameters,
+    validate_upgrade_gate_disable_and_enable_parameters,
     validate_azure_service_mesh_revision,
     validate_artifact_streaming,
     validate_os_disk_full_caching,
@@ -1586,8 +1587,18 @@ def load_arguments(self, _):
         )
         c.argument("upgrade_override_until", is_preview=True)
         # upgrade gate
-        c.argument("enable_upgrade_gate", action="store_true", is_preview=True)
-        c.argument("disable_upgrade_gate", action="store_true", is_preview=True)
+        c.argument(
+            "enable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
+        c.argument(
+            "disable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
         c.argument(
             "cluster_autoscaler_profile",
             nargs="+",
@@ -2576,8 +2587,18 @@ def load_arguments(self, _):
             help='The resource ID of the prepared image specification to use for provisioning nodes in the node pool.'
         )
         # upgrade gate
-        c.argument("enable_upgrade_gate", action="store_true", is_preview=True)
-        c.argument("disable_upgrade_gate", action="store_true", is_preview=True)
+        c.argument(
+            "enable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
+        c.argument(
+            "disable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -2731,8 +2752,18 @@ def load_arguments(self, _):
             help='The resource ID of the prepared image specification to use for provisioning nodes in the node pool.'
         )
         # upgrade gate
-        c.argument("enable_upgrade_gate", action="store_true", is_preview=True)
-        c.argument("disable_upgrade_gate", action="store_true", is_preview=True)
+        c.argument(
+            "enable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
+        c.argument(
+            "disable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
 
     with self.argument_context("aks nodepool upgrade") as c:
         # upgrade strategy
