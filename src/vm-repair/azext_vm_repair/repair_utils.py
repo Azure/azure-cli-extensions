@@ -98,14 +98,9 @@ def _quote_cmd_arg(arg):
     return result
 
 
-# Characters that are never safe in a token on a Windows 'cmd /c' line, regardless of call
-# site. cmd.exe's outer parser toggles in-quote state on every literal '"' with no
-# backslash-escape support, so a quote cannot be escaped and must be rejected outright.
-# '%'/'!' are also rejected: cmd.exe expands '%VAR%'/'!VAR!' while parsing the already-
-# quoted line, which can synthesize a '"' at runtime from a value with none (e.g.
-# '%CMDCMDLINE:~10,1%' - see ICM-558). ASCII control characters are rejected for the same
-# reason a quote is. This is a sibling of MSRC 115198/VULN-185362, which only hardened
-# tag values; the check now applies to every _call_az_command call site.
+# '"', '%', '!', and control characters are never safe in a cmd.exe token: quotes can't be
+# escaped on a 'cmd /c' line, and '%'/'!' trigger cmd.exe variable expansion that can
+# synthesize a quote at runtime even from a value with none (see ICM-558).
 def _is_unsafe_cmd_exe_value(value):
     return (
         '"' in value
@@ -115,23 +110,19 @@ def _is_unsafe_cmd_exe_value(value):
     )
 
 
-def _validate_token_for_cmd_exe(token):
+def _validate_token_for_cmd_exe(token, field_name=None):
     """
-    Reject a command-line token that is unsafe on a Windows 'cmd /s /c "..."' line (see
-    _is_unsafe_cmd_exe_value). Raises InvalidArgumentValueError; omits the token from the
-    message since it may carry a secret (e.g. a password) not listed in secure_params.
-
-    Example (ICM-558): a storageProfile.osDisk.vhd.uri of
-    'https://pwned.blob.core.windows.net/x\\" & calc.exe & rem' tokenizes to a value
-    containing a literal '"', which would otherwise close cmd.exe's quoted argument early
-    and run '& calc.exe & rem' as live syntax.
+    Reject a command-line token that is unsafe on Windows (see _is_unsafe_cmd_exe_value).
+    The token itself is never included in the error, since it may carry a secret; an
+    optional field_name names the source property instead, for an actionable message.
     """
     if _is_unsafe_cmd_exe_value(token):
+        where = f' (from {field_name})' if field_name else ''
         raise InvalidArgumentValueError(
-            'A value being passed to a nested az command contains a double quote, '
-            'percent sign, exclamation mark, or control character, which cannot be '
-            'safely used on Windows. The value has been omitted from this message '
-            'because it may contain sensitive data.')
+            f'A value being passed to a nested az command{where} contains a double quote, '
+            'percent sign, exclamation mark, or control character, which cannot be safely '
+            'used on Windows. The value has been omitted because it may be sensitive. '
+            'Remove or rename the offending value on the affected resource and retry.')
 
 
 def _validate_tags_for_command(merged_tags):
@@ -148,20 +139,16 @@ def _validate_tags_for_command(merged_tags):
                 )
 
 
-def _validate_command_for_cmd_exe(command_string):
+def _validate_command_for_cmd_exe(command_string, field_name=None):
     """
-    Tokenize command_string like _call_az_command does and, on Windows only, validate
-    every token via _validate_token_for_cmd_exe without running anything.
-
-    Lets a caller pre-flight-check a later command before an earlier, hard-to-reverse
-    step: custom.py's restore() validates the attach command before detaching the
-    repaired disk, so a rejected token can't leave it detached with no reattachment.
+    Pre-flight-check command_string (tokenized the same way _call_az_command will) without
+    running anything, on Windows only. Lets a caller validate a later, hard-to-reverse step
+    (e.g. a reattach/revert command) before an earlier, one-way step runs.
     """
     if os.name != 'nt':
         return
-    tokenized_command = shlex.split(command_string)
-    for token in tokenized_command[1:]:
-        _validate_token_for_cmd_exe(token)
+    for token in shlex.split(command_string)[1:]:
+        _validate_token_for_cmd_exe(token, field_name=field_name)
 
 
 def _call_az_command(command_string, run_async=False, secure_params=None):

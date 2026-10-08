@@ -10,6 +10,7 @@
 # into a command string and executed through 'cmd /c', resulting in remote code execution
 # on the operator's workstation. See MSRC 115198 / VULN-185362.
 
+import json
 import os
 import shlex
 import subprocess
@@ -21,7 +22,7 @@ import pytest
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
-from azext_vm_repair.custom import restore
+from azext_vm_repair.custom import reset_nic, restore
 from azext_vm_repair.exceptions import AzCommandError
 from azext_vm_repair.repair_utils import (
     _call_az_command,
@@ -356,7 +357,7 @@ def test_rejection_error_does_not_leak_the_raw_token():
     with pytest.raises(InvalidArgumentValueError) as exc_info:
         _validate_token_for_cmd_exe(secret_token)
 
-    assert 'hunter2' not in str(exc_info.value)
+    assert secret_token not in str(exc_info.value)
 
 
 @pytest.mark.parametrize('malicious_disk_uri', [MALICIOUS_DISK_URI, EXPANSION_DISK_URI])
@@ -514,3 +515,99 @@ class UnmanagedDiskAttachValidationTest(unittest.TestCase):
         self.assertEqual(result['status'], 'ERROR')
         mock_az.assert_not_called()
         mock_clean_up.assert_not_called()
+
+
+def test_rejection_error_names_the_field_when_provided():
+    with pytest.raises(InvalidArgumentValueError) as exc_info:
+        _validate_token_for_cmd_exe('bad%value', field_name='storageProfile.osDisk.vhd.uri')
+
+    assert 'storageProfile.osDisk.vhd.uri' in str(exc_info.value)
+    assert 'bad%value' not in str(exc_info.value)
+
+
+def test_rejection_error_has_no_field_name_by_default():
+    with pytest.raises(InvalidArgumentValueError) as exc_info:
+        _validate_token_for_cmd_exe('bad%value')
+
+    assert 'from' not in str(exc_info.value)
+
+
+# ---------------------------------------------------------------------------
+# ICM-558 follow-up: reset_nic's IP-swap/revert flow has the same stranding
+# shape as restore()'s detach/attach - a rejected revert command used to be
+# discovered only after the NIC was already swapped, with no way back.
+# ---------------------------------------------------------------------------
+
+UNSAFE_ASG_NAME = 'asg%CMDCMDLINE:~10,1%'
+
+
+@mock.patch('azext_vm_repair.custom.command_helper', FakeCommandHelper)
+class NicRevertValidationTest(unittest.TestCase):
+    """An unsafe ASG name must block the IP swap before it happens, not after."""
+
+    def _ip_config(self):
+        return json.dumps({
+            'name': 'ipconfig1',
+            'privateIPAddress': '10.0.0.4',
+            'privateIPAllocationMethod': 'Static',
+            'subnet': {'id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet1'},
+            'applicationSecurityGroups': [
+                {'id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Network/applicationSecurityGroups/' + UNSAFE_ASG_NAME},
+            ],
+        })
+
+    def _reset_nic(self):
+        call_results = iter(['primary-nic', self._ip_config(), '10.0.0.5'])
+        with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
+                mock.patch('azext_vm_repair.custom.get_vm_by_aaz', return_value={}), \
+                mock.patch('azext_vm_repair.custom._check_n_start_vm', return_value=True), \
+                mock.patch('azext_vm_repair.custom._call_az_command', side_effect=lambda *a, **k: next(call_results)) as mock_az:
+            result = reset_nic(mock.MagicMock(), 'vm', 'rg')
+        return result, mock_az
+
+    def test_unsafe_asg_name_blocks_swap_before_it_happens(self):
+        result, mock_az = self._reset_nic()
+
+        self.assertEqual(result['status'], 'ERROR')
+        # Only the 3 read-only lookups should have run; the IP swap itself must not.
+        self.assertEqual(mock_az.call_count, 3)
+
+
+@mock.patch('azext_vm_repair.custom.command_helper', FakeCommandHelper)
+class NicRevertHappyPathTest(unittest.TestCase):
+    """Legit ASG names and both IP allocation methods must still complete after the reorder."""
+
+    def _ip_config(self, allocation_method, with_asg):
+        config = {
+            'name': 'ipconfig1',
+            'privateIPAddress': '10.0.0.4',
+            'privateIPAllocationMethod': allocation_method,
+            'subnet': {'id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet1'},
+        }
+        if with_asg:
+            config['applicationSecurityGroups'] = [
+                {'id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Network/applicationSecurityGroups/clean-asg'},
+            ]
+        return json.dumps(config)
+
+    def _reset_nic(self, allocation_method, with_asg):
+        # 3 read-only lookups, then update + wait + revert: 6 calls total on the happy path.
+        call_results = iter(['primary-nic', self._ip_config(allocation_method, with_asg), '10.0.0.5', '', '', ''])
+        with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
+                mock.patch('azext_vm_repair.custom.get_vm_by_aaz', return_value={}), \
+                mock.patch('azext_vm_repair.custom._check_n_start_vm', return_value=True), \
+                mock.patch('azext_vm_repair.custom._call_az_command', side_effect=lambda *a, **k: next(call_results)) as mock_az:
+            result = reset_nic(mock.MagicMock(), 'vm', 'rg')
+        return result, mock_az
+
+    def test_static_ip_with_asg_completes(self):
+        result, mock_az = self._reset_nic('Static', with_asg=True)
+
+        self.assertEqual(result['status'], 'SUCCESS')
+        self.assertEqual(mock_az.call_count, 6)
+
+    def test_dynamic_ip_without_asg_completes(self):
+        result, mock_az = self._reset_nic('Dynamic', with_asg=False)
+
+        self.assertEqual(result['status'], 'SUCCESS')
+        self.assertEqual(mock_az.call_count, 6)
