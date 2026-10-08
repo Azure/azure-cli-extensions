@@ -4,7 +4,10 @@ Release History
 
 2.4.6
 ++++++
-Hardened nested ``az`` command invocation on Windows: any value interpolated into a command string is now rejected if it contains a double quote, a percent sign, an exclamation mark, or a control character, instead of being passed through to the nested ``cmd.exe`` call. This closes a command-injection gap in the unmanaged-disk repair path (an untrusted, writable VM property could previously reach this sink unvalidated) and applies uniformly to every nested command built by the extension, not only the previously-hardened tag values. Percent signs and exclamation marks are rejected because ``cmd.exe``'s own environment-variable expansion can otherwise synthesize a disallowed character at runtime from a value that contained none of them literally. The error raised when a value is rejected no longer echoes the value back, since it may carry sensitive data; this now also applies to values passed only via ``secure_params`` (for example a repair password), which a masking-order bug had previously let bypass this validation entirely. The unmanaged-disk and managed-disk restore flows now also validate the final re-attach command before detaching the repaired disk from the repair VM, so a rejected value cannot leave a disk detached with no automatic reattachment.
+* Fixed a Windows command-injection gap: untrusted VM properties (for example the unmanaged-disk URI) reached a nested ``cmd.exe`` call unvalidated. Now any unsafe character (quote, ``%``, ``!``, control char) is rejected on every nested ``az`` command, not just tags.
+* Rejection errors no longer echo the offending value, and this now also covers values passed via ``secure_params`` (e.g. a repair password), closing a prior masking-order bypass.
+* ``restore`` and ``reset-nic`` now validate the follow-up command (re-attach disk / revert NIC) before the preceding, hard-to-reverse step runs, so a rejected value can't strand a disk or NIC mid-operation.
+* Rejection errors now name the affected property (e.g. ``storageProfile.osDisk.vhd.uri``) when known.
 
 2.4.5
 ++++++
