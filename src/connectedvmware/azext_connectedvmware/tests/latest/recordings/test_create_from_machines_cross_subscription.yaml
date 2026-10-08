@@ -1,0 +1,1320 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resource show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute","namespace":"Microsoft.HybridCompute","authorizations":[{"applicationId":"8c420feb-03df-47cc-8a05-55df0cf3064b","roleDefinitionId":"83eeb1c6-47f8-4da2-bbc3-42a7ac767360"},{"applicationId":"d2a590e7-6906-4a45-8f41-cecfdca9bca1","roleDefinitionId":"f32ad452-2b05-4296-bee4-fc9056ed85fa"},{"applicationId":"5e5e43d4-54da-4211-86a4-c6e7f3715801","roleDefinitionId":"ffcd6e5b-8772-457d-bb17-89703c03428f"},{"applicationId":"d00b5d58-cae5-42ad-ae0a-5a2e6f7ee6c9","roleDefinitionId":"4d8fb750-b938-4da8-95ce-557d4d36bd3b"},{"applicationId":"c8f5141d-83e0-4e9a-84d0-bb6677e26f64","roleDefinitionId":"b9872c82-72dd-402b-add5-f99a58f990da"},{"applicationId":"eec53b1f-b9a4-4479-acf5-6b247c6a49f2"},{"applicationId":"61414a6b-7050-4d69-8e88-d6c5646bab20"},{"applicationId":"5a8800f2-f31d-4654-9bed-f5b368c703f8","roleDefinitionId":"f5cff2b7-37d6-4e77-99e8-6e8ad7719923"},{"applicationId":"5bab4c7f-51c3-479b-a199-06b31afecc8f","roleDefinitionId":"f5cff2b7-37d6-4e77-99e8-6e8ad7719923"},{"applicationId":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","roleDefinitionId":"d367c838-4ddb-41b7-b6d8-53d0fe49b19f"},{"applicationId":"e18cedde-9458-482f-9dd1-558c597ac42e","roleDefinitionId":"01ce5666-d866-4fb1-80a1-fc11b2b6f7d5"}],"resourceTypes":[{"resourceType":"machines","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"machines/hybridIdentityMetadata","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/privateLinkScopes","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/extensions","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations","locations":["West
+        Europe","East US 2 EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2026-02-01-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/publishers","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/publishers/extensionTypes","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/publishers/extensionTypes/versions","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/operationStatus","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2026-02-01-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/operationResults","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2026-02-01-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"operations","locations":[],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/assessPatches","locations":["West
+        US 2","West Europe","Southeast Asia","East US","West Central US","South Central
+        US","North Europe","UK South","Australia East","East US 2","Japan East","Canada
+        Central","West US","North Central US","France Central","Korea Central","UK
+        West","West US 3","East Asia","Brazil South","Central US","Switzerland North","South
+        Africa North","Central India","Sweden Central","Canada East","Australia Southeast","Norway
+        East","UAE North","Germany West Central","Italy North","Israel Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/installPatches","locations":["West
+        US 2","West Europe","Southeast Asia","East US","West Central US","South Central
+        US","North Europe","UK South","Australia East","East US 2","Japan East","Canada
+        Central","West US","North Central US","France Central","Korea Central","UK
+        West","West US 3","East Asia","Brazil South","Central US","Switzerland North","South
+        Africa North","Central India","Sweden Central","Canada East","Australia Southeast","Norway
+        East","UAE North","Germany West Central","Italy North","Israel Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/updateCenterOperationResults","locations":["West
+        US 2","West Europe","Southeast Asia","East US","West Central US","South Central
+        US","North Europe","UK South","Australia East","East US 2","japan East","Canada
+        Central","West US","North Central US","France Central","Korea Central","UK
+        West","West US 3","East Asia","Brazil South","Central US","Switzerland North","South
+        Africa North","Central India","Sweden Central","Canada East","Australia Southeast","Norway
+        East","UAE North","Germany West Central","Italy North","Israel Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2025-02-19-preview","2025-01-13","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"privateLinkScopes","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"privateLinkScopes/privateEndpointConnections","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","Switzerland
+        North","UAE North","UK West","Central India","Canada East","South Africa North","Sweden
+        Central","Australia Southeast","Norway East","Italy North","South India","Israel
+        Central","Japan West","Qatar Central","Spain Central","Poland Central","Korea
+        South","Jio India West","Switzerland West","Indonesia Central","Malaysia West","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"privateLinkScopes/privateEndpointConnectionProxies","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","Switzerland
+        North","UAE North","UK West","Central India","Canada East","South Africa North","Sweden
+        Central","Australia Southeast","Norway East","Italy North","South India","Israel
+        Central","Japan West","Qatar Central","Spain Central","Poland Central","Korea
+        South","Jio India West","Switzerland West","Indonesia Central","Malaysia West","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/privateLinkScopes","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","Switzerland
+        North","UAE North","UK West","Central India","Canada East","South Africa North","Sweden
+        Central","Australia Southeast","Norway East","Italy North","South India","Israel
+        Central","Japan West","Qatar Central","Spain Central","Poland Central","Korea
+        South","Jio India West","Switzerland West","Indonesia Central","Malaysia West","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"osType","locations":["West
+        Europe","East US 2 EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"osType/agentVersions","locations":[],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"osType/agentVersions/latest","locations":[],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/runcommands","locations":["West
+        Central US","West US 2","West Europe","East US","Southeast Asia","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"machines/licenseProfiles","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"licenses","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"validateLicense","locations":[],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"networkConfigurations","locations":["Israel
+        Central","Japan West","Qatar Central","Spain Central","Poland Central","Korea
+        South","Jio India West","Switzerland West","Indonesia Central","Malaysia West","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"SupportsExtension"},{"resourceType":"settings","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview"],"defaultApiVersion":"2026-07-15","capabilities":"SupportsExtension"},{"resourceType":"gateways","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"privateLinkScopes/networkSecurityPerimeterConfigurations","locations":["Israel
+        Central","Japan West","Qatar Central","Spain Central","Poland Central","Korea
+        South","Jio India West","Switzerland West","Indonesia Central","Malaysia West","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"privateLinkScopes/networkSecurityPerimeterAssociationProxies","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/notifyNetworkSecurityPerimeterUpdatesAvailable","locations":["East
+        US 2 EUAP","West Central US","West US 2","West Europe","Southeast Asia","East
+        US","Australia East","South Central US","East US 2","North Europe","France
+        Central","Japan East","UK South","East Asia","Canada Central","Central US
+        EUAP","Korea Central","North Central US","West US","West US 3","Central US","Germany
+        West Central","Brazil South","UAE North","Switzerland North","UK West","Central
+        India","Canada East","South Africa North","Sweden Central","Australia Southeast","Norway
+        East","Italy North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/notifyExtension","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/notifyRunCommand","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/applications","locations":["Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2026-02-01-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '39089'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Oct 2026 07:09:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 660154FDDDD94D3DAD81455A06ED1A00 Ref B: SG2AA1040515029 Ref C: 2026-10-02T07:09:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resource show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli?api-version=2026-07-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli","name":"test-vm-azcli","location":"eastus2euap","tags":{"azsecpack":"nonprod"},"identity":{"type":"SystemAssigned","principalId":"50d3d827-5b35-4f40-956a-a20eea096723","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.68.03532.1399","status":"Connected","lastStatusChange":"2026-10-02T07:08:21.6945852Z","errorDetails":[],"displayName":"arcvmware","machineFqdn":"arcvmware","osName":"linux","osVersion":"5.4.0-216-generic","osType":"linux","osProfile":{"computerName":"arcvmware"},"vmId":"8dc96014-7626-4ccc-b8d5-02e9e21ddea2","vmUuid":"38773742-b91d-85eb-a6c5-88b261ec6deb","clientPublicKey":"MIIBCgKCAQEA1dFlycHW8UmBpe4ygpWQJ5iWFgi8wX2Liy16tfIgXkdsmnm/qzD7i+D4GmUGZBmBM1CRREeBnrWNp4EcYkaHWfgN3rbguPnDpfMbkAxzOI6jUTReFE5SuWT1vgQe+LWvBTcIiQUQvt+UPK2zZ67VcE+/p35wRUqopwreEMwquMnzTxKmHSABpvLL5yjk3hVj6oIjWBMch6gy54dqduGmmFyPyySQUnaxkFETaSf9Uc1k5gucKSXCRguCenDH4ppc3Qz2Lnrlm2if5CY2uhX+pt8Dw2luAe9fCZxmNqacE68yzaiTRGLv1wDS/8ktbxRzel6YffSd1IeMn4IUmbq2pwIDAQAB","identityKeyStore":"Default","osSku":"Ubuntu
+        20.04.6 LTS","osEdition":"unknown","domainName":"unknown","adFqdn":"unknown","dnsFqdn":"arcvmware","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"architecture":"amd64","cloudprovider":"N/A","coreCount":"2","hypervisorType":"VMware","logicalCoreCount":"2","manufacturer":"VMware,
+        Inc.","model":"VMware20,1","mssqldiscovered":"false","mysqldiscovered":"false","pgsqldiscovered":"false","processorCount":"1","processorNames":"Intel(R)
+        Xeon(R) Gold 5220R CPU @ 2.20GHz","productType":"unknown","serialNumber":"VMware-42
+        37 77 38 1d b9 eb 85-a6 c5 88 b2 61 ec 6d eb","smbiosAssetTag":"No Asset Tag","totalPhysicalMemoryInBytes":"2066485248","totalPhysicalMemoryInGigabytes":"1","tpm_Present":"false","tpm_Ready":"false","tpm_SpecVersion":"","ubuntuPro":"unknown","vmuuidEsu":"","vmuuidEsu2012":""},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"active","startupType":"enabled"},"guestConfigurationService":{"status":"active","startupType":"enabled"}},"agentUpgrade":{"enableAutomaticUpgrade":true},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"10.150.179.189","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.150.176.0/21"}},{"address":"2404:f801:4800:14:250:56ff:feb7:f292","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2404:f801:4800:14::/64"}}],"macAddress":"00:50:56:b7:f2:92","id":"2","name":"ens33"}]},"licenseProfile":{"esuProfile":{"licenseAssignmentState":"NotAssigned","serverType":"Unknown","esuEligibility":"Ineligible","esuKeyState":"Inactive"}},"storageProfile":{"disks":[{"path":"/dev/loop0","diskType":"loop","generatedId":"DataDisk0","id":"/dev/loop0","name":"/dev/loop0","maxSizeInBytes":96292864,"usedSpaceInBytes":94080},{"path":"/dev/loop1","diskType":"loop","generatedId":"DataDisk1","id":"/dev/loop1","name":"/dev/loop1","maxSizeInBytes":66879488,"usedSpaceInBytes":65408},{"path":"/dev/loop2","diskType":"loop","generatedId":"DataDisk2","id":"/dev/loop2","name":"/dev/loop2","maxSizeInBytes":52260864,"usedSpaceInBytes":51072},{"path":"/dev/loop3","diskType":"loop","generatedId":"DataDisk3","id":"/dev/loop3","name":"/dev/loop3","maxSizeInBytes":66359296,"usedSpaceInBytes":64896},{"path":"/dev/loop4","diskType":"loop","generatedId":"DataDisk4","id":"/dev/loop4","name":"/dev/loop4","maxSizeInBytes":96645120,"usedSpaceInBytes":94464},{"path":"/dev/sda","diskType":"disk","generatedId":"RootDisk","id":"/dev/sda","name":"/dev/sda","maxSizeInBytes":26843545600,"usedSpaceInBytes":123572},{"path":"/dev/sr0","diskType":"rom","generatedId":"DataDisk5","id":"/dev/sr0","name":"/dev/sr0","maxSizeInBytes":1073741312},{"path":"/dev/mapper/ubuntu--vg-ubuntu--lv","diskType":"lvm","generatedId":"DataDisk6","id":"/dev/mapper/ubuntu--vg-ubuntu--lv","name":"/dev/mapper/ubuntu--vg-ubuntu--lv","maxSizeInBytes":11781799936,"usedSpaceInBytes":5373112}]},"firmwareProfile":{"serialNumber":"VMware-42
+        37 77 38 1d b9 eb 85-a6 c5 88 b2 61 ec 6d eb","type":"EFI"},"hardwareProfile":{"totalPhysicalMemoryInBytes":2066485248,"numberOfCpuSockets":1,"processors":[{"name":"Intel(R)
+        Xeon(R) Gold 5220R CPU @ 2.20GHz","numberOfCores":2}]}},"resources":[],"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-02T07:08:01.9537264Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-02T07:08:01.9537264Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4838'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Oct 2026 07:09:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 4BDF206B4B8A41CCB8063BC58C4F4600 Ref B: SG2AA1070304040 Ref C: 2026-10-02T07:09:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm create-from-machines
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --name --vcenter-id
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwareVsphere/vcenters/azcli-vcenter-scenario?api-version=2023-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/microsoft.connectedvmwarevsphere/vcenters/azcli-vcenter-scenario","name":"azcli-vcenter-scenario","type":"microsoft.connectedvmwarevsphere/vcenters","kind":"VMware","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl"},"tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-01T05:26:05.4063514Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2026-10-02T07:09:00.9740249Z"},"properties":{"credentials":{"username":"criticalinfra@vsphere.local"},"fqdn":"idclab-vcen8.fareast.corp.microsoft.com","port":443,"provisioningState":"Succeeded","uuid":"20e9dc9f-5cdc-4586-a9f2-6ba3fb3954df","statuses":[{"status":"True","type":"Connected","lastUpdatedAt":"2026-10-01T05:27:10Z"},{"status":"True","type":"Ready","lastUpdatedAt":"2026-10-01T05:27:36.620678Z"},{"status":"True","type":"Idle","lastUpdatedAt":"2026-10-01T05:27:36.620678Z"}],"customResourceName":"20e9dc9f-5cdc-4586-a9f2-6ba3fb3954df","version":"8.0.1","instanceUuid":"0fa0baee-4b1f-45fc-b16d-1684789f2634","connectionStatus":"Connected"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1388'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Oct 2026 07:09:55 GMT
+      etag:
+      - '"00003b9d-0000-3300-0000-6abf588d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 2E311486188E488A9A7726BF1D4E9DA8 Ref B: SG2AA1040518023 Ref C: 2026-10-02T07:09:55Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"subscriptions": ["00000000-0000-0000-0000-000000000000", "11111111-1111-1111-1111-111111111111"],
+      "query": " Resources | where subscriptionId =~ ''00000000-0000-0000-0000-000000000000''
+      | where resourceGroup =~ ''azcli-machine-integration-test'' | where id =~ ''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli''
+      | where type =~ ''Microsoft.HybridCompute/machines'' | where isempty(kind) or
+      kind =~ ''VMware'' | extend p=parse_json(properties) | extend u = tolower(tostring(p[''vmUuid'']))
+      | where isnotempty(u) | where location =~ ''eastus2euap'' | extend vmUuidRev
+      = strcat(     substring(u, 6, 2), substring(u, 4, 2), substring(u, 2, 2), substring(u,
+      0, 2), ''-'',     substring(u, 11, 2), substring(u, 9, 2), ''-'',     substring(u,
+      16, 2), substring(u, 14, 2), ''-'',     substring(u, 19)) | extend vmUuid=pack_array(u,
+      vmUuidRev) | mv-expand vmUuid | extend vmUuid=tostring(vmUuid) | project machineId=id,
+      name, resourceGroup, vmUuid, kind | join kind=inner ( ConnectedVMwareVsphereResources
+      | where type =~ ''Microsoft.ConnectedVMwareVsphere/VCenters/InventoryItems''
+      | where kind =~ ''VirtualMachine'' | where id startswith ''/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/microsoft.connectedvmwarevsphere/vcenters/azcli-vcenter-scenario/InventoryItems''
+      | extend p=parse_json(properties) | extend biosId = tolower(tostring(p[''smbiosUuid'']))
+      | extend managedResourceId=tolower(tostring(p[''managedResourceId''])) | project
+      inventoryId=id, biosId, managedResourceId ) on $left.vmUuid == $right.biosId
+      | project-away vmUuid", "options": {"allowPartialScopes": false, "authorizationScopeFilter":
+      "AtScopeAndBelow"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm create-from-machines
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1753'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --subscription --resource-group --name --vcenter-id
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2022-10-01
+  response:
+    body:
+      string: '{"totalRecords":1,"count":1,"data":[{"machineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli","name":"test-vm-azcli","resourceGroup":"azcli-machine-integration-test","kind":"","inventoryId":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario/InventoryItems/vm-505434","biosId":"42377738-1db9-eb85-a6c5-88b261ec6deb","managedResourceId":""}],"facets":[],"resultTruncated":"false"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '605'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Oct 2026 07:09:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '14'
+      x-ms-resource-graph-request-duration:
+      - '0:00:00:00.3115537'
+      x-ms-user-quota-remaining:
+      - '14'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+      x-msedge-ref:
+      - 'Ref A: 65AC60A5E1344BC586D790FA9CEBDBFB Ref B: SG2AA1040515034 Ref C: 2026-10-02T07:09:56Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"kind": "VMware"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm create-from-machines
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '18'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --subscription --resource-group --name --vcenter-id
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PATCH
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli?api-version=2023-04-25-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli","name":"test-vm-azcli","location":"eastus2euap","tags":{"azsecpack":"nonprod"},"kind":"VMware","identity":{"type":"SystemAssigned","principalId":"50d3d827-5b35-4f40-956a-a20eea096723","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Updating","agentVersion":"1.68.03532.1399","status":"Connected","lastStatusChange":"2026-10-02T07:08:21.6945852Z","errorDetails":[],"displayName":"arcvmware","machineFqdn":"arcvmware","osName":"linux","osVersion":"5.4.0-216-generic","osType":"linux","osProfile":{"computerName":"arcvmware"},"vmId":"8dc96014-7626-4ccc-b8d5-02e9e21ddea2","vmUuid":"38773742-b91d-85eb-a6c5-88b261ec6deb","clientPublicKey":"MIIBCgKCAQEA1dFlycHW8UmBpe4ygpWQJ5iWFgi8wX2Liy16tfIgXkdsmnm/qzD7i+D4GmUGZBmBM1CRREeBnrWNp4EcYkaHWfgN3rbguPnDpfMbkAxzOI6jUTReFE5SuWT1vgQe+LWvBTcIiQUQvt+UPK2zZ67VcE+/p35wRUqopwreEMwquMnzTxKmHSABpvLL5yjk3hVj6oIjWBMch6gy54dqduGmmFyPyySQUnaxkFETaSf9Uc1k5gucKSXCRguCenDH4ppc3Qz2Lnrlm2if5CY2uhX+pt8Dw2luAe9fCZxmNqacE68yzaiTRGLv1wDS/8ktbxRzel6YffSd1IeMn4IUmbq2pwIDAQAB","osSku":"Ubuntu
+        20.04.6 LTS","domainName":"unknown","adFqdn":"unknown","dnsFqdn":"arcvmware","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"architecture":"amd64","cloudprovider":"N/A","coreCount":"2","hypervisorType":"VMware","logicalCoreCount":"2","manufacturer":"VMware,
+        Inc.","model":"VMware20,1","mssqldiscovered":"false","mysqldiscovered":"false","pgsqldiscovered":"false","processorCount":"1","processorNames":"Intel(R)
+        Xeon(R) Gold 5220R CPU @ 2.20GHz","productType":"unknown","serialNumber":"VMware-42
+        37 77 38 1d b9 eb 85-a6 c5 88 b2 61 ec 6d eb","smbiosAssetTag":"No Asset Tag","totalPhysicalMemoryInBytes":"2066485248","totalPhysicalMemoryInGigabytes":"1","tpm_Present":"false","tpm_Ready":"false","tpm_SpecVersion":"","ubuntuPro":"unknown","vmuuidEsu":"","vmuuidEsu2012":""},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"active","startupType":"enabled"},"guestConfigurationService":{"status":"active","startupType":"enabled"}},"agentUpgrade":{"enableAutomaticUpgrade":true},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"10.150.179.189","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.150.176.0/21"}},{"address":"2404:f801:4800:14:250:56ff:feb7:f292","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2404:f801:4800:14::/64"}}]}]}},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-02T07:08:01.9537264Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-02T07:09:59.4334569Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2996'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Oct 2026 07:09:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=485c94a8-4f47-4a21-b5b4-24566d261e07/eastus2euap/fab85529-26b2-45cd-bb88-9107ce56fbe5
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '799'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: AB17A115B38347D9B7B5C35CCC8EBFE8 Ref B: SG2AA1070306025 Ref C: 2026-10-02T07:09:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"extendedLocation": {"type": "CustomLocation", "name": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl"},
+      "properties": {"infrastructureProfile": {"inventoryItemId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario/InventoryItems/vm-505434"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm create-from-machines
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '471'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --subscription --resource-group --name --vcenter-id
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default?api-version=2023-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default","name":"default","type":"microsoft.connectedvmwarevsphere/virtualmachineinstances","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-02T07:10:02.0993656Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-02T07:10:02.0993656Z"},"properties":{"infrastructureProfile":{"inventoryItemId":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario/InventoryItems/vm-505434","vCenterId":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario"},"provisioningState":"Accepted","statuses":[{"status":"False","type":"Ready","reason":"Provisioning","message":"The
+        resource is being provisioned.","severity":"Info","lastUpdatedAt":"2026-10-02T07:10:11.709601Z"},{"status":"False","type":"Idle","reason":"Provisioning","message":"The
+        resource is being provisioned.","severity":"Info","lastUpdatedAt":"2026-10-02T07:10:11.709601Z"}]}}'
+    headers:
+      api-supported-versions:
+      - 2020-10-01-preview, 2022-01-10-preview, 2022-07-15-preview, 2023-03-01-preview,
+        2023-10-01, 2023-12-01
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/e38ac73e-4913-41e3-8da7-7f7e028c6fe4*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639265218118653236&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=sJhr-q1NtRKLDhCI8UDdyiARtzQ099ezcnYsH2QbzsTQ00bQ-CgOHTSgrOq5ldz7ElnNW3n8VWAOsDlvVDSr6ZzyA7vA5AKVvopH5Hz2gwYUWS7oHDR-NU2g2mln_lEGDQ7-6VsgJTPvzZ64si2FKQmflDnLGOjs2BOqTNe4X-XkzjTQntNfD6VjxBBJmT4j7OCPFm9-q7oBpVfZSOhXOzx6qcjEKoLBigoT3yec8RpyE1yo0zN8lHiVsQBdOI6Mr7I72wRVzIJxvuqh7H5G1fpHRtUk1v7FHYCYOgAbQpdFnfcphYTwqfqiULfV95B0obhbFk8d-A1me9t_I3uUEQ&h=D3R1tGuhCSA2Od2ncfi0oLuIwGGybY68Usajwdnq73E
+      cache-control:
+      - no-cache
+      content-length:
+      - '1567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Oct 2026 07:10:11 GMT
+      etag:
+      - '"16006707-0000-3300-0000-6abf58d30000"'
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - P6D
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=485c94a8-4f47-4a21-b5b4-24566d261e07/eastus2euap/066141ac-8fc3-4a46-8207-c65650e24391
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '800'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 56461EDAA3F8486F8D6F788A216C8882 Ref B: SG2AA1040519029 Ref C: 2026-10-02T07:10:01Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm create-from-machines
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --name --vcenter-id
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/e38ac73e-4913-41e3-8da7-7f7e028c6fe4*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639265218118653236&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=sJhr-q1NtRKLDhCI8UDdyiARtzQ099ezcnYsH2QbzsTQ00bQ-CgOHTSgrOq5ldz7ElnNW3n8VWAOsDlvVDSr6ZzyA7vA5AKVvopH5Hz2gwYUWS7oHDR-NU2g2mln_lEGDQ7-6VsgJTPvzZ64si2FKQmflDnLGOjs2BOqTNe4X-XkzjTQntNfD6VjxBBJmT4j7OCPFm9-q7oBpVfZSOhXOzx6qcjEKoLBigoT3yec8RpyE1yo0zN8lHiVsQBdOI6Mr7I72wRVzIJxvuqh7H5G1fpHRtUk1v7FHYCYOgAbQpdFnfcphYTwqfqiULfV95B0obhbFk8d-A1me9t_I3uUEQ&h=D3R1tGuhCSA2Od2ncfi0oLuIwGGybY68Usajwdnq73E
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/e38ac73e-4913-41e3-8da7-7f7e028c6fe4*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","name":"e38ac73e-4913-41e3-8da7-7f7e028c6fe4*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default","status":"Accepted","startTime":"2026-10-02T07:10:11.0522216Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '613'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Oct 2026 07:10:12 GMT
+      etag:
+      - '"1e00259d-0000-3300-0000-6abf58d30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 028496E0BD72466E81944364390BFFD6 Ref B: SG2AA1070301060 Ref C: 2026-10-02T07:10:13Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm create-from-machines
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --name --vcenter-id
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/e38ac73e-4913-41e3-8da7-7f7e028c6fe4*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639265218118653236&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=sJhr-q1NtRKLDhCI8UDdyiARtzQ099ezcnYsH2QbzsTQ00bQ-CgOHTSgrOq5ldz7ElnNW3n8VWAOsDlvVDSr6ZzyA7vA5AKVvopH5Hz2gwYUWS7oHDR-NU2g2mln_lEGDQ7-6VsgJTPvzZ64si2FKQmflDnLGOjs2BOqTNe4X-XkzjTQntNfD6VjxBBJmT4j7OCPFm9-q7oBpVfZSOhXOzx6qcjEKoLBigoT3yec8RpyE1yo0zN8lHiVsQBdOI6Mr7I72wRVzIJxvuqh7H5G1fpHRtUk1v7FHYCYOgAbQpdFnfcphYTwqfqiULfV95B0obhbFk8d-A1me9t_I3uUEQ&h=D3R1tGuhCSA2Od2ncfi0oLuIwGGybY68Usajwdnq73E
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/e38ac73e-4913-41e3-8da7-7f7e028c6fe4*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","name":"e38ac73e-4913-41e3-8da7-7f7e028c6fe4*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default","status":"Succeeded","startTime":"2026-10-02T07:10:11.0522216Z","endTime":"2026-10-02T07:10:34.1240919Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '673'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Oct 2026 07:10:44 GMT
+      etag:
+      - '"1e00c9a2-0000-3300-0000-6abf58ea0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 26D621E33E544A82BFB434EB6CE1A8C4 Ref B: SG2AA1040518040 Ref C: 2026-10-02T07:10:45Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm create-from-machines
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --name --vcenter-id
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default?api-version=2023-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default","name":"default","type":"microsoft.connectedvmwarevsphere/virtualmachineinstances","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-02T07:10:02.0993656Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-02T07:10:02.0993656Z"},"properties":{"infrastructureProfile":{"inventoryItemId":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario/InventoryItems/vm-505434","vCenterId":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario","customResourceName":"923f0eb9-81ce-4437-915b-925b8e48d0ee","moRefId":"vm-505434","instanceUuid":"50373be8-8dd8-54bf-1b79-cdd875f592d5","moName":"test-vm-azcli","folderPath":"ArcVMwareCriticalInfra/ArcVMwareSynthetics","smbiosUuid":"42377738-1db9-eb85-a6c5-88b261ec6deb","firmwareType":"efi"},"provisioningState":"Succeeded","statuses":[{"status":"True","type":"Ready","lastUpdatedAt":"2026-10-02T07:10:33.6664967Z"},{"status":"True","type":"Idle","lastUpdatedAt":"2026-10-02T07:10:33.6664967Z"}],"placementProfile":{},"resourceUid":"8dc96014-7626-4ccc-b8d5-02e9e21ddea2","networkProfile":{"networkInterfaces":[{"powerOnBoot":"enabled","ipSettings":{"allocationMethod":"unset","dnsServers":["10.50.50.50","10.50.10.50"],"gateway":["10.150.176.1","fe80::201:11ff:fe11:1111"],"ipAddress":"10.150.179.189","subnetMask":"255.255.248.0","ipAddressInfo":[{"ipAddress":"10.150.179.189","subnetMask":"255.255.248.0"},{"ipAddress":"2404:f801:4800:14:250:56ff:feb7:f292","subnetMask":"ffff:ffff:ffff:ffff:0000:0000:0000:0000"},{"ipAddress":"fe80::250:56ff:feb7:f292","subnetMask":"ffff:ffff:ffff:ffff:0000:0000:0000:0000"}]},"label":"Network
+        adapter 1","ipAddresses":["10.150.179.189","2404:f801:4800:14:250:56ff:feb7:f292","fe80::250:56ff:feb7:f292"],"macAddress":"00:50:56:b7:f2:92","networkMoRefId":"network-18983","networkMoName":"VM
+        Network","nicType":"vmxnet3","deviceKey":4000}]},"storageProfile":{"disks":[{"diskObjectId":"62444-2000","label":"Hard
+        disk 1","diskSizeGB":25,"deviceKey":2000,"diskMode":"persistent","controllerKey":1000,"unitNumber":0,"diskType":"flat"}],"scsiControllers":[{"type":"pvscsi","controllerKey":1000,"scsiCtlrUnitNumber":7,"sharing":"noSharing"}]},"securityProfile":{"uefiSettings":{"secureBootEnabled":false}},"osProfile":{"computerName":"arcvmware","osSku":"Ubuntu
+        Linux (64-bit)","osType":"Linux","guestId":"ubuntu64Guest","toolsRunningStatus":"guestToolsRunning","toolsVersionStatus":"guestToolsUnmanaged","toolsVersion":"11360"},"hardwareProfile":{"memorySizeMB":2048,"numCPUs":2,"numCoresPerSocket":2,"cpuHotAddEnabled":false,"cpuHotRemoveEnabled":false,"memoryHotAddEnabled":false},"powerState":"poweredOn"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3324'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Oct 2026 07:10:46 GMT
+      etag:
+      - '"15009a80-0000-3400-0000-6abf58ea0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=485c94a8-4f47-4a21-b5b4-24566d261e07/eastus2euap/dae09f55-769e-4694-98be-83d26c23a880
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1099'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 94EEDD8B98C14FD1B37B5E54DBC24045 Ref B: SG2AA1070303031 Ref C: 2026-10-02T07:10:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default?api-version=2023-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default","name":"default","type":"microsoft.connectedvmwarevsphere/virtualmachineinstances","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-02T07:10:02.0993656Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-02T07:10:02.0993656Z"},"properties":{"infrastructureProfile":{"inventoryItemId":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario/InventoryItems/vm-505434","vCenterId":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/azcli-integration-test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-vcenter-scenario","customResourceName":"923f0eb9-81ce-4437-915b-925b8e48d0ee","moRefId":"vm-505434","instanceUuid":"50373be8-8dd8-54bf-1b79-cdd875f592d5","moName":"test-vm-azcli","folderPath":"ArcVMwareCriticalInfra/ArcVMwareSynthetics","smbiosUuid":"42377738-1db9-eb85-a6c5-88b261ec6deb","firmwareType":"efi"},"provisioningState":"Succeeded","statuses":[{"status":"True","type":"Ready","lastUpdatedAt":"2026-10-02T07:10:33.6664967Z"},{"status":"True","type":"Idle","lastUpdatedAt":"2026-10-02T07:10:33.6664967Z"}],"placementProfile":{},"resourceUid":"8dc96014-7626-4ccc-b8d5-02e9e21ddea2","networkProfile":{"networkInterfaces":[{"powerOnBoot":"enabled","ipSettings":{"allocationMethod":"unset","dnsServers":["10.50.50.50","10.50.10.50"],"gateway":["10.150.176.1","fe80::201:11ff:fe11:1111"],"ipAddress":"10.150.179.189","subnetMask":"255.255.248.0","ipAddressInfo":[{"ipAddress":"10.150.179.189","subnetMask":"255.255.248.0"},{"ipAddress":"2404:f801:4800:14:250:56ff:feb7:f292","subnetMask":"ffff:ffff:ffff:ffff:0000:0000:0000:0000"},{"ipAddress":"fe80::250:56ff:feb7:f292","subnetMask":"ffff:ffff:ffff:ffff:0000:0000:0000:0000"}]},"label":"Network
+        adapter 1","ipAddresses":["10.150.179.189","2404:f801:4800:14:250:56ff:feb7:f292","fe80::250:56ff:feb7:f292"],"macAddress":"00:50:56:b7:f2:92","networkMoRefId":"network-18983","networkMoName":"VM
+        Network","nicType":"vmxnet3","deviceKey":4000}]},"storageProfile":{"disks":[{"diskObjectId":"62444-2000","label":"Hard
+        disk 1","diskSizeGB":25,"deviceKey":2000,"diskMode":"persistent","controllerKey":1000,"unitNumber":0,"diskType":"flat"}],"scsiControllers":[{"type":"pvscsi","controllerKey":1000,"scsiCtlrUnitNumber":7,"sharing":"noSharing"}]},"securityProfile":{"uefiSettings":{"secureBootEnabled":false}},"osProfile":{"computerName":"arcvmware","osSku":"Ubuntu
+        Linux (64-bit)","osType":"Linux","guestId":"ubuntu64Guest","toolsRunningStatus":"guestToolsRunning","toolsVersionStatus":"guestToolsUnmanaged","toolsVersion":"11360"},"hardwareProfile":{"memorySizeMB":2048,"numCPUs":2,"numCoresPerSocket":2,"cpuHotAddEnabled":false,"cpuHotRemoveEnabled":false,"memoryHotAddEnabled":false},"powerState":"poweredOn"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3324'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Oct 2026 07:10:48 GMT
+      etag:
+      - '"15009a80-0000-3400-0000-6abf58ea0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=485c94a8-4f47-4a21-b5b4-24566d261e07/eastus2euap/353b9014-6a18-44c1-a6ca-653211017c99
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1099'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: E1ABF90EE8504DF68DE7F67463B8F6D7 Ref B: SG2AA1070306034 Ref C: 2026-10-02T07:10:48Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --subscription --resource-group --name --retain-machine --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: DELETE
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default?api-version=2023-10-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      api-supported-versions:
+      - 2020-10-01-preview, 2022-01-10-preview, 2022-07-15-preview, 2023-03-01-preview,
+        2023-10-01, 2023-12-01
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/fde6849d-1ae6-45c4-8764-6ab03c7104db*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639265218521230966&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=E-y4wt8Cu9D7kp4kF1hkM42UWaclsw1uN8BOml07BZ5XpJDU91X0jOR2KCpGVJ_RaGweDRYOjICfOpt87VA7vSc1CYdkW59cx8yqcw_Q69P9fXkVUMbghnVS-4eMINNwCQUnu45Sy958xbT17NJi3ne7J9MTFU1yJw87cei9ACbQ9ajSYM1g0Pva-aiPyRm2Spdh0mj9nBu5OZtJbRmrPeuNqVM1McuKzs2DgwGkUNbf052RaP4o7tzsQQfe9-9TCRlquG1tbVXQ14lXKTCqkLdFYJh6o_kj4zZMx2AUdM3HjDgWYolaLP1Erdn5hNiPaKfTudPj9f7PZRUQ9paAQg&h=8DeuNnhttLJisK8JU9DIWWMsgUa2_c8Dh3L41Oux25g
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Oct 2026 07:10:51 GMT
+      etag:
+      - '"16009f07-0000-3300-0000-6abf58fc0000"'
+      expires:
+      - '-1'
+      location:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/fde6849d-1ae6-45c4-8764-6ab03c7104db*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639265218521387351&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=PBUqlo7gLX1AWj4tTwpXB56pY0WWNqH05Tm4tVwPOjs5L3PqMgfks39XYPAwwI2MK-gUuOG4aRyB4rDHlnPDA4EhimZ-5cp3dq6hSE8rw_t9w57--TOvsEcAPkKZsk-ff66DMkdBZWy_ji6AN_snJmNoHWgSu0Wjmv2M4Qrg-6A7pXYhm0IMmyVsksxfe8iANq5K_ErnrNb1isTVlHeH3Nn0O9neXDOd-r43yHGzs4ITzZzYGXY09yBN0irttf8zKSMGDzdUH5oVgtGqq2F_A0ffXwdNWbF_mjvDb4x5ggWtKudCDdbZNNYv6v_KPGxSqHofn1f8srObNbf0z8LFQA&h=bYebAnpRdDdqYYbT9bpf-JzmKOPMRopr8tG0F6kXMho
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=485c94a8-4f47-4a21-b5b4-24566d261e07/eastus2euap/7b1af5a3-4a72-402e-8101-5435733c10a7
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 3DFC05FF803E4E7E88A1BCFA83CFF13F Ref B: SG2AA1070306034 Ref C: 2026-10-02T07:10:51Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --name --retain-machine --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/fde6849d-1ae6-45c4-8764-6ab03c7104db*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639265218521230966&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=E-y4wt8Cu9D7kp4kF1hkM42UWaclsw1uN8BOml07BZ5XpJDU91X0jOR2KCpGVJ_RaGweDRYOjICfOpt87VA7vSc1CYdkW59cx8yqcw_Q69P9fXkVUMbghnVS-4eMINNwCQUnu45Sy958xbT17NJi3ne7J9MTFU1yJw87cei9ACbQ9ajSYM1g0Pva-aiPyRm2Spdh0mj9nBu5OZtJbRmrPeuNqVM1McuKzs2DgwGkUNbf052RaP4o7tzsQQfe9-9TCRlquG1tbVXQ14lXKTCqkLdFYJh6o_kj4zZMx2AUdM3HjDgWYolaLP1Erdn5hNiPaKfTudPj9f7PZRUQ9paAQg&h=8DeuNnhttLJisK8JU9DIWWMsgUa2_c8Dh3L41Oux25g
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/fde6849d-1ae6-45c4-8764-6ab03c7104db*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","name":"fde6849d-1ae6-45c4-8764-6ab03c7104db*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default","status":"Deleting","startTime":"2026-10-02T07:10:51.812869Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/eastus2euap/operationStatuses/fde6849d-1ae6-45c4-8764-6ab03c7104db*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639265218542735311&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=RwMFPlbHBnr357nZ8P01CTnurbl5tQcsYmFhR56imurhi5SVb3jJu-BqXlfjzOQv6bOAARMpt8WhdLYoCIYGB0ghPrsKAylYyVW2cg00db2hmnWqKRV0YHW1PZOGoCg4Lo5QOBaGmGaNQIA0mBns1V9FiDFdus5I5p9Lk_7--nTx-O4N8PUw1dvTin8wxKLgf7EAKktcHXSAsFI2eqoH0oeYgyjmlWq1AaOgGDAUa42OdNqY1Jno8e_x4dFquR6-rsR6GLh9w1KFPeI-fY5LSFQU91dO0g8abnkw_ckhXI9CGEolO-w11qcU4n2D4tyd3HicDiH-hVYJN43gKr_Naw&h=8qx1yy102_heegKVMSGYWOnzpTjbvzElO8CnA2BWSQk
+      cache-control:
+      - no-cache
+      content-length:
+      - '612'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Oct 2026 07:10:53 GMT
+      etag:
+      - '"1e0069a6-0000-3300-0000-6abf58fb0000"'
+      expires:
+      - '-1'
+      location:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/eastus2euap/operationStatuses/fde6849d-1ae6-45c4-8764-6ab03c7104db*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639265218542890842&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=glqZwxoFZ1uYCkEcLcTjlZ3UTp-82MhtELIbd3SaU0506vilah7OXEe4lX_dwV78LGx4nQ_KEwqRPze9c46l6bedxbK-rSv6dtqdXp_XnyTjsiyaTRk3GCXQRnT_AGx0QmkC6YpooKdl8O9F6_3Bhrf8HCSqV3TOUsSzyMi68WNr_Jn8I74Zzf3gaULQ0lHPGp3Eie0qrh6tbNZGzTLQDQRwD57pmnhIVcDdV4tXCTBPaA6qHye7MJfHG9RxCGTb7OMZ4ZLItD-etm1rN2gC8lbOiRiL6Ys9yD6tPtt_AC6pjlg-R0TCnb0vqFnQEFahvPVexBI6hemQcJEgsuUZ6A&h=EWfuLe9REkxhGUJibBgaVNdNfRjnkyg0gQqib37s8hc
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 3BBC510AA07542B58BD71779784B3AC5 Ref B: SG2AA1070301023 Ref C: 2026-10-02T07:10:53Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --resource-group --name --retain-machine --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/fde6849d-1ae6-45c4-8764-6ab03c7104db*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E?api-version=2023-10-01&t=639265218521230966&c=MIIH9DCCBtygAwIBAgIQAwzCVXj09ySm8dLUwXQVKjANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDkxMzA1NTgwN1oXDTI2MTIwODExNTgwN1owQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDbWZRriThFT2lP1ss14GM9tr_GWMsml4JZp6kEM-D_wF3zQ7LPfsbzfj6q_XRJVzBIIxrCKqF7bVB6kNs949Df-Ic_JN72OdbdZxli5CxZqn7TprpsfLP0PDwZoUEcANqJ3JSj6ptcLH1fjMjGyItwUzLUgcgIy4HTSFcZF-EUtTmw1pAal3e-XlnQHYi8IrOI5pFEJSOG1OS6P-NOf5jLxAQgiqP8iDmEbfvoQU2cKwf0XbiOfMxMIshALjV40PbQbZa7DPW1fQu_ipX7775t5vSg4fNwvKbsF_Q2yl5rzuEKvnHAuFPhffO34rtK_DWcUbbKwQGyrnnmxfPQZdRJAgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBRd0MdkX6OyH4NwWOj23TdAfDPoxTAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzY5L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvNjkvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS82OS9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAyYFUOy3i4MwAzgUJKO-ayvCM5rj7rNLujyjSeNMS6BaelcIXSdXjzGHXoSy72lLXkqXiluFf87z3TF1syLM_tavvNQTiw25Ey5UuwS7JKOxpPGzwAGkvLCIV-vZ6aqQ-VdoxUw_NlmW3ZB17CPQ7ZnHdBzAI3lLER2Dd311JHrjrnzxOdJoIgo9VixxCpdeHFLu1aRqMz7v0QXHTXw4oZZNqjnmwa3bRrlqA4Wmc6ptQzPaZG43wR0YLQflcSS-qyvgLt-aprvh6ws4HMaHS-b7LVZtniozAdLws4C_9NxuqdGeD3IDsvO5o0AOwCupqBbFEb3bszjlivRgyryvE7&s=E-y4wt8Cu9D7kp4kF1hkM42UWaclsw1uN8BOml07BZ5XpJDU91X0jOR2KCpGVJ_RaGweDRYOjICfOpt87VA7vSc1CYdkW59cx8yqcw_Q69P9fXkVUMbghnVS-4eMINNwCQUnu45Sy958xbT17NJi3ne7J9MTFU1yJw87cei9ACbQ9ajSYM1g0Pva-aiPyRm2Spdh0mj9nBu5OZtJbRmrPeuNqVM1McuKzs2DgwGkUNbf052RaP4o7tzsQQfe9-9TCRlquG1tbVXQ14lXKTCqkLdFYJh6o_kj4zZMx2AUdM3HjDgWYolaLP1Erdn5hNiPaKfTudPj9f7PZRUQ9paAQg&h=8DeuNnhttLJisK8JU9DIWWMsgUa2_c8Dh3L41Oux25g
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/fde6849d-1ae6-45c4-8764-6ab03c7104db*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","name":"fde6849d-1ae6-45c4-8764-6ab03c7104db*B5DD67CD29BEB9D0E0792FF118AF1E45EEBB52908ADA2EA4E70ABB830DE8807E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default","status":"Succeeded","startTime":"2026-10-02T07:10:51.812869Z","endTime":"2026-10-02T07:11:25.3765711Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '672'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Oct 2026 07:11:26 GMT
+      etag:
+      - '"1e00a0ae-0000-3300-0000-6abf591d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 9C179DAC396041F0982425EE0C58FF86 Ref B: SG2AA1070306060 Ref C: 2026-10-02T07:11:26Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resource show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute","namespace":"Microsoft.HybridCompute","authorizations":[{"applicationId":"8c420feb-03df-47cc-8a05-55df0cf3064b","roleDefinitionId":"83eeb1c6-47f8-4da2-bbc3-42a7ac767360"},{"applicationId":"d2a590e7-6906-4a45-8f41-cecfdca9bca1","roleDefinitionId":"f32ad452-2b05-4296-bee4-fc9056ed85fa"},{"applicationId":"5e5e43d4-54da-4211-86a4-c6e7f3715801","roleDefinitionId":"ffcd6e5b-8772-457d-bb17-89703c03428f"},{"applicationId":"d00b5d58-cae5-42ad-ae0a-5a2e6f7ee6c9","roleDefinitionId":"4d8fb750-b938-4da8-95ce-557d4d36bd3b"},{"applicationId":"c8f5141d-83e0-4e9a-84d0-bb6677e26f64","roleDefinitionId":"b9872c82-72dd-402b-add5-f99a58f990da"},{"applicationId":"eec53b1f-b9a4-4479-acf5-6b247c6a49f2"},{"applicationId":"61414a6b-7050-4d69-8e88-d6c5646bab20"},{"applicationId":"5a8800f2-f31d-4654-9bed-f5b368c703f8","roleDefinitionId":"f5cff2b7-37d6-4e77-99e8-6e8ad7719923"},{"applicationId":"5bab4c7f-51c3-479b-a199-06b31afecc8f","roleDefinitionId":"f5cff2b7-37d6-4e77-99e8-6e8ad7719923"},{"applicationId":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","roleDefinitionId":"d367c838-4ddb-41b7-b6d8-53d0fe49b19f"},{"applicationId":"e18cedde-9458-482f-9dd1-558c597ac42e","roleDefinitionId":"01ce5666-d866-4fb1-80a1-fc11b2b6f7d5"}],"resourceTypes":[{"resourceType":"machines","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"machines/hybridIdentityMetadata","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/privateLinkScopes","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/extensions","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations","locations":["West
+        Europe","East US 2 EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2026-02-01-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/publishers","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/publishers/extensionTypes","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/publishers/extensionTypes/versions","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/operationStatus","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2026-02-01-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/operationResults","locations":["West
+        Central US","West Europe","West US 2","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2026-02-01-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"operations","locations":[],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/assessPatches","locations":["West
+        US 2","West Europe","Southeast Asia","East US","West Central US","South Central
+        US","North Europe","UK South","Australia East","East US 2","Japan East","Canada
+        Central","West US","North Central US","France Central","Korea Central","UK
+        West","West US 3","East Asia","Brazil South","Central US","Switzerland North","South
+        Africa North","Central India","Sweden Central","Canada East","Australia Southeast","Norway
+        East","UAE North","Germany West Central","Italy North","Israel Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/installPatches","locations":["West
+        US 2","West Europe","Southeast Asia","East US","West Central US","South Central
+        US","North Europe","UK South","Australia East","East US 2","Japan East","Canada
+        Central","West US","North Central US","France Central","Korea Central","UK
+        West","West US 3","East Asia","Brazil South","Central US","Switzerland North","South
+        Africa North","Central India","Sweden Central","Canada East","Australia Southeast","Norway
+        East","UAE North","Germany West Central","Italy North","Israel Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/updateCenterOperationResults","locations":["West
+        US 2","West Europe","Southeast Asia","East US","West Central US","South Central
+        US","North Europe","UK South","Australia East","East US 2","japan East","Canada
+        Central","West US","North Central US","France Central","Korea Central","UK
+        West","West US 3","East Asia","Brazil South","Central US","Switzerland North","South
+        Africa North","Central India","Sweden Central","Canada East","Australia Southeast","Norway
+        East","UAE North","Germany West Central","Italy North","Israel Central","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2025-02-19-preview","2025-01-13","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"privateLinkScopes","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"privateLinkScopes/privateEndpointConnections","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","Switzerland
+        North","UAE North","UK West","Central India","Canada East","South Africa North","Sweden
+        Central","Australia Southeast","Norway East","Italy North","South India","Israel
+        Central","Japan West","Qatar Central","Spain Central","Poland Central","Korea
+        South","Jio India West","Switzerland West","Indonesia Central","Malaysia West","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"privateLinkScopes/privateEndpointConnectionProxies","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","Switzerland
+        North","UAE North","UK West","Central India","Canada East","South Africa North","Sweden
+        Central","Australia Southeast","Norway East","Italy North","South India","Israel
+        Central","Japan West","Qatar Central","Spain Central","Poland Central","Korea
+        South","Jio India West","Switzerland West","Indonesia Central","Malaysia West","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/privateLinkScopes","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","Switzerland
+        North","UAE North","UK West","Central India","Canada East","South Africa North","Sweden
+        Central","Australia Southeast","Norway East","Italy North","South India","Israel
+        Central","Japan West","Qatar Central","Spain Central","Poland Central","Korea
+        South","Jio India West","Switzerland West","Indonesia Central","Malaysia West","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview","2022-12-27-preview","2022-12-27","2022-11-10","2022-08-11-preview","2022-05-10-preview","2022-03-10","2021-12-10-preview","2021-06-10-preview","2021-05-20","2021-05-17-preview","2021-04-22-preview","2021-03-25-preview","2021-01-28-preview","2020-08-15-preview","2020-08-02","2020-07-30-preview","2020-03-11-preview","2019-12-12","2019-08-02-preview","2019-03-18-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"osType","locations":["West
+        Europe","East US 2 EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"osType/agentVersions","locations":[],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"osType/agentVersions/latest","locations":[],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview","2023-03-15-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/runcommands","locations":["West
+        Central US","West US 2","West Europe","East US","Southeast Asia","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview","2023-04-25-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"machines/licenseProfiles","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"licenses","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","UK West","Germany West Central","Brazil
+        South","Switzerland North","UAE North","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"validateLicense","locations":[],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview","2023-06-20-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"networkConfigurations","locations":["Israel
+        Central","Japan West","Qatar Central","Spain Central","Poland Central","Korea
+        South","Jio India West","Switzerland West","Indonesia Central","Malaysia West","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"SupportsExtension"},{"resourceType":"settings","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview"],"defaultApiVersion":"2026-07-15","capabilities":"SupportsExtension"},{"resourceType":"gateways","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"privateLinkScopes/networkSecurityPerimeterConfigurations","locations":["Israel
+        Central","Japan West","Qatar Central","Spain Central","Poland Central","Korea
+        South","Jio India West","Switzerland West","Indonesia Central","Malaysia West","East
+        US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"privateLinkScopes/networkSecurityPerimeterAssociationProxies","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/notifyNetworkSecurityPerimeterUpdatesAvailable","locations":["East
+        US 2 EUAP","West Central US","West US 2","West Europe","Southeast Asia","East
+        US","Australia East","South Central US","East US 2","North Europe","France
+        Central","Japan East","UK South","East Asia","Canada Central","Central US
+        EUAP","Korea Central","North Central US","West US","West US 3","Central US","Germany
+        West Central","Brazil South","UAE North","Switzerland North","UK West","Central
+        India","Canada East","South Africa North","Sweden Central","Australia Southeast","Norway
+        East","Italy North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/notifyExtension","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"locations/notifyRunCommand","locations":["West
+        Central US","West US 2","West Europe","Southeast Asia","East US","Australia
+        East","South Central US","East US 2","North Europe","France Central","Japan
+        East","UK South","East Asia","Canada Central","Korea Central","North Central
+        US","West US","West US 3","Central US","Germany West Central","Brazil South","UAE
+        North","Switzerland North","UK West","Central India","Canada East","South
+        Africa North","Sweden Central","Australia Southeast","Norway East","Italy
+        North","South India","Israel Central","Japan West","Qatar Central","Spain
+        Central","Poland Central","Korea South","Jio India West","Switzerland West","Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2025-02-19-preview","2025-01-13","2024-11-10-preview","2024-09-10-preview","2024-07-31-preview","2024-07-10","2024-05-20-preview","2024-03-31-preview","2023-10-03-preview"],"defaultApiVersion":"2026-07-15","capabilities":"None"},{"resourceType":"machines/applications","locations":["Indonesia
+        Central","Malaysia West","East US 2 EUAP","Central US EUAP"],"apiVersions":["2026-07-15","2026-06-16-preview","2026-06-04-preview","2026-06-01-preview","2026-02-12-preview","2026-02-01-preview"],"defaultApiVersion":"2026-07-15","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '39089'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Oct 2026 07:11:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: F784A480FAF44608BF601C4B59AF6599 Ref B: SG2AA1040519062 Ref C: 2026-10-02T07:11:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resource show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli?api-version=2026-07-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli","name":"test-vm-azcli","location":"eastus2euap","tags":{"azsecpack":"nonprod"},"kind":"VMware","identity":{"type":"SystemAssigned","principalId":"50d3d827-5b35-4f40-956a-a20eea096723","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.68.03532.1399","status":"Connected","lastStatusChange":"2026-10-02T07:08:21.6945852Z","errorDetails":[],"displayName":"arcvmware","machineFqdn":"arcvmware","osName":"linux","osVersion":"5.4.0-216-generic","osType":"linux","osProfile":{"computerName":"arcvmware"},"vmId":"8dc96014-7626-4ccc-b8d5-02e9e21ddea2","vmUuid":"38773742-b91d-85eb-a6c5-88b261ec6deb","clientPublicKey":"MIIBCgKCAQEA1dFlycHW8UmBpe4ygpWQJ5iWFgi8wX2Liy16tfIgXkdsmnm/qzD7i+D4GmUGZBmBM1CRREeBnrWNp4EcYkaHWfgN3rbguPnDpfMbkAxzOI6jUTReFE5SuWT1vgQe+LWvBTcIiQUQvt+UPK2zZ67VcE+/p35wRUqopwreEMwquMnzTxKmHSABpvLL5yjk3hVj6oIjWBMch6gy54dqduGmmFyPyySQUnaxkFETaSf9Uc1k5gucKSXCRguCenDH4ppc3Qz2Lnrlm2if5CY2uhX+pt8Dw2luAe9fCZxmNqacE68yzaiTRGLv1wDS/8ktbxRzel6YffSd1IeMn4IUmbq2pwIDAQAB","identityKeyStore":"Default","osSku":"Ubuntu
+        20.04.6 LTS","osEdition":"unknown","domainName":"unknown","adFqdn":"unknown","dnsFqdn":"arcvmware","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"architecture":"amd64","cloudprovider":"N/A","coreCount":"2","hypervisorType":"VMware","logicalCoreCount":"2","manufacturer":"VMware,
+        Inc.","model":"VMware20,1","mssqldiscovered":"false","mysqldiscovered":"false","pgsqldiscovered":"false","processorCount":"1","processorNames":"Intel(R)
+        Xeon(R) Gold 5220R CPU @ 2.20GHz","productType":"unknown","serialNumber":"VMware-42
+        37 77 38 1d b9 eb 85-a6 c5 88 b2 61 ec 6d eb","smbiosAssetTag":"No Asset Tag","totalPhysicalMemoryInBytes":"2066485248","totalPhysicalMemoryInGigabytes":"1","tpm_Present":"false","tpm_Ready":"false","tpm_SpecVersion":"","ubuntuPro":"unknown","vmuuidEsu":"","vmuuidEsu2012":""},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"active","startupType":"enabled"},"guestConfigurationService":{"status":"active","startupType":"enabled"}},"agentUpgrade":{"enableAutomaticUpgrade":true},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"10.150.179.189","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.150.176.0/21"}},{"address":"2404:f801:4800:14:250:56ff:feb7:f292","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2404:f801:4800:14::/64"}}],"macAddress":"00:50:56:b7:f2:92","id":"2","name":"ens33"}]},"licenseProfile":{"esuProfile":{"licenseAssignmentState":"NotAssigned","serverType":"Unknown","esuEligibility":"Ineligible","esuKeyState":"Inactive"}},"storageProfile":{"disks":[{"path":"/dev/loop0","diskType":"loop","generatedId":"DataDisk0","id":"/dev/loop0","name":"/dev/loop0","maxSizeInBytes":96292864,"usedSpaceInBytes":94080},{"path":"/dev/loop1","diskType":"loop","generatedId":"DataDisk1","id":"/dev/loop1","name":"/dev/loop1","maxSizeInBytes":66879488,"usedSpaceInBytes":65408},{"path":"/dev/loop2","diskType":"loop","generatedId":"DataDisk2","id":"/dev/loop2","name":"/dev/loop2","maxSizeInBytes":52260864,"usedSpaceInBytes":51072},{"path":"/dev/loop3","diskType":"loop","generatedId":"DataDisk3","id":"/dev/loop3","name":"/dev/loop3","maxSizeInBytes":66359296,"usedSpaceInBytes":64896},{"path":"/dev/loop4","diskType":"loop","generatedId":"DataDisk4","id":"/dev/loop4","name":"/dev/loop4","maxSizeInBytes":96645120,"usedSpaceInBytes":94464},{"path":"/dev/sda","diskType":"disk","generatedId":"RootDisk","id":"/dev/sda","name":"/dev/sda","maxSizeInBytes":26843545600,"usedSpaceInBytes":123572},{"path":"/dev/sr0","diskType":"rom","generatedId":"DataDisk5","id":"/dev/sr0","name":"/dev/sr0","maxSizeInBytes":1073741312},{"path":"/dev/mapper/ubuntu--vg-ubuntu--lv","diskType":"lvm","generatedId":"DataDisk6","id":"/dev/mapper/ubuntu--vg-ubuntu--lv","name":"/dev/mapper/ubuntu--vg-ubuntu--lv","maxSizeInBytes":11781799936,"usedSpaceInBytes":5373112}]},"firmwareProfile":{"serialNumber":"VMware-42
+        37 77 38 1d b9 eb 85-a6 c5 88 b2 61 ec 6d eb","type":"EFI"},"hardwareProfile":{"totalPhysicalMemoryInBytes":2066485248,"numberOfCpuSockets":1,"processors":[{"name":"Intel(R)
+        Xeon(R) Gold 5220R CPU @ 2.20GHz","numberOfCores":2}]}},"resources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/extensions/Microsoft.Azure.Security.Monitoring.AzureSecurityLinuxAgent","name":"Microsoft.Azure.Security.Monitoring.AzureSecurityLinuxAgent","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Azure.Security.Monitoring","type":"AzureSecurityLinuxAgent","typeHandlerVersion":"2.40.1483","autoUpgradeMinorVersion":true,"enableAutomaticUpgrade":true,"settings":{"enableGenevaUpload":true,"enableAutoConfig":true,"reportSuccessOnUnsupportedDistro":true},"provisioningState":"Creating","instanceView":{"name":"Microsoft.Azure.Security.Monitoring.AzureSecurityLinuxAgent","type":"AzureSecurityLinuxAgent","typeHandlerVersion":"2.40.1483","status":{}}},"systemData":{"createdBy":"ce0d719f-3f82-4573-bb20-dc4e8174055c","createdByType":"Application","createdAt":"2026-10-02T07:10:43.0437828Z","lastModifiedBy":"ce0d719f-3f82-4573-bb20-dc4e8174055c","lastModifiedByType":"Application","lastModifiedAt":"2026-10-02T07:10:43.0437828Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-machine-integration-test/providers/Microsoft.HybridCompute/machines/test-vm-azcli/extensions/Microsoft.Azure.Monitor.AzureMonitorLinuxAgent","name":"Microsoft.Azure.Monitor.AzureMonitorLinuxAgent","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Azure.Monitor","type":"AzureMonitorLinuxAgent","typeHandlerVersion":"1.45.1","autoUpgradeMinorVersion":true,"enableAutomaticUpgrade":true,"settings":{"GCS_AUTO_CONFIG":true},"provisioningState":"Creating","instanceView":{"name":"Microsoft.Azure.Monitor.AzureMonitorLinuxAgent","type":"AzureMonitorLinuxAgent","typeHandlerVersion":"1.45.1","status":{}}},"systemData":{"createdBy":"ce0d719f-3f82-4573-bb20-dc4e8174055c","createdByType":"Application","createdAt":"2026-10-02T07:10:33.7249284Z","lastModifiedBy":"ce0d719f-3f82-4573-bb20-dc4e8174055c","lastModifiedByType":"Application","lastModifiedAt":"2026-10-02T07:10:33.7249284Z"}}],"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-02T07:08:01.9537264Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-02T07:09:59.4334569Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '7027'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 02 Oct 2026 07:11:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 6248D7F1A4674CC0A8C20736A84AE117 Ref B: SG2AA1070304036 Ref C: 2026-10-02T07:11:31Z'
+    status:
+      code: 200
+      message: OK
+version: 1
