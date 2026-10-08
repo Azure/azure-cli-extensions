@@ -8,9 +8,21 @@
 
 """Unit tests for azext_dataprotection.manual.aks.aks_helper functions."""
 
+import json
 import unittest
 from unittest.mock import MagicMock, patch
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from requests import Response
+from azure.core import PipelineClient
+from azure.core.credentials import AccessToken
+from azure.core.exceptions import HttpResponseError, ServiceRequestError, ServiceResponseError
+from azure.core.pipeline.transport import HttpTransport, RequestsTransportResponse
+from azure.cli.core import get_default_cli
+from azure.cli.core.aaz._client import AAZMgmtClient
+from azure.cli.core.aaz._command_ctx import AAZCommandCtx
+from azure.cli.core.aaz.exceptions import AAZInvalidValueError
+from azure.cli.core.azclierror import AzureResponseError, InvalidArgumentValueError
+from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Create as GeneratedBackupVaultCreate
+from azext_dataprotection.manual.aaz_operations.backup_vault import AKSCreate as BackupVaultCreate
 
 # Module under test
 from azext_dataprotection.manual.aks.aks_helper import (
@@ -27,9 +39,14 @@ from azext_dataprotection.manual.aks.aks_helper import (
     _generate_arm_id,
     _check_and_assign_role,
     _setup_storage_account,
+    _install_backup_extension,
     _find_existing_backup_resource_group,
     _find_existing_backup_storage_account,
     _check_existing_backup_instance,
+    _find_existing_backup_vault,
+    _setup_backup_vault,
+    _try_create_vault_with_storage_type,
+    _wait_for_backup_vault_ready,
     AKS_BACKUP_TAG_KEY,
 )
 
@@ -351,6 +368,34 @@ class TestFindExistingBackupStorageAccount(unittest.TestCase):
         result_sa, _ = _find_existing_backup_storage_account(client, "eastus")
         self.assertIsNone(result_sa)
 
+    def test_scopes_discovery_to_resolved_backup_resource_group(self):
+        client = MagicMock()
+        client.storage_accounts.list.return_value = [self._make_sa("other-test-account", "eastus")]
+        client.storage_accounts.list_by_resource_group.return_value = []
+        result = _find_existing_backup_storage_account(client, "eastus", "owned-rg")
+        self.assertEqual(result, (None, None))
+        client.storage_accounts.list_by_resource_group.assert_called_once_with("owned-rg")
+        client.storage_accounts.list.assert_not_called()
+
+    def test_reuses_matching_account_in_requested_scope(self):
+        account = self._make_sa(
+            "owned", "EASTUS",
+            f"/subscriptions/{SUB_ID}/resourceGroups/owned-rg/providers/Microsoft.Storage/storageAccounts/owned",
+        )
+        client = MagicMock()
+        client.storage_accounts.list_by_resource_group.return_value = [account]
+        self.assertEqual(_find_existing_backup_storage_account(client, "eastus", "owned-rg"),
+                         (account, "owned-rg"))
+        client.storage_accounts.list.assert_not_called()
+
+    def test_discovery_errors_are_not_treated_as_missing_accounts(self):
+        client = MagicMock()
+        error = HttpResponseError("Cannot list storage accounts")
+        client.storage_accounts.list_by_resource_group.side_effect = error
+        with self.assertRaises(HttpResponseError) as raised:
+            _find_existing_backup_storage_account(client, "eastus", "owned-rg")
+        self.assertIs(raised.exception, error)
+
 
 # ---------------------------------------------------------------------------
 # _setup_storage_account
@@ -364,7 +409,7 @@ class TestSetupStorageAccount(unittest.TestCase):
         from azure.mgmt.storage.models import StorageAccountCreateParameters
 
         storage_client = MagicMock()
-        storage_client.storage_accounts.list.return_value = []
+        storage_client.storage_accounts.list_by_resource_group.return_value = []
         created_storage_account = MagicMock()
         created_storage_account.id = (
             f"/subscriptions/{SUB_ID}/resourceGroups/backup-rg"
@@ -400,6 +445,39 @@ class TestSetupStorageAccount(unittest.TestCase):
         self.assertEqual(storage_params.tags[AKS_BACKUP_TAG_KEY], "eastus")
         self.assertEqual(storage_params.tags["env"], "test")
         storage_client.blob_containers.create.assert_called_once()
+        storage_client.storage_accounts.list_by_resource_group.assert_called_once_with("backup-rg")
+        storage_client.storage_accounts.list.assert_not_called()
+
+    @patch("azext_dataprotection.manual.aks.aks_helper.get_mgmt_service_client")
+    def test_discovery_error_prevents_automatic_creation(self, mock_get_client):
+        client = mock_get_client.return_value
+        client.storage_accounts.list_by_resource_group.side_effect = HttpResponseError("Authorization failed")
+        with self.assertRaisesRegex(HttpResponseError, "Authorization failed"):
+            _setup_storage_account(
+                MagicMock(), SUB_ID, None, None, "backup-rg", LOCATION, CLUSTER_NAME, CLUSTER_RG, None)
+        client.storage_accounts.begin_create.assert_not_called()
+        client.blob_containers.create.assert_not_called()
+
+
+class TestInstallBackupExtension(unittest.TestCase):
+    @patch("azext_dataprotection.manual.aks.aks_helper._check_and_assign_role")
+    @patch("azext_dataprotection.manual.aks.aks_helper._create_backup_extension")
+    def test_uses_storage_account_resource_group_not_cluster_or_vault_group(self, create, assign_role):
+        cmd = MagicMock()
+        account = MagicMock(id=(
+            f"/subscriptions/{SUB_ID}/resourceGroups/storage-rg"
+            "/providers/Microsoft.Storage/storageAccounts/storage"
+        ))
+        extension = create.return_value
+        extension.aks_assigned_identity.principal_id = "extension-principal"
+        result = _install_backup_extension(
+            cmd, SUB_ID, CLUSTER_RG, CLUSTER_NAME, "storage", "container", account, yes=True)
+        self.assertIs(result, extension)
+        create.assert_called_once_with(
+            cmd, SUB_ID, CLUSTER_RG, CLUSTER_NAME, "storage", "container", "storage-rg", SUB_ID, yes=True)
+        assign_role.assert_called_once_with(
+            cmd, role="Storage Blob Data Contributor", assignee_object_id="extension-principal",
+            scope=account.id, identity_name="backup extension identity")
 
 
 # ---------------------------------------------------------------------------
@@ -461,11 +539,11 @@ class TestFindExistingBackupVault(unittest.TestCase):
         self.assertIsNone(result)
 
     @patch("azext_dataprotection.aaz.latest.dataprotection.backup_vault.List")
-    def test_returns_none_on_exception(self, mock_list_cls):
+    def test_propagates_discovery_error(self, mock_list_cls):
         mock_list_cls.return_value = MagicMock(side_effect=Exception("API error"))
         from azext_dataprotection.manual.aks.aks_helper import _find_existing_backup_vault
-        result = _find_existing_backup_vault(MagicMock(), SUB_ID, "eastus", "my-backup-rg")
-        self.assertIsNone(result)
+        with self.assertRaisesRegex(Exception, "API error"):
+            _find_existing_backup_vault(MagicMock(), SUB_ID, "eastus", "my-backup-rg")
 
     @patch("azext_dataprotection.aaz.latest.dataprotection.backup_vault.List")
     def test_scopes_list_call_to_explicit_backup_resource_group(self, mock_list_cls):
@@ -527,7 +605,7 @@ class TestWaitForBackupVaultReady(unittest.TestCase):
         mock_show_cls.return_value = MagicMock(
             return_value={"name": "v1", "properties": {"provisioningState": "Failed"}})
         from azext_dataprotection.manual.aks.aks_helper import _wait_for_backup_vault_ready
-        with self.assertRaises(InvalidArgumentValueError):
+        with self.assertRaises(AzureResponseError):
             _wait_for_backup_vault_ready(MagicMock(), "v1", "rg", SUB_ID, retries=3, interval_seconds=0)
 
     @patch("time.sleep", return_value=None)
@@ -536,9 +614,366 @@ class TestWaitForBackupVaultReady(unittest.TestCase):
         mock_show_cls.return_value = MagicMock(
             return_value={"name": "v1", "properties": {"provisioningState": "Updating"}})
         from azext_dataprotection.manual.aks.aks_helper import _wait_for_backup_vault_ready
-        result = _wait_for_backup_vault_ready(MagicMock(), "v1", "rg", SUB_ID, retries=3, interval_seconds=0)
-        self.assertEqual(result["properties"]["provisioningState"], "Updating")
+        with self.assertRaisesRegex(AzureResponseError, "Updating"):
+            _wait_for_backup_vault_ready(MagicMock(), "v1", "rg", SUB_ID, retries=3, interval_seconds=0)
         self.assertEqual(mock_show_cls.return_value.call_count, 3)
+
+
+class TestBackupVaultAAZ(unittest.TestCase):
+    """Exercise real AAZ validation, serialization, polling and errors without Azure access."""
+
+    def setUp(self):
+        self.cmd = MagicMock(cli_ctx=get_default_cli())
+        self.vault_name = _generate_backup_vault_name(LOCATION)
+        self.backup_rg = "backup-rg"
+        self.vault = {
+            "id": _generate_arm_id(SUB_ID, self.backup_rg, "Microsoft.DataProtection/backupVaults",
+                                   self.vault_name),
+            "name": self.vault_name,
+            "identity": {"type": "SystemAssigned", "principalId": "test-principal"},
+            "properties": {"provisioningState": "Succeeded"},
+            "tags": {AKS_BACKUP_TAG_KEY: LOCATION},
+        }
+        self.responses = []
+        self.transport = MagicMock(spec=HttpTransport)
+        self.transport.send.side_effect = self._send
+        # Keep the real AAZ HTTP/polling implementation, but use an unauthenticated, mocked pipeline.
+        client = AAZMgmtClient.__new__(AAZMgmtClient)
+        PipelineClient.__init__(client, base_url="https://management.azure.com", transport=self.transport)
+        self.real_get_http_client = AAZCommandCtx.get_http_client
+        self._start_patch("azure.cli.core.aaz._command_ctx.AAZCommandCtx.get_http_client", return_value=client)
+        self.roles = self._start_patch("azext_dataprotection.manual.aks.aks_helper._check_and_assign_role")
+        self.sleep = self._start_patch("time.sleep")
+
+    def _start_patch(self, target, **kwargs):
+        patcher = patch(target, **kwargs)
+        self.addCleanup(patcher.stop)
+        return patcher.start()
+
+    def _send(self, request, **_kwargs):
+        self.assertTrue(self.responses, "Unexpected HTTP request: " + request.url)
+        result = self.responses.pop(0)
+        if isinstance(result, Exception):
+            raise result
+        status, payload = result[:2]
+        response = Response()
+        response.status_code = status
+        response._content = json.dumps(payload).encode("utf-8")
+        response.headers["Content-Type"] = "application/json"
+        if len(result) == 3:
+            response.headers.update(result[2])
+        return RequestsTransportResponse(request, response)
+
+    @staticmethod
+    def _error(code, message):
+        return {"error": {"code": code, "message": message}}
+
+    def _create(self, storage_type):
+        return _try_create_vault_with_storage_type(
+            self.cmd, BackupVaultCreate, self.vault_name, self.backup_rg, LOCATION,
+            {AKS_BACKUP_TAG_KEY: LOCATION}, storage_type, SUB_ID)
+
+    def _setup(self, strategy="Week", vault_id=None):
+        return _setup_backup_vault(
+            self.cmd, strategy, vault_id, SUB_ID, LOCATION, self.backup_rg,
+            MagicMock(id=CLUSTER_ID), MagicMock(id=f"/subscriptions/{SUB_ID}/resourceGroups/{self.backup_rg}"),
+            {"env": "test"})
+
+    def _wait(self, retries=3):
+        return _wait_for_backup_vault_ready(
+            self.cmd, self.vault_name, self.backup_rg, SUB_ID, retries=retries, interval_seconds=0)
+
+    def test_create_serializes_current_aaz_arguments_for_all_storage_types(self):
+        for storage_type in ["GeoRedundant", "ZoneRedundant", "LocallyRedundant"]:
+            with self.subTest(storage_type=storage_type):
+                self.responses = [(200, self.vault)]
+                self.assertEqual(self._create(storage_type), self.vault)
+                request = self.transport.send.call_args.args[0]
+                self.assertEqual(request.method, "PUT")
+                self.assertIn(f"/subscriptions/{SUB_ID}/resourceGroups/{self.backup_rg}/", request.url)
+                self.assertIn("api-version=2025-07-01", request.url)
+                body = json.loads(request.body)
+                self.assertEqual(body["location"], LOCATION)
+                self.assertEqual(body["identity"], {"type": "SystemAssigned"})
+                self.assertEqual(body["tags"], {AKS_BACKUP_TAG_KEY: LOCATION})
+                props = body["properties"]
+                self.assertEqual(props["storageSettings"], [{"datastoreType": "VaultStore", "type": storage_type}])
+                self.assertEqual(props["securitySettings"], {
+                    "immutabilitySettings": {"state": "Unlocked"},
+                    "softDeleteSettings": {"state": "On", "retentionDurationInDays": 14.0},
+                })
+                features = props["featureSettings"]
+                self.assertEqual(features["crossSubscriptionRestoreSettings"], {"state": "Enabled"})
+                if storage_type == "GeoRedundant":
+                    self.assertEqual(features["crossRegionRestoreSettings"], {"state": "Enabled"})
+                else:
+                    self.assertNotIn("crossRegionRestoreSettings", features)
+
+    def test_malformed_storage_type_fails_validation_before_transport(self):
+        with self.assertRaises(AAZInvalidValueError):
+            self._create({"type": "GeoRedundant"})
+        self.transport.send.assert_not_called()
+
+    def test_general_vault_create_keeps_new_api_and_cost_management(self):
+        self.responses = [(200, self.vault)]
+        GeneratedBackupVaultCreate(cli_ctx=self.cmd.cli_ctx)(command_args={
+            "vault_name": self.vault_name,
+            "resource_group": self.backup_rg,
+            "subscription": SUB_ID,
+            "location": LOCATION,
+            "storage_setting": [{"type": "GeoRedundant", "datastore-type": "VaultStore"}],
+            "soft_delete_state": "AlwaysOn",
+            "cost_management_granularity": "ProtectedItemLevel",
+        }).result()
+        request = self.transport.send.call_args.args[0]
+        self.assertIn("api-version=2026-06-01", request.url)
+        props = json.loads(request.body)["properties"]
+        self.assertEqual(props["securitySettings"]["softDeleteSettings"]["state"], "AlwaysOn")
+        self.assertEqual(props["costManagementSettings"], {"granularityLevel": "ProtectedItemLevel"})
+
+    def test_create_polls_until_service_reports_success(self):
+        updating = dict(self.vault, properties={"provisioningState": "Updating"})
+        self.responses = [(201, updating), (200, self.vault)]
+        self.assertEqual(self._create("GeoRedundant"), self.vault)
+        self.assertFalse(self.responses)
+        self.assertEqual([call.args[0].method for call in self.transport.send.call_args_list], ["PUT", "GET"])
+
+    def test_create_follows_async_operation_for_all_storage_types(self):
+        resource_url = "https://management.azure.com" + self.vault["id"] + "?api-version=2025-07-01"
+        operation_url = "https://management.azure.com" + self.vault["id"] + "/operationStatus/test-operation"
+        for storage_type in ["GeoRedundant", "ZoneRedundant", "LocallyRedundant"]:
+            for initial_status in [201, 202]:
+                with self.subTest(storage_type=storage_type, initial_status=initial_status):
+                    self.transport.send.reset_mock()
+                    headers = {"Azure-AsyncOperation": operation_url, "Retry-After": "0"}
+                    if initial_status == 202:
+                        headers["Location"] = resource_url
+                    provisioning = dict(self.vault, properties={"provisioningState": "Provisioning"})
+                    self.responses = [
+                        (initial_status, provisioning, headers),
+                        (200, {"status": "Inprogress"}),
+                        (200, {"status": "Succeeded"}),
+                        (200, self.vault),
+                    ]
+                    result = self._create(storage_type)
+                    self.assertIsInstance(result, dict)
+                    self.assertEqual(result, self.vault)
+                    self.assertFalse(self.responses)
+                    requests = [call.args[0] for call in self.transport.send.call_args_list]
+                    self.assertEqual([request.method for request in requests], ["PUT", "GET", "GET", "GET"])
+                    self.assertEqual([request.url for request in requests],
+                                     [resource_url, operation_url, operation_url, resource_url])
+                    storage_settings = json.loads(requests[0].body)["properties"]["storageSettings"]
+                    self.assertEqual(storage_settings, [{"datastoreType": "VaultStore", "type": storage_type}])
+
+    def test_create_preserves_error_from_failed_async_operation(self):
+        operation_url = "https://management.azure.com" + self.vault["id"] + "/operationStatus/test-operation"
+        self.responses = [
+            (201, dict(self.vault, properties={"provisioningState": "Provisioning"}),
+             {"Azure-AsyncOperation": operation_url, "Retry-After": "0"}),
+            (200, dict(self._error("TestServiceError", "Creation failed asynchronously."), status="Failed")),
+        ]
+        with self.assertRaisesRegex(HttpResponseError, "Creation failed asynchronously") as caught:
+            self._create("GeoRedundant")
+        self.assertEqual(caught.exception.status_code, 200)
+        self.assertFalse(self.responses)
+
+    def test_create_with_real_management_client_factory(self):
+        self.cmd.cli_ctx.data.update({
+            "headers": {}, "command": "dataprotection enable-backup trigger", "completer_active": False,
+        })
+        credential = MagicMock(spec=["get_token"])
+        credential.get_token.return_value = AccessToken("unit-test-token", 253402300799)
+        operation_url = "https://management.azure.com" + self.vault["id"] + "/operationStatus/test-operation"
+        with patch.object(AAZCommandCtx, "get_http_client", self.real_get_http_client), \
+                patch.object(AAZCommandCtx, "get_login_credential", return_value=credential), \
+                patch("azure.core.pipeline.transport.RequestsTransport.send", side_effect=self.transport.send):
+            for storage_type in ["GeoRedundant", "ZoneRedundant", "LocallyRedundant"]:
+                with self.subTest(storage_type=storage_type):
+                    self.transport.send.reset_mock()
+                    self.responses = [
+                        (201, dict(self.vault, properties={"provisioningState": "Provisioning"}),
+                         {"Azure-AsyncOperation": operation_url, "Retry-After": "0"}),
+                        (200, {"status": "Inprogress"}),
+                        (200, {"status": "Succeeded"}),
+                        (200, self.vault),
+                    ]
+                    result = self._create(storage_type)
+                    self.assertIsInstance(result, dict)
+                    self.assertEqual(result, self.vault)
+                    self.assertFalse(self.responses)
+                    self.assertEqual(self.transport.send.call_count, 4)
+                    request = self.transport.send.call_args_list[0].args[0]
+                    self.assertEqual(json.loads(request.body)["properties"]["storageSettings"],
+                                     [{"datastoreType": "VaultStore", "type": storage_type}])
+
+    def test_create_preserves_service_error(self):
+        self.responses = [(403, self._error("AuthorizationFailed", "Cannot create a vault."))]
+        with self.assertRaisesRegex(HttpResponseError, "AuthorizationFailed"):
+            self._create("GeoRedundant")
+
+    def test_discovery_uses_resource_group_url(self):
+        self.responses = [(200, {"value": [self.vault]})]
+        self.assertEqual(_find_existing_backup_vault(self.cmd, SUB_ID, LOCATION, self.backup_rg), self.vault)
+        request = self.transport.send.call_args.args[0]
+        self.assertEqual(request.method, "GET")
+        self.assertIn(f"/subscriptions/{SUB_ID}/resourceGroups/{self.backup_rg}/", request.url)
+
+    def test_discovery_error_does_not_trigger_create(self):
+        self.responses = [(403, self._error("AuthorizationFailed", "Cannot list vaults."))]
+        with self.assertRaisesRegex(HttpResponseError, "Cannot list vaults"):
+            self._setup()
+        self.transport.send.assert_called_once()
+        self.roles.assert_not_called()
+
+    def test_preserves_service_fallback_then_waits_for_vault(self):
+        self.responses = [
+            (200, {"value": []}),
+            (400, self._error("TestServiceError", "The requested storage setting is unsupported.")),
+            (200, self.vault),
+            (200, self.vault),
+        ]
+        self.assertEqual(self._setup()[0], self.vault)
+        requests = [call.args[0] for call in self.transport.send.call_args_list]
+        self.assertEqual([request.method for request in requests], ["GET", "PUT", "PUT", "GET"])
+        storage_types = [json.loads(request.body)["properties"]["storageSettings"][0]["type"]
+                         for request in requests if request.method == "PUT"]
+        self.assertEqual(storage_types, ["GeoRedundant", "ZoneRedundant"])
+        self.assertEqual(self.roles.call_count, 3)
+        self.assertFalse(self.responses)
+
+    def test_all_storage_failures_include_untruncated_errors_and_cause(self):
+        storage_types = ["GeoRedundant", "ZoneRedundant", "LocallyRedundant"]
+        self.responses = [(200, {"value": []})] + [
+            (400, self._error("TestServiceError", storage_type + ": " + "details " * 30 + "important suffix"))
+            for storage_type in storage_types
+        ]
+        with self.assertRaises(AzureResponseError) as caught:
+            self._setup()
+        for storage_type in storage_types:
+            self.assertIn(storage_type + ": " + "details " * 30 + "important suffix", str(caught.exception))
+        self.assertIn("TestServiceError", str(caught.exception))
+        self.assertIsInstance(caught.exception.__cause__, HttpResponseError)
+        self.assertNotIn("check region availability", str(caught.exception))
+        self.assertFalse(self.responses)
+        self.roles.assert_not_called()
+
+    def test_service_error_fallback_preserves_original_behavior_and_cause(self):
+        for status in [401, 403, 404, 409, 429, 500]:
+            with self.subTest(status=status):
+                self.transport.send.reset_mock()
+                self.responses = [(200, {"value": []})] + [
+                    (status, self._error("TestError", "Original service failure."))] * 3
+                with self.assertRaisesRegex(AzureResponseError, "Original service failure") as caught:
+                    self._setup()
+                self.assertEqual(caught.exception.__cause__.status_code, status)
+                self.assertEqual(self.transport.send.call_count, 4)
+                self.assertFalse(self.responses)
+                self.roles.assert_not_called()
+
+    def test_preserves_fallback_after_failed_async_operation(self):
+        operation_url = "https://management.azure.com" + self.vault["id"] + "/operationStatus/test-operation"
+        self.responses = [
+            (200, {"value": []}),
+            (201, dict(self.vault, properties={"provisioningState": "Provisioning"}),
+             {"Azure-AsyncOperation": operation_url, "Retry-After": "0"}),
+            (200, dict(self._error("TestServiceError", "The requested storage setting is unsupported."),
+                       status="Failed")),
+            (200, self.vault),
+            (200, self.vault),
+        ]
+        self.assertEqual(self._setup()[0], self.vault)
+        self.assertFalse(self.responses)
+        requests = [call.args[0] for call in self.transport.send.call_args_list]
+        self.assertEqual([request.method for request in requests], ["GET", "PUT", "GET", "PUT", "GET"])
+        storage_types = [json.loads(request.body)["properties"]["storageSettings"][0]["type"]
+                         for request in requests if request.method == "PUT"]
+        self.assertEqual(storage_types, ["GeoRedundant", "ZoneRedundant"])
+        self.assertEqual(self.roles.call_count, 3)
+
+    def test_local_create_error_is_not_hidden_by_storage_fallback(self):
+        self.responses = [(200, {"value": []}), TypeError("Invalid command model")]
+        with self.assertRaisesRegex(TypeError, "Invalid command model"):
+            self._setup()
+        self.assertEqual(self.transport.send.call_count, 2)
+        self.roles.assert_not_called()
+
+    def test_existing_vault_waits_before_assigning_roles(self):
+        updating = dict(self.vault, properties={"provisioningState": "Updating"})
+        self.responses = [(200, {"value": [updating]}), (200, updating), (200, self.vault)]
+        self.assertEqual(self._setup()[0], self.vault)
+        self.assertFalse(self.responses)
+        self.assertEqual(self.roles.call_count, 3)
+        self.assertTrue(all(call.args[0].method == "GET" for call in self.transport.send.call_args_list))
+
+    def test_custom_vault_readiness_uses_its_own_resource_group(self):
+        vault_id = _generate_arm_id(SUB_ID, "custom-rg", "Microsoft.DataProtection/backupVaults", self.vault_name)
+        self.vault["id"] = vault_id
+        self.responses = [(200, self.vault), (200, self.vault)]
+        self.assertEqual(self._setup("Custom", vault_id)[0], self.vault)
+        self.assertFalse(self.responses)
+        self.assertTrue(all("/resourceGroups/custom-rg/" in call.args[0].url
+                            for call in self.transport.send.call_args_list))
+
+    def test_setup_timeout_does_not_assign_roles(self):
+        updating = dict(self.vault, properties={"provisioningState": "Updating"})
+        self.responses = [(200, {"value": [updating]})] + [(200, updating)] * 30
+        with self.assertRaisesRegex(AzureResponseError, "Updating"):
+            self._setup()
+        self.assertFalse(self.responses)
+        self.roles.assert_not_called()
+
+    def test_new_vault_timeout_does_not_use_create_payload(self):
+        updating = dict(self.vault, properties={"provisioningState": "Updating"})
+        self.responses = [(200, {"value": []}), (200, self.vault)] + [(200, updating)] * 30
+        with self.assertRaisesRegex(AzureResponseError, "Updating"):
+            self._setup()
+        self.assertFalse(self.responses)
+        self.roles.assert_not_called()
+
+    def test_readiness_retries_transient_http_errors(self):
+        for status in [404, 408, 429, 500, 502, 503, 504]:
+            with self.subTest(status=status):
+                self.responses = [(status, self._error("TransientError", "Retry lookup.")), (200, self.vault)]
+                self.assertEqual(self._wait(), self.vault)
+                self.assertFalse(self.responses)
+
+    def test_readiness_retries_network_errors(self):
+        for error in [ServiceRequestError("Connection reset"), ServiceResponseError("Incomplete response")]:
+            with self.subTest(error=type(error).__name__):
+                self.responses = [error, (200, self.vault)]
+                self.assertEqual(self._wait(), self.vault)
+                self.assertFalse(self.responses)
+
+    def test_readiness_timeout_preserves_last_lookup_error(self):
+        self.responses = [(404, self._error("ResourceNotFound", "Vault not visible yet."))] * 3
+        with self.assertRaisesRegex(AzureResponseError, "Vault not visible yet") as caught:
+            self._wait()
+        self.assertIsInstance(caught.exception.__cause__, HttpResponseError)
+        self.assertFalse(self.responses)
+
+    def test_readiness_rejects_missing_and_non_success_states(self):
+        for state in [None, "", "Failed", "Canceled", "Cancelled"]:
+            with self.subTest(state=state):
+                attempts = 3 if state in [None, ""] else 1
+                self.responses = [(200, dict(self.vault, properties={"provisioningState": state}))] * attempts
+                with self.assertRaises(AzureResponseError):
+                    self._wait()
+                self.assertFalse(self.responses)
+
+    def test_readiness_non_transient_errors_are_not_retried(self):
+        self.responses = [(403, self._error("AuthorizationFailed", "Cannot read vault."))]
+        with self.assertRaisesRegex(HttpResponseError, "AuthorizationFailed"):
+            self._wait()
+        self.transport.send.assert_called_once()
+        self.sleep.assert_not_called()
+
+    def test_readiness_local_error_is_not_swallowed(self):
+        self.responses = [TypeError("Invalid command model")]
+        with self.assertRaisesRegex(TypeError, "Invalid command model"):
+            self._wait()
+        self.transport.send.assert_called_once()
+        self.sleep.assert_not_called()
 
 
 if __name__ == "__main__":
