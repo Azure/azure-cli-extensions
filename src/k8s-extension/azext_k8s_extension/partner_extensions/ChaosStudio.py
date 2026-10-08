@@ -122,7 +122,11 @@ class ChaosStudio(DefaultExtension):
         "IsWorkloadIdentityEnabled", "IdentityClientId", "IdentityTenantId",
     )
 
-    ROLE_NAME = "Chaos Studio Kubernetes Operator"
+    # Custom role names and IDs are unique per Microsoft Entra tenant, so the
+    # role the CLI creates carries the subscription ID in both. Roles created by
+    # earlier versions (fixed name and ID) are still recognized and reused.
+    LEGACY_ROLE_NAME = "Chaos Studio Kubernetes Operator"
+    ROLE_NAME_FORMAT = "Chaos Studio Kubernetes Operator ({})"
     ROLE_DESCRIPTION = (
         "Allows a Chaos Studio workspace managed identity to operate through "
         "the chaos-subscriber ServiceAccount on AKS."
@@ -579,12 +583,16 @@ class ChaosStudio(DefaultExtension):
             cluster_name,
             cluster_id,
         )
-        role_definition = arm.get(
-            self._select_role_id(resource_ids, existing_role_id, arm.subscription_id),
-            self.AUTHORIZATION_API_VERSION,
-            "Chaos Studio Kubernetes Operator role definition",
-            allow_not_found=existing_role_id is None,
-        )
+        if existing_role_id is not None:
+            role_definition = arm.get(
+                self._select_role_id(resource_ids, existing_role_id, arm.subscription_id),
+                self.AUTHORIZATION_API_VERSION,
+                "Chaos Studio Kubernetes Operator role definition",
+            )
+        else:
+            role_definition = self._resolve_owned_role_definition(
+                arm, resource_ids, arm.subscription_id
+            )
         role_assignment = arm.get(
             resource_ids["role_assignment"],
             self.AUTHORIZATION_API_VERSION,
@@ -842,7 +850,15 @@ class ChaosStudio(DefaultExtension):
             cluster_name,
             cluster_id,
         )
-        self._select_role_id(resource_ids, existing_role_id, arm.subscription_id)
+        if existing_role_id is not None:
+            owned_role_ids = [
+                self._select_role_id(resource_ids, existing_role_id, arm.subscription_id)
+            ]
+        else:
+            owned_role_ids = [
+                resource_ids["role_definition"],
+                resource_ids["legacy_role_definition"],
+            ]
         role_assignment = arm.get(
             resource_ids["role_assignment"],
             self.AUTHORIZATION_API_VERSION,
@@ -853,9 +869,11 @@ class ChaosStudio(DefaultExtension):
         if role_assignment is not None:
             properties = role_assignment.get("properties") or {}
             if (
-                self._same_resource_id(
-                    properties.get("roleDefinitionId"),
-                    resource_ids["role_definition"],
+                any(
+                    self._same_resource_id(
+                        properties.get("roleDefinitionId"), role_id
+                    )
+                    for role_id in owned_role_ids
                 )
                 and properties.get("description")
                 == self.ROLE_ASSIGNMENT_DESCRIPTION
@@ -1008,13 +1026,51 @@ class ChaosStudio(DefaultExtension):
         return resource_ids["role_definition"]
 
     @classmethod
+    def _resolve_owned_role_definition(cls, arm, resource_ids, subscription_id):
+        """Return the CLI-owned role for this subscription, or None to create one.
+
+        A legacy role (fixed ID) is reused only when it is scoped to exactly this
+        subscription; otherwise it belongs to another subscription in the tenant
+        and the per-subscription role is used instead.
+        """
+        legacy = arm.get(
+            resource_ids["legacy_role_definition"],
+            cls.AUTHORIZATION_API_VERSION,
+            "Chaos Studio Kubernetes Operator role definition",
+            allow_not_found=True,
+        )
+        if legacy is not None and (legacy.get("properties") or {}).get(
+            "assignableScopes"
+        ) == ["/subscriptions/{}".format(subscription_id)]:
+            resource_ids["role_definition"] = resource_ids["legacy_role_definition"]
+            return legacy
+        return arm.get(
+            resource_ids["role_definition"],
+            cls.AUTHORIZATION_API_VERSION,
+            "Chaos Studio Kubernetes Operator role definition",
+            allow_not_found=True,
+        )
+
+    @classmethod
+    def _role_name(cls, subscription_id):
+        return cls.ROLE_NAME_FORMAT.format(subscription_id.lower())
+
+    @classmethod
+    def _role_definition_guid(cls, subscription_id):
+        return str(
+            uuid.uuid5(
+                uuid.UUID(cls.ROLE_DEFINITION_GUID), subscription_id.lower()
+            )
+        )
+
+    @classmethod
     def _validate_role_definition(cls, role_definition, subscription_id, explicit=False):
+        # The role is identified by the ID it was read from, not its name.
         properties = role_definition.get("properties") or {}
         permissions = properties.get("permissions") or []
         expected_scope = "/subscriptions/{}".format(subscription_id)
         compatible = (
-            properties.get("roleName") == cls.ROLE_NAME
-            and (explicit or properties.get("description") == cls.ROLE_DESCRIPTION)
+            (explicit or properties.get("description") == cls.ROLE_DESCRIPTION)
             and properties.get("type") == "CustomRole"
             and properties.get("assignableScopes") == [expected_scope]
             and len(permissions) == 1
@@ -1034,7 +1090,7 @@ class ChaosStudio(DefaultExtension):
             raise InvalidArgumentValueError(
                 "The existing '{}' role definition is incompatible. Remove "
                 "or repair it before retrying; it was not overwritten.".format(
-                    cls.ROLE_NAME
+                    properties.get("roleName") or cls.LEGACY_ROLE_NAME
                 )
             )
 
@@ -1061,7 +1117,7 @@ class ChaosStudio(DefaultExtension):
     def _role_definition_body(cls, subscription_id):
         return {
             "properties": {
-                "roleName": cls.ROLE_NAME,
+                "roleName": cls._role_name(subscription_id),
                 "description": cls.ROLE_DESCRIPTION,
                 "type": "CustomRole",
                 "permissions": [
@@ -1114,10 +1170,10 @@ class ChaosStudio(DefaultExtension):
         cluster_name,
         cluster_id,
     ):
-        role_definition_id = (
+        role_definition_format = (
             "/subscriptions/{}/providers/Microsoft.Authorization/"
             "roleDefinitions/{}"
-        ).format(subscription_id, cls.ROLE_DEFINITION_GUID)
+        )
         role_assignment_guid = str(
             uuid.uuid5(
                 uuid.UUID(cls.ROLE_DEFINITION_GUID),
@@ -1125,7 +1181,12 @@ class ChaosStudio(DefaultExtension):
             )
         )
         return {
-            "role_definition": role_definition_id,
+            "role_definition": role_definition_format.format(
+                subscription_id, cls._role_definition_guid(subscription_id)
+            ),
+            "legacy_role_definition": role_definition_format.format(
+                subscription_id, cls.ROLE_DEFINITION_GUID
+            ),
             "role_assignment": (
                 "{}/providers/Microsoft.Authorization/roleAssignments/{}"
             ).format(cluster_id, role_assignment_guid),
