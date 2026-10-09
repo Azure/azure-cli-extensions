@@ -13,11 +13,11 @@ Pending
 +++++++
 
 22.0.0b12
-++++++++++
++++++++++
 * `az aks nodepool add/update`: Add `--gpu-mig-profiles` to configure an ordered list of NVIDIA MIG partition profiles.
 
 22.0.0b11
-++++++++++
++++++++++
 * `az aks nodepool update`: Add `--node-public-ip-prefix-ids` to add or replace the dual-stack node public IP prefixes on an existing node pool. An accepted change rolls the pool so existing nodes are recreated with the new public IPs. Requires the ``NodePublicIPv6PrefixPreview`` feature flag.
 
 22.0.0b10
