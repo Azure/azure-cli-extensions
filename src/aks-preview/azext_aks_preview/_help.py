@@ -459,6 +459,10 @@ helps['aks create'] = f"""
         - name: --enable-workload-identity
           type: bool
           short-summary: (PREVIEW) Enable workload identity addon.
+        - name: --enable-disk-driver
+          type: bool
+          short-summary: Enable AzureDisk CSI Driver.
+          long-summary: The AzureDisk CSI Driver is enabled by default, but the property is left out of the create request unless this flag is given. Pass it to set the property explicitly, which is required by features that validate storageProfile.diskCSIDriver.enabled on the request body.
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
@@ -2632,6 +2636,10 @@ helps['aks nodepool add'] = """
         - name: --gpu-mig-strategy
           type: string
           short-summary: Specify the MIG (Multi-Instance GPU) strategy for managed MIG support. Valid values are "Single" and "Mixed". When not specified, managed MIG is disabled.
+        - name: --gpu-mig-profiles
+          type: string array
+          short-summary: Space-separated ordered list of MIG partition profiles. Valid values are "MIG1g", "MIG2g", "MIG3g", "MIG4g", and "MIG7g".
+          long-summary: Duplicate profiles are allowed and meaningful. "Single" accepts one profile; "Mixed" accepts an ordered profile layout. This option cannot be used with --gpu-instance-profile. The service validates the VM size and profile layout.
         - name: --ssh-access
           type: string
           short-summary: Configure SSH setting for the node pool. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
@@ -2718,6 +2726,8 @@ helps['aks nodepool add'] = """
           text: az aks nodepool add -g MyResourceGroup -n managedsystem1 --cluster-name MyManagedCluster --mode ManagedSystem
         - name: Create a node pool with blue-green upgrade strategy and default parameters
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --upgrade-strategy BlueGreen
+        - name: Create a node pool with an ordered mixed MIG profile layout
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --enable-managed-gpu --gpu-mig-strategy Mixed --gpu-mig-profiles MIG1g MIG2g MIG2g MIG2g
 """
 
 helps['aks nodepool scale'] = """
@@ -2797,6 +2807,10 @@ helps['aks nodepool update'] = """
     short-summary: Update a node pool properties.
     long-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count.  When called with no optional arguments this attempts to move the node pool to its goal state without changing the current node pool configuration. This can be used to move out of a non succeeded state.
     parameters:
+        - name: --gpu-mig-profiles
+          type: string array
+          short-summary: Space-separated ordered list of MIG partition profiles. Valid values are "MIG1g", "MIG2g", "MIG3g", "MIG4g", and "MIG7g".
+          long-summary: Duplicate profiles are allowed and meaningful. The service rejects changes to this immutable property. This option cannot be used with --gpu-instance-profile.
         - name: --enable-cluster-autoscaler -e
           type: bool
           short-summary: Enable cluster autoscaler. For VMSS pools, enables autoscaler on the pool. For VirtualMachines pools, converts all manual scale profiles to autoscale profiles using the same min/max counts.
@@ -2929,6 +2943,10 @@ helps['aks nodepool update'] = """
         - name: --crg-id
           type: string
           short-summary: The Capacity Reservation Group (CRG) ID used to associate the existing nodepool with the existing Capacity Reservation Group resource.
+        - name: --node-public-ip-prefix-ids
+          type: string
+          short-summary: Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs (IPv4 and/or IPv6).
+          long-summary: At most one IPv4 and one IPv6 prefix may be specified. On an existing node pool this adds or replaces the assigned prefixes; an accepted change rolls the pool so existing nodes are recreated with the new public IPs. Requires the NodePublicIPv6PrefixPreview feature flag.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2948,6 +2966,8 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --zones auto
       - name: Update a node pool with blue-green upgrade settings
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --drain-batch-size 50% --drain-timeout-bg 5 --batch-soak-duration 10 --final-soak-duration 10
+      - name: Add an IPv6 public IP prefix to an existing dual-stack node pool (grows the assigned prefixes; existing nodes are recreated with the new public IPs)
+        text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-public-ip-prefix-ids "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Network/publicIPPrefixes/<v4prefix>,/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Network/publicIPPrefixes/<v6prefix>"
       - name: Update a nodepool with a Capacity Reservation Group(CRG) ID.
         text: az aks nodepool update -g MyResourceGroup -n MyNodePool --cluster-name MyMC --node-vm-size VMSize --crg-id "/subscriptions/SubID/resourceGroups/ResourceGroupName/providers/Microsoft.Compute/CapacityReservationGroups/MyCRGID"
 """

@@ -9,6 +9,7 @@ import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
+from .recording_processors import RedisEnterpriseKeyReplacer
 from .example_steps import step_create
 from .example_steps import step_show
 from .example_steps import step_database_show
@@ -131,6 +132,7 @@ class Redisenterprisescenario1Test(ScenarioTest):
     
     def __init__(self, *args, **kwargs):
         super(Redisenterprisescenario1Test, self).__init__(*args, **kwargs)
+        self.recording_processors.append(RedisEnterpriseKeyReplacer())
 
         self.kwargs.update({
             'cluster': self.create_random_name(prefix='clitest-cache1-', length=21)
@@ -225,6 +227,7 @@ class Redisenterprisescenario2Test(ScenarioTest):
 
     def __init__(self, *args, **kwargs):
         super(Redisenterprisescenario2Test, self).__init__(*args, **kwargs)
+        self.recording_processors.append(RedisEnterpriseKeyReplacer())
 
         self.kwargs.update({
             'cluster': self.create_random_name(prefix='clitest-cache2-', length=21),
@@ -286,6 +289,7 @@ class Redisenterprisescenario3Test(ScenarioTest):
     
     def __init__(self, *args, **kwargs):
         super(Redisenterprisescenario3Test, self).__init__(*args, **kwargs)
+        self.recording_processors.append(RedisEnterpriseKeyReplacer())
 
         self.kwargs.update({
             'subscription': self.get_subscription_id(),
@@ -382,6 +386,7 @@ class Redisenterprisescenario4Test(ScenarioTest):
     
     def __init__(self, *args, **kwargs):
         super(Redisenterprisescenario4Test, self).__init__(*args, **kwargs)
+        self.recording_processors.append(RedisEnterpriseKeyReplacer())
 
         self.kwargs.update({
             'cluster': self.create_random_name(prefix='clitest-cache4-', length=21),
@@ -482,6 +487,7 @@ class Redisenterprisescenario5Test(ScenarioTest):
     
     def __init__(self, *args, **kwargs):
         super(Redisenterprisescenario5Test, self).__init__(*args, **kwargs)
+        self.recording_processors.append(RedisEnterpriseKeyReplacer())
 
         self.kwargs.update({
             'cluster': self.create_random_name(prefix='clitest-cache5-', length=21),
@@ -576,6 +582,7 @@ class Redisenterprisescenario6Test(ScenarioTest):
 
     def __init__(self, *args, **kwargs):
         super(Redisenterprisescenario6Test, self).__init__(*args, **kwargs)
+        self.recording_processors.append(RedisEnterpriseKeyReplacer())
 
         self.kwargs.update({
             'cluster': self.create_random_name(prefix='clitest-cache6-', length=21),
@@ -667,6 +674,7 @@ class Redisenterprisescenario7Test(ScenarioTest):
     
     def __init__(self, *args, **kwargs):
         super(Redisenterprisescenario7Test, self).__init__(*args, **kwargs)
+        self.recording_processors.append(RedisEnterpriseKeyReplacer())
 
         self.kwargs.update({
             'cluster': self.create_random_name(prefix='clitest-cache7-', length=21),
