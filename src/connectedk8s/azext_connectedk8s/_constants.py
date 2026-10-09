@@ -6,6 +6,21 @@
 
 # pylint: disable=line-too-long
 
+Connected_Cluster_Arm_Id_Telemetry_Context_Key = "connectedk8s_arm_id"
+Connected_Cluster_Arm_Id_Telemetry_Property = "Context.Default.AzureCLI.resourceid"
+Telemetry_Error_Code_Key = "Context.Default.AzureCLI.errorCode"
+Telemetry_Error_Fault_Type_Key = "Context.Default.AzureCLI.errorFaultType"
+Telemetry_Error_Name_Key = "Context.Default.AzureCLI.errorName"
+Telemetry_Error_Message_Key = "Context.Default.AzureCLI.errorMessage"
+Telemetry_Error_Tsg_Link_Key = "Context.Default.AzureCLI.errorTsgLink"
+Telemetry_Error_Exception_Type_Key = "Context.Default.AzureCLI.errorExceptionType"
+Telemetry_Error_Http_Status_Code_Key = "Context.Default.AzureCLI.errorHttpStatusCode"
+Telemetry_Warning_Code_Key = "Context.Default.AzureCLI.warningCode"
+Telemetry_Warning_Fault_Type_Key = "Context.Default.AzureCLI.warningFaultType"
+Telemetry_Warning_Name_Key = "Context.Default.AzureCLI.warningName"
+Telemetry_Warning_Message_Key = "Context.Default.AzureCLI.warningMessage"
+Telemetry_Warning_Tsg_Link_Key = "Context.Default.AzureCLI.warningTsgLink"
+
 Distribution_Enum_Values = [
     "generic",
     "openshift",
@@ -123,6 +138,15 @@ Custom_Access_Token_Env_Var_Tenant_Id_Missing_Fault_Type = (
 )
 Custom_Token_Env_Var_Sub_Id_Missing_Fault_Type = "Required environment variable 'AZURE_SUBSCRIPTION_ID' is not set, when using Custom Acces Token."
 Release_Install_Namespace = "azure-arc-release"
+Helm_Release_Name = "azure-arc"
+Onboarding_PrivateKey_Secret_Name = "azure-arc-connect-privatekey"
+Onboarding_PrivateKey_Secret_Data_Key = "privateKey"
+Min_Agent_Version_For_Secret_Injection = "1.35.3"
+Min_Agent_Version_For_Secret_Injection_Preview = "1.35.3-preview"
+Stable_Release_Train = "stable"
+Preview_Release_Train = "preview"
+Inject_PrivateKey_Secret_Fault_Type = "inject-private-key-secret-error"
+Strip_Chart_PrivateKey_Secret_Fault_Type = "strip-chart-private-key-secret-error"
 Workload_Identity_Release_Name = "wiextension"
 Workload_Identity_Release_Namespace = "arc-workload-identity"
 Helm_Environment_File_Fault_Type = "helm-environment-file-error"
@@ -133,6 +157,7 @@ Pls_Resource_Not_Found = "pls-resource-not-found"
 Invalid_Argument_Fault_Type = "argument-validation-error"
 Load_Kubeconfig_Fault_Type = "kubeconfig-load-error"
 Read_ConfigMap_Fault_Type = "configmap-read-error"
+Create_ConfigMap_Fault_Type = "configmap-create-error"
 Get_ResourceProvider_Fault_Type = "resource-provider-fetch-error"
 Get_ConnectedCluster_Fault_Type = "connected-cluster-fetch-error"
 Create_ConnectedCluster_Fault_Type = "connected-cluster-create-error"
@@ -153,13 +178,7 @@ Helm_Timeout_ImagePull_Fault_Type = "helm-timeout-image-pull-failure"
 Helm_Timeout_PendingOrUnschedulable_Fault_Type = "helm-timeout-pending-or-unschedulable"
 Helm_Timeout_ClusterIdentity_Fault_Type = "helm-timeout-cluster-identity-error"
 Helm_Timeout_Generic_Fault_Type = "helm-timeout-error"
-# Customer-facing AZK8S error codes surfaced for Helm timeout classifications.
-# Ranges follow the error code chart: Helm & Agent Lifecycle (0500-0599),
-# Network & Connectivity (0300-0399).
-Helm_Timeout_PendingOrUnschedulable_Error_Code = "AZK8S0512"
-Helm_Timeout_ImagePull_Error_Code = "AZK8S0513"
-Helm_Timeout_Generic_Error_Code = "AZK8S0514"
-Helm_Timeout_ClusterIdentity_Error_Code = "AZK8S0309"
+Helm_Client_Error_Type = "helm-client-error"
 Install_Prediagnostics_Fault_Type = "prediagnostics-failure"
 Install_Prediagnostics_Job_Execution_Error_Fault_Type = (
     "prediagnostics-job-execution-error"
@@ -204,6 +223,7 @@ Get_Credentials_Failed_Fault_Type = "failed-to-get-list-cluster-user-credentials
 Failed_To_Merge_Credentials_Fault_Type = "failed-to-merge-credentials"
 Kubeconfig_Failed_To_Load_Fault_Type = "failed-to-load-kubeconfig-file"
 Failed_To_Load_K8s_Configuration_Fault_Type = "failed-to-load-kubernetes-configuration"
+Failed_To_Inject_Private_Key_Fault_Type = "failed-to-inject-private-key"
 Failed_To_Merge_Kubeconfig_File = "failed-to-merge-kubeconfig-file"
 Download_Helm_Fault_Type = "helm-client-download-error"
 Create_HelmExe_Fault_Type = "helm-client-create-error"
@@ -246,16 +266,147 @@ Proxy_Cert_Path_Does_Not_Exist_Error = (
 Get_Kubernetes_Infra_Fault_Type = "kubernetes-get-infrastructure-error"
 No_Param_Error = "No parameters were specified with update command. Please run az connectedk8s update --help to check parameters available for update"
 Gateway_ArmId_Is_Invalid = "The provided Gateway ArmID in --gateway-resource-id  {} is invalid. Please provide a valid Gateway ArmID."
-EnableProxy_Conflict_Error = "Conflict detected: --disable-proxy can not be set with --https-proxy, --http-proxy, --proxy-skip-range and --proxy-cert at the same time. Please run az connectedk8s update --help for more information about the parameters"
+EnableProxy_Conflict_Error = "Conflict detected: --disable-proxy can not be set with --https-proxy, --http-proxy, --proxy-skip-range, --proxy-cert and --add-proxy-bypass at the same time. Please run az connectedk8s update --help for more information about the parameters"
 
-# --proxy-skip-range keyword that expands to the Azure Arc private-link endpoints.
-Proxy_Skip_Range_Arc_Keyword = "arc"
-# Arc private-link endpoint host suffixes the "arc" keyword expands to.
-Arc_Private_Link_Endpoints = [
+# Arc service endpoint host suffixes that are bypassed when Arc bypass is requested.
+Arc_Service_Endpoints = [
     ".his.arc.azure.{cloud_based_domain}",
     ".dp.kubernetesconfiguration.azure.{cloud_based_domain}",
     ".guestconfiguration.azure.{cloud_based_domain}",
 ]
+
+# Keyword accepted by --add-proxy-bypass, which bypasses the proxy for the endpoints above.
+Proxy_Bypass_Arc_Keyword = "Arc"
+Proxy_Bypass_Arc_Helm_Value = "connectedk8sCli.arcProxyBypass"
+Proxy_Bypass_Arc_State_Fault_Type = "proxy-bypass-arc-state-invalid"
+Proxy_Bypass_Arc_State_Invalid_Error = (
+    "Cannot read the saved Arc proxy bypass information. "
+    "This command has not changed the proxy settings."
+)
+Proxy_Bypass_Arc_State_Mismatch_Error = (
+    "The saved Arc proxy bypass information does not match the current proxy skip range. "
+    "The proxy settings may have been changed outside this CLI. "
+    "This command has not changed the proxy settings."
+)
+# Announces the Arc bypass, naming the endpoints it covers and the command that clears it.
+Proxy_Bypass_Arc_Applied_Message = (
+    "Bypassing the proxy for Azure Arc endpoints {endpoints}. Run 'az connectedk8s update "
+    "-n <connected-cluster-name> -g <resource-group-name> --clear-proxy-bypass Arc' "
+    "to clear the Arc bypass."
+)
+# Names the carry-over and the endpoints kept, so it is not a surprise.
+Proxy_Bypass_Arc_Preserved_Warning = (
+    "The enabled Arc bypass for Azure Arc endpoints {endpoints} has been kept. "
+    "Run 'az connectedk8s update -n <connected-cluster-name> -g <resource-group-name> "
+    "--clear-proxy-bypass Arc' to clear it."
+)
+Proxy_Bypass_Arc_Overlap_Warning = (
+    "The Azure Arc endpoints were passed through --proxy-skip-range in the "
+    "current or a previous run and will be preserved when "
+    "--clear-proxy-bypass Arc is used."
+)
+# Confirms the clear, naming the endpoints so removing the bypass reads like applying it.
+Proxy_Bypass_Arc_Cleared_Message = (
+    "Clearing the Arc bypass for Azure Arc endpoints {endpoints}."
+)
+# Reports a clear that found nothing, so a no-op is not mistaken for a change.
+Proxy_Bypass_Arc_Nothing_To_Clear_Warning = (
+    "No saved Arc proxy bypass is recorded; there is nothing to clear."
+)
+# Reconnecting leaves the agents as they are, so the bypass is refused instead of being applied.
+Proxy_Bypass_Arc_Reconnect_Error = (
+    "--add-proxy-bypass Arc cannot be applied while reconnecting a cluster that is "
+    "already onboarded, because reconnecting leaves the agent configuration as it is."
+)
+# Names the command that does apply the bypass, so the error says how to get past it.
+Proxy_Bypass_Arc_Reconnect_Recommendation = (
+    "Run 'az connectedk8s update -n <connected-cluster-name> -g <resource-group-name> "
+    "--add-proxy-bypass Arc' to bypass the proxy for the Azure Arc service endpoints."
+)
+Proxy_Bypass_Arc_Reconnect_Fault_Type = "proxy-bypass-arc-reconnect-error"
+
+# Extension type accepted by --add-proxy-bypass, which makes that agent bypass the proxy.
+Proxy_Bypass_ContainerInsights_Extension_Type = "Microsoft.AzureMonitor.Containers"
+# Values accepted by --add-proxy-bypass and --clear-proxy-bypass.
+Proxy_Bypass_Enum_Values = [
+    Proxy_Bypass_Arc_Keyword,
+    Proxy_Bypass_ContainerInsights_Extension_Type,
+]
+# Rendered once for the error that lists what the flags accept.
+Proxy_Bypass_Allowed_Values = ", ".join(Proxy_Bypass_Enum_Values)
+# Lower-cased lookup, so a keyword is matched however the user typed it.
+Proxy_Bypass_Allowed_Keywords = frozenset(
+    value.lower() for value in Proxy_Bypass_Enum_Values
+)
+# Names the command that clears the Container Insights bypass, so each message says how to undo it.
+Proxy_Bypass_ContainerInsights_Clear = (
+    "Run 'az connectedk8s update -n <connected-cluster-name> -g <resource-group-name> "
+    "--clear-proxy-bypass "
+    f"{Proxy_Bypass_ContainerInsights_Extension_Type}' to stop bypassing the proxy for "
+    "Container Insights."
+)
+
+# ConfigMap the Container Insights agent reads; ignore_proxy_settings here drives the proxy bypass.
+CI_ConfigMap_Name = "container-azm-ms-agentconfig"
+CI_ConfigMap_Namespace = "kube-system"
+# Data key holding the ama-logs agent settings that carry the proxy_config section.
+CI_ConfigMap_Agent_Settings_Key = "agent-settings"
+# Section that scopes ignore_proxy_settings; the setting has no effect in any other section.
+CI_ConfigMap_Proxy_Config_Section = "[agent_settings.proxy_config]"
+# Setting inside that section which drives the proxy bypass.
+CI_ConfigMap_Proxy_Bypass_Setting = "ignore_proxy_settings"
+# Setting line written to enable the bypass.
+CI_ConfigMap_Proxy_Bypass_Enabled = f'{CI_ConfigMap_Proxy_Bypass_Setting} = "true"'
+# Setting line written to withdraw the bypass; the agent then honours the proxy again.
+CI_ConfigMap_Proxy_Bypass_Disabled = f'{CI_ConfigMap_Proxy_Bypass_Setting} = "false"'
+# Section and setting written together when agent-settings has no proxy_config section yet.
+CI_ConfigMap_Proxy_Bypass_Block = (
+    f"{CI_ConfigMap_Proxy_Config_Section}\n    {CI_ConfigMap_Proxy_Bypass_Enabled}"
+)
+# Set when this CLI writes ignore_proxy_settings, so a later run can remove it.
+CI_ConfigMap_Proxy_Bypass_Annotation = "connectedk8s.arc.azure.com/proxy-bypass"
+# Prefix for the error raised when the bypass cannot be applied or removed.
+CI_ConfigMap_Error_Message = (
+    f"Unable to configure the '{CI_ConfigMap_Name}' ConfigMap that carries the Container Insights "
+    "proxy bypass: "
+)
+# Guidance for the most likely failure, which is no access to the ConfigMap.
+CI_ConfigMap_Unauthorized_Message = (
+    f"The user does not have the required privileges to update the '{CI_ConfigMap_Name}' "
+    f"ConfigMap in the '{CI_ConfigMap_Namespace}' namespace, which carries the Container "
+    f"Insights proxy bypass. Please ensure you have permissions to get, create and update "
+    f"ConfigMaps in the '{CI_ConfigMap_Namespace}' namespace."
+)
+# Carries the wording kubernetes_exception_handler used, so a missing resource still reads the same.
+CI_ConfigMap_Not_Found_Message = "The requested kubernetes resource was not found."
+# Removal failures stop the command, so the message says why and how to get past it.
+CI_ConfigMap_Removal_Error_Message = (
+    f"Unable to remove the Container Insights proxy bypass from the '{CI_ConfigMap_Name}' "
+    f"ConfigMap in the '{CI_ConfigMap_Namespace}' namespace, so Container Insights may still "
+    "be bypassing the proxy. The command stopped here without making any further changes; "
+    "run it again once the ConfigMap is reachable: "
+)
+# Reported when removal fails on a path that carries on, so the setting can still be on the cluster.
+CI_ConfigMap_Removal_Failed_Warning = (
+    f"Unable to remove the Container Insights proxy bypass from the '{CI_ConfigMap_Name}' "
+    f"ConfigMap in the '{CI_ConfigMap_Namespace}' namespace, so Container Insights may continue "
+    "to bypass the proxy."
+)
+# Names the rollback, so undoing the bypass is not mistaken for a requested change.
+CI_ConfigMap_Rollback_Warning = (
+    "Reverting the Container Insights proxy bypass applied by this command."
+)
+# Reported when an explicit clear finds no ConfigMap, so a no-op is not mistaken for a change.
+CI_ConfigMap_Nothing_To_Clear_Warning = (
+    f"No Container Insights proxy bypass was found in the '{CI_ConfigMap_Name}' ConfigMap in the "
+    f"'{CI_ConfigMap_Namespace}' namespace; there is nothing to clear."
+)
+# Reported when an explicit clear finds a setting this CLI did not add, so it is left untouched.
+CI_ConfigMap_Not_Managed_Warning = (
+    f"The '{CI_ConfigMap_Proxy_Bypass_Setting}' setting in the '{CI_ConfigMap_Name}' ConfigMap in "
+    f"the '{CI_ConfigMap_Namespace}' namespace was not added by this CLI, so it has been left "
+    "unchanged."
+)
 
 Manual_Upgrade_Called_In_Auto_Update_Enabled = (
     "Manual Upgrade was called while in auto_Update enabled mode"
@@ -555,8 +706,46 @@ Entra_Connectivity_Check_Result_String = (
     "Entra Authentication Endpoint Connectivity Check Result"
 )
 CRD_Ownership_Check_Failed_String = "Check Failed: CRD"
+
+# Canonical fault-type names used by the standardized AZK8S error catalog.
+# Aliases retain the exact string values already emitted by existing call sites.
+Catch_All_Fault_Type = "unexpected-connectedk8s-error"
+Unsupported_OS_Fault_Type = Unsupported_Fault_Type
+Unsupported_Operation_Provisioned_Cluster_Fault_Type = (
+    Provisioned_Cluster_Operation_Fault_Type
+)
+Gateway_ArmId_Is_Invalid_Fault_Type = "invalid-gateway-arm-id"
+Linux_Node_Not_Exists_Fault_Type = Linux_Node_Not_Exists
+Release_Namespace_Not_Found_Fault_Type = Release_Namespace_Not_Found
+Get_Helm_Values_Failed_Fault_Type = Get_Helm_Values_Failed
+DNS_NXDomain_Fault_Type = "prediagnostics-dns-nxdomain"
+DNS_Timeout_Fault_Type = "prediagnostics-dns-timeout"
+DNS_ServFail_Fault_Type = "prediagnostics-dns-servfail"
+DNS_No_Servers_Reachable_Fault_Type = "prediagnostics-dns-no-servers-reachable"
+DNS_Communications_Error_Fault_Type = "prediagnostics-dns-communications-error"
+Outbound_Connectivity_Check_Failed_For_Onboarding_Fault_Type = (
+    Outbound_Connectivity_Check_Failed_For_Onboarding
+)
+Outbound_Connectivity_Check_Failed_For_Cluster_Connect_Fault_Type = (
+    Outbound_Connectivity_Check_Failed_For_Cluster_Connect
+)
+Prediagnostics_Outbound_Non2xx_Response_Fault_Type = (
+    Outbound_Connectivity_Non2xx_Response_Type
+)
+Cluster_Diagnostic_Prechecks_Incomplete_Fault_Type = (
+    Cluster_Diagnostic_Prechecks_Incomplete
+)
+Cluster_Diagnostic_Checks_Job_Not_Scheduled_Fault_Type = (
+    Cluster_Diagnostic_Checks_Job_Not_Scheduled
+)
+Cluster_Diagnostic_Checks_Job_Not_Complete_Fault_Type = (
+    Cluster_Diagnostic_Checks_Job_Not_Complete
+)
+Cluster_Diagnostic_Checks_Job_Log_Save_Failed_Fault_Type = (
+    Cluster_Diagnostic_Checks_Job_Log_Save_Failed
+)
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = "2.30.0"
-CLIENT_PROXY_VERSION = "1.3.034631"
+CLIENT_PROXY_VERSION = "1.3.035302"
 CLIENT_PROXY_FOLDER = ".clientproxy"
 API_SERVER_PORT = 47011
 CLIENT_PROXY_PORT = 47010

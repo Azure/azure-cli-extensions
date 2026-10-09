@@ -9,69 +9,31 @@ from __future__ import annotations
 import json
 import os
 import sys
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
-# Stub out heavy dependencies before importing the module under test.
-# The _precheckutils module imports kubernetes, azure.cli.core, knack, etc. at module level.
-# In lightweight test environments (no full CLI installed), we inject MagicMock stubs into
-# sys.modules so the import succeeds. In full azdev CI, the real modules are already loaded
-# and setdefault() leaves them untouched.
-_STUBS = {
-    "kubernetes": MagicMock(),
-    "kubernetes.config": MagicMock(),
-    "kubernetes.watch": MagicMock(),
-    "kubernetes.client": MagicMock(),
-    "kubernetes.client.models": MagicMock(),
-    "azure": MagicMock(),
-    "azure.cli": MagicMock(),
-    "azure.cli.core": MagicMock(),
-    "azure.cli.core.telemetry": MagicMock(),
-    "azure.cli.core.azclierror": MagicMock(),
-    "azure.cli.core.commands": MagicMock(),
-    "azure.cli.core.commands.client_factory": MagicMock(),
-    "azure.cli.core.util": MagicMock(),
-    "azure.cli.core._config": MagicMock(),
-    "azure.core": MagicMock(),
-    "azure.core.exceptions": MagicMock(),
-    "azure.mgmt": MagicMock(),
-    "azure.mgmt.core": MagicMock(),
-    "azure.mgmt.core.tools": MagicMock(),
-    "msrest": MagicMock(),
-    "msrestazure": MagicMock(),
-    "knack": MagicMock(),
-    "knack.log": MagicMock(),
-    "knack.help_files": MagicMock(),
-    "knack.util": MagicMock(),
-    "knack.cli": MagicMock(),
-    "knack.config": MagicMock(),
-    "knack.prompting": MagicMock(),
-    "knack.commands": MagicMock(),
-    "knack.arguments": MagicMock(),
-    "knack.events": MagicMock(),
-    # Stub the sibling module to avoid its transitive imports
-    "azext_connectedk8s._utils": MagicMock(),
-}
-_ORIGINAL_MODULES = {mod: sys.modules.get(mod) for mod in _STUBS}
-for mod, stub in _STUBS.items():
-    sys.modules.setdefault(mod, stub)
-
-# Make process_helm_error_detail a transparent passthrough so telemetry message assertions work.
-# Only patch if this is our MagicMock stub — if the real module is already loaded (e.g. in full
-# azdev CI), patching it here would permanently mutate its attribute on the shared module object.
-_utils_stub = sys.modules.get("azext_connectedk8s._utils")
-if isinstance(_utils_stub, MagicMock):
-    _utils_stub.process_helm_error_detail = lambda x: x
+import pytest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
-import azext_connectedk8s._constants as consts  # noqa: E402
-import azext_connectedk8s._precheckutils as precheckutils  # noqa: E402
+import azext_connectedk8s._constants as consts
+import azext_connectedk8s._precheckutils as precheckutils
 
-for mod, original_module in _ORIGINAL_MODULES.items():
-    if original_module is None:
-        sys.modules.pop(mod, None)
-    else:
-        sys.modules[mod] = original_module
+_REAL_ADD_CONNECTEDK8S_TELEMETRY_EVENT = (
+    precheckutils.azext_utils.add_connectedk8s_telemetry_event
+)
+
+
+@pytest.fixture(autouse=True)
+def _route_wrapped_events_to_test_telemetry(monkeypatch):
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "add_connectedk8s_telemetry_event",
+        lambda _cmd, properties: precheckutils.telemetry.add_extension_event(
+            "connectedk8s", properties
+        ),
+    )
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -84,6 +46,308 @@ def _reset_globals():
     precheckutils.prediagnostic_job_execution_status = consts.Job_Status_Not_Started
     precheckutils.prediagnostic_entra_check = consts.Diagnostic_Check_Starting
     precheckutils.prediagnostic_crd_check = consts.Diagnostic_Check_Starting
+
+
+def test_precheck_telemetry_helpers_forward_command_context(monkeypatch):
+    cmd = MagicMock()
+    add_event = MagicMock()
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "add_connectedk8s_telemetry_event",
+        add_event,
+    )
+
+    precheckutils.send_prediagnostic_job_execution_error_telemetry(cmd=cmd)
+    precheckutils.send_prediagnostic_check_failure_telemetry(
+        consts.Diagnostic_Check_Failed,
+        consts.Diagnostic_Check_Passed,
+        cmd=cmd,
+    )
+    precheckutils.send_post_diagnostic_precheck_failure_telemetry(
+        "LinuxNodeExists", "No Linux nodes found", cmd=cmd
+    )
+
+    assert add_event.call_count == 3
+    assert all(call.args[0] is cmd for call in add_event.call_args_list)
+
+
+def test_fetch_diagnostic_checks_results_preserves_standardized_cli_error(monkeypatch):
+    expected = precheckutils.AzCLIError("[AZK8S0502] HelmChartPullFailed")
+    monkeypatch.setattr(
+        precheckutils,
+        "executing_cluster_diagnostic_checks_job",
+        MagicMock(side_effect=expected),
+    )
+
+    with pytest.raises(precheckutils.AzCLIError) as raised:
+        precheckutils.fetch_diagnostic_checks_results(
+            MagicMock(),
+            MagicMock(),
+            MagicMock(),
+            "/usr/bin/helm",
+            "/usr/bin/kubectl",
+            None,
+            None,
+            "eastus",
+            "",
+            "",
+            "",
+            "",
+            "AzureCloud",
+            "/tmp/prechecks",
+            True,
+        )
+
+    assert raised.value is expected
+
+
+def test_executing_cluster_diagnostic_checks_job_preserves_chart_pull_error(
+    monkeypatch,
+):
+    expected = precheckutils.AzCLIError("[AZK8S0502] HelmChartPullFailed")
+    monkeypatch.setattr(
+        precheckutils.azext_utils, "get_release_namespace", MagicMock(return_value=None)
+    )
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "get_mcr_path",
+        MagicMock(return_value="mcr.microsoft.com"),
+    )
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "get_chart_path",
+        MagicMock(side_effect=expected),
+    )
+    monkeypatch.setattr(precheckutils.config, "load_kube_config", MagicMock())
+    cleanup_process = MagicMock()
+    monkeypatch.setattr(precheckutils, "Popen", cleanup_process)
+
+    with pytest.raises(precheckutils.AzCLIError) as raised:
+        precheckutils.executing_cluster_diagnostic_checks_job(
+            MagicMock(),
+            MagicMock(),
+            MagicMock(),
+            "/usr/bin/helm",
+            "/usr/bin/kubectl",
+            None,
+            None,
+            "eastus",
+            "",
+            "",
+            "",
+            "",
+            "AzureCloud",
+            "/tmp/prechecks",
+            True,
+        )
+
+    assert raised.value is expected
+    cleanup_process.assert_called_once()
+
+
+def test_prediagnostics_helm_install_uses_https_for_mcr_check(monkeypatch):
+    process = MagicMock(returncode=0)
+    process.communicate.return_value = (b"", b"")
+    popen = MagicMock(return_value=process)
+    monkeypatch.setattr(precheckutils, "Popen", popen)
+
+    precheckutils.helm_install_release_cluster_diagnostic_checks(
+        MagicMock(),
+        "/tmp/chart",
+        "eastus",
+        "",
+        "",
+        "",
+        "",
+        "AzureCloud",
+        None,
+        None,
+        "/usr/bin/helm",
+        "mcr.microsoft.com",
+    )
+
+    helm_command = popen.call_args.args[0]
+    assert "global.mcrRepository=https://mcr.microsoft.com" in helm_command
+    assert "global.image.registry=mcr.microsoft.com" in helm_command
+
+
+def test_prediagnostics_helm_install_uses_standardized_error(monkeypatch):
+    process = MagicMock(returncode=1)
+    process.communicate.return_value = (
+        b"",
+        b"Error: injected Helm install failure",
+    )
+    monkeypatch.setattr(precheckutils, "Popen", MagicMock(return_value=process))
+    arm_id = (
+        "/subscriptions/sub/resourceGroups/rg/providers/"
+        "Microsoft.Kubernetes/connectedClusters/cluster"
+    )
+    cmd = SimpleNamespace(cli_ctx=SimpleNamespace(data={"connectedk8s_arm_id": arm_id}))
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(precheckutils.azext_utils, "telemetry", mock_telemetry)
+    monkeypatch.setattr(precheckutils, "telemetry", mock_telemetry)
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "add_connectedk8s_telemetry_event",
+        _REAL_ADD_CONNECTEDK8S_TELEMETRY_EVENT,
+    )
+
+    with pytest.raises(precheckutils.AzCLIError) as raised:
+        precheckutils.helm_install_release_cluster_diagnostic_checks(
+            cmd,
+            "/tmp/chart",
+            "eastus",
+            "",
+            "",
+            "",
+            "",
+            "AzureCloud",
+            None,
+            None,
+            "/usr/bin/helm",
+            "mcr.microsoft.com",
+        )
+
+    assert str(raised.value).startswith("[AZK8S0607] PrediagnosticsHelmInstallFailed:")
+    _, properties = mock_telemetry.add_extension_event.call_args.args
+    assert properties["Context.Default.AzureCLI.errorCode"] == "AZK8S0607"
+    assert properties["Context.Default.AzureCLI.resourceid"] == arm_id
+    assert properties["Context.Default.AzureCLI.errorMessage"] == str(raised.value)
+    assert mock_telemetry.set_exception.call_args.kwargs["summary"] == str(raised.value)
+    mock_telemetry.set_user_fault.assert_not_called()
+
+
+def test_prediagnostics_helm_install_sets_user_fault_once(monkeypatch):
+    process = MagicMock(returncode=1)
+    process.communicate.return_value = (b"", b"Error: forbidden")
+    monkeypatch.setattr(precheckutils, "Popen", MagicMock(return_value=process))
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(precheckutils.azext_utils, "telemetry", mock_telemetry)
+    monkeypatch.setattr(precheckutils, "telemetry", mock_telemetry)
+
+    with pytest.raises(precheckutils.AzCLIError):
+        precheckutils.helm_install_release_cluster_diagnostic_checks(
+            MagicMock(),
+            "/tmp/chart",
+            "eastus",
+            "",
+            "",
+            "",
+            "",
+            "AzureCloud",
+            None,
+            None,
+            "/usr/bin/helm",
+            "mcr.microsoft.com",
+        )
+
+    mock_telemetry.set_user_fault.assert_called_once_with()
+    mock_telemetry.set_exception.assert_called_once()
+
+
+def test_log_save_failure_reports_azk8s0606_with_command_context(monkeypatch):
+    cmd = MagicMock()
+    exception = OSError("write failed")
+    diagnostic = MagicMock(return_value="sanitized message")
+    monkeypatch.setattr(
+        precheckutils.azext_utils, "report_connectedk8s_diagnostic", diagnostic
+    )
+
+    precheckutils._report_prediagnostic_log_save_failure(cmd, exception)
+
+    diagnostic.assert_called_once_with(
+        cmd,
+        precheckutils.errors.PREDIAGNOSTICS_LOG_SAVE_FAILED,
+        exception=exception,
+        fault_type=consts.Cluster_Diagnostic_Checks_Job_Log_Save_Failed,
+    )
+
+
+def test_fetch_results_propagates_classified_azure_cli_error(monkeypatch):
+    class ClassifiedError(Exception):
+        pass
+
+    monkeypatch.setattr(precheckutils, "AzCLIError", ClassifiedError)
+    classified_error = ClassifiedError("[AZK8S0607] forbidden")
+
+    def raise_classified_error(*_args, **_kwargs):
+        raise classified_error
+
+    monkeypatch.setattr(
+        precheckutils,
+        "executing_cluster_diagnostic_checks_job",
+        raise_classified_error,
+    )
+
+    with pytest.raises(ClassifiedError) as exc_info:
+        precheckutils.fetch_diagnostic_checks_results(
+            cmd=MagicMock(),
+            corev1_api_instance=MagicMock(),
+            batchv1_api_instance=MagicMock(),
+            helm_client_location="helm",
+            kubectl_client_location="kubectl",
+            kube_config=None,
+            kube_context=None,
+            location="eastus",
+            http_proxy="",
+            https_proxy="",
+            no_proxy="",
+            proxy_cert="",
+            azure_cloud="AZUREPUBLICCLOUD",
+            filepath_with_timestamp="/tmp/prediagnostics",
+            storage_space_available=True,
+        )
+
+    assert exc_info.value is classified_error
+
+
+def test_job_execution_propagates_helm_install_error_unchanged(monkeypatch):
+    class ClassifiedError(Exception):
+        pass
+
+    monkeypatch.setattr(precheckutils, "AzCLIError", ClassifiedError)
+    classified_error = ClassifiedError("[AZK8S0607] forbidden")
+    monkeypatch.setattr(precheckutils.config, "load_kube_config", MagicMock())
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "get_release_namespace",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(precheckutils.azext_utils, "get_mcr_path", lambda *_args: "mcr")
+    monkeypatch.setattr(
+        precheckutils.azext_utils, "get_chart_path", lambda *_args: "chart"
+    )
+    monkeypatch.setattr(precheckutils, "Popen", MagicMock())
+
+    def raise_classified_error(*_args, **_kwargs):
+        raise classified_error
+
+    monkeypatch.setattr(
+        precheckutils,
+        "helm_install_release_cluster_diagnostic_checks",
+        raise_classified_error,
+    )
+
+    with pytest.raises(ClassifiedError) as exc_info:
+        precheckutils.executing_cluster_diagnostic_checks_job(
+            cmd=MagicMock(),
+            corev1_api_instance=MagicMock(),
+            batchv1_api_instance=MagicMock(),
+            helm_client_location="helm",
+            kubectl_client_location="kubectl",
+            kube_config=None,
+            kube_context=None,
+            location="eastus",
+            http_proxy="",
+            https_proxy="",
+            no_proxy="",
+            proxy_cert="",
+            azure_cloud="AZUREPUBLICCLOUD",
+            filepath_with_timestamp="/tmp/prediagnostics",
+            storage_space_available=True,
+        )
+
+    assert exc_info.value is classified_error
 
 
 # ---------------------------------------------------------------------------
@@ -348,6 +612,7 @@ class TestSendPostDiagnosticPrecheckFailureTelemetry:
             props[consts.Telemetry_Onboarding_Error_Type_Key]
             == consts.Post_Diagnostic_Precheck_Fault_Type
         )
+        mock_telemetry.set_exception.assert_called_once()
 
     @patch("azext_connectedk8s._precheckutils.telemetry")
     def test_message_includes_check_name_and_reason(self, mock_telemetry):
@@ -419,12 +684,21 @@ All PreOnboading Diagnostic Checks passed successfully
 """
 
 
-def _run_completed_prediagnostic_output(monkeypatch, output):
+def _run_completed_prediagnostic_output(
+    monkeypatch,
+    output,
+    *,
+    job_status=consts.Job_Status_Completed,
+    cmd=None,
+):
+    command = cmd or MagicMock()
+
     def execute_job(*_args, **_kwargs):
-        precheckutils.prediagnostic_job_execution_status = consts.Job_Status_Completed
+        precheckutils.prediagnostic_job_execution_status = job_status
         return output
 
-    def parse_dns(log, _path, storage_available, _diagnoser_output):
+    def parse_dns(log, _path, storage_available, _diagnoser_output, **kwargs):
+        assert kwargs["cmd"] is command
         result = (
             consts.Diagnostic_Check_Passed
             if consts.DNS_Check_Result_String in log
@@ -451,7 +725,7 @@ def _run_completed_prediagnostic_output(monkeypatch, output):
     )
 
     result, _ = precheckutils.fetch_diagnostic_checks_results(
-        cmd=MagicMock(),
+        cmd=command,
         corev1_api_instance=MagicMock(),
         batchv1_api_instance=MagicMock(),
         helm_client_location="helm",
@@ -480,6 +754,26 @@ def test_completed_job_parses_healthy_1_36_1_output(monkeypatch):
     assert precheckutils.prediagnostic_outbound_check == consts.Diagnostic_Check_Passed
     assert precheckutils.prediagnostic_entra_check == consts.Diagnostic_Check_Passed
     assert precheckutils.prediagnostic_crd_check == consts.Diagnostic_Check_Passed
+
+
+def test_incomplete_job_with_partial_results_forwards_command_context(monkeypatch):
+    cmd = MagicMock()
+    send_job_error = MagicMock()
+    monkeypatch.setattr(
+        precheckutils,
+        "send_prediagnostic_job_execution_error_telemetry",
+        send_job_error,
+    )
+
+    result = _run_completed_prediagnostic_output(
+        monkeypatch,
+        CONFORMANCE_PREDIAGNOSTIC_OUTPUT,
+        job_status=consts.Job_Status_Not_Completed,
+        cmd=cmd,
+    )
+
+    assert result == consts.Diagnostic_Check_Incomplete
+    send_job_error.assert_called_once_with(cmd=cmd)
 
 
 def test_completed_job_parses_conformance_stringified_bytes(monkeypatch):
@@ -560,3 +854,151 @@ def test_split_container_log_handles_stringified_bytes():
         "DNS Result: success",
         "Outbound Result: success",
     ]
+
+
+@pytest.mark.parametrize(
+    ("reason", "expected_hint"),
+    [
+        ("ErrImagePull", "Verify connectivity to MCR and proxy settings"),
+        ("ImagePullBackOff", "Verify connectivity to MCR and proxy settings"),
+        ("CrashLoopBackOff", "Review the saved container logs"),
+    ],
+)
+def test_incomplete_job_diagnostic_maps_waiting_reason(reason, expected_hint):
+    pod = MagicMock()
+    pod.status.container_statuses = [MagicMock()]
+    pod.status.container_statuses[0].state.waiting.reason = reason
+    pod.status.container_statuses[0].state.terminated = None
+
+    diagnostic = precheckutils._get_incomplete_job_diagnostic(pod)
+
+    assert f"Pod reason: {reason}" in diagnostic
+    assert expected_hint in diagnostic
+
+
+def test_incomplete_job_diagnostic_maps_unschedulable_pod():
+    pod = MagicMock()
+    pod.status.container_statuses = []
+    pod.status.conditions = [
+        MagicMock(type="PodScheduled", status="False", reason="Unschedulable")
+    ]
+
+    diagnostic = precheckutils._get_incomplete_job_diagnostic(pod)
+
+    assert "Pod reason: Unschedulable" in diagnostic
+    assert "Verify node resources, taints, and namespace quotas" in diagnostic
+
+
+def test_incomplete_job_diagnostic_maps_oom_killed_container():
+    pod = MagicMock()
+    container_status = MagicMock()
+    container_status.state.waiting = None
+    container_status.state.terminated.reason = "OOMKilled"
+    container_status.state.terminated.exit_code = 137
+    pod.status.container_statuses = [container_status]
+
+    diagnostic = precheckutils._get_incomplete_job_diagnostic(pod)
+
+    assert "Pod reason: OOMKilled" in diagnostic
+    assert "Ensure the cluster has sufficient memory" in diagnostic
+
+
+def test_incomplete_job_diagnostic_maps_nonzero_exit_code():
+    pod = MagicMock()
+    container_status = MagicMock()
+    container_status.state.waiting = None
+    container_status.state.terminated.reason = "Error"
+    container_status.state.terminated.exit_code = 2
+    pod.status.container_statuses = [container_status]
+
+    diagnostic = precheckutils._get_incomplete_job_diagnostic(pod)
+
+    assert "Pod reason: Error (exit code 2)" in diagnostic
+    assert "Review the saved container logs" in diagnostic
+
+
+def test_incomplete_job_diagnostic_has_unknown_state_fallback():
+    pod = MagicMock()
+    pod.status.container_statuses = []
+    pod.status.conditions = []
+    pod.status.reason = None
+
+    diagnostic = precheckutils._get_incomplete_job_diagnostic(pod)
+
+    assert diagnostic == (
+        "Review the saved pod description and container logs, then retry."
+    )
+
+
+def test_diagnostic_job_watch_uses_180_second_timeout(monkeypatch):
+    _reset_globals()
+
+    complete_condition = MagicMock(type="Complete", status="True")
+    completed_job = MagicMock()
+    completed_job.metadata.name = "cluster-diagnostic-checks-job"
+    completed_job.status.failed = None
+    completed_job.status.conditions = [complete_condition]
+    watcher = MagicMock()
+    watcher.stream.return_value = iter([{"object": completed_job}])
+
+    batchv1_api = MagicMock()
+
+    pod = MagicMock()
+    pod.metadata.name = "cluster-diagnostic-checks-job-abc12"
+    pod.metadata.creation_timestamp = "2026-08-21T23:02:22Z"
+    corev1_api = MagicMock()
+    corev1_api.list_namespaced_pod.return_value = MagicMock(items=[pod])
+    corev1_api.read_namespaced_pod_log.return_value = "diagnostic output"
+
+    cmd = MagicMock()
+    cmd.cli_ctx.cloud.endpoints.active_directory = "https://login.microsoftonline.com"
+    monkeypatch.setattr(precheckutils.watch, "Watch", lambda: watcher)
+    monkeypatch.setattr(precheckutils.config, "load_kube_config", MagicMock())
+    monkeypatch.setattr(precheckutils, "Popen", MagicMock())
+    monkeypatch.setattr(
+        precheckutils,
+        "helm_install_release_cluster_diagnostic_checks",
+        MagicMock(),
+    )
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "get_release_namespace",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        precheckutils.azext_utils,
+        "get_mcr_path",
+        lambda *_args: "mcr.microsoft.com",
+    )
+    monkeypatch.setattr(
+        precheckutils.azext_utils, "get_chart_path", lambda *_args: "/fake/chart"
+    )
+
+    precheckutils.executing_cluster_diagnostic_checks_job(
+        cmd=cmd,
+        corev1_api_instance=corev1_api,
+        batchv1_api_instance=batchv1_api,
+        helm_client_location="helm",
+        kubectl_client_location="kubectl",
+        kube_config=None,
+        kube_context=None,
+        location="eastus",
+        http_proxy="",
+        https_proxy="",
+        no_proxy="",
+        proxy_cert="",
+        azure_cloud="AZUREPUBLICCLOUD",
+        filepath_with_timestamp="/tmp/prediagnostics",
+        storage_space_available=False,
+    )
+
+    watcher.stream.assert_called_once_with(
+        batchv1_api.list_namespaced_job,
+        namespace="azure-arc-release",
+        label_selector="",
+        timeout_seconds=180,
+    )
+    batchv1_api.read_namespaced_job.assert_not_called()
+    assert (
+        precheckutils.prediagnostic_job_execution_status == consts.Job_Status_Completed
+    )
