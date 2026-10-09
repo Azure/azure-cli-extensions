@@ -1295,6 +1295,7 @@ def aks_create(
     nrg_lockdown_restriction_level=None,
     enable_defender=False,
     defender_config=None,
+    enable_disk_driver=False,
     disable_disk_driver=False,
     disable_file_driver=False,
     enable_blob_driver=None,
