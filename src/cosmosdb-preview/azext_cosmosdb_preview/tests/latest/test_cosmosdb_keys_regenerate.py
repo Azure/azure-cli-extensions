@@ -21,20 +21,20 @@ class CosmosDBKeysRegenerateBodyTest(unittest.TestCase):
 
     def test_skip_check_omitted_when_not_specified(self):
         params = DatabaseAccountRegenerateKeyParameters(key_kind=KeyKind.PRIMARY)
-        body = params.serialize()
+        body = params.as_dict()
         self.assertEqual(body, {"keyKind": "primary"})
         self.assertNotIn("skipAccountKeysLastUsageCheck", body)
 
     def test_skip_check_true(self):
         params = DatabaseAccountRegenerateKeyParameters(
             key_kind=KeyKind.PRIMARY, skip_account_keys_last_usage_check=True)
-        body = params.serialize()
+        body = params.as_dict()
         self.assertEqual(body.get("skipAccountKeysLastUsageCheck"), True)
 
     def test_skip_check_false(self):
         params = DatabaseAccountRegenerateKeyParameters(
             key_kind=KeyKind.SECONDARY, skip_account_keys_last_usage_check=False)
-        body = params.serialize()
+        body = params.as_dict()
         self.assertEqual(body.get("skipAccountKeysLastUsageCheck"), False)
 
 
