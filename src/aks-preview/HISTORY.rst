@@ -11,6 +11,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create`: Add `--enable-disk-driver` so the AzureDisk CSI Driver can be enabled explicitly on create. The driver is already on by default, but `storageProfile.diskCSIDriver` was omitted from the create request unless `--disable-disk-driver` was passed, which blocked features that validate `storageProfile.diskCSIDriver.enabled` on the request body. `az aks update` already accepted this flag.
+
+22.0.0b12
++++++++++
+* `az aks nodepool add/update`: Add `--gpu-mig-profiles` to configure an ordered list of NVIDIA MIG partition profiles.
+
+22.0.0b11
++++++++++
+* `az aks nodepool update`: Add `--node-public-ip-prefix-ids` to add or replace the dual-stack node public IP prefixes on an existing node pool. An accepted change rolls the pool so existing nodes are recreated with the new public IPs. Requires the ``NodePublicIPv6PrefixPreview`` feature flag.
 
 22.0.0b10
 +++++++++
