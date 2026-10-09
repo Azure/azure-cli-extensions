@@ -56,6 +56,28 @@ class CheckExtensionVersionTest(unittest.TestCase):
             mock_logger.warning.assert_not_called()
 
 
+class FetchCompatibleWindowsOsUrnTest(unittest.TestCase):
+
+    @mock.patch(
+        'azext_vm_repair.repair_utils._call_az_command',
+        return_value='["MicrosoftWindowsServer:WindowsServer:2022-datacenter-smalldisk:2026.01.01"]')
+    def test_none_source_image_version_returns_first_urn(self, _):
+        source_vm = {
+            'location': 'eastus',
+            'storageProfile': {
+                'imageReference': {
+                    'version': None
+                }
+            }
+        }
+
+        urn = repair_utils._fetch_compatible_windows_os_urn(source_vm, {})
+
+        self.assertEqual(
+            'MicrosoftWindowsServer:WindowsServer:2022-datacenter-smalldisk:2026.01.01',
+            urn)
+
+
 class RepairMapUrlTest(unittest.TestCase):
 
     # Azure/repair-script-library renamed its default branch to main. The old name only

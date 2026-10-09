@@ -10,3 +10,4 @@
 
 from .__cmd_group import *
 from ._acknowledge import *
+from ._list_acknowledge import *

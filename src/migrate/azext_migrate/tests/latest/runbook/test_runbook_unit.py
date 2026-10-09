@@ -1192,8 +1192,8 @@ class ExecutionModelTests(unittest.TestCase):
         body = models.build_perform_action_body(ExecutionAction.PAUSE)
         self.assertEqual(
             body,
-            {"action": "Pause", "targetId": "",
-             "entities": []})
+            {"action": "Pause", "entities": []})
+        self.assertNotIn("targetId", body)
         self.assertIsInstance(body["action"], str)
 
     def test_perform_action_body_with_target(self):
@@ -1414,8 +1414,7 @@ class ExecutionCommandTests(unittest.TestCase):
         self.client.post_action.assert_called_once_with(
             arm_ids.execution_id(self._runbook_id(), "e1"),
             'PerformAction',
-            {"action": "Pause", "targetId": "",
-             "entities": []})
+            {"action": "Pause", "entities": []})
 
     def test_resume_posts_perform_action(self):
         self.client.post_action.return_value = {"ok": True}

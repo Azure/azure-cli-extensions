@@ -415,12 +415,13 @@ class ChaosStudioTests(unittest.TestCase):
         self.assertFalse(any(e[0] in ("create", "update", "arm-put") for e in self.events))
 
     def test_omitted_version_resolves_to_latest_registered(self):
-        self.registered("0.1.6", "0.2.10", "0.2.9", "not-a-version")
+        self.registered("0.2.10")
         extension = self.prepare()
         self.assertEqual(extension.version, "0.2.10")
+        self.assertIsNone(extension.release_train)
         self.assertFalse(extension.auto_upgrade_minor_version)
         self.versions.assert_called_with("rg", "Microsoft.ContainerService", "managedClusters", "cluster",
-                                         "Microsoft.ChaosStudio", release_train="dev")
+                                         "Microsoft.ChaosStudio", release_train=None, show_latest=True)
         self.registered()
         with self.assertRaisesRegex(InvalidArgumentValueError, "No Microsoft.ChaosStudio version"):
             self.prepare()

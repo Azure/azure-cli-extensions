@@ -4,19 +4,16 @@ Release History
 ===============
 3.0.0b6
 +++++++++++++++
-* Add ``az migrate runbook`` commands (generate, show, list, update,
-  regenerate, delete, wait).
-* Add ``az migrate runbook definition`` commands (show, download,
-  visualize).
-* Add ``az migrate runbook definition step`` commands (add, update,
-  remove) and ``az migrate runbook definition step-group`` commands
-  (split, merge).
-* Add ``az migrate runbook parameter`` and
-  ``az migrate runbook execution parameter`` commands (download, upload).
-* Add ``az migrate runbook execution`` commands (start, show, list,
-  pause, resume, cancel, visualize).
-* Add ``az migrate runbook execution step`` commands (retry, approve,
-  complete).
+* Add ``az migrate runbook`` command group to author, configure, and run
+  Azure Migrate wave runbooks. Supported operations:
+
+  * Runbook lifecycle: generate, view, update, regenerate, delete, and wait.
+  * Definition authoring: view/visualize a runbook and edit its steps and
+    step groups.
+  * Parameter configuration: download, configure, and upload runbook and
+    execution parameters.
+  * Execution management: start, monitor/visualize, pause, resume, and
+    cancel a run, plus per-step approve, retry, and complete.
 
 3.0.0b5
 +++++++++++++++

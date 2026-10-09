@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/azurefirewalls/{}", "2024-10-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/azurefirewalls/{}", "2025-09-01"],
         ]
     }
 
@@ -52,6 +52,10 @@ class Update(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.create_afc_control_plane = AAZBoolArg(
+            options=["--create-afc", "--create-afc-control-plane"],
+            help="When set to true, creates an AFC control plane for the Azure Firewall.",
         )
         _args_schema.firewall_policy = AAZStrArg(
             options=["--policy", "--firewall-policy"],
@@ -333,7 +337,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -432,7 +436,10 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01",
+                    "createAfcControlPlane", self.ctx.args.create_afc_control_plane,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -700,6 +707,10 @@ class _UpdateHelper:
         properties.additional_properties = AAZDictType(
             serialized_name="additionalProperties",
         )
+        properties.afc_configuration = AAZObjectType(
+            serialized_name="afcConfiguration",
+            flags={"read_only": True},
+        )
         properties.application_rule_collections = AAZListType(
             serialized_name="applicationRuleCollections",
         )
@@ -745,6 +756,12 @@ class _UpdateHelper:
 
         additional_properties = _schema_azure_firewall_read.properties.additional_properties
         additional_properties.Element = AAZStrType()
+
+        afc_configuration = _schema_azure_firewall_read.properties.afc_configuration
+        afc_configuration.service_endpoint = AAZStrType(
+            serialized_name="serviceEndpoint",
+            flags={"read_only": True},
+        )
 
         application_rule_collections = _schema_azure_firewall_read.properties.application_rule_collections
         application_rule_collections.Element = AAZObjectType()

@@ -48,7 +48,7 @@ def load_job_params(self):
             options_list=["--ssh-args", "-c"],
             type=str,
             action='append',
-            help="Additional arguments for ssh (repeatable)",
+            help="Additional SSH arguments, one argument per occurrence. Use --ssh-args=-N for an option starting with '-'.",
         )
 
     with self.argument_context("ml job create") as c:
