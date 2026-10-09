@@ -3250,6 +3250,55 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         dec_agentpool_2 = dec_2.update_network_profile(agentpool_2)
         self.assertEqual(dec_agentpool_2.network_profile.dranet.mode, "Managed")
 
+    def common_update_node_public_ip_prefix_ids(self):
+        v4 = "/subscriptions/1234/resourceGroups/rg/providers/Microsoft.Network/publicIPPrefixes/v4"
+        v6 = "/subscriptions/1234/resourceGroups/rg/providers/Microsoft.Network/publicIPPrefixes/v6"
+
+        # migrate a pool created with the legacy singular field: the network profile is created,
+        # the plural array is set, and the mutually-exclusive singular field is cleared
+        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"node_public_ip_prefix_ids": f"{v4},{v6}"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_1 = self.create_initialized_agentpool_instance(node_public_ip_prefix_id=v4)
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.update_network_profile(agentpool_1)
+        self.assertEqual(dec_agentpool_1.network_profile.node_public_ip_prefix_i_ds, [v4, v6])
+        self.assertIsNone(dec_agentpool_1.node_public_ip_prefix_id)
+
+        # replace the prefixes on a pool that already carries the plural array
+        dec_2 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"node_public_ip_prefix_ids": f"{v4},{v6}"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance(
+            network_profile=self.models.AgentPoolNetworkProfile(
+                node_public_ip_prefix_i_ds=[v4]
+            )
+        )
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.update_network_profile(agentpool_2)
+        self.assertEqual(dec_agentpool_2.network_profile.node_public_ip_prefix_i_ds, [v4, v6])
+
+        # no prefixes passed: the network profile is left untouched (not created)
+        dec_3 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"node_public_ip_prefix_ids": None},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_3 = self.create_initialized_agentpool_instance()
+        dec_3.context.attach_agentpool(agentpool_3)
+        dec_agentpool_3 = dec_3.update_network_profile(agentpool_3)
+        self.assertIsNone(dec_agentpool_3.network_profile)
+
     def common_update_managed_gpu(self):
         dec_1 = AKSPreviewAgentPoolUpdateDecorator(
             self.cmd,
@@ -3933,6 +3982,9 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
 
     def test_update_artifact_streaming(self):
         self.common_update_artifact_streaming()
+
+    def test_update_node_public_ip_prefix_ids(self):
+        self.common_update_node_public_ip_prefix_ids()
 
     def test_update_managed_dranet(self):
         self.common_update_managed_dranet()

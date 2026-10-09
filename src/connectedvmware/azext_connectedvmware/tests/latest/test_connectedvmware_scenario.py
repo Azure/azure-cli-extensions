@@ -4,17 +4,252 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import unittest
+from copy import deepcopy
+from unittest.mock import patch
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
-from knack.util import CLIError
+from azure.cli.core._profile import Profile
+from azure.cli.core.azclierror import ResourceNotFoundError as CLIResourceNotFoundError
+from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD
 from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk.scenario_tests import SubscriptionRecordingProcessor
+from azure.core.exceptions import ResourceNotFoundError
+
+from azext_connectedvmware.vendored_sdks.resourcegraph import ResourceGraphClient
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+NOT_FOUND_ERRORS = (CLIResourceNotFoundError, ResourceNotFoundError)
 
 
 class ConnectedvmwareScenarioTest(ScenarioTest):
+    def __init__(self, method_name):
+        super().__init__(method_name)
+        if method_name.startswith('test_create_from_machines_cross_subscription'):
+            # Keep the subscriptions distinct instead of replacing every resource ID with zero.
+            self.recording_processors = [
+                processor for processor in self.recording_processors
+                if not isinstance(processor, SubscriptionRecordingProcessor)
+            ]
+            # Use stable placeholders for the machine, vCenter, and unrelated subscriptions,
+            # including IDs in query bodies as well as resource paths.
+            for original, replacement in (
+                ('204898ee-cd13-4332-b9d4-55ca5c25496d', '00000000-0000-0000-0000-000000000000'),
+                ('ef8e2098-7ed6-4399-9fb6-556da62b3cf7', '11111111-1111-1111-1111-111111111111'),
+                ('b24cc8ee-df4f-48ac-94cf-46edf36b0fae', '22222222-2222-2222-2222-222222222222'),
+            ):
+                self.name_replacer.register_name_pair(original, replacement)
+
+    def setUp(self):
+        super().setUp()
+        if not self.in_recording:
+            # Isolate playback from the active cloud without modifying the shared cloud definition.
+            cloud = deepcopy(AZURE_PUBLIC_CLOUD)
+            cloud.profile = self.cli_ctx.cloud.profile
+            if self._testMethodName.startswith('test_create_from_machines_cross_subscription'):
+                # Playback request URLs must match the endpoint captured in the recordings.
+                cloud.endpoints.resource_manager = 'https://eastus2euap.management.azure.com'
+                subscription = Profile(cli_ctx=self.cli_ctx).load_cached_subscriptions()[0]
+                subscriptions = [
+                    dict(subscription, id=subscription_id, name=name, isDefault=index == 0)
+                    for index, (subscription_id, name) in enumerate((
+                        ('00000000-0000-0000-0000-000000000000', 'ARC-Testing'),
+                        ('11111111-1111-1111-1111-111111111111', 'vcenter'),
+                        ('22222222-2222-2222-2222-222222222222', 'unrelated'),
+                    ))
+                ]
+                # Keep account lookup and switching in memory so playback does not persist
+                # fake subscription IDs to the local cloud configuration.
+                for patcher in (
+                    patch.object(Profile, 'load_cached_subscriptions', return_value=subscriptions),
+                    patch('azure.cli.core._profile.ACCOUNT', {'subscriptions': subscriptions}),
+                    patch('azure.cli.core._profile.set_cloud_subscription'),
+                ):
+                    patcher.start()
+                    self.addCleanup(patcher.stop)
+            cloud_patch = patch.object(self.cli_ctx, 'cloud', cloud)
+            cloud_patch.start()
+            self.addCleanup(cloud_patch.stop)
+
+    def _assert_resource_absent(self, show_command):
+        # Authentication and other command failures must not count as successful deletion.
+        with self.assertRaises(NOT_FOUND_ERRORS):
+            self.cmd(show_command)
+
+    def _delete_resource(self, delete_command, show_command):
+        self.cmd(delete_command)
+        self._assert_resource_absent(show_command)
+
+    def _set_subscription(self, subscription_id):
+        self.cmd(f'az account set --subscription {subscription_id}')
+        self.cmd(
+            'az account show',
+            checks=[self.check('id', subscription_id, case_sensitive=False)],
+        )
+
+    def test_create_from_machines_cross_subscription(self):
+        self._create_from_machines_cross_subscription()
+
+    def test_create_from_machines_cross_subscription_with_unrelated_default(self):
+        original_subscription = self.cmd('az account show --query id -o tsv').output.strip()
+        self.addCleanup(self._set_subscription, original_subscription)
+        # Select the real account when recording, or its matching placeholder during playback.
+        default_subscription = (
+            'b24cc8ee-df4f-48ac-94cf-46edf36b0fae' if self.in_recording
+            else '22222222-2222-2222-2222-222222222222'
+        )
+        self._set_subscription(default_subscription)
+
+        self._create_from_machines_cross_subscription()
+
+        self.cmd(
+            'az account show',
+            checks=[self.check('id', default_subscription, case_sensitive=False)],
+        )
+
+    def _create_from_machines_cross_subscription(self):
+        self.kwargs.update(
+            {
+                'machine_subscription': 'ARC-Testing',
+                'machine_rg': 'azcli-machine-integration-test',
+                'machine_name': 'test-vm-azcli',
+                'vcenter_id': (
+                    '/subscriptions/ef8e2098-7ed6-4399-9fb6-556da62b3cf7/'
+                    'resourceGroups/azcli-integration-test/providers/'
+                    'Microsoft.ConnectedVMwareVsphere/vcenters/azcli-vcenter-scenario'
+                ),
+            }
+        )
+        if not self.in_recording:
+            # Command inputs must use the same vCenter ID as the sanitized HTTP recording.
+            self.kwargs['vcenter_id'] = self.kwargs['vcenter_id'].replace(
+                'ef8e2098-7ed6-4399-9fb6-556da62b3cf7', '11111111-1111-1111-1111-111111111111'
+            )
+
+        machine_subscription_id = self.cmd(
+            'az account show --subscription {machine_subscription} --query id -o tsv'
+        ).output.strip()
+        self.assertRegex(
+            machine_subscription_id,
+            r'^[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$',
+        )
+        vcenter_subscription_id = self.kwargs['vcenter_id'].split('/')[2]
+        self.assertNotEqual(
+            machine_subscription_id.lower(),
+            vcenter_subscription_id.lower(),
+            'The machine and vCenter must be in different subscriptions.',
+        )
+        machine_id = (
+            f'/subscriptions/{machine_subscription_id}/resourceGroups/{self.kwargs["machine_rg"]}/'
+            f'providers/Microsoft.HybridCompute/machines/{self.kwargs["machine_name"]}'
+        )
+        self.kwargs.update({
+            'machine_subscription_id': machine_subscription_id,
+            'machine_id': machine_id,
+            'vm_instance_id': (
+                f'{machine_id}/providers/'
+                'Microsoft.ConnectedVMwareVsphere/virtualMachineInstances/default'
+            ),
+        })
+
+        self.cmd(
+            'az resource show --ids {machine_id}',
+            checks=[
+                self.check('id', '{machine_id}', case_sensitive=False),
+                self.check('type', 'Microsoft.HybridCompute/machines', case_sensitive=False),
+            ],
+        )
+
+        original_resources = ResourceGraphClient.resources
+        with patch.object(
+            ResourceGraphClient, 'resources', autospec=True,
+            side_effect=original_resources,
+        ) as queries, self.assertLogs('azext_connectedvmware.custom', level='DEBUG') as logs:
+            queries.metadata = original_resources.metadata
+            self.cmd(
+                'az connectedvmware vm create-from-machines '
+                '--subscription {machine_subscription} '
+                '--resource-group {machine_rg} '
+                '--name {machine_name} '
+                '--vcenter-id {vcenter_id}'
+            )
+        self.assertGreater(queries.call_count, 0, 'The command must query ARG.')
+        for query_call in queries.call_args_list:
+            request = query_call.args[1]
+            self.assertEqual(
+                request.subscriptions,
+                [machine_subscription_id, vcenter_subscription_id],
+            )
+            self.assertNotIn(
+                'b24cc8ee-df4f-48ac-94cf-46edf36b0fae' if self.in_recording
+                else '22222222-2222-2222-2222-222222222222',
+                request.subscriptions,
+            )
+            self.assertIn(f"subscriptionId =~ '{machine_subscription_id}'", request.query)
+            self.assertIn(f"resourceGroup =~ '{self.kwargs['machine_rg']}'", request.query)
+            self.assertIn(f"id =~ '{machine_id}'", request.query)
+            self.assertIn(
+                f"id startswith '{self.kwargs['vcenter_id']}/InventoryItems'".lower(),
+                request.query.lower(),
+            )
+        messages = [record.getMessage() for record in logs.records]
+        self.assertIn(
+            f'Creating VM from machines on Subscription {machine_subscription_id} ...',
+            messages,
+        )
+        self.assertEqual(
+            [message for message in messages if message.startswith('Querying subscriptions:')],
+            [f'Querying subscriptions: {[machine_subscription_id, vcenter_subscription_id]}']
+            * queries.call_count,
+        )
+        self.assertIn(
+            (
+                f'Processing machine {self.kwargs["machine_name"]} '
+                f'in resource group {self.kwargs["machine_rg"]} | machineId: {machine_id}'
+            ).lower(),
+            [message.lower() for message in messages],
+        )
+        vcenter_name = self.kwargs['vcenter_id'].rsplit('/', 1)[1]
+        # The command catches per-machine failures, so exit code zero is not enough.
+        self.assertIn(
+            f'[1/1] machines were successfully linked to the vCenter {vcenter_name} .',
+            messages,
+        )
+        self.assertIn(
+            f'[0/1] machines failed to be linked to the vCenter {vcenter_name} .',
+            messages,
+        )
+        self.assertIn('[0/1] machines were skipped.', messages)
+
+        self.cmd(
+            'az connectedvmware vm show '
+            '--subscription {machine_subscription} '
+            '--resource-group {machine_rg} '
+            '--name {machine_name}',
+            checks=[
+                self.check('id', '{vm_instance_id}', case_sensitive=False),
+                self.check('infrastructureProfile.vCenterId', '{vcenter_id}', case_sensitive=False),
+                self.check('provisioningState', 'Succeeded'),
+            ],
+        )
+
+        self.cmd(
+            'az connectedvmware vm delete '
+            '--subscription {machine_subscription} '
+            '--resource-group {machine_rg} '
+            '--name {machine_name} '
+            '--retain-machine --yes'
+        )
+        self._assert_machine_retained()
+
+    def _assert_machine_retained(self):
+        self.cmd(
+            'az resource show --ids {machine_id}',
+            checks=[
+                self.check('id', '{machine_id}', case_sensitive=False),
+                self.check('name', '{machine_name}'),
+                self.check('type', 'Microsoft.HybridCompute/machines', case_sensitive=False),
+            ],
+        )
+
     def test_connectedvmware(self):
         self.kwargs.update(
             {

@@ -15,6 +15,10 @@ Pending
 * `az aks update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the cluster.
 * `az aks nodepool add/update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the node pool.
 
+22.0.0b11
++++++++++
+* `az aks nodepool update`: Add `--node-public-ip-prefix-ids` to add or replace the dual-stack node public IP prefixes on an existing node pool. An accepted change rolls the pool so existing nodes are recreated with the new public IPs. Requires the ``NodePublicIPv6PrefixPreview`` feature flag.
+
 22.0.0b10
 +++++++++
 * Bump API version to 2026-07-02-preview.
