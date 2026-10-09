@@ -19,7 +19,6 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request, sdk_no_wait
 from knack.log import get_logger
 from knack.util import CLIError
-from packaging.version import InvalidVersion, Version
 from ..vendored_sdks.models import Extension, PatchExtension, Scope, ScopeCluster
 from .._client_factory import cf_k8s_extension_types
 from .DefaultExtension import DefaultExtension
@@ -104,7 +103,6 @@ class ChaosStudio(DefaultExtension):
 
     DEFAULT_CLUSTER_TYPE = "managedclusters"
     DEFAULT_RELEASE_NAMESPACE = "chaos-infrastructure"
-    DEFAULT_RELEASE_TRAIN = "dev"
     WORKSPACE_ID_KEY = "chaos-workspace-id"
     EXISTING_ROLE_KEY = "chaos-existing-role-definition-id"
 
@@ -191,7 +189,6 @@ class ChaosStudio(DefaultExtension):
         )
         if not workspace_id:
             raise InvalidArgumentValueError("'chaos-workspace-id' is required.")
-        release_train = release_train or self.DEFAULT_RELEASE_TRAIN
         if not version:
             # auto-upgrade is forced off, so the extension RP needs an explicit version.
             version = self._latest_registered_version(
@@ -224,21 +221,16 @@ class ChaosStudio(DefaultExtension):
     def _latest_registered_version(cmd, resource_group_name, cluster_rp, cluster_type, cluster_name, release_train):
         versions = cf_k8s_extension_types(cmd.cli_ctx).cluster_list_versions(
             resource_group_name, cluster_rp, cluster_type, cluster_name,
-            "Microsoft.ChaosStudio", release_train=release_train,
+            "Microsoft.ChaosStudio", release_train=release_train, show_latest=True,
         )
-        candidates = []
         for item in versions or []:
             value = getattr(getattr(item, "properties", None), "version", None)
-            try:
-                candidates.append((Version(value), value))
-            except (InvalidVersion, TypeError):
-                continue
-        if not candidates:
-            raise InvalidArgumentValueError(
-                "No Microsoft.ChaosStudio version is registered for this cluster on release train '{}'. "
-                "Pass --version once one is available.".format(release_train)
-            )
-        return max(candidates)[1]
+            if value:
+                return value
+        raise InvalidArgumentValueError(
+            "No Microsoft.ChaosStudio version is registered for this cluster. "
+            "Pass --version once one is available."
+        )
 
     @classmethod
     def _reject_managed_overrides(cls, *settings):
@@ -266,7 +258,7 @@ class ChaosStudio(DefaultExtension):
                     "Completed extension did not expose a valid aksAssignedIdentity.{}.".format(field)
                 )
             values.append(str(parsed))
-        return tuple(values)
+        return values[0], values[1]
 
     @classmethod
     def _stage(cls, extension):
@@ -512,11 +504,7 @@ class ChaosStudio(DefaultExtension):
         return PatchExtension(
             auto_upgrade_minor_version=False,
             auto_upgrade_mode=None,
-            release_train=(
-                release_train
-                or getattr(original_extension, "release_train", None)
-                or self.DEFAULT_RELEASE_TRAIN
-            ),
+            release_train=release_train or getattr(original_extension, "release_train", None),
             version=version or getattr(original_extension, "version", None),
             configuration_settings=configuration_settings,
             configuration_protected_settings=configuration_protected_settings,

@@ -91,6 +91,15 @@ helps['vm repair run'] = """
         - name: Check whether a Linux guest is ready to boot from an NVMe controller (read-only)
           text: >
             az vm repair run -g MyResourceGroup -n MyBrokenVM --run-id linux-detect-nvme-readiness --run-on-repair --verbose
+        - name: Report the Windows NVMe boot-driver recovery changes without writing.
+          text: >
+            az vm repair run -g MyResourceGroup -n MyBrokenVM --run-id win-enable-nvme-boot-driver --run-on-repair --verbose
+        - name: Repair the Windows NVMe boot-driver configuration after the detector returns NVME_REPAIR_APPLICABLE.
+          text: >
+            az vm repair run -g MyResourceGroup -n MyBrokenVM --run-id win-enable-nvme-boot-driver --run-on-repair --parameters Mode=Repair --verbose
+        - name: Roll back a Windows NVMe boot-driver repair using the full backup path emitted by Repair.
+          text: >
+            az vm repair run -g MyResourceGroup -n MyBrokenVM --run-id win-enable-nvme-boot-driver --run-on-repair --parameters Mode=Rollback "BackupFile=<full-path-emitted-by-Repair>" --verbose
         - name: Run a local custom script on the VM.
           text: >
             az vm repair run -g MyResourceGroup -n MySourceWinVM --custom-script-file ./file.ps1 --verbose

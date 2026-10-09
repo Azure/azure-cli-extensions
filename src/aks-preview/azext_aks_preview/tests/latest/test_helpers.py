@@ -22,6 +22,9 @@ from azext_aks_preview._helpers import (
 )
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
+from azext_aks_preview.azurecontainerstorage._helpers import (
+    get_container_storage_extension_installed,
+)
 from azext_aks_preview.managed_cluster_decorator import (
     AKSPreviewManagedClusterModels,
 )
@@ -419,6 +422,59 @@ class TestGetMonitoringAddonKey(unittest.TestCase):
         # Both keys should still be present (no re-keying needed)
         self.assertIn("omsagent", addon_profiles)
         self.assertIn("omsAgent", addon_profiles)
+
+
+class GetContainerStorageExtensionInstalledTestCase(unittest.TestCase):
+    """Tests for get_container_storage_extension_installed extension_type verification."""
+
+    def _patch_module(self, extension=None, side_effect=None):
+        mock_mod = Mock()
+        if side_effect is not None:
+            mock_mod.show_k8s_extension = Mock(side_effect=side_effect)
+        else:
+            mock_mod.show_k8s_extension = Mock(return_value=extension)
+        return patch(
+            "azext_aks_preview.azurecontainerstorage._helpers.get_k8s_extension_module",
+            return_value=mock_mod,
+        )
+
+    def test_installed_when_type_matches(self):
+        extension = SimpleNamespace(extension_type="microsoft.distributedaccelerator", current_version="1.0.0")
+        with self._patch_module(extension=extension):
+            installed, version = get_container_storage_extension_installed(
+                Mock(), "mock_rg", "mock_cluster", "distributedaccelerator",
+                expected_extension_type="microsoft.distributedaccelerator",
+            )
+        self.assertTrue(installed)
+        self.assertEqual(version, "1.0.0")
+
+    def test_not_installed_when_type_mismatches(self):
+        extension = SimpleNamespace(extension_type="microsoft.somethingelse", current_version="1.0.0")
+        with self._patch_module(extension=extension):
+            installed, version = get_container_storage_extension_installed(
+                Mock(), "mock_rg", "mock_cluster", "distributedaccelerator",
+                expected_extension_type="microsoft.distributedaccelerator",
+            )
+        self.assertFalse(installed)
+        self.assertEqual(version, "")
+
+    def test_installed_ignores_type_when_expected_not_supplied(self):
+        extension = SimpleNamespace(extension_type="microsoft.somethingelse", current_version="1.0.0")
+        with self._patch_module(extension=extension):
+            installed, version = get_container_storage_extension_installed(
+                Mock(), "mock_rg", "mock_cluster", "distributedaccelerator",
+            )
+        self.assertTrue(installed)
+        self.assertEqual(version, "1.0.0")
+
+    def test_not_installed_when_extension_not_found(self):
+        with self._patch_module(side_effect=ResourceNotFoundError("not found")):
+            installed, version = get_container_storage_extension_installed(
+                Mock(), "mock_rg", "mock_cluster", "distributedaccelerator",
+                expected_extension_type="microsoft.distributedaccelerator",
+            )
+        self.assertFalse(installed)
+        self.assertEqual(version, "")
 
 
 if __name__ == "__main__":

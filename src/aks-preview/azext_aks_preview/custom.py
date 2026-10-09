@@ -2403,6 +2403,7 @@ def aks_agentpool_update(
     allowed_host_ports=None,
     asg_ids=None,
     enable_managed_dranet=False,
+    node_public_ip_prefix_ids=None,
     enable_artifact_streaming=False,
     disable_artifact_streaming=False,
     enable_managed_gpu=None,
@@ -3322,6 +3323,26 @@ def aks_operation_show_latest(cmd,
     if nodepool_name:
         return client.get_by_agent_pool(resource_group_name, name, nodepool_name, "latest")
     return client.get(resource_group_name, name, "latest")
+
+
+def aks_operation_list(cmd,   # pylint: disable=unused-argument
+                       client,
+                       resource_group_name,
+                       name,
+                       nodepool_name="",
+                       active_only=False):
+    if not nodepool_name:
+        operations = client.list(resource_group_name, name)
+        if active_only:
+            # There is no cluster-scope API to return only active operations, so filter locally.
+            # Terminal states are Succeeded/Failed/Canceled; anything else is still in progress.
+            terminal_states = {"succeeded", "failed", "canceled"}
+            return [
+                op for op in operations
+                if (getattr(op, "status", None) or "").lower() not in terminal_states
+            ]
+        return operations
+    return client.list_by_agent_pool(resource_group_name, name, nodepool_name, active_only=active_only)
 
 
 def aks_operation_abort(cmd,   # pylint: disable=unused-argument

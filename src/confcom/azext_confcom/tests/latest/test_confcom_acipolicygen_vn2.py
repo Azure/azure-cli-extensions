@@ -9,8 +9,13 @@ import json
 import os
 import pytest
 
-from azext_confcom.custom import acipolicygen_confcom
+from azext_confcom import config
+from azext_confcom.custom import (
+    _validate_allow_kubeproxy,
+    acipolicygen_confcom,
+)
 from deepdiff import DeepDiff
+from knack.util import CLIError
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
@@ -76,6 +81,120 @@ def test_acipolicygen_virtual_node_yaml(sample_directory):
         "Policy generation mismatch, actual output for "
         f"{os.path.join(sample_directory, 'policy.rego')}:\n{actual_policy}"
     )
+
+
+def test_acipolicygen_virtual_node_yaml_allow_kubeproxy():
+    os.chdir(CONFCOM_DIR)
+    virtual_node_yaml_path = os.path.join(
+        SAMPLES_ROOT,
+        "basic_command_args",
+        "virtual_node.yaml",
+    )
+
+    buffer = io.StringIO()
+    with contextlib.redirect_stdout(buffer):
+        acipolicygen_confcom(
+            input_path=None,
+            arm_template=None,
+            arm_template_parameters=None,
+            image_name=None,
+            virtual_node_yaml_path=virtual_node_yaml_path,
+            infrastructure_svn=None,
+            tar_mapping_location=None,
+            outraw_pretty_print=True,
+            platform="linux/amd64",
+            exclude_default_fragments=True,
+            allow_kubeproxy=True,
+        )
+
+    actual_policy = buffer.getvalue()
+    fragments_start = actual_policy.index("fragments := ") + len("fragments := ")
+    fragments_end = actual_policy.index("\n\ncontainers :=", fragments_start)
+    fragments = json.loads(actual_policy[fragments_start:fragments_end])
+    assert fragments == [config.KUBE_PROXY_REGO_FRAGMENT]
+
+
+def test_allow_kubeproxy_accepts_vn2_json(tmp_path):
+    input_path = tmp_path / "input.json"
+    input_path.write_text('{"scenario": "vn2"}', encoding="utf-8")
+
+    _validate_allow_kubeproxy(
+        allow_kubeproxy=True,
+        input_path=str(input_path),
+        virtual_node_yaml_path=None,
+        platform="linux/amd64",
+    )
+
+
+def test_acipolicygen_vn2_json_allow_kubeproxy(tmp_path):
+    input_path = tmp_path / "input.json"
+    input_path.write_text(
+        json.dumps(
+            {
+                "version": "1.0",
+                "scenario": "vn2",
+                "containers": [
+                    {
+                        "name": "container1",
+                        "properties": {
+                            "image": "mcr.microsoft.com/azurelinux/distroless/base:3.0",
+                        },
+                    },
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    buffer = io.StringIO()
+    with contextlib.redirect_stdout(buffer):
+        acipolicygen_confcom(
+            input_path=str(input_path),
+            arm_template=None,
+            arm_template_parameters=None,
+            image_name=None,
+            virtual_node_yaml_path=None,
+            infrastructure_svn=None,
+            tar_mapping_location=None,
+            outraw_pretty_print=True,
+            platform="linux/amd64",
+            allow_kubeproxy=True,
+        )
+
+    actual_policy = buffer.getvalue()
+    fragments_start = actual_policy.index("fragments := ") + len("fragments := ")
+    fragments_end = actual_policy.index("\n\ncontainers :=", fragments_start)
+    fragments = json.loads(actual_policy[fragments_start:fragments_end])
+    assert config.KUBE_PROXY_REGO_FRAGMENT in fragments
+
+
+@pytest.mark.parametrize(
+    "input_contents,virtual_node_yaml_path,platform",
+    [
+        ('{"scenario": "aci"}', None, "linux/amd64"),
+        (None, None, "linux/amd64"),
+        (None, "pod.yaml", "windows/amd64"),
+    ],
+)
+def test_allow_kubeproxy_rejects_non_vn2_sources(
+    tmp_path,
+    input_contents,
+    virtual_node_yaml_path,
+    platform,
+):
+    input_path = None
+    if input_contents is not None:
+        input_file = tmp_path / "input.json"
+        input_file.write_text(input_contents, encoding="utf-8")
+        input_path = str(input_file)
+
+    with pytest.raises(CLIError):
+        _validate_allow_kubeproxy(
+            allow_kubeproxy=True,
+            input_path=input_path,
+            virtual_node_yaml_path=virtual_node_yaml_path,
+            platform=platform,
+        )
 
 
 @pytest.mark.parametrize(

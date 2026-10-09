@@ -6,6 +6,6 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from .v2026_05_02_preview import ContainerServiceAIManagerMgmtClient
+from .v2026_09_02_preview import ContainerServiceAIManagerMgmtClient
 
 __all__ = ['ContainerServiceAIManagerMgmtClient']
