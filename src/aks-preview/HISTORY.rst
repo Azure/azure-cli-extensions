@@ -11,6 +11,9 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks kollect`, `az aks kanalyze`, `az aks get-credentials` and `az aks bastion tunnel`: Use resolved executable paths consistently.
+* `az aks bastion tunnel`: Report unsuccessful tunnel process exits instead of returning success.
+* `az aks bastion tunnel`: Identify interactive shells by executable name rather than directory names.
 * `az aks create`: Add `--enable-disk-driver` so the AzureDisk CSI Driver can be enabled explicitly on create. The driver is already on by default, but `storageProfile.diskCSIDriver` was omitted from the create request unless `--disable-disk-driver` was passed, which blocked features that validate `storageProfile.diskCSIDriver.enabled` on the request body. `az aks update` already accepted this flag.
 
 22.0.0b12
