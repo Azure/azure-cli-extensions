@@ -165,6 +165,10 @@
       "/bin/sh",
       "-c",
       "echo hello"
+    ],
+    "signals": [
+      9,
+      15
     ]
   }
 ]

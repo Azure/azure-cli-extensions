@@ -34,6 +34,7 @@ from azext_aks_preview._format import (
     aks_machine_list_table_format,
     aks_machine_show_table_format,
     aks_operation_show_table_format,
+    aks_operation_list_table_format,
     aks_list_nodepool_snapshot_table_format,
     aks_list_snapshot_table_format,
     aks_list_table_format,
@@ -379,6 +380,9 @@ def load_command_table(self, _):
         )
         g.custom_command(
             "show-latest", "aks_operation_show_latest", table_transformer=aks_operation_show_table_format
+        )
+        g.custom_command(
+            "list", "aks_operation_list", table_transformer=aks_operation_list_table_format
         )
 
     # AKS draft commands

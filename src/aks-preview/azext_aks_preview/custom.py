@@ -1295,6 +1295,7 @@ def aks_create(
     nrg_lockdown_restriction_level=None,
     enable_defender=False,
     defender_config=None,
+    enable_disk_driver=False,
     disable_disk_driver=False,
     disable_file_driver=False,
     enable_blob_driver=None,
@@ -2325,6 +2326,7 @@ def aks_agentpool_add(
     gpu_driver=None,
     driver_type=None,
     gpu_mig_strategy=None,
+    gpu_mig_profiles=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
     enable_secure_boot=False,
@@ -2403,9 +2405,10 @@ def aks_agentpool_update(
     allowed_host_ports=None,
     asg_ids=None,
     enable_managed_dranet=False,
+    node_public_ip_prefix_ids=None,
     enable_artifact_streaming=False,
     disable_artifact_streaming=False,
-    enable_managed_gpu=False,
+    enable_managed_gpu=None,
     managed_gpu_driver_mode=None,
     os_sku=None,
     ssh_access=None,
@@ -2425,6 +2428,7 @@ def aks_agentpool_update(
     zones=None,
     gpu_driver=None,
     gpu_mig_strategy=None,
+    gpu_mig_profiles=None,
     # crg
     crg_id=None,
     # prepared image specification
@@ -2462,6 +2466,7 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
                         cluster_name,
                         nodepool_name,
                         node_count=3,
+                        use_patch_api=False,
                         no_wait=False,
                         aks_custom_headers=None):
     headers = get_aks_custom_headers(aks_custom_headers)
@@ -2479,6 +2484,22 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
             raise ClientRequestError("Cannot scale virtual machines node pool with more than one size.")
     else:
         instance.count = new_node_count  # pylint: disable=no-member
+
+    # By default scale via the PUT agent pool API (begin_create_or_update).
+    # When --use-patch-api is set, scale a VMSS node pool via the preview PATCH agent
+    # pool API, which scales to the target count without a full reconciliation.
+    # VirtualMachines node pools are not supported yet and keep using the PUT API.
+    if use_patch_api and instance.type_properties_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
+        return _aks_agentpool_scale_patch(
+            cmd,
+            client,
+            resource_group_name,
+            cluster_name,
+            nodepool_name,
+            instance,
+            headers=headers,
+            no_wait=no_wait,
+        )
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
@@ -2486,6 +2507,42 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
         cluster_name,
         nodepool_name,
         instance,
+        headers=headers,
+    )
+
+
+def _aks_agentpool_scale_patch(cmd,
+                               client,
+                               resource_group_name,
+                               cluster_name,
+                               nodepool_name,
+                               instance,
+                               headers=None,
+                               no_wait=False):
+    """Scale a VMSS agent pool via the dedicated PATCH agent pool API.
+
+    Sends only the already-updated target count on ``instance`` so the pool scales
+    without triggering a full agent pool reconciliation.
+    """
+    AgentPoolUpdate = cmd.get_models(
+        "AgentPoolUpdate",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="agent_pools",
+    )
+    AgentPoolUpdateProperties = cmd.get_models(
+        "AgentPoolUpdateProperties",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="agent_pools",
+    )
+
+    parameters = AgentPoolUpdate(properties=AgentPoolUpdateProperties(count=instance.count))
+    return sdk_no_wait(
+        no_wait,
+        client.begin_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        parameters,
         headers=headers,
     )
 
@@ -3271,6 +3328,26 @@ def aks_operation_show_latest(cmd,
     return client.get(resource_group_name, name, "latest")
 
 
+def aks_operation_list(cmd,   # pylint: disable=unused-argument
+                       client,
+                       resource_group_name,
+                       name,
+                       nodepool_name="",
+                       active_only=False):
+    if not nodepool_name:
+        operations = client.list(resource_group_name, name)
+        if active_only:
+            # There is no cluster-scope API to return only active operations, so filter locally.
+            # Terminal states are Succeeded/Failed/Canceled; anything else is still in progress.
+            terminal_states = {"succeeded", "failed", "canceled"}
+            return [
+                op for op in operations
+                if (getattr(op, "status", None) or "").lower() not in terminal_states
+            ]
+        return operations
+    return client.list_by_agent_pool(resource_group_name, name, nodepool_name, active_only=active_only)
+
+
 def aks_operation_abort(cmd,   # pylint: disable=unused-argument
                         client,
                         resource_group_name,
@@ -3331,6 +3408,7 @@ def aks_machine_add(
     spot_max_price=float("nan"),
     enable_ultra_ssd=False,
     eviction_policy=None,
+    capacity_reservation_group=None,
 ):
     existedMachine = None
     try:
@@ -6371,18 +6449,6 @@ def aks_alert_config_add(
         no_wait=False
 ):
     headers = get_aks_custom_headers(aks_custom_headers)
-    existing_alert_config = None
-    try:
-        existing_alert_config = client.get(resource_group_name, cluster_name, name, headers=headers)
-    except ResourceNotFoundError:
-        pass
-
-    if existing_alert_config:
-        raise ClientRequestError(
-            f"Alert configuration '{name}' already exists. "
-            "Please use 'az aks alert-config update' to update it."
-        )
-
     raw_parameters = locals()
     return aks_alert_config_add_internal(
         cmd,

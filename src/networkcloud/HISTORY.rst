@@ -3,6 +3,10 @@
 Release History
 ===============
 
+6.0.0b1
+++++++++
+* This preview version supports NetworkCloud 2026-08-01-preview APIs.
+
 5.1.1
 ++++++++
 * Removes `create` and `delete` commands from `kubernetesversion` command group. These are not needed as this is a hydrated resource managed by the cluster.

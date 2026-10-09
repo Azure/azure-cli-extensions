@@ -207,6 +207,7 @@ from azext_aks_preview._validators import (
     validate_azuremonitorworkspaceresourceid,
     validate_cluster_id,
     validate_cluster_snapshot_id,
+    validate_capacity_reservation_group,
     validate_create_parameters,
     validate_crg_id,
     validate_custom_ca_trust_certificates,
@@ -279,6 +280,7 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
+    CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
     CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
     CONST_STORAGE_POOL_SKU_STANDARD_LRS,
     CONST_STORAGE_POOL_SKU_STANDARDSSD_LRS,
@@ -528,12 +530,14 @@ storage_pool_types = [
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
+    CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
 ]
 
 disable_storage_pool_types = [
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
+    CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
     CONST_ACSTOR_ALL,
 ]
 
@@ -850,6 +854,7 @@ def load_arguments(self, _):
         c.argument("k8s_support_plan", arg_type=get_enum_type(k8s_support_plans))
         c.argument("enable_defender", action="store_true")
         c.argument("defender_config", validator=validate_defender_config_parameter)
+        c.argument("enable_disk_driver", action="store_true")
         c.argument("disable_disk_driver", action="store_true")
         c.argument("disable_file_driver", action="store_true")
         c.argument("enable_blob_driver", action="store_true")
@@ -1293,7 +1298,7 @@ def load_arguments(self, _):
             "enable_azure_container_storage",
             arg_type=_get_container_storage_enum_type(storage_pool_types),
             help="enable azure container storage. Can be used as a flag (defaults to True) or with a"
-            " storage pool type value: (azureDisk, ephemeralDisk, elasticSan)",
+            " storage pool type value: (azureDisk, ephemeralDisk, elasticSan, distributedAccelerator)",
         )
         c.argument(
             "container_storage_version",
@@ -2041,14 +2046,14 @@ def load_arguments(self, _):
             "enable_azure_container_storage",
             arg_type=_get_container_storage_enum_type(storage_pool_types),
             help="enable azure container storage. Can be used as a flag (defaults to True) or with a"
-            " storage pool type value: (azureDisk, ephemeralDisk, elasticSan)",
+            " storage pool type value: (azureDisk, ephemeralDisk, elasticSan, distributedAccelerator)",
         )
         c.argument(
             "disable_azure_container_storage",
             arg_type=_get_container_storage_enum_type(disable_storage_pool_types),
-            help="disable azure container storage or any one of the storage pool types."
-            " Can be used as a flag (defaults to True) or with a storagepool type value:"
-            " azureDisk, ephemeralDisk, elasticSan, all (to disable all storage pools).",
+            help="disable azure container storage or any one of the storage types."
+            " Can be used as a flag (defaults to True) or with a storage type value:"
+            " azureDisk, ephemeralDisk, elasticSan, distributedAccelerator, all (to disable all storage types).",
         )
         c.argument(
             "container_storage_version",
@@ -2512,6 +2517,13 @@ def load_arguments(self, _):
             is_preview=True,
             help="Specify the GPU Multi-Instance GPU (MIG) strategy. Allowed values: Single, Mixed.",
         )
+        c.argument(
+            "gpu_mig_profiles",
+            arg_type=get_enum_type(gpu_instance_profiles),
+            nargs="+",
+            is_preview=True,
+            help="Space-separated ordered list of GPU MIG profiles. Allowed values: MIG1g, MIG2g, MIG3g, MIG4g, MIG7g.",
+        )
         # in creation scenario, use "localuser" as default
         c.argument(
             'ssh_access',
@@ -2568,6 +2580,15 @@ def load_arguments(self, _):
         )
 
     with self.argument_context("aks nodepool update") as c:
+        c.argument(
+            "node_public_ip_prefix_ids",
+            validator=validate_node_public_ip_prefix_ids,
+            help="Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs "
+                 "(IPv4 and/or IPv6). At most one IPv4 and one IPv6 prefix may be specified. "
+                 "On an existing node pool this adds or replaces the assigned prefixes; an accepted change "
+                 "rolls the pool so existing nodes are recreated with the new public IPs. "
+                 "Requires the NodePublicIPv6PrefixPreview feature flag to be registered.",
+        )
         c.argument(
             "enable_cluster_autoscaler",
             options_list=["--enable-cluster-autoscaler", "-e"],
@@ -2710,6 +2731,13 @@ def load_arguments(self, _):
             is_preview=True,
             help="Specify the GPU Multi-Instance GPU (MIG) strategy. Allowed values: Single, Mixed.",
         )
+        c.argument(
+            "gpu_mig_profiles",
+            arg_type=get_enum_type(gpu_instance_profiles),
+            nargs="+",
+            is_preview=True,
+            help="Space-separated ordered list of GPU MIG profiles. Allowed values: MIG1g, MIG2g, MIG3g, MIG4g, MIG7g.",
+        )
         # prepared image specification
         c.argument(
             'prepared_image_specification_id',
@@ -2759,6 +2787,14 @@ def load_arguments(self, _):
             nargs="+",
             required=True,
             help="Space-separated machine names to delete.",
+        )
+
+    with self.argument_context("aks nodepool scale") as c:
+        c.argument(
+            "use_patch_api",
+            action="store_true",
+            is_preview=True,
+            help="Scale a VMSS node pool using the preview PATCH agent pool API instead of the default PUT API.",
         )
 
     with self.argument_context("aks nodepool manual-scale add") as c:
@@ -2875,6 +2911,12 @@ def load_arguments(self, _):
             arg_type=get_enum_type(node_eviction_policies),
             validator=validate_eviction_policy,
         )
+        c.argument(
+            "capacity_reservation_group",
+            options_list=["--capacity-reservation-group", "--crg"],
+            validator=validate_capacity_reservation_group,
+            is_preview=True,
+        )
         c.argument("labels", nargs="*", validator=validate_nodepool_labels)
         c.argument("node_taints", validator=validate_nodepool_taints)
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
@@ -2899,6 +2941,13 @@ def load_arguments(self, _):
             required=False,
             validator=validate_nodepool_name,
             default="",
+        )
+
+    with self.argument_context("aks operation list") as c:
+        c.argument(
+            "active_only",
+            action="store_true",
+            help="Only list operations that are currently active (not terminal). "
         )
 
     with self.argument_context("aks maintenanceconfiguration") as c:

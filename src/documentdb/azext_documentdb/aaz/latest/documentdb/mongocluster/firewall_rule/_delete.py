@@ -13,8 +13,8 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster firewall-rule delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
+    is_preview=True,
 )
 class Delete(AAZCommand):
     """Delete a mongo cluster firewall rule.
@@ -24,9 +24,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-01",
+        "version": "2026-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}/firewallrules/{}", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}/firewallrules/{}", "2026-06-15-preview"],
         ]
     }
 
@@ -164,7 +164,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-06-15-preview",
                     required=True,
                 ),
             }

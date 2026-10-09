@@ -19,14 +19,15 @@ from azure.mgmt.resource.deployments.models import DeploymentMode
 
 from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError, AzureResponseError, ServiceError,
                                        ClientRequestError, ForbiddenError, UnauthorizedError,
-                                       RequiredArgumentMissingError, ResourceNotFoundError,
-                                       MutuallyExclusiveArgumentError)
+                                       RequiredArgumentMissingError, ResourceNotFoundError)
+from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
 
-from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
+from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, cf_suite_offers, _get_data_credentials
 from .._list_helper import repack_response_json
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import ManagedServiceIdentity
-from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, WorkspaceResourceProperties, KeyType, TargetQuotaAllocations
+from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, KeyType, WorkspaceKind, WorkspaceResourceProperties, TargetQuotaAllocations
+from ..vendored_sdks.azure_quantum_python._client.models import DimensionScope, MeterPeriod
 from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
 from knack.log import get_logger
@@ -52,15 +53,29 @@ QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID = "c1410b24-3e69-4857-8f86-4d0a2e6032
 # Built-in "Quantum Workspace Owner" role.
 QUANTUM_WORKSPACE_OWNER_ROLE_ID = "30b3bcf2-670a-4bdc-8669-7e0ae0c0dfda"
 
+QUANTUM_WORKSPACE_USER_ROLE_IDS = {
+    QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID,
+    QUANTUM_WORKSPACE_OWNER_ROLE_ID,
+}
+
 C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum terms and conditions and privacy policy and agree that " \
                                "Microsoft can share your account details with the provider for their transactional purposes.\n\n" \
                                "https://privacy.microsoft.com/privacystatement\n" \
                                "https://azure.microsoft.com/support/legal/preview-supplemental-terms/\n\n" \
                                "Continue? (Y/N) "
 
+_TARGET_QUOTA_TYPES = {
+    "standard_minutes_lifetime": "standardMinutesLifetime",
+    "high_minutes_lifetime": "highMinutesLifetime",
+}
+_WORKSPACE_QUOTA_SCOPE = DimensionScope.WORKSPACE.value
+_WORKSPACE_QUOTA_PERIOD = MeterPeriod.NONE.value
+
 
 class WorkspaceInfo:
-    def __init__(self, cmd, resource_group_name=None, workspace_name=None, endpoint=None):
+    _ENDPOINT_CACHE_KEY = 'workspace_endpoint_cache'
+
+    def __init__(self, cmd, resource_group_name=None, workspace_name=None):
         from azure.cli.core.commands.client_factory import get_subscription_id
 
         # Hierarchically selects the value for the given key.
@@ -75,7 +90,23 @@ class WorkspaceInfo:
         self.subscription = get_subscription_id(cmd.cli_ctx)
         self.resource_group = select_value('group', resource_group_name)
         self.name = select_value('workspace', workspace_name)
-        self.endpoint = select_value('endpoint', endpoint)
+        self.endpoint = self._get_cached_endpoint(cmd)
+
+    def _normalized_resource_id(self):
+        return _get_workspace_resource_id(self).lower()
+
+    def _get_cached_endpoint(self, cmd):
+        value = cmd.cli_ctx.config.get('quantum', self._ENDPOINT_CACHE_KEY, None)
+        if not value:
+            return None
+        try:
+            cache = json.loads(value)
+        except ValueError:
+            return None
+        if not isinstance(cache, dict) or cache.get('resource_id') != self._normalized_resource_id():
+            return None
+        endpoint = cache.get('endpoint')
+        return endpoint if isinstance(endpoint, str) and endpoint else None
 
     def clear(self):
         self.subscription = ''
@@ -84,13 +115,22 @@ class WorkspaceInfo:
         self.endpoint = ''
 
     def save(self, cmd, endpoint=''):
+        """
+        Persist this workspace's group/name defaults in global CLI config.
+
+        Cache the supplied endpoint with the workspace identity, or remove the cache if empty.
+        Local configuration is left unchanged.
+        """
         from azure.cli.core.util import ConfiguredDefaultSetter
 
-        # Save in the global [defaults] section of the .azure\config file
-        with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
+        with ConfiguredDefaultSetter(cmd.cli_ctx.config, use_local_config=False):
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'group', self.resource_group)
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'workspace', self.name)
-            cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'endpoint', endpoint)
+            if endpoint:
+                cache = {'resource_id': self._normalized_resource_id(), 'endpoint': endpoint}
+                cmd.cli_ctx.config.set_value('quantum', self._ENDPOINT_CACHE_KEY, json.dumps(cache))
+            else:
+                cmd.cli_ctx.config.remove_option('quantum', self._ENDPOINT_CACHE_KEY)
 
 
 def _show_tip(msg):
@@ -214,7 +254,7 @@ def _enum_to_value(value):
 
 
 def _require_v2_workspace(workspace_kind):
-    if str(_enum_to_value(workspace_kind)).upper() != 'V2':
+    if str(_enum_to_value(workspace_kind)).upper() != WorkspaceKind.V2.value:
         raise InvalidArgumentValueError("--quota is supported only for V2 workspaces.")
 
 
@@ -267,6 +307,112 @@ def _apply_target_quotas(providers, quota, preserve_existing=False):
         provider.target_quotas = target_quotas
 
 
+def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
+    if not quota:
+        return
+
+    requested_keys = sorted({
+        (allocation['providerId'].lower(), allocation['targetId'].lower())
+        for allocation in quota
+    })
+    workspace_providers = {
+        provider.provider_id.lower(): provider
+        for provider in workspace.properties.providers or []
+        if provider.provider_id
+    }
+    suite_offers = {
+        offer.properties.provider_id.lower(): offer
+        for offer in cf_suite_offers(cmd.cli_ctx).list_by_subscription()
+        if offer.properties is not None and offer.properties.provider_id
+    }
+
+    final_targets = {}
+    suite_targets = {}
+    for provider_id, target_id in requested_keys:
+        provider = workspace_providers[provider_id]
+        target_quota = next(
+            item for item in provider.target_quotas or []
+            if item.target_id is not None and item.target_id.lower() == target_id
+        )
+        final_targets[(provider_id, target_id)] = target_quota
+        suite_offer = suite_offers.get(provider_id)
+        if suite_offer is None:
+            raise InvalidArgumentValueError(
+                f"Cannot validate --quota because no suite offer was found for provider '{provider.provider_id}'. "
+                "Run 'az quantum suite-offer list' to view available suite offers."
+            )
+        suite_target = next(
+            (item for item in suite_offer.properties.target_quotas or []
+             if item.target_id is not None and item.target_id.lower() == target_id),
+            None
+        )
+        for quota_attribute in _TARGET_QUOTA_TYPES:
+            requested_allocation = getattr(target_quota, quota_attribute, None)
+            if requested_allocation is None:
+                continue
+            quota_type = quota_attribute.replace("_", " ")
+            if suite_target is None:
+                raise InvalidArgumentValueError(
+                    f"--quota requests a {quota_type} quota of {requested_allocation} minutes for provider "
+                    f"'{provider.provider_id}', target '{target_quota.target_id}', but the subscription has no "
+                    "allocation for that target.\n"
+                    "Allocate it at the subscription level first, then retry. To see current allocations run:\n"
+                    f"\taz quantum suite-offer quotas --provider-id {provider.provider_id}"
+                )
+            if getattr(suite_target, quota_attribute, None) is None:
+                raise InvalidArgumentValueError(
+                    f"Cannot validate the {quota_type} quota for provider '{provider.provider_id}', target "
+                    f"'{target_quota.target_id}', because the suite offer has no {quota_type} quota."
+                )
+        suite_targets[(provider_id, target_id)] = suite_target
+
+    usage_by_key = {}
+    if include_usage:
+        usage_client = cf_quotas(
+            cmd.cli_ctx, info.subscription, info.resource_group, info.name, workspace.properties.endpoint_uri)
+        for provider_id in sorted({provider_id for provider_id, _ in requested_keys}):
+            provider = workspace_providers[provider_id]
+            try:
+                usages = tuple(usage_client.list_workspace_usages(
+                    info.subscription, info.resource_group, info.name, provider_id=provider.provider_id))
+            except AzureResourceNotFoundError:
+                usages = None
+            for usage in usages or []:
+                if usage.target_id is not None:
+                    usage_by_key[(provider_id, usage.target_id.lower())] = usage.usage
+
+    for provider_id, target_id in requested_keys:
+        provider = workspace_providers[provider_id]
+        target_quota = final_targets[(provider_id, target_id)]
+        suite_target = suite_targets[(provider_id, target_id)]
+
+        usage = usage_by_key.get((provider_id, target_id))
+        for quota_attribute, usage_field in _TARGET_QUOTA_TYPES.items():
+            requested_allocation = getattr(target_quota, quota_attribute, None)
+            if requested_allocation is None:
+                continue
+            quota_type = quota_attribute.replace("_", " ")
+            suite_allocation = getattr(suite_target, quota_attribute)
+            current_usage = usage.get(usage_field) if usage is not None else None
+            current_usage = current_usage if current_usage is not None else 0
+            if requested_allocation < current_usage:
+                raise InvalidArgumentValueError(
+                    f"--quota would set the {quota_type} quota for provider '{provider.provider_id}', target "
+                    f"'{target_quota.target_id}' to {requested_allocation} minutes, below the {current_usage} minutes "
+                    f"the workspace has already used. Specify at least {current_usage}.\n"
+                    "To see current usage run:\n"
+                    f"\taz quantum workspace quotas -g {info.resource_group} -w {info.name}"
+                )
+            if requested_allocation > suite_allocation:
+                raise InvalidArgumentValueError(
+                    f"--quota would set the {quota_type} quota for provider '{provider.provider_id}', target "
+                    f"'{target_quota.target_id}' to {requested_allocation} minutes, above the {suite_allocation} minutes "
+                    f"allocated to the subscription. Specify at most {suite_allocation}.\n"
+                    "To see subscription allocations run:\n"
+                    f"\taz quantum suite-offer quotas --provider-id {provider.provider_id}"
+                )
+
+
 def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
            provider_sku_list=None, auto_accept=False, skip_autoadd=False, workspace_kind=None, quota=None):
     """
@@ -283,14 +429,18 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     if not info.resource_group:
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
     quantum_workspace: QuantumWorkspace = _get_basic_quantum_workspace(location, info, storage_account)
+    workspace_kind_value = str(_enum_to_value(workspace_kind)).upper()
     if quota:
         _require_v2_workspace(workspace_kind)
+    if workspace_kind_value == WorkspaceKind.V2.value:
+        skip_autoadd = True
 
     # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
     if skip_role_assignment:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
         _apply_target_quotas(quantum_workspace.properties.providers, quota)
-        quantum_workspace.properties.api_key_enabled = True
+        _validate_target_quota_bounds(cmd, info, quantum_workspace, quota, include_usage=False)
+        quantum_workspace.properties.api_key_enabled = workspace_kind_value != WorkspaceKind.V2.value
         if workspace_kind:
             quantum_workspace.properties.workspace_kind = workspace_kind
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
@@ -307,6 +457,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
 
     _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
     _apply_target_quotas(quantum_workspace.properties.providers, quota)
+    _validate_target_quota_bounds(cmd, info, quantum_workspace, quota, include_usage=False)
     validated_providers = []
     for provider in quantum_workspace.properties.providers:
         provider_data = {"providerId": provider.provider_id, "providerSku": provider.provider_sku}
@@ -413,10 +564,11 @@ def delete(cmd, resource_group_name, workspace_name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
     client.begin_delete(info.resource_group, info.name, polling=False)
     # If we deleted the current workspace, clear it
-    curr_ws = WorkspaceInfo(cmd)
-    if (curr_ws.resource_group == info.resource_group and curr_ws.name == info.name):
-        curr_ws.clear()
-        curr_ws.save(cmd)
+    default_ws = WorkspaceInfo(cmd)
+    if (info.endpoint and
+            (default_ws.resource_group or '').lower() == info.resource_group.lower() and
+            (default_ws.name or '').lower() == info.name.lower()):
+        clear(cmd)
     # Get updated information from the affected workspace
     ws = client.get(info.resource_group, info.name)
     return ws
@@ -444,17 +596,96 @@ def get(cmd, resource_group_name=None, workspace_name=None):
 
 def quotas(cmd, resource_group_name, workspace_name):
     """
-    List the quotas for the given (or current) Azure Quantum workspace.
+    List quota allocations and usages for the given (or current) Azure Quantum workspace.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
-    client = cf_quotas(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
-    response = client.list(info.subscription, info.resource_group, info.name)
-    return repack_response_json(response)
+
+    workspace = cf_workspaces(cmd.cli_ctx).get(info.resource_group, info.name)
+    properties = workspace.properties
+    providers = properties.providers if properties is not None else None
+    endpoint = properties.endpoint_uri if properties is not None else info.endpoint
+    usages = []
+    v1_quotas = []
+    client = cf_quotas(
+        cmd.cli_ctx, info.subscription, info.resource_group, info.name, endpoint)
+    workspace_kind = getattr(properties, 'workspace_kind', None) if properties is not None else None
+    if str(_enum_to_value(workspace_kind)).upper() == WorkspaceKind.V2.value:
+        for provider in providers or []:
+            try:
+                provider_usages = tuple(client.list_workspace_usages(
+                    info.subscription, info.resource_group, info.name, provider_id=provider.provider_id))
+            except AzureResourceNotFoundError:
+                provider_usages = None
+            usages.extend(provider_usages or [])
+    else:
+        v1_quotas = repack_response_json(
+            client.list(info.subscription, info.resource_group, info.name))
+
+    return _merge_workspace_quotas(workspace, usages, v1_quotas)
+
+
+def _target_quota_row(provider_id, target_id, dimension, allocation, usage):
+    return {
+        "dimension": dimension,
+        "providerId": provider_id,
+        "scope": _WORKSPACE_QUOTA_SCOPE,
+        "limit": allocation if allocation is not None else 0,
+        "utilization": usage if usage is not None else 0,
+        "holds": 0.0,
+        "period": _WORKSPACE_QUOTA_PERIOD,
+        "targetId": target_id,
+    }
+
+
+def _merge_workspace_quotas(workspace, usages, v1_quotas=None):
+    """
+    Preserve v1 quota rows and append one flat row per target and quota type for v2 quotas.
+    """
+    usage_by_key = {
+        ((usage.provider_id or '').lower(), usage.target_id.lower()): usage
+        for usage in (usages or [])
+        if usage.target_id is not None
+    }
+
+    properties = workspace.properties
+    providers = properties.providers if properties is not None else None
+
+    rows = [row for row in (v1_quotas or [])]
+    for provider in providers or []:
+        allocations_by_target = {
+            quota.target_id.lower(): quota
+            for quota in (provider.target_quotas or [])
+            if quota.target_id is not None
+        }
+        usage_targets = {
+            target_id: usage
+            for (provider_id, target_id), usage in usage_by_key.items()
+            if provider_id == (provider.provider_id or '').lower()
+        }
+        target_ids = [target_id for target_id in allocations_by_target]
+        target_ids.extend(target_id for target_id in usage_targets if target_id not in allocations_by_target)
+
+        for target_id in target_ids:
+            target_quota = allocations_by_target.get(target_id)
+            usage = usage_targets.get(target_id)
+            usage_values = usage.usage if usage is not None else None
+            display_target_id = target_quota.target_id if target_quota is not None else usage.target_id
+
+            for attribute, usage_field in _TARGET_QUOTA_TYPES.items():
+                rows.append(_target_quota_row(
+                    provider.provider_id,
+                    display_target_id,
+                    usage_field[0].upper() + usage_field[1:],
+                    getattr(target_quota, attribute, None),
+                    usage_values.get(usage_field) if usage_values is not None else None,
+                ))
+
+    return rows
 
 
 def set(cmd, workspace_name, resource_group_name):
     """
-    Set the default Azure Quantum workspace.
+    Save resource-group and workspace-name defaults and the workspace's data-plane endpoint cache.
     """
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
@@ -516,7 +747,7 @@ def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type
 
 def update(cmd, resource_group_name=None, workspace_name=None, enable_key=None, quota=None):
     """
-    Update the default Azure Quantum workspace.
+    Update the given (or current) Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
@@ -534,6 +765,7 @@ def update(cmd, resource_group_name=None, workspace_name=None, enable_key=None, 
     if quota:
         _require_v2_workspace(ws.properties.workspace_kind)
         _apply_target_quotas(ws.properties.providers, quota, preserve_existing=True)
+        _validate_target_quota_bounds(cmd, info, ws, quota, include_usage=True)
 
     if enable_key in ["True", "true"]:
         ws.properties.api_key_enabled = True
@@ -542,7 +774,6 @@ def update(cmd, resource_group_name=None, workspace_name=None, enable_key=None, 
     lropoller = client.begin_create_or_update(info.resource_group, info.name, ws)
     if lropoller:
         ws = lropoller.result()
-        info.save(cmd, ws.properties.endpoint_uri)
     return ws
 
 
@@ -552,38 +783,107 @@ def _get_workspace_resource_id(info):
             f"/providers/Microsoft.Quantum/Workspaces/{info.name}")
 
 
-def _validate_assignee_args(assignee, assignee_object_id):
-    if not assignee and not assignee_object_id:
-        raise RequiredArgumentMissingError("Please provide either '--assignee' or '--assignee-object-id'.")
-    if assignee and assignee_object_id:
-        raise MutuallyExclusiveArgumentError("Only one of '--assignee' or '--assignee-object-id' can be specified.")
+def _resolve_user_id(cmd, email):
+    from azure.cli.command_modules.role import graph_client_factory
+    from azure.cli.command_modules.role.custom import GraphError
+
+    try:
+        user = graph_client_factory(cmd.cli_ctx).user_get(email)
+    except GraphError as ex:
+        if getattr(ex.response, "status_code", None) == 404:
+            raise ResourceNotFoundError(
+                f"No user with the email address '{email}' was found in the directory. "
+                "Check that the user is in the tenant and the email address is spelled correctly."
+            ) from ex
+        raise
+
+    return user["id"]
 
 
-def add_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, assignee_principal_type=None, role=None):
+def _list_user_workspace_role_assignments(cmd, user_id, scope):
+    from azure.cli.command_modules.role.custom import list_role_assignments
+
+    assignments = list_role_assignments(cmd, assignee_object_id=user_id, scope=scope,
+                                        include_inherited=True, fill_principal_name=False,
+                                        fill_role_definition_name=False)
+    return [assignment for assignment in assignments
+            if assignment["roleDefinitionId"].rsplit("/", 1)[-1].lower() in QUANTUM_WORKSPACE_USER_ROLE_IDS]
+
+
+def _scope_parts(scope):
+    return scope.lower().strip("/").split("/")
+
+
+def _is_workspace_scope(assignment, scope):
+    return _scope_parts(assignment["scope"]) == _scope_parts(scope)
+
+
+def _scope_distance(assignment_scope, workspace_scope):
+    """ARM path segments between the workspace and an assignment's scope; unrelated scopes sort last."""
+    workspace_parts = _scope_parts(workspace_scope)
+    assignment_parts = _scope_parts(assignment_scope)
+    if workspace_parts[:len(assignment_parts)] != assignment_parts:
+        return len(workspace_parts)
+    return len(workspace_parts) - len(assignment_parts)
+
+
+def _select_user_workspace_role_assignment(assignments, scope):
+    # Nearest scope wins, then Data Contributor over Owner; scope and ID make remaining ties deterministic.
+    def sort_key(assignment):
+        role_id = assignment["roleDefinitionId"].rsplit("/", 1)[-1].lower()
+        return (_scope_distance(assignment["scope"], scope),
+                0 if role_id == QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID else 1,
+                assignment["scope"].lower(),
+                assignment["id"].lower())
+
+    return min(assignments, key=sort_key)
+
+
+def add_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     """
-    Grant a user, group, or service principal access to an Azure Quantum workspace.
+    Grant a user access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import create_role_assignment
 
-    _validate_assignee_args(assignee, assignee_object_id)
+    user_id = _resolve_user_id(cmd, email)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
-    return create_role_assignment(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id,
-                                  assignee_principal_type=assignee_principal_type)
+    assignments = _list_user_workspace_role_assignments(cmd, user_id, scope)
+    if assignments:
+        logger.warning("User '%s' already has access to this Azure Quantum workspace. No new role assignment was "
+                       "created.", email)
+        return _select_user_workspace_role_assignment(assignments, scope)
+
+    return create_role_assignment(cmd, role=QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID, scope=scope,
+                                  assignee_object_id=user_id, assignee_principal_type="User")
 
 
-def remove_user(cmd, resource_group_name=None, workspace_name=None, assignee=None, assignee_object_id=None, role=None):
+def remove_user(cmd, resource_group_name=None, workspace_name=None, email=None):
     """
-    Remove a user, group, or service principal's access to an Azure Quantum workspace.
+    Remove a user's access to an Azure Quantum workspace.
     """
     from azure.cli.command_modules.role.custom import delete_role_assignments
 
-    _validate_assignee_args(assignee, assignee_object_id)
+    user_id = _resolve_user_id(cmd, email)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     scope = _get_workspace_resource_id(info)
-    role = role or QUANTUM_WORKSPACE_DATA_CONTRIBUTOR_ROLE_ID
-    return delete_role_assignments(cmd, role=role, scope=scope, assignee=assignee, assignee_object_id=assignee_object_id)
+    assignments = _list_user_workspace_role_assignments(cmd, user_id, scope)
+    direct_assignments = [assignment for assignment in assignments if _is_workspace_scope(assignment, scope)]
+    inherited_assignments = [assignment for assignment in assignments if not _is_workspace_scope(assignment, scope)]
+
+    if not direct_assignments:
+        if inherited_assignments:
+            raise ResourceNotFoundError(
+                f"User '{email}' has no access assigned directly on this workspace. Their access is inherited "
+                "from the resource group or subscription and must be removed at that scope."
+            )
+        raise ResourceNotFoundError(f"User '{email}' does not have access to this Azure Quantum workspace.")
+
+    delete_role_assignments(cmd, ids=[assignment["id"] for assignment in direct_assignments])
+    if inherited_assignments:
+        logger.warning("Workspace-level access was removed for '%s', but inherited access from the resource "
+                       "group or subscription remains. Remove the inherited assignment at its scope to revoke "
+                       "access.", email)
 
 
 def list_users(cmd, resource_group_name=None, workspace_name=None, include_inherited=True):

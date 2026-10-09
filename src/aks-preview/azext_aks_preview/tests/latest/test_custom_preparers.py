@@ -10,6 +10,7 @@ from unittest.mock import patch
 from azext_aks_preview.tests.latest.custom_preparers import (
     AKSCustomResourceGroupPreparer,
     ENV_VAR_FORCE_RESOURCE_GROUP_LOCATION,
+    skip_test_if_location_unsupported,
 )
 
 
@@ -58,6 +59,35 @@ class TestAKSCustomResourceGroupPreparer(unittest.TestCase):
 
         self.assertEqual(preparer.location, "westcentralus")
         self.assertEqual(preparer.dev_setting_location, "westcentralus")
+
+
+class TestSkipTestIfLocationUnsupported(unittest.TestCase):
+
+    class _FakeTestCase:
+        def __init__(self):
+            self.skipped_reason = None
+
+        def skipTest(self, reason):
+            self.skipped_reason = reason
+            raise unittest.SkipTest(reason)
+
+    def test_supported_location_does_not_skip(self):
+        fake = self._FakeTestCase()
+        # should not raise
+        skip_test_if_location_unsupported(fake, "westus2", ["westus2", "westus3"], "hosted-system")
+        self.assertIsNone(fake.skipped_reason)
+
+    def test_supported_location_is_case_and_space_insensitive(self):
+        fake = self._FakeTestCase()
+        skip_test_if_location_unsupported(fake, "West US 2", ["westus2", "westus3"], "hosted-system")
+        self.assertIsNone(fake.skipped_reason)
+
+    def test_unsupported_location_skips_precisely(self):
+        fake = self._FakeTestCase()
+        with self.assertRaises(unittest.SkipTest):
+            skip_test_if_location_unsupported(fake, "eastus", ["westus2", "westus3"], "hosted-system")
+        self.assertIn("hosted-system", fake.skipped_reason)
+        self.assertIn("eastus", fake.skipped_reason)
 
 
 if __name__ == "__main__":

@@ -13,8 +13,8 @@ def cf_ml_cl(cli_ctx, *_):
     from azext_mlv2.manual.custom.utils import _get_cloud_information_from_cli
 
     # the client used here doesn't matter since it isn't used by any command
-    from azure.ai.ml._restclient.v2022_02_01_preview import AzureMachineLearningWorkspaces
+    from azure.ai.ml._restclient.arm_ml_service import MachineLearningServicesMgmtClient
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
     kwargs = _get_cloud_information_from_cli(cli_ctx=cli_ctx)
-    return get_mgmt_service_client(cli_ctx, AzureMachineLearningWorkspaces, **kwargs)
+    return get_mgmt_service_client(cli_ctx, MachineLearningServicesMgmtClient, **kwargs)

@@ -31,12 +31,12 @@ def parse_key_value_list(pairs):
     return result
 
 
-def get_aks_custom_headers(aks_custom_headers=None):
+def get_custom_headers(custom_headers=None):
     """Parse a comma separated ``key=value`` string into a request headers dictionary."""
     headers = {}
-    if aks_custom_headers is not None:
-        if aks_custom_headers != "":
-            for pair in aks_custom_headers.split(','):
+    if custom_headers is not None:
+        if custom_headers != "":
+            for pair in custom_headers.split(','):
                 parts = pair.split('=')
                 if len(parts) != 2:
                     raise CLIError('custom headers format is incorrect')

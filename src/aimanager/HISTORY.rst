@@ -3,8 +3,84 @@
 Release History
 ===============
 
-1.5.2b1
+2.0.1b2
++++++++
+* ``az aimanager create/update``, ``az aimanager namespace create/update`` and ``az aimanager
+  namespace modeldeployment create/update``: ``-o table`` output now uses the same columns as
+  ``show``/``list``, including ``ProvisioningState`` (and ``ModelId`` for model deployments).
+* ``az aimanager namespace modeldeployment create/update``: Without ``--no-wait``, the returned
+  resource now includes the top-level ``modelId`` field, matching ``show``.
+* ``az aimanager modelsource create/update/show/list``: Add ``-o table`` output with ``Name``,
+  ``ProvisioningState``, ``SourceType`` and ``Description`` columns.
+* ``az aimanager model show``: Add ``-o table`` output with the same ``Name``, ``ModelId`` and
+  ``Description`` columns as ``az aimanager model list``.
+
+2.0.1b1
++++++++
+* ``az aimanager create``, ``az aimanager namespace create``, ``az aimanager modelsource
+  create`` and ``az aimanager namespace modeldeployment create``: These commands are now
+  idempotent. Re-running them for an existing resource updates it and returns the resource,
+  instead of failing with an "already exists" error.
+* ``az aimanager namespace``, ``az aimanager modelsource`` and ``az aimanager namespace
+  modeldeployment``: Rename the ``add`` command to ``create`` to follow the Azure CLI command
+  guidelines.
+
+2.0.0b3
++++++++
+* Replace all occurrences of ``Azure AIManager and namespace RBAC Reader`` with ``Azure AIManager RBAC Reader`` across AIManager commands help message.
+
+2.0.0b2
+++++++++
+* Update the vendored SDK to API version ``2026-09-02-preview`` and add ``--cluster-id`` to
+  ``az aimanager create`` for attaching an existing AKS cluster.
+
+2.0.0b1
++++++++
+* Rename ``--aks-custom-headers`` to ``--custom-headers`` across all AIManager commands.
+
+1.5.5b1
 ++++++
+* ``az aimanager model calculate-cost``: Always show the ``Feasible`` column in ``-o table``
+  output, rendering an explicit ``True``/``False`` for every SKU. Previously the service
+  omitted ``feasible`` for infeasible plans, so when every SKU was infeasible the column —
+  the most useful one — disappeared entirely. Also add an ``InfeasibilityReason`` column
+  surfacing the per-plan reason code (with the redundant ``InfeasibleCode_`` prefix stripped)
+  for infeasible SKUs.
+
+1.5.4b1
+++++++
+* ``az aimanager namespace modeldeployment``: Rename the ``--namespace-name`` argument to
+  the shorter ``--namespace``. The ``--ns`` alias is unchanged.
+* ``az aimanager modelsource``, ``az aimanager namespace`` and ``az aimanager namespace
+  modeldeployment``: Rename the ``--aimanager-name`` argument to the shorter ``--aimanager``.
+  The ``--manager`` and ``-m`` aliases are unchanged.
+* ``az aimanager namespace modeldeployment list``: Make ``--namespace``/``--ns`` optional.
+  When omitted, model deployments are listed across the namespaces of the AI Manager
+  (mirroring ``kubectl get pods --all-namespaces``). This first lists namespaces (requires
+  namespace read on the AI Manager) and then lists deployments per namespace (requires model
+  deployment read for each namespace, granted on the namespace or inherited from the AI
+  Manager). Namespaces the caller cannot read model deployments in
+  are skipped with a per-namespace warning; if namespaces cannot be listed at all, or the
+  caller lacks access to every one, an actionable error explains the specific permission
+  needed and suggests ``--namespace``/``--ns`` for a single namespace.
+
+1.5.3b1
+++++++
+* ``az aimanager list`` and ``az aimanager show``: Improve ``-o table`` output. Drop the
+  ``ETag`` column and add a ``ProvisioningState`` column.
+* ``az aimanager namespace list`` and ``az aimanager namespace show``: Improve ``-o table``
+  output with ``Name``, ``ProvisioningState``, ``Age`` and ``Labels`` columns.
+* ``az aimanager namespace modeldeployment list`` and ``show``: Improve ``-o table`` output
+  with ``Namespace``, ``Name``, ``ProvisioningState``, ``Replicas`` (current/desired),
+  ``Age``, ``ModelId`` (human-readable, resolved from the model) and ``Endpoint`` columns.
+
+1.5.2b2
++++++++
+* ``az aimanager namespace modeldeployment``: Accept ``--ns`` as an alias of
+  ``--namespace-name``.
+
+1.5.2b1
++++++++
 * Refactor validation code to make the name validators consistent
 
 1.5.1

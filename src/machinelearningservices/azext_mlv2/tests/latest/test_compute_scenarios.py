@@ -62,6 +62,7 @@ class ComputeScenarioTest(MLBaseScenarioTest):
         assert ws_obj["port"] == "50000"
         assert ws_obj["private_ip_address"] == "10.0.0.4"
         assert ws_obj["public_ip_address"] == "20.246.149.32"
+        assert ws_obj["current_job_name"] == "job-123"
         
     def test_compute_compute_instance(self) -> None:
         compute_name_suffix = "ci3"

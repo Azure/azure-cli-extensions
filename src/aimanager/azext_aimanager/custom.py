@@ -15,7 +15,7 @@ from knack.util import CLIError
 
 from azext_aimanager._client_factory import CUSTOM_MGMT_AIMANAGER
 from azext_aimanager._helpers import (
-    get_aks_custom_headers,
+    get_custom_headers,
     parse_key_value_list,
     print_or_merge_credentials,
 )
@@ -60,21 +60,24 @@ def _grant_caller_roles_on_success(cmd, poller, no_wait, scope):
     try:
         assign_caller_roles(cmd, scope, AIMANAGER_CALLER_ROLE_IDS)
     except Exception as ex:  # pylint: disable=broad-except
-        # Role assignment is best-effort: never fail a successful create/add because of it.
+        # Role assignment is best-effort: never fail a successful create because of it.
         logger.warning("Could not assign the caller's roles on %s: %s", scope, ex)
     return result
 
 
 # region AI Manager
 
-def _construct_aimanager(cmd, location, tags, delete_policy, identity=None):
+def _construct_aimanager(cmd, location, tags, delete_policy, cluster_id=None, identity=None):
     ai_manager_properties_model = _get_model(cmd, "AIManagerProperties", "ai_managers")
     ai_manager_model = _get_model(cmd, "AIManager", "ai_managers")
 
     ai_manager = ai_manager_model()
     ai_manager.location = location
     ai_manager.tags = tags
-    ai_manager.properties = ai_manager_properties_model(delete_policy=delete_policy)
+    ai_manager.properties = ai_manager_properties_model(
+        delete_policy=delete_policy,
+        cluster_resource_id=cluster_id,
+    )
     if identity is not None:
         ai_manager.identity = identity
     return ai_manager
@@ -88,20 +91,13 @@ def create_aimanager(cmd,
                      location=None,
                      tags=None,
                      delete_policy=None,
-                     aks_custom_headers=None,
+                     cluster_id=None,
+                     custom_headers=None,
                      no_wait=False):
-    existing = None
-    try:
-        existing = client.get(resource_group_name, ai_manager_name)
-    except ResourceNotFoundError:
-        pass
-    if existing:
-        raise ClientRequestError(
-            f"AI Manager '{ai_manager_name}' already exists. "
-            "Please use 'az aimanager update' to update it.")
-
-    headers = get_aks_custom_headers(aks_custom_headers)
-    ai_manager = _construct_aimanager(cmd, location, tags, delete_policy)
+    # 'create' is idempotent (PUT via begin_create_or_update): re-running with the same name
+    # updates the resource and returns it, rather than failing if it already exists.
+    headers = get_custom_headers(custom_headers)
+    ai_manager = _construct_aimanager(cmd, location, tags, delete_policy, cluster_id)
 
     poller = sdk_no_wait(
         no_wait,
@@ -124,7 +120,7 @@ def update_aimanager(cmd,
                      ai_manager_name,
                      tags=None,
                      delete_policy=None,
-                     aks_custom_headers=None,
+                     custom_headers=None,
                      no_wait=False):
     try:
         existing = client.get(resource_group_name, ai_manager_name)
@@ -139,9 +135,7 @@ def update_aimanager(cmd,
     if delete_policy is None and existing_properties is not None:
         delete_policy = existing_properties.delete_policy
 
-    headers = get_aks_custom_headers(aks_custom_headers)
-    # Preserve the existing identity so a tags/delete-policy update does not drop a
-    # managed identity configured through ARM or another client on the create-or-replace PUT.
+    headers = get_custom_headers(custom_headers)
     ai_manager = _construct_aimanager(
         cmd, existing.location, tags, delete_policy, identity=existing.identity)
 
@@ -208,8 +202,8 @@ def aimanager_get_credentials(cmd,
                               path=os.path.join(os.path.expanduser("~"), ".kube", "config"),
                               overwrite_existing=False,
                               context_name=None,
-                              aks_custom_headers=None):
-    headers = get_aks_custom_headers(aks_custom_headers)
+                              custom_headers=None):
+    headers = get_custom_headers(custom_headers)
     credential_results = client.list_credential(
         resource_group_name, ai_manager_name, headers=headers)
     _write_kubeconfig(credential_results, path, overwrite_existing, context_name)
@@ -229,26 +223,17 @@ def _construct_namespace(cmd, labels, annotations):
 
 
 # pylint: disable=unused-argument
-def add_aimanager_namespace(cmd,
-                            client,
-                            resource_group_name,
-                            ai_manager_name,
-                            namespace_name,
-                            labels=None,
-                            annotations=None,
-                            aks_custom_headers=None,
-                            no_wait=False):
-    existing = None
-    try:
-        existing = client.get(resource_group_name, ai_manager_name, namespace_name)
-    except ResourceNotFoundError:
-        pass
-    if existing:
-        raise ClientRequestError(
-            f"Namespace '{namespace_name}' already exists. "
-            "Please use 'az aimanager namespace update' to update it.")
-
-    headers = get_aks_custom_headers(aks_custom_headers)
+def create_aimanager_namespace(cmd,
+                               client,
+                               resource_group_name,
+                               ai_manager_name,
+                               namespace_name,
+                               labels=None,
+                               annotations=None,
+                               custom_headers=None,
+                               no_wait=False):
+    # Idempotent create (PUT): re-running updates the namespace and returns it.
+    headers = get_custom_headers(custom_headers)
     namespace_config = _construct_namespace(
         cmd, parse_key_value_list(labels), parse_key_value_list(annotations))
 
@@ -275,7 +260,7 @@ def update_aimanager_namespace(cmd,
                                namespace_name,
                                labels=None,
                                annotations=None,
-                               aks_custom_headers=None,
+                               custom_headers=None,
                                no_wait=False):
     try:
         existing = client.get(resource_group_name, ai_manager_name, namespace_name)
@@ -294,7 +279,7 @@ def update_aimanager_namespace(cmd,
     else:
         new_annotations = parse_key_value_list(annotations)
 
-    headers = get_aks_custom_headers(aks_custom_headers)
+    headers = get_custom_headers(custom_headers)
     namespace_config = _construct_namespace(cmd, new_labels, new_annotations)
 
     return sdk_no_wait(
@@ -336,8 +321,8 @@ def aimanager_namespace_get_credentials(cmd,
                                         path=os.path.join(os.path.expanduser("~"), ".kube", "config"),
                                         overwrite_existing=False,
                                         context_name=None,
-                                        aks_custom_headers=None):
-    headers = get_aks_custom_headers(aks_custom_headers)
+                                        custom_headers=None):
+    headers = get_custom_headers(custom_headers)
     credential_results = client.list_credential(
         resource_group_name, ai_manager_name, namespace_name, headers=headers)
     _write_kubeconfig(credential_results, path, overwrite_existing, context_name)
@@ -349,8 +334,8 @@ def aimanager_namespace_list_accesskeys(cmd,
                                         resource_group_name,
                                         ai_manager_name,
                                         namespace_name,
-                                        aks_custom_headers=None):
-    headers = get_aks_custom_headers(aks_custom_headers)
+                                        custom_headers=None):
+    headers = get_custom_headers(custom_headers)
     return client.list_access_keys(
         resource_group_name, ai_manager_name, namespace_name, headers=headers)
 
@@ -361,8 +346,8 @@ def aimanager_namespace_rotate_accesskeys(cmd,
                                           resource_group_name,
                                           ai_manager_name,
                                           namespace_name,
-                                          aks_custom_headers=None):
-    headers = get_aks_custom_headers(aks_custom_headers)
+                                          custom_headers=None):
+    headers = get_custom_headers(custom_headers)
     return client.rotate_keys(
         resource_group_name, ai_manager_name, namespace_name, headers=headers)
 
@@ -389,27 +374,19 @@ def _construct_modelsource(cmd, source_type, description=None, token=None):
 
 
 # pylint: disable=unused-argument
-def add_modelsource(cmd,
-                    client,
-                    resource_group_name,
-                    ai_manager_name,
-                    model_source_name,
-                    source_type,
-                    description=None,
-                    token=None,
-                    aks_custom_headers=None,
-                    no_wait=False):
-    try:
-        client.get(resource_group_name, ai_manager_name, model_source_name)
-    except ResourceNotFoundError:
-        pass
-    else:
-        raise ClientRequestError(
-            f"Model source '{model_source_name}' already exists. "
-            "Please use 'az aimanager modelsource update' to update it.")
-
+def create_modelsource(cmd,
+                       client,
+                       resource_group_name,
+                       ai_manager_name,
+                       model_source_name,
+                       source_type,
+                       description=None,
+                       token=None,
+                       custom_headers=None,
+                       no_wait=False):
+    # Idempotent create (PUT): re-running updates the model source and returns it.
     model_source = _construct_modelsource(cmd, source_type, description, token)
-    headers = get_aks_custom_headers(aks_custom_headers)
+    headers = get_custom_headers(custom_headers)
     return sdk_no_wait(
         no_wait, client.begin_create_or_update, resource_group_name, ai_manager_name,
         model_source_name, model_source, headers=headers)
@@ -423,7 +400,7 @@ def update_modelsource(cmd,
                        model_source_name,
                        description=None,
                        token=None,
-                       aks_custom_headers=None,
+                       custom_headers=None,
                        no_wait=False):
     try:
         existing = client.get(resource_group_name, ai_manager_name, model_source_name)
@@ -440,7 +417,7 @@ def update_modelsource(cmd,
     source_type = existing_properties.source_type if existing_properties is not None else None
 
     model_source = _construct_modelsource(cmd, source_type, description, token)
-    headers = get_aks_custom_headers(aks_custom_headers)
+    headers = get_custom_headers(custom_headers)
     return sdk_no_wait(
         no_wait, client.begin_create_or_update, resource_group_name, ai_manager_name,
         model_source_name, model_source, headers=headers)
@@ -534,36 +511,29 @@ def _construct_modeldeployment(cmd, model_resource_id, vm_size, model_source_res
 
 
 # pylint: disable=unused-argument
-def add_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
-                        model_deployment_name, model_resource_id, vm_size,
-                        model_source_resource_id=None, performance_mode=None, replicas=None,
-                        min_replicas=None, max_replicas=None, overrides=None,
-                        aks_custom_headers=None, no_wait=False):
-    try:
-        client.get(resource_group_name, ai_manager_name, namespace_name, model_deployment_name)
-    except ResourceNotFoundError:
-        pass
-    else:
-        raise ClientRequestError(
-            f"Model deployment '{model_deployment_name}' already exists. "
-            "Please use 'az aimanager namespace modeldeployment update' to update it.")
-
+def create_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
+                           model_deployment_name, model_resource_id, vm_size,
+                           model_source_resource_id=None, performance_mode=None, replicas=None,
+                           min_replicas=None, max_replicas=None, overrides=None,
+                           custom_headers=None, no_wait=False):
+    # Idempotent create (PUT): re-running updates the model deployment and returns it.
     scale = _construct_scaling_profile(
         cmd, replicas, min_replicas, max_replicas, required=True)
     deployment = _construct_modeldeployment(
         cmd, model_resource_id, vm_size, model_source_resource_id, performance_mode,
         scale, parse_key_value_list(overrides) if overrides is not None else None)
-    headers = get_aks_custom_headers(aks_custom_headers)
-    return sdk_no_wait(
+    headers = get_custom_headers(custom_headers)
+    poller = sdk_no_wait(
         no_wait, client.begin_create_or_update, resource_group_name, ai_manager_name,
         namespace_name, model_deployment_name, deployment, headers=headers)
+    return _annotate_model_id_on_completion(cmd, poller, no_wait)
 
 
 # pylint: disable=unused-argument
 def update_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
                            model_deployment_name, performance_mode=None, replicas=None,
                            min_replicas=None, max_replicas=None, overrides=None,
-                           aks_custom_headers=None, no_wait=False):
+                           custom_headers=None, no_wait=False):
     try:
         existing = client.get(
             resource_group_name, ai_manager_name, namespace_name, model_deployment_name)
@@ -586,25 +556,157 @@ def update_modeldeployment(cmd, client, resource_group_name, ai_manager_name, na
     deployment = _construct_modeldeployment(
         cmd, properties.model_resource_id, properties.vm_size,
         properties.model_source_resource_id, performance_mode, scale, override_values)
-    headers = get_aks_custom_headers(aks_custom_headers)
+    headers = get_custom_headers(custom_headers)
     etag = existing.e_tag
     match_condition = MatchConditions.IfNotModified if etag is not None else None
-    return sdk_no_wait(
+    poller = sdk_no_wait(
         no_wait, client.begin_create_or_update, resource_group_name, ai_manager_name,
         namespace_name, model_deployment_name, deployment, headers=headers,
         etag=etag, match_condition=match_condition)
+    return _annotate_model_id_on_completion(cmd, poller, no_wait)
+
+
+def _annotate_model_id_on_completion(cmd, poller, no_wait):
+    """Wait for a create/update to finish and annotate the result with ``modelId``, so the
+    ``-o table`` ModelId column is populated as it is for ``show``. With --no-wait the poller
+    is returned unchanged."""
+    if no_wait:
+        return poller
+    result = LongRunningOperation(cmd.cli_ctx)(poller)  # blocks until Succeeded; raises on failure
+    return _annotate_model_ids(cmd, [result])[0]
 
 
 def show_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
                          model_deployment_name):  # pylint: disable=unused-argument
-    return client.get(
+    deployment = client.get(
         resource_group_name, ai_manager_name, namespace_name, model_deployment_name)
+    return _annotate_model_ids(cmd, [deployment])[0]
 
 
 def list_modeldeployment(cmd, client, resource_group_name, ai_manager_name,
-                         namespace_name):  # pylint: disable=unused-argument
-    return client.list_by_ai_manager_namespace(
-        resource_group_name, ai_manager_name, namespace_name)
+                         namespace_name=None):  # pylint: disable=unused-argument
+    if namespace_name:
+        deployments = list(client.list_by_ai_manager_namespace(
+            resource_group_name, ai_manager_name, namespace_name))
+    else:
+        # No namespace given: list across all readable namespaces, mirroring
+        # `kubectl get pods --all-namespaces`. Two distinct permissions are involved:
+        #   1. Enumerating namespaces (list_by_ai_manager) requires namespace read on the
+        #      AI Manager resource. Without it, no namespaces can be listed at all.
+        #   2. Listing deployments in each namespace (list_by_ai_manager_namespace) requires
+        #      model deployment read on that namespace resource. The caller may have this on
+        #      some namespaces but not others.
+        # The model_deployments SDK has no cross-namespace list operation, so enumerate the
+        # AI Manager's namespaces once and fan out one call per namespace, aggregating results.
+        from azure.core.exceptions import HttpResponseError
+        from azure.cli.core.azclierror import UnauthorizedError
+        from azext_aimanager._client_factory import cf_ai_manager_namespaces
+        namespaces_client = cf_ai_manager_namespaces(cmd.cli_ctx)
+
+        try:
+            namespaces = list(
+                namespaces_client.list_by_ai_manager(resource_group_name, ai_manager_name))
+        except HttpResponseError as ex:
+            # Permission layer 1: cannot enumerate namespaces on the AI Manager.
+            if ex.status_code in (401, 403):
+                raise UnauthorizedError(
+                    ex.message,
+                    "Listing model deployments without --namespace/--ns first lists namespaces, "
+                    "which requires namespace read permission on AI Manager '{}'. Grant that "
+                    "permission, or specify --namespace/--ns to list model deployments for a "
+                    "single namespace.".format(ai_manager_name))
+            raise
+
+        deployments = []
+        any_readable = False
+        last_auth_error = None
+        for ns in namespaces:
+            try:
+                deployments.extend(
+                    client.list_by_ai_manager_namespace(
+                        resource_group_name, ai_manager_name, ns.name))
+                any_readable = True
+            except HttpResponseError as ex:
+                # Permission layer 2: skip namespaces where the caller lacks model deployment
+                # read, so a partially-authorized caller still sees what they can read. Other
+                # errors propagate immediately.
+                if ex.status_code in (401, 403):
+                    logger.warning(
+                        "Skipping namespace '%s': not authorized to read its model deployments.",
+                        ns.name)
+                    last_auth_error = ex
+                    continue
+                raise
+        # Namespaces were listed, but the caller lacked model deployment read on every one.
+        # Surface an actionable error rather than silently returning an empty list. Note we do
+        # NOT suggest --namespace here: the caller can enumerate namespaces but is denied model
+        # deployment read on all of them, so scoping to a single namespace would fail too.
+        if last_auth_error is not None and not any_readable:
+            raise UnauthorizedError(
+                last_auth_error.message,
+                "Not authorized to read model deployments in any namespace of AI Manager "
+                "'{}'. Ask for model deployment read access on a namespace of this AI Manager, "
+                "or on the AI Manager resource itself to cover all its namespaces.".format(
+                    ai_manager_name))
+    return _annotate_model_ids(cmd, deployments)
+
+
+def _annotate_model_ids(cmd, deployments):
+    """Resolve the human-readable model id (e.g. "meta-llama/Llama-3-8B") for each deployment
+    from its ``modelResourceId`` and return plain dicts with the id stashed under ``modelId``
+    for table rendering.
+
+    Plain dicts are returned (rather than the SDK model objects with an extra attribute)
+    because ``modelId`` is not a declared field on ``ModelDeployment``. azure-cli core 2.76+
+    copies only declared fields when converting a model to output, which would silently drop
+    an injected attribute; a plain dict passes through untouched.
+
+    The AIModel client is built once and lookups are memoized by ``(location, ai_model_name)``
+    so a namespace with many deployments referencing the same model incurs a single GET per
+    distinct model rather than one per deployment.
+
+    Best-effort: on any failure the affected deployment is returned unchanged (without a
+    ``modelId``) and the table shows a blank ModelId.
+    """
+    from azure.mgmt.core.tools import parse_resource_id
+    from azure.cli.core.util import todict
+    from azext_aimanager._client_factory import cf_ai_models
+
+    # Convert to plain (recursively nested) dicts first with todict, so an injected ``modelId``
+    # survives CLI output conversion and nested camelCase keys (e.g. ``modelResourceId``,
+    # ``currentReplicas``) are preserved for the table formatter.
+    annotated = [todict(deployment) for deployment in deployments]
+
+    ai_models_client = None
+    resolved = {}  # (location, ai_model_name) -> modelId
+
+    for deployment in annotated:
+        try:
+            properties = deployment.get('properties') or {}
+            model_resource_id = properties.get('modelResourceId')
+            if not model_resource_id:
+                continue
+
+            parsed = parse_resource_id(model_resource_id)
+            location = parsed.get('name')  # the location segment for an AIModel id
+            ai_model_name = parsed.get('resource_name')
+            if not location or not ai_model_name:
+                continue
+
+            key = (location, ai_model_name)
+            if key not in resolved:
+                if ai_models_client is None:
+                    ai_models_client = cf_ai_models(cmd.cli_ctx)
+                model = ai_models_client.get(location, ai_model_name)
+                resolved[key] = (todict(model).get('properties') or {}).get('modelId')
+
+            model_id = resolved[key]
+            if model_id:
+                deployment['modelId'] = model_id
+        except Exception:  # pylint: disable=broad-except
+            logger.debug("Failed to resolve human-readable modelId for a model deployment.",
+                         exc_info=True)
+    return annotated
 
 
 def delete_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,
@@ -633,7 +735,6 @@ def list_aimodel(cmd, client, location):  # pylint: disable=unused-argument
 
 
 def calculate_aimodel_cost(cmd, client, location, ai_model_name):
-    request_model = _get_model(cmd, "CalculateCostRequest", "ai_models")
-    return client.calculate_cost(location, ai_model_name, request_model())
+    return client.calculate_cost(location, ai_model_name)
 
 # endregion

@@ -40,7 +40,7 @@ def ml_batch_endpoint_show(cmd, resource_group_name, workspace_name, name):
 
     try:
         endpoint = ml_client.batch_endpoints.get(name=name)
-        return endpoint.dump()
+        return _dump_entity_with_warnings(endpoint)
     except Exception as err:  # pylint: disable=broad-exception-caught
         log_and_raise_error(err, debug)
 
@@ -137,8 +137,9 @@ def ml_batch_endpoint_update(
     file=None,  # pylint: disable=unused-argument
     no_wait=False,
     parameters=None,
-    **kwargs,  # pylint: disable=unused-argument
+    **kwargs,
 ) -> None:
+    # pylint: disable=unused-argument
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )

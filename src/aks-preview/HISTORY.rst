@@ -11,11 +11,41 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create`: Add `--enable-disk-driver` so the AzureDisk CSI Driver can be enabled explicitly on create. The driver is already on by default, but `storageProfile.diskCSIDriver` was omitted from the create request unless `--disable-disk-driver` was passed, which blocked features that validate `storageProfile.diskCSIDriver.enabled` on the request body. `az aks update` already accepted this flag.
+
+22.0.0b12
++++++++++
+* `az aks nodepool add/update`: Add `--gpu-mig-profiles` to configure an ordered list of NVIDIA MIG partition profiles.
+
+22.0.0b11
++++++++++
+* `az aks nodepool update`: Add `--node-public-ip-prefix-ids` to add or replace the dual-stack node public IP prefixes on an existing node pool. An accepted change rolls the pool so existing nodes are recreated with the new public IPs. Requires the ``NodePublicIPv6PrefixPreview`` feature flag.
+
+22.0.0b10
++++++++++
+* Bump API version to 2026-07-02-preview.
+
+22.0.0b9
++++++++++
+* `az aks create/update`: Add `distributedAccelerator` storage option to `--enable-azure-container-storage` and `--disable-azure-container-storage` to install/uninstall the Azure Container Storage distributed accelerator controller.
+* `az aks nodepool update`: Preserve the existing GPU management mode when `--enable-managed-gpu` is omitted, including when enabling, updating, or disabling the cluster autoscaler.
+* `az aks alert-config add`: Reject an empty `--name` before looking up existing configurations instead of reporting that it already exists.
+* `az aks nodepool scale`: add `--use-patch-api` to optionally scale a VMSS node pool via the new dedicated PATCH agent pool API (scales to the target count without triggering full reconciliation). The default behavior continues to use the PUT agent pool API.
+* Add `az aks operation list` to list historical or active (`--active-only`) operations on a cluster (`--resource-group` and `--name`) or on a node pool (`--nodepool-name`).
+
+22.0.0b8
++++++++++
+* `az aks nodepool add`: Omit `nodeTaints` when `--node-taints` is not specified for FlexNodes pools, and reject explicitly empty values.
+
+22.0.0b7
++++++++++
+* `az aks machine add`: Add preview `--capacity-reservation-group` support to associate a machine with a Capacity Reservation Group.
 * Add `az aks alert-config` commands to manage AKS-managed alert configurations.
 * `az aks create`: Honor `--enable-osdisk-full-caching` for the default agent pool.
 * `az aks kollect` and `az aks kanalyze`: Fix compatibility with the keyword-only credential SDK parameters.
 * `az aks maintenanceconfiguration add` and `az aks maintenanceconfiguration update`: Preserve configuration-file fields with the typespec-generated SDK model.
 * Improve AKS live-test resilience for preview feature gates, transient resource and monitoring-table readiness, retired configurations, and service propagation delays.
+* `az aks create` and `az aks update`: Reject `--outbound-type managedNATGatewayV2` with an actionable error directing to `--outbound-type managedNATGateway --outbound-type-sku StandardV2` (the GA-aligned shape); the legacy value is no longer accepted on the target api-version.
 
 22.0.0b6
 +++++++++

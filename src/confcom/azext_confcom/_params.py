@@ -127,6 +127,13 @@ def load_arguments(self, _):
             choices=["linux/amd64", "windows/amd64"],
         )
         c.argument(
+            "prerelease_policy_api",
+            options_list=("--prerelease-policy-api",),
+            action="store_true",
+            help="Generate a Linux policy using the latest bundled prerelease policy API and framework. "
+                 "Windows policies always use the latest bundled policy versions.",
+        )
+        c.argument(
             "tar_mapping_location",
             options_list=("--tar",),
             required=False,
@@ -252,6 +259,15 @@ def load_arguments(self, _):
             type=json.loads,
             required=False,
             help='Container definitions to include in the policy'
+        )
+        c.argument(
+            "allow_kubeproxy",
+            options_list=("--allow-kubeproxy",),
+            required=False,
+            help=(
+                "Include the ACI kube-proxy image-attached fragment reference "
+                "in a Linux VN2 policy"
+            ),
         )
 
     with self.argument_context("confcom acifragmentgen") as c:

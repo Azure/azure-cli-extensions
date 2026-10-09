@@ -19,10 +19,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.network/azurefirewalls", "2024-10-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/azurefirewalls", "2024-10-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.network/azurefirewalls", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/azurefirewalls", "2025-09-01"],
         ]
     }
 
@@ -109,7 +109,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -145,7 +145,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -178,6 +180,10 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.additional_properties = AAZDictType(
                 serialized_name="additionalProperties",
+            )
+            properties.afc_configuration = AAZObjectType(
+                serialized_name="afcConfiguration",
+                flags={"read_only": True},
             )
             properties.application_rule_collections = AAZListType(
                 serialized_name="applicationRuleCollections",
@@ -224,6 +230,12 @@ class List(AAZCommand):
 
             additional_properties = cls._schema_on_200.value.Element.properties.additional_properties
             additional_properties.Element = AAZStrType()
+
+            afc_configuration = cls._schema_on_200.value.Element.properties.afc_configuration
+            afc_configuration.service_endpoint = AAZStrType(
+                serialized_name="serviceEndpoint",
+                flags={"read_only": True},
+            )
 
             application_rule_collections = cls._schema_on_200.value.Element.properties.application_rule_collections
             application_rule_collections.Element = AAZObjectType()
@@ -528,7 +540,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -564,7 +576,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -597,6 +611,10 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.additional_properties = AAZDictType(
                 serialized_name="additionalProperties",
+            )
+            properties.afc_configuration = AAZObjectType(
+                serialized_name="afcConfiguration",
+                flags={"read_only": True},
             )
             properties.application_rule_collections = AAZListType(
                 serialized_name="applicationRuleCollections",
@@ -643,6 +661,12 @@ class List(AAZCommand):
 
             additional_properties = cls._schema_on_200.value.Element.properties.additional_properties
             additional_properties.Element = AAZStrType()
+
+            afc_configuration = cls._schema_on_200.value.Element.properties.afc_configuration
+            afc_configuration.service_endpoint = AAZStrType(
+                serialized_name="serviceEndpoint",
+                flags={"read_only": True},
+            )
 
             application_rule_collections = cls._schema_on_200.value.Element.properties.application_rule_collections
             application_rule_collections.Element = AAZObjectType()
