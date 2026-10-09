@@ -2632,6 +2632,10 @@ helps['aks nodepool add'] = """
         - name: --gpu-mig-strategy
           type: string
           short-summary: Specify the MIG (Multi-Instance GPU) strategy for managed MIG support. Valid values are "Single" and "Mixed". When not specified, managed MIG is disabled.
+        - name: --gpu-mig-profiles
+          type: string array
+          short-summary: Space-separated ordered list of MIG partition profiles. Valid values are "MIG1g", "MIG2g", "MIG3g", "MIG4g", and "MIG7g".
+          long-summary: Duplicate profiles are allowed and meaningful. "Single" accepts one profile; "Mixed" accepts an ordered profile layout. This option cannot be used with --gpu-instance-profile. The service validates the VM size and profile layout.
         - name: --ssh-access
           type: string
           short-summary: Configure SSH setting for the node pool. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
@@ -2718,6 +2722,8 @@ helps['aks nodepool add'] = """
           text: az aks nodepool add -g MyResourceGroup -n managedsystem1 --cluster-name MyManagedCluster --mode ManagedSystem
         - name: Create a node pool with blue-green upgrade strategy and default parameters
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --upgrade-strategy BlueGreen
+        - name: Create a node pool with an ordered mixed MIG profile layout
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --enable-managed-gpu --gpu-mig-strategy Mixed --gpu-mig-profiles MIG1g MIG2g MIG2g MIG2g
 """
 
 helps['aks nodepool scale'] = """
@@ -2797,6 +2803,10 @@ helps['aks nodepool update'] = """
     short-summary: Update a node pool properties.
     long-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count.  When called with no optional arguments this attempts to move the node pool to its goal state without changing the current node pool configuration. This can be used to move out of a non succeeded state.
     parameters:
+        - name: --gpu-mig-profiles
+          type: string array
+          short-summary: Space-separated ordered list of MIG partition profiles. Valid values are "MIG1g", "MIG2g", "MIG3g", "MIG4g", and "MIG7g".
+          long-summary: Duplicate profiles are allowed and meaningful. The service rejects changes to this immutable property. This option cannot be used with --gpu-instance-profile.
         - name: --enable-cluster-autoscaler -e
           type: bool
           short-summary: Enable cluster autoscaler. For VMSS pools, enables autoscaler on the pool. For VirtualMachines pools, converts all manual scale profiles to autoscale profiles using the same min/max counts.

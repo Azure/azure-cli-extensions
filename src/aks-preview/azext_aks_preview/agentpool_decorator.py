@@ -858,6 +858,23 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         return gpu_mig_strategy
 
+    def get_gpu_mig_profiles(self) -> Union[List[str], None]:
+        """Obtain the value of gpu_mig_profiles.
+        :return: list of strings or None
+        """
+        gpu_mig_profiles = self.raw_param.get("gpu_mig_profiles")
+
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.gpu_profile is not None and
+                self.agentpool.gpu_profile.nvidia is not None and
+                self.agentpool.gpu_profile.nvidia.mig_profiles is not None
+            ):
+                gpu_mig_profiles = self.agentpool.gpu_profile.nvidia.mig_profiles
+
+        return gpu_mig_profiles
+
     def get_enable_secure_boot(self) -> bool:
         """Obtain the value of enable_secure_boot.
         :return: bool
@@ -1595,6 +1612,20 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             agentpool.gpu_profile.driver = CONST_GPU_DRIVER_INSTALL
         return agentpool
 
+    def set_up_gpu_mig_profiles(self, agentpool: AgentPool) -> AgentPool:
+        """Set up gpu mig profiles for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        gpu_mig_profiles = self.context.get_gpu_mig_profiles()
+        if gpu_mig_profiles is not None:
+            if agentpool.gpu_profile is None:
+                agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
+            if agentpool.gpu_profile.nvidia is None:
+                agentpool.gpu_profile.nvidia = self.models.NvidiaGPUProfile()  # pylint: disable=no-member
+            agentpool.gpu_profile.nvidia.mig_profiles = gpu_mig_profiles
+            agentpool.gpu_profile.driver = CONST_GPU_DRIVER_INSTALL
+        return agentpool
+
     def set_up_pod_ip_allocation_mode(self, agentpool: AgentPool) -> AgentPool:
         """Set up pod ip allocation mode for the AgentPool object."""
         self._ensure_agentpool(agentpool)
@@ -1796,6 +1827,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_driver_type(agentpool)
         # set up gpu_mig_strategy
         agentpool = self.set_up_gpu_mig_strategy(agentpool)
+        # set up gpu_mig_profiles
+        agentpool = self.set_up_gpu_mig_profiles(agentpool)
         # set up agentpool ssh access
         agentpool = self.set_up_ssh_access(agentpool)
         # set up agentpool pod ip allocation mode
@@ -2017,6 +2050,20 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             if agentpool.gpu_profile.nvidia is None:
                 agentpool.gpu_profile.nvidia = self.models.NvidiaGPUProfile()  # pylint: disable=no-member
             agentpool.gpu_profile.nvidia.mig_strategy = gpu_mig_strategy
+            agentpool.gpu_profile.driver = CONST_GPU_DRIVER_INSTALL
+        return agentpool
+
+    def update_gpu_mig_profiles(self, agentpool: AgentPool) -> AgentPool:
+        """Update gpu mig profiles for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        gpu_mig_profiles = self.context.get_gpu_mig_profiles()
+        if gpu_mig_profiles is not None:
+            if agentpool.gpu_profile is None:
+                agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
+            if agentpool.gpu_profile.nvidia is None:
+                agentpool.gpu_profile.nvidia = self.models.NvidiaGPUProfile()  # pylint: disable=no-member
+            agentpool.gpu_profile.nvidia.mig_profiles = gpu_mig_profiles
             agentpool.gpu_profile.driver = CONST_GPU_DRIVER_INSTALL
         return agentpool
 
@@ -2295,6 +2342,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update gpu mig strategy
         agentpool = self.update_gpu_mig_strategy(agentpool)
+
+        # update gpu mig profiles
+        agentpool = self.update_gpu_mig_profiles(agentpool)
 
         # update crg id
         agentpool = self.update_crg(agentpool)

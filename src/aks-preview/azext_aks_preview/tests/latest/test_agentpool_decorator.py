@@ -631,6 +631,35 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_0.attach_agentpool(agentpool_0)
         self.assertEqual(ctx_0.get_gpu_mig_strategy(), "Single")
 
+    def common_get_gpu_mig_profiles(self):
+        profiles = ["MIG1g", "MIG2g", "MIG2g", "MIG2g"]
+        ctx = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"gpu_mig_profiles": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertIsNone(ctx.get_gpu_mig_profiles())
+
+        agentpool = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                nvidia=self.models.NvidiaGPUProfile(mig_profiles=profiles)
+            )
+        )
+        ctx.attach_agentpool(agentpool)
+        self.assertEqual(ctx.get_gpu_mig_profiles(), profiles)
+
+        requested_profiles = ["MIG7g", "MIG1g"]
+        ctx = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"gpu_mig_profiles": requested_profiles}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx.get_gpu_mig_profiles(), requested_profiles)
+
     def common_get_os_sku(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
@@ -1471,6 +1500,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_gpu_mig_strategy(self):
         self.common_get_gpu_mig_strategy()
 
+    def test_get_gpu_mig_profiles(self):
+        self.common_get_gpu_mig_profiles()
+
     def test_get_enable_secure_boot(self):
         self.common_get_enable_secure_boot()
 
@@ -2035,6 +2067,52 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
+    def common_set_up_gpu_mig_profiles(self):
+        profiles = ["MIG1g", "MIG2g", "MIG2g", "MIG2g"]
+        dec = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {
+                "gpu_mig_strategy": "Mixed",
+                "gpu_mig_profiles": profiles,
+            },
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        with self.assertRaises(CLIInternalError):
+            dec.set_up_gpu_mig_profiles(None)
+
+        agentpool = self.create_initialized_agentpool_instance(
+            restore_defaults=False,
+            gpu_profile=self.models.GPUProfile(
+                nvidia=self.models.NvidiaGPUProfile(management_mode="Managed")
+            ),
+        )
+        dec.context.attach_agentpool(agentpool)
+        agentpool = dec.set_up_gpu_mig_strategy(agentpool)
+        agentpool = dec.set_up_gpu_mig_profiles(agentpool)
+
+        self.assertEqual(agentpool.gpu_profile.driver, CONST_GPU_DRIVER_INSTALL)
+        self.assertEqual(agentpool.gpu_profile.nvidia.management_mode, "Managed")
+        self.assertEqual(agentpool.gpu_profile.nvidia.mig_strategy, "Mixed")
+        self.assertEqual(agentpool.gpu_profile.nvidia.mig_profiles, profiles)
+        self.assertEqual(
+            agentpool.as_dict()["properties"]["gpuProfile"]["nvidia"]["migProfiles"],
+            profiles,
+        )
+
+        omitted = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"gpu_mig_profiles": None},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_without_gpu = self.create_initialized_agentpool_instance(restore_defaults=False)
+        omitted.context.attach_agentpool(agentpool_without_gpu)
+        omitted.set_up_gpu_mig_profiles(agentpool_without_gpu)
+        self.assertIsNone(agentpool_without_gpu.gpu_profile)
+
     def common_set_up_secure_boot(self):
         dec_1 = AKSPreviewAgentPoolAddDecorator(
             self.cmd,
@@ -2577,6 +2655,9 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
 
     def test_set_up_gpu_profile(self):
         self.common_set_up_gpu_profile()
+
+    def test_set_up_gpu_mig_profiles(self):
+        self.common_set_up_gpu_mig_profiles()
 
     def test_set_up_secure_boot(self):
         self.common_set_up_secure_boot()
@@ -3801,6 +3882,51 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)        
 
+    def common_update_gpu_mig_profiles(self):
+        existing_profiles = ["MIG7g"]
+        agentpool = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                driver=CONST_GPU_DRIVER_INSTALL,
+                nvidia=self.models.NvidiaGPUProfile(
+                    management_mode="Managed",
+                    mig_strategy="Single",
+                    mig_profiles=existing_profiles,
+                ),
+            )
+        )
+
+        omitted = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"gpu_mig_profiles": None},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        with self.assertRaises(CLIInternalError):
+            omitted.update_gpu_mig_profiles(None)
+        omitted.context.attach_agentpool(agentpool)
+        omitted.update_gpu_mig_profiles(agentpool)
+        self.assertEqual(agentpool.gpu_profile.nvidia.mig_profiles, existing_profiles)
+
+        profiles = ["MIG1g", "MIG2g", "MIG2g", "MIG2g"]
+        requested = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"gpu_mig_profiles": profiles},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        requested.context.attach_agentpool(agentpool)
+        requested.update_gpu_mig_profiles(agentpool)
+        self.assertEqual(agentpool.gpu_profile.nvidia.mig_profiles, profiles)
+        self.assertEqual(agentpool.gpu_profile.nvidia.management_mode, "Managed")
+        self.assertEqual(agentpool.gpu_profile.nvidia.mig_strategy, "Single")
+
+        payload = agentpool.as_dict()
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.STANDALONE:
+            payload = payload["properties"]
+        self.assertEqual(payload["gpuProfile"]["nvidia"]["migProfiles"], profiles)
+
     def common_test_process_dns_overrides_helper(self):
         from azext_aks_preview._helpers import process_dns_overrides
         
@@ -3902,6 +4028,9 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
 
     def test_update_gpu_profile(self):
         self.common_update_gpu_profile()
+
+    def test_update_gpu_mig_profiles(self):
+        self.common_update_gpu_mig_profiles()
 
     def test_process_dns_overrides_helper(self):
         self.common_test_process_dns_overrides_helper()
@@ -4012,6 +4141,9 @@ class AKSPreviewAgentPoolUpdateDecoratorManagedClusterModeTestCase(
 
     def test_update_gpu_profile(self):
         self.common_update_gpu_profile()
+
+    def test_update_gpu_mig_profiles(self):
+        self.common_update_gpu_mig_profiles()
 
     def test_update_agentpool_profile_preview(self):
         import inspect
