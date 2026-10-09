@@ -24,6 +24,12 @@ class AmgScenarioTest(ScenarioTest):
             ApiKeyServiceAccountTokenReplacer()
         ])
 
+    def setUp(self):
+        super().setUp()
+        endpoint_cache = unittest.mock.patch.dict('azext_amg.custom.grafana_endpoints', {}, clear=True)
+        endpoint_cache.start()
+        self.addCleanup(endpoint_cache.stop)
+
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
     def test_amg_crud(self, resource_group):
@@ -322,7 +328,8 @@ class AmgScenarioTest(ScenarioTest):
             amg1 = self.cmd('grafana create -g {rg} -n {name} -l {location}').get_output_in_json()
             amg2 = self.cmd('grafana create -g {rg} -n {name2} -l {location}').get_output_in_json()
             # Ensure RBAC changes are propagated
-            time.sleep(120)
+            if self.in_recording:
+                time.sleep(120)
 
             # set up folder
             self.kwargs.update({
