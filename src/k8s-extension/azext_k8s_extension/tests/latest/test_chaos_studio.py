@@ -52,7 +52,9 @@ class Arm:
     def get(self, resource_id, *_args, allow_not_found=False):
         self.events.append(("arm-get", resource_id))
         if resource_id in self.fail_reads:
-            raise AzureResponseError("Forbidden: AuthorizationFailed")
+            error = AzureResponseError("Forbidden: AuthorizationFailed")
+            error.status_code = 403
+            raise error
         if resource_id not in self.resources and not allow_not_found:
             raise AzureResponseError("read failed")
         return copy.deepcopy(self.resources.get(resource_id))
@@ -645,7 +647,14 @@ class ChaosStudioTests(unittest.TestCase):
                     self.arm.resources[self.SAFEGUARDS] = body
                 with self.assertRaises(AzureResponseError):
                     self.run_install()
-                self.assertFalse(any(e[0] in ("create", "update") for e in self.events))
+                self.assertFalse(any(e[0] in ("create", "update", "arm-put") for e in self.events))
+
+    def test_safeguards_forbidden_names_required_permission(self):
+        self.arm.fail_reads.add(self.SAFEGUARDS)
+        with self.assertRaises(AzureResponseError) as raised:
+            self.run_install()
+        self.assertIn("Microsoft.ContainerService/deploymentSafeguards/read", str(raised.exception))
+        self.assertIn("Reader", str(raised.exception))
 
     def test_safeguards_daemon_setting_cannot_be_overridden(self):
         for value in ("true", "false"):

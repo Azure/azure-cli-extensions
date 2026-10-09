@@ -5,7 +5,7 @@ Release History
 1.9.4
 +++++++++++++++++++
 * Microsoft.ChaosStudio: create the workspace operator role with a per-subscription role ID and name so installs in more than one subscription of a tenant no longer fail with RoleDefinitionWithSameNameExists. Existing roles named 'Chaos Studio Kubernetes Operator' are still reused, and explicit roles may have any name.
-* Microsoft.ChaosStudio: detect AKS Deployment Safeguards at Enforce and set chaosDaemon.enabled=false unless the release namespace is excluded, with a warning about which faults are unavailable.
+* Microsoft.ChaosStudio: detect AKS Deployment Safeguards at Enforce and set chaosDaemon.enabled=false unless the release namespace is excluded, with a warning about which faults are unavailable. Install and update now need Microsoft.ContainerService/deploymentSafeguards/read on the cluster (included in Reader), and the Safeguards check runs before any role definition or assignment is written.
 
 1.9.3
 +++++++++++++++++++

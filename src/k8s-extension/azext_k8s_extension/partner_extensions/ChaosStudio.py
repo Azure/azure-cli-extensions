@@ -81,11 +81,13 @@ class _ArmClient:
             )
             if allow_not_found and status_code == 404:
                 return None
-            raise AzureResponseError(
+            wrapped = AzureResponseError(
                 "Failed to {} {} '{}': {}".format(
                     method, description, resource_id, error
                 )
-            ) from error
+            )
+            wrapped.status_code = status_code
+            raise wrapped from error
 
         if method == "DELETE":
             return None
@@ -125,6 +127,7 @@ class ChaosStudio(DefaultExtension):
     DAEMON_ENABLED_KEY = "chaosDaemon.enabled"
     SAFEGUARDS_API_VERSION = "2025-05-02-preview"
     SAFEGUARDS_LEVELS = ("Warn", "Enforce")
+    SAFEGUARDS_READ_ACTION = "Microsoft.ContainerService/deploymentSafeguards/read"
 
     # Custom role names and IDs are unique per Microsoft Entra tenant, so the
     # role the CLI creates carries the subscription ID in both. Roles created by
@@ -614,6 +617,9 @@ class ChaosStudio(DefaultExtension):
                 resource_ids["role_definition"],
                 workspace_principal_id,
             )
+        # Read Safeguards before any authorization write so a failed read
+        # leaves nothing behind.
+        daemon_enabled = self._daemon_enabled(arm, cluster_id, release_namespace)
 
         if role_definition is None:
             arm.put(
@@ -637,9 +643,7 @@ class ChaosStudio(DefaultExtension):
             "workspaceManagedIdentity.objectId": workspace_principal_id,
             "subscriber.workspaceId": workspace_id,
             "subscriber.clusterResourceId": cluster_id,
-            self.DAEMON_ENABLED_KEY: self._daemon_enabled(
-                arm, cluster_id, release_namespace
-            ),
+            self.DAEMON_ENABLED_KEY: daemon_enabled,
         }
 
     @classmethod
@@ -652,12 +656,22 @@ class ChaosStudio(DefaultExtension):
         safeguards_id = (
             "{}/providers/Microsoft.ContainerService/deploymentSafeguards/default"
         ).format(cluster_id)
-        safeguards = arm.get(
-            safeguards_id,
-            cls.SAFEGUARDS_API_VERSION,
-            "AKS Deployment Safeguards configuration",
-            allow_not_found=True,
-        )
+        try:
+            safeguards = arm.get(
+                safeguards_id,
+                cls.SAFEGUARDS_API_VERSION,
+                "AKS Deployment Safeguards configuration",
+                allow_not_found=True,
+            )
+        except AzureResponseError as error:
+            if getattr(error, "status_code", None) != 403:
+                raise
+            raise AzureResponseError(
+                "Can't read AKS Deployment Safeguards '{}'. Installing or updating "
+                "Microsoft.ChaosStudio needs '{}' on the cluster to decide whether "
+                "the Chaos daemon can run. Grant that permission (it's included in "
+                "Reader), then retry.".format(safeguards_id, cls.SAFEGUARDS_READ_ACTION)
+            ) from error
         if safeguards is None:
             return "true"
         properties = safeguards.get("properties") if isinstance(safeguards, dict) else None
