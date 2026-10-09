@@ -8,19 +8,18 @@ import os
 import unittest
 import time
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
+from azure.cli.testsdk import ScenarioTest, live_only
 
 class OracleResourceAnchorScenarioTest(ScenarioTest):
-    @live_only()
-    @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def setUp(self):
         subscription_id = self.get_subscription_id()
         self.kwargs.update({
-            'resource_group': 'azCliTest',
-            'resource_anchor_name': 'AzureCliTestMi',
+            'resource_group': 'PowerShellTestRgMihr',
+            'resource_anchor_name': 'AzCliTest2026New',
             'location': 'global',
         })
 
+    @live_only()
     def test_create_resource_anchor(self):
      self.cmd(
             'az oracle-database resource-anchor create '

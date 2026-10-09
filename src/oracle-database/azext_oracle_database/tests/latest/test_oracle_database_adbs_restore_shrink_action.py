@@ -28,7 +28,7 @@ class OracleDatabaseAdbsRestoreShrinkActionScenario(ScenarioTest):
         self.cmd('az oracle-database autonomous-database action '
                  '--resource-group {} '
                  '--autonomousdatabasename {} '
-                 '--action Restart '.format(resource_group_name, autonomous_database_name))
+                 '--action Restart --no-wait '.format(resource_group_name, autonomous_database_name))
 
     @live_only()
     @AllowLargeResponse(size_kb=10240)
@@ -54,7 +54,8 @@ class OracleDatabaseAdbsRestoreShrinkActionScenario(ScenarioTest):
         self.cmd('az oracle-database autonomous-database restore '
                  '--resource-group {} '
                  '--autonomousdatabasename {} '
-                 '--timestamp {} '.format(resource_group_name, autonomous_database_name, restore_timestamp))
+                 '--timestamp {} --no-wait '.format(
+                     resource_group_name, autonomous_database_name, restore_timestamp))
 
 
 if __name__ == '__main__':

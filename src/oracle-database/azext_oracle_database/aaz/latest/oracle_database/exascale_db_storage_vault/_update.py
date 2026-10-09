@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/exascaledbstoragevaults/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/exascaledbstoragevaults/{}", "2026-06-01"],
         ]
     }
 
@@ -58,6 +58,22 @@ class Update(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.autoscale_limit_in_gbs = AAZIntArg(
+            options=["--autoscale-limit-in-gbs"],
+            arg_group="Properties",
+            help="Maximum limit storage size in gigabytes, that is applicable for the Database Storage Vault.",
+            nullable=True,
+        )
+        _args_schema.is_autoscale_enabled = AAZBoolArg(
+            options=["--is-autoscale-enabled"],
+            arg_group="Properties",
+            help="Indicates if autoscale feature is enabled for the Storage Vault. The default value is: false.",
+            nullable=True,
         )
 
         # define Arg Group "Resource"
@@ -165,7 +181,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -196,111 +212,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.zones = AAZListType()
-
-            properties = cls._schema_on_200.properties
-            properties.additional_flash_cache_in_percent = AAZIntType(
-                serialized_name="additionalFlashCacheInPercent",
-            )
-            properties.attached_shape_attributes = AAZListType(
-                serialized_name="attachedShapeAttributes",
-                flags={"read_only": True},
-            )
-            properties.description = AAZStrType()
-            properties.display_name = AAZStrType(
-                serialized_name="displayName",
-                flags={"required": True},
-            )
-            properties.exadata_infrastructure_id = AAZStrType(
-                serialized_name="exadataInfrastructureId",
-            )
-            properties.high_capacity_database_storage = AAZObjectType(
-                serialized_name="highCapacityDatabaseStorage",
-                flags={"read_only": True},
-            )
-            properties.lifecycle_details = AAZStrType(
-                serialized_name="lifecycleDetails",
-                flags={"read_only": True},
-            )
-            properties.lifecycle_state = AAZStrType(
-                serialized_name="lifecycleState",
-                flags={"read_only": True},
-            )
-            properties.oci_url = AAZStrType(
-                serialized_name="ociUrl",
-                flags={"read_only": True},
-            )
-            properties.ocid = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.time_zone = AAZStrType(
-                serialized_name="timeZone",
-            )
-            properties.vm_cluster_count = AAZIntType(
-                serialized_name="vmClusterCount",
-                flags={"read_only": True},
-            )
-
-            attached_shape_attributes = cls._schema_on_200.properties.attached_shape_attributes
-            attached_shape_attributes.Element = AAZStrType()
-
-            high_capacity_database_storage = cls._schema_on_200.properties.high_capacity_database_storage
-            high_capacity_database_storage.available_size_in_gbs = AAZIntType(
-                serialized_name="availableSizeInGbs",
-            )
-            high_capacity_database_storage.total_size_in_gbs = AAZIntType(
-                serialized_name="totalSizeInGbs",
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
-            zones = cls._schema_on_200.zones
-            zones.Element = AAZStrType()
+            _UpdateHelper._build_schema_exascale_db_storage_vault_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -368,7 +280,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -411,111 +323,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200_201.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.properties = AAZObjectType()
-            _schema_on_200_201.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.tags = AAZDictType()
-            _schema_on_200_201.type = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.zones = AAZListType()
-
-            properties = cls._schema_on_200_201.properties
-            properties.additional_flash_cache_in_percent = AAZIntType(
-                serialized_name="additionalFlashCacheInPercent",
-            )
-            properties.attached_shape_attributes = AAZListType(
-                serialized_name="attachedShapeAttributes",
-                flags={"read_only": True},
-            )
-            properties.description = AAZStrType()
-            properties.display_name = AAZStrType(
-                serialized_name="displayName",
-                flags={"required": True},
-            )
-            properties.exadata_infrastructure_id = AAZStrType(
-                serialized_name="exadataInfrastructureId",
-            )
-            properties.high_capacity_database_storage = AAZObjectType(
-                serialized_name="highCapacityDatabaseStorage",
-                flags={"read_only": True},
-            )
-            properties.lifecycle_details = AAZStrType(
-                serialized_name="lifecycleDetails",
-                flags={"read_only": True},
-            )
-            properties.lifecycle_state = AAZStrType(
-                serialized_name="lifecycleState",
-                flags={"read_only": True},
-            )
-            properties.oci_url = AAZStrType(
-                serialized_name="ociUrl",
-                flags={"read_only": True},
-            )
-            properties.ocid = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.time_zone = AAZStrType(
-                serialized_name="timeZone",
-            )
-            properties.vm_cluster_count = AAZIntType(
-                serialized_name="vmClusterCount",
-                flags={"read_only": True},
-            )
-
-            attached_shape_attributes = cls._schema_on_200_201.properties.attached_shape_attributes
-            attached_shape_attributes.Element = AAZStrType()
-
-            high_capacity_database_storage = cls._schema_on_200_201.properties.high_capacity_database_storage
-            high_capacity_database_storage.available_size_in_gbs = AAZIntType(
-                serialized_name="availableSizeInGbs",
-            )
-            high_capacity_database_storage.total_size_in_gbs = AAZIntType(
-                serialized_name="totalSizeInGbs",
-            )
-
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
-
-            zones = cls._schema_on_200_201.zones
-            zones.Element = AAZStrType()
+            _UpdateHelper._build_schema_exascale_db_storage_vault_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -530,8 +338,14 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
             _builder.set_prop("zones", AAZListType, ".zones")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("autoscaleLimitInGbs", AAZIntType, ".autoscale_limit_in_gbs")
+                properties.set_prop("isAutoscaleEnabled", AAZBoolType, ".is_autoscale_enabled")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -554,6 +368,145 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    _schema_exascale_db_storage_vault_read = None
+
+    @classmethod
+    def _build_schema_exascale_db_storage_vault_read(cls, _schema):
+        if cls._schema_exascale_db_storage_vault_read is not None:
+            _schema.id = cls._schema_exascale_db_storage_vault_read.id
+            _schema.location = cls._schema_exascale_db_storage_vault_read.location
+            _schema.name = cls._schema_exascale_db_storage_vault_read.name
+            _schema.properties = cls._schema_exascale_db_storage_vault_read.properties
+            _schema.system_data = cls._schema_exascale_db_storage_vault_read.system_data
+            _schema.tags = cls._schema_exascale_db_storage_vault_read.tags
+            _schema.type = cls._schema_exascale_db_storage_vault_read.type
+            _schema.zones = cls._schema_exascale_db_storage_vault_read.zones
+            return
+
+        cls._schema_exascale_db_storage_vault_read = _schema_exascale_db_storage_vault_read = AAZObjectType()
+
+        exascale_db_storage_vault_read = _schema_exascale_db_storage_vault_read
+        exascale_db_storage_vault_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        exascale_db_storage_vault_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        exascale_db_storage_vault_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        exascale_db_storage_vault_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        exascale_db_storage_vault_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        exascale_db_storage_vault_read.tags = AAZDictType()
+        exascale_db_storage_vault_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+        exascale_db_storage_vault_read.zones = AAZListType()
+
+        properties = _schema_exascale_db_storage_vault_read.properties
+        properties.additional_flash_cache_in_percent = AAZIntType(
+            serialized_name="additionalFlashCacheInPercent",
+        )
+        properties.attached_shape_attributes = AAZListType(
+            serialized_name="attachedShapeAttributes",
+            flags={"read_only": True},
+        )
+        properties.autoscale_limit_in_gbs = AAZIntType(
+            serialized_name="autoscaleLimitInGbs",
+        )
+        properties.description = AAZStrType()
+        properties.display_name = AAZStrType(
+            serialized_name="displayName",
+            flags={"required": True},
+        )
+        properties.exadata_infrastructure_id = AAZStrType(
+            serialized_name="exadataInfrastructureId",
+        )
+        properties.high_capacity_database_storage = AAZObjectType(
+            serialized_name="highCapacityDatabaseStorage",
+            flags={"read_only": True},
+        )
+        properties.is_autoscale_enabled = AAZBoolType(
+            serialized_name="isAutoscaleEnabled",
+        )
+        properties.lifecycle_details = AAZStrType(
+            serialized_name="lifecycleDetails",
+            flags={"read_only": True},
+        )
+        properties.lifecycle_state = AAZStrType(
+            serialized_name="lifecycleState",
+            flags={"read_only": True},
+        )
+        properties.oci_url = AAZStrType(
+            serialized_name="ociUrl",
+            flags={"read_only": True},
+        )
+        properties.ocid = AAZStrType(
+            flags={"read_only": True},
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.time_zone = AAZStrType(
+            serialized_name="timeZone",
+        )
+        properties.vm_cluster_count = AAZIntType(
+            serialized_name="vmClusterCount",
+            flags={"read_only": True},
+        )
+
+        attached_shape_attributes = _schema_exascale_db_storage_vault_read.properties.attached_shape_attributes
+        attached_shape_attributes.Element = AAZStrType()
+
+        high_capacity_database_storage = _schema_exascale_db_storage_vault_read.properties.high_capacity_database_storage
+        high_capacity_database_storage.available_size_in_gbs = AAZIntType(
+            serialized_name="availableSizeInGbs",
+        )
+        high_capacity_database_storage.total_size_in_gbs = AAZIntType(
+            serialized_name="totalSizeInGbs",
+        )
+
+        system_data = _schema_exascale_db_storage_vault_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        tags = _schema_exascale_db_storage_vault_read.tags
+        tags.Element = AAZStrType()
+
+        zones = _schema_exascale_db_storage_vault_read.zones
+        zones.Element = AAZStrType()
+
+        _schema.id = cls._schema_exascale_db_storage_vault_read.id
+        _schema.location = cls._schema_exascale_db_storage_vault_read.location
+        _schema.name = cls._schema_exascale_db_storage_vault_read.name
+        _schema.properties = cls._schema_exascale_db_storage_vault_read.properties
+        _schema.system_data = cls._schema_exascale_db_storage_vault_read.system_data
+        _schema.tags = cls._schema_exascale_db_storage_vault_read.tags
+        _schema.type = cls._schema_exascale_db_storage_vault_read.type
+        _schema.zones = cls._schema_exascale_db_storage_vault_read.zones
 
 
 __all__ = ["Update"]

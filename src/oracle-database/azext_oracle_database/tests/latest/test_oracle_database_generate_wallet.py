@@ -21,7 +21,7 @@ class OracleDatabaseGenerateWalletScenario(ScenarioTest):
         )
 
     def _get_wallet_password(self):
-        return os.environ.get('AZURE_ORACLE_DATABASE_ADBS_WALLET_PASSWORD', 'TestPass#2024#')
+        return os.environ['AZURE_ORACLE_DATABASE_ADBS_WALLET_PASSWORD']
 
     def _assert_wallet_zip(self, file_path):
         self.assertTrue(os.path.exists(file_path))

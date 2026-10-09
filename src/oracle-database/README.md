@@ -13,6 +13,9 @@ Create a Resource Anchor
 #### Create an Autonomous Database ####
 az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyAutoDB --display-name MyAutoDB --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded --db-workload OLTP --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <vnet_id> --subnet-id <subnet_id> --regular
 
+#### Create an Autonomous Database with Resource and Network Anchors ####
+az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyAutoDB --display-name MyAutoDB --resource-anchor-id <resource_anchor_id> --network-anchor-id <network_anchor_id> --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded --db-workload OLTP --character-set AL32UTF8 --ncharacter-set AL16UTF16 --regular
+
 Use one create mode option per request. The database type is inferred from `--regular`, `--clone`, `--clone-from-backup-timestamp`, or `--cross-region-disaster-recovery`.
 
 Do not pass `dataBaseType` directly. Clone and disaster recovery fields must be nested inside the matching create mode option, for example `--clone clone-type=Full source=Database source-id=<source_autonomous_database_id>`.
@@ -69,8 +72,12 @@ Use `--local-data-guard true` to enable local, in-region Autonomous Data Guard f
 #### Switchover an Autonomous Database disaster recovery peer ####
 az oracle-database autonomous-database switchover --resource-group MyResourceGroup --autonomousdatabasename MyAutoDB --peer-db-id <peer_database_id> --peer-db-location <peer_region>
 
+Use the peer database's Azure resource ID for `--peer-db-id`. If required, pass its OCI database OCID separately with `--peer-db-ocid`.
+
 #### Failover an Autonomous Database disaster recovery peer ####
 az oracle-database autonomous-database failover --resource-group MyResourceGroup --autonomousdatabasename MyAutoDB --peer-db-id <peer_database_id> --peer-db-location <peer_region>
+
+Use the peer database's Azure resource ID for `--peer-db-id`. If required, pass its OCI database OCID separately with `--peer-db-ocid`.
 
 #### Wait for an Autonomous Database condition ####
 az oracle-database autonomous-database wait --resource-group MyResourceGroup --name MyAutoDB --created
@@ -174,6 +181,12 @@ az oracle-database network-anchor list --resource-group MyResourceGroup
 
 #### Delete a Network Anchor ####
 az oracle-database network-anchor delete --name MyNetworkAnchor --resource-group MyResourceGroup --yes --no-wait
+
+#### Create a Cloud Exadata Infrastructure with a Resource Anchor ####
+az oracle-database cloud-exadata-infrastructure create --name MyExaInfra --resource-group MyResourceGroup --location eastus --zones 1 --resource-anchor-id <resource_anchor_id> --compute-count 2 --storage-count 3 --shape Exadata.X9M --display-name MyExaInfra
+
+#### Create a Cloud VM Cluster with Resource and Network Anchors ####
+az oracle-database cloud-vm-cluster create --name MyVmCluster --resource-group MyResourceGroup --location eastus --cloud-exadata-infrastructure-id <cloud_exadata_infrastructure_id> --resource-anchor-id <resource_anchor_id> --network-anchor-id <network_anchor_id> --cpu-core-count <cpu_count> --data-storage-size-in-tbs <storage_tbs> --db-node-storage-size-in-gbs <node_storage_gbs> --db-servers '<db_server_ocid_1>' '<db_server_ocid_2>' --display-name MyVmCluster --gi-version <gi_version> --hostname myvmcluster --license-model LicenseIncluded --memory-size-in-gbs <memory_gbs> --ssh-public-keys '<ssh_public_key>' --time-zone UTC
 
 #### Create a DB System ####
 az oracle-database db-system create --name MyDbSystem --resource-group MyResourceGroup --location eastus --zones 1 --database-edition EnterpriseEdition --admin-password <password> --resource-anchor-id <resource_anchor_id> --network-anchor-id <network_anchor_id> --hostname mydbhost --shape VM.Standard.E5.Flex --display-name MyDbSystem --node-count 1 --initial-data-storage-size-in-gb 256 --compute-model OCPU --compute-count 4 --db-version 19.27.0.0 --pdb-name mypdb --db-system-options storage-management=LVM --ssh-public-keys '<ssh_key>'

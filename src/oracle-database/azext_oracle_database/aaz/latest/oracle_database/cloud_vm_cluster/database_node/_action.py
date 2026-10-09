@@ -25,13 +25,11 @@ class Action(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}/dbnodes/{}/action", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}/dbnodes/{}/action", "2026-06-01"],
         ]
     }
-
-    AZ_SUPPORT_NO_WAIT = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -169,7 +167,7 @@ class Action(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -236,7 +234,6 @@ class Action(AAZCommand):
             properties = cls._schema_on_200.properties
             properties.additional_details = AAZStrType(
                 serialized_name="additionalDetails",
-                flags={"read_only": True},
             )
             properties.backup_ip_id = AAZStrType(
                 serialized_name="backupIpId",
@@ -249,11 +246,9 @@ class Action(AAZCommand):
             )
             properties.cpu_core_count = AAZIntType(
                 serialized_name="cpuCoreCount",
-                flags={"read_only": True},
             )
             properties.db_node_storage_size_in_gbs = AAZIntType(
                 serialized_name="dbNodeStorageSizeInGbs",
-                flags={"read_only": True},
             )
             properties.db_server_id = AAZStrType(
                 serialized_name="dbServerId",
@@ -264,27 +259,23 @@ class Action(AAZCommand):
             )
             properties.fault_domain = AAZStrType(
                 serialized_name="faultDomain",
-                flags={"read_only": True},
             )
             properties.host_ip_id = AAZStrType(
                 serialized_name="hostIpId",
             )
-            properties.hostname = AAZStrType(
-                flags={"read_only": True},
-            )
+            properties.hostname = AAZStrType()
             properties.lifecycle_details = AAZStrType(
                 serialized_name="lifecycleDetails",
-                flags={"read_only": True},
             )
             properties.lifecycle_state = AAZStrType(
                 serialized_name="lifecycleState",
+                flags={"required": True},
             )
             properties.maintenance_type = AAZStrType(
                 serialized_name="maintenanceType",
             )
             properties.memory_size_in_gbs = AAZIntType(
                 serialized_name="memorySizeInGbs",
-                flags={"read_only": True},
             )
             properties.ocid = AAZStrType(
                 flags={"required": True},
@@ -295,25 +286,23 @@ class Action(AAZCommand):
             )
             properties.software_storage_size_in_gb = AAZIntType(
                 serialized_name="softwareStorageSizeInGb",
-                flags={"read_only": True},
             )
             properties.time_created = AAZStrType(
                 serialized_name="timeCreated",
-                flags={"read_only": True},
+                flags={"required": True},
             )
             properties.time_maintenance_window_end = AAZStrType(
                 serialized_name="timeMaintenanceWindowEnd",
-                flags={"read_only": True},
             )
             properties.time_maintenance_window_start = AAZStrType(
                 serialized_name="timeMaintenanceWindowStart",
-                flags={"read_only": True},
             )
             properties.vnic2_id = AAZStrType(
                 serialized_name="vnic2Id",
             )
             properties.vnic_id = AAZStrType(
                 serialized_name="vnicId",
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.system_data

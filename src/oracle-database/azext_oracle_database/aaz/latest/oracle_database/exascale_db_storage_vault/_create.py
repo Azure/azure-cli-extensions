@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/exascaledbstoragevaults/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/exascaledbstoragevaults/{}", "2026-06-01"],
         ]
     }
 
@@ -68,6 +68,11 @@ class Create(AAZCommand):
                 minimum=0,
             ),
         )
+        _args_schema.autoscale_limit_in_gbs = AAZIntArg(
+            options=["--autoscale-limit-in-gbs"],
+            arg_group="Properties",
+            help="Maximum limit storage size in gigabytes, that is applicable for the Database Storage Vault.",
+        )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
@@ -86,7 +91,7 @@ class Create(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.exadata_infrastructure_id = AAZStrArg(
+        _args_schema.exadata_infrastructure_id = AAZResourceIdArg(
             options=["--exadata-infrastructure-id"],
             arg_group="Properties",
             help="Cloud Exadata infrastructure ID",
@@ -95,6 +100,12 @@ class Create(AAZCommand):
             options=["--high-capacity-database-storage-input"],
             arg_group="Properties",
             help="Create exadata Database Storage Details",
+        )
+        _args_schema.is_autoscale_enabled = AAZBoolArg(
+            options=["--is-autoscale-enabled"],
+            arg_group="Properties",
+            help="Indicates if autoscale feature is enabled for the Storage Vault. The default value is: false.",
+            default=False,
         )
         _args_schema.time_zone = AAZStrArg(
             options=["--time-zone"],
@@ -223,7 +234,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -249,17 +260,19 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
             _builder.set_prop("zones", AAZListType, ".zones")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("additionalFlashCacheInPercent", AAZIntType, ".additional_flash_cache_in_percent")
+                properties.set_prop("autoscaleLimitInGbs", AAZIntType, ".autoscale_limit_in_gbs")
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("displayName", AAZStrType, ".display_name", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("exadataInfrastructureId", AAZStrType, ".exadata_infrastructure_id")
                 properties.set_prop("highCapacityDatabaseStorageInput", AAZObjectType, ".high_capacity_database_storage_input", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("isAutoscaleEnabled", AAZBoolType, ".is_autoscale_enabled")
                 properties.set_prop("timeZone", AAZStrType, ".time_zone")
 
             high_capacity_database_storage_input = _builder.get(".properties.highCapacityDatabaseStorageInput")
@@ -303,7 +316,9 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -322,6 +337,9 @@ class Create(AAZCommand):
                 serialized_name="attachedShapeAttributes",
                 flags={"read_only": True},
             )
+            properties.autoscale_limit_in_gbs = AAZIntType(
+                serialized_name="autoscaleLimitInGbs",
+            )
             properties.description = AAZStrType()
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
@@ -333,6 +351,9 @@ class Create(AAZCommand):
             properties.high_capacity_database_storage = AAZObjectType(
                 serialized_name="highCapacityDatabaseStorage",
                 flags={"read_only": True},
+            )
+            properties.is_autoscale_enabled = AAZBoolType(
+                serialized_name="isAutoscaleEnabled",
             )
             properties.lifecycle_details = AAZStrType(
                 serialized_name="lifecycleDetails",
