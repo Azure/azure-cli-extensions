@@ -145,6 +145,32 @@ def test_executing_cluster_diagnostic_checks_job_preserves_chart_pull_error(
     cleanup_process.assert_called_once()
 
 
+def test_prediagnostics_helm_install_uses_https_for_mcr_check(monkeypatch):
+    process = MagicMock(returncode=0)
+    process.communicate.return_value = (b"", b"")
+    popen = MagicMock(return_value=process)
+    monkeypatch.setattr(precheckutils, "Popen", popen)
+
+    precheckutils.helm_install_release_cluster_diagnostic_checks(
+        MagicMock(),
+        "/tmp/chart",
+        "eastus",
+        "",
+        "",
+        "",
+        "",
+        "AzureCloud",
+        None,
+        None,
+        "/usr/bin/helm",
+        "mcr.microsoft.com",
+    )
+
+    helm_command = popen.call_args.args[0]
+    assert "global.mcrRepository=https://mcr.microsoft.com" in helm_command
+    assert "global.image.registry=mcr.microsoft.com" in helm_command
+
+
 def test_prediagnostics_helm_install_uses_standardized_error(monkeypatch):
     process = MagicMock(returncode=1)
     process.communicate.return_value = (

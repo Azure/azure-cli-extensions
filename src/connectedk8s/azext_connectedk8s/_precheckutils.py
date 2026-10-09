@@ -1037,7 +1037,7 @@ def helm_install_release_cluster_diagnostic_checks(
     # To set some other helm parameters through file
     cmd_helm_install.extend(["--set", f"global.location={location}"])
     cmd_helm_install.extend(["--set", f"global.azureCloud={azure_cloud}"])
-    cmd_helm_install.extend(["--set", f"global.mcrRepository={mcr_url}"])
+    cmd_helm_install.extend(["--set", f"global.mcrRepository=https://{mcr_url}"])
     cmd_helm_install.extend(["--set", f"global.image.registry={mcr_url}"])
     if https_proxy:
         cmd_helm_install.extend(["--set", f"global.httpsProxy={https_proxy}"])
