@@ -11,6 +11,9 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create`: Add `--enable-upgrade-gate` to enable health-aware upgrade gating for the cluster.
+* `az aks update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the cluster.
+* `az aks nodepool add/update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the node pool.
 * `az aks create`: Add `--enable-disk-driver` so the AzureDisk CSI Driver can be enabled explicitly on create. The driver is already on by default, but `storageProfile.diskCSIDriver` was omitted from the create request unless `--disable-disk-driver` was passed, which blocked features that validate `storageProfile.diskCSIDriver.enabled` on the request body. `az aks update` already accepted this flag.
 
 22.0.0b12
