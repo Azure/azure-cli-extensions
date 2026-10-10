@@ -22,7 +22,8 @@ from .aaz.latest.grafana._update import Update as _GrafanaUpdate
 from ._client_factory import cf_amg
 from .utils import get_yes_or_no_option, search_folders
 from .dashboard_v2 import (is_v2_dashboard_definition, require_dashboard_v2_api_version,
-                           create_dashboard_v2, resolve_dashboard_v2_api_version, read_dashboard)
+                           create_dashboard_v2, resolve_dashboard_v2_api_version, read_dashboard,
+                           dashboard_folder_uid)
 
 logger = get_logger(__name__)
 
@@ -384,8 +385,11 @@ def _create_dashboard(cmd, grafana_name, definition, title=None, folder_uid=None
     if title:
         payload['dashboard']['title'] = title
 
-    if folder_uid:
+    if folder_uid is not None:
         payload['folderUid'] = folder_uid
+    elif 'folderId' in payload:
+        payload['folderUid'] = dashboard_folder_uid(payload)
+    payload.pop('folderId', None)
 
     payload['overwrite'] = overwrite or False
 
@@ -435,8 +439,12 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
         payload['dashboard'] = data
 
     if folder:
-        folder = _find_folder(cmd, resource_group_name, grafana_name, folder)
-        payload['folderId'] = folder['id']
+        folder = _find_folder(cmd, resource_group_name, grafana_name, folder,
+                              api_key_or_token=api_key_or_token)
+        payload['folderUid'] = folder['uid']
+    elif 'folderId' in payload:
+        payload['folderUid'] = dashboard_folder_uid(payload)
+    payload.pop('folderId', None)
 
     payload['overwrite'] = overwrite or False
     payload['inputs'] = []

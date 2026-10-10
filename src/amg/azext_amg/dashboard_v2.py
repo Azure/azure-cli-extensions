@@ -10,6 +10,8 @@
 
 import copy
 import json
+import re
+from urllib.parse import urlsplit
 
 import requests
 
@@ -177,10 +179,43 @@ def dashboard_identity(content):
 
 
 def dashboard_folder_uid(content):
-    # Return the folder uid for either a classic {meta, dashboard} object or a v2 resource.
+    # Older backups identify folders by URL; newer dashboards and library panels expose a UID.
     if is_v2_dashboard_definition(content):
         return content.get("metadata", {}).get("annotations", {}).get("grafana.app/folder", "")
-    return content.get("meta", {}).get("folderUid", "")
+
+    meta = content.get("meta", {})
+    if not isinstance(meta, dict):
+        raise ArgumentUsageError("The definition's 'meta' field must be an object.")
+
+    folder_uid = content.get("folderUid")
+    if folder_uid is None:
+        folder_uid = meta.get("folderUid")
+    if folder_uid is not None:
+        if not isinstance(folder_uid, str):
+            raise ArgumentUsageError("The definition's 'folderUid' field must be a string.")
+        return "" if folder_uid == "general" else folder_uid
+
+    folder_url = meta.get("folderUrl")
+    if folder_url is not None and not isinstance(folder_url, str):
+        raise ArgumentUsageError("The definition's 'folderUrl' field must be a string.")
+    if folder_url:
+        try:
+            folder_path = urlsplit(folder_url).path
+        except ValueError as ex:
+            raise ArgumentUsageError("The definition's 'folderUrl' field must be a valid URL.") from ex
+        match = re.search(r"(?:^|/)dashboards/f/([^/]+)(?:/|$)", folder_path)
+        if match:
+            folder_uid = match.group(1)
+            return "" if folder_uid == "general" else folder_uid
+        if folder_path.rstrip("/").split("/")[-1] == "dashboards":
+            return ""
+        raise ArgumentUsageError("The definition's 'folderUrl' does not identify a Grafana folder. "
+                                 "Supply 'folderUid' instead.")
+
+    if content.get("folderId", meta.get("folderId")):
+        raise ArgumentUsageError("The definition has a numeric 'folderId' but no folder UID. "
+                                 "Supply 'folderUid' instead.")
+    return ""
 
 
 def remap_v2_datasource_uids(node, uid_mapping):

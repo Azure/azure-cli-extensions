@@ -25,13 +25,20 @@ class AmgMigrateScenarioTest(ScenarioTest):
             ApiKeyServiceAccountTokenReplacer()
         ])
 
+    def setUp(self):
+        super().setUp()
+        endpoint_cache = unittest.mock.patch.dict('azext_amg.custom.grafana_endpoints', {}, clear=True)
+        endpoint_cache.start()
+        self.addCleanup(endpoint_cache.stop)
+
     def _setup_migrate_instances(self):
         # migrate from amg1 to amg2
         amg1 = self.cmd('grafana create -g {rg} -n {name} -l {location}').get_output_in_json()
         amg2 = self.cmd('grafana create -g {rg} -n {name2} -l {location}').get_output_in_json()
 
         # Ensure RBAC changes are propagated
-        time.sleep(120)
+        if self.in_recording:
+            time.sleep(120)
 
         # enable service accounts so I can create service tokens
         self.cmd('grafana update -g {rg} -n {name} --service-account Enabled')
@@ -125,7 +132,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
             folder_list_output = self.cmd('grafana folder list -g {rg} -n {name2}').get_output_in_json()
             dashboard_list_output = self.cmd('grafana dashboard list -g {rg} -n {name2}').get_output_in_json()
 
-            with unittest.mock.patch('azext_amg.utils.search_annotations', side_effect=self._return_200_and_empty_list):
+            with unittest.mock.patch('azext_amg.backup_core.search_annotations', side_effect=self._return_200_and_empty_list):
                 # now migrate to new instance 2.
                 self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken} --dry-run')
 
@@ -195,7 +202,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 self.check("[dashboard.uid]", "['{dashboardUid2_amg2}']"),
                 self.check("[meta.folderTitle]", "['General']")])
 
-            with unittest.mock.patch('azext_amg.utils.search_annotations', side_effect=self._return_200_and_empty_list):
+            with unittest.mock.patch('azext_amg.backup_core.search_annotations', side_effect=self._return_200_and_empty_list):
                 # now migrate to new instance 2.
                 self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
 
@@ -205,7 +212,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 self.check("[dashboard.uid]", "['{dashboardUid2_amg2}']"),
                 self.check("[meta.folderTitle]", "['General']")])
 
-            with unittest.mock.patch('azext_amg.utils.search_annotations', side_effect=self._return_200_and_empty_list):
+            with unittest.mock.patch('azext_amg.backup_core.search_annotations', side_effect=self._return_200_and_empty_list):
                 self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken} --overwrite')
 
             # the uid should stay the same, but the title & other properies should be updated.
@@ -290,7 +297,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 'serviceAccountToken': service_account_token['key']
             })
 
-            with unittest.mock.patch('azext_amg.utils.search_annotations', side_effect=self._return_200_and_empty_list):
+            with unittest.mock.patch('azext_amg.backup_core.search_annotations', side_effect=self._return_200_and_empty_list):
                 # now migrate to new instance 2.
                 self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
 
@@ -343,7 +350,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 'serviceAccountToken': service_account_token['key']
             })
 
-            with unittest.mock.patch('azext_amg.utils.search_annotations', side_effect=self._return_200_and_empty_list):
+            with unittest.mock.patch('azext_amg.backup_core.search_annotations', side_effect=self._return_200_and_empty_list):
                 # now migrate to new instance 2.
                 self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
 
