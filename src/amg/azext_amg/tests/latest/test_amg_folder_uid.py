@@ -102,6 +102,7 @@ class DashboardFolderTests(unittest.TestCase):
 
     def test_import_uses_uid_only_folder_response(self):
         self.definition['folderId'] = 42
+        self.definition['meta'] = {'folderUid': 'source-folder', 'folderId': 21}
         custom.import_dashboard(None, 'workspace', self.definition, folder='Nested',
                                 resource_group_name='rg', overwrite=True, api_key_or_token='test-token')
 
@@ -134,6 +135,40 @@ class DashboardFolderTests(unittest.TestCase):
         self.assertNotIn('folderId', payload)
         self.assertNotIn('folderUid', payload)
 
+    def test_classic_writes_preserve_metadata_wrapper_folder(self):
+        cases = [
+            ({'meta': {'folderUid': 'nested-folder', 'folderId': 2495897813577728}}, 'nested-folder'),
+            ({'meta': {'folderUid': '', 'folderId': 0}}, ''),
+            ({'meta': {'folderUid': 'general', 'folderId': 0}}, ''),
+            ({'meta': {'folderUrl': '/dashboards/f/legacy-folder/title', 'folderId': 42}}, 'legacy-folder'),
+            ({'meta': {'folderId': 0}}, ''),
+            ({'folderUid': 'target-folder', 'meta': {'folderUid': 'source-folder'}}, 'target-folder'),
+            ({'folderUid': '', 'meta': {'folderUid': 'source-folder'}}, ''),
+        ]
+        for write_dashboard in (custom.import_dashboard, custom._create_dashboard):
+            for wrapper, expected in cases:
+                with self.subTest(write_dashboard=write_dashboard.__name__, wrapper=wrapper):
+                    definition = copy.deepcopy(self.definition)
+                    definition.update(wrapper)
+                    self.mocks['_try_load_dashboard_definition'].return_value = definition
+                    self.mocks['_send_request'].reset_mock()
+                    write_dashboard(None, 'workspace', definition)
+                    self.mocks['_send_request'].assert_called_once()
+                    payload = self.mocks['_send_request'].call_args.args[5]
+                    self.assertEqual(payload['folderUid'], expected)
+                    self.assertNotIn('folderId', payload)
+        self.mocks['_find_folder'].assert_not_called()
+
+    def test_classic_writes_reject_metadata_only_numeric_folder_id(self):
+        for write_dashboard in (custom.import_dashboard, custom._create_dashboard):
+            with self.subTest(write_dashboard=write_dashboard.__name__):
+                definition = copy.deepcopy(self.definition)
+                definition['meta'] = {'folderId': 42}
+                self.mocks['_try_load_dashboard_definition'].return_value = definition
+                with self.assertRaises(ArgumentUsageError):
+                    write_dashboard(None, 'workspace', definition)
+        self.mocks['_send_request'].assert_not_called()
+
     def test_classic_writes_normalize_legacy_root_folder(self):
         for write_dashboard in (custom.import_dashboard, custom._create_dashboard):
             with self.subTest(write_dashboard=write_dashboard.__name__):
@@ -149,7 +184,10 @@ class DashboardFolderTests(unittest.TestCase):
         for folder_uid in ('nested-folder', ''):
             with self.subTest(folder_uid=folder_uid):
                 definition = copy.deepcopy(self.definition)
-                definition.update({'folderId': 42, 'folderUid': 'old-folder'})
+                definition.update({
+                    'folderId': 42, 'folderUid': 'old-folder',
+                    'meta': {'folderUid': 'source-folder', 'folderId': 21}
+                })
                 custom._create_dashboard(None, 'workspace', definition, folder_uid=folder_uid)
                 payload = self.mocks['_send_request'].call_args.args[5]
                 self.assertEqual(payload['folderUid'], folder_uid)

@@ -387,7 +387,7 @@ def _create_dashboard(cmd, grafana_name, definition, title=None, folder_uid=None
 
     if folder_uid is not None:
         payload['folderUid'] = folder_uid
-    elif 'folderId' in payload:
+    elif 'folderId' in payload or 'meta' in payload:
         payload['folderUid'] = dashboard_folder_uid(payload)
     payload.pop('folderId', None)
 
@@ -442,7 +442,7 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
         folder = _find_folder(cmd, resource_group_name, grafana_name, folder,
                               api_key_or_token=api_key_or_token)
         payload['folderUid'] = folder['uid']
-    elif 'folderId' in payload:
+    elif 'folderId' in payload or 'meta' in payload:
         payload['folderUid'] = dashboard_folder_uid(payload)
     payload.pop('folderId', None)
 
