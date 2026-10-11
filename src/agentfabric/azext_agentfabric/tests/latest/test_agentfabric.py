@@ -11,6 +11,8 @@ import unittest
 from unittest.mock import MagicMock
 
 from azure.cli.testsdk import ScenarioTest
+from azure.cli.core.aaz._command import AAZCommandCtx
+from azext_agentfabric.custom import AksUpdate
 
 
 COMMANDS = (
@@ -61,13 +63,23 @@ COMMANDS = (
     ),
     (
         "agentfabric aks update",
-        "azext_agentfabric.aaz.latest.agentfabric.aks._update",
-        "Update",
+        "azext_agentfabric.custom",
+        "AksUpdate",
     ),
     (
         "agentfabric aks detach",
         "azext_agentfabric.aaz.latest.agentfabric.aks._detach",
         "Detach",
+    ),
+    (
+        "agentfabric egress-trust-bundle show",
+        "azext_agentfabric.aaz.latest.agentfabric.egress_trust_bundle._show",
+        "Show",
+    ),
+    (
+        "agentfabric egress-trust-bundle list",
+        "azext_agentfabric.aaz.latest.agentfabric.egress_trust_bundle._list",
+        "List",
     ),
     (
         "agentfabric policy-group create",
@@ -110,7 +122,7 @@ REQUEST_SHAPES = (
         "AgentFabricsCreateOrUpdate",
         "PUT",
         "/Microsoft.NetworkSecurity/agentFabrics/{agentFabricName}",
-        "2026-07-21-preview",
+        "2026-10-07-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric._update",
@@ -118,7 +130,7 @@ REQUEST_SHAPES = (
         "AgentFabricsUpdate",
         "PATCH",
         "/Microsoft.NetworkSecurity/agentFabrics/{agentFabricName}",
-        "2026-07-21-preview",
+        "2026-10-07-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric._delete",
@@ -126,7 +138,7 @@ REQUEST_SHAPES = (
         "AgentFabricsDelete",
         "DELETE",
         "/Microsoft.NetworkSecurity/agentFabrics/{agentFabricName}",
-        "2026-07-21-preview",
+        "2026-10-07-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.member._create",
@@ -134,7 +146,7 @@ REQUEST_SHAPES = (
         "MembersCreateOrUpdate",
         "PUT",
         "/agentFabrics/{agentFabricName}/members/{memberName}",
-        "2026-07-21-preview",
+        "2026-10-07-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.member._update",
@@ -142,7 +154,7 @@ REQUEST_SHAPES = (
         "MembersUpdate",
         "PATCH",
         "/agentFabrics/{agentFabricName}/members/{memberName}",
-        "2026-07-21-preview",
+        "2026-10-07-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.member._delete",
@@ -150,7 +162,7 @@ REQUEST_SHAPES = (
         "MembersDelete",
         "DELETE",
         "/agentFabrics/{agentFabricName}/members/{memberName}",
-        "2026-07-21-preview",
+        "2026-10-07-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.aks._attach",
@@ -158,7 +170,7 @@ REQUEST_SHAPES = (
         "ClusterAssociationsCreateOrUpdate",
         "PUT",
         "/agentFabrics/{agentFabricName}/clusterAssociations/{clusterAssociationName}",
-        "2026-09-10-preview",
+        "2026-10-07-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.aks._show",
@@ -166,7 +178,7 @@ REQUEST_SHAPES = (
         "ClusterAssociationsGet",
         "GET",
         "/agentFabrics/{agentFabricName}/clusterAssociations/{clusterAssociationName}",
-        "2026-09-10-preview",
+        "2026-10-07-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.aks._list",
@@ -174,15 +186,15 @@ REQUEST_SHAPES = (
         "ClusterAssociationsListByParent",
         "GET",
         "/agentFabrics/{agentFabricName}/clusterAssociations",
-        "2026-09-10-preview",
+        "2026-10-07-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.aks._update",
         "Update",
-        "ClusterAssociationsCreateOrUpdate",
-        "PUT",
+        "ClusterAssociationsUpdate",
+        "PATCH",
         "/agentFabrics/{agentFabricName}/clusterAssociations/{clusterAssociationName}",
-        "2026-09-10-preview",
+        "2026-10-07-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.aks._detach",
@@ -190,7 +202,7 @@ REQUEST_SHAPES = (
         "ClusterAssociationsDelete",
         "DELETE",
         "/agentFabrics/{agentFabricName}/clusterAssociations/{clusterAssociationName}",
-        "2026-09-10-preview",
+        "2026-10-07-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.policy_group._create",
@@ -198,7 +210,7 @@ REQUEST_SHAPES = (
         "PolicyGroupsCreateOrUpdate",
         "PUT",
         "/Microsoft.NetworkSecurity/policyGroups/{policyGroupName}",
-        "2026-07-21-preview",
+        "2026-10-07-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.policy_group._update",
@@ -206,7 +218,7 @@ REQUEST_SHAPES = (
         "PolicyGroupsUpdate",
         "PATCH",
         "/Microsoft.NetworkSecurity/policyGroups/{policyGroupName}",
-        "2026-07-21-preview",
+        "2026-10-07-preview",
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.policy_group._delete",
@@ -214,7 +226,7 @@ REQUEST_SHAPES = (
         "PolicyGroupsDelete",
         "DELETE",
         "/Microsoft.NetworkSecurity/policyGroups/{policyGroupName}",
-        "2026-07-21-preview",
+        "2026-10-07-preview",
     ),
 )
 
@@ -235,6 +247,7 @@ class AgentfabricScenario(ScenarioTest):
             "agentfabric",
             "agentfabric member",
             "agentfabric aks",
+            "agentfabric egress-trust-bundle",
             "agentfabric policy-group",
             *(command for command, _, _ in COMMANDS),
             *HELP_ONLY_COMMANDS,
@@ -262,6 +275,11 @@ class AgentfabricScenario(ScenarioTest):
 
 class AgentfabricGeneratedCommandTest(unittest.TestCase):
 
+    def _operation(self, command_class, operation_name, arguments):
+        ctx = AAZCommandCtx(MagicMock(), command_class._build_arguments_schema(), arguments)
+        ctx._clients["MgmtClient"] = MagicMock()  # pylint: disable=protected-access
+        return getattr(command_class, operation_name)(ctx=ctx)
+
     def test_all_commands_have_generated_examples(self):
         for command, module_name, class_name in COMMANDS:
             command_class = getattr(importlib.import_module(module_name), class_name)
@@ -270,6 +288,20 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
                 any(example.startswith(f"az {command}") for example in _examples(command_class)),
                 command,
             )
+
+    def test_all_operations_use_latest_public_api(self):
+        from azure.cli.core.aaz import AAZHttpOperation
+        for command, module_name, class_name in COMMANDS:
+            command_class = getattr(importlib.import_module(module_name), class_name)
+            for operation_class in vars(command_class).values():
+                if not isinstance(operation_class, type) or not issubclass(operation_class, AAZHttpOperation):
+                    continue
+                operation = operation_class(ctx=MagicMock())
+                operation.client.format_url.side_effect = lambda url, **_: url
+                self.assertEqual(operation.query_parameters, {"api-version": "2026-10-07-preview"}, command)
+                self.assertIn("/Microsoft.NetworkSecurity/", operation.url, command)
+                self.assertNotIn("Private.NetworkSecurity", operation.url, command)
+                self.assertFalse(operation.url.startswith("https://"), command)
 
     def test_request_shapes_and_resource_urls(self):
         for (
@@ -297,8 +329,11 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
         )
         attach_schema = attach_module.Attach._build_arguments_schema()
         self.assertTrue(attach_schema.cluster_resource_id._required)
-        self.assertTrue(attach_schema.cluster_name._required)
-        self.assertEqual(attach_schema.cluster_name._options, ["--cluster-name"])
+        self.assertTrue(attach_schema.association_name._required)
+        self.assertIn("--cluster-name", attach_schema.association_name._options)
+        self.assertIn("--association-name", attach_schema.association_name._options)
+        self.assertTrue(attach_schema.location._required)
+        self.assertTrue(hasattr(attach_schema, "tags"))
         self.assertEqual(
             attach_schema.sku.enum.items,
             {"Premium": "Premium", "Standard": "Standard"},
@@ -309,9 +344,13 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
             "azext_agentfabric.aaz.latest.agentfabric.aks._update"
         )
         update_schema = update_module.Update._build_arguments_schema()
-        self.assertFalse(hasattr(update_schema, "cluster_resource_id"))
+        self.assertTrue(update_schema.cluster_resource_id._required)
         self.assertFalse(hasattr(update_schema, "if_none_match"))
         self.assertTrue(hasattr(update_schema, "sku"))
+        self.assertTrue(hasattr(update_schema, "workload_cluster_gateway_ip"))
+        custom_schema = AksUpdate._build_arguments_schema()
+        self.assertFalse(custom_schema.cluster_resource_id._required)
+        self.assertFalse(custom_schema.cluster_resource_id._registered)
 
         show_module = importlib.import_module(
             "azext_agentfabric.aaz.latest.agentfabric.aks._show"
@@ -327,3 +366,197 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
             set(output_schema.properties.status._fields),
             {"code", "message"},
         )
+
+    def test_update_preserves_cluster_id_before_patch(self):
+        command = MagicMock()
+        cluster_id = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ContainerService/managedClusters/aks"
+        command.ctx.vars.instance.properties.cluster_resource_id = cluster_id
+        with unittest.mock.patch(
+            "azext_agentfabric.custom._AksShow.ClusterAssociationsGet"
+        ) as get_operation:
+            AksUpdate.pre_operations(command)
+        get_operation.assert_called_once_with(ctx=command.ctx)
+        get_operation.return_value.assert_called_once_with()
+        self.assertEqual(command.ctx.args.cluster_resource_id, cluster_id)
+
+    def test_attach_and_patch_payloads(self):
+        from azext_agentfabric.aaz.latest.agentfabric.aks import Attach, Update
+        cluster_id = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ContainerService/managedClusters/aks"
+        arguments = {
+            "fabric_name": "fabric",
+            "association_name": "association",
+            "resource_group": "rg",
+            "cluster_resource_id": cluster_id,
+            "sku": "Premium",
+            "tags": {"env": "test"},
+        }
+        attach = self._operation(
+            Attach, "ClusterAssociationsCreateOrUpdate", dict(arguments, location="eastus")
+        )
+        self.assertEqual(attach.content, {
+            "location": "eastus",
+            "tags": {"env": "test"},
+            "properties": {"clusterResourceId": cluster_id, "sku": "Premium"},
+        })
+        update = self._operation(
+            Update, "ClusterAssociationsUpdate",
+            dict(arguments, workload_cluster_gateway_ip="10.0.0.4"),
+        )
+        self.assertEqual(update.content, {
+            "tags": {"env": "test"},
+            "properties": {
+                "clusterResourceId": cluster_id,
+                "sku": "Premium",
+                "workloadClusterGatewayIp": "10.0.0.4",
+            },
+        })
+        session = MagicMock()
+        session.http_response.status_code = 202
+        update.client.send_request.return_value = session
+        update()
+        self.assertEqual(
+            update.client.build_lro_polling.call_args.kwargs["lro_options"],
+            {"final-state-via": "location"},
+        )
+
+    def test_custom_update_get_then_patch(self):
+        from azext_agentfabric.aaz.latest.agentfabric.aks import Show, Update
+        from knack.cli import CLI
+        cli_ctx = MagicMock(spec=CLI)
+        cli_ctx.data = {}
+        cli_ctx.cloud = MagicMock()
+        cli_ctx.config = MagicMock()
+        command = AksUpdate(cli_ctx=cli_ctx)
+        command.ctx = AAZCommandCtx(cli_ctx, AksUpdate._build_arguments_schema(), {
+            "fabric_name": "fabric", "association_name": "association",
+            "resource_group": "rg", "sku": "Premium",
+        })
+        command.ctx._clients["MgmtClient"] = MagicMock()  # pylint: disable=protected-access
+        cluster_id = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ContainerService/managedClusters/aks"
+        payloads = []
+        output_builder = Show.ClusterAssociationsGet._build_schema_on_200
+
+        def read_existing():
+            command.ctx.set_var("instance", {
+                "properties": {"clusterResourceId": cluster_id, "sku": "Standard"},
+            }, schema_builder=output_builder)
+
+        def record_patch(operation):
+            payloads.append(operation.content)
+
+        with unittest.mock.patch(
+            "azext_agentfabric.custom._AksShow.ClusterAssociationsGet"
+        ) as read, unittest.mock.patch.object(
+            Update.ClusterAssociationsUpdate, "__call__", record_patch
+        ):
+            read.return_value.side_effect = read_existing
+            list(command._execute_operations())  # pylint: disable=protected-access
+        self.assertEqual(payloads, [{
+            "properties": {"clusterResourceId": cluster_id, "sku": "Premium"},
+        }])
+        with unittest.mock.patch(
+            "azext_agentfabric.custom._AksShow.ClusterAssociationsGet",
+            side_effect=RuntimeError("GET failed"),
+        ), unittest.mock.patch.object(Update.ClusterAssociationsUpdate, "__call__") as patch:
+            with self.assertRaisesRegex(RuntimeError, "GET failed"):
+                list(command._execute_operations())  # pylint: disable=protected-access
+            patch.assert_not_called()
+
+    def test_fabric_inspection_connection_payload_and_secret_output(self):
+        from azext_agentfabric.aaz.latest.agentfabric import Create
+        arguments = {
+            "name": "fabric",
+            "resource_group": "rg",
+            "location": "eastus",
+            "identity": {"type": "SystemAssigned"},
+            "content_inspection_profile": {
+                "endpoint": "https://example.cognitiveservices.azure.com/",
+                "api_key": "test-key-not-a-credential",
+            },
+        }
+        operation = self._operation(Create, "AgentFabricsCreateOrUpdate", arguments)
+        self.assertEqual(operation.content["identity"], {"type": "SystemAssigned"})
+        self.assertEqual(operation.content["properties"]["contentInspectionProfile"], {
+            "endpoint": "https://example.cognitiveservices.azure.com/",
+            "apiKey": "test-key-not-a-credential",
+        })
+        output = operation._build_schema_on_200_201()  # pylint: disable=protected-access
+        self.assertNotIn("api_key", output.properties.content_inspection_profile._fields)
+        self.assertIn("resource_guid", output.properties._fields)
+        empty = self._operation(
+            Create, "AgentFabricsCreateOrUpdate",
+            dict(arguments, content_inspection_profile={}),
+        )
+        self.assertEqual(empty.content["properties"]["contentInspectionProfile"], {})
+        omitted = dict(arguments)
+        omitted.pop("content_inspection_profile")
+        self.assertNotIn("contentInspectionProfile", self._operation(
+            Create, "AgentFabricsCreateOrUpdate", omitted,
+        ).content.get("properties", {}))
+
+    def test_member_patch_and_egress_bundle_contract(self):
+        from azext_agentfabric.aaz.latest.agentfabric.member import Update
+        from azext_agentfabric.aaz.latest.agentfabric.egress_trust_bundle import Show, List
+        operation = self._operation(Update, "MembersUpdate", {
+            "fabric_name": "fabric", "member_name": "member", "resource_group": "rg",
+            "fqdn": "member.example.com", "tags": {"env": "test"},
+        })
+        self.assertEqual(operation.content, {
+            "properties": {"fqdn": "member.example.com"}, "tags": {"env": "test"},
+        })
+        show = self._operation(Show, "EgressTrustBundlesGet", {
+            "fabric_name": "fabric", "resource_group": "rg",
+        })
+        show.client.format_url.side_effect = lambda url, **_: url
+        self.assertTrue(show.url.endswith("/egressTrustBundles/default"))
+        schema = show._build_schema_on_200()  # pylint: disable=protected-access
+        self.assertEqual(set(schema.properties._fields), {
+            "certificates", "bundle_version", "cache_validity_seconds",
+            "cache_expires_at", "provisioning_state",
+        })
+        self.assertTrue(List.AZ_SUPPORT_PAGINATION)
+
+    def test_member_aks_and_sandbox_endpoint_payloads(self):
+        from azext_agentfabric.aaz.latest.agentfabric.member import Create
+        endpoint = {
+            "name": "http", "protocol": "TCP", "service_port": 80, "target_port": 8080,
+        }
+        arguments = {
+            "fabric_name": "fabric", "member_name": "member",
+            "resource_group": "rg", "location": "eastus", "fqdn": "member.example.com",
+            "workload": {"aks": {
+                "cluster_association_id": "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.NetworkSecurity/agentFabrics/fabric/clusterAssociations/association",
+                "cluster_resource_id": "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ContainerService/managedClusters/aks",
+                "workload": {
+                    "api_version": "apps/v1", "kind": "Deployment",
+                    "namespace": "agents", "name": "agent",
+                },
+                "endpoints": [endpoint],
+            }},
+        }
+        operation = self._operation(Create, "MembersCreateOrUpdate", arguments)
+        workload = operation.content["properties"]["workload"]
+        self.assertEqual(workload["type"], "AKS")
+        self.assertEqual(workload["workload"]["apiVersion"], "apps/v1")
+        self.assertEqual(workload["endpoints"], [{
+            "name": "http", "protocol": "TCP", "servicePort": 80, "targetPort": 8080,
+        }])
+        sandbox = dict(arguments, workload={"agent_fabric_sandbox": {
+            "image": {"uri": "example.com/agent:latest"},
+            "resources": {"cpu": "1", "memory": "1Gi"},
+            "domain": "example.com", "endpoints": [endpoint],
+        }})
+        operation = self._operation(Create, "MembersCreateOrUpdate", sandbox)
+        workload = operation.content["properties"]["workload"]
+        self.assertNotIn("port", workload["endpoints"][0])
+        self.assertEqual(workload["endpoints"][0]["targetPort"], 8080)
+        aci = dict(arguments, workload={
+            "member_guid": "11111111-1111-1111-1111-111111111111",
+            "aci": {
+                "resource_id": "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ContainerInstance/sandboxGroups/sandbox",
+            },
+        })
+        operation = self._operation(Create, "MembersCreateOrUpdate", aci)
+        workload = operation.content["properties"]["workload"]
+        self.assertEqual(workload["type"], "ACI")
+        self.assertEqual(workload["memberGuid"], "11111111-1111-1111-1111-111111111111")

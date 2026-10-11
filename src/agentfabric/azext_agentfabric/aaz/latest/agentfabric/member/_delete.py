@@ -16,16 +16,18 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a member resource that is a child of an Agent Fabric. The parent Fabric name is required.
+    """Delete an Agent Fabric member.
 
-    :example: Members_Delete
-        az agentfabric member delete --resource-group rgnetworksecurity --fabric-name testAIFabric --member-name testMember
+    Members are children of an Agent Fabric and require the parent Fabric name. Member workloads can describe ACI, AKS, or Agent Fabric sandbox resources.
+
+    :example: Delete an Agent Fabric member
+        az agentfabric member delete --resource-group rgnetworksecurity --fabric-name testAIFabric --member-name checkoutApi
     """
 
     _aaz_info = {
-        "version": "2026-07-21-preview",
+        "version": "2026-10-07-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/members/{}", "2026-07-21-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/members/{}", "2026-10-07-preview"],
         ]
     }
 
@@ -48,7 +50,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="The name of the AgentFabric",
+            help="Name of the parent Agent Fabric.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -56,7 +58,7 @@ class Delete(AAZCommand):
             ),
         )
         _args_schema.member_name = AAZStrArg(
-            options=["--member-name"],
+            options=["-n", "--name", "--member-name"],
             help="The name of the Member",
             required=True,
             id_part="child_name_1",
@@ -159,7 +161,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-21-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }

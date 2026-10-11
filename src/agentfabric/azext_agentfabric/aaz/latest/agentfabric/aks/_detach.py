@@ -16,16 +16,18 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Detach(AAZCommand):
-    """Detach an AKS cluster from an Agent Fabric. The parent Fabric name and AKS cluster name are required.
+    """Delete an Agent Fabric compute association.
 
-    :example: Detach an AKS cluster
-        az agentfabric aks detach --resource-group rgnetworksecurity --fabric-name testAIFabric --cluster-name testCluster
+    Manage compute-resource enrollment through ClusterAssociation resources under an Agent Fabric. This AKS-oriented command surface also preserves the REST API's support for ACI SandboxGroup resource IDs. Association names are independent from target resource names; --cluster-name is retained as a compatibility alias for the association name.
+
+    :example: Detach a compute association
+        az agentfabric aks detach --resource-group rgnetworksecurity --fabric-name testAIFabric --association-name testAssociation
     """
 
     _aaz_info = {
-        "version": "2026-09-10-preview",
+        "version": "2026-10-07-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/clusterassociations/{}", "2026-09-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/clusterassociations/{}", "2026-10-07-preview"],
         ]
     }
 
@@ -48,16 +50,16 @@ class Detach(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="The name of the parent Agent Fabric.",
+            help="Name of the parent Agent Fabric.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
-        _args_schema.cluster_name = AAZStrArg(
-            options=["--cluster-name"],
-            help="The name of the AKS cluster. This value is used as the Cluster Association ARM child resource name.",
+        _args_schema.association_name = AAZStrArg(
+            options=["-n", "--name", "--cluster-name", "--association-name"],
+            help="Name of the ClusterAssociation child resource. --cluster-name is retained as a compatibility alias.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -141,7 +143,7 @@ class Detach(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "clusterAssociationName", self.ctx.args.cluster_name,
+                    "clusterAssociationName", self.ctx.args.association_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -159,7 +161,7 @@ class Detach(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-10-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }

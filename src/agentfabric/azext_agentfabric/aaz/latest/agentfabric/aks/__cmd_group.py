@@ -15,7 +15,9 @@ from azure.cli.core.aaz import *
     "agentfabric aks",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage AKS cluster enrollment with an Agent Fabric. Commands use the AKS cluster name as the association child name and require the parent Fabric name.
+    """Manage Agent Fabric compute enrollment.
+
+    Manage compute-resource enrollment through ClusterAssociation resources under an Agent Fabric. This AKS-oriented command surface also preserves the REST API's support for ACI SandboxGroup resource IDs. Association names are independent from target resource names; --cluster-name is retained as a compatibility alias for the association name.
     """
     pass
 

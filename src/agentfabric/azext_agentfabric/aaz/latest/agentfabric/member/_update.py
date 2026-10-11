@@ -15,16 +15,18 @@ from azure.cli.core.aaz import *
     "agentfabric member update",
 )
 class Update(AAZCommand):
-    """Update a member resource that is a child of an Agent Fabric. The parent Fabric name is required.
+    """Update an Agent Fabric member's tags or FQDN.
 
-    :example: Members_Update
-        az agentfabric member update --resource-group rgnetworksecurity --fabric-name testAIFabric --member-name testMember --tags "{environment:production}"
+    Patch member tags or properties.fqdn. The workload and member GUID remain create-only.
+
+    :example: Update a member FQDN and tags
+        az agentfabric member update --resource-group rgnetworksecurity --fabric-name testAIFabric --member-name checkoutApi --fqdn checkout.contoso.com --tags "{env:prod}"
     """
 
     _aaz_info = {
-        "version": "2026-07-21-preview",
+        "version": "2026-10-07-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/members/{}", "2026-07-21-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/members/{}", "2026-10-07-preview"],
         ]
     }
 
@@ -47,7 +49,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="The name of the AgentFabric",
+            help="Name of the parent Agent Fabric.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -55,7 +57,7 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.member_name = AAZStrArg(
-            options=["--member-name"],
+            options=["-n", "--name", "--member-name"],
             help="The name of the Member",
             required=True,
             id_part="child_name_1",
@@ -70,6 +72,11 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.fqdn = AAZStrArg(
+            options=["--fqdn"],
+            arg_group="Properties",
+            help="The customer-provided fully qualified domain name associated with the member.",
+        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Properties",
@@ -165,7 +172,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-21-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }
@@ -190,7 +197,12 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("fqdn", AAZStrType, ".fqdn")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -236,6 +248,7 @@ class Update(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.fqdn = AAZStrType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -247,6 +260,9 @@ class Update(AAZCommand):
             properties.workload = AAZObjectType()
 
             workload = cls._schema_on_200.properties.workload
+            workload.member_guid = AAZStrType(
+                serialized_name="memberGuid",
+            )
             workload.type = AAZStrType(
                 flags={"required": True},
             )
@@ -258,6 +274,54 @@ class Update(AAZCommand):
             disc_aci = cls._schema_on_200.properties.workload.discriminate_by("type", "ACI")
             disc_aci.resource_id = AAZStrType(
                 serialized_name="resourceId",
+                flags={"required": True},
+            )
+
+            disc_aks = cls._schema_on_200.properties.workload.discriminate_by("type", "AKS")
+            disc_aks.cluster_association_id = AAZStrType(
+                serialized_name="clusterAssociationId",
+                flags={"required": True},
+            )
+            disc_aks.cluster_resource_id = AAZStrType(
+                serialized_name="clusterResourceId",
+                flags={"required": True},
+            )
+            disc_aks.endpoints = AAZListType()
+            disc_aks.workload = AAZObjectType(
+                flags={"required": True},
+            )
+
+            endpoints = cls._schema_on_200.properties.workload.discriminate_by("type", "AKS").endpoints
+            endpoints.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.workload.discriminate_by("type", "AKS").endpoints.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.protocol = AAZStrType(
+                flags={"required": True},
+            )
+            _element.service_port = AAZIntType(
+                serialized_name="servicePort",
+                flags={"required": True},
+            )
+            _element.target_port = AAZIntType(
+                serialized_name="targetPort",
+                flags={"required": True},
+            )
+
+            workload = cls._schema_on_200.properties.workload.discriminate_by("type", "AKS").workload
+            workload.api_version = AAZStrType(
+                serialized_name="apiVersion",
+                flags={"required": True},
+            )
+            workload.kind = AAZStrType(
+                flags={"required": True},
+            )
+            workload.name = AAZStrType(
+                flags={"required": True},
+            )
+            workload.namespace = AAZStrType(
                 flags={"required": True},
             )
 
@@ -293,7 +357,15 @@ class Update(AAZCommand):
             _element.name = AAZStrType(
                 flags={"required": True},
             )
-            _element.port = AAZIntType(
+            _element.protocol = AAZStrType(
+                flags={"required": True},
+            )
+            _element.service_port = AAZIntType(
+                serialized_name="servicePort",
+                flags={"required": True},
+            )
+            _element.target_port = AAZIntType(
+                serialized_name="targetPort",
                 flags={"required": True},
             )
 

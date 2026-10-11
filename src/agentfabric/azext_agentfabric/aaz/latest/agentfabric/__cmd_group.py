@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Agent Fabric and related Microsoft.NetworkSecurity resources. Root commands manage Agent Fabric resources.
+
+    Manage Agent Fabric and related Microsoft.NetworkSecurity resources. Root create, show, list, update, and delete commands manage Agent Fabric resources.
     """
     pass
 

@@ -16,16 +16,18 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete an independent resource-group-scoped Microsoft.NetworkSecurity Policy Group resource. Policy Groups are not children of an Agent Fabric.
+    """Delete an independent Policy Group.
 
-    :example: PolicyGroups_Delete
+    Policy Groups are independent resource-group-scoped Microsoft.NetworkSecurity peer resources and are not children of an Agent Fabric.
+
+    :example: Delete an independent Policy Group
         az agentfabric policy-group delete --resource-group rgnetworksecurity --name testPolicyGroup
     """
 
     _aaz_info = {
-        "version": "2026-07-21-preview",
+        "version": "2026-10-07-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/policygroups/{}", "2026-07-21-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/policygroups/{}", "2026-10-07-preview"],
         ]
     }
 
@@ -146,7 +148,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-21-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }

@@ -15,16 +15,18 @@ from azure.cli.core.aaz import *
     "agentfabric aks list",
 )
 class List(AAZCommand):
-    """List AKS cluster enrollments for an Agent Fabric. The parent Fabric name is required.
+    """List compute associations under an Agent Fabric.
 
-    :example: List AKS cluster enrollments
+    Manage compute-resource enrollment through ClusterAssociation resources under an Agent Fabric. This AKS-oriented command surface also preserves the REST API's support for ACI SandboxGroup resource IDs. Association names are independent from target resource names; --cluster-name is retained as a compatibility alias for the association name.
+
+    :example: List compute associations
         az agentfabric aks list --resource-group rgnetworksecurity --fabric-name testAIFabric
     """
 
     _aaz_info = {
-        "version": "2026-09-10-preview",
+        "version": "2026-10-07-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/clusterassociations", "2026-09-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/clusterassociations", "2026-10-07-preview"],
         ]
     }
 
@@ -47,7 +49,7 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="The name of the parent Agent Fabric.",
+            help="Name of the parent Agent Fabric.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
@@ -124,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-10-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }
@@ -171,6 +173,9 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -179,6 +184,7 @@ class List(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -224,6 +230,9 @@ class List(AAZCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 

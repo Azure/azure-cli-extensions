@@ -15,7 +15,9 @@ from azure.cli.core.aaz import *
     "agentfabric member",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage members that are children of an Agent Fabric. The parent Fabric name is required.
+    """Manage Agent Fabric members.
+
+    Members are children of an Agent Fabric and require the parent Fabric name. Member workloads can describe ACI, AKS, or Agent Fabric sandbox resources.
     """
     pass
 

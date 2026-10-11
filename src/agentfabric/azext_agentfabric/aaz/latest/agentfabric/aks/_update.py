@@ -15,22 +15,22 @@ from azure.cli.core.aaz import *
     "agentfabric aks update",
 )
 class Update(AAZCommand):
-    """Update the SKU for an AKS cluster enrollment. The parent Fabric name and AKS cluster name are required.
+    """Patch an Agent Fabric compute association.
 
-    :example: Update an AKS cluster enrollment SKU
-        az agentfabric aks update --resource-group rgnetworksecurity --fabric-name testAIFabric --cluster-name testCluster --sku Premium
+    Patch tags, SKU, or workload cluster gateway IP. The existing immutable target resource ID is required by ARM linked authorization and must match the stored association.
+
+    :example: Patch a compute association
+        az agentfabric aks update --resource-group rgnetworksecurity --fabric-name testAIFabric --association-name testAssociation --cluster-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgaks/providers/Microsoft.ContainerService/managedClusters/testAksCluster --sku Premium --gateway-ip 10.0.0.4 --tags "{env:prod}"
     """
 
     _aaz_info = {
-        "version": "2026-09-10-preview",
+        "version": "2026-10-07-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/clusterassociations/{}", "2026-09-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/clusterassociations/{}", "2026-10-07-preview"],
         ]
     }
 
     AZ_SUPPORT_NO_WAIT = True
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -49,16 +49,16 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="The name of the parent Agent Fabric.",
+            help="Name of the parent Agent Fabric.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
-        _args_schema.cluster_name = AAZStrArg(
-            options=["--cluster-name"],
-            help="The name of the AKS cluster. This value is used as the Cluster Association ARM child resource name.",
+        _args_schema.association_name = AAZStrArg(
+            options=["-n", "--name", "--cluster-name", "--association-name"],
+            help="Name of the ClusterAssociation child resource. --cluster-name is retained as a compatibility alias.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -72,23 +72,36 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.cluster_resource_id = AAZResourceIdArg(
+            options=["--cluster-resource-id"],
+            arg_group="Properties",
+            help="The existing AKS managed cluster or ACI SandboxGroup. This value is required so Azure Resource Manager can perform linked authorization and must match the immutable clusterResourceId already stored on the association.",
+            required=True,
+        )
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
             arg_group="Properties",
-            help="Determines which AgentFabric components are deployed to the cluster. Defaults to Standard when omitted at creation and remains unchanged when omitted during an update.",
-            nullable=True,
+            help="Determines which AgentFabric components are deployed to the cluster. Only an upgrade from Standard to Premium is supported; Premium cannot be downgraded to Standard. When omitted, the PATCH request is an authorized no-op and the existing SKU remains unchanged.",
             enum={"Premium": "Premium", "Standard": "Standard"},
         )
+        _args_schema.workload_cluster_gateway_ip = AAZStrArg(
+            options=["--gateway-ip", "--workload-cluster-gateway-ip"],
+            arg_group="Properties",
+            help="The IPv4 or IPv6 address of the workload cluster gateway used for internal Agent Fabric routing. The resource provider validates the value.",
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Properties",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ClusterAssociationsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        yield self.ClusterAssociationsCreateOrUpdate(ctx=self.ctx)()
+        yield self.ClusterAssociationsUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -99,106 +112,11 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ClusterAssociationsGet(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetworkSecurity/agentFabrics/{agentFabricName}/clusterAssociations/{clusterAssociationName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "agentFabricName", self.ctx.args.fabric_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "clusterAssociationName", self.ctx.args.cluster_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2026-09-10-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_cluster_association_read(cls._schema_on_200)
-
-            return cls._schema_on_200
-
-    class ClusterAssociationsCreateOrUpdate(AAZHttpOperation):
+    class ClusterAssociationsUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -208,18 +126,18 @@ class Update(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200, 201]:
+            if session.http_response.status_code in [200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -234,7 +152,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -248,7 +166,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "clusterAssociationName", self.ctx.args.cluster_name,
+                    "clusterAssociationName", self.ctx.args.association_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -266,7 +184,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-10-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }
@@ -288,139 +206,111 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("clusterResourceId", AAZStrType, ".cluster_resource_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("sku", AAZStrType, ".sku")
+                properties.set_prop("workloadClusterGatewayIp", AAZStrType, ".workload_cluster_gateway_ip")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_cluster_association_read(cls._schema_on_200_201)
+            cls._schema_on_200 = AAZObjectType()
 
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
             )
-            _builder.set_prop("properties", AAZObjectType)
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("sku", AAZStrType, ".sku")
-
-            return _instance_value
-
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
             )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.cluster_resource_id = AAZStrType(
+                serialized_name="clusterResourceId",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.sku = AAZStrType()
+            properties.status = AAZObjectType(
+                flags={"read_only": True},
+            )
+
+            status = cls._schema_on_200.properties.status
+            status.code = AAZStrType(
+                flags={"read_only": True},
+            )
+            status.message = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_cluster_association_read = None
-
-    @classmethod
-    def _build_schema_cluster_association_read(cls, _schema):
-        if cls._schema_cluster_association_read is not None:
-            _schema.id = cls._schema_cluster_association_read.id
-            _schema.name = cls._schema_cluster_association_read.name
-            _schema.properties = cls._schema_cluster_association_read.properties
-            _schema.system_data = cls._schema_cluster_association_read.system_data
-            _schema.type = cls._schema_cluster_association_read.type
-            return
-
-        cls._schema_cluster_association_read = _schema_cluster_association_read = AAZObjectType()
-
-        cluster_association_read = _schema_cluster_association_read
-        cluster_association_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        cluster_association_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        cluster_association_read.properties = AAZObjectType()
-        cluster_association_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        cluster_association_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        properties = _schema_cluster_association_read.properties
-        properties.cluster_resource_id = AAZStrType(
-            serialized_name="clusterResourceId",
-            flags={"required": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.sku = AAZStrType()
-        properties.status = AAZObjectType(
-            flags={"read_only": True},
-        )
-
-        status = _schema_cluster_association_read.properties.status
-        status.code = AAZStrType(
-            flags={"read_only": True},
-        )
-        status.message = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        system_data = _schema_cluster_association_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        _schema.id = cls._schema_cluster_association_read.id
-        _schema.name = cls._schema_cluster_association_read.name
-        _schema.properties = cls._schema_cluster_association_read.properties
-        _schema.system_data = cls._schema_cluster_association_read.system_data
-        _schema.type = cls._schema_cluster_association_read.type
 
 
 __all__ = ["Update"]

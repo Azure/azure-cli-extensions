@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Show an Agent Fabric resource.
 
-    :example: AgentFabrics_Get
+    :example: Show an Agent Fabric
         az agentfabric show --resource-group rgnetworksecurity --name testAIFabric
     """
 
     _aaz_info = {
-        "version": "2026-07-21-preview",
+        "version": "2026-10-07-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}", "2026-07-21-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}", "2026-10-07-preview"],
         ]
     }
 
@@ -123,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-21-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }
@@ -159,6 +159,7 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -175,7 +176,23 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+
             properties = cls._schema_on_200.properties
+            properties.content_inspection_profile = AAZObjectType(
+                serialized_name="contentInspectionProfile",
+            )
             properties.default_policy_groups = AAZListType(
                 serialized_name="defaultPolicyGroups",
             )
@@ -183,9 +200,16 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
+                flags={"read_only": True},
+            )
             properties.trust_domain = AAZStrType(
                 serialized_name="trustDomain",
             )
+
+            content_inspection_profile = cls._schema_on_200.properties.content_inspection_profile
+            content_inspection_profile.endpoint = AAZStrType()
 
             default_policy_groups = cls._schema_on_200.properties.default_policy_groups
             default_policy_groups.Element = AAZStrType()

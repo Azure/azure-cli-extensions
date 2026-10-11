@@ -15,16 +15,18 @@ from azure.cli.core.aaz import *
     "agentfabric policy-group show",
 )
 class Show(AAZCommand):
-    """Show an independent resource-group-scoped Microsoft.NetworkSecurity Policy Group resource. Policy Groups are not children of an Agent Fabric.
+    """Show an independent Policy Group.
 
-    :example: PolicyGroups_Get
+    Policy Groups are independent resource-group-scoped Microsoft.NetworkSecurity peer resources and are not children of an Agent Fabric.
+
+    :example: Show an independent Policy Group
         az agentfabric policy-group show --resource-group rgnetworksecurity --name testPolicyGroup
     """
 
     _aaz_info = {
-        "version": "2026-07-21-preview",
+        "version": "2026-10-07-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/policygroups/{}", "2026-07-21-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/policygroups/{}", "2026-10-07-preview"],
         ]
     }
 
@@ -123,7 +125,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-21-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }

@@ -12,4 +12,5 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    from .custom import AksUpdate
+    self.command_table["agentfabric aks update"] = AksUpdate(loader=self)

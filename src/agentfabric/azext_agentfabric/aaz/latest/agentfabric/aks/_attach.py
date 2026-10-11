@@ -15,16 +15,21 @@ from azure.cli.core.aaz import *
     "agentfabric aks attach",
 )
 class Attach(AAZCommand):
-    """Attach an AKS cluster to an Agent Fabric. The parent Fabric name and AKS cluster name are required.
+    """Create a compute-resource association under an Agent Fabric.
 
-    :example: Attach an AKS cluster
-        az agentfabric aks attach --resource-group rgnetworksecurity --fabric-name testAIFabric --cluster-name testCluster --cluster-resource-id /subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/rgaks/providers/Microsoft.ContainerService/managedClusters/testCluster --sku Standard
+    Create a ClusterAssociation for an AKS managed cluster or ACI SandboxGroup. Location and the target resource ID are required. The association name is independent from the target resource name; --cluster-name remains a compatibility alias.
+
+    :example: Attach an AKS managed cluster
+        az agentfabric aks attach --resource-group rgnetworksecurity --fabric-name testAIFabric --association-name testAssociation --location eastus --cluster-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgaks/providers/Microsoft.ContainerService/managedClusters/testAksCluster --sku Premium --tags "{env:prod}"
+
+    :example: Associate an ACI SandboxGroup
+        az agentfabric aks attach --resource-group rgnetworksecurity --fabric-name testAIFabric --association-name testSandboxAssociation --location eastus --cluster-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgaci/providers/Microsoft.ContainerInstance/sandboxGroups/testSandboxGroup
     """
 
     _aaz_info = {
-        "version": "2026-09-10-preview",
+        "version": "2026-10-07-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/clusterassociations/{}", "2026-09-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/clusterassociations/{}", "2026-10-07-preview"],
         ]
     }
 
@@ -47,16 +52,16 @@ class Attach(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="The name of the parent Agent Fabric.",
+            help="Name of the parent Agent Fabric.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
         )
-        _args_schema.cluster_name = AAZStrArg(
-            options=["--cluster-name"],
-            help="The name of the AKS cluster. This value is used as the Cluster Association ARM child resource name.",
+        _args_schema.association_name = AAZStrArg(
+            options=["-n", "--name", "--cluster-name", "--association-name"],
+            help="Name of the ClusterAssociation child resource. --cluster-name is retained as a compatibility alias.",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -73,15 +78,35 @@ class Attach(AAZCommand):
         _args_schema.cluster_resource_id = AAZResourceIdArg(
             options=["--cluster-resource-id"],
             arg_group="Properties",
-            help="The AKS managed cluster to enroll. The cluster must be in the same subscription as the AgentFabric; a different resource group is allowed. Set at creation and immutable thereafter; to enroll a different cluster, delete and recreate the association.",
+            help="The AKS managed cluster, or (starting in API version `2026-10-07-preview`) ACI SandboxGroup, to enroll. The resource must be in the same subscription as the AgentFabric; a different resource group is allowed. Set at creation and immutable thereafter; to enroll a different resource, delete and recreate the association. AF rejects the request if the resource is already associated with another fabric.",
             required=True,
         )
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
             arg_group="Properties",
-            help="Determines which AgentFabric components are deployed to the cluster. Defaults to Standard when omitted at creation and remains unchanged when omitted during an update.",
+            help="Determines which AgentFabric components are deployed to the cluster. Defaults to Standard when omitted at creation. An update may upgrade Standard to Premium but cannot downgrade Premium to Standard. The SKU remains unchanged when omitted during an update.",
             enum={"Premium": "Premium", "Standard": "Standard"},
         )
+
+        # define Arg Group "Resource"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Resource",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Resource",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -151,7 +176,7 @@ class Attach(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "clusterAssociationName", self.ctx.args.cluster_name,
+                    "clusterAssociationName", self.ctx.args.association_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -169,7 +194,7 @@ class Attach(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-10-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }
@@ -194,12 +219,18 @@ class Attach(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("clusterResourceId", AAZStrType, ".cluster_resource_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("sku", AAZStrType, ".sku")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -224,6 +255,9 @@ class Attach(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200_201.location = AAZStrType(
+                flags={"required": True},
+            )
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -232,6 +266,7 @@ class Attach(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -277,6 +312,9 @@ class Attach(AAZCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
+
+            tags = cls._schema_on_200_201.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
 

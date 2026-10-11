@@ -15,16 +15,18 @@ from azure.cli.core.aaz import *
     "agentfabric policy-group update",
 )
 class Update(AAZCommand):
-    """Update an independent resource-group-scoped Microsoft.NetworkSecurity Policy Group resource. Policy Groups are not children of an Agent Fabric.
+    """Update an independent Policy Group's tags.
 
-    :example: PolicyGroups_Update
-        az agentfabric policy-group update --resource-group rgnetworksecurity --name testPolicyGroup --tags "{env:production}"
+    Policy Groups are independent resource-group-scoped Microsoft.NetworkSecurity peer resources and are not children of an Agent Fabric.
+
+    :example: Update independent Policy Group tags
+        az agentfabric policy-group update --resource-group rgnetworksecurity --name testPolicyGroup --tags "{env:prod}"
     """
 
     _aaz_info = {
-        "version": "2026-07-21-preview",
+        "version": "2026-10-07-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/policygroups/{}", "2026-07-21-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/policygroups/{}", "2026-10-07-preview"],
         ]
     }
 
@@ -152,7 +154,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-21-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }

@@ -15,16 +15,21 @@ from azure.cli.core.aaz import *
     "agentfabric create",
 )
 class Create(AAZCommand):
-    """Create an Agent Fabric resource.
+    """Create or replace an Agent Fabric resource.
 
-    :example: AgentFabrics_CreateOrUpdate
-        az agentfabric create --resource-group rgnetworksecurity --name testAIFabric --default-policy-groups "[/subscriptions/11809CA1-E126-4017-945E-AA795CD5C5A9/resourceGroups/rgnetworksecurity/providers/Microsoft.NetworkSecurity/policyGroups/testPolicyGroup]" --trust-domain contoso.agentfabric --tags "{}" --location eastus
+    Create an Agent Fabric, including its optional system-assigned identity and complete customer-owned content inspection endpoint/API-key pair. Omitting the inspection profile or supplying an empty object requests no connection change for an existing Fabric.
+
+    :example: Create an Agent Fabric with customer-owned content inspection
+        az agentfabric create --resource-group rgnetworksecurity --name testAIFabric --location westus3 --trust-domain contoso.agentfabric --identity "{type:SystemAssigned}" --inspection-profile "{endpoint:'https://contoso.cognitiveservices.azure.com/',api-key:<content-safety-api-key>}"
+
+    :example: Create an Agent Fabric without content inspection
+        az agentfabric create --resource-group rgnetworksecurity --name testAIFabric --location westus3 --trust-domain contoso.agentfabric
     """
 
     _aaz_info = {
-        "version": "2026-07-21-preview",
+        "version": "2026-10-07-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}", "2026-07-21-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}", "2026-10-07-preview"],
         ]
     }
 
@@ -60,10 +65,15 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.content_inspection_profile = AAZObjectArg(
+            options=["--inspection-profile", "--content-inspection-profile"],
+            arg_group="Properties",
+            help="The connection to the customer's Azure Content Safety account. For a new fabric created with API version `2026-09-29-preview` or later, omitting this profile or supplying {} requests no inspection capability and uses no platform-owned account or shared-key fallback.  For an existing fabric, omitting the profile from PUT, including requests from older clients, or supplying {} preserves its customer-owned connection, legacy regional connection, or absence of connection. The empty object is a request for no connection change, not a stored replacement profile. Neither omission nor {} removes, probes, or creates a connection or cancels a pending connection update. Other Fabric fields and policy compatibility rules still apply. A nonempty request profile requires both endpoint and apiKey, even at the unchanged endpoint. PUT can rotate the key or replace the endpoint by supplying the complete pair. Tags- or identity-only PATCH requests cannot change this profile.  Existing legacy fabrics without a profile retain their regional Content Safety endpoint and authentication path. Omission or {} triggers no connection probe, account-management call, key retrieval, or credential requirement. Supplying a complete profile explicitly configures a customer-owned connection; there is no automatic conversion or failed-connection fallback to regional credentials.  The customer owns, pays for, and operates the account. The service does not create, reserve, manage, or delete it. The service validates new or changed endpoint/credential configuration and the required Content Safety API before activation; configuration alone does not indicate readiness or active policy enforcement. Unchanged configuration, GET, and list do not trigger a new validation request. A failed replacement preserves the existing connection and credential, including a legacy regional connection.",
+        )
         _args_schema.default_policy_groups = AAZListArg(
             options=["--default-policy-groups"],
             arg_group="Properties",
-            help="The default policy groups to apply to all members of this fabric.",
+            help="The default policy groups to apply to all members of this fabric. A fabric without a configured inspection connection cannot reference a group containing any ContentInspection policy, even when that policy's selectors currently match no traffic. For an existing fabric, compatibility uses the stored configuration when PUT omits contentInspectionProfile or supplies an empty object. Existing legacy fabrics retain their regional Content Safety connection, which satisfies the inspection prerequisite without new probes. A connection still being validated is not an absent connection. Removing a group reference remains allowed, subject to other validation.",
         )
         _args_schema.trust_domain = AAZStrArg(
             options=["--trust-domain"],
@@ -75,12 +85,36 @@ class Create(AAZCommand):
             ),
         )
 
+        content_inspection_profile = cls._args_schema.content_inspection_profile
+        content_inspection_profile.api_key = AAZPasswordArg(
+            options=["api-key"],
+            help="The nonempty API key for the specified account. Required together with endpoint in every nonempty request profile, even when the endpoint is unchanged. Supplying a different key with the endpoint on PUT rotates the stored credential. A missing key in a nonempty profile is rejected without retrieving a saved key or comparing with the saved endpoint to permit omission. Null and empty values are rejected, not treated as removal. The key is never returned in resource, list, or long-running operation responses.",
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
+        )
+        content_inspection_profile.endpoint = AAZStrArg(
+            options=["endpoint"],
+            help="The HTTPS account endpoint, for example `https://contoso.cognitiveservices.azure.com/`. Only Azure Content Safety account endpoints in the service's supported Azure cloud are accepted. Credentials must not be forwarded to other destinations, including redirects. Required together with apiKey in a nonempty request profile, including key rotation. Changing the endpoint requires a key for the new account; the stored key is not reused.",
+            fmt=AAZStrArgFormat(
+                pattern="^https://[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\\.cognitiveservices\\.(azure\\.com|azure\\.us|azure\\.cn)/?$",
+            ),
+        )
+
         default_policy_groups = cls._args_schema.default_policy_groups
         default_policy_groups.Element = AAZResourceIdArg()
 
         # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
+        _args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="Resource",
+            help="The managed service identity assigned to this fabric. The service uses it to reach the clusters associated with the fabric on the customer's behalf.",
+        )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Resource",
             help="The geo-location where the resource lives",
@@ -93,6 +127,14 @@ class Create(AAZCommand):
             options=["--tags"],
             arg_group="Resource",
             help="Resource tags.",
+        )
+
+        identity = cls._args_schema.identity
+        identity.type = AAZStrArg(
+            options=["type"],
+            help="Type of managed service identity (either system assigned, or none).",
+            required=True,
+            enum={"None": "None", "SystemAssigned": "SystemAssigned"},
         )
 
         tags = cls._args_schema.tags
@@ -180,7 +222,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-21-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }
@@ -205,14 +247,25 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("contentInspectionProfile", AAZObjectType, ".content_inspection_profile")
                 properties.set_prop("defaultPolicyGroups", AAZListType, ".default_policy_groups")
                 properties.set_prop("trustDomain", AAZStrType, ".trust_domain")
+
+            content_inspection_profile = _builder.get(".properties.contentInspectionProfile")
+            if content_inspection_profile is not None:
+                content_inspection_profile.set_prop("apiKey", AAZStrType, ".api_key", typ_kwargs={"flags": {"secret": True}})
+                content_inspection_profile.set_prop("endpoint", AAZStrType, ".endpoint")
 
             default_policy_groups = _builder.get(".properties.defaultPolicyGroups")
             if default_policy_groups is not None:
@@ -245,6 +298,7 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200_201.identity = AAZObjectType()
             _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
@@ -261,7 +315,23 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200_201.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+
             properties = cls._schema_on_200_201.properties
+            properties.content_inspection_profile = AAZObjectType(
+                serialized_name="contentInspectionProfile",
+            )
             properties.default_policy_groups = AAZListType(
                 serialized_name="defaultPolicyGroups",
             )
@@ -269,9 +339,16 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
+                flags={"read_only": True},
+            )
             properties.trust_domain = AAZStrType(
                 serialized_name="trustDomain",
             )
+
+            content_inspection_profile = cls._schema_on_200_201.properties.content_inspection_profile
+            content_inspection_profile.endpoint = AAZStrType()
 
             default_policy_groups = cls._schema_on_200_201.properties.default_policy_groups
             default_policy_groups.Element = AAZStrType()

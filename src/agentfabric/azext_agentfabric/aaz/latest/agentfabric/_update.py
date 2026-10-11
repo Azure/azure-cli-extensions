@@ -15,16 +15,18 @@ from azure.cli.core.aaz import *
     "agentfabric update",
 )
 class Update(AAZCommand):
-    """Update an Agent Fabric resource.
+    """Update Agent Fabric tags or system-assigned identity.
 
-    :example: AgentFabrics_Update
-        az agentfabric update --resource-group rgnetworksecurity --name testAIFabric --tags "{env:production}"
+    Patch only tags and the system-assigned identity. Content inspection, trust domain, and default Policy Groups are not PATCH inputs.
+
+    :example: Update Agent Fabric tags and identity
+        az agentfabric update --resource-group rgnetworksecurity --name testAIFabric --tags "{env:prod}" --identity "{type:SystemAssigned}"
     """
 
     _aaz_info = {
-        "version": "2026-07-21-preview",
+        "version": "2026-10-07-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}", "2026-07-21-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}", "2026-10-07-preview"],
         ]
     }
 
@@ -61,10 +63,23 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="Properties",
+            help="The managed service identity assigned to this fabric.",
+        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Properties",
             help="Resource tags.",
+        )
+
+        identity = cls._args_schema.identity
+        identity.type = AAZStrArg(
+            options=["type"],
+            help="Type of managed service identity (either system assigned, or none).",
+            required=True,
+            enum={"None": "None", "SystemAssigned": "SystemAssigned"},
         )
 
         tags = cls._args_schema.tags
@@ -152,7 +167,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-21-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }
@@ -177,7 +192,12 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -206,6 +226,7 @@ class Update(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -222,7 +243,23 @@ class Update(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+
             properties = cls._schema_on_200.properties
+            properties.content_inspection_profile = AAZObjectType(
+                serialized_name="contentInspectionProfile",
+            )
             properties.default_policy_groups = AAZListType(
                 serialized_name="defaultPolicyGroups",
             )
@@ -230,9 +267,16 @@ class Update(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
+                flags={"read_only": True},
+            )
             properties.trust_domain = AAZStrType(
                 serialized_name="trustDomain",
             )
+
+            content_inspection_profile = cls._schema_on_200.properties.content_inspection_profile
+            content_inspection_profile.endpoint = AAZStrType()
 
             default_policy_groups = cls._schema_on_200.properties.default_policy_groups
             default_policy_groups.Element = AAZStrType()

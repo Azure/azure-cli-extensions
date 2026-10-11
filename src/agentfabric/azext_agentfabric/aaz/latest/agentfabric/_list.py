@@ -17,18 +17,18 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List Agent Fabric resources.
 
-    :example: AgentFabrics_ListBySubscription
-        az agentfabric list
-
-    :example: AgentFabrics_ListByResourceGroup
+    :example: List Agent Fabrics in a resource group
         az agentfabric list --resource-group rgnetworksecurity
+
+    :example: List Agent Fabrics in a subscription
+        az agentfabric list
     """
 
     _aaz_info = {
-        "version": "2026-07-21-preview",
+        "version": "2026-10-07-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networksecurity/agentfabrics", "2026-07-21-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics", "2026-07-21-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networksecurity/agentfabrics", "2026-10-07-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics", "2026-10-07-preview"],
         ]
     }
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-21-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }
@@ -162,6 +162,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.identity = AAZObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -178,7 +179,23 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+
             properties = cls._schema_on_200.value.Element.properties
+            properties.content_inspection_profile = AAZObjectType(
+                serialized_name="contentInspectionProfile",
+            )
             properties.default_policy_groups = AAZListType(
                 serialized_name="defaultPolicyGroups",
             )
@@ -186,9 +203,16 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
+                flags={"read_only": True},
+            )
             properties.trust_domain = AAZStrType(
                 serialized_name="trustDomain",
             )
+
+            content_inspection_profile = cls._schema_on_200.value.Element.properties.content_inspection_profile
+            content_inspection_profile.endpoint = AAZStrType()
 
             default_policy_groups = cls._schema_on_200.value.Element.properties.default_policy_groups
             default_policy_groups.Element = AAZStrType()
@@ -262,7 +286,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-21-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }
@@ -309,6 +333,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.identity = AAZObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -325,7 +350,23 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+
             properties = cls._schema_on_200.value.Element.properties
+            properties.content_inspection_profile = AAZObjectType(
+                serialized_name="contentInspectionProfile",
+            )
             properties.default_policy_groups = AAZListType(
                 serialized_name="defaultPolicyGroups",
             )
@@ -333,9 +374,16 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
+                flags={"read_only": True},
+            )
             properties.trust_domain = AAZStrType(
                 serialized_name="trustDomain",
             )
+
+            content_inspection_profile = cls._schema_on_200.value.Element.properties.content_inspection_profile
+            content_inspection_profile.endpoint = AAZStrType()
 
             default_policy_groups = cls._schema_on_200.value.Element.properties.default_policy_groups
             default_policy_groups.Element = AAZStrType()

@@ -18,14 +18,14 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete an Agent Fabric resource.
 
-    :example: AgentFabrics_Delete
+    :example: Delete an Agent Fabric
         az agentfabric delete --resource-group rgnetworksecurity --name testAIFabric
     """
 
     _aaz_info = {
-        "version": "2026-07-21-preview",
+        "version": "2026-10-07-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}", "2026-07-21-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}", "2026-10-07-preview"],
         ]
     }
 
@@ -146,7 +146,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-21-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }

@@ -15,20 +15,22 @@ from azure.cli.core.aaz import *
     "agentfabric policy-group list",
 )
 class List(AAZCommand):
-    """List independent resource-group-scoped Microsoft.NetworkSecurity Policy Group resources. Policy Groups are not children of an Agent Fabric.
+    """List independent Policy Groups.
 
-    :example: PolicyGroups_ListBySubscription
-        az agentfabric policy-group list
+    Policy Groups are independent resource-group-scoped Microsoft.NetworkSecurity peer resources and are not children of an Agent Fabric.
 
-    :example: PolicyGroups_ListByResourceGroup
+    :example: List independent Policy Groups in a resource group
         az agentfabric policy-group list --resource-group rgnetworksecurity
+
+    :example: List independent Policy Groups in a subscription
+        az agentfabric policy-group list
     """
 
     _aaz_info = {
-        "version": "2026-07-21-preview",
+        "version": "2026-10-07-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networksecurity/policygroups", "2026-07-21-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/policygroups", "2026-07-21-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networksecurity/policygroups", "2026-10-07-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/policygroups", "2026-10-07-preview"],
         ]
     }
 
@@ -115,7 +117,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-21-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }
@@ -552,7 +554,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-21-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }

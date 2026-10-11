@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/members/{}", "2026-07-21-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/members/{}", "2026-10-07-preview"],
         ]
     }
 
@@ -42,7 +42,7 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="The name of the AgentFabric",
+            help="Name of the parent Agent Fabric.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -50,7 +50,7 @@ class Wait(AAZWaitCommand):
             ),
         )
         _args_schema.member_name = AAZStrArg(
-            options=["--member-name"],
+            options=["-n", "--name", "--member-name"],
             help="The name of the Member",
             required=True,
             id_part="child_name_1",
@@ -132,7 +132,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-21-preview",
+                    "api-version", "2026-10-07-preview",
                     required=True,
                 ),
             }
@@ -185,6 +185,7 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.fqdn = AAZStrType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -196,6 +197,9 @@ class Wait(AAZWaitCommand):
             properties.workload = AAZObjectType()
 
             workload = cls._schema_on_200.properties.workload
+            workload.member_guid = AAZStrType(
+                serialized_name="memberGuid",
+            )
             workload.type = AAZStrType(
                 flags={"required": True},
             )
@@ -207,6 +211,54 @@ class Wait(AAZWaitCommand):
             disc_aci = cls._schema_on_200.properties.workload.discriminate_by("type", "ACI")
             disc_aci.resource_id = AAZStrType(
                 serialized_name="resourceId",
+                flags={"required": True},
+            )
+
+            disc_aks = cls._schema_on_200.properties.workload.discriminate_by("type", "AKS")
+            disc_aks.cluster_association_id = AAZStrType(
+                serialized_name="clusterAssociationId",
+                flags={"required": True},
+            )
+            disc_aks.cluster_resource_id = AAZStrType(
+                serialized_name="clusterResourceId",
+                flags={"required": True},
+            )
+            disc_aks.endpoints = AAZListType()
+            disc_aks.workload = AAZObjectType(
+                flags={"required": True},
+            )
+
+            endpoints = cls._schema_on_200.properties.workload.discriminate_by("type", "AKS").endpoints
+            endpoints.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.workload.discriminate_by("type", "AKS").endpoints.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.protocol = AAZStrType(
+                flags={"required": True},
+            )
+            _element.service_port = AAZIntType(
+                serialized_name="servicePort",
+                flags={"required": True},
+            )
+            _element.target_port = AAZIntType(
+                serialized_name="targetPort",
+                flags={"required": True},
+            )
+
+            workload = cls._schema_on_200.properties.workload.discriminate_by("type", "AKS").workload
+            workload.api_version = AAZStrType(
+                serialized_name="apiVersion",
+                flags={"required": True},
+            )
+            workload.kind = AAZStrType(
+                flags={"required": True},
+            )
+            workload.name = AAZStrType(
+                flags={"required": True},
+            )
+            workload.namespace = AAZStrType(
                 flags={"required": True},
             )
 
@@ -242,7 +294,15 @@ class Wait(AAZWaitCommand):
             _element.name = AAZStrType(
                 flags={"required": True},
             )
-            _element.port = AAZIntType(
+            _element.protocol = AAZStrType(
+                flags={"required": True},
+            )
+            _element.service_port = AAZIntType(
+                serialized_name="servicePort",
+                flags={"required": True},
+            )
+            _element.target_port = AAZIntType(
+                serialized_name="targetPort",
                 flags={"required": True},
             )
 

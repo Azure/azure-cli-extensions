@@ -15,7 +15,9 @@ from azure.cli.core.aaz import *
     "agentfabric policy-group",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage independent resource-group-scoped Microsoft.NetworkSecurity Policy Group peer resources. Policy Groups are not children of an Agent Fabric.
+    """Manage independent Agent Fabric Policy Groups.
+
+    Policy Groups are independent resource-group-scoped Microsoft.NetworkSecurity peer resources and are not children of an Agent Fabric.
     """
     pass
 
