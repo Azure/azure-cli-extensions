@@ -16,7 +16,7 @@ from azext_amg import custom, dashboard_v2, migrate, restore, utils
 class FolderUidTests(unittest.TestCase):
     def test_folder_uid_from_metadata_or_payload(self):
         cases = [
-            ({'meta': {'folderUid': 'nested-folder', 'folderId': 0}}, 'nested-folder'),
+            ({'meta': {'folderUid': 'nested-folder'}}, 'nested-folder'),
             ({'folderUid': 'panel-folder'}, 'panel-folder'),
             ({'folderUid': 'target', 'meta': {'folderUid': 'source'}}, 'target'),
             ({'folderUid': None, 'meta': {'folderUid': 'source'}}, 'source'),
@@ -129,19 +129,50 @@ class DashboardFolderTests(unittest.TestCase):
             custom.import_dashboard(None, 'workspace', self.definition)
         self.mocks['_send_request'].assert_not_called()
 
-    def test_import_preserves_default_folder_behavior(self):
-        custom.import_dashboard(None, 'workspace', self.definition)
-        payload = self.mocks['_send_request'].call_args.args[5]
-        self.assertNotIn('folderId', payload)
-        self.assertNotIn('folderUid', payload)
+    def test_classic_writes_preserve_default_folder_behavior(self):
+        for write_dashboard in (custom.import_dashboard, custom._create_dashboard):
+            with self.subTest(write_dashboard=write_dashboard.__name__):
+                definition = copy.deepcopy(self.definition)
+                self.mocks['_try_load_dashboard_definition'].return_value = definition
+                write_dashboard(None, 'workspace', definition)
+                payload = self.mocks['_send_request'].call_args.args[5]
+                self.assertNotIn('folderId', payload)
+                self.assertNotIn('folderUid', payload)
+
+    def test_classic_writes_use_uid_only_payloads(self):
+        cases = [('nested-folder', 'nested-folder'), ('', ''), ('general', ''), (None, '')]
+        for write_dashboard in (custom.import_dashboard, custom._create_dashboard):
+            for folder_uid, expected in cases:
+                with self.subTest(write_dashboard=write_dashboard.__name__, folder_uid=folder_uid):
+                    definition = copy.deepcopy(self.definition)
+                    definition['folderUid'] = folder_uid
+                    self.mocks['_try_load_dashboard_definition'].return_value = definition
+                    self.mocks['_send_request'].reset_mock()
+                    write_dashboard(None, 'workspace', definition)
+                    self.mocks['_send_request'].assert_called_once()
+                    payload = self.mocks['_send_request'].call_args.args[5]
+                    self.assertEqual(payload['folderUid'], expected)
+                    self.assertNotIn('folderId', payload)
+        self.mocks['_find_folder'].assert_not_called()
+
+    def test_classic_writes_reject_invalid_uid_only_payloads(self):
+        for write_dashboard in (custom.import_dashboard, custom._create_dashboard):
+            for folder_uid in (42, [], {}):
+                with self.subTest(write_dashboard=write_dashboard.__name__, folder_uid=folder_uid):
+                    definition = copy.deepcopy(self.definition)
+                    definition['folderUid'] = folder_uid
+                    self.mocks['_try_load_dashboard_definition'].return_value = definition
+                    self.mocks['_send_request'].reset_mock()
+                    with self.assertRaises(ArgumentUsageError):
+                        write_dashboard(None, 'workspace', definition)
+                    self.mocks['_send_request'].assert_not_called()
 
     def test_classic_writes_preserve_metadata_wrapper_folder(self):
         cases = [
-            ({'meta': {'folderUid': 'nested-folder', 'folderId': 2495897813577728}}, 'nested-folder'),
-            ({'meta': {'folderUid': '', 'folderId': 0}}, ''),
-            ({'meta': {'folderUid': 'general', 'folderId': 0}}, ''),
-            ({'meta': {'folderUrl': '/dashboards/f/legacy-folder/title', 'folderId': 42}}, 'legacy-folder'),
-            ({'meta': {'folderId': 0}}, ''),
+            ({'meta': {'folderUid': 'nested-folder'}}, 'nested-folder'),
+            ({'meta': {'folderUid': ''}}, ''),
+            ({'meta': {'folderUid': 'general'}}, ''),
+            ({'meta': {'folderUrl': '/dashboards/f/legacy-folder/title'}}, 'legacy-folder'),
             ({'folderUid': 'target-folder', 'meta': {'folderUid': 'source-folder'}}, 'target-folder'),
             ({'folderUid': '', 'meta': {'folderUid': 'source-folder'}}, ''),
         ]
@@ -238,12 +269,12 @@ class RestoreFolderTests(unittest.TestCase):
         folder_lookup.start()
         self.addCleanup(folder_lookup.stop)
         self.dashboard = {'uid': 'dashboard', 'title': 'Classic', 'panels': []}
-        self.panel = {'uid': 'panel', 'name': 'Library panel', 'kind': 1, 'model': {}, 'folderId': 42}
+        self.panel = {'uid': 'panel', 'name': 'Library panel', 'kind': 1, 'model': {}}
 
     def test_restore_dashboard_preserves_folder_uid(self):
         cases = [
-            ({'folderUid': 'nested-folder', 'folderId': 0}, 'nested-folder'),
-            ({'folderUid': '', 'folderId': 0}, ''),
+            ({'folderUid': 'nested-folder'}, 'nested-folder'),
+            ({'folderUid': ''}, ''),
             ({'folderUrl': '/dashboards/f/nested-folder/title'}, 'nested-folder'),
             ({'folderUrl': '/dashboards'}, ''),
         ]
@@ -260,6 +291,25 @@ class RestoreFolderTests(unittest.TestCase):
         content = {'dashboard': self.dashboard, 'meta': {'folderId': 42}}
         with self.assertRaises(ArgumentUsageError):
             restore.create_dashboard('url', content, {}, overwrite=True)
+        self.mocks['send_grafana_post'].assert_not_called()
+
+    def test_restore_ignores_legacy_folder_id_when_uid_is_available(self):
+        for write_content, content in (
+                (restore.create_dashboard, {'dashboard': self.dashboard}),
+                (restore.create_library_panel, self.panel)):
+            with self.subTest(write_content=write_content.__name__):
+                definition = copy.deepcopy(content)
+                definition['folderId'] = 2495897813577728
+                definition['meta'] = {'folderUid': 'nested-folder', 'folderId': 42}
+                self.assertTrue(write_content('url', definition, {}, overwrite=True))
+                payload = json.loads(self.mocks['send_grafana_post'].call_args.args[1])
+                self.assertEqual(payload['folderUid'], 'nested-folder')
+                self.assertNotIn('folderId', payload)
+
+    def test_restore_library_panel_rejects_numeric_only_folder_id(self):
+        panel = dict(self.panel, folderId=42)
+        with self.assertRaises(ArgumentUsageError):
+            restore.create_library_panel('url', panel, {}, overwrite=True)
         self.mocks['send_grafana_post'].assert_not_called()
 
     def test_restore_library_panel_preserves_folder_uid(self):
