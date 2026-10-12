@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * `az aks create`: Add `--enable-disk-driver` so the AzureDisk CSI Driver can be enabled explicitly on create. The driver is already on by default, but `storageProfile.diskCSIDriver` was omitted from the create request unless `--disable-disk-driver` was passed, which blocked features that validate `storageProfile.diskCSIDriver.enabled` on the request body. `az aks update` already accepted this flag.
+* `az aks create/update`: `--enable-fips` now requires Kubernetes version 1.35 or later, matching the resource provider's minimum for cluster-level FIPS.
 
 22.0.0b12
 +++++++++

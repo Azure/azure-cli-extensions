@@ -8161,7 +8161,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
-    # FIPS mode at the cluster level is gated by EnableFIPSPreview AFEC and requires K8s 1.34+,
+    # FIPS mode at the cluster level is gated by EnableFIPSPreview AFEC and requires K8s 1.35+,
     # so this scenario is live-only until the preview is broadly available.
     @live_only()
     @AllowLargeResponse()
@@ -8174,7 +8174,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
         k8s_version = self._get_version_at_least(
-            location=resource_group_location, min_version="1.34.0"
+            location=resource_group_location, min_version="1.35.0"
         )
         self.kwargs.update(
             {
@@ -8214,7 +8214,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
         k8s_version = self._get_version_at_least(
-            location=resource_group_location, min_version="1.34.0"
+            location=resource_group_location, min_version="1.35.0"
         )
         self.kwargs.update(
             {
