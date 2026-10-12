@@ -466,14 +466,17 @@ def _managed_delete_plan(cmd, resource_group_name, name, arm_id,
 
     Assignment to an app is not ownership: user-assigned identities can serve
     multiple apps, and an assigned identity may not be used by this entry at all.
-    Only the selected system-assigned identity establishes exclusive access.
+    Only the selected system-assigned principal and matching tenant establish
+    exclusive access.
     """
+    from ._managed_connection import _policy_principal_matches
+
     authentication = _nested(entry, "authentication")
     authentication = authentication if isinstance(authentication, dict) else {}
     managed_identity = str(authentication.get("type") or "").lower() == "managedserviceidentity"
     explicit_identity = authentication.get("identity") is not None
-    system_id = (_app_system_principal_id(cmd, resource_group_name, name, sender=sender)
-                 if managed_identity and not explicit_identity and not referenced_elsewhere else None)
+    system_principal = (_app_system_principal(cmd, resource_group_name, name, sender=sender)
+                        if managed_identity and not explicit_identity and not referenced_elsewhere else None)
     own_policies, other_policies = [], []
     unverified_policies = False
     try:
@@ -485,14 +488,12 @@ def _managed_delete_plan(cmd, resource_group_name, name, arm_id,
             or listed.get("nextLink")):
         unverified_policies = True
     for item in _value(listed):
-        object_id = _nested(item, "properties", "principal", "identity", "objectId")
         policy_name = item.get("name") if isinstance(item, dict) else None
         if not policy_name:
             unverified_policies = True
             continue
-        principal_type = _nested(item, "properties", "principal", "type")
-        if (system_id and isinstance(object_id, str) and object_id.lower() == system_id
-                and str(principal_type or "").lower() == "activedirectory"):
+        principal = _nested(item, "properties", "principal")
+        if system_principal and _policy_principal_matches(principal, system_principal):
             own_policies.append(policy_name)
         else:
             other_policies.append(policy_name)
@@ -512,9 +513,9 @@ def _managed_delete_plan(cmd, resource_group_name, name, arm_id,
         reasons.append(
             "The connection entry selects a user-assigned or unresolved managed identity, which may "
             "be shared by other apps. All access policies and the ARM resource were retained.")
-    elif not system_id:
+    elif not system_principal:
         reasons.append(
-            "The app's system-assigned identity could not be verified. "
+            "The app's system-assigned principal and tenant could not be verified. "
             "All access policies and the ARM resource were retained.")
     elif other_policies:
         reasons.append(
@@ -539,8 +540,8 @@ def _managed_delete_plan(cmd, resource_group_name, name, arm_id,
     }
 
 
-def _app_system_principal_id(cmd, resource_group_name, name, sender=None):
-    """The only managed identity principal whose assignment is exclusive to this app."""
+def _app_system_principal(cmd, resource_group_name, name, sender=None):
+    """Read the exclusive system principal and tenant from the selected site."""
     from ._identity import get_identity
 
     try:
@@ -551,7 +552,11 @@ def _app_system_principal_id(cmd, resource_group_name, name, sender=None):
     if "systemassigned" not in identity_types:
         return None
     principal = identity.get("principalId")
-    return principal.lower() if isinstance(principal, str) and principal else None
+    tenant = identity.get("tenantId")
+    if not all(isinstance(value, str) and value.strip() and value == value.strip()
+               for value in (principal, tenant)):
+        return None
+    return {"objectId": principal.casefold(), "tenantId": tenant.casefold()}
 
 
 def _remove_connections_entry(client, payload, class_name, entry_name):

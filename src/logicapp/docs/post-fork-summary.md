@@ -175,7 +175,7 @@ and rejection of untrusted ones; proxy/header trickling shares the request budge
 
 ## Verification and remaining qualification limits
 
-The current upstream review source passed **760 tests and 1,697 subtests**,
+The current upstream review source passed **765 tests and 1,749 subtests**,
 including all six genuine stock CLI additivity checks, six new resubmission
 regressions, eight connection revision-policy/race regressions and eight strict
 JSON/buffered execution regressions, five removal-readback/token-refresh regressions
@@ -203,12 +203,18 @@ conflicts plus matching decoded tokens against only the selected endpoint.
 Five further regressions cover pre-send credential/setup/entry deadlines, expired
 network setup budgets, retained post-acknowledgement state and strict Base64
 alphabet rejection with valid offset/paging round trips.
+Five further regressions cover tenant-aware managed deletion: missing/malformed
+policy tenants, incomplete site principal/tenant evidence without login fallback,
+case-compatible complete matches, the same object ID in another tenant, and
+site/policy tenant changes after verified unlink. Creation and deletion share the
+same ActiveDirectory principal/object/tenant matcher; unrelated or unverified
+policies and their ARM connection remain retained.
 Selected-site full IDs, foreign/conflicting references, automatic
 and explicit history lookup, confirmation-time changes, local references and
 the actual prepared Requests transport are covered. All **29 packaged
 source/metadata files** matched the fresh review wheel and isolated installation.
 An installed-wheel run passed the **complete latest suite:
-760 tests and 1,697 subtests**, with production imports confirmed beneath the
+765 tests and 1,749 subtests**, with production imports confirmed beneath the
 isolated installation and all six genuine GA additivity checks included.
 Both current complete suites passed without timing observers or changes to native
 requests, budgets or assertions. Earlier eleventh-round uninstrumented native
@@ -239,12 +245,23 @@ the acknowledged connection without unsafe compensation. Inventory traversal
 allows exactly 100 pages and 10,000 entries and rejects overruns without returning
 partial results. Type-distinct concurrent metadata cannot authorize entry removal,
 publication or recovery; type-only authored workflow edits are not false no-ops.
-Current focused execution/discovery coverage passed **118 tests
-and 390 subtests**. Five changed Python files compiled; filtered error-level lint
+Current focused identity/offline coverage passed **292 tests
+and 182 subtests**. Four changed Python files compiled; filtered error-level lint
 had no actionable findings.
 The precisely recorded context-manager inference exclusions include the tested
 workflow-state private logging contexts; this is not an unfiltered lint claim.
 
+The fourteenth follow-up's in-memory negative control failed 41 mutation-safety
+cases with the prior tenant-blind delete plan; production bytes were unchanged.
+Its first full source attempt exposed the older principal-ID-only mock target in
+the removal-publication fixture. That fixture now supplies the complete principal
+and tenant expected by the renamed helper; assertions and production guards were
+not weakened. The failed log is retained, and both final complete serial suites
+passed without native timing observers.
+
+The thirteenth follow-up passed 760 tests and 1,697 subtests in both complete
+serial source/installed suites, with focused coverage of 118 tests and 390
+subtests and five compiled Python files.
 The twelfth follow-up passed 755 tests and 1,653 subtests in both complete serial
 source/installed suites, with focused coverage of 155 tests and 419 subtests and
 six compiled Python files.

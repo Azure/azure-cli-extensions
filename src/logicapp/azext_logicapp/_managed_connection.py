@@ -228,12 +228,26 @@ def _validate_existing_policy(policy, expected):
                 (principal.get("type"), identity.get("objectId"), identity.get("tenantId")))):
         raise ValidationError(
             "The existing access policy cannot be safely interpreted. No access policy update was attempted.")
-    if (principal["type"].casefold() != "activedirectory"
-            or identity["objectId"].casefold() != expected["objectId"].casefold()
-            or identity["tenantId"].casefold() != expected["tenantId"].casefold()):
+    if not _policy_principal_matches(principal, expected):
         raise ValidationError(
             "The existing access policy does not match the selected principal. "
             "It will not be overwritten; --force does not authorize replacing unrelated access.")
+
+
+def _policy_principal_matches(principal, expected):
+    """Require complete principal and tenant evidence for policy mutation."""
+    if not isinstance(principal, dict) or not isinstance(expected, dict):
+        return False
+    identity = principal.get("identity")
+    principal_type = principal.get("type")
+    if (not isinstance(identity, dict) or not isinstance(principal_type, str)
+            or principal_type.casefold() != "activedirectory"):
+        return False
+    return all(
+        isinstance(identity.get(field), str) and isinstance(expected.get(field), str)
+        and expected[field].strip() and expected[field] == expected[field].strip()
+        and identity[field].casefold() == expected[field].casefold()
+        for field in ("objectId", "tenantId"))
 
 
 def build_connection_body(location, connector_id, display_name, parameters, parameter_set=None):

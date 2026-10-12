@@ -345,7 +345,13 @@ Connection deletion uses the identity in the actual connection entry, not every
 identity assigned to the app. User-assigned managed identities may be shared:
 their access policies and connection resources are retained, even with
 `--keep-resource`. Only demonstrably exclusive system-assigned identity access is
-removed automatically, and retained resources include an explanatory reason.
+removed automatically: the policy must name the selected site's system principal
+and tenant, with ActiveDirectory type and complete, matching identity fields.
+The site's tenant is not inferred from the CLI login. Missing/malformed tenant
+evidence or the same object ID in another tenant retains that policy and the ARM
+connection; other verified exclusive policies may still be revoked on a shared
+connection. Both site and policy evidence are refreshed after verified unlink.
+Retained resources include an explanatory reason.
 
 Local runtime ownership is verified with PID and process creation time on
 Windows, Linux, and macOS. Unknown or recycled process identities are never

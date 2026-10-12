@@ -191,6 +191,89 @@ class SharedIdentityDeletionTests(unittest.TestCase):
         self.assertIsNone(result["resource"]["reason"])
         self.assertEqual(["system-policy"], result["accessPolicies"]["removed"])
 
+    def test_missing_or_malformed_policy_tenant_never_authorizes_deletion(self):
+        samples = (None, "", " ", "\t\n", False, True, 0, 1, 1.0, [], {}, "other-tenant")
+        for tenant in samples:
+            for keep_resource in (False, True):
+                with self.subTest(tenant=tenant, keep_resource=keep_resource):
+                    policy = _policy("unverified-policy", "system-a")
+                    policy["properties"]["principal"]["identity"]["tenantId"] = tenant
+                    arm = _MemoryArm(_site_identity(), [policy])
+                    result = self._delete(_MemoryVfs(SYSTEM_AUTH), arm, keep_resource=keep_resource)
+                    self.assertEqual([], arm.deletes)
+                    self.assertEqual([policy], arm.policies)
+                    self.assertTrue(arm.exists)
+                    self.assertTrue(result["resource"]["retained"])
+                    self.assertEqual(["unverified-policy"], result["accessPolicies"]["retained"])
+        policy = _policy("missing-tenant-policy", "system-a")
+        policy["properties"]["principal"]["identity"].pop("tenantId")
+        arm = _MemoryArm(_site_identity(), [policy])
+        result = self._delete(_MemoryVfs(SYSTEM_AUTH), arm)
+        self.assertEqual([], arm.deletes)
+        self.assertEqual(["missing-tenant-policy"], result["accessPolicies"]["retained"])
+
+    def test_incomplete_site_principal_or_tenant_never_borrows_profile_evidence(self):
+        samples = (None, "", " ", "\t\n", False, True, 0, 1, 1.0, [], {}, " tenant", "tenant ")
+        for field in ("principalId", "tenantId"):
+            for value in samples:
+                with self.subTest(field=field, value=value):
+                    identity = _site_identity()
+                    identity[field] = value
+                    policy = _policy("system-policy", "system-a")
+                    arm = _MemoryArm(identity, [policy])
+                    with patch("azext_logicapp._managed_connection._tenant_id",
+                               side_effect=AssertionError("Do not infer the site's tenant from CLI login")):
+                        result = self._delete(_MemoryVfs(SYSTEM_AUTH), arm)
+                    self.assertEqual([], arm.deletes)
+                    self.assertEqual([policy], arm.policies)
+                    self.assertTrue(arm.exists)
+                    self.assertTrue(result["resource"]["retained"])
+                    self.assertEqual(["system-policy"], result["accessPolicies"]["retained"])
+
+    def test_case_insensitive_complete_principal_and_tenant_match_authorizes_cleanup(self):
+        identity = _site_identity()
+        identity["principalId"] = "SYSTEM-A"
+        identity["tenantId"] = "TeNaNt"
+        policy = _policy("system-policy", "system-a")
+        policy["properties"]["principal"]["type"] = "aCtIvEdIrEcToRy"
+        policy["properties"]["principal"]["identity"]["tenantId"] = "TENANT"
+        arm = _MemoryArm(identity, [policy])
+        result = self._delete(_MemoryVfs(SYSTEM_AUTH), arm)
+        self.assertEqual([CONNECTION_ID + "/accessPolicies/system-policy", CONNECTION_ID], arm.deletes)
+        self.assertTrue(result["resource"]["removed"])
+
+    def test_same_object_id_in_other_tenant_retains_that_policy_and_resource(self):
+        own = _policy("system-policy", "system-a")
+        other = _policy("cross-tenant-policy", "system-a")
+        other["properties"]["principal"]["identity"]["tenantId"] = "other-tenant"
+        arm = _MemoryArm(_site_identity(), [own, other])
+        result = self._delete(_MemoryVfs(SYSTEM_AUTH), arm)
+        self.assertEqual([CONNECTION_ID + "/accessPolicies/system-policy"], arm.deletes)
+        self.assertEqual([other], arm.policies)
+        self.assertTrue(arm.exists)
+        self.assertEqual(["cross-tenant-policy"], result["accessPolicies"]["retained"])
+
+    def test_tenant_evidence_is_refreshed_after_unlink_before_any_arm_delete(self):
+        for stage in ("site", "policy"):
+            with self.subTest(stage=stage):
+                vfs = _MemoryVfs(SYSTEM_AUTH)
+                arm = _MemoryArm(_site_identity(), [_policy("system-policy", "system-a")])
+                original_put = vfs.put_raw
+
+                def change_tenant(*args, **kwargs):
+                    receipt = original_put(*args, **kwargs)
+                    if stage == "site":
+                        arm.identity["tenantId"] = "other-tenant"
+                    else:
+                        arm.policies[0]["properties"]["principal"]["identity"]["tenantId"] = "other-tenant"
+                    return receipt
+
+                vfs.put_raw = change_tenant
+                result = self._delete(vfs, arm)
+                self.assertEqual([], arm.deletes)
+                self.assertTrue(arm.exists)
+                self.assertEqual(["system-policy"], result["accessPolicies"]["retained"])
+
     def test_keep_resource_still_revokes_exclusive_system_acl(self):
         arm = _MemoryArm(_site_identity(), [_policy("system-policy", "system-a")])
         result = self._delete(_MemoryVfs(SYSTEM_AUTH), arm, keep_resource=True)

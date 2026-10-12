@@ -1234,7 +1234,7 @@ class ConnectionRemovalPublicationRegressions(unittest.TestCase):
                 "serviceProviderConnections": {"other": {"keep": True}}}
 
     def _delete(self, arm, vfs):
-        with mock.patch.object(_connection, "_app_system_principal_id", return_value="app-principal"):
+        with mock.patch.object(_connection, "_app_system_principal", return_value=PRINCIPAL):
             return _connection.connection_delete(
                 SimpleNamespace(cli_ctx=object()), "rg", "app", "conn",
                 client=vfs, sender=arm.send)

@@ -18,6 +18,9 @@ Release History
 0.1.19
 ++++++
 
+* Require managed-deletion access policies to match the selected site's system
+  principal and tenant, sharing the creation matcher. Retain missing/malformed
+  tenant evidence and cross-tenant policies; never infer site ownership from login.
 * Preserve proven pre-send deadline state in execution reports without erasing
   acknowledged cancellation or weakening post-send uncertainty. Validate the
   continuation-token Base64 alphabet before parsing its JSON offset.

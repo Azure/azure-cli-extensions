@@ -6,6 +6,10 @@ baseline is `4e50f12d52b13c25de0d90a6955f1fff2d5523f1`; the migration input is
 staging commit `3dcef94c0e6856f8e2a3f74e44b7f6b903fa5446` (0.1.19).
 Validated staging follow-up `3087a62f999debb4b0dec771b9424f62903959b2`
 adds pre-send deadline reporting and strict Base64 continuation decoding.
+Follow-up `db3389f47272a2d0cd6298c702f5153102a24fe9` requires managed deletion
+to match the selected site's system principal and tenant using creation's shared
+ActiveDirectory matcher. Missing or unrelated tenant evidence retains policies
+and ARM resources; site and policy evidence are refreshed after verified unlink.
 Subsequent staging features and safety repairs preserve its original 38 leaves
 and add 17 leaves, for 55 total. Upstream packaging starts at preview `1.0.0b1`.
 
@@ -52,13 +56,13 @@ matrix or a claim about live Azure.
 | `azdev style logicapp` | Passed pylint and flake8. |
 | `azdev linter logicapp` | Passed command, argument, help and custom pylint rules. |
 | `azdev verify license` | Passed repository license-header checks. |
-| `azdev test logicapp --series --discover --no-exitfirst --pytest-args -q` | Passed 762 source tests. |
-| `python -m pytest src\logicapp\azext_logicapp\tests\latest -q` | Passed 762 source tests and 1,697 subtests. |
+| `azdev test logicapp --series --discover --no-exitfirst --pytest-args -q` | Passed 767 source tests. |
+| `python -m pytest src\logicapp\azext_logicapp\tests\latest -q` | Passed 767 source tests and 1,749 subtests. |
 | `python scripts\ci\test_index.py -q` | Passed 9 checks with the 2 CI-only network checks skipped; index unchanged. |
-| Exact native-installed wheel, serial full suite | Passed 762 tests and 1,697 subtests; all production import origins remained under the isolated installation. |
+| Exact native-installed wheel, serial full suite | Passed 767 tests and 1,749 subtests; all production import origins remained under the isolated installation. |
 | Source/wheel/installed production bytes | All 29 Python/metadata files matched; Python 3-only wheel and preview/minimum metadata checked. |
-| Integrated parent execution/discovery regressions | Passed 118 tests and 390 subtests; parent production ASTs matched the validated archive. |
-| Installed wheel on minimum CLI 2.67.0 / Python 3.12.7 | Passed the serial full suite: 762 tests and 1,697 subtests, including GA and real parser/formatter controls; all production imports remained isolated. This is not a platform/Python matrix. |
+| Integrated tenant deletion/lifecycle regressions | Passed 108 tests and 355 subtests; both changed production ASTs matched the validated archive exactly. |
+| Source and installed wheel on minimum CLI 2.67.0 / Python 3.12.7 | Each serial full suite passed 767 tests and 1,749 subtests, including GA and real parser/formatter controls; production import origins were verified throughout. This is not a platform/Python matrix. |
 
 Source and installed suites ran serially without timing observers. An earlier
 installed control refused one native Windows shim cleanup safely; its final
