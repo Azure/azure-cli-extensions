@@ -58,7 +58,7 @@ matrix or a claim about live Azure.
 | Exact native-installed wheel, serial full suite | Passed 762 tests and 1,697 subtests; all production import origins remained under the isolated installation. |
 | Source/wheel/installed production bytes | All 29 Python/metadata files matched; Python 3-only wheel and preview/minimum metadata checked. |
 | Integrated parent execution/discovery regressions | Passed 118 tests and 390 subtests; parent production ASTs matched the validated archive. |
-| Installed wheel on minimum CLI 2.67.0 / Python 3.12.7 | Passed 14 GA additivity and real parser/formatter tests with 15 subtests; production imports remained isolated. This targeted control is not a full suite or platform/Python matrix. |
+| Installed wheel on minimum CLI 2.67.0 / Python 3.12.7 | Passed the serial full suite: 762 tests and 1,697 subtests, including GA and real parser/formatter controls; all production imports remained isolated. This is not a platform/Python matrix. |
 
 Source and installed suites ran serially without timing observers. An earlier
 installed control refused one native Windows shim cleanup safely; its final
