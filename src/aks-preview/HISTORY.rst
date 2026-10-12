@@ -11,6 +11,9 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+22.0.0b13
++++++++++
 * `az aks kollect`, `az aks kanalyze`, `az aks get-credentials` and `az aks bastion tunnel`: Use resolved executable paths consistently.
 * `az aks bastion tunnel`: Report unsuccessful tunnel process exits instead of returning success.
 * `az aks bastion tunnel`: Identify interactive shells by executable name rather than directory names.
