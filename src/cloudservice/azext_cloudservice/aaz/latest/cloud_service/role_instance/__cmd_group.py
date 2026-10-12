@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "cloud-service role-instance",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage role instance
+    """Manage Role Instance
     """
     pass
 
