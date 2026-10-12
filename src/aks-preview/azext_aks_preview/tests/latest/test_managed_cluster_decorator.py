@@ -3328,6 +3328,33 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_3.get_disk_driver(), ground_truth_disk_csi_driver_3)
 
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_disk_driver": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        ground_truth_disk_csi_driver_4 = (
+            self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                enabled=True,
+            )
+        )
+        self.assertEqual(ctx_4.get_disk_driver(), ground_truth_disk_csi_driver_4)
+
+        # neither flag specified on create leaves the profile unset, so the
+        # service applies its own default
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertIsNone(ctx_5.get_disk_driver())
+
     def test_get_enable_apiserver_vnet_integration(self):
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
