@@ -69,6 +69,16 @@ class Update(AAZCommand):
             options=["--clone"],
             arg_group="Properties",
         )
+        _args_schema.clone_from_backup_timestamp = AAZObjectArg(
+            options=["--clone-from-backup-timestamp"],
+            arg_group="Properties",
+            blank={},
+        )
+        _args_schema.cross_region_disaster_recovery = AAZObjectArg(
+            options=["--cross-region-disaster-recovery"],
+            arg_group="Properties",
+            blank={},
+        )
         _args_schema.regular = AAZObjectArg(
             options=["--regular"],
             arg_group="Properties",
@@ -660,6 +670,8 @@ class Update(AAZCommand):
                 properties.set_prop("whitelistedIps", AAZListType, ".whitelisted_ips")
                 properties.set_prop("zone", AAZStrType, ".zone")
                 properties.discriminate_by("dataBaseType", "Clone")
+                properties.discriminate_by("dataBaseType", "CloneFromBackupTimestamp")
+                properties.discriminate_by("dataBaseType", "CrossRegionDisasterRecovery")
                 properties.discriminate_by("dataBaseType", "Regular")
 
             customer_contacts = _builder.get(".properties.customerContacts")
