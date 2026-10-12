@@ -19361,6 +19361,50 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             new_ws,
         )
 
+    def test_enable_azure_monitor_logs_is_idempotent_across_dispatchers(self):
+        """Onboarding must survive being dispatched twice in one command.
+
+        The extension drives the enable from update_addon_profiles, and CLI core >= 2.91 also
+        drives it from its own update_azure_monitor_logs callback. Without the once-per-command
+        guard the second pass sees the profile the first one just wrote and aborts the command
+        on the "already enabled" check, so the cluster is never sent to ARM.
+        """
+        ws = "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/ws"
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": ws,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test-subscription-id")
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda x: x,
+        ), patch.object(
+            dec.context.external_functions,
+            "ensure_container_insights_for_monitoring",
+            return_value=None,
+        ) as ensure_ci:
+            dec.update_addon_profiles(mc)
+            # Second dispatch, as performed by CLI core >= 2.91 later in update_mc_profile_default.
+            dec.update_azure_monitor_logs(mc)
+
+        # The DCR/DCRA are provisioned exactly once: a second provisioning pass would re-create
+        # the collection artifacts for a cluster that is already set up.
+        ensure_ci.assert_called_once()
+        self.assertTrue(mc.azure_monitor_profile.container_insights.enabled)
+        self.assertEqual(
+            mc.azure_monitor_profile.container_insights.log_analytics_workspace_resource_id,
+            ws,
+        )
+
     def test_setup_azure_monitor_logs_same_workspace_still_provisions_dcr(self):
         """Re-enabling onto the same workspace must still provision the DCR/DCRA: the disable
         removed the association, so skipping it would leave the agent unattached."""

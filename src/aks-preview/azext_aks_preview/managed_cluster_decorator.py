@@ -9267,6 +9267,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
     def _setup_azure_monitor_logs(self, mc: ManagedCluster) -> None:
         """Set up Azure Monitor logs configuration."""
 
+        # Onboarding runs at most once per command. The update flow reaches this handler twice:
+        # the extension drives it from update_addon_profiles, which every supported CLI core
+        # calls, and CLI core >= 2.91 also drives it from its own update_azure_monitor_logs
+        # callback. Onboarding is not repeatable, so a second pass would see the profile the
+        # first one just wrote and fail the command on the "already enabled" guard below, before
+        # the cluster is ever sent to ARM. The disable path needs no equivalent because it
+        # already returns early once monitoring is off.
+        if self.context.get_intermediate("azure_monitor_logs_setup_done", False):
+            return
+
         addon_consts = self.context.get_addon_consts()
 
         # The Azure Monitor Profile is managed-identity only, so a service principal cluster can
@@ -9352,6 +9362,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._provision_azure_monitor_logs_dcr(mc, addon_consts)
 
         self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
+        self.context.set_intermediate("azure_monitor_logs_setup_done", True, overwrite_exists=True)
 
     def _provision_azure_monitor_logs_dcr(self, mc: ManagedCluster, addon_consts: dict) -> None:
         """Create the DCR and DCRA before the cluster PUT.
