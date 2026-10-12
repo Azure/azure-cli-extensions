@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a DbSystem
-
-    :example: DbSystems_Create
-        az oracle-database db-system create --resource-group rgo --db-system-name dbsystem1 --database-edition StandardEdition --admin-password ******** --db-version 19.0.0.0 --resource-anchor-id /subscriptions/00000000-0000-4025-0000-000000000000/resourceGroups/rg001/providers/Oracle.Database/resourceAnchors/resourceanchor1 --network-anchor-id /subscriptions/00000000-0000-4025-0000-000000000000/resourceGroups/rg001/providers/Oracle.Database/networkAnchors/networkanchor1 --cluster-name example --display-name example --initial-data-storage-size-in-gb 19 --db-system-options "{storage-management:LVM}" --disk-redundancy High --hostname krixp --node-count 24 --shape VM.Standard.E5.Flex --ssh-public-keys "[sha-xx]" --storage-volume-performance-mode Balanced --time-zone utc --compute-model ECPU --compute-count 28 --zones "[2]" --tags "{tag:test}" --location eastus
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/dbsystems/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/dbsystems/{}", "2026-06-01"],
         ]
     }
 
@@ -72,6 +69,15 @@ class Create(AAZCommand):
                 msg="Password:",
             ),
         )
+        _args_schema.character_set = AAZStrArg(
+            options=["--character-set"],
+            arg_group="Properties",
+            help="The character set for the DB system. The default is AL32UTF8",
+            fmt=AAZStrArgFormat(
+                max_length=255,
+                min_length=1,
+            ),
+        )
         _args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name"],
             arg_group="Properties",
@@ -91,6 +97,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The compute model for Base Database Service. This is required if using the `computeCount` parameter. If using `cpuCoreCount` then it is an error to specify `computeModel` to a non-null value. The ECPU compute model is the recommended model, and the OCPU compute model is legacy.",
             enum={"ECPU": "ECPU", "OCPU": "OCPU"},
+        )
+        _args_schema.data_collection_options = AAZObjectArg(
+            options=["--data-collection-options"],
+            arg_group="Properties",
+            help="Indicates user preferences for the various diagnostic collection options for the Base DB.",
         )
         _args_schema.database_edition = AAZStrArg(
             options=["--database-edition"],
@@ -149,6 +160,15 @@ class Create(AAZCommand):
             default="LicenseIncluded",
             enum={"BringYourOwnLicense": "BringYourOwnLicense", "LicenseIncluded": "LicenseIncluded"},
         )
+        _args_schema.ncharacter_set = AAZStrArg(
+            options=["--ncharacter-set"],
+            arg_group="Properties",
+            help="The national character set for the DB system. The default is AL16UTF16",
+            fmt=AAZStrArgFormat(
+                max_length=255,
+                min_length=1,
+            ),
+        )
         _args_schema.network_anchor_id = AAZResourceIdArg(
             options=["--network-anchor-id"],
             arg_group="Properties",
@@ -201,6 +221,23 @@ class Create(AAZCommand):
                 max_length=255,
                 min_length=1,
             ),
+        )
+
+        data_collection_options = cls._args_schema.data_collection_options
+        data_collection_options.is_diagnostics_events_enabled = AAZBoolArg(
+            options=["is-diagnostics-events-enabled"],
+            help="Indicates whether diagnostic collection is enabled for the VM cluster/Cloud VM cluster/VMBM DBCS.",
+            default=False,
+        )
+        data_collection_options.is_health_monitoring_enabled = AAZBoolArg(
+            options=["is-health-monitoring-enabled"],
+            help="Indicates whether health monitoring is enabled for the VM cluster / Cloud VM cluster / VMBM DBCS.",
+            default=False,
+        )
+        data_collection_options.is_incident_logs_enabled = AAZBoolArg(
+            options=["is-incident-logs-enabled"],
+            help="Indicates whether incident logs and trace collection are enabled for the VM cluster / Cloud VM cluster / VMBM DBCS.",
+            default=False,
         )
 
         db_system_options = cls._args_schema.db_system_options
@@ -328,7 +365,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -361,9 +398,11 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("adminPassword", AAZStrType, ".admin_password", typ_kwargs={"flags": {"secret": True}})
+                properties.set_prop("characterSet", AAZStrType, ".character_set")
                 properties.set_prop("clusterName", AAZStrType, ".cluster_name")
                 properties.set_prop("computeCount", AAZIntType, ".compute_count")
                 properties.set_prop("computeModel", AAZStrType, ".compute_model")
+                properties.set_prop("dataCollectionOptions", AAZObjectType, ".data_collection_options")
                 properties.set_prop("databaseEdition", AAZStrType, ".database_edition", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("dbSystemOptions", AAZObjectType, ".db_system_options")
                 properties.set_prop("dbVersion", AAZStrType, ".db_version", typ_kwargs={"flags": {"required": True}})
@@ -373,6 +412,7 @@ class Create(AAZCommand):
                 properties.set_prop("hostname", AAZStrType, ".hostname", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("initialDataStorageSizeInGb", AAZIntType, ".initial_data_storage_size_in_gb")
                 properties.set_prop("licenseModel", AAZStrType, ".license_model")
+                properties.set_prop("ncharacterSet", AAZStrType, ".ncharacter_set")
                 properties.set_prop("networkAnchorId", AAZStrType, ".network_anchor_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("nodeCount", AAZIntType, ".node_count")
                 properties.set_prop("pdbName", AAZStrType, ".pdb_name")
@@ -382,6 +422,12 @@ class Create(AAZCommand):
                 properties.set_prop("sshPublicKeys", AAZListType, ".ssh_public_keys", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("storageVolumePerformanceMode", AAZStrType, ".storage_volume_performance_mode")
                 properties.set_prop("timeZone", AAZStrType, ".time_zone")
+
+            data_collection_options = _builder.get(".properties.dataCollectionOptions")
+            if data_collection_options is not None:
+                data_collection_options.set_prop("isDiagnosticsEventsEnabled", AAZBoolType, ".is_diagnostics_events_enabled")
+                data_collection_options.set_prop("isHealthMonitoringEnabled", AAZBoolType, ".is_health_monitoring_enabled")
+                data_collection_options.set_prop("isIncidentLogsEnabled", AAZBoolType, ".is_incident_logs_enabled")
 
             db_system_options = _builder.get(".properties.dbSystemOptions")
             if db_system_options is not None:
@@ -442,6 +488,9 @@ class Create(AAZCommand):
             _schema_on_200_201.zones = AAZListType()
 
             properties = cls._schema_on_200_201.properties
+            properties.character_set = AAZStrType(
+                serialized_name="characterSet",
+            )
             properties.cluster_name = AAZStrType(
                 serialized_name="clusterName",
             )
@@ -450,6 +499,9 @@ class Create(AAZCommand):
             )
             properties.compute_model = AAZStrType(
                 serialized_name="computeModel",
+            )
+            properties.data_collection_options = AAZObjectType(
+                serialized_name="dataCollectionOptions",
             )
             properties.data_storage_size_in_gbs = AAZIntType(
                 serialized_name="dataStorageSizeInGbs",
@@ -497,6 +549,9 @@ class Create(AAZCommand):
             properties.memory_size_in_gbs = AAZIntType(
                 serialized_name="memorySizeInGbs",
                 flags={"read_only": True},
+            )
+            properties.ncharacter_set = AAZStrType(
+                serialized_name="ncharacterSet",
             )
             properties.network_anchor_id = AAZStrType(
                 serialized_name="networkAnchorId",
@@ -546,6 +601,17 @@ class Create(AAZCommand):
             )
             properties.version = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            data_collection_options = cls._schema_on_200_201.properties.data_collection_options
+            data_collection_options.is_diagnostics_events_enabled = AAZBoolType(
+                serialized_name="isDiagnosticsEventsEnabled",
+            )
+            data_collection_options.is_health_monitoring_enabled = AAZBoolType(
+                serialized_name="isHealthMonitoringEnabled",
+            )
+            data_collection_options.is_incident_logs_enabled = AAZBoolType(
+                serialized_name="isIncidentLogsEnabled",
             )
 
             db_system_options = cls._schema_on_200_201.properties.db_system_options
