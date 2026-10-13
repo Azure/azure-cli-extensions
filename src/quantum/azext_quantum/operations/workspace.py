@@ -140,6 +140,8 @@ def _show_tip(msg):
 
 
 def _get_storage_account_path(workspaceInfo, storage_account_name):
+    if not storage_account_name:
+        return None
     if storage_account_name[0] == "/":
         path = storage_account_name
     else:
@@ -413,7 +415,7 @@ def _validate_target_quota_bounds(cmd, info, workspace, quota, include_usage):
                 )
 
 
-def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
+def create(cmd, resource_group_name, workspace_name, location, storage_account=None, skip_role_assignment=False,
            provider_sku_list=None, auto_accept=False, skip_autoadd=False, workspace_kind=None, quota=None):
     """
     Create a new Azure Quantum workspace.
@@ -421,8 +423,6 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     client = cf_workspaces(cmd.cli_ctx)
     if not workspace_name:
         raise RequiredArgumentMissingError("An explicit workspace name is required for this command.")
-    if not storage_account:
-        raise RequiredArgumentMissingError("A quantum workspace requires a valid storage account.")
     if not location:
         raise RequiredArgumentMissingError("A location for the new quantum workspace is required.")
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
@@ -435,8 +435,8 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     if workspace_kind_value == WorkspaceKind.V2.value:
         skip_autoadd = True
 
-    # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
-    if skip_role_assignment:
+    # Use direct API creation when storage is service-managed or role assignment is explicitly skipped.
+    if skip_role_assignment or not storage_account:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
         _apply_target_quotas(quantum_workspace.properties.providers, quota)
         _validate_target_quota_bounds(cmd, info, quantum_workspace, quota, include_usage=False)
