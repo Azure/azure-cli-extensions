@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.14
+++++++
+* Migrate Disk Encryption Set validation from the Compute SDK to AAZ.
+
 1.0.13
 ++++++
 * Add support for hosted control plane clusters via `az aro hcp` and its subcommands.

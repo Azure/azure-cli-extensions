@@ -1295,6 +1295,7 @@ def aks_create(
     nrg_lockdown_restriction_level=None,
     enable_defender=False,
     defender_config=None,
+    enable_disk_driver=False,
     disable_disk_driver=False,
     disable_file_driver=False,
     enable_blob_driver=None,
@@ -1486,6 +1487,8 @@ def aks_create(
     enable_on_demand_monitor=False,
     # prepared image specification
     prepared_image_specification_id=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1554,6 +1557,9 @@ def aks_update(
     enable_force_upgrade=False,
     disable_force_upgrade=False,
     upgrade_override_until=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
+    disable_upgrade_gate=False,
     cluster_autoscaler_profile=None,
     sku=None,
     tier=None,
@@ -1930,11 +1936,12 @@ def aks_get_credentials(
             path, kubeconfig, overwrite_existing, context_name)
         # Check if kubeconfig requires kubelogin with devicecode and convert it
         if uses_kubelogin_devicecode(kubeconfig):
-            if which("kubelogin"):
+            kubelogin_path = which("kubelogin")
+            if kubelogin_path:
                 try:
                     # Run kubelogin convert-kubeconfig -l azurecli
                     subprocess.run(
-                        ["kubelogin", "convert-kubeconfig", "-l", "azurecli"],
+                        [kubelogin_path, "convert-kubeconfig", "-l", "azurecli"],
                         cwd=os.path.dirname(path),
                         check=True,
                     )
@@ -2325,6 +2332,7 @@ def aks_agentpool_add(
     gpu_driver=None,
     driver_type=None,
     gpu_mig_strategy=None,
+    gpu_mig_profiles=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
     enable_secure_boot=False,
@@ -2341,6 +2349,9 @@ def aks_agentpool_add(
     secondary_network_interfaces=None,
     # prepared image specification
     prepared_image_specification_id=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
+    disable_upgrade_gate=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2403,6 +2414,7 @@ def aks_agentpool_update(
     allowed_host_ports=None,
     asg_ids=None,
     enable_managed_dranet=False,
+    node_public_ip_prefix_ids=None,
     enable_artifact_streaming=False,
     disable_artifact_streaming=False,
     enable_managed_gpu=None,
@@ -2425,10 +2437,14 @@ def aks_agentpool_update(
     zones=None,
     gpu_driver=None,
     gpu_mig_strategy=None,
+    gpu_mig_profiles=None,
     # crg
     crg_id=None,
     # prepared image specification
     prepared_image_specification_id=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
+    disable_upgrade_gate=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

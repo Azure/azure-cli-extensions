@@ -256,13 +256,15 @@ class TestFrontendCollaboration(unittest.TestCase):
         """Test showing collaboration report"""
         # Mock report response
         mock_report = {
-            "collaborationId": "test-collab-123",
-            "reportData": {
-                "totalQueries": 42,
-                "totalDatasets": 10,
-                "participants": 5
+            "cgs": {
+                "cgsEndpoint": "https://cgs.example.com",
+                "recoveryAgentEndpoint": "https://recovery.example.com",
+                "report": {"platform": "snp", "reportDataPayload": "cgs-payload"}
             },
-            "generatedAt": "2024-01-01T00:00:00Z"
+            "consortiumManager": {
+                "endpoint": "https://cm.example.com",
+                "report": {"platform": "snp", "serviceCert": "-----BEGIN CERTIFICATE-----"}
+            }
         }
         mock_client = Mock()
         mock_client.collaboration.report_get.return_value = mock_report
@@ -275,8 +277,8 @@ class TestFrontendCollaboration(unittest.TestCase):
         )
 
         # Verify
-        self.assertEqual(result["collaborationId"], "test-collab-123")
-        self.assertEqual(result["reportData"]["totalQueries"], 42)
+        self.assertEqual(result["cgs"]["report"]["reportDataPayload"], "cgs-payload")
+        self.assertEqual(result["consortiumManager"]["endpoint"], "https://cm.example.com")
         mock_client.collaboration.report_get.assert_called_once_with(
             "test-collab-123")
 

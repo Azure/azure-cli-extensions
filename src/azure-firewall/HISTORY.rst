@@ -3,6 +3,18 @@
 Release History
 ===============
 
+2.4.0
+++++++
+* `az network firewall policy kube-selector-group` : Add new command group (`create`/`show`/`list`/`update`/`delete`/`wait`) to manage Kubernetes selector groups of a firewall policy, with `--pod-selector` and `--namespace-selector` supporting `matchLabels` and `matchExpressions`.
+* `az network firewall show/list` : Expose read-only property `afcConfiguration` (with read-only `serviceEndpoint`) for the Azure Firewall for Containers endpoint.
+* `az network firewall create/update` : Add `--create-afc-control-plane`/`--create-afc` to create an AFC control plane for the Azure Firewall.
+* Bump API version to `2025-09-01` for `az network firewall` create/update/show/list/delete/wait.
+
+2.3.0
+++++++
+* `az network firewall policy show` : Expose read-only property `afcManaged` indicating whether the firewall policy is managed by Azure Firewall Configuration (AFC).
+* Bump API version to `2025-09-01` for `az network firewall policy` create/update/show/list/delete/wait.
+
 2.2.1
 ++++++
 * `az network firewall create` : Fix `managementIpConfiguration.subnet.id` not being set for non-Basic tier firewalls when `--m-conf-name` is provided.

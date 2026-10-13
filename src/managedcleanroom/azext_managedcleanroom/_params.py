@@ -39,11 +39,6 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         help='Document identifier (dataset, query, or consent document)'
     )
 
-    job_id_type = CLIArgumentType(
-        options_list=['--job-id', '-j'],
-        help='Query job identifier (for run results)'
-    )
-
     run_id_type = CLIArgumentType(
         options_list=['--run-id', '-r'],
         help='Query run identifier'
@@ -274,7 +269,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             type=str,
             help='JSON string or @file path containing run configuration. '
             'Optional fields: runId (auto-generated if not provided), '
-            'dryRun, startDate, endDate, useOptimizer.')
+            'dryRun, startDate, endDate, useOptimizer, scaleSku.')
 
         c.argument(
             'dry_run',
@@ -294,6 +289,11 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             options_list=['--use-optimizer'],
             action='store_true',
             help='Use query optimizer')
+        c.argument(
+            'scale_sku',
+            options_list=['--scale-sku'],
+            arg_type=get_enum_type(['small', 'medium', 'large']),
+            help='Compute size for the query run. If omitted, the service default (small) is used.')
 
     # Query vote context (unified)
     with self.argument_context('managedcleanroom frontend analytics query vote') as c:
@@ -320,7 +320,13 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('collaboration_id', collaboration_id_type)
 
     with self.argument_context('managedcleanroom frontend analytics query runresult show') as c:
-        c.argument('job_id', job_id_type)
+        c.argument(
+            'run_id',
+            options_list=[
+                '--run-id', '-r',
+                c.deprecate(target='--job-id', redirect='--run-id', hide=True),
+                c.deprecate(target='-j', redirect='-r', hide=True)],
+            help='Query run identifier')
 
     # Audit context
     with self.argument_context('managedcleanroom frontend analytics auditevent') as c:

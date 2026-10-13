@@ -235,6 +235,8 @@ DEFAULT_MOUNTS_WORKLOAD_IDENTITY_VIRTUAL_NODE_WINDOWS = (
 DEFAULT_MOUNT_POLICY = _config["mount"]["default_policy"]
 # default rego policy to be added to all user containers
 DEFAULT_REGO_FRAGMENTS = _config["default_rego_fragments"]
+# kube-proxy image-attached fragment to add to VN2 policies when requested
+KUBE_PROXY_REGO_FRAGMENT = _config["kube_proxy_rego_fragment"]
 # things that need to be set for debug mode
 DEBUG_MODE_SETTINGS = _config["debugMode"]
 DEBUG_MODE_SETTINGS_WINDOWS = _config["debugModeWindows"]

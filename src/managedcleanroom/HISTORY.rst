@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.0.0b10
+++++++++
+* Regenerated the analytics frontend client from the latest ``2026-03-01-preview`` frontend spec
+* Added: ``--scale-sku`` (``small``, ``medium``, ``large``) to ``az managedcleanroom frontend analytics query run``
+* ``az managedcleanroom frontend analytics query runresult show`` now takes ``--run-id``; ``--job-id`` is deprecated
+
 1.0.0b9
 +++++++
 * Update commands to reflect new API version 2026-09-30-preview

@@ -758,6 +758,7 @@ def frontend_collaboration_query_run(
     start_date=None,
     end_date=None,
     use_optimizer=False,
+    scale_sku=None,
     api_version=None,
 ):
     """Run a query
@@ -766,11 +767,13 @@ def frontend_collaboration_query_run(
     :param collaboration_id: Collaboration identifier
     :param document_id: Query document identifier
     :param body: Run configuration JSON (string, dict, or @file). Optional fields:
-                 runId (auto-generated if not provided), dryRun, startDate, endDate, useOptimizer
+                 runId (auto-generated if not provided), dryRun, startDate, endDate, useOptimizer,
+                 scaleSku
     :param dry_run: Perform a dry run without executing the query
     :param start_date: Start date for query execution
     :param end_date: End date for query execution
     :param use_optimizer: Use query optimizer
+    :param scale_sku: Compute size for the run: small, medium, or large (service default: small)
     :param api_version: API version to use for this request
     :return: Run result
     """
@@ -779,7 +782,7 @@ def frontend_collaboration_query_run(
     from azure.cli.core.util import CLIError
 
     # Check for mutual exclusion: body vs parameters
-    has_params = any([dry_run, start_date, end_date, use_optimizer])
+    has_params = any([dry_run, start_date, end_date, use_optimizer, scale_sku])
 
     if body and has_params:
         raise CLIError(
@@ -805,6 +808,8 @@ def frontend_collaboration_query_run(
             body["endDate"] = end_date
         if use_optimizer:
             body["useOptimizer"] = True
+        if scale_sku:
+            body["scaleSku"] = scale_sku
 
     # Auto-generate runId if not provided
     if "runId" not in body:
@@ -881,18 +886,18 @@ def frontend_collaboration_query_cancel_run(
 
 
 def frontend_collaboration_query_runresult_show(
-    cmd, collaboration_id, job_id, api_version=None
+    cmd, collaboration_id, run_id, api_version=None
 ):
-    """Show query job result details
+    """Show query run result details
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
-    :param job_id: Query job identifier
+    :param run_id: Query run identifier
     :param api_version: API version to use for this request
-    :return: Query job result details
+    :return: Query run result with id, status, and events
     """
     client = get_frontend_client(cmd, api_version=api_version)
-    return client.collaboration.analytics_runs_job_id_get(collaboration_id, job_id)
+    return client.collaboration.analytics_runs_run_id_get(collaboration_id, run_id)
 
 
 # ============================================================================

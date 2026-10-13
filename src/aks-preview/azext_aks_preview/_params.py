@@ -257,6 +257,7 @@ from azext_aks_preview._validators import (
     validate_system_node_subnet_id,
     validate_node_subnet_id,
     validate_force_upgrade_disable_and_enable_parameters,
+    validate_upgrade_gate_disable_and_enable_parameters,
     validate_azure_service_mesh_revision,
     validate_artifact_streaming,
     validate_os_disk_full_caching,
@@ -854,6 +855,7 @@ def load_arguments(self, _):
         c.argument("k8s_support_plan", arg_type=get_enum_type(k8s_support_plans))
         c.argument("enable_defender", action="store_true")
         c.argument("defender_config", validator=validate_defender_config_parameter)
+        c.argument("enable_disk_driver", action="store_true")
         c.argument("disable_disk_driver", action="store_true")
         c.argument("disable_file_driver", action="store_true")
         c.argument("enable_blob_driver", action="store_true")
@@ -1477,6 +1479,8 @@ def load_arguments(self, _):
             help='The resource ID of the prepared image specification to use for provisioning nodes in the default '
                  'node pool.'
         )
+        # upgrade gate
+        c.argument("enable_upgrade_gate", action="store_true", is_preview=True)
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1583,6 +1587,19 @@ def load_arguments(self, _):
             validator=validate_force_upgrade_disable_and_enable_parameters,
         )
         c.argument("upgrade_override_until", is_preview=True)
+        # upgrade gate
+        c.argument(
+            "enable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
+        c.argument(
+            "disable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
         c.argument(
             "cluster_autoscaler_profile",
             nargs="+",
@@ -2516,6 +2533,13 @@ def load_arguments(self, _):
             is_preview=True,
             help="Specify the GPU Multi-Instance GPU (MIG) strategy. Allowed values: Single, Mixed.",
         )
+        c.argument(
+            "gpu_mig_profiles",
+            arg_type=get_enum_type(gpu_instance_profiles),
+            nargs="+",
+            is_preview=True,
+            help="Space-separated ordered list of GPU MIG profiles. Allowed values: MIG1g, MIG2g, MIG3g, MIG4g, MIG7g.",
+        )
         # in creation scenario, use "localuser" as default
         c.argument(
             'ssh_access',
@@ -2570,8 +2594,30 @@ def load_arguments(self, _):
             validator=validate_prepared_image_specification_id,
             help='The resource ID of the prepared image specification to use for provisioning nodes in the node pool.'
         )
+        # upgrade gate
+        c.argument(
+            "enable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
+        c.argument(
+            "disable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
 
     with self.argument_context("aks nodepool update") as c:
+        c.argument(
+            "node_public_ip_prefix_ids",
+            validator=validate_node_public_ip_prefix_ids,
+            help="Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs "
+                 "(IPv4 and/or IPv6). At most one IPv4 and one IPv6 prefix may be specified. "
+                 "On an existing node pool this adds or replaces the assigned prefixes; an accepted change "
+                 "rolls the pool so existing nodes are recreated with the new public IPs. "
+                 "Requires the NodePublicIPv6PrefixPreview feature flag to be registered.",
+        )
         c.argument(
             "enable_cluster_autoscaler",
             options_list=["--enable-cluster-autoscaler", "-e"],
@@ -2714,6 +2760,13 @@ def load_arguments(self, _):
             is_preview=True,
             help="Specify the GPU Multi-Instance GPU (MIG) strategy. Allowed values: Single, Mixed.",
         )
+        c.argument(
+            "gpu_mig_profiles",
+            arg_type=get_enum_type(gpu_instance_profiles),
+            nargs="+",
+            is_preview=True,
+            help="Space-separated ordered list of GPU MIG profiles. Allowed values: MIG1g, MIG2g, MIG3g, MIG4g, MIG7g.",
+        )
         # prepared image specification
         c.argument(
             'prepared_image_specification_id',
@@ -2721,6 +2774,19 @@ def load_arguments(self, _):
             is_preview=True,
             validator=validate_prepared_image_specification_id,
             help='The resource ID of the prepared image specification to use for provisioning nodes in the node pool.'
+        )
+        # upgrade gate
+        c.argument(
+            "enable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
+        c.argument(
+            "disable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
         )
 
     with self.argument_context("aks nodepool upgrade") as c:
