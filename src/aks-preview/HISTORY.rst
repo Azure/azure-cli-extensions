@@ -34,6 +34,9 @@ Pending
 * `az aks update`: Stop reopening public network access on the ingestion data collection endpoint of a cluster that is linked to an Azure Monitor Private Link Scope. The endpoint is created or updated on every reconfiguration, but `--ampls-resource-id` is only supplied on the command that links the scope, so an unrelated update such as `--enable-syslog` used to flip an existing private endpoint back to public. The existing network configuration is now preserved unless the caller explicitly asks to change it.
 * `az aks update`: Fix `--ampls-resource-id` being rejected with `--ampls-resource-id can only be used with private cluster in MSI mode.` on a cluster that is already private. The private state was only read from the command line, so it was invisible unless `--enable-private-cluster` happened to be supplied again in the same command; it is now read from the cluster as well.
 * `az aks create` and `az aks update`: Reject `--enable-msi-auth-for-monitoring` when it is supplied alongside `--enable-azure-monitor-logs`. Onboarding through the Azure Monitor profile always uses managed identity, so the auth flag has no meaning there and was silently ignored, including when it was explicitly set to `false`.
+* `az aks create`: Add `--enable-upgrade-gate` to enable health-aware upgrade gating for the cluster.
+* `az aks update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the cluster.
+* `az aks nodepool add/update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the node pool.
 
 22.0.0b13
 +++++++++
