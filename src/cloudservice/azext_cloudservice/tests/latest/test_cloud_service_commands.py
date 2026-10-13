@@ -231,13 +231,9 @@ class CloudServiceRequestTest(ScenarioTest):
                 reqs = self._run(command + ' --no-wait')
                 self.assertEqual([(method, path, body)], [(r['method'], r['path'], r['body']) for r in reqs])
 
-    @unittest.expectedFailure
     def test_remote_desktop_file_request(self):
         with stub_http() as rec:
-            try:
-                self.cmd('cloud-service role-instance show-remote-desktop-file ' + RI)
-            except Exception:  # pylint: disable=broad-except
-                pass  # output handling is covered separately
+            self.cmd('cloud-service role-instance show-remote-desktop-file ' + RI)
         self.assertEqual(1, len(rec.requests))
         self.assertEqual('GET', rec.requests[0]['method'])
         self.assertEqual(BASE + '/cs1/roleInstances/ri1/remoteDesktopFile', rec.requests[0]['path'])
@@ -339,8 +335,6 @@ class CloudServiceOutputTest(ScenarioTest):
             self.assertEqual('', self.cmd('cloud-service delete ' + SVC + ' -y').output.strip())
             self.assertEqual('', self.cmd('cloud-service restart ' + SVC).output.strip())
 
-    # Known gap: the generated command cannot decode application/x-rdp
-    @unittest.expectedFailure
     def test_remote_desktop_file_returns_rdp_text(self):
         with stub_http():
             result = self.cmd('cloud-service role-instance show-remote-desktop-file ' + RI).output
