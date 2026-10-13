@@ -8,26 +8,21 @@ import os
 import unittest
 import time
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
+from azure.cli.testsdk import ScenarioTest, live_only
 
 class OracleDbSystemScenarioTest(ScenarioTest):
-    @live_only()
-    @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def setUp(self):
         subscription_id = self.get_subscription_id()
         self.kwargs.update({
-            'db_system_name': 'AzureCliSdkNewMih',
-            'resource_group': 'azCliTest',
+            'db_system_name': 'AzureCli2026New',
+            'resource_group': 'AzCli2026baseDb',
             'location': 'eastus',
             'zone': '1',
             'database_edition': 'EnterpriseEdition',
-            'admin_password': 'TesT##1234',
-            'resource_anchor_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azCliTest/providers/Oracle.Database/resourceAnchors/AzureCliTestMi',
-            'network_anchor_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yumfeiTest/providers/Oracle.Database/networkAnchors/1202yumfeiDnsNa1',
+            'resource_anchor_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzCli2026baseDb/providers/Oracle.Database/resourceAnchors/AzCli2026baseDbRA',
+            'network_anchor_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzCli2026baseDb/providers/Oracle.Database/networkAnchors/AzCli2026baseDbNA',
             'hostname': 'basedbNew',
-            'shape': 'VM.Standard.E5.Flex',
+            'shape': 'VM.BaseDB.x86',
             'display_name': 'BaseDbWhitelisMih',
             'node_count': 1,
             'initial_data_storage_size_in_gb': 256,
@@ -38,7 +33,13 @@ class OracleDbSystemScenarioTest(ScenarioTest):
             'db_system_option_storage_management': 'LVM',
             })
 
+    @live_only()
     def test_create_db_system(self):
+        self.kwargs.update({
+            'admin_password': os.environ['AZURE_ORACLE_DATABASE_DB_SYSTEM_ADMIN_PASSWORD'],
+            'ssh_public_key': os.environ['AZURE_ORACLE_DATABASE_SSH_PUBLIC_KEY'],
+        })
+
         self.cmd(
             'az oracle-database db-system create '
             '--name {db_system_name} '
@@ -59,7 +60,7 @@ class OracleDbSystemScenarioTest(ScenarioTest):
             '--db-version {db_version} '
             '--pdb-name {pdb_name} '
             '--db-system-options storage-management={db_system_option_storage_management} '
-            '--ssh-public-keys \'ssh-rsa xxxx\' '
+            '--ssh-public-keys \'{ssh_public_key}\' '
             '--no-wait'
         )
         # Show

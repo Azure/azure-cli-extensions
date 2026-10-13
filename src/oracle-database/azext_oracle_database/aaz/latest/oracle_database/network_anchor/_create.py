@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/networkanchors/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/networkanchors/{}", "2026-06-01"],
         ]
     }
 
@@ -98,12 +98,17 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="OCI DNS label. This is optional if DNS config is provided.",
         )
+        _args_schema.proximity_placement_group = AAZObjectArg(
+            options=["--proximity-placement-group"],
+            arg_group="Properties",
+            help="Proximity placement group settings",
+        )
         _args_schema.resource_anchor_id = AAZStrArg(
             options=["--resource-anchor-id"],
             arg_group="Properties",
             help="Corresponding resource anchor Azure ID",
         )
-        _args_schema.subnet_id = AAZStrArg(
+        _args_schema.subnet_id = AAZResourceIdArg(
             options=["--subnet-id"],
             arg_group="Properties",
             help="Client subnet",
@@ -121,6 +126,23 @@ class Create(AAZCommand):
         _element.forwarding_ip_address = AAZStrArg(
             options=["forwarding-ip-address"],
             help="Forwarding ip address",
+            required=True,
+        )
+
+        proximity_placement_group = cls._args_schema.proximity_placement_group
+        proximity_placement_group.entity_type_intended_to_use = AAZStrArg(
+            options=["entity-type-intended-to-use"],
+            help="Entity type intended to use the proximity placement group",
+            required=True,
+            enum={"CloudExadataInfrastructure": "CloudExadataInfrastructure", "OtherProducts": "OtherProducts"},
+        )
+        proximity_placement_group.proximity_anchor_id = AAZStrArg(
+            options=["proximity-anchor-id"],
+            help="Proximity Anchor ID",
+        )
+        proximity_placement_group.proximity_placement_group_id = AAZStrArg(
+            options=["proximity-placement-group-id"],
+            help="Proximity placement group ID",
             required=True,
         )
 
@@ -234,7 +256,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -260,7 +282,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
             _builder.set_prop("zones", AAZListType, ".zones")
 
@@ -273,6 +295,7 @@ class Create(AAZCommand):
                 properties.set_prop("isOracleToAzureDnsZoneSyncEnabled", AAZBoolType, ".is_oracle_to_azure_dns_zone_sync_enabled")
                 properties.set_prop("ociBackupCidrBlock", AAZStrType, ".oci_backup_cidr_block")
                 properties.set_prop("ociVcnDnsLabel", AAZStrType, ".oci_vcn_dns_label")
+                properties.set_prop("proximityPlacementGroup", AAZObjectType, ".proximity_placement_group")
                 properties.set_prop("resourceAnchorId", AAZStrType, ".resource_anchor_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("subnetId", AAZStrType, ".subnet_id", typ_kwargs={"flags": {"required": True}})
 
@@ -284,6 +307,12 @@ class Create(AAZCommand):
             if _elements is not None:
                 _elements.set_prop("domainNames", AAZStrType, ".domain_names", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("forwardingIpAddress", AAZStrType, ".forwarding_ip_address", typ_kwargs={"flags": {"required": True}})
+
+            proximity_placement_group = _builder.get(".properties.proximityPlacementGroup")
+            if proximity_placement_group is not None:
+                proximity_placement_group.set_prop("entityTypeIntendedToUse", AAZStrType, ".entity_type_intended_to_use", typ_kwargs={"flags": {"required": True}})
+                proximity_placement_group.set_prop("proximityAnchorId", AAZStrType, ".proximity_anchor_id")
+                proximity_placement_group.set_prop("proximityPlacementGroupId", AAZStrType, ".proximity_placement_group_id", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -322,7 +351,9 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -385,6 +416,9 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.proximity_placement_group = AAZObjectType(
+                serialized_name="proximityPlacementGroup",
+            )
             properties.resource_anchor_id = AAZStrType(
                 serialized_name="resourceAnchorId",
                 flags={"required": True},
@@ -396,6 +430,19 @@ class Create(AAZCommand):
             properties.vnet_id = AAZStrType(
                 serialized_name="vnetId",
                 flags={"read_only": True},
+            )
+
+            proximity_placement_group = cls._schema_on_200_201.properties.proximity_placement_group
+            proximity_placement_group.entity_type_intended_to_use = AAZStrType(
+                serialized_name="entityTypeIntendedToUse",
+                flags={"required": True},
+            )
+            proximity_placement_group.proximity_anchor_id = AAZStrType(
+                serialized_name="proximityAnchorId",
+            )
+            proximity_placement_group.proximity_placement_group_id = AAZStrType(
+                serialized_name="proximityPlacementGroupId",
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200_201.system_data

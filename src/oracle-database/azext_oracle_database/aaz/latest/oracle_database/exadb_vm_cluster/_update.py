@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/exadbvmclusters/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/exadbvmclusters/{}", "2026-06-01"],
         ]
     }
 
@@ -174,7 +174,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -205,279 +205,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.zones = AAZListType()
-
-            properties = cls._schema_on_200.properties
-            properties.backup_subnet_cidr = AAZStrType(
-                serialized_name="backupSubnetCidr",
-            )
-            properties.backup_subnet_ocid = AAZStrType(
-                serialized_name="backupSubnetOcid",
-                flags={"read_only": True},
-            )
-            properties.cluster_name = AAZStrType(
-                serialized_name="clusterName",
-            )
-            properties.data_collection_options = AAZObjectType(
-                serialized_name="dataCollectionOptions",
-            )
-            properties.display_name = AAZStrType(
-                serialized_name="displayName",
-                flags={"required": True},
-            )
-            properties.domain = AAZStrType()
-            properties.enabled_ecpu_count = AAZIntType(
-                serialized_name="enabledEcpuCount",
-                flags={"required": True},
-            )
-            properties.exascale_db_storage_vault_id = AAZStrType(
-                serialized_name="exascaleDbStorageVaultId",
-                flags={"required": True},
-            )
-            properties.gi_version = AAZStrType(
-                serialized_name="giVersion",
-                flags={"read_only": True},
-            )
-            properties.grid_image_ocid = AAZStrType(
-                serialized_name="gridImageOcid",
-            )
-            properties.grid_image_type = AAZStrType(
-                serialized_name="gridImageType",
-                flags={"read_only": True},
-            )
-            properties.hostname = AAZStrType(
-                flags={"required": True},
-            )
-            properties.iorm_config_cache = AAZObjectType(
-                serialized_name="iormConfigCache",
-                flags={"read_only": True},
-            )
-            properties.license_model = AAZStrType(
-                serialized_name="licenseModel",
-            )
-            properties.lifecycle_details = AAZStrType(
-                serialized_name="lifecycleDetails",
-                flags={"read_only": True},
-            )
-            properties.lifecycle_state = AAZStrType(
-                serialized_name="lifecycleState",
-                flags={"read_only": True},
-            )
-            properties.listener_port = AAZIntType(
-                serialized_name="listenerPort",
-                flags={"read_only": True},
-            )
-            properties.memory_size_in_gbs = AAZIntType(
-                serialized_name="memorySizeInGbs",
-                flags={"read_only": True},
-            )
-            properties.node_count = AAZIntType(
-                serialized_name="nodeCount",
-                flags={"required": True},
-            )
-            properties.nsg_cidrs = AAZListType(
-                serialized_name="nsgCidrs",
-            )
-            properties.nsg_url = AAZStrType(
-                serialized_name="nsgUrl",
-                flags={"read_only": True},
-            )
-            properties.oci_url = AAZStrType(
-                serialized_name="ociUrl",
-                flags={"read_only": True},
-            )
-            properties.ocid = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.private_zone_ocid = AAZStrType(
-                serialized_name="privateZoneOcid",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.scan_dns_name = AAZStrType(
-                serialized_name="scanDnsName",
-                flags={"read_only": True},
-            )
-            properties.scan_dns_record_id = AAZStrType(
-                serialized_name="scanDnsRecordId",
-                flags={"read_only": True},
-            )
-            properties.scan_ip_ids = AAZListType(
-                serialized_name="scanIpIds",
-                flags={"read_only": True},
-            )
-            properties.scan_listener_port_tcp = AAZIntType(
-                serialized_name="scanListenerPortTcp",
-            )
-            properties.scan_listener_port_tcp_ssl = AAZIntType(
-                serialized_name="scanListenerPortTcpSsl",
-            )
-            properties.shape = AAZStrType(
-                flags={"required": True},
-            )
-            properties.shape_attribute = AAZStrType(
-                serialized_name="shapeAttribute",
-            )
-            properties.snapshot_file_system_storage = AAZObjectType(
-                serialized_name="snapshotFileSystemStorage",
-                flags={"read_only": True},
-            )
-            _UpdateHelper._build_schema_exadbvmclusterstoragedetails_read(properties.snapshot_file_system_storage)
-            properties.ssh_public_keys = AAZListType(
-                serialized_name="sshPublicKeys",
-                flags={"required": True},
-            )
-            properties.subnet_id = AAZStrType(
-                serialized_name="subnetId",
-                flags={"required": True},
-            )
-            properties.subnet_ocid = AAZStrType(
-                serialized_name="subnetOcid",
-                flags={"read_only": True},
-            )
-            properties.system_version = AAZStrType(
-                serialized_name="systemVersion",
-            )
-            properties.time_zone = AAZStrType(
-                serialized_name="timeZone",
-            )
-            properties.total_ecpu_count = AAZIntType(
-                serialized_name="totalEcpuCount",
-                flags={"required": True},
-            )
-            properties.total_file_system_storage = AAZObjectType(
-                serialized_name="totalFileSystemStorage",
-                flags={"read_only": True},
-            )
-            _UpdateHelper._build_schema_exadbvmclusterstoragedetails_read(properties.total_file_system_storage)
-            properties.vip_ids = AAZListType(
-                serialized_name="vipIds",
-                flags={"read_only": True},
-            )
-            properties.vm_file_system_storage = AAZObjectType(
-                serialized_name="vmFileSystemStorage",
-                flags={"required": True},
-            )
-            _UpdateHelper._build_schema_exadbvmclusterstoragedetails_read(properties.vm_file_system_storage)
-            properties.vnet_id = AAZStrType(
-                serialized_name="vnetId",
-                flags={"required": True},
-            )
-            properties.zone_ocid = AAZStrType(
-                serialized_name="zoneOcid",
-                flags={"read_only": True},
-            )
-
-            data_collection_options = cls._schema_on_200.properties.data_collection_options
-            data_collection_options.is_diagnostics_events_enabled = AAZBoolType(
-                serialized_name="isDiagnosticsEventsEnabled",
-            )
-            data_collection_options.is_health_monitoring_enabled = AAZBoolType(
-                serialized_name="isHealthMonitoringEnabled",
-            )
-            data_collection_options.is_incident_logs_enabled = AAZBoolType(
-                serialized_name="isIncidentLogsEnabled",
-            )
-
-            iorm_config_cache = cls._schema_on_200.properties.iorm_config_cache
-            iorm_config_cache.db_plans = AAZListType(
-                serialized_name="dbPlans",
-            )
-            iorm_config_cache.lifecycle_details = AAZStrType(
-                serialized_name="lifecycleDetails",
-            )
-            iorm_config_cache.lifecycle_state = AAZStrType(
-                serialized_name="lifecycleState",
-            )
-            iorm_config_cache.objective = AAZStrType()
-
-            db_plans = cls._schema_on_200.properties.iorm_config_cache.db_plans
-            db_plans.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.iorm_config_cache.db_plans.Element
-            _element.db_name = AAZStrType(
-                serialized_name="dbName",
-            )
-            _element.flash_cache_limit = AAZStrType(
-                serialized_name="flashCacheLimit",
-            )
-            _element.share = AAZIntType()
-
-            nsg_cidrs = cls._schema_on_200.properties.nsg_cidrs
-            nsg_cidrs.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.nsg_cidrs.Element
-            _element.destination_port_range = AAZObjectType(
-                serialized_name="destinationPortRange",
-            )
-            _element.source = AAZStrType(
-                flags={"required": True},
-            )
-
-            destination_port_range = cls._schema_on_200.properties.nsg_cidrs.Element.destination_port_range
-            destination_port_range.max = AAZIntType(
-                flags={"required": True},
-            )
-            destination_port_range.min = AAZIntType(
-                flags={"required": True},
-            )
-
-            scan_ip_ids = cls._schema_on_200.properties.scan_ip_ids
-            scan_ip_ids.Element = AAZStrType()
-
-            ssh_public_keys = cls._schema_on_200.properties.ssh_public_keys
-            ssh_public_keys.Element = AAZStrType()
-
-            vip_ids = cls._schema_on_200.properties.vip_ids
-            vip_ids.Element = AAZStrType()
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
-            zones = cls._schema_on_200.zones
-            zones.Element = AAZStrType()
+            _UpdateHelper._build_schema_exadb_vm_cluster_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -545,7 +273,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -588,279 +316,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200_201.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.properties = AAZObjectType()
-            _schema_on_200_201.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.tags = AAZDictType()
-            _schema_on_200_201.type = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.zones = AAZListType()
-
-            properties = cls._schema_on_200_201.properties
-            properties.backup_subnet_cidr = AAZStrType(
-                serialized_name="backupSubnetCidr",
-            )
-            properties.backup_subnet_ocid = AAZStrType(
-                serialized_name="backupSubnetOcid",
-                flags={"read_only": True},
-            )
-            properties.cluster_name = AAZStrType(
-                serialized_name="clusterName",
-            )
-            properties.data_collection_options = AAZObjectType(
-                serialized_name="dataCollectionOptions",
-            )
-            properties.display_name = AAZStrType(
-                serialized_name="displayName",
-                flags={"required": True},
-            )
-            properties.domain = AAZStrType()
-            properties.enabled_ecpu_count = AAZIntType(
-                serialized_name="enabledEcpuCount",
-                flags={"required": True},
-            )
-            properties.exascale_db_storage_vault_id = AAZStrType(
-                serialized_name="exascaleDbStorageVaultId",
-                flags={"required": True},
-            )
-            properties.gi_version = AAZStrType(
-                serialized_name="giVersion",
-                flags={"read_only": True},
-            )
-            properties.grid_image_ocid = AAZStrType(
-                serialized_name="gridImageOcid",
-            )
-            properties.grid_image_type = AAZStrType(
-                serialized_name="gridImageType",
-                flags={"read_only": True},
-            )
-            properties.hostname = AAZStrType(
-                flags={"required": True},
-            )
-            properties.iorm_config_cache = AAZObjectType(
-                serialized_name="iormConfigCache",
-                flags={"read_only": True},
-            )
-            properties.license_model = AAZStrType(
-                serialized_name="licenseModel",
-            )
-            properties.lifecycle_details = AAZStrType(
-                serialized_name="lifecycleDetails",
-                flags={"read_only": True},
-            )
-            properties.lifecycle_state = AAZStrType(
-                serialized_name="lifecycleState",
-                flags={"read_only": True},
-            )
-            properties.listener_port = AAZIntType(
-                serialized_name="listenerPort",
-                flags={"read_only": True},
-            )
-            properties.memory_size_in_gbs = AAZIntType(
-                serialized_name="memorySizeInGbs",
-                flags={"read_only": True},
-            )
-            properties.node_count = AAZIntType(
-                serialized_name="nodeCount",
-                flags={"required": True},
-            )
-            properties.nsg_cidrs = AAZListType(
-                serialized_name="nsgCidrs",
-            )
-            properties.nsg_url = AAZStrType(
-                serialized_name="nsgUrl",
-                flags={"read_only": True},
-            )
-            properties.oci_url = AAZStrType(
-                serialized_name="ociUrl",
-                flags={"read_only": True},
-            )
-            properties.ocid = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.private_zone_ocid = AAZStrType(
-                serialized_name="privateZoneOcid",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.scan_dns_name = AAZStrType(
-                serialized_name="scanDnsName",
-                flags={"read_only": True},
-            )
-            properties.scan_dns_record_id = AAZStrType(
-                serialized_name="scanDnsRecordId",
-                flags={"read_only": True},
-            )
-            properties.scan_ip_ids = AAZListType(
-                serialized_name="scanIpIds",
-                flags={"read_only": True},
-            )
-            properties.scan_listener_port_tcp = AAZIntType(
-                serialized_name="scanListenerPortTcp",
-            )
-            properties.scan_listener_port_tcp_ssl = AAZIntType(
-                serialized_name="scanListenerPortTcpSsl",
-            )
-            properties.shape = AAZStrType(
-                flags={"required": True},
-            )
-            properties.shape_attribute = AAZStrType(
-                serialized_name="shapeAttribute",
-            )
-            properties.snapshot_file_system_storage = AAZObjectType(
-                serialized_name="snapshotFileSystemStorage",
-                flags={"read_only": True},
-            )
-            _UpdateHelper._build_schema_exadbvmclusterstoragedetails_read(properties.snapshot_file_system_storage)
-            properties.ssh_public_keys = AAZListType(
-                serialized_name="sshPublicKeys",
-                flags={"required": True},
-            )
-            properties.subnet_id = AAZStrType(
-                serialized_name="subnetId",
-                flags={"required": True},
-            )
-            properties.subnet_ocid = AAZStrType(
-                serialized_name="subnetOcid",
-                flags={"read_only": True},
-            )
-            properties.system_version = AAZStrType(
-                serialized_name="systemVersion",
-            )
-            properties.time_zone = AAZStrType(
-                serialized_name="timeZone",
-            )
-            properties.total_ecpu_count = AAZIntType(
-                serialized_name="totalEcpuCount",
-                flags={"required": True},
-            )
-            properties.total_file_system_storage = AAZObjectType(
-                serialized_name="totalFileSystemStorage",
-                flags={"read_only": True},
-            )
-            _UpdateHelper._build_schema_exadbvmclusterstoragedetails_read(properties.total_file_system_storage)
-            properties.vip_ids = AAZListType(
-                serialized_name="vipIds",
-                flags={"read_only": True},
-            )
-            properties.vm_file_system_storage = AAZObjectType(
-                serialized_name="vmFileSystemStorage",
-                flags={"required": True},
-            )
-            _UpdateHelper._build_schema_exadbvmclusterstoragedetails_read(properties.vm_file_system_storage)
-            properties.vnet_id = AAZStrType(
-                serialized_name="vnetId",
-                flags={"required": True},
-            )
-            properties.zone_ocid = AAZStrType(
-                serialized_name="zoneOcid",
-                flags={"read_only": True},
-            )
-
-            data_collection_options = cls._schema_on_200_201.properties.data_collection_options
-            data_collection_options.is_diagnostics_events_enabled = AAZBoolType(
-                serialized_name="isDiagnosticsEventsEnabled",
-            )
-            data_collection_options.is_health_monitoring_enabled = AAZBoolType(
-                serialized_name="isHealthMonitoringEnabled",
-            )
-            data_collection_options.is_incident_logs_enabled = AAZBoolType(
-                serialized_name="isIncidentLogsEnabled",
-            )
-
-            iorm_config_cache = cls._schema_on_200_201.properties.iorm_config_cache
-            iorm_config_cache.db_plans = AAZListType(
-                serialized_name="dbPlans",
-            )
-            iorm_config_cache.lifecycle_details = AAZStrType(
-                serialized_name="lifecycleDetails",
-            )
-            iorm_config_cache.lifecycle_state = AAZStrType(
-                serialized_name="lifecycleState",
-            )
-            iorm_config_cache.objective = AAZStrType()
-
-            db_plans = cls._schema_on_200_201.properties.iorm_config_cache.db_plans
-            db_plans.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.iorm_config_cache.db_plans.Element
-            _element.db_name = AAZStrType(
-                serialized_name="dbName",
-            )
-            _element.flash_cache_limit = AAZStrType(
-                serialized_name="flashCacheLimit",
-            )
-            _element.share = AAZIntType()
-
-            nsg_cidrs = cls._schema_on_200_201.properties.nsg_cidrs
-            nsg_cidrs.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.nsg_cidrs.Element
-            _element.destination_port_range = AAZObjectType(
-                serialized_name="destinationPortRange",
-            )
-            _element.source = AAZStrType(
-                flags={"required": True},
-            )
-
-            destination_port_range = cls._schema_on_200_201.properties.nsg_cidrs.Element.destination_port_range
-            destination_port_range.max = AAZIntType(
-                flags={"required": True},
-            )
-            destination_port_range.min = AAZIntType(
-                flags={"required": True},
-            )
-
-            scan_ip_ids = cls._schema_on_200_201.properties.scan_ip_ids
-            scan_ip_ids.Element = AAZStrType()
-
-            ssh_public_keys = cls._schema_on_200_201.properties.ssh_public_keys
-            ssh_public_keys.Element = AAZStrType()
-
-            vip_ids = cls._schema_on_200_201.properties.vip_ids
-            vip_ids.Element = AAZStrType()
-
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
-
-            zones = cls._schema_on_200_201.zones
-            zones.Element = AAZStrType()
+            _UpdateHelper._build_schema_exadb_vm_cluster_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -875,7 +331,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
             _builder.set_prop("zones", AAZListType, ".zones")
 
@@ -905,23 +361,331 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_exadbvmclusterstoragedetails_read = None
+    _schema_exadb_vm_cluster_storage_details_read = None
 
     @classmethod
-    def _build_schema_exadbvmclusterstoragedetails_read(cls, _schema):
-        if cls._schema_exadbvmclusterstoragedetails_read is not None:
-            _schema.total_size_in_gbs = cls._schema_exadbvmclusterstoragedetails_read.total_size_in_gbs
+    def _build_schema_exadb_vm_cluster_storage_details_read(cls, _schema):
+        if cls._schema_exadb_vm_cluster_storage_details_read is not None:
+            _schema.total_size_in_gbs = cls._schema_exadb_vm_cluster_storage_details_read.total_size_in_gbs
             return
 
-        cls._schema_exadbvmclusterstoragedetails_read = _schema_exadbvmclusterstoragedetails_read = AAZObjectType()
+        cls._schema_exadb_vm_cluster_storage_details_read = _schema_exadb_vm_cluster_storage_details_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
-        exadbvmclusterstoragedetails_read = _schema_exadbvmclusterstoragedetails_read
-        exadbvmclusterstoragedetails_read.total_size_in_gbs = AAZIntType(
+        exadb_vm_cluster_storage_details_read = _schema_exadb_vm_cluster_storage_details_read
+        exadb_vm_cluster_storage_details_read.total_size_in_gbs = AAZIntType(
             serialized_name="totalSizeInGbs",
             flags={"required": True},
         )
 
-        _schema.total_size_in_gbs = cls._schema_exadbvmclusterstoragedetails_read.total_size_in_gbs
+        _schema.total_size_in_gbs = cls._schema_exadb_vm_cluster_storage_details_read.total_size_in_gbs
+
+    _schema_exadb_vm_cluster_read = None
+
+    @classmethod
+    def _build_schema_exadb_vm_cluster_read(cls, _schema):
+        if cls._schema_exadb_vm_cluster_read is not None:
+            _schema.id = cls._schema_exadb_vm_cluster_read.id
+            _schema.location = cls._schema_exadb_vm_cluster_read.location
+            _schema.name = cls._schema_exadb_vm_cluster_read.name
+            _schema.properties = cls._schema_exadb_vm_cluster_read.properties
+            _schema.system_data = cls._schema_exadb_vm_cluster_read.system_data
+            _schema.tags = cls._schema_exadb_vm_cluster_read.tags
+            _schema.type = cls._schema_exadb_vm_cluster_read.type
+            _schema.zones = cls._schema_exadb_vm_cluster_read.zones
+            return
+
+        cls._schema_exadb_vm_cluster_read = _schema_exadb_vm_cluster_read = AAZObjectType()
+
+        exadb_vm_cluster_read = _schema_exadb_vm_cluster_read
+        exadb_vm_cluster_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        exadb_vm_cluster_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        exadb_vm_cluster_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        exadb_vm_cluster_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        exadb_vm_cluster_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        exadb_vm_cluster_read.tags = AAZDictType()
+        exadb_vm_cluster_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+        exadb_vm_cluster_read.zones = AAZListType()
+
+        properties = _schema_exadb_vm_cluster_read.properties
+        properties.backup_subnet_cidr = AAZStrType(
+            serialized_name="backupSubnetCidr",
+        )
+        properties.backup_subnet_ocid = AAZStrType(
+            serialized_name="backupSubnetOcid",
+            flags={"read_only": True},
+        )
+        properties.cluster_name = AAZStrType(
+            serialized_name="clusterName",
+        )
+        properties.data_collection_options = AAZObjectType(
+            serialized_name="dataCollectionOptions",
+        )
+        properties.display_name = AAZStrType(
+            serialized_name="displayName",
+            flags={"required": True},
+        )
+        properties.domain = AAZStrType()
+        properties.enabled_ecpu_count = AAZIntType(
+            serialized_name="enabledEcpuCount",
+            flags={"required": True},
+        )
+        properties.exascale_db_storage_vault_id = AAZStrType(
+            serialized_name="exascaleDbStorageVaultId",
+            flags={"required": True},
+        )
+        properties.gi_version = AAZStrType(
+            serialized_name="giVersion",
+            flags={"read_only": True},
+        )
+        properties.grid_image_ocid = AAZStrType(
+            serialized_name="gridImageOcid",
+        )
+        properties.grid_image_type = AAZStrType(
+            serialized_name="gridImageType",
+            flags={"read_only": True},
+        )
+        properties.hostname = AAZStrType(
+            flags={"required": True},
+        )
+        properties.iorm_config_cache = AAZObjectType(
+            serialized_name="iormConfigCache",
+            flags={"read_only": True},
+        )
+        properties.license_model = AAZStrType(
+            serialized_name="licenseModel",
+        )
+        properties.lifecycle_details = AAZStrType(
+            serialized_name="lifecycleDetails",
+            flags={"read_only": True},
+        )
+        properties.lifecycle_state = AAZStrType(
+            serialized_name="lifecycleState",
+            flags={"read_only": True},
+        )
+        properties.listener_port = AAZIntType(
+            serialized_name="listenerPort",
+            flags={"read_only": True},
+        )
+        properties.memory_size_in_gbs = AAZIntType(
+            serialized_name="memorySizeInGbs",
+            flags={"read_only": True},
+        )
+        properties.node_count = AAZIntType(
+            serialized_name="nodeCount",
+            flags={"required": True},
+        )
+        properties.nsg_cidrs = AAZListType(
+            serialized_name="nsgCidrs",
+        )
+        properties.nsg_url = AAZStrType(
+            serialized_name="nsgUrl",
+            flags={"read_only": True},
+        )
+        properties.oci_url = AAZStrType(
+            serialized_name="ociUrl",
+            flags={"read_only": True},
+        )
+        properties.ocid = AAZStrType(
+            flags={"read_only": True},
+        )
+        properties.private_zone_ocid = AAZStrType(
+            serialized_name="privateZoneOcid",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.scan_dns_name = AAZStrType(
+            serialized_name="scanDnsName",
+            flags={"read_only": True},
+        )
+        properties.scan_dns_record_id = AAZStrType(
+            serialized_name="scanDnsRecordId",
+            flags={"read_only": True},
+        )
+        properties.scan_ip_ids = AAZListType(
+            serialized_name="scanIpIds",
+            flags={"read_only": True},
+        )
+        properties.scan_listener_port_tcp = AAZIntType(
+            serialized_name="scanListenerPortTcp",
+        )
+        properties.scan_listener_port_tcp_ssl = AAZIntType(
+            serialized_name="scanListenerPortTcpSsl",
+        )
+        properties.shape = AAZStrType(
+            flags={"required": True},
+        )
+        properties.shape_attribute = AAZStrType(
+            serialized_name="shapeAttribute",
+        )
+        properties.snapshot_file_system_storage = AAZObjectType(
+            serialized_name="snapshotFileSystemStorage",
+            flags={"read_only": True},
+        )
+        cls._build_schema_exadb_vm_cluster_storage_details_read(properties.snapshot_file_system_storage)
+        properties.ssh_public_keys = AAZListType(
+            serialized_name="sshPublicKeys",
+            flags={"required": True},
+        )
+        properties.subnet_id = AAZStrType(
+            serialized_name="subnetId",
+            flags={"required": True},
+        )
+        properties.subnet_ocid = AAZStrType(
+            serialized_name="subnetOcid",
+            flags={"read_only": True},
+        )
+        properties.system_version = AAZStrType(
+            serialized_name="systemVersion",
+        )
+        properties.time_zone = AAZStrType(
+            serialized_name="timeZone",
+        )
+        properties.total_ecpu_count = AAZIntType(
+            serialized_name="totalEcpuCount",
+            flags={"required": True},
+        )
+        properties.total_file_system_storage = AAZObjectType(
+            serialized_name="totalFileSystemStorage",
+            flags={"read_only": True},
+        )
+        cls._build_schema_exadb_vm_cluster_storage_details_read(properties.total_file_system_storage)
+        properties.vip_ids = AAZListType(
+            serialized_name="vipIds",
+            flags={"read_only": True},
+        )
+        properties.vm_file_system_storage = AAZObjectType(
+            serialized_name="vmFileSystemStorage",
+            flags={"required": True},
+        )
+        properties.vnet_id = AAZStrType(
+            serialized_name="vnetId",
+            flags={"required": True},
+        )
+        properties.zone_ocid = AAZStrType(
+            serialized_name="zoneOcid",
+            flags={"read_only": True},
+        )
+
+        data_collection_options = _schema_exadb_vm_cluster_read.properties.data_collection_options
+        data_collection_options.is_diagnostics_events_enabled = AAZBoolType(
+            serialized_name="isDiagnosticsEventsEnabled",
+        )
+        data_collection_options.is_health_monitoring_enabled = AAZBoolType(
+            serialized_name="isHealthMonitoringEnabled",
+        )
+        data_collection_options.is_incident_logs_enabled = AAZBoolType(
+            serialized_name="isIncidentLogsEnabled",
+        )
+
+        iorm_config_cache = _schema_exadb_vm_cluster_read.properties.iorm_config_cache
+        iorm_config_cache.db_plans = AAZListType(
+            serialized_name="dbPlans",
+        )
+        iorm_config_cache.lifecycle_details = AAZStrType(
+            serialized_name="lifecycleDetails",
+        )
+        iorm_config_cache.lifecycle_state = AAZStrType(
+            serialized_name="lifecycleState",
+        )
+        iorm_config_cache.objective = AAZStrType()
+
+        db_plans = _schema_exadb_vm_cluster_read.properties.iorm_config_cache.db_plans
+        db_plans.Element = AAZObjectType()
+
+        _element = _schema_exadb_vm_cluster_read.properties.iorm_config_cache.db_plans.Element
+        _element.db_name = AAZStrType(
+            serialized_name="dbName",
+        )
+        _element.flash_cache_limit = AAZStrType(
+            serialized_name="flashCacheLimit",
+        )
+        _element.share = AAZIntType()
+
+        nsg_cidrs = _schema_exadb_vm_cluster_read.properties.nsg_cidrs
+        nsg_cidrs.Element = AAZObjectType()
+
+        _element = _schema_exadb_vm_cluster_read.properties.nsg_cidrs.Element
+        _element.destination_port_range = AAZObjectType(
+            serialized_name="destinationPortRange",
+        )
+        _element.source = AAZStrType(
+            flags={"required": True},
+        )
+
+        destination_port_range = _schema_exadb_vm_cluster_read.properties.nsg_cidrs.Element.destination_port_range
+        destination_port_range.max = AAZIntType(
+            flags={"required": True},
+        )
+        destination_port_range.min = AAZIntType(
+            flags={"required": True},
+        )
+
+        scan_ip_ids = _schema_exadb_vm_cluster_read.properties.scan_ip_ids
+        scan_ip_ids.Element = AAZStrType()
+
+        ssh_public_keys = _schema_exadb_vm_cluster_read.properties.ssh_public_keys
+        ssh_public_keys.Element = AAZStrType()
+
+        vip_ids = _schema_exadb_vm_cluster_read.properties.vip_ids
+        vip_ids.Element = AAZStrType()
+
+        vm_file_system_storage = _schema_exadb_vm_cluster_read.properties.vm_file_system_storage
+        vm_file_system_storage.total_size_in_gbs = AAZIntType(
+            serialized_name="totalSizeInGbs",
+            flags={"required": True},
+        )
+
+        system_data = _schema_exadb_vm_cluster_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        tags = _schema_exadb_vm_cluster_read.tags
+        tags.Element = AAZStrType()
+
+        zones = _schema_exadb_vm_cluster_read.zones
+        zones.Element = AAZStrType()
+
+        _schema.id = cls._schema_exadb_vm_cluster_read.id
+        _schema.location = cls._schema_exadb_vm_cluster_read.location
+        _schema.name = cls._schema_exadb_vm_cluster_read.name
+        _schema.properties = cls._schema_exadb_vm_cluster_read.properties
+        _schema.system_data = cls._schema_exadb_vm_cluster_read.system_data
+        _schema.tags = cls._schema_exadb_vm_cluster_read.tags
+        _schema.type = cls._schema_exadb_vm_cluster_read.type
+        _schema.zones = cls._schema_exadb_vm_cluster_read.zones
 
 
 __all__ = ["Update"]
