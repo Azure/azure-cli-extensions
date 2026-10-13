@@ -2,6 +2,14 @@
 
 Release History
 ===============
+1.4.0b1
+++++++
+* `az elastic-san`: Support the 2026-05-01-preview API version and Elastic SAN V2 capacity and performance settings.
+* `az elastic-san volume`: Support managed-by resource IDs and permanent deletion of soft-deleted volumes.
+* `az elastic-san volume-group`: Support PATCH updates, delete retention, encryption in transit, and QoS reservations.
+* `az elastic-san volume snapshot update`: Add snapshot update support.
+* BREAKING CHANGE: `az elastic-san update` no longer accepts `--sku` or `--availability-zones`. Use `az elastic-san create --sku` and/or `--availability-zones` instead.
+
 1.3.2
 ++++++
 * `az elastic-san`: Support autoscale, prerestore, and prebackup
