@@ -2498,10 +2498,9 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
         instance.count = new_node_count  # pylint: disable=no-member
 
     # By default scale via the PUT agent pool API (begin_create_or_update).
-    # When --use-patch-api is set, scale a VMSS node pool via the preview PATCH agent
+    # When --use-patch-api is set, scale the node pool via the preview PATCH agent
     # pool API, which scales to the target count without a full reconciliation.
-    # VirtualMachines node pools are not supported yet and keep using the PUT API.
-    if use_patch_api and instance.type_properties_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
+    if use_patch_api:
         return _aks_agentpool_scale_patch(
             cmd,
             client,
@@ -2531,10 +2530,11 @@ def _aks_agentpool_scale_patch(cmd,
                                instance,
                                headers=None,
                                no_wait=False):
-    """Scale a VMSS agent pool via the dedicated PATCH agent pool API.
+    """Scale an agent pool via the dedicated PATCH agent pool API.
 
-    Sends only the already-updated target count on ``instance`` so the pool scales
-    without triggering a full agent pool reconciliation.
+    Sends only the already-updated target count (VMSS) or manual scale profiles
+    (VirtualMachines) on ``instance`` so the pool scales without triggering a full
+    agent pool reconciliation.
     """
     AgentPoolUpdate = cmd.get_models(
         "AgentPoolUpdate",
@@ -2547,7 +2547,35 @@ def _aks_agentpool_scale_patch(cmd,
         operation_group="agent_pools",
     )
 
-    parameters = AgentPoolUpdate(properties=AgentPoolUpdateProperties(count=instance.count))
+    if instance.type_properties_type == CONST_VIRTUAL_MACHINES:
+        AgentPoolUpdateVirtualMachinesProfile = cmd.get_models(
+            "AgentPoolUpdateVirtualMachinesProfile",
+            resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+            operation_group="agent_pools",
+        )
+        AgentPoolUpdateScaleProfile = cmd.get_models(
+            "AgentPoolUpdateScaleProfile",
+            resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+            operation_group="agent_pools",
+        )
+        AgentPoolUpdateManualScaleProfile = cmd.get_models(
+            "AgentPoolUpdateManualScaleProfile",
+            resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+            operation_group="agent_pools",
+        )
+        manual = [
+            AgentPoolUpdateManualScaleProfile(size=m.size, count=m.count)
+            for m in instance.virtual_machines_profile.scale.manual
+        ]
+        properties = AgentPoolUpdateProperties(
+            virtual_machines_profile=AgentPoolUpdateVirtualMachinesProfile(
+                scale=AgentPoolUpdateScaleProfile(manual=manual)
+            )
+        )
+    else:
+        properties = AgentPoolUpdateProperties(count=instance.count)
+
+    parameters = AgentPoolUpdate(properties=properties)
     return sdk_no_wait(
         no_wait,
         client.begin_update,
@@ -3097,6 +3125,7 @@ def aks_agentpool_manual_scale_add(cmd,
                                    nodepool_name,
                                    vm_sizes,
                                    node_count,
+                                   use_patch_api=False,
                                    no_wait=False):
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
@@ -3112,6 +3141,18 @@ def aks_agentpool_manual_scale_add(cmd,
     new_manual_scale_profile = ManualScaleProfile(size=sizes[0], count=int(node_count))
     instance.virtual_machines_profile.scale.manual.append(new_manual_scale_profile)
 
+    # When --use-patch-api is set, add the manual scale profile via the preview
+    # PATCH agent pool API instead of the default PUT API.
+    if use_patch_api:
+        return _aks_agentpool_scale_patch(
+            cmd,
+            client,
+            resource_group_name,
+            cluster_name,
+            nodepool_name,
+            instance,
+            no_wait=no_wait,
+        )
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
@@ -3122,7 +3163,7 @@ def aks_agentpool_manual_scale_add(cmd,
     )
 
 
-def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
+def aks_agentpool_manual_scale_update(cmd,
                                       client,
                                       resource_group_name,
                                       cluster_name,
@@ -3130,6 +3171,7 @@ def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
                                       current_vm_sizes,
                                       vm_sizes=None,
                                       node_count=None,
+                                      use_patch_api=False,
                                       no_wait=False):
     if vm_sizes is None and node_count is None:
         raise RequiredArgumentMissingError("specify --vm-sizes or --node-count or both.")
@@ -3160,6 +3202,18 @@ def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
             f"Manual with size {current_vm_sizes[0]} doesn't exist in node pool {nodepool_name}"
         )
 
+    # When --use-patch-api is set, update the manual scale profiles via the preview
+    # PATCH agent pool API instead of the default PUT API.
+    if use_patch_api:
+        return _aks_agentpool_scale_patch(
+            cmd,
+            client,
+            resource_group_name,
+            cluster_name,
+            nodepool_name,
+            instance,
+            no_wait=no_wait,
+        )
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
@@ -3170,12 +3224,13 @@ def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
     )
 
 
-def aks_agentpool_manual_scale_delete(cmd,    # pylint: disable=unused-argument
+def aks_agentpool_manual_scale_delete(cmd,
                                       client,
                                       resource_group_name,
                                       cluster_name,
                                       nodepool_name,
                                       current_vm_sizes,
+                                      use_patch_api=False,
                                       no_wait=False):
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
@@ -3196,6 +3251,18 @@ def aks_agentpool_manual_scale_delete(cmd,    # pylint: disable=unused-argument
             f"Manual with size {current_vm_sizes[0]} doesn't exist in node pool {nodepool_name}"
         )
 
+    # When --use-patch-api is set, delete the manual scale profile via the preview
+    # PATCH agent pool API instead of the default PUT API.
+    if use_patch_api:
+        return _aks_agentpool_scale_patch(
+            cmd,
+            client,
+            resource_group_name,
+            cluster_name,
+            nodepool_name,
+            instance,
+            no_wait=no_wait,
+        )
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,

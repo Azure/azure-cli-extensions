@@ -2836,18 +2836,36 @@ def load_arguments(self, _):
             "use_patch_api",
             action="store_true",
             is_preview=True,
-            help="Scale a VMSS node pool using the preview PATCH agent pool API instead of the default PUT API.",
+            help="Scale a node pool using the preview PATCH agent pool API instead of the default PUT API.",
         )
 
     with self.argument_context("aks nodepool manual-scale add") as c:
         c.argument("vm_sizes", is_preview=True)
+        c.argument(
+            "use_patch_api",
+            action="store_true",
+            is_preview=True,
+            help="Manage the manual scale profiles using the preview PATCH agent pool API instead of the default PUT API.",
+        )
 
     with self.argument_context("aks nodepool manual-scale update") as c:
         c.argument("current_vm_sizes", is_preview=True)
         c.argument("vm_sizes", is_preview=True)
+        c.argument(
+            "use_patch_api",
+            action="store_true",
+            is_preview=True,
+            help="Manage the manual scale profiles using the preview PATCH agent pool API instead of the default PUT API.",
+        )
 
     with self.argument_context("aks nodepool manual-scale delete") as c:
         c.argument("current_vm_sizes", is_preview=True)
+        c.argument(
+            "use_patch_api",
+            action="store_true",
+            is_preview=True,
+            help="Manage the manual scale profiles using the preview PATCH agent pool API instead of the default PUT API.",
+        )
 
     with self.argument_context("aks nodepool auto-scale add") as c:
         c.argument("node_vm_size", is_preview=True)
