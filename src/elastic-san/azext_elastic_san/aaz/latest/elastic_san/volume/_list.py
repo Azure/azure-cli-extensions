@@ -25,9 +25,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes", "2026-05-01-preview"],
         ]
     }
 
@@ -48,6 +48,11 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.x_ms_access_soft_deleted_resources = AAZStrArg(
+            options=["--access-soft-deleted-resources", "--x-ms-access-soft-deleted-resources"],
+            help="Optional, returns only soft deleted volume groups if set to true. If set to false or if not specified, returns only active volume groups.",
+            enum={"false": "false", "true": "true"},
+        )
         _args_schema.elastic_san_name = AAZStrArg(
             options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
@@ -143,7 +148,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -152,6 +157,9 @@ class List(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "x-ms-access-soft-deleted-resources", self.ctx.args.x_ms_access_soft_deleted_resources,
+                ),
                 **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
@@ -208,7 +216,7 @@ class List(AAZCommand):
             properties.creation_data = AAZObjectType(
                 serialized_name="creationData",
             )
-            properties.managed_by = AAZObjectType(
+            properties.managed_by = AAZListType(
                 serialized_name="managedBy",
             )
             properties.provisioning_state = AAZStrType(
@@ -237,9 +245,19 @@ class List(AAZCommand):
             )
 
             managed_by = cls._schema_on_200.value.Element.properties.managed_by
-            managed_by.resource_id = AAZStrType(
-                serialized_name="resourceId",
+            managed_by.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.managed_by.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
             )
+            _element.resource_ids = AAZListType(
+                serialized_name="resourceIds",
+            )
+            _element.version = AAZIntType()
+
+            resource_ids = cls._schema_on_200.value.Element.properties.managed_by.Element.resource_ids
+            resource_ids.Element = AAZStrType()
 
             storage_target = cls._schema_on_200.value.Element.properties.storage_target
             storage_target.provisioning_state = AAZStrType(

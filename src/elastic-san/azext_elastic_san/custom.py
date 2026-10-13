@@ -69,15 +69,24 @@ class VolumeGroupCreate(_VolumeGroupCreate):
 class VolumeGroupUpdate(_VolumeGroupUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg, AAZResourceIdArgFormat
+        from azure.cli.core.aaz import AAZObjectArg, AAZResourceIdArgFormat, AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="Identity",
+            help="Identity configuration (legacy syntax).",
+        )
+        args_schema.identity.type = AAZStrArg(
+            options=["type"],
+            required=True,
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"},
+        )
         args_schema.identity.user_assigned_identity_id = AAZStrArg(
             options=["user-assigned-identity"],
             help="The ARM resource identifier of the User Assigned identity that will be used with this volume group. ",
             fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
                                                 "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
         )
-        args_schema.identity.user_assigned_identities._registered = False
         args_schema.encryption_properties.identity.user_assigned_identity._fmt = \
             AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
                                             "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
@@ -85,12 +94,33 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
 
     def pre_operations(self):
         from azure.cli.core.aaz import has_value
+        from azure.cli.core.azclierror import InvalidArgumentValueError
         args = self.ctx.args
-        if has_value(args.identity.user_assigned_identity_id):
-            uai_id = str(args.identity.user_assigned_identity_id)
-            args.identity["user_assigned_identities"] = {
-                uai_id: {}}
-            del args.identity.user_assigned_identity_id
+        if has_value(args.identity):
+            if has_value(args.mi_system_assigned) or has_value(args.user_assigned_identity):
+                raise InvalidArgumentValueError(
+                    "Use either the legacy --identity option or the new managed identity options, not both."
+                )
+
+            identity_type = args.identity.type
+            if identity_type == "None":
+                raise InvalidArgumentValueError(
+                    "The legacy --identity type None is not supported by PATCH update. "
+                    "Use 'az elastic-san volume-group identity remove' instead."
+                )
+
+            user_assigned_ids = []
+            if has_value(args.identity.user_assigned_identity_id):
+                user_assigned_ids.append(str(args.identity.user_assigned_identity_id))
+
+            if identity_type == "UserAssigned" and not user_assigned_ids:
+                raise InvalidArgumentValueError(
+                    "The legacy --identity type UserAssigned requires a user-assigned identity."
+                )
+
+            args.mi_system_assigned = "True" if identity_type == "SystemAssigned" else None
+            args.user_assigned_identity = user_assigned_ids
+
         if has_value(args.EnforceDataIntegrityCheckForIscsi) and args.EnforceDataIntegrityCheckForIscsi:
             logger.warning("CRC protection feature is not supported for Azure VMware solution (AVS) yet. "
                            "Do not enable this flag if you plan to use the volumes within this volume group as "
@@ -113,21 +143,6 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
                            "group as datastores for Azure VMware Solution (AVS), as this feature is not supported for "
                            "AVS yet and the datastore creation will fail. "
                            "Learn more: https://go.microsoft.com/fwlink/?LinkId=2294733&id=Microsoft_Azure_ElasticSan")
-
-    def pre_instance_update(self, instance):
-        from azure.cli.core.aaz import has_value
-        args = self.ctx.args
-        if has_value(instance.identity) and has_value(instance.identity.user_assigned_identities) and \
-                has_value(args.identity) and has_value(args.identity.user_assigned_identities):
-            uai_id_new = list(args.identity.user_assigned_identities.keys())[0]
-            uai_id_old = list(instance.identity.user_assigned_identities.keys())[0]
-            if uai_id_old != uai_id_new:
-                if has_value(instance.properties) and has_value(instance.properties.encryption_properties) and \
-                        has_value(instance.properties.encryption_properties.key_vault_properties) and \
-                        has_value(args.encryption_properties) and not has_value(
-                        args.encryption_properties.key_vault_properties):
-                    args.encryption_properties.key_vault_properties = \
-                        instance.properties.encryption_properties.key_vault_properties
 
 
 class ElasticSanCreate(_ElasticSanCreate):

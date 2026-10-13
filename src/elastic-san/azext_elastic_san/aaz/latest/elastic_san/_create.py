@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -119,14 +119,12 @@ class Create(AAZCommand):
             options=["--base-size-tib"],
             arg_group="Properties",
             help="Base size of the Elastic San appliance in TiB.",
-            required=True,
             default=20,
         )
         _args_schema.extended_capacity_size_tib = AAZIntArg(
             options=["--extended-size", "--extended-capacity-size-tib"],
             arg_group="Properties",
             help="Extended size of the Elastic San appliance in TiB.",
-            required=True,
             default=0,
         )
         _args_schema.public_network_access = AAZStrArg(
@@ -141,6 +139,27 @@ class Create(AAZCommand):
             help="resource sku",
             required=True,
         )
+        _args_schema.total_iops = AAZIntArg(
+            options=["--total-iops"],
+            arg_group="Properties",
+            help="Total Provisioned IOPS of the Elastic San appliance. Settable only for ElasticSanVersion V2, where it is required; read-only for V1.",
+        )
+        _args_schema.total_mbps = AAZIntArg(
+            options=["--total-mbps"],
+            arg_group="Properties",
+            help="Total Provisioned MBps Elastic San appliance. Settable only for ElasticSanVersion V2, where it is required; read-only for V1.",
+        )
+        _args_schema.total_size_tib = AAZIntArg(
+            options=["--total-size-tib"],
+            arg_group="Properties",
+            help="Total size of the Elastic San appliance in TB. Settable only for ElasticSanVersion V2, where it is required; read-only for V1.",
+        )
+        _args_schema.version = AAZStrArg(
+            options=["--version"],
+            arg_group="Properties",
+            help="Elastic San appliance version. Defaults to V1 if not specified.",
+            enum={"V1": "V1", "V2": "V2"},
+        )
 
         availability_zones = cls._args_schema.availability_zones
         availability_zones.Element = AAZStrArg()
@@ -150,7 +169,7 @@ class Create(AAZCommand):
             options=["name"],
             help="The sku name.",
             required=True,
-            enum={"Premium_LRS": "Premium_LRS", "Premium_ZRS": "Premium_ZRS"},
+            enum={"ElasticSAN_LRS": "ElasticSAN_LRS", "Premium_LRS": "Premium_LRS", "Premium_ZRS": "Premium_ZRS"},
         )
         sku.tier = AAZStrArg(
             options=["tier"],
@@ -240,7 +259,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -273,10 +292,14 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("autoScaleProperties", AAZObjectType)
                 properties.set_prop("availabilityZones", AAZListType, ".availability_zones")
-                properties.set_prop("baseSizeTiB", AAZIntType, ".base_size_tib", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("extendedCapacitySizeTiB", AAZIntType, ".extended_capacity_size_tib", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("baseSizeTiB", AAZIntType, ".base_size_tib")
+                properties.set_prop("extendedCapacitySizeTiB", AAZIntType, ".extended_capacity_size_tib")
                 properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
                 properties.set_prop("sku", AAZObjectType, ".sku", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("totalIops", AAZIntType, ".total_iops")
+                properties.set_prop("totalMBps", AAZIntType, ".total_mbps")
+                properties.set_prop("totalSizeTiB", AAZIntType, ".total_size_tib")
+                properties.set_prop("version", AAZStrType, ".version")
 
             auto_scale_properties = _builder.get(".properties.autoScaleProperties")
             if auto_scale_properties is not None:
@@ -353,11 +376,9 @@ class Create(AAZCommand):
             )
             properties.base_size_ti_b = AAZIntType(
                 serialized_name="baseSizeTiB",
-                flags={"required": True},
             )
             properties.extended_capacity_size_ti_b = AAZIntType(
                 serialized_name="extendedCapacitySizeTiB",
-                flags={"required": True},
             )
             properties.private_endpoint_connections = AAZListType(
                 serialized_name="privateEndpointConnections",
@@ -375,20 +396,30 @@ class Create(AAZCommand):
             )
             properties.total_iops = AAZIntType(
                 serialized_name="totalIops",
-                flags={"read_only": True},
             )
             properties.total_m_bps = AAZIntType(
                 serialized_name="totalMBps",
+            )
+            properties.total_reserved_iops = AAZIntType(
+                serialized_name="totalReservedIops",
+                flags={"read_only": True},
+            )
+            properties.total_reserved_m_bps = AAZIntType(
+                serialized_name="totalReservedMBps",
                 flags={"read_only": True},
             )
             properties.total_size_ti_b = AAZIntType(
                 serialized_name="totalSizeTiB",
-                flags={"read_only": True},
             )
             properties.total_volume_size_gi_b = AAZIntType(
                 serialized_name="totalVolumeSizeGiB",
                 flags={"read_only": True},
             )
+            properties.used_capacity_gi_b = AAZIntType(
+                serialized_name="usedCapacityGiB",
+                flags={"read_only": True},
+            )
+            properties.version = AAZStrType()
             properties.volume_group_count = AAZIntType(
                 serialized_name="volumeGroupCount",
                 flags={"read_only": True},
