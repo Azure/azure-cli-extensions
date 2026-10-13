@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* Resolve Docker to a trusted absolute path before invoking it from local build and patch flows
 
 1.3.0b5
 ++++++

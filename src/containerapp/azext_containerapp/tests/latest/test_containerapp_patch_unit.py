@@ -8,7 +8,7 @@ import os
 import unittest
 from unittest import mock
 
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import CLIError, ValidationError
 
 from azext_containerapp._utils_validation import validate_image_name
 
@@ -82,7 +82,9 @@ _FUNC_GLOBALS = {
     "subprocess": __import__("subprocess"),
     "json": __import__("json"),
     "logger": mock.MagicMock(),
+    "CLIError": CLIError,
     "validate_image_name": validate_image_name,
+    "get_docker_exec_path": lambda: "/usr/local/bin/docker",
     "update_containerapp": mock.MagicMock(return_value={}),
 }
 
@@ -207,15 +209,35 @@ class TestPatchCliCall(unittest.TestCase):
         tag_call = mock_subprocess.run.call_args_list[1]
         self.assertEqual(
             tag_call[0][0],
-            ["docker", "tag", "myregistry.azurecr.io/myapp:old-tag",
+            ["/usr/local/bin/docker", "tag", "myregistry.azurecr.io/myapp:old-tag",
              "myregistry.azurecr.io/myapp:7.1.0-debian-bullseye"]
         )
 
         push_call = mock_subprocess.run.call_args_list[2]
         self.assertEqual(
             push_call[0][0],
-            ["docker", "push", "-q", "myregistry.azurecr.io/myapp:7.1.0-debian-bullseye"]
+            ["/usr/local/bin/docker", "push", "-q", "myregistry.azurecr.io/myapp:7.1.0-debian-bullseye"]
         )
+
+    def test_does_not_run_when_docker_is_not_found(self):
+        mock_subprocess = mock.MagicMock()
+
+        with mock.patch.dict(
+                _FUNC_GLOBALS,
+                {"subprocess": mock_subprocess, "get_docker_exec_path": lambda: None}
+        ):
+            fn = _extract_function("patch_cli_call")
+            with self.assertRaises(CLIError):
+                fn(
+                    cmd=mock.MagicMock(),
+                    resource_group="myrg",
+                    container_app_name="myapp",
+                    container_name="mycontainer",
+                    target_image_name="myregistry.azurecr.io/myapp:old-tag",
+                    new_run_image="mcr.microsoft.com/oryx/dotnetcore:7.1.0-debian-bullseye",
+                    pack_exec_path="/usr/local/bin/pack",
+                )
+            mock_subprocess.run.assert_not_called()
 
     def test_rejects_malicious_target_image_name(self):
         mock_subprocess = mock.MagicMock()

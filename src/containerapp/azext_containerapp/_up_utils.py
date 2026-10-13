@@ -56,7 +56,7 @@ from ._clients import ContainerAppPreviewClient, GitHubActionClient, ContainerAp
 
 from ._utils import (
     is_docker_running,
-    get_pack_exec_path, _validate_custom_loc_and_location, _validate_connected_k8s_exists, get_custom_location,
+    get_docker_exec_path, get_pack_exec_path, _validate_custom_loc_and_location, _validate_connected_k8s_exists, get_custom_location,
     create_extension, create_custom_location, get_cluster_extension, validate_environment_location,
     list_environment_locations, get_randomized_name_with_dash, get_randomized_name, get_connected_k8s,
     list_cluster_extensions, list_custom_location, is_cloud_supported_by_connected_env
@@ -534,7 +534,11 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         from azure.cli.command_modules.acr.custom import acr_login
         from azure.cli.core.profiles import ResourceType
 
-        command = ['docker', 'push', image_name]
+        docker_exec_path = get_docker_exec_path()
+        if not docker_exec_path:
+            raise CLIError("Docker executable could not be found.")
+
+        command = [docker_exec_path, 'push', image_name]
         logger.debug(f"Calling '{' '.join(command)}'")
         logger.warning(f"Built image {image_name} locally using buildpacks, attempting to push to registry...")
         try:
@@ -551,10 +555,18 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                         for key in task_command_kwargs:  # pylint: disable=consider-using-dict-items
                             old_command_kwargs[key] = self.cmd.command_kwargs.get(key)
                             self.cmd.command_kwargs[key] = task_command_kwargs[key]
-                        if self.acr and self.acr.name is not None:
-                            acr_login(self.cmd, self.acr.name)
-                        for k, v in old_command_kwargs.items():
-                            self.cmd.command_kwargs[k] = v
+                        old_docker_command = os.environ.get("DOCKER_COMMAND")
+                        try:
+                            os.environ["DOCKER_COMMAND"] = docker_exec_path
+                            if self.acr and self.acr.name is not None:
+                                acr_login(self.cmd, self.acr.name)
+                        finally:
+                            if old_docker_command is None:
+                                os.environ.pop("DOCKER_COMMAND", None)
+                            else:
+                                os.environ["DOCKER_COMMAND"] = old_docker_command
+                            for k, v in old_command_kwargs.items():
+                                self.cmd.command_kwargs[k] = v
 
                         self._docker_push_to_container_registry(image_name, True)
                     else:

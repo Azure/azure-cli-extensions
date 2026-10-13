@@ -263,14 +263,48 @@ def list_environment_locations(cmd, resource_type=MANAGED_ENVIRONMENT_RESOURCE_T
     return res_locations
 
 
+def get_docker_exec_path():
+    docker_exec_path = shutil.which("docker")
+    if not docker_exec_path:
+        return None
+
+    try:
+        cwd = os.path.abspath(os.getcwd())
+        docker_exec_path = os.path.abspath(docker_exec_path)
+        resolved_paths = (docker_exec_path, os.path.realpath(docker_exec_path))
+
+        for resolved_path in resolved_paths:
+            resolved_dir = os.path.dirname(resolved_path)
+            try:
+                is_cwd = os.path.samefile(resolved_dir, cwd)
+            except (OSError, ValueError):
+                is_cwd = os.path.normcase(os.path.normpath(resolved_dir)) == os.path.normcase(os.path.normpath(cwd))
+
+            if is_cwd:
+                raise CLIError(
+                    "Refusing to use Docker executable '{}' because it is located in the current working directory."
+                    .format(resolved_path)
+                )
+    except CLIError:
+        raise
+    except (OSError, ValueError) as ex:
+        raise CLIError("Unable to verify Docker executable path safety.") from ex
+
+    return docker_exec_path
+
+
 def is_docker_running():
+    docker_exec_path = get_docker_exec_path()
+    if not docker_exec_path:
+        return False
+
     try:
         # Run a simple 'docker stats --no-stream' command to check if the Docker daemon is running
-        command = ["docker", "stats", "--no-stream"]
+        command = [docker_exec_path, "stats", "--no-stream"]
         with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
             _, _ = process.communicate()
             return process.returncode == 0
-    except Exception:
+    except (OSError, subprocess.SubprocessError):
         return False
 
 
