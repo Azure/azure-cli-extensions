@@ -39,6 +39,38 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 TEST_V2_QUOTA_ALLOCATION_MINUTES = 2
 
 
+class QuantumJobsArgumentTest(unittest.TestCase):
+
+    def test_storage_argument_is_deprecated(self):
+        from azure.cli.core.mock import DummyCli
+        from ... import QuantumCommandsLoader
+
+        loader = QuantumCommandsLoader(cli_ctx=DummyCli())
+        loader.skip_applicability = True
+        loader.load_command_table(None)
+        loader.load_arguments(None)
+
+        commands = (
+            'quantum job submit',
+            'quantum execute',
+            'quantum run',
+        )
+
+        for command in commands:
+            with self.subTest(command=command):
+                argument = loader.argument_registry.get_cli_argument(
+                    command,
+                    'storage',
+                )
+                deprecation = argument.settings.get('deprecate_info')
+
+                self.assertIsNotNone(deprecation)
+                self.assertTrue(deprecation.show_in_help())
+                self.assertIsNone(deprecation.redirect)
+                self.assertIn('deprecated', deprecation.message.lower())
+                self.assertIn('future release', deprecation.message.lower())
+
+
 class QuantumJobsScenarioTest(ScenarioTest):
 
     def _cmd_with_retry(self, command, retry_error_code, retries=3, delay=10):

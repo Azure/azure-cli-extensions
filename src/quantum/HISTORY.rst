@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b31
+++++++++++++++
+* Deprecated the ignored ``--storage`` argument for ``az quantum job submit``, ``az quantum execute``, and ``az quantum run``. Jobs use workspace-linked storage.
+
 1.0.0b30
 ++++++++++++++
 * Fixed crashes in ``az quantum offerings list -o table`` and ``az quantum workspace create`` when a V2-only provider lacks a legacy marketplace ManagedApplication association.

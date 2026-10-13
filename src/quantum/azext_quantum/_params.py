@@ -170,7 +170,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     job_params_type = CLIArgumentType(options_list=['--job-params'], help='Job parameters passed to the target as a list of key=value pairs, json string, or `@{file}` with json content.', action=JobParamsAction, nargs='+')
     target_capability_type = CLIArgumentType(options_list=['--target-capability'], help='Target-capability parameter passed to the compiler.')
     shots_type = CLIArgumentType(help='The number of times to run the program on the given target.')
-    storage_type = CLIArgumentType(help='If specified, the ConnectionString of an Azure Storage is used to store job data and results.')
+    storage_type = CLIArgumentType(help='Deprecated and ignored. Jobs use the storage account linked to the workspace.')
     max_poll_wait_secs_type = CLIArgumentType(help='Poll time in seconds to query Azure Quantum for results of the corresponding job.')
     tag_type = CLIArgumentType(help='Show only quantum workspaces that have associated the specified tag.')
     skip_role_assignment_type = CLIArgumentType(help='Skip the role assignment step for the quantum workspace in the storage account.')
@@ -260,6 +260,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('job_input_format', job_input_format_type)
         c.argument('job_output_format', job_output_format_type)
         c.argument('entry_point', entry_point_type)
+        c.argument(
+            'storage',
+            storage_type,
+            deprecate_info=c.deprecate(target='--storage'),
+        )
 
     with self.argument_context('quantum job file download') as c:
         c.argument('file_name', file_name_type)
@@ -275,7 +280,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('target_id', target_id_type)
         c.argument('job_name', job_name_type)
         c.argument('shots', shots_type)
-        c.argument('storage', storage_type)
+        c.argument(
+            'storage',
+            storage_type,
+            deprecate_info=c.deprecate(target='--storage'),
+        )
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
         c.argument('job_input_file', job_input_file_type)
@@ -288,7 +297,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('target_id', target_id_type)
         c.argument('job_name', job_name_type)
         c.argument('shots', shots_type)
-        c.argument('storage', storage_type)
+        c.argument(
+            'storage',
+            storage_type,
+            deprecate_info=c.deprecate(target='--storage'),
+        )
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
         c.argument('job_input_file', job_input_file_type)
