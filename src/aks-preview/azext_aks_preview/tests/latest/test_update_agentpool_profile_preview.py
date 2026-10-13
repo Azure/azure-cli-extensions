@@ -157,6 +157,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings = Mock(return_value=agentpool)
         decorator.update_gpu_profile = Mock(return_value=agentpool)
         decorator.update_gpu_mig_strategy = Mock(return_value=agentpool)
+        decorator.update_gpu_mig_profiles = Mock(return_value=agentpool)
         decorator.update_crg = Mock(return_value=agentpool)
         decorator.update_prepared_image_specification = Mock(return_value=agentpool)
 
@@ -188,6 +189,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings.assert_called_once_with(agentpool)
         decorator.update_gpu_profile.assert_called_once_with(agentpool)
         decorator.update_gpu_mig_strategy.assert_called_once_with(agentpool)
+        decorator.update_gpu_mig_profiles.assert_called_once_with(agentpool)
         decorator.update_crg.assert_called_once_with(agentpool)
         decorator.update_prepared_image_specification.assert_called_once_with(agentpool)
 
@@ -236,6 +238,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
             "update_blue_green_upgrade_settings",
             "update_gpu_profile",
             "update_gpu_mig_strategy",
+            "update_gpu_mig_profiles",
             "update_crg",
             "update_prepared_image_specification",
         ]:
@@ -291,6 +294,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings = Mock(return_value=agentpool)
         decorator.update_gpu_profile = Mock(return_value=agentpool)
         decorator.update_gpu_mig_strategy = Mock(return_value=agentpool)
+        decorator.update_gpu_mig_profiles = Mock(return_value=agentpool)
         decorator.update_crg = Mock(return_value=agentpool)
         decorator.update_prepared_image_specification = Mock(return_value=agentpool)
 
@@ -346,6 +350,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings = Mock()
         decorator.update_gpu_profile = Mock()
         decorator.update_gpu_mig_strategy = Mock()
+        decorator.update_gpu_mig_profiles = Mock()
         decorator.update_crg = Mock()
         decorator.update_prepared_image_specification = Mock()
 
@@ -379,6 +384,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings.assert_not_called()
         decorator.update_gpu_profile.assert_not_called()
         decorator.update_gpu_mig_strategy.assert_not_called()
+        decorator.update_gpu_mig_profiles.assert_not_called()
         decorator.update_crg.assert_not_called()
         decorator.update_prepared_image_specification.assert_not_called()
 
@@ -463,6 +469,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings = Mock(return_value=agentpool)
         decorator.update_gpu_profile = Mock(return_value=agentpool)
         decorator.update_gpu_mig_strategy = Mock(return_value=agentpool)
+        decorator.update_gpu_mig_profiles = Mock(return_value=agentpool)
         decorator.update_crg = Mock(return_value=agentpool)
         decorator.update_prepared_image_specification = Mock(return_value=agentpool)
 
@@ -492,6 +499,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings.assert_called_once_with(agentpool)
         decorator.update_gpu_profile.assert_called_once_with(agentpool)
         decorator.update_gpu_mig_strategy.assert_called_once_with(agentpool)
+        decorator.update_gpu_mig_profiles.assert_called_once_with(agentpool)
         decorator.update_crg.assert_called_once_with(agentpool)
         decorator.update_prepared_image_specification.assert_called_once_with(agentpool)
 
@@ -544,6 +552,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings = create_mock_update_method("update_blue_green_upgrade_settings")
         decorator.update_gpu_profile = create_mock_update_method("update_gpu_profile")
         decorator.update_gpu_mig_strategy = create_mock_update_method("update_gpu_mig_strategy")
+        decorator.update_gpu_mig_profiles = create_mock_update_method("update_gpu_mig_profiles")
         decorator.update_crg = create_mock_update_method("update_crg")
         decorator.update_prepared_image_specification = create_mock_update_method("update_prepared_image_specification")
 
@@ -566,6 +575,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
             "update_blue_green_upgrade_settings",
             "update_gpu_profile",
             "update_gpu_mig_strategy",
+            "update_gpu_mig_profiles",
             "update_crg",
             "update_prepared_image_specification",
         ]
@@ -624,6 +634,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings = create_tracking_mock("update_blue_green_upgrade_settings")        
         decorator.update_gpu_profile = create_tracking_mock("update_gpu_profile")
         decorator.update_gpu_mig_strategy = create_tracking_mock("update_gpu_mig_strategy")
+        decorator.update_gpu_mig_profiles = create_tracking_mock("update_gpu_mig_profiles")
         decorator.update_crg = create_tracking_mock("update_crg")
         decorator.update_prepared_image_specification = create_tracking_mock("update_prepared_image_specification")
 
@@ -689,7 +700,8 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
                     'update_secure_boot', 'update_vtpm', 'update_os_sku', 'update_fips_image',
                     'update_ssh_access', 'update_vm_size', 'update_localdns_profile',
                     'update_upgrade_strategy', 'update_blue_green_upgrade_settings', 'update_gpu_profile',
-                    'update_gpu_mig_strategy', 'update_crg', 'update_prepared_image_specification'
+                    'update_gpu_mig_strategy', 'update_gpu_mig_profiles', 'update_crg',
+                    'update_prepared_image_specification'
                 ]
                 if not self.base_handles_zones:
                     update_methods.insert(9, 'update_zones')
@@ -853,6 +865,7 @@ class TestUpdateAgentPoolProfilePreviewManagedClusterMode(TestUpdateAgentPoolPro
         decorator.update_blue_green_upgrade_settings = Mock(return_value=agentpool)
         decorator.update_gpu_profile = Mock(return_value=agentpool)
         decorator.update_gpu_mig_strategy = Mock(return_value=agentpool)
+        decorator.update_gpu_mig_profiles = Mock(return_value=agentpool)
         decorator.update_crg = Mock(return_value=agentpool)
         decorator.update_prepared_image_specification = Mock(return_value=agentpool)
 

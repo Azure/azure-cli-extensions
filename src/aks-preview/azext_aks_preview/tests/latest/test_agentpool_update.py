@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from azext_aks_preview import ContainerServiceCommandsLoader, register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
@@ -150,3 +150,39 @@ class TestAgentPoolUpdateGPUProfile(unittest.TestCase):
                 parsed = parser.parse_args(args + flags)
                 self.assertIs(parsed.enable_managed_gpu, expected)
                 self.assertTrue(parsed.enable_cluster_autoscaler)
+
+    def test_gpu_mig_profiles_argument_preserves_order_and_duplicates(self):
+        cli_ctx = self.cmd.cli_ctx
+        parser = AzCliCommandParser(cli_ctx=cli_ctx)
+        command_name = "aks nodepool update"
+        cli_ctx.invocation = Mock(parser=parser, data={"command_string": command_name})
+        cli_ctx.local_context = Mock(is_on=False)
+        loader = ContainerServiceCommandsLoader(cli_ctx)
+        loader.load_command_table(command_name.split())
+        command = loader.command_table[command_name]
+        command.load_arguments()
+        loader.load_arguments(command_name)
+        loader._apply_parameter_info(command_name, command)  # pylint: disable=protected-access
+        loader.command_table = {command_name: command}
+        parser.load_command_table(loader)
+
+        args = command_name.split()
+        for name, value in (
+            ("resource_group_name", "test-rg"),
+            ("cluster_name", "test-cluster"),
+            ("nodepool_name", "gpunp"),
+        ):
+            args.extend([command.arguments[name].options_list[0], value])
+
+        parsed = parser.parse_args(args)
+        self.assertIsNone(parsed.gpu_mig_profiles)
+
+        profiles = ["MIG1g", "MIG2g", "MIG2g", "MIG2g"]
+        parsed = parser.parse_args(args + ["--gpu-mig-profiles", *profiles])
+        self.assertEqual(parsed.gpu_mig_profiles, profiles)
+
+        with patch(
+            "azure.cli.core.command_recommender.CommandRecommender.provide_recommendations",
+            return_value=[],
+        ), self.assertRaises(SystemExit):
+            parser.parse_args(args + ["--gpu-mig-profiles", "MIG5g"])
