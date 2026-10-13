@@ -12,6 +12,9 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Allow longer node pool names; the service enforces the actual limit.
+* `az aks create`: Add `--enable-upgrade-gate` to enable health-aware upgrade gating for the cluster.
+* `az aks update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the cluster.
+* `az aks nodepool add/update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the node pool.
 
 22.0.0b13
 +++++++++

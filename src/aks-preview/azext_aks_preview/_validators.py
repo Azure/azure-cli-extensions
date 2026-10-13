@@ -859,6 +859,13 @@ def validate_force_upgrade_disable_and_enable_parameters(namespace):
         )
 
 
+def validate_upgrade_gate_disable_and_enable_parameters(namespace):
+    if namespace.disable_upgrade_gate and namespace.enable_upgrade_gate:
+        raise MutuallyExclusiveArgumentError(
+            'Providing both --disable-upgrade-gate and --enable-upgrade-gate flags is invalid'
+        )
+
+
 def sanitize_resource_id(resource_id):
     resource_id = resource_id.strip()
     if not resource_id.startswith("/"):

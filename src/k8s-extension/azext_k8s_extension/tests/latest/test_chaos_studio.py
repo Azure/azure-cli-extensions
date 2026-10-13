@@ -16,6 +16,7 @@ from azext_k8s_extension.partner_extensions.ChaosStudio import ChaosStudio
 from azext_k8s_extension.vendored_sdks.models import Extension, PatchExtension
 
 SUB = "00000000-0000-0000-0000-000000000001"
+SUB2 = "00000000-0000-0000-0000-000000000006"
 WORKSPACE = "/subscriptions/{}/resourceGroups/workspace/providers/Microsoft.Chaos/workspaces/test".format(SUB)
 PRINCIPAL = "00000000-0000-0000-0000-000000000002"
 TENANT = "00000000-0000-0000-0000-000000000003"
@@ -29,30 +30,47 @@ PREFIX = "azext_k8s_extension.partner_extensions.ChaosStudio."
 
 
 class Arm:
-    def __init__(self, events):
-        self.subscription_id = SUB
+    def __init__(self, events, subscription_id=SUB, tenant_roles=None):
+        self.subscription_id = subscription_id
         self.events = events
         self.endpoint = "https://dataplane.northeurope.chaos-test.azure.com"
+        # Role definitions are tenant-wide: role GUID -> (roleName, assignableScopes).
+        self.tenant_roles = {} if tenant_roles is None else tenant_roles
         self.resources = {
-            CLUSTER: {"location": "westus2", "properties": {
-                "securityProfile": {"workloadIdentity": {"enabled": True}},
-                "oidcIssuerProfile": {"enabled": True, "issuerURL": "https://issuer.test"},
-                "aadProfile": {"enableAzureRBAC": True},
-            }},
+            ChaosStudio._cluster_resource_id(subscription_id, "rg", "cluster"): {
+                "location": "westus2", "properties": {
+                    "securityProfile": {"workloadIdentity": {"enabled": True}},
+                    "oidcIssuerProfile": {"enabled": True, "issuerURL": "https://issuer.test"},
+                    "aadProfile": {"enableAzureRBAC": True},
+                }},
             WORKSPACE: {"identity": {"type": "SystemAssigned", "principalId": WORKSPACE_PRINCIPAL}},
         }
         self.fail_connection = False
         self.lost_response = False
+        self.fail_reads = set()
 
     def get(self, resource_id, *_args, allow_not_found=False):
         self.events.append(("arm-get", resource_id))
+        if resource_id in self.fail_reads:
+            error = AzureResponseError("Forbidden: AuthorizationFailed")
+            error.status_code = 403
+            raise error
         if resource_id not in self.resources and not allow_not_found:
             raise AzureResponseError("read failed")
         return copy.deepcopy(self.resources.get(resource_id))
 
     def put(self, resource_id, _api, _description, body):
         self.events.append(("arm-put", resource_id))
-        if resource_id == CONNECTION:
+        if "/roleDefinitions/" in resource_id:
+            guid = resource_id.rsplit("/", 1)[-1]
+            name = body["properties"]["roleName"]
+            scopes = body["properties"]["assignableScopes"]
+            if any(n == name and g != guid for g, (n, _) in self.tenant_roles.items()):
+                raise AzureResponseError("Conflict: RoleDefinitionWithSameNameExists")
+            if guid in self.tenant_roles and self.tenant_roles[guid][1] != scopes:
+                raise AzureResponseError("Conflict: role definition ID already exists in the tenant")
+            self.tenant_roles[guid] = (name, scopes)
+        if "/connections/" in resource_id:
             if self.fail_connection:
                 raise AzureResponseError("grant publication failed")
             old = self.resources.get(resource_id)
@@ -60,7 +78,7 @@ class Arm:
                 raise AzureResponseError("immutable trust conflict")
             body = {"properties": dict(body["properties"], dataPlaneEndpoint=self.endpoint)}
         self.resources[resource_id] = copy.deepcopy(body)
-        if resource_id == CONNECTION and self.lost_response:
+        if "/connections/" in resource_id and self.lost_response:
             self.lost_response = False
             raise AzureResponseError("connection response lost")
         return copy.deepcopy(body)
@@ -146,9 +164,9 @@ class ChaosStudioTests(unittest.TestCase):
         wait.start()
         self.addCleanup(wait.stop)
 
-    def reset_resources(self):
+    def reset_resources(self, subscription_id=SUB, tenant_roles=None):
         self.events = []
-        self.arm = Arm(self.events)
+        self.arm = Arm(self.events, subscription_id, tenant_roles)
         self.client = Extensions(self.events)
         self.partner = ChaosStudio()
         self.partner._arm_client_factory = lambda _cmd: self.arm
@@ -317,6 +335,88 @@ class ChaosStudioTests(unittest.TestCase):
         self.assertNotIn(("arm-put", role_id), self.events)
         self.assertEqual(self.arm.resources[role_id], role)
 
+    @staticmethod
+    def role_id(subscription_id, guid):
+        return "/subscriptions/{}/providers/Microsoft.Authorization/roleDefinitions/{}".format(
+            subscription_id, guid)
+
+    @staticmethod
+    def role_body(name, subscription_id=SUB, description=ChaosStudio.ROLE_DESCRIPTION):
+        return {"properties": {
+            "roleName": name, "description": description, "type": "CustomRole",
+            "assignableScopes": ["/subscriptions/{}".format(subscription_id)],
+            "permissions": [{"actions": ChaosStudio.ROLE_ACTIONS, "notActions": [],
+                             "dataActions": ChaosStudio.ROLE_DATA_ACTIONS, "notDataActions": []}],
+        }}
+
+    def assigned_role(self):
+        assignment = next(v for k, v in self.arm.resources.items() if "/roleAssignments/" in k)
+        return assignment["properties"]["roleDefinitionId"]
+
+    def test_second_subscription_in_same_tenant_does_not_conflict(self):
+        legacy_guid = ChaosStudio.ROLE_DEFINITION_GUID
+        # Positive control: the fake tenant rejects a second role with the 1.9.2 fixed name.
+        control = Arm([], SUB2, {"other": (ChaosStudio.LEGACY_ROLE_NAME, ["/subscriptions/" + SUB])})
+        with self.assertRaisesRegex(AzureResponseError, "RoleDefinitionWithSameNameExists"):
+            control.put(self.role_id(SUB2, legacy_guid), None, None,
+                        self.role_body(ChaosStudio.LEGACY_ROLE_NAME, SUB2))
+
+        tenant = {}
+        self.reset_resources(SUB, tenant)
+        self.run_install()
+        first_role = self.assigned_role()
+        self.reset_resources(SUB2, tenant)
+        # The tenant-wide legacy role may be readable from the second subscription; it must be ignored.
+        self.arm.resources[self.role_id(SUB2, legacy_guid)] = self.role_body(ChaosStudio.LEGACY_ROLE_NAME, SUB)
+        self.run_install()
+        second_role = self.assigned_role()
+
+        self.assertNotEqual(first_role.rsplit("/", 1)[-1], second_role.rsplit("/", 1)[-1])
+        self.assertNotIn(legacy_guid, (first_role.rsplit("/", 1)[-1], second_role.rsplit("/", 1)[-1]))
+        self.assertEqual(sorted(name for name, _ in tenant.values()), sorted([
+            "Chaos Studio Kubernetes Operator ({})".format(SUB),
+            "Chaos Studio Kubernetes Operator ({})".format(SUB2),
+        ]))
+        self.assertTrue(all(len(name) <= 512 for name, _ in tenant.values()))
+        self.assertEqual(second_role, self.role_id(SUB2, ChaosStudio._role_definition_guid(SUB2)))
+
+    def test_legacy_named_role_is_reused_and_cleaned_up(self):
+        legacy_id = self.role_id(SUB, ChaosStudio.ROLE_DEFINITION_GUID)
+        legacy = self.role_body(ChaosStudio.LEGACY_ROLE_NAME)
+        self.arm.resources[legacy_id] = copy.deepcopy(legacy)
+        self.run_install()
+        self.assertFalse(any(e[0] == "arm-put" and "/roleDefinitions/" in e[1] for e in self.events))
+        self.assertEqual(self.assigned_role(), legacy_id)
+        self.assertEqual(self.arm.resources[legacy_id], legacy)
+
+        self.events.clear()
+        with patch("azext_k8s_extension.partner_extensions.DefaultExtension.DefaultExtension.Delete"):
+            self.partner.Delete(self.cmd, self.client, "rg", "cluster", "chaos",
+                                "managedClusters", "Microsoft.ContainerService", True)
+        deletes = [e[1] for e in self.events if e[0] == "arm-delete"]
+        self.assertTrue(any("/roleAssignments/" in d for d in deletes))
+        self.assertNotIn(legacy_id, deletes)
+
+    def test_explicit_role_with_different_name_is_accepted(self):
+        role_id = self.role_id(SUB, "11111111-2222-3333-4444-555555555555")
+        role = self.role_body("Contoso AKS chaos operator", description="Customer-managed role.")
+        self.arm.resources[role_id] = copy.deepcopy(role)
+        self.run_install(configuration_settings={
+            "chaos-workspace-id": WORKSPACE, "chaos-existing-role-definition-id": role_id,
+        })
+        self.assertFalse(any(e[0] == "arm-put" and "/roleDefinitions/" in e[1] for e in self.events))
+        self.assertEqual(self.assigned_role(), role_id)
+        self.assertEqual(self.arm.resources[role_id], role)
+
+    def test_owned_role_with_wrong_permissions_is_not_overwritten(self):
+        role_id = self.role_id(SUB, ChaosStudio._role_definition_guid(SUB))
+        role = self.role_body(ChaosStudio._role_name(SUB))
+        role["properties"]["permissions"][0]["dataActions"] = ["Microsoft.ContainerService/*"]
+        self.arm.resources[role_id] = role
+        with self.assertRaisesRegex(AzureResponseError, "incompatible"):
+            self.run_install()
+        self.assertFalse(any(e[0] in ("create", "update", "arm-put") for e in self.events))
+
     def test_conflicting_workspace_assignment_is_not_overwritten(self):
         self.run_install()
         assignment_id = next(key for key in self.arm.resources if "/roleAssignments/" in key)
@@ -475,6 +575,114 @@ class ChaosStudioTests(unittest.TestCase):
         self.assertEqual(deletes[0], CONNECTION)
         self.assertEqual(len(deletes), 2)
         self.assertIn("roleAssignments", deletes[1])
+
+    SAFEGUARDS = CLUSTER + "/providers/Microsoft.ContainerService/deploymentSafeguards/default"
+
+    def set_safeguards(self, level, excluded=None, system_excluded=None):
+        properties = {"level": level}
+        if excluded is not None:
+            properties["excludedNamespaces"] = excluded
+        if system_excluded is not None:
+            properties["systemExcludedNamespaces"] = system_excluded
+        self.arm.resources[self.SAFEGUARDS] = {"properties": properties}
+
+    def daemon_settings(self):
+        create = next(e[1] for e in self.events if e[0] == "create")
+        update = next(e[1] for e in self.events if e[0] == "update")
+        return (create.configuration_settings["chaosDaemon.enabled"],
+                update.configuration_settings["chaosDaemon.enabled"])
+
+    def test_safeguards_enforce_without_exclusion_skips_daemon_before_bootstrap(self):
+        self.set_safeguards("Enforce", excluded=["other"], system_excluded=["kube-system"])
+        with patch(PREFIX + "logger") as log:
+            result = self.run_install()
+        self.assertEqual(self.daemon_settings(), ("false", "false"))
+        self.assertEqual(result.configuration_settings["chaosDaemon.enabled"], "false")
+        events = [e[0:2] for e in self.events]
+        self.assertLess(events.index(("arm-get", self.SAFEGUARDS)),
+                        next(i for i, e in enumerate(self.events) if e[0] == "create"))
+        call = log.warning.call_args_list[0]
+        warning = call.args[0] % call.args[1:]
+        for text in ("'chaos-infrastructure'", "PodNetworkLatency and PodNetworkLoss",
+                     "PodDelete, PodCpuHog and PodMemoryHog still work", "az k8s-extension update"):
+            self.assertIn(text, warning)
+
+    def test_safeguards_exclusion_or_warn_or_absent_keeps_daemon(self):
+        cases = {
+            "customer exclusion": dict(level="Enforce", excluded=["chaos-infrastructure"]),
+            "system exclusion": dict(level="Enforce", system_excluded=["chaos-infrastructure"]),
+            "warn": dict(level="Warn"),
+            "not configured": None,
+        }
+        for name, safeguards in cases.items():
+            with self.subTest(name):
+                self.reset_resources()
+                if safeguards:
+                    self.set_safeguards(**safeguards)
+                self.run_install()
+                self.assertEqual(self.daemon_settings(), ("true", "true"))
+
+    def test_safeguards_uses_custom_release_namespace(self):
+        self.set_safeguards("Enforce", excluded=["chaos-infrastructure"])
+        self.run_install(release_namespace="custom-chaos")
+        self.assertEqual(self.daemon_settings(), ("false", "false"))
+        self.reset_resources()
+        self.set_safeguards("Enforce", excluded=["custom-chaos"])
+        self.run_install(release_namespace="custom-chaos")
+        self.assertEqual(self.daemon_settings(), ("true", "true"))
+
+    def test_safeguards_read_failure_or_malformed_response_fails_before_writes(self):
+        cases = {
+            "forbidden": None,
+            "unknown level": {"properties": {"level": "Audit"}},
+            "missing properties": {},
+            "malformed exclusions": {"properties": {"level": "Enforce", "excludedNamespaces": "chaos-infrastructure"}},
+        }
+        for name, body in cases.items():
+            with self.subTest(name):
+                self.reset_resources()
+                if body is None:
+                    self.arm.fail_reads.add(self.SAFEGUARDS)
+                else:
+                    self.arm.resources[self.SAFEGUARDS] = body
+                with self.assertRaises(AzureResponseError):
+                    self.run_install()
+                self.assertFalse(any(e[0] in ("create", "update", "arm-put") for e in self.events))
+
+    def test_safeguards_forbidden_names_required_permission(self):
+        self.arm.fail_reads.add(self.SAFEGUARDS)
+        with self.assertRaises(AzureResponseError) as raised:
+            self.run_install()
+        self.assertIn("Microsoft.ContainerService/deploymentSafeguards/read", str(raised.exception))
+        self.assertIn("Reader", str(raised.exception))
+
+    def test_safeguards_daemon_setting_cannot_be_overridden(self):
+        for value in ("true", "false"):
+            with self.subTest(value=value), self.assertRaises(InvalidArgumentValueError):
+                self.prepare(configuration_settings={"chaos-workspace-id": WORKSPACE, "chaosDaemon.enabled": value})
+        self.set_safeguards("Enforce")
+        self.run_install()
+        with self.assertRaises(InvalidArgumentValueError):
+            self.partner.Update(self.cmd, "rg", "cluster", None, None, None, None,
+                                {"chaosDaemon.enabled": "true"}, {}, self.client.extension)
+
+    def test_safeguards_update_reevaluates_and_recovers(self):
+        self.set_safeguards("Enforce")
+        self.run_install()
+        self.assertEqual(self.client.extension.configuration_settings["chaosDaemon.enabled"], "false")
+        self.set_safeguards("Enforce", excluded=["chaos-infrastructure"])
+        update = self.partner.Update(self.cmd, "rg", "cluster", None, None, None, None,
+                                     {}, {}, self.client.extension)
+        self.assertEqual(update.configuration_settings["chaosDaemon.enabled"], "true")
+        self.client.extension.configuration_settings = dict(update.configuration_settings)
+        self.set_safeguards("Enforce")
+        update = self.partner.Update(self.cmd, "rg", "cluster", None, None, None, None,
+                                     {}, {}, self.client.extension)
+        self.assertEqual(update.configuration_settings["chaosDaemon.enabled"], "false")
+        del self.arm.resources[self.SAFEGUARDS]
+        update = self.partner.Update(self.cmd, "rg", "cluster", None, None, None, None,
+                                     {}, {}, self.client.extension)
+        self.assertEqual(update.configuration_settings["chaosDaemon.enabled"], "true")
 
     def test_workspace_identity_variants(self):
         self.assertEqual(ChaosStudio._workspace_principal_id(
