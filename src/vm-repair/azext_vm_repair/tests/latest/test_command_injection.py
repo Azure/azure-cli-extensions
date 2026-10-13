@@ -323,7 +323,7 @@ def test_validate_tags_error_message_names_offending_tag():
 #
 # Fix: _validate_token_for_cmd_exe rejects '"', '%', '!', and control chars on
 # every token in _call_az_command's Windows branch - covers all call sites, not
-# just osDisk.vhd.uri. See ICM-558-FIX-SPEC.md.
+# just osDisk.vhd.uri.
 # ---------------------------------------------------------------------------
 
 # Malicious osDisk.vhd.uri: backslash-quote closes cmd.exe's quoted region early.
@@ -365,7 +365,7 @@ def test_rejection_error_does_not_leak_the_raw_token():
 def test_osdisk_uri_injection_is_blocked_end_to_end(tmp_path, monkeypatch, malicious_disk_uri):
     """End-to-end through the real _call_az_command: must raise before cmd.exe runs, no marker file."""
     monkeypatch.chdir(tmp_path)
-    marker = tmp_path / 'ICM_558_INJECTED.txt'
+    marker = tmp_path / 'test_osdisk_uri_injection.txt'
     command = RESTORE_COMMAND_TEMPLATE.format(
         g='rg', n='vm', uri=malicious_disk_uri.replace('calc.exe', 'echo PWNED>{} & rem'.format(marker.name)))
 
@@ -374,7 +374,7 @@ def test_osdisk_uri_injection_is_blocked_end_to_end(tmp_path, monkeypatch, malic
 
     assert isinstance(exc_info.value, InvalidArgumentValueError), (
         'Expected the sink-level guard to reject the token, not a failed az invocation.')
-    assert not marker.exists(), 'ICM-558 reproduced: command injection via osDisk.vhd.uri.'
+    assert not marker.exists(), 'Reproduced: command injection via osDisk.vhd.uri.'
 
 
 def test_unsafe_secure_param_is_rejected_without_leaking_it(monkeypatch):
@@ -418,7 +418,7 @@ def test_osdisk_uri_injection_is_blocked_before_any_process_is_spawned(monkeypat
 
 
 # ---------------------------------------------------------------------------
-# ICM-558: disk-stranding regression tests for custom.py's restore()
+# disk-stranding regression tests for custom.py's restore()
 #
 # restore() validates the attach command before detaching the repaired disk, so a
 # rejected attach can't leave it detached with no reattachment. These tests drive
@@ -594,9 +594,9 @@ def test_rejection_error_has_no_field_name_by_default():
 
 
 # ---------------------------------------------------------------------------
-# ICM-558 follow-up: reset_nic's IP-swap/revert flow has the same stranding
-# shape as restore()'s detach/attach - a rejected revert command used to be
-# discovered only after the NIC was already swapped, with no way back.
+# reset_nic's IP-swap/revert flow has the same stranding shape as restore()'s
+# detach/attach - a rejected revert command used to be discovered only after
+# the NIC was already swapped, with no way back.
 # ---------------------------------------------------------------------------
 
 UNSAFE_ASG_NAME = 'asg%CMDCMDLINE:~10,1%'

@@ -645,7 +645,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
                     .format(g=resource_group_name, n=vm_name, disk=disk_id)
 
                 # Validate before detaching, so a rejected attach command can't strand the
-                # disk detached from the repair VM. See ICM-558.
+                # disk detached from the repair VM.
                 _validate_command_for_cmd_exe(attach_fixed_command, field_name='source disk ID')
 
                 # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
@@ -678,13 +678,13 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
                 # arguments (e.g. '--remove storageProfile.dataDisks') into the nested az
                 # call while leaving no literal '"' in any token for the guard to catch.
                 # shlex.quote() keeps the whole assignment, including any embedded quote,
-                # as the literal value of a single token, so the guard sees it. See ICM-558.
+                # as the literal value of a single token, so the guard sees it.
                 uri_assignment = shlex.quote('storageProfile.osDisk.vhd.uri={uri}'.format(uri=disk_uri))
                 attach_unmanaged_command = 'az vm update -g {g} -n {n} --set {assignment}' \
                     .format(g=resource_group_name, n=vm_name, assignment=uri_assignment)
 
                 # Validate before detaching, so a rejected attach command can't strand the
-                # disk detached from the repair VM. See ICM-558.
+                # disk detached from the repair VM.
                 _validate_command_for_cmd_exe(attach_unmanaged_command, field_name='storageProfile.osDisk.vhd.uri')
 
                 # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
@@ -1031,7 +1031,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
 
         # Build the revert command up front and validate it before swapping the IP, so a
         # rejected revert token can't strand the NIC on swap_ip_address with no automatic
-        # way back to orig_ip_address. See ICM-558.
+        # way back to orig_ip_address.
         if orig_ip_allocation_method == DYNAMIC_CONFIG:
             if application_names:
                 revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method} --asgs {asgs}' \

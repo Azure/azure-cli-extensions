@@ -100,7 +100,7 @@ def _quote_cmd_arg(arg):
 
 # '"', '%', '!', and control characters are never safe in a cmd.exe token: quotes can't be
 # escaped on a 'cmd /c' line, and '%'/'!' trigger cmd.exe variable expansion that can
-# synthesize a quote at runtime even from a value with none (see ICM-558).
+# synthesize a quote at runtime even from a value with none.
 def _is_unsafe_cmd_exe_value(value):
     return (
         '"' in value
