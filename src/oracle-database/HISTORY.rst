@@ -3,6 +3,14 @@
 Release History
 ===============
 
+
+3.0.0
+++++++
+* Upgraded Oracle Database commands to stable API version 2026-06-01.
+* Added support for GoldenGate connections and deployments, Database Editions, and Database System Shapes.
+* Updated existing Oracle Database commands for the 2026-06-01 API changes.
+
+
 2.0.5
 ++++++
 * Fixed autonomous database backup update and delete

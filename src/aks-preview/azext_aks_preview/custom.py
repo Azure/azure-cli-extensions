@@ -1487,6 +1487,8 @@ def aks_create(
     enable_on_demand_monitor=False,
     # prepared image specification
     prepared_image_specification_id=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1555,6 +1557,9 @@ def aks_update(
     enable_force_upgrade=False,
     disable_force_upgrade=False,
     upgrade_override_until=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
+    disable_upgrade_gate=False,
     cluster_autoscaler_profile=None,
     sku=None,
     tier=None,
@@ -1931,11 +1936,12 @@ def aks_get_credentials(
             path, kubeconfig, overwrite_existing, context_name)
         # Check if kubeconfig requires kubelogin with devicecode and convert it
         if uses_kubelogin_devicecode(kubeconfig):
-            if which("kubelogin"):
+            kubelogin_path = which("kubelogin")
+            if kubelogin_path:
                 try:
                     # Run kubelogin convert-kubeconfig -l azurecli
                     subprocess.run(
-                        ["kubelogin", "convert-kubeconfig", "-l", "azurecli"],
+                        [kubelogin_path, "convert-kubeconfig", "-l", "azurecli"],
                         cwd=os.path.dirname(path),
                         check=True,
                     )
@@ -2343,6 +2349,9 @@ def aks_agentpool_add(
     secondary_network_interfaces=None,
     # prepared image specification
     prepared_image_specification_id=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
+    disable_upgrade_gate=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2433,6 +2442,9 @@ def aks_agentpool_update(
     crg_id=None,
     # prepared image specification
     prepared_image_specification_id=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
+    disable_upgrade_gate=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

@@ -3015,5 +3015,24 @@ class TestValidateOsSku(unittest.TestCase):
         self.assertIn("Windows2025", node_os_skus_update)
 
 
+class TestValidateUpgradeGateDisableAndEnableParameters(unittest.TestCase):
+    def test_neither_flag(self):
+        namespace = SimpleNamespace(enable_upgrade_gate=False, disable_upgrade_gate=False)
+        validators.validate_upgrade_gate_disable_and_enable_parameters(namespace)
+
+    def test_single_flag(self):
+        validators.validate_upgrade_gate_disable_and_enable_parameters(
+            SimpleNamespace(enable_upgrade_gate=True, disable_upgrade_gate=False)
+        )
+        validators.validate_upgrade_gate_disable_and_enable_parameters(
+            SimpleNamespace(enable_upgrade_gate=False, disable_upgrade_gate=True)
+        )
+
+    def test_both_flags(self):
+        namespace = SimpleNamespace(enable_upgrade_gate=True, disable_upgrade_gate=True)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            validators.validate_upgrade_gate_disable_and_enable_parameters(namespace)
+
+
 if __name__ == "__main__":
     unittest.main()

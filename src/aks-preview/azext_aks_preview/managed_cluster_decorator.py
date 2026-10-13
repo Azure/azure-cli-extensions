@@ -1340,6 +1340,24 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return self.raw_param.get("upgrade_override_until")
 
+    def get_upgrade_gate_enabled(self) -> Union[bool, None]:
+        """Obtain the cluster-level upgrade gate setting from --enable-upgrade-gate / --disable-upgrade-gate.
+
+        :return: True if enabling, False if disabling, None if neither flag is specified
+        """
+        enable_upgrade_gate = self.raw_param.get("enable_upgrade_gate")
+        disable_upgrade_gate = self.raw_param.get("disable_upgrade_gate")
+
+        if enable_upgrade_gate and disable_upgrade_gate:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-upgrade-gate and --disable-upgrade-gate at the same time."
+            )
+        if enable_upgrade_gate:
+            return True
+        if disable_upgrade_gate:
+            return False
+        return None
+
     def get_if_match(self) -> Union[str, None]:
         """Obtain the value of if_match.
         :return: string or None
@@ -5780,6 +5798,24 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.network_profile.pod_link_local_access = CONST_IMDS_RESTRICTION_ENABLED
         return mc
 
+    def set_up_upgrade_gate_settings(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up cluster-level upgrade gate settings for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        upgrade_gate_enabled = self.context.get_upgrade_gate_enabled()
+        if upgrade_gate_enabled:
+            if mc.upgrade_settings is None:
+                mc.upgrade_settings = self.models.ClusterUpgradeSettings()  # pylint: disable=no-member
+            mc.upgrade_settings.upgrade_gate_settings = (
+                self.models.UpgradeGateSettings(enabled=True)  # pylint: disable=no-member
+            )
+
+        # Default is disabled so no need to worry about that here
+        return mc
+
     def set_up_upstream_kubescheduler_user_configuration(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -6005,6 +6041,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_health_monitor_profile(mc)
         # set up imds restriction(a property in network profile)
         mc = self.set_up_imds_restriction(mc)
+        # set up upgrade gate settings
+        mc = self.set_up_upgrade_gate_settings(mc)
         # set up user-defined scheduler configuration for kube-scheduler upstream
         mc = self.set_up_upstream_kubescheduler_user_configuration(mc)
         # Set up hosted components. Managed System Pool creation already skipped
@@ -8357,6 +8395,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 default_extended_until = datetime.datetime.utcnow() + datetime.timedelta(days=3)
                 if existing_until is None or existing_until.timestamp() < default_extended_until.timestamp():
                     mc.upgrade_settings.override_settings.until = default_extended_until
+
+        upgrade_gate_enabled = self.context.get_upgrade_gate_enabled()
+        if upgrade_gate_enabled is not None:
+            if mc.upgrade_settings is None:
+                mc.upgrade_settings = self.models.ClusterUpgradeSettings()  # pylint: disable=no-member
+            if mc.upgrade_settings.upgrade_gate_settings is None:
+                mc.upgrade_settings.upgrade_gate_settings = (
+                    self.models.UpgradeGateSettings()  # pylint: disable=no-member
+                )
+            mc.upgrade_settings.upgrade_gate_settings.enabled = upgrade_gate_enabled
 
         return mc
 
