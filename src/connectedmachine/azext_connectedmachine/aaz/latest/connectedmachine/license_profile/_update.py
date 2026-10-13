@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-16-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/licenseprofiles/{}", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/licenseprofiles/{}", "2026-07-15"],
         ]
     }
 
@@ -77,6 +77,21 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Parameters",
+            help="Resource tags.",
+            nullable=True,
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg(
+            nullable=True,
+        )
+
         # define Arg Group "ProductProfile"
 
         _args_schema = cls._args_schema
@@ -117,21 +132,6 @@ class Update(AAZCommand):
             help="Indicates the current status of the product features.",
             nullable=True,
             enum={"Disabled": "Disabled", "Disabling": "Disabling", "Enabled": "Enabled", "Enabling": "Enabling", "Failed": "Failed", "Unknown": "Unknown"},
-        )
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-            nullable=True,
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
         )
 
         # define Arg Group "SoftwareAssurance"
@@ -227,7 +227,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -258,168 +258,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.esu_profile = AAZObjectType(
-                serialized_name="esuProfile",
-                flags={"client_flatten": True},
-            )
-            properties.product_profile = AAZObjectType(
-                serialized_name="productProfile",
-                flags={"client_flatten": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.software_assurance = AAZObjectType(
-                serialized_name="softwareAssurance",
-                flags={"client_flatten": True},
-            )
-
-            esu_profile = cls._schema_on_200.properties.esu_profile
-            esu_profile.assigned_license = AAZStrType(
-                serialized_name="assignedLicense",
-            )
-            esu_profile.assigned_license_immutable_id = AAZStrType(
-                serialized_name="assignedLicenseImmutableId",
-                flags={"read_only": True},
-            )
-            esu_profile.esu_eligibility = AAZStrType(
-                serialized_name="esuEligibility",
-                flags={"read_only": True},
-            )
-            esu_profile.esu_key_state = AAZStrType(
-                serialized_name="esuKeyState",
-                flags={"read_only": True},
-            )
-            esu_profile.esu_keys = AAZListType(
-                serialized_name="esuKeys",
-                flags={"read_only": True},
-            )
-            esu_profile.server_type = AAZStrType(
-                serialized_name="serverType",
-                flags={"read_only": True},
-            )
-
-            esu_keys = cls._schema_on_200.properties.esu_profile.esu_keys
-            esu_keys.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.esu_profile.esu_keys.Element
-            _element.license_status = AAZIntType(
-                serialized_name="licenseStatus",
-            )
-            _element.sku = AAZStrType()
-
-            product_profile = cls._schema_on_200.properties.product_profile
-            product_profile.billing_end_date = AAZStrType(
-                serialized_name="billingEndDate",
-                flags={"read_only": True},
-            )
-            product_profile.billing_start_date = AAZStrType(
-                serialized_name="billingStartDate",
-                flags={"read_only": True},
-            )
-            product_profile.disenrollment_date = AAZStrType(
-                serialized_name="disenrollmentDate",
-                flags={"read_only": True},
-            )
-            product_profile.enrollment_date = AAZStrType(
-                serialized_name="enrollmentDate",
-                flags={"read_only": True},
-            )
-            product_profile.error = AAZObjectType(
-                flags={"read_only": True},
-            )
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(product_profile.error)
-            product_profile.product_features = AAZListType(
-                serialized_name="productFeatures",
-            )
-            product_profile.product_type = AAZStrType(
-                serialized_name="productType",
-            )
-            product_profile.subscription_status = AAZStrType(
-                serialized_name="subscriptionStatus",
-            )
-
-            product_features = cls._schema_on_200.properties.product_profile.product_features
-            product_features.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.product_profile.product_features.Element
-            _element.billing_end_date = AAZStrType(
-                serialized_name="billingEndDate",
-                flags={"read_only": True},
-            )
-            _element.billing_start_date = AAZStrType(
-                serialized_name="billingStartDate",
-                flags={"read_only": True},
-            )
-            _element.disenrollment_date = AAZStrType(
-                serialized_name="disenrollmentDate",
-                flags={"read_only": True},
-            )
-            _element.enrollment_date = AAZStrType(
-                serialized_name="enrollmentDate",
-                flags={"read_only": True},
-            )
-            _element.error = AAZObjectType(
-                flags={"read_only": True},
-            )
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(_element.error)
-            _element.name = AAZStrType()
-            _element.subscription_status = AAZStrType(
-                serialized_name="subscriptionStatus",
-            )
-
-            software_assurance = cls._schema_on_200.properties.software_assurance
-            software_assurance.software_assurance_customer = AAZBoolType(
-                serialized_name="softwareAssuranceCustomer",
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            _UpdateHelper._build_schema_license_profile_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -491,7 +330,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -534,168 +373,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200_201.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200_201.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.tags = AAZDictType()
-            _schema_on_200_201.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200_201.properties
-            properties.esu_profile = AAZObjectType(
-                serialized_name="esuProfile",
-                flags={"client_flatten": True},
-            )
-            properties.product_profile = AAZObjectType(
-                serialized_name="productProfile",
-                flags={"client_flatten": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.software_assurance = AAZObjectType(
-                serialized_name="softwareAssurance",
-                flags={"client_flatten": True},
-            )
-
-            esu_profile = cls._schema_on_200_201.properties.esu_profile
-            esu_profile.assigned_license = AAZStrType(
-                serialized_name="assignedLicense",
-            )
-            esu_profile.assigned_license_immutable_id = AAZStrType(
-                serialized_name="assignedLicenseImmutableId",
-                flags={"read_only": True},
-            )
-            esu_profile.esu_eligibility = AAZStrType(
-                serialized_name="esuEligibility",
-                flags={"read_only": True},
-            )
-            esu_profile.esu_key_state = AAZStrType(
-                serialized_name="esuKeyState",
-                flags={"read_only": True},
-            )
-            esu_profile.esu_keys = AAZListType(
-                serialized_name="esuKeys",
-                flags={"read_only": True},
-            )
-            esu_profile.server_type = AAZStrType(
-                serialized_name="serverType",
-                flags={"read_only": True},
-            )
-
-            esu_keys = cls._schema_on_200_201.properties.esu_profile.esu_keys
-            esu_keys.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.esu_profile.esu_keys.Element
-            _element.license_status = AAZIntType(
-                serialized_name="licenseStatus",
-            )
-            _element.sku = AAZStrType()
-
-            product_profile = cls._schema_on_200_201.properties.product_profile
-            product_profile.billing_end_date = AAZStrType(
-                serialized_name="billingEndDate",
-                flags={"read_only": True},
-            )
-            product_profile.billing_start_date = AAZStrType(
-                serialized_name="billingStartDate",
-                flags={"read_only": True},
-            )
-            product_profile.disenrollment_date = AAZStrType(
-                serialized_name="disenrollmentDate",
-                flags={"read_only": True},
-            )
-            product_profile.enrollment_date = AAZStrType(
-                serialized_name="enrollmentDate",
-                flags={"read_only": True},
-            )
-            product_profile.error = AAZObjectType(
-                flags={"read_only": True},
-            )
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(product_profile.error)
-            product_profile.product_features = AAZListType(
-                serialized_name="productFeatures",
-            )
-            product_profile.product_type = AAZStrType(
-                serialized_name="productType",
-            )
-            product_profile.subscription_status = AAZStrType(
-                serialized_name="subscriptionStatus",
-            )
-
-            product_features = cls._schema_on_200_201.properties.product_profile.product_features
-            product_features.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.product_profile.product_features.Element
-            _element.billing_end_date = AAZStrType(
-                serialized_name="billingEndDate",
-                flags={"read_only": True},
-            )
-            _element.billing_start_date = AAZStrType(
-                serialized_name="billingStartDate",
-                flags={"read_only": True},
-            )
-            _element.disenrollment_date = AAZStrType(
-                serialized_name="disenrollmentDate",
-                flags={"read_only": True},
-            )
-            _element.enrollment_date = AAZStrType(
-                serialized_name="enrollmentDate",
-                flags={"read_only": True},
-            )
-            _element.error = AAZObjectType(
-                flags={"read_only": True},
-            )
-            _UpdateHelper._build_schema_azure_resourcemanager_commontypes_errordetail_read(_element.error)
-            _element.name = AAZStrType()
-            _element.subscription_status = AAZStrType(
-                serialized_name="subscriptionStatus",
-            )
-
-            software_assurance = cls._schema_on_200_201.properties.software_assurance
-            software_assurance.software_assurance_customer = AAZBoolType(
-                serialized_name="softwareAssuranceCustomer",
-            )
-
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
+            _UpdateHelper._build_schema_license_profile_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -760,60 +438,249 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_azure_resourcemanager_commontypes_errordetail_read = None
+    _schema_error_detail_read = None
 
     @classmethod
-    def _build_schema_azure_resourcemanager_commontypes_errordetail_read(cls, _schema):
-        if cls._schema_azure_resourcemanager_commontypes_errordetail_read is not None:
-            _schema.additional_info = cls._schema_azure_resourcemanager_commontypes_errordetail_read.additional_info
-            _schema.code = cls._schema_azure_resourcemanager_commontypes_errordetail_read.code
-            _schema.details = cls._schema_azure_resourcemanager_commontypes_errordetail_read.details
-            _schema.message = cls._schema_azure_resourcemanager_commontypes_errordetail_read.message
-            _schema.target = cls._schema_azure_resourcemanager_commontypes_errordetail_read.target
+    def _build_schema_error_detail_read(cls, _schema):
+        if cls._schema_error_detail_read is not None:
+            _schema.additional_info = cls._schema_error_detail_read.additional_info
+            _schema.code = cls._schema_error_detail_read.code
+            _schema.details = cls._schema_error_detail_read.details
+            _schema.message = cls._schema_error_detail_read.message
+            _schema.target = cls._schema_error_detail_read.target
             return
 
-        cls._schema_azure_resourcemanager_commontypes_errordetail_read = _schema_azure_resourcemanager_commontypes_errordetail_read = AAZObjectType(
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
             flags={"read_only": True}
         )
 
-        azure_resourcemanager_commontypes_errordetail_read = _schema_azure_resourcemanager_commontypes_errordetail_read
-        azure_resourcemanager_commontypes_errordetail_read.additional_info = AAZListType(
+        error_detail_read = _schema_error_detail_read
+        error_detail_read.additional_info = AAZListType(
             serialized_name="additionalInfo",
             flags={"read_only": True},
         )
-        azure_resourcemanager_commontypes_errordetail_read.code = AAZStrType(
+        error_detail_read.code = AAZStrType(
             flags={"read_only": True},
         )
-        azure_resourcemanager_commontypes_errordetail_read.details = AAZListType(
+        error_detail_read.details = AAZListType(
             flags={"read_only": True},
         )
-        azure_resourcemanager_commontypes_errordetail_read.message = AAZStrType(
+        error_detail_read.message = AAZStrType(
             flags={"read_only": True},
         )
-        azure_resourcemanager_commontypes_errordetail_read.target = AAZStrType(
+        error_detail_read.target = AAZStrType(
             flags={"read_only": True},
         )
 
-        additional_info = _schema_azure_resourcemanager_commontypes_errordetail_read.additional_info
+        additional_info = _schema_error_detail_read.additional_info
         additional_info.Element = AAZObjectType()
 
-        _element = _schema_azure_resourcemanager_commontypes_errordetail_read.additional_info.Element
-        _element.info = AAZAnyType(
+        _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        details = _schema_azure_resourcemanager_commontypes_errordetail_read.details
-        details.Element = AAZObjectType()
-        cls._build_schema_azure_resourcemanager_commontypes_errordetail_read(details.Element)
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
-        _schema.additional_info = cls._schema_azure_resourcemanager_commontypes_errordetail_read.additional_info
-        _schema.code = cls._schema_azure_resourcemanager_commontypes_errordetail_read.code
-        _schema.details = cls._schema_azure_resourcemanager_commontypes_errordetail_read.details
-        _schema.message = cls._schema_azure_resourcemanager_commontypes_errordetail_read.message
-        _schema.target = cls._schema_azure_resourcemanager_commontypes_errordetail_read.target
+        details = _schema_error_detail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_error_detail_read(details.Element)
+
+        _schema.additional_info = cls._schema_error_detail_read.additional_info
+        _schema.code = cls._schema_error_detail_read.code
+        _schema.details = cls._schema_error_detail_read.details
+        _schema.message = cls._schema_error_detail_read.message
+        _schema.target = cls._schema_error_detail_read.target
+
+    _schema_license_profile_read = None
+
+    @classmethod
+    def _build_schema_license_profile_read(cls, _schema):
+        if cls._schema_license_profile_read is not None:
+            _schema.id = cls._schema_license_profile_read.id
+            _schema.location = cls._schema_license_profile_read.location
+            _schema.name = cls._schema_license_profile_read.name
+            _schema.properties = cls._schema_license_profile_read.properties
+            _schema.system_data = cls._schema_license_profile_read.system_data
+            _schema.tags = cls._schema_license_profile_read.tags
+            _schema.type = cls._schema_license_profile_read.type
+            return
+
+        cls._schema_license_profile_read = _schema_license_profile_read = AAZObjectType()
+
+        license_profile_read = _schema_license_profile_read
+        license_profile_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        license_profile_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        license_profile_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        license_profile_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        license_profile_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        license_profile_read.tags = AAZDictType()
+        license_profile_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_license_profile_read.properties
+        properties.esu_profile = AAZObjectType(
+            serialized_name="esuProfile",
+            flags={"client_flatten": True},
+        )
+        properties.product_profile = AAZObjectType(
+            serialized_name="productProfile",
+            flags={"client_flatten": True},
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.software_assurance = AAZObjectType(
+            serialized_name="softwareAssurance",
+            flags={"client_flatten": True},
+        )
+
+        esu_profile = _schema_license_profile_read.properties.esu_profile
+        esu_profile.assigned_license = AAZStrType(
+            serialized_name="assignedLicense",
+        )
+        esu_profile.assigned_license_immutable_id = AAZStrType(
+            serialized_name="assignedLicenseImmutableId",
+            flags={"read_only": True},
+        )
+        esu_profile.esu_eligibility = AAZStrType(
+            serialized_name="esuEligibility",
+            flags={"read_only": True},
+        )
+        esu_profile.esu_key_state = AAZStrType(
+            serialized_name="esuKeyState",
+            flags={"read_only": True},
+        )
+        esu_profile.esu_keys = AAZListType(
+            serialized_name="esuKeys",
+            flags={"read_only": True},
+        )
+        esu_profile.server_type = AAZStrType(
+            serialized_name="serverType",
+            flags={"read_only": True},
+        )
+
+        esu_keys = _schema_license_profile_read.properties.esu_profile.esu_keys
+        esu_keys.Element = AAZObjectType()
+
+        _element = _schema_license_profile_read.properties.esu_profile.esu_keys.Element
+        _element.license_status = AAZIntType(
+            serialized_name="licenseStatus",
+        )
+        _element.sku = AAZStrType()
+
+        product_profile = _schema_license_profile_read.properties.product_profile
+        product_profile.billing_end_date = AAZStrType(
+            serialized_name="billingEndDate",
+            flags={"read_only": True},
+        )
+        product_profile.billing_start_date = AAZStrType(
+            serialized_name="billingStartDate",
+            flags={"read_only": True},
+        )
+        product_profile.disenrollment_date = AAZStrType(
+            serialized_name="disenrollmentDate",
+            flags={"read_only": True},
+        )
+        product_profile.enrollment_date = AAZStrType(
+            serialized_name="enrollmentDate",
+            flags={"read_only": True},
+        )
+        product_profile.error = AAZObjectType(
+            flags={"read_only": True},
+        )
+        cls._build_schema_error_detail_read(product_profile.error)
+        product_profile.product_features = AAZListType(
+            serialized_name="productFeatures",
+        )
+        product_profile.product_type = AAZStrType(
+            serialized_name="productType",
+        )
+        product_profile.subscription_status = AAZStrType(
+            serialized_name="subscriptionStatus",
+        )
+
+        product_features = _schema_license_profile_read.properties.product_profile.product_features
+        product_features.Element = AAZObjectType()
+
+        _element = _schema_license_profile_read.properties.product_profile.product_features.Element
+        _element.billing_end_date = AAZStrType(
+            serialized_name="billingEndDate",
+            flags={"read_only": True},
+        )
+        _element.billing_start_date = AAZStrType(
+            serialized_name="billingStartDate",
+            flags={"read_only": True},
+        )
+        _element.disenrollment_date = AAZStrType(
+            serialized_name="disenrollmentDate",
+            flags={"read_only": True},
+        )
+        _element.enrollment_date = AAZStrType(
+            serialized_name="enrollmentDate",
+            flags={"read_only": True},
+        )
+        _element.error = AAZObjectType(
+            flags={"read_only": True},
+        )
+        cls._build_schema_error_detail_read(_element.error)
+        _element.name = AAZStrType()
+        _element.subscription_status = AAZStrType(
+            serialized_name="subscriptionStatus",
+        )
+
+        software_assurance = _schema_license_profile_read.properties.software_assurance
+        software_assurance.software_assurance_customer = AAZBoolType(
+            serialized_name="softwareAssuranceCustomer",
+        )
+
+        system_data = _schema_license_profile_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        tags = _schema_license_profile_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_license_profile_read.id
+        _schema.location = cls._schema_license_profile_read.location
+        _schema.name = cls._schema_license_profile_read.name
+        _schema.properties = cls._schema_license_profile_read.properties
+        _schema.system_data = cls._schema_license_profile_read.system_data
+        _schema.tags = cls._schema_license_profile_read.tags
+        _schema.type = cls._schema_license_profile_read.type
 
 
 __all__ = ["Update"]

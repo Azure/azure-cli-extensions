@@ -167,7 +167,7 @@ def step_delete(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud cluster baremetalmachinekeyset delete --name {name} "
-        "--cluster-name {clusterName} --resource-group {rg} -y"
+        "--cluster-name {clusterName} --resource-group {rg} --yes"
     )
 
 

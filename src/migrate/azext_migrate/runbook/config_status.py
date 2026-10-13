@@ -6,8 +6,8 @@
 
 A runbook is *shipped* as two documents inside the same download archive:
 
-* the **definition** (``runbookSpec``) — the immutable step graph, and
-* the **parameters** (``runbookInputs``) — the per-step input *schema* plus
+* the **definition** (``spec``) — the immutable step graph, and
+* the **parameters** (``inputs``) — the per-step input *schema* plus
   the customer-supplied *values*.
 
 A step is only runnable once every *required* input has a value. Required
@@ -15,24 +15,32 @@ inputs come in two scopes:
 
 * ``Appliance`` — one shared value stored at ``stepInputs[stepId][field]``.
 * ``Entity`` — one value **per migration entity**, stored at
-  ``stepInputs[stepId].workloadOverrides[entityId][field]``. An entity-scope
-  field is only "set" when *every* entity on the step has a value for it.
+  ``stepInputs[stepId].workloadOverrides[entityId][field]``. A non-empty
+  step-level value is inherited by every workload (the per-entity override is
+  optional), so an entity-scope field is "set" when each entity's *effective*
+  value -- its override if non-empty, else the step-level value -- is set.
+  This mirrors the configure editor's ``effective()``.
 
 The status is one of:
 
-* ``Configured``     — all required inputs have values (or none are required),
+* ``Configured``     — the step has required inputs and all have values,
 * ``Partial (n/m)``  — some but not all required inputs have values,
-* ``NotConfigured``  — no required input has a value, and
-* ``Unknown``        — the step is not tracked in the parameters document
-  (``stepInputs`` has no entry for it), or no parameters are available.
+* ``NotConfigured``  — the step has required inputs but none have values,
+* ``NA``             — the step takes no inputs (nothing to configure), and
+* ``Unknown``        — no parameters document is available, so the status of a
+  step that *might* take inputs cannot be determined.
 
-Steps that need no inputs (e.g. approval gates, cutover, cleanup) are emitted
-as ``stepInputs[stepId] = {}`` with no ``schema`` entry; because they are
-tracked and have no required inputs, they are :data:`CONFIGURED`.
+A step's required inputs are defined solely by its ``schema[stepRef]`` entry.
+Manual/Approval gates (``stepRef`` in :data:`INPUTLESS_STEP_REFS`) never take
+inputs, so they are :data:`NA` even when no parameters document is present. Any
+other step whose schema declares no required inputs is likewise :data:`NA`.
 """
+
+from azext_migrate.runbook.constants import INPUTLESS_STEP_REFS
 
 CONFIGURED = 'Configured'
 NOT_CONFIGURED = 'NotConfigured'
+NOT_APPLICABLE = 'NA'
 UNKNOWN = 'Unknown'
 
 
@@ -52,13 +60,19 @@ def _field_is_set(field, meta, step, step_inputs):
     scope = (meta.get('scope') if isinstance(meta, dict) else None) or \
         'Appliance'
     if scope == 'Entity':
-        overrides = step_inputs.get('workloadOverrides') or {}
         entities = step.get('entities') or []
         if not entities:
             return False
+        overrides = step_inputs.get('workloadOverrides') or {}
+        # A non-empty step-level value is inherited by every workload; only a
+        # non-empty per-entity override takes precedence (configure's
+        # ``effective()``: override if set, else the step-level value).
+        step_level = step_inputs.get(field)
         for entity_id in entities:
-            entity_values = overrides.get(entity_id) or {}
-            if _is_empty(entity_values.get(field)):
+            effective = (overrides.get(entity_id) or {}).get(field)
+            if _is_empty(effective):
+                effective = step_level
+            if _is_empty(effective):
                 return False
         return True
     return not _is_empty(step_inputs.get(field))
@@ -67,23 +81,25 @@ def _field_is_set(field, meta, step, step_inputs):
 def compute(step, runbook_inputs):
     """Return the configuration status string for a definition ``step``.
 
-    ``runbook_inputs`` is the ``runbookInputs`` object from the parameters
-    document (with ``schema`` and ``stepInputs``). Returns :data:`UNKNOWN`
-    only when the step is not tracked under ``stepInputs`` (or no parameters
-    are available). A step tracked with an empty inputs object and no schema
-    entry has no required inputs and is therefore :data:`CONFIGURED`.
+    ``runbook_inputs`` is the ``inputs`` object from the parameters
+    document (with ``schema`` and ``stepInputs``). A step that takes no inputs
+    is :data:`NOT_APPLICABLE`; a step that might take inputs but has no
+    parameters document is :data:`UNKNOWN`. Otherwise the step's required
+    inputs come from ``schema[stepRef]``.
     """
     step = step or {}
+    step_ref = step.get('stepRef')
+    # Manual/Approval gates never take inputs -> NA (independent of params).
+    if step_ref in INPUTLESS_STEP_REFS:
+        return NOT_APPLICABLE
     if not isinstance(runbook_inputs, dict):
         return UNKNOWN
-    step_ref = step.get('stepRef')
     step_id = step.get('stepId') or step.get('id')
-    # Presence under ``stepInputs`` (even as an empty object) is the signal
-    # that the parameters document tracks this step. A missing entry means
-    # the step is untracked -> Unknown.
+    # A missing ``stepInputs`` entry just means "no values supplied yet"; the
+    # schema below decides whether any are required.
     step_inputs = (runbook_inputs.get('stepInputs') or {}).get(step_id)
     if not isinstance(step_inputs, dict):
-        return UNKNOWN
+        step_inputs = {}
     # The schema entry may be absent for steps that need no inputs; treat a
     # missing/invalid schema as "no required inputs".
     schema = (runbook_inputs.get('schema') or {}).get(step_ref)
@@ -94,7 +110,7 @@ def compute(step, runbook_inputs):
         (field, meta) for field, meta in schema.items()
         if isinstance(meta, dict) and meta.get('required')]
     if not required:
-        return CONFIGURED
+        return NOT_APPLICABLE
 
     set_count = sum(
         1 for field, meta in required

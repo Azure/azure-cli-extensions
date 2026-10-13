@@ -26,10 +26,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-07-01",
+        "version": "2026-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/clusters", "2026-07-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters", "2026-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/clusters", "2026-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters", "2026-08-01-preview"],
         ]
     }
 
@@ -130,7 +130,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2026-07-01",
+                    "api-version", "2026-08-01-preview",
                     required=True,
                 ),
             }
@@ -313,6 +313,10 @@ class List(AAZCommand):
             )
             properties.detailed_status_message = AAZStrType(
                 serialized_name="detailedStatusMessage",
+                flags={"read_only": True},
+            )
+            properties.edge_management_service_ca_certificate = AAZObjectType(
+                serialized_name="edgeManagementServiceCaCertificate",
                 flags={"read_only": True},
             )
             properties.hybrid_aks_extended_location = AAZObjectType(
@@ -542,6 +546,14 @@ class List(AAZCommand):
             compute_rack_definitions.Element = AAZObjectType()
             _ListHelper._build_schema_rack_definition_read(compute_rack_definitions.Element)
 
+            edge_management_service_ca_certificate = cls._schema_on_200.value.Element.properties.edge_management_service_ca_certificate
+            edge_management_service_ca_certificate.hash = AAZStrType(
+                flags={"read_only": True},
+            )
+            edge_management_service_ca_certificate.value = AAZStrType(
+                flags={"read_only": True},
+            )
+
             managed_credentials = cls._schema_on_200.value.Element.properties.managed_credentials
             managed_credentials.Element = AAZStrType()
 
@@ -571,8 +583,79 @@ class List(AAZCommand):
                 serialized_name="associatedIdentity",
             )
             _ListHelper._build_schema_identity_selector_read(secret_archive_settings.associated_identity)
+            secret_archive_settings.encryption_public_key = AAZStrType(
+                serialized_name="encryptionPublicKey",
+            )
+            secret_archive_settings.provider_configuration = AAZObjectType(
+                serialized_name="providerConfiguration",
+            )
             secret_archive_settings.vault_uri = AAZStrType(
                 serialized_name="vaultUri",
+            )
+
+            provider_configuration = cls._schema_on_200.value.Element.properties.secret_archive_settings.provider_configuration
+            provider_configuration.provider = AAZStrType(
+                flags={"required": True},
+            )
+
+            disc_cyber_ark = cls._schema_on_200.value.Element.properties.secret_archive_settings.provider_configuration.discriminate_by("provider", "CyberArk")
+            disc_cyber_ark.application_id = AAZStrType(
+                serialized_name="applicationId",
+                flags={"required": True},
+            )
+            disc_cyber_ark.folder_name = AAZStrType(
+                serialized_name="folderName",
+            )
+            disc_cyber_ark.object_name_template = AAZStrType(
+                serialized_name="objectNameTemplate",
+            )
+            disc_cyber_ark.safe_name = AAZStrType(
+                serialized_name="safeName",
+                flags={"required": True},
+            )
+
+            disc_hashi_corp_vault = cls._schema_on_200.value.Element.properties.secret_archive_settings.provider_configuration.discriminate_by("provider", "HashiCorpVault")
+            disc_hashi_corp_vault.application_role_id = AAZStrType(
+                serialized_name="applicationRoleId",
+            )
+            disc_hashi_corp_vault.authentication_method = AAZStrType(
+                serialized_name="authenticationMethod",
+                flags={"required": True},
+            )
+            disc_hashi_corp_vault.authentication_mount_path = AAZStrType(
+                serialized_name="authenticationMountPath",
+            )
+            disc_hashi_corp_vault.key_value_version = AAZStrType(
+                serialized_name="keyValueVersion",
+            )
+            disc_hashi_corp_vault.mount_path = AAZStrType(
+                serialized_name="mountPath",
+            )
+            disc_hashi_corp_vault.namespace = AAZStrType()
+            disc_hashi_corp_vault.path_template = AAZStrType(
+                serialized_name="pathTemplate",
+            )
+
+            disc_open_bao = cls._schema_on_200.value.Element.properties.secret_archive_settings.provider_configuration.discriminate_by("provider", "OpenBao")
+            disc_open_bao.application_role_id = AAZStrType(
+                serialized_name="applicationRoleId",
+            )
+            disc_open_bao.authentication_method = AAZStrType(
+                serialized_name="authenticationMethod",
+                flags={"required": True},
+            )
+            disc_open_bao.authentication_mount_path = AAZStrType(
+                serialized_name="authenticationMountPath",
+            )
+            disc_open_bao.key_value_version = AAZStrType(
+                serialized_name="keyValueVersion",
+            )
+            disc_open_bao.mount_path = AAZStrType(
+                serialized_name="mountPath",
+            )
+            disc_open_bao.namespace = AAZStrType()
+            disc_open_bao.path_template = AAZStrType(
+                serialized_name="pathTemplate",
             )
 
             update_strategy = cls._schema_on_200.value.Element.properties.update_strategy
@@ -678,7 +761,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2026-07-01",
+                    "api-version", "2026-08-01-preview",
                     required=True,
                 ),
             }
@@ -861,6 +944,10 @@ class List(AAZCommand):
             )
             properties.detailed_status_message = AAZStrType(
                 serialized_name="detailedStatusMessage",
+                flags={"read_only": True},
+            )
+            properties.edge_management_service_ca_certificate = AAZObjectType(
+                serialized_name="edgeManagementServiceCaCertificate",
                 flags={"read_only": True},
             )
             properties.hybrid_aks_extended_location = AAZObjectType(
@@ -1090,6 +1177,14 @@ class List(AAZCommand):
             compute_rack_definitions.Element = AAZObjectType()
             _ListHelper._build_schema_rack_definition_read(compute_rack_definitions.Element)
 
+            edge_management_service_ca_certificate = cls._schema_on_200.value.Element.properties.edge_management_service_ca_certificate
+            edge_management_service_ca_certificate.hash = AAZStrType(
+                flags={"read_only": True},
+            )
+            edge_management_service_ca_certificate.value = AAZStrType(
+                flags={"read_only": True},
+            )
+
             managed_credentials = cls._schema_on_200.value.Element.properties.managed_credentials
             managed_credentials.Element = AAZStrType()
 
@@ -1119,8 +1214,79 @@ class List(AAZCommand):
                 serialized_name="associatedIdentity",
             )
             _ListHelper._build_schema_identity_selector_read(secret_archive_settings.associated_identity)
+            secret_archive_settings.encryption_public_key = AAZStrType(
+                serialized_name="encryptionPublicKey",
+            )
+            secret_archive_settings.provider_configuration = AAZObjectType(
+                serialized_name="providerConfiguration",
+            )
             secret_archive_settings.vault_uri = AAZStrType(
                 serialized_name="vaultUri",
+            )
+
+            provider_configuration = cls._schema_on_200.value.Element.properties.secret_archive_settings.provider_configuration
+            provider_configuration.provider = AAZStrType(
+                flags={"required": True},
+            )
+
+            disc_cyber_ark = cls._schema_on_200.value.Element.properties.secret_archive_settings.provider_configuration.discriminate_by("provider", "CyberArk")
+            disc_cyber_ark.application_id = AAZStrType(
+                serialized_name="applicationId",
+                flags={"required": True},
+            )
+            disc_cyber_ark.folder_name = AAZStrType(
+                serialized_name="folderName",
+            )
+            disc_cyber_ark.object_name_template = AAZStrType(
+                serialized_name="objectNameTemplate",
+            )
+            disc_cyber_ark.safe_name = AAZStrType(
+                serialized_name="safeName",
+                flags={"required": True},
+            )
+
+            disc_hashi_corp_vault = cls._schema_on_200.value.Element.properties.secret_archive_settings.provider_configuration.discriminate_by("provider", "HashiCorpVault")
+            disc_hashi_corp_vault.application_role_id = AAZStrType(
+                serialized_name="applicationRoleId",
+            )
+            disc_hashi_corp_vault.authentication_method = AAZStrType(
+                serialized_name="authenticationMethod",
+                flags={"required": True},
+            )
+            disc_hashi_corp_vault.authentication_mount_path = AAZStrType(
+                serialized_name="authenticationMountPath",
+            )
+            disc_hashi_corp_vault.key_value_version = AAZStrType(
+                serialized_name="keyValueVersion",
+            )
+            disc_hashi_corp_vault.mount_path = AAZStrType(
+                serialized_name="mountPath",
+            )
+            disc_hashi_corp_vault.namespace = AAZStrType()
+            disc_hashi_corp_vault.path_template = AAZStrType(
+                serialized_name="pathTemplate",
+            )
+
+            disc_open_bao = cls._schema_on_200.value.Element.properties.secret_archive_settings.provider_configuration.discriminate_by("provider", "OpenBao")
+            disc_open_bao.application_role_id = AAZStrType(
+                serialized_name="applicationRoleId",
+            )
+            disc_open_bao.authentication_method = AAZStrType(
+                serialized_name="authenticationMethod",
+                flags={"required": True},
+            )
+            disc_open_bao.authentication_mount_path = AAZStrType(
+                serialized_name="authenticationMountPath",
+            )
+            disc_open_bao.key_value_version = AAZStrType(
+                serialized_name="keyValueVersion",
+            )
+            disc_open_bao.mount_path = AAZStrType(
+                serialized_name="mountPath",
+            )
+            disc_open_bao.namespace = AAZStrType()
+            disc_open_bao.path_template = AAZStrType(
+                serialized_name="pathTemplate",
             )
 
             update_strategy = cls._schema_on_200.value.Element.properties.update_strategy

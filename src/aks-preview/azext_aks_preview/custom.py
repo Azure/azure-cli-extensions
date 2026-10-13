@@ -136,6 +136,10 @@ from azext_aks_preview.machine import (
     update_flexnode_machine,
     update_machine,
 )
+from azext_aks_preview.alertconfiguration import (
+    aks_alert_config_add_internal,
+    aks_alert_config_update_internal,
+)
 from azext_aks_preview.jwtauthenticator import (
     aks_jwtauthenticator_add_internal,
     aks_jwtauthenticator_update_internal,
@@ -244,6 +248,41 @@ def _ssl_context():
             return ssl.SSLContext(ssl.PROTOCOL_TLSv1)
 
     return ssl.create_default_context()
+
+
+# The Log Analytics workspace's default output tables (e.g. the ContainerInsights solution
+# tables) can take a short while to finish provisioning right after the workspace itself, or
+# its association with the ContainerInsights solution, reports "Succeeded". During that window
+# a Data Collection Rule (DCR) PUT referencing those tables can fail synchronously with
+# "InvalidOutputTable" even though the workspace is otherwise ready.
+_DCR_TABLE_READINESS_MAX_RETRY_TIMES = 5
+_DCR_TABLE_READINESS_RETRY_DELAY_SECONDS = 15
+
+
+def _create_or_update_dcr_with_table_readiness_retry(resources, dcr_resource_id, api_version, body):
+    """
+    Create/update a Data Collection Rule (DCR), applying a bounded backoff-and-retry
+    specifically for the known-transient "InvalidOutputTable" readiness error described above.
+    Any other error keeps the pre-existing immediate-retry policy (up to 3 attempts, no delay)
+    and is re-raised unchanged once that bound is exhausted.
+    """
+    _MAX_RETRY_TIMES = 3
+    error = None
+    readiness_retries = 0
+    attempt = 0
+    while True:
+        try:
+            resources.begin_create_or_update_by_id(dcr_resource_id, api_version, body)
+            return
+        except (CLIError, HttpResponseError) as e:
+            error = e
+            if "InvalidOutputTable" in str(e) and readiness_retries < _DCR_TABLE_READINESS_MAX_RETRY_TIMES:
+                readiness_retries += 1
+                time.sleep(_DCR_TABLE_READINESS_RETRY_DELAY_SECONDS)
+                continue
+            attempt += 1
+            if attempt >= _MAX_RETRY_TIMES:
+                raise error
 
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
@@ -581,26 +620,12 @@ def ensure_container_insights_for_monitoring_preview(
             )
 
             resources = get_resources_client(cmd.cli_ctx, cluster_subscription)
-            for _ in range(3):
-                try:
-                    if enable_syslog:
-                        resources.begin_create_or_update_by_id(
-                            dcr_resource_id,
-                            "2022-06-01",
-                            json.loads(dcr_creation_body_with_syslog)
-                        )
-                    else:
-                        resources.begin_create_or_update_by_id(
-                            dcr_resource_id,
-                            "2022-06-01",
-                            json.loads(dcr_creation_body_without_syslog)
-                        )
-                    error = None
-                    break
-                except (CLIError, HttpResponseError) as e:
-                    error = e
-            else:
-                raise error
+            _create_or_update_dcr_with_table_readiness_retry(
+                resources,
+                dcr_resource_id,
+                "2022-06-01",
+                json.loads(dcr_creation_body_with_syslog) if enable_syslog else json.loads(dcr_creation_body_without_syslog),
+            )
 
         if create_dcra:
             # only create or delete the association between the DCR and cluster
@@ -1230,6 +1255,7 @@ def aks_create(
     nat_gateway_managed_outbound_ipv6_count=None,
     nat_gateway_outbound_ip_ids=None,
     nat_gateway_outbound_ip_prefix_ids=None,
+    nat_gateway_sku=None,
     outbound_type=None,
     network_plugin=None,
     network_plugin_mode=None,
@@ -1269,6 +1295,7 @@ def aks_create(
     nrg_lockdown_restriction_level=None,
     enable_defender=False,
     defender_config=None,
+    enable_disk_driver=False,
     disable_disk_driver=False,
     disable_file_driver=False,
     enable_blob_driver=None,
@@ -1333,6 +1360,7 @@ def aks_create(
     enable_ultra_ssd=False,
     enable_fips_image=False,
     enable_fips=False,
+    enable_node_hardening=False,
     kubelet_config=None,
     linux_os_config=None,
     host_group_id=None,
@@ -1459,6 +1487,8 @@ def aks_create(
     enable_on_demand_monitor=False,
     # prepared image specification
     prepared_image_specification_id=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1520,12 +1550,16 @@ def aks_update(
     nat_gateway_managed_outbound_ipv6_count=None,
     nat_gateway_outbound_ip_ids=None,
     nat_gateway_outbound_ip_prefix_ids=None,
+    nat_gateway_sku=None,
     kube_proxy_config=None,
     auto_upgrade_channel=None,
     node_os_upgrade_channel=None,
     enable_force_upgrade=False,
     disable_force_upgrade=False,
     upgrade_override_until=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
+    disable_upgrade_gate=False,
     cluster_autoscaler_profile=None,
     sku=None,
     tier=None,
@@ -1621,6 +1655,8 @@ def aks_update(
     disable_image_integrity=False,
     enable_fips=False,
     disable_fips=False,
+    enable_node_hardening=False,
+    disable_node_hardening=False,
     enable_service_account_image_pull=False,
     disable_service_account_image_pull=False,
     service_account_image_pull_default_managed_identity_id=None,
@@ -1900,11 +1936,12 @@ def aks_get_credentials(
             path, kubeconfig, overwrite_existing, context_name)
         # Check if kubeconfig requires kubelogin with devicecode and convert it
         if uses_kubelogin_devicecode(kubeconfig):
-            if which("kubelogin"):
+            kubelogin_path = which("kubelogin")
+            if kubelogin_path:
                 try:
                     # Run kubelogin convert-kubeconfig -l azurecli
                     subprocess.run(
-                        ["kubelogin", "convert-kubeconfig", "-l", "azurecli"],
+                        [kubelogin_path, "convert-kubeconfig", "-l", "azurecli"],
                         cwd=os.path.dirname(path),
                         check=True,
                     )
@@ -2286,13 +2323,16 @@ def aks_agentpool_add(
     disable_windows_outbound_nat=False,
     allowed_host_ports=None,
     asg_ids=None,
+    enable_managed_dranet=False,
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
     enable_managed_gpu=False,
+    managed_gpu_driver_mode=None,
     skip_gpu_driver_install=False,
     gpu_driver=None,
     driver_type=None,
     gpu_mig_strategy=None,
+    gpu_mig_profiles=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
     enable_secure_boot=False,
@@ -2309,6 +2349,9 @@ def aks_agentpool_add(
     secondary_network_interfaces=None,
     # prepared image specification
     prepared_image_specification_id=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
+    disable_upgrade_gate=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2370,9 +2413,12 @@ def aks_agentpool_update(
     # extensions
     allowed_host_ports=None,
     asg_ids=None,
+    enable_managed_dranet=False,
+    node_public_ip_prefix_ids=None,
     enable_artifact_streaming=False,
     disable_artifact_streaming=False,
-    enable_managed_gpu=False,
+    enable_managed_gpu=None,
+    managed_gpu_driver_mode=None,
     os_sku=None,
     ssh_access=None,
     yes=False,
@@ -2391,10 +2437,14 @@ def aks_agentpool_update(
     zones=None,
     gpu_driver=None,
     gpu_mig_strategy=None,
+    gpu_mig_profiles=None,
     # crg
     crg_id=None,
     # prepared image specification
     prepared_image_specification_id=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
+    disable_upgrade_gate=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2428,6 +2478,7 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
                         cluster_name,
                         nodepool_name,
                         node_count=3,
+                        use_patch_api=False,
                         no_wait=False,
                         aks_custom_headers=None):
     headers = get_aks_custom_headers(aks_custom_headers)
@@ -2445,6 +2496,22 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
             raise ClientRequestError("Cannot scale virtual machines node pool with more than one size.")
     else:
         instance.count = new_node_count  # pylint: disable=no-member
+
+    # By default scale via the PUT agent pool API (begin_create_or_update).
+    # When --use-patch-api is set, scale a VMSS node pool via the preview PATCH agent
+    # pool API, which scales to the target count without a full reconciliation.
+    # VirtualMachines node pools are not supported yet and keep using the PUT API.
+    if use_patch_api and instance.type_properties_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
+        return _aks_agentpool_scale_patch(
+            cmd,
+            client,
+            resource_group_name,
+            cluster_name,
+            nodepool_name,
+            instance,
+            headers=headers,
+            no_wait=no_wait,
+        )
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
@@ -2452,6 +2519,42 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
         cluster_name,
         nodepool_name,
         instance,
+        headers=headers,
+    )
+
+
+def _aks_agentpool_scale_patch(cmd,
+                               client,
+                               resource_group_name,
+                               cluster_name,
+                               nodepool_name,
+                               instance,
+                               headers=None,
+                               no_wait=False):
+    """Scale a VMSS agent pool via the dedicated PATCH agent pool API.
+
+    Sends only the already-updated target count on ``instance`` so the pool scales
+    without triggering a full agent pool reconciliation.
+    """
+    AgentPoolUpdate = cmd.get_models(
+        "AgentPoolUpdate",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="agent_pools",
+    )
+    AgentPoolUpdateProperties = cmd.get_models(
+        "AgentPoolUpdateProperties",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="agent_pools",
+    )
+
+    parameters = AgentPoolUpdate(properties=AgentPoolUpdateProperties(count=instance.count))
+    return sdk_no_wait(
+        no_wait,
+        client.begin_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        parameters,
         headers=headers,
     )
 
@@ -3237,6 +3340,26 @@ def aks_operation_show_latest(cmd,
     return client.get(resource_group_name, name, "latest")
 
 
+def aks_operation_list(cmd,   # pylint: disable=unused-argument
+                       client,
+                       resource_group_name,
+                       name,
+                       nodepool_name="",
+                       active_only=False):
+    if not nodepool_name:
+        operations = client.list(resource_group_name, name)
+        if active_only:
+            # There is no cluster-scope API to return only active operations, so filter locally.
+            # Terminal states are Succeeded/Failed/Canceled; anything else is still in progress.
+            terminal_states = {"succeeded", "failed", "canceled"}
+            return [
+                op for op in operations
+                if (getattr(op, "status", None) or "").lower() not in terminal_states
+            ]
+        return operations
+    return client.list_by_agent_pool(resource_group_name, name, nodepool_name, active_only=active_only)
+
+
 def aks_operation_abort(cmd,   # pylint: disable=unused-argument
                         client,
                         resource_group_name,
@@ -3297,6 +3420,7 @@ def aks_machine_add(
     spot_max_price=float("nan"),
     enable_ultra_ssd=False,
     eviction_policy=None,
+    capacity_reservation_group=None,
 ):
     existedMachine = None
     try:
@@ -6322,3 +6446,78 @@ def aks_prepared_image_specification_version_show(cmd, client, resource_group_na
 
 def aks_prepared_image_specification_version_list(cmd, client, resource_group_name, pis_name):
     return client.list_versions(resource_group_name, pis_name)
+
+
+# Alert configuration commands
+def aks_alert_config_add(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        mode=None,
+        action_group_id=None,
+        aks_custom_headers=None,
+        no_wait=False
+):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    raw_parameters = locals()
+    return aks_alert_config_add_internal(
+        cmd,
+        client,
+        raw_parameters,
+        headers,
+        no_wait,
+    )
+
+
+def aks_alert_config_update(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        mode=None,
+        action_group_id=None,
+        aks_custom_headers=None,
+        no_wait=False
+):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    raw_parameters = locals()
+    return aks_alert_config_update_internal(
+        cmd,
+        client,
+        raw_parameters,
+        headers,
+        no_wait,
+    )
+
+
+def aks_alert_config_delete(
+        cmd,
+        client,
+        resource_group_name,
+        cluster_name,
+        name,
+        aks_custom_headers=None,
+        no_wait=False
+):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        resource_group_name,
+        cluster_name,
+        name,
+        headers=headers,
+    )
+
+
+def aks_alert_config_list(cmd, client, resource_group_name, cluster_name, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.list_by_managed_cluster(resource_group_name, cluster_name, headers=headers)
+
+
+def aks_alert_config_show(cmd, client, resource_group_name, cluster_name, name, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.get(resource_group_name, cluster_name, name, headers=headers)

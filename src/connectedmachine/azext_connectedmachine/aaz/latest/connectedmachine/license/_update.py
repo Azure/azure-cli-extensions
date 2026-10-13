@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-16-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2026-07-15"],
         ]
     }
 
@@ -122,6 +122,21 @@ class Update(AAZCommand):
             enum={"Year 1": "Year 1", "Year 2": "Year 2", "Year 3": "Year 3"},
         )
 
+        # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Parameters",
+            help="Resource tags.",
+            nullable=True,
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg(
+            nullable=True,
+        )
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -136,21 +151,6 @@ class Update(AAZCommand):
             options=["--tenant-id"],
             arg_group="Properties",
             help="Describes the tenant id.",
-            nullable=True,
-        )
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-            nullable=True,
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
             nullable=True,
         )
         return cls._args_schema
@@ -233,7 +233,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -264,95 +264,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.license_details = AAZObjectType(
-                serialized_name="licenseDetails",
-            )
-            properties.license_type = AAZStrType(
-                serialized_name="licenseType",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-            )
-
-            license_details = cls._schema_on_200.properties.license_details
-            license_details.assigned_licenses = AAZIntType(
-                serialized_name="assignedLicenses",
-                flags={"read_only": True},
-            )
-            license_details.edition = AAZStrType()
-            license_details.immutable_id = AAZStrType(
-                serialized_name="immutableId",
-                flags={"read_only": True},
-            )
-            license_details.processors = AAZIntType()
-            license_details.state = AAZStrType()
-            license_details.target = AAZStrType()
-            license_details.type = AAZStrType()
-            license_details.volume_license_details = AAZListType(
-                serialized_name="volumeLicenseDetails",
-            )
-
-            volume_license_details = cls._schema_on_200.properties.license_details.volume_license_details
-            volume_license_details.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.license_details.volume_license_details.Element
-            _element.invoice_id = AAZStrType(
-                serialized_name="invoiceId",
-            )
-            _element.program_year = AAZStrType(
-                serialized_name="programYear",
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            _UpdateHelper._build_schema_license_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -420,7 +332,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -463,95 +375,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.license_details = AAZObjectType(
-                serialized_name="licenseDetails",
-            )
-            properties.license_type = AAZStrType(
-                serialized_name="licenseType",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-            )
-
-            license_details = cls._schema_on_200.properties.license_details
-            license_details.assigned_licenses = AAZIntType(
-                serialized_name="assignedLicenses",
-                flags={"read_only": True},
-            )
-            license_details.edition = AAZStrType()
-            license_details.immutable_id = AAZStrType(
-                serialized_name="immutableId",
-                flags={"read_only": True},
-            )
-            license_details.processors = AAZIntType()
-            license_details.state = AAZStrType()
-            license_details.target = AAZStrType()
-            license_details.type = AAZStrType()
-            license_details.volume_license_details = AAZListType(
-                serialized_name="volumeLicenseDetails",
-            )
-
-            volume_license_details = cls._schema_on_200.properties.license_details.volume_license_details
-            volume_license_details.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.license_details.volume_license_details.Element
-            _element.invoice_id = AAZStrType(
-                serialized_name="invoiceId",
-            )
-            _element.program_year = AAZStrType(
-                serialized_name="programYear",
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            _UpdateHelper._build_schema_license_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -610,6 +434,119 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    _schema_license_read = None
+
+    @classmethod
+    def _build_schema_license_read(cls, _schema):
+        if cls._schema_license_read is not None:
+            _schema.id = cls._schema_license_read.id
+            _schema.location = cls._schema_license_read.location
+            _schema.name = cls._schema_license_read.name
+            _schema.properties = cls._schema_license_read.properties
+            _schema.system_data = cls._schema_license_read.system_data
+            _schema.tags = cls._schema_license_read.tags
+            _schema.type = cls._schema_license_read.type
+            return
+
+        cls._schema_license_read = _schema_license_read = AAZObjectType()
+
+        license_read = _schema_license_read
+        license_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        license_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        license_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        license_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        license_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        license_read.tags = AAZDictType()
+        license_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_license_read.properties
+        properties.license_details = AAZObjectType(
+            serialized_name="licenseDetails",
+        )
+        properties.license_type = AAZStrType(
+            serialized_name="licenseType",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+        )
+
+        license_details = _schema_license_read.properties.license_details
+        license_details.assigned_licenses = AAZIntType(
+            serialized_name="assignedLicenses",
+            flags={"read_only": True},
+        )
+        license_details.edition = AAZStrType()
+        license_details.immutable_id = AAZStrType(
+            serialized_name="immutableId",
+            flags={"read_only": True},
+        )
+        license_details.processors = AAZIntType()
+        license_details.state = AAZStrType()
+        license_details.target = AAZStrType()
+        license_details.type = AAZStrType()
+        license_details.volume_license_details = AAZListType(
+            serialized_name="volumeLicenseDetails",
+        )
+
+        volume_license_details = _schema_license_read.properties.license_details.volume_license_details
+        volume_license_details.Element = AAZObjectType()
+
+        _element = _schema_license_read.properties.license_details.volume_license_details.Element
+        _element.invoice_id = AAZStrType(
+            serialized_name="invoiceId",
+        )
+        _element.program_year = AAZStrType(
+            serialized_name="programYear",
+        )
+
+        system_data = _schema_license_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        tags = _schema_license_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_license_read.id
+        _schema.location = cls._schema_license_read.location
+        _schema.name = cls._schema_license_read.name
+        _schema.properties = cls._schema_license_read.properties
+        _schema.system_data = cls._schema_license_read.system_data
+        _schema.tags = cls._schema_license_read.tags
+        _schema.type = cls._schema_license_read.type
 
 
 __all__ = ["Update"]

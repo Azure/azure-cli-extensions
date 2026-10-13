@@ -93,7 +93,7 @@ def step_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster metricsconfiguration delete --cluster-name {clusterName} --resource-group {rg} -y"
+        "az networkcloud cluster metricsconfiguration delete --cluster-name {clusterName} --resource-group {rg} --yes"
     )
 
 

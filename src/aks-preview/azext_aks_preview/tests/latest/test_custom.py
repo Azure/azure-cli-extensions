@@ -2,7 +2,11 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import os
+import subprocess
+import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
@@ -16,10 +20,14 @@ from azext_aks_preview.managed_cluster_decorator import (
 from azext_aks_preview.custom import (
     aks_agentpool_get_bootstrap_data,
     aks_agentpool_upgrade,
+    aks_get_credentials,
     aks_machine_add,
     aks_machine_update,
     aks_stop,
     aks_scale,
+    aks_operation_show,
+    aks_operation_show_latest,
+    aks_operation_list,
     aks_upgrade,
     aks_enable_addons,
     aks_list_vm_skus,
@@ -34,6 +42,60 @@ from azure.cli.core.azclierror import (
 from azure.core.exceptions import ResourceNotFoundError
 from azext_aks_preview.tests.latest.test_vm_skus import _make_sku, _make_restriction
 from knack.util import CLIError
+
+
+class TestGetCredentialsExecutablePath(unittest.TestCase):
+    def setUp(self):
+        self.path = os.path.join(tempfile.gettempdir(), "test config", "config")
+        self.client = Mock()
+        self.client.list_cluster_user_credentials.return_value = SimpleNamespace(
+            kubeconfigs=[SimpleNamespace(value=(
+                b"users:\n- name: test-user\n  user:\n    exec:\n"
+                b"      command: kubelogin\n      args: [get-token, --login, devicecode]\n"
+            ))]
+        )
+
+    def test_executes_resolved_kubelogin_and_preserves_arguments(self):
+        executable = os.path.join(tempfile.gettempdir(), "installed tools", "kubelogin")
+        with patch("azext_aks_preview.custom.print_or_merge_credentials"), patch(
+            "azext_aks_preview.custom.which", return_value=executable
+        ) as resolve, patch("azext_aks_preview.custom.subprocess.run") as run:
+            aks_get_credentials(None, self.client, "rg", "cluster", path=self.path)
+        resolve.assert_called_once_with("kubelogin")
+        run.assert_called_once_with(
+            [executable, "convert-kubeconfig", "-l", "azurecli"],
+            cwd=os.path.dirname(self.path),
+            check=True,
+        )
+
+    def test_missing_kubelogin_warns_without_execution(self):
+        with patch("azext_aks_preview.custom.print_or_merge_credentials"), patch(
+            "azext_aks_preview.custom.which", return_value=None
+        ), patch("azext_aks_preview.custom.subprocess.run") as run, patch(
+            "azext_aks_preview.custom.logger.warning"
+        ) as warning:
+            aks_get_credentials(None, self.client, "rg", "cluster", path=self.path)
+        run.assert_not_called()
+        self.assertIn("Please install kubelogin", warning.call_args.args[0])
+
+    def test_conversion_failure_keeps_existing_warning_behavior(self):
+        with patch("azext_aks_preview.custom.print_or_merge_credentials"), patch(
+            "azext_aks_preview.custom.which", return_value="/installed/kubelogin"
+        ), patch(
+            "azext_aks_preview.custom.subprocess.run",
+            side_effect=subprocess.CalledProcessError(1, "kubelogin"),
+        ), patch("azext_aks_preview.custom.logger.warning") as warning:
+            aks_get_credentials(None, self.client, "rg", "cluster", path=self.path)
+        self.assertIn("Failed to convert kubeconfig", warning.call_args.args[0])
+
+    def test_other_authentication_does_not_resolve_or_execute_kubelogin(self):
+        self.client.list_cluster_user_credentials.return_value.kubeconfigs[0].value = b"users: []"
+        with patch("azext_aks_preview.custom.print_or_merge_credentials"), patch(
+            "azext_aks_preview.custom.which"
+        ) as resolve, patch("azext_aks_preview.custom.subprocess.run") as run:
+            aks_get_credentials(None, self.client, "rg", "cluster", path=self.path)
+        resolve.assert_not_called()
+        run.assert_not_called()
 
 
 class TestCustomCommand(unittest.TestCase):
@@ -78,6 +140,74 @@ class TestCustomCommand(unittest.TestCase):
 
         with self.assertRaisesRegex(CLIError, "no scalable node pools"):
             aks_scale(self.cmd, self.client, "rg", "name", 3, "nodepool1")
+
+    def test_aks_operation_list_cluster_scope(self):
+        client = Mock()
+        client.list = Mock(return_value=["op1"])
+        result = aks_operation_list(self.cmd, client, "rg", "name")
+        self.assertEqual(result, ["op1"])
+        client.list.assert_called_once_with("rg", "name")
+
+    def test_aks_operation_list_agent_pool_scope(self):
+        client = Mock()
+        client.list_by_agent_pool = Mock(return_value=["op1"])
+        result = aks_operation_list(self.cmd, client, "rg", "name", nodepool_name="np1")
+        self.assertEqual(result, ["op1"])
+        client.list_by_agent_pool.assert_called_once_with(
+            "rg", "name", "np1", active_only=False
+        )
+
+    def test_aks_operation_list_agent_pool_active(self):
+        client = Mock()
+        client.list_by_agent_pool = Mock(return_value=["active-op"])
+        result = aks_operation_list(
+            self.cmd, client, "rg", "name", nodepool_name="np1", active_only=True
+        )
+        self.assertEqual(result, ["active-op"])
+        client.list_by_agent_pool.assert_called_once_with(
+            "rg", "name", "np1", active_only=True
+        )
+
+    def test_aks_operation_list_cluster_active_filters_locally(self):
+        op_running = Mock()
+        op_running.status = "ScalingAgentPool: 0/3 nodes completed"
+        op_succeeded = Mock()
+        op_succeeded.status = "Succeeded"
+        op_failed = Mock()
+        op_failed.status = "Failed"
+        client = Mock()
+        client.list = Mock(return_value=[op_running, op_succeeded, op_failed])
+        result = aks_operation_list(self.cmd, client, "rg", "name", active_only=True)
+        self.assertEqual(result, [op_running])
+        client.list.assert_called_once_with("rg", "name")
+
+    def test_aks_operation_show_cluster_scope(self):
+        client = Mock()
+        client.get = Mock(return_value="op")
+        result = aks_operation_show(self.cmd, client, "rg", "name", "", "op-id")
+        self.assertEqual(result, "op")
+        client.get.assert_called_once_with("rg", "name", "op-id")
+
+    def test_aks_operation_show_agent_pool_scope(self):
+        client = Mock()
+        client.get_by_agent_pool = Mock(return_value="op")
+        result = aks_operation_show(self.cmd, client, "rg", "name", "np1", "op-id")
+        self.assertEqual(result, "op")
+        client.get_by_agent_pool.assert_called_once_with("rg", "name", "np1", "op-id")
+
+    def test_aks_operation_show_latest_cluster_scope(self):
+        client = Mock()
+        client.get = Mock(return_value="latest-op")
+        result = aks_operation_show_latest(self.cmd, client, "rg", "name", "")
+        self.assertEqual(result, "latest-op")
+        client.get.assert_called_once_with("rg", "name", "latest")
+
+    def test_aks_operation_show_latest_agent_pool_scope(self):
+        client = Mock()
+        client.get_by_agent_pool = Mock(return_value="latest-op")
+        result = aks_operation_show_latest(self.cmd, client, "rg", "name", "np1")
+        self.assertEqual(result, "latest-op")
+        client.get_by_agent_pool.assert_called_once_with("rg", "name", "np1", "latest")
 
     def test_aks_upgrade_node_image_only_skips_machines_mode_pool(self):
         """Machines mode pools must be skipped during --node-image-only to avoid a known client-side error."""
@@ -788,6 +918,124 @@ class TestAksListVmSkus(unittest.TestCase):
                                   size="D4", zone=True, show_all=False)
 
         self.assertEqual(result, [match])
+
+
+class TestDcrTableReadinessRetry(unittest.TestCase):
+    """
+    Unit tests for `_create_or_update_dcr_with_table_readiness_retry`, added to narrowly
+    retry the monitoring-addon Data Collection Rule (DCR) PUT when the Log Analytics
+    workspace's output table is not yet ready (`InvalidOutputTable`), while preserving the
+    original 3-attempt immediate-retry/raise behavior for every other error.
+    """
+
+    def setUp(self):
+        patcher = patch("azext_aks_preview.custom.time.sleep", return_value=None)
+        self.addCleanup(patcher.stop)
+        self.mock_sleep = patcher.start()
+
+    def test_succeeds_immediately_with_no_retries(self):
+        from azext_aks_preview.custom import (
+            _create_or_update_dcr_with_table_readiness_retry,
+        )
+
+        resources = Mock()
+        resources.begin_create_or_update_by_id.return_value = None
+
+        _create_or_update_dcr_with_table_readiness_retry(
+            resources, "dcr-id", "2022-06-01", {"foo": "bar"}
+        )
+
+        resources.begin_create_or_update_by_id.assert_called_once_with(
+            "dcr-id", "2022-06-01", {"foo": "bar"}
+        )
+        self.mock_sleep.assert_not_called()
+
+    def test_retries_on_invalid_output_table_then_succeeds(self):
+        from azext_aks_preview.custom import (
+            _create_or_update_dcr_with_table_readiness_retry,
+        )
+
+        resources = Mock()
+        resources.begin_create_or_update_by_id.side_effect = [
+            CLIError("(BadRequest) InvalidOutputTable: the output table is not ready"),
+            CLIError("(BadRequest) InvalidOutputTable: the output table is not ready"),
+            None,
+        ]
+
+        _create_or_update_dcr_with_table_readiness_retry(
+            resources, "dcr-id", "2022-06-01", {"foo": "bar"}
+        )
+
+        self.assertEqual(resources.begin_create_or_update_by_id.call_count, 3)
+        self.assertEqual(self.mock_sleep.call_count, 2)
+
+    def test_raises_after_exhausting_table_readiness_retries(self):
+        from azext_aks_preview.custom import (
+            _create_or_update_dcr_with_table_readiness_retry,
+            _DCR_TABLE_READINESS_MAX_RETRY_TIMES,
+        )
+
+        error = CLIError("(BadRequest) InvalidOutputTable: still not ready")
+        resources = Mock()
+        resources.begin_create_or_update_by_id.side_effect = error
+
+        with self.assertRaises(CLIError):
+            _create_or_update_dcr_with_table_readiness_retry(
+                resources, "dcr-id", "2022-06-01", {"foo": "bar"}
+            )
+
+        # Once the readiness-specific retry budget (_DCR_TABLE_READINESS_MAX_RETRY_TIMES)
+        # is exhausted, a still-failing InvalidOutputTable error falls back to consuming
+        # the original 3-attempt bound before finally being raised: total calls ==
+        # readiness retries + the original 3-attempt bound.
+        self.assertEqual(
+            resources.begin_create_or_update_by_id.call_count,
+            _DCR_TABLE_READINESS_MAX_RETRY_TIMES + 3,
+        )
+        self.assertEqual(self.mock_sleep.call_count, _DCR_TABLE_READINESS_MAX_RETRY_TIMES)
+
+    def test_other_errors_use_original_three_attempt_bound_without_sleep(self):
+        from azext_aks_preview.custom import (
+            _create_or_update_dcr_with_table_readiness_retry,
+        )
+
+        error = CLIError("(BadRequest) some unrelated failure")
+        resources = Mock()
+        resources.begin_create_or_update_by_id.side_effect = error
+
+        with self.assertRaises(CLIError):
+            _create_or_update_dcr_with_table_readiness_retry(
+                resources, "dcr-id", "2022-06-01", {"foo": "bar"}
+            )
+
+        # Original behavior: exactly 3 immediate attempts, no sleeping.
+        self.assertEqual(resources.begin_create_or_update_by_id.call_count, 3)
+        self.mock_sleep.assert_not_called()
+
+    def test_other_error_after_table_readiness_retry_still_bounded(self):
+        """
+        A different, non-transient error surfacing after one InvalidOutputTable retry
+        should still respect the original 3-attempt bound for *that* error path.
+        """
+        from azext_aks_preview.custom import (
+            _create_or_update_dcr_with_table_readiness_retry,
+        )
+
+        resources = Mock()
+        resources.begin_create_or_update_by_id.side_effect = [
+            CLIError("(BadRequest) InvalidOutputTable: not ready yet"),
+            CLIError("(BadRequest) some unrelated failure"),
+            CLIError("(BadRequest) some unrelated failure"),
+            CLIError("(BadRequest) some unrelated failure"),
+        ]
+
+        with self.assertRaisesRegex(CLIError, "unrelated failure"):
+            _create_or_update_dcr_with_table_readiness_retry(
+                resources, "dcr-id", "2022-06-01", {"foo": "bar"}
+            )
+
+        self.assertEqual(resources.begin_create_or_update_by_id.call_count, 4)
+        self.assertEqual(self.mock_sleep.call_count, 1)
 
 
 if __name__ == '__main__':

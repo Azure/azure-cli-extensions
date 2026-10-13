@@ -4,6 +4,10 @@ This is an extension to Azure CLI to manage **Azure DocumentDB**
 clusters (the `Microsoft.DocumentDB/mongoClusters` resource) under the
 `az documentdb mongocluster` command group.
 
+Version `1.1.0b1` is a Beta release generated against the
+`2026-06-15-preview` management API. The Preview API adds planned replica
+promotion while retaining the existing command surface.
+
 ## How to install ##
 
 ```bash
@@ -88,8 +92,13 @@ az documentdb mongocluster replica list --source-cluster MyCluster -g MyResource
 az documentdb mongocluster replica create -n MyReplica -g MyResourceGroup -l centralus \
     --source-cluster MyCluster
 
-# Promote a replica to primary (--source-cluster guards against promoting the wrong replica)
-az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup --source-cluster MyCluster
+# Planned promotion waits for the replica to catch up before switching roles (Preview).
+az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup \
+    --source-cluster MyCluster --mode Switchover --promote-option Planned
+
+# Forced promotion switches immediately and can lose recent writes; use it for recovery only.
+az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup \
+    --source-cluster MyCluster --mode Switchover --promote-option Forced
 ```
 
 ### Point-in-time restore

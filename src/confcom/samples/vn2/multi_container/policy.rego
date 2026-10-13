@@ -237,7 +237,10 @@ containers := [
     "name": "app",
     "no_new_privileges": false,
     "seccomp_profile_sha256": "",
-    "signals": [],
+    "signals": [
+      9,
+      15
+    ],
     "user": {
       "group_idnames": [
         {
@@ -470,7 +473,10 @@ containers := [
     "name": "worker",
     "no_new_privileges": false,
     "seccomp_profile_sha256": "",
-    "signals": [],
+    "signals": [
+      9,
+      15
+    ],
     "user": {
       "group_idnames": [
         {
@@ -564,7 +570,10 @@ containers := [
     "name": "pause-container",
     "no_new_privileges": false,
     "seccomp_profile_sha256": "",
-    "signals": [],
+    "signals": [
+      9,
+      15
+    ],
     "user": {
       "group_idnames": [
         {

@@ -168,20 +168,25 @@ class TestFrontendMisc(unittest.TestCase):
         """Test listing audit logs"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.analytics_auditevents_get.return_value = [
-            {
-                "logId": "test-log-123",
-                "timestamp": "2024-01-01T00:00:00Z",
-                "action": "dataset_published",
-                "userId": "user-123"
-            },
-            {
-                "logId": "log-456",
-                "timestamp": "2024-01-02T00:00:00Z",
-                "action": "query_executed",
-                "userId": "user-456"
-            }
-        ]
+        mock_client.collaboration.analytics_auditevents_get.return_value = {
+            "value": [
+                {
+                    "scope": "analytics",
+                    "id": "101",
+                    "timestamp": "1704067200000",
+                    "timestampIso": "2024-01-01T00:00:00Z",
+                    "data": {"source": "frontend", "message": "dataset published"}
+                },
+                {
+                    "scope": "analytics",
+                    "id": "102",
+                    "timestamp": "1704153600000",
+                    "timestampIso": "2024-01-02T00:00:00Z",
+                    "data": {"source": "frontend", "message": "query executed"}
+                }
+            ],
+            "nextLink": None
+        }
         mock_get_client.return_value = mock_client
 
         # Execute
@@ -191,9 +196,10 @@ class TestFrontendMisc(unittest.TestCase):
         )
 
         # Verify
-        self.assertEqual(len(result), 2)
-        self.assertEqual(result[0]["logId"], "test-log-123")
-        self.assertEqual(result[1]["logId"], "log-456")
+        self.assertEqual(len(result["value"]), 2)
+        self.assertEqual(result["value"][0]["id"], "101")
+        self.assertEqual(result["value"][1]["data"]["message"], "query executed")
+        self.assertIsNone(result["nextLink"])
         mock_client.collaboration.analytics_auditevents_get.assert_called_once_with(
             "test-collab-123", scope=None, from_seqno=None, to_seqno=None)
 
@@ -205,9 +211,7 @@ class TestFrontendMisc(unittest.TestCase):
         # Mock the client
         mock_client = Mock()
         mock_client.collaboration.analytics_secrets_secret_name_put.return_value = {
-            "secretName": "test-secret",
-            "status": "set",
-            "updatedAt": "2024-01-01T00:00:00Z"
+            "secretId": "test-secret"
         }
         mock_get_client.return_value = mock_client
 
@@ -220,8 +224,7 @@ class TestFrontendMisc(unittest.TestCase):
         )
 
         # Verify
-        self.assertEqual(result["secretName"], "test-secret")
-        self.assertEqual(result["status"], "set")
+        self.assertEqual(result["secretId"], "test-secret")
         mock_client.collaboration.analytics_secrets_secret_name_put.assert_called_once_with(
             "test-collab-123", "test-secret", body={"secretValue": "secret-value-123"})
 
@@ -262,14 +265,18 @@ class TestFrontendMisc(unittest.TestCase):
         """Test listing audit logs with filters"""
         # Mock the client
         mock_client = Mock()
-        mock_client.collaboration.analytics_auditevents_get.return_value = [
-            {
-                "logId": "test-log-123",
-                "timestamp": "2024-01-01T00:00:00Z",
-                "action": "query_executed",
-                "userId": "user-123"
-            }
-        ]
+        mock_client.collaboration.analytics_auditevents_get.return_value = {
+            "value": [
+                {
+                    "scope": "analytics",
+                    "id": "150",
+                    "timestamp": "1704067200000",
+                    "timestampIso": "2024-01-01T00:00:00Z",
+                    "data": {"source": "frontend", "message": "query executed"}
+                }
+            ],
+            "nextLink": None
+        }
         mock_get_client.return_value = mock_client
 
         # Execute
@@ -282,8 +289,8 @@ class TestFrontendMisc(unittest.TestCase):
         )
 
         # Verify
-        self.assertEqual(len(result), 1)
-        self.assertEqual(result[0]["action"], "query_executed")
+        self.assertEqual(len(result["value"]), 1)
+        self.assertEqual(result["value"][0]["data"]["message"], "query executed")
         mock_client.collaboration.analytics_auditevents_get.assert_called_once_with(
             "test-collab-123", scope="analytics", from_seqno=100, to_seqno=200)
 

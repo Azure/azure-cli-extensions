@@ -98,3 +98,43 @@ migrate runbook:
         resource_group_name:
             rule_exclusions:
                 - missing_parameter_test_coverage
+
+# -g/-p are identity/scope parameters that carry a configured_default (set via
+# `az configure --defaults group=<rg> migrate_project=<name>`). The
+# no-defaults-on-update rule targets update *content* parameters; excluding the
+# scope parameters here keeps the linter green when az config defaults are set.
+migrate runbook update:
+    parameters:
+        resource_group_name:
+            rule_exclusions:
+                - no_parameter_defaults_for_update_commands
+        project_name:
+            rule_exclusions:
+                - no_parameter_defaults_for_update_commands
+# The three depends-on flags mirror the service's dependency discriminator
+# (whole-step / per-entity / mapped-entities); --depends-on-mapped-entities is
+# intentionally descriptive and exceeds the option-length threshold.
+migrate runbook definition step add:
+    parameters:
+        depends_on_mapped_entities:
+            rule_exclusions:
+                - option_length_too_long
+
+migrate runbook definition step update:
+    parameters:
+        depends_on_mapped_entities:
+            rule_exclusions:
+                - option_length_too_long
+        resource_group_name:
+            rule_exclusions:
+                - no_parameter_defaults_for_update_commands
+        project_name:
+            rule_exclusions:
+                - no_parameter_defaults_for_update_commands
+
+# The execution LRO started with --no-wait is monitored via
+# `execution show` / `execution visualize --watch` (a workflow-state resource,
+# not a provisioningState one), so a `wait` command does not fit this group.
+migrate runbook execution:
+    rule_exclusions:
+        - require_wait_command_if_no_wait

@@ -2,6 +2,17 @@
 
 Release History
 ===============
+1.5.0b1
+- Preview release. Adds support for the 2025-08-01-preview, 2026-02-01-preview, and 2026-06-01-preview API versions.
+- Added a new command group `az redisenterprise migration` to migrate an existing Azure Cache for Redis instance into an Azure Managed Redis (Redis Enterprise) cluster:
+  - `start`: start a migration from a source Azure Cache for Redis resource. The source properties are exposed as flat arguments: `--source-resource-id`, `--skip-data-migration`, `--switch-dns`, and `--force-migrate`.
+  - `validate`: validate whether a source Azure Cache for Redis resource can be migrated to the target cluster.
+  - `undo`: cancel or roll back an in-progress migration.
+  - `list` / `show`: view migration attempts on a cluster.
+- Added `--maintenance-config`/`--maintenance-configuration` to `az redisenterprise create` and `az redisenterprise update` to configure cluster-level maintenance, including custom maintenance windows that control when maintenance is applied to the cluster.
+- Added `--notify-keyspace-events` to `az redisenterprise database create` and `az redisenterprise database update` to configure Redis keyspace notifications. Defaults to disabled (empty string); when set, the value must include at least 'K' (keyspace events) or 'E' (keyevent events), for example 'AKE' to enable all standard events.
+- Added `--access-string` to `az redisenterprise database access-policy-assignment create` and `update` to set a custom Redis ACL permissions string for the assignment (for example, `+@read ~cache:*`); defaults to `+@all ~*` when not specified.
+
 1.4.0
 - add a new command `az redisenterprise test-connection` to test the connection to a cluster.
 

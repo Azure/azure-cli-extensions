@@ -46,6 +46,11 @@ class RunbookCrudScenarioTest(unittest.TestCase):
         self.client_cls = client_patch.start()
         self.client = self.client_cls.return_value
 
+        open_patch = mock.patch(
+            'azext_migrate.runbook.cmds.runbook._open_definition_view')
+        self.addCleanup(open_patch.stop)
+        self.open_view = open_patch.start()
+
     def test_runbook_crud(self):
         generated = {
             "id": RUNBOOK_ID, "name": RUNBOOK,
@@ -58,6 +63,7 @@ class RunbookCrudScenarioTest(unittest.TestCase):
             self.cmd, RG, PROJECT, RUNBOOK, WAVE)
 
         self.assertEqual(result, generated)
+        self.open_view.assert_called_once()
         put_id, put_body = self.client.put.call_args[0]
         self.assertEqual(put_id, RUNBOOK_ID)
         self.assertEqual(
@@ -88,6 +94,14 @@ class RunbookCrudScenarioTest(unittest.TestCase):
         runbook_cmds.delete(self.cmd, RG, PROJECT, RUNBOOK)
         self.client.delete.assert_called_once_with(
             RUNBOOK_ID, no_wait=False)
+
+    def test_generate_no_visualize_skips_definition_view(self):
+        generated = {"id": RUNBOOK_ID, "name": RUNBOOK}
+        self.client.put.return_value = generated
+        result = runbook_cmds.generate(
+            self.cmd, RG, PROJECT, RUNBOOK, WAVE, no_visualize=True)
+        self.assertEqual(result, generated)
+        self.open_view.assert_not_called()
 
 
 class ExecutionStepScenarioTest(unittest.TestCase):
@@ -123,7 +137,7 @@ class ExecutionStepScenarioTest(unittest.TestCase):
         _, action, body = self.client.post_action.call_args[0]
         self.assertEqual(action, 'ProvideApproval')
         self.assertEqual(body["action"], "Approve")
-        self.assertEqual(body["migrationEntityIds"], ["ent1"])
+        self.assertEqual(body["entities"], ["ent1"])
 
         execution_step_cmds.complete(
             self.cmd, RG, PROJECT, RUNBOOK, "exec1", "step1", "done")

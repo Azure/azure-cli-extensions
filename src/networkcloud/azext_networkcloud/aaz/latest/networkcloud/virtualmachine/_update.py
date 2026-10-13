@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-07-01",
+        "version": "2026-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2026-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2026-08-01-preview"],
         ]
     }
 
@@ -101,6 +101,9 @@ class Update(AAZCommand):
             help="The password or token used to access an image in the target repository.",
             fmt=AAZStrArgFormat(
                 min_length=1,
+            ),
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
             ),
         )
         vm_image_repository_credentials.registry_url = AAZStrArg(
@@ -209,7 +212,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-01",
+                    "api-version", "2026-08-01-preview",
                     required=True,
                 ),
             }

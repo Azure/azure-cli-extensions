@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2026-06-16-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2026-07-15"],
         ]
     }
 
@@ -56,7 +56,7 @@ class Wait(AAZWaitCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.HybridComputePrivateLinkScopesGet(ctx=self.ctx)()
+        self.PrivateLinkScopesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -71,7 +71,7 @@ class Wait(AAZWaitCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class HybridComputePrivateLinkScopesGet(AAZHttpOperation):
+    class PrivateLinkScopesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-16-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }

@@ -189,3 +189,7 @@ Release History
 1.11.0
 ++++++
 * Add 2026-06-02-preview API version with vendored generated SDK.
+
+1.11.1
+++++++
+* Improve ``az fleet namespace update`` compatibility by using the corrected managed namespace PATCH models.

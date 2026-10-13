@@ -6,32 +6,30 @@
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
+def _validate_name(namespace, attr, label):
+    name = getattr(namespace, attr, None)
+    if name is not None and not name.strip():
+        raise InvalidArgumentValueError(f"{label} is not a valid.")
+
+
 def validate_ai_manager_name(namespace):
-    if namespace.ai_manager_name is not None and not namespace.ai_manager_name.strip():
-        raise InvalidArgumentValueError("AI Manager name must not be empty.")
+    _validate_name(namespace, "ai_manager_name", "AI Manager name")
 
 
 def validate_namespace_name(namespace):
-    if getattr(namespace, "namespace_name", None) is not None and not namespace.namespace_name.strip():
-        raise InvalidArgumentValueError("--name/-n is not a valid namespace name.")
+    _validate_name(namespace, "namespace_name", "namespace name")
 
 
 def validate_model_deployment_name(namespace):
-    name = getattr(namespace, "model_deployment_name", None)
-    if name is not None and not name.strip():
-        raise InvalidArgumentValueError("--name/-n is not a valid model deployment name.")
+    _validate_name(namespace, "model_deployment_name", "model deployment name")
 
 
 def validate_ai_model_name(namespace):
-    name = getattr(namespace, "ai_model_name", None)
-    if name is not None and not name.strip():
-        raise InvalidArgumentValueError("--name/-n is not a valid AI model name.")
+    _validate_name(namespace, "ai_model_name", "AI model name")
 
 
 def validate_model_source_name(namespace):
-    name = getattr(namespace, "model_source_name", None)
-    if name is not None and not name.strip():
-        raise InvalidArgumentValueError("--name/-n is not a valid model source name.")
+    _validate_name(namespace, "model_source_name", "model source name")
 
 
 def _validate_key_value_pairs(values, option):
