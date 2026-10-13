@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class ShowUpdateDomain(AAZCommand):
     """Get the specified update domain of a cloud service. Use nextLink property in the response to get the next page of update domains. Do this till nextLink is null to fetch all the update domains.
+
+    :example: Get Cloud Service Update Domain
+        az cloud-service update-domain show-update-domain --resource-group ConstosoRG --cloud-service-name {cs-name} --update-domain 1
     """
 
     _aaz_info = {

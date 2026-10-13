@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class ShowRemoteDesktopFile(AAZCommand):
     """Get a remote desktop file for a role instance in a cloud service.
+
+    :example: Get Cloud Service Role
+        az cloud-service role-instance show-remote-desktop-file --role-instance-name aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa --resource-group rgcloudService --cloud-service-name aaaa
     """
 
     _aaz_info = {

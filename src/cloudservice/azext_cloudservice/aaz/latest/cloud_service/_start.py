@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Start(AAZCommand):
     """Starts the cloud service.
+
+    :example: Start Cloud Service
+        az cloud-service start --resource-group ConstosoRG --cloud-service-name {cs-name}
     """
 
     _aaz_info = {

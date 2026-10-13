@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about a cloud service.
+
+    :example: Get Cloud Service with Multiple Roles and RDP Extension
+        az cloud-service show --resource-group ConstosoRG --cloud-service-name {cs-name}
     """
 
     _aaz_info = {

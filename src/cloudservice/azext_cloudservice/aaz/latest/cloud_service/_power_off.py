@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class PowerOff(AAZCommand):
     """Power off the cloud service. Note that resources are still attached and you are getting charged for the resources.
+
+    :example: Stop or PowerOff Cloud Service
+        az cloud-service power-off --resource-group ConstosoRG --cloud-service-name {cs-name}
     """
 
     _aaz_info = {

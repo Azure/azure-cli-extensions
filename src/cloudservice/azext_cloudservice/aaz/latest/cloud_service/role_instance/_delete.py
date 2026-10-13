@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a role instance from a cloud service.
+
+    :example: Delete Cloud Service Role Instance
+        az cloud-service role-instance delete --role-instance-name {roleInstance-name} --resource-group ConstosoRG --cloud-service-name {cs-name}
     """
 
     _aaz_info = {

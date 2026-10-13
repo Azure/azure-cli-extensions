@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a cloud service.
+
+    :example: Delete Cloud Service
+        az cloud-service delete --resource-group ConstosoRG --cloud-service-name {cs-name}
     """
 
     _aaz_info = {

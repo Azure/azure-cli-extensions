@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class DeleteInstance(AAZCommand):
     """Delete role instances in a cloud service.
+
+    :example: Delete Cloud Service Role Instances in a Cloud Service
+        az cloud-service delete-instance --resource-group ConstosoRG --cloud-service-name {cs-name} --role-instances "[ContosoFrontend_IN_0,ContosoBackend_IN_1]"
     """
 
     _aaz_info = {

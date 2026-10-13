@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Rebuild(AAZCommand):
     """Rebuild Role Instances reinstalls the operating system on instances of web roles or worker roles and initializes the storage resources that are used by them. If you do not want to initialize storage resources, you can use Reimage Role Instances.
+
+    :example: Rebuild Cloud Service Role Instances in a Cloud Service
+        az cloud-service rebuild --resource-group ConstosoRG --cloud-service-name {cs-name} --role-instances "[ContosoFrontend_IN_0,ContosoBackend_IN_1]"
     """
 
     _aaz_info = {

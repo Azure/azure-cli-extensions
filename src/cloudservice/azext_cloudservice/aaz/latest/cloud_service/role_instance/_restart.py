@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Restart(AAZCommand):
     """The Reboot Role Instance asynchronous operation requests a reboot of a role instance in the cloud service.
+
+    :example: Restart Cloud Service Role Instance
+        az cloud-service role-instance restart --role-instance-name {roleInstance-name} --resource-group ConstosoRG --cloud-service-name {cs-name}
     """
 
     _aaz_info = {

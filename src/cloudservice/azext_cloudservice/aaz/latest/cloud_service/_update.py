@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a cloud service.
+
+    :example: Update existing Cloud Service to add tags
+        az cloud-service update --resource-group ConstosoRG --cloud-service-name {cs-name} --tags "{Documentation:RestAPI}"
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List a list of all roles in a cloud service. Use nextLink property in the response to get the next page of roles. Do this till nextLink is null to fetch all the roles.
+
+    :example: List Roles in a Cloud Service
+        az cloud-service role list --resource-group ConstosoRG --cloud-service-name {cs-name}
     """
 
     _aaz_info = {

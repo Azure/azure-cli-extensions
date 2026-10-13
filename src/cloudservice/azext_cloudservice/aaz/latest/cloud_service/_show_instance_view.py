@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class ShowInstanceView(AAZCommand):
     """Get the status of a cloud service.
+
+    :example: Get Cloud Service Instance View with Multiple Roles
+        az cloud-service show-instance-view --resource-group ConstosoRG --cloud-service-name {cs-name}
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class ListUpdateDomain(AAZCommand):
     """List a list of all update domains in a cloud service.
+
+    :example: List Update Domains in Cloud Service
+        az cloud-service update-domain list-update-domain --resource-group ConstosoRG --cloud-service-name {cs-name}
     """
 
     _aaz_info = {

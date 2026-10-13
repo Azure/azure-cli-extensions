@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Restart(AAZCommand):
     """Restarts one or more role instances in a cloud service.
+
+    :example: Restart Cloud Service Role Instances in a Cloud Service
+        az cloud-service restart --resource-group ConstosoRG --cloud-service-name {cs-name} --role-instances "[ContosoFrontend_IN_0,ContosoBackend_IN_1]"
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a role instance from a cloud service.
+
+    :example: Get Cloud Service Role Instance
+        az cloud-service role-instance show --role-instance-name {roleInstance-name} --resource-group ConstosoRG --cloud-service-name {cs-name}
     """
 
     _aaz_info = {

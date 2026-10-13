@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class WalkUpdateDomain(AAZCommand):
     """Updates the role instances in the specified update domain.
+
+    :example: Update Cloud Service to specified Domain
+        az cloud-service update-domain walk-update-domain --resource-group ConstosoRG --cloud-service-name {cs-name} --update-domain 1
     """
 
     _aaz_info = {
