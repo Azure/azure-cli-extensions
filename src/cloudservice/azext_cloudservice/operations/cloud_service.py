@@ -5,12 +5,22 @@
 
 # pylint: disable=protected-access
 
-from azure.cli.core.aaz import AAZAnyTypeArg
+from azure.cli.core.aaz import AAZAnyTypeArg, register_command
 from azext_cloudservice.aaz.latest.cloud_service._create import Create as _Create
 from azext_cloudservice.aaz.latest.cloud_service._list import List as _List
 
 
+@register_command(
+    "cloud-service list",
+    is_experimental=True,
+)
 class CloudServiceList(_List):
+    """List all cloud services in a resource group.
+
+    :example: List cloud services in a resource group.
+        az cloud-service list --resource-group MyResourceGroup
+    """
+
     _args_schema = None
 
     @classmethod
@@ -20,7 +30,17 @@ class CloudServiceList(_List):
         return args_schema
 
 
+@register_command(
+    "cloud-service list-all",
+    is_experimental=True,
+)
 class CloudServiceListAll(_List):
+    """List all cloud services in the subscription.
+
+    :example: List all cloud services in the current subscription.
+        az cloud-service list-all
+    """
+
     _args_schema = None
 
     @classmethod

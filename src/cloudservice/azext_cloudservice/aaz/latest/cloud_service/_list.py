@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "cloud-service list",
-    is_experimental=True,
-)
 class List(AAZCommand):
     """List a list of all cloud services under a resource group. Use nextLink property in the response to get the next page of Cloud Services. Do this till nextLink is null to fetch all the Cloud Services.
 
