@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "cloud-service update",
 )
 class Update(AAZCommand):
-    """Update a cloud service. Please note some properties can be set only during cloud service creation.
+    """Update a cloud service.
     """
 
     _aaz_info = {
@@ -26,8 +26,6 @@ class Update(AAZCommand):
     }
 
     AZ_SUPPORT_NO_WAIT = True
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -60,47 +58,16 @@ class Update(AAZCommand):
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Parameters",
-            help="Resource tags.",
-            nullable=True,
+            help="Resource tags",
         )
 
         tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        # define Arg Group "Properties"
+        tags.Element = AAZStrArg()
         return cls._args_schema
-
-    _args_sub_resource_update = None
-
-    @classmethod
-    def _build_args_sub_resource_update(cls, _schema):
-        if cls._args_sub_resource_update is not None:
-            _schema.id = cls._args_sub_resource_update.id
-            return
-
-        cls._args_sub_resource_update = AAZObjectArg(
-            nullable=True,
-        )
-
-        sub_resource_update = cls._args_sub_resource_update
-        sub_resource_update.id = AAZStrArg(
-            options=["id"],
-            help="Resource Id",
-            nullable=True,
-        )
-
-        _schema.id = cls._args_sub_resource_update.id
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CloudServicesGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        yield self.CloudServicesCreateOrUpdate(ctx=self.ctx)()
+        yield self.CloudServicesUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -111,102 +78,11 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class CloudServicesGet(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/cloudServices/{cloudServiceName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "ODataV4Format"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "cloudServiceName", self.ctx.args.cloud_service_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-09-04",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_cloud_service_read(cls._schema_on_200)
-
-            return cls._schema_on_200
-
-    class CloudServicesCreateOrUpdate(AAZHttpOperation):
+    class CloudServicesUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -216,16 +92,16 @@ class Update(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200, 201]:
+            if session.http_response.status_code in [200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
@@ -242,7 +118,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -292,313 +168,258 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"client_flatten": True}}
             )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_cloud_service_read(cls._schema_on_200_201)
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
-            )
-            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             tags = _builder.get(".tags")
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
 
-            return _instance_value
+            return self.serialize_content(_content_value)
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
             )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.zones = AAZListType()
+
+            properties = cls._schema_on_200.properties
+            properties.allow_model_override = AAZBoolType(
+                serialized_name="allowModelOverride",
+            )
+            properties.configuration = AAZStrType()
+            properties.configuration_url = AAZStrType(
+                serialized_name="configurationUrl",
+            )
+            properties.extension_profile = AAZObjectType(
+                serialized_name="extensionProfile",
+            )
+            properties.network_profile = AAZObjectType(
+                serialized_name="networkProfile",
+            )
+            properties.os_profile = AAZObjectType(
+                serialized_name="osProfile",
+            )
+            properties.package_url = AAZStrType(
+                serialized_name="packageUrl",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.role_profile = AAZObjectType(
+                serialized_name="roleProfile",
+            )
+            properties.start_cloud_service = AAZBoolType(
+                serialized_name="startCloudService",
+            )
+            properties.unique_id = AAZStrType(
+                serialized_name="uniqueId",
+                flags={"read_only": True},
+            )
+            properties.upgrade_mode = AAZStrType(
+                serialized_name="upgradeMode",
+            )
+
+            extension_profile = cls._schema_on_200.properties.extension_profile
+            extension_profile.extensions = AAZListType()
+
+            extensions = cls._schema_on_200.properties.extension_profile.extensions
+            extensions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.extension_profile.extensions.Element
+            _element.name = AAZStrType()
+            _element.properties = AAZObjectType()
+
+            properties = cls._schema_on_200.properties.extension_profile.extensions.Element.properties
+            properties.auto_upgrade_minor_version = AAZBoolType(
+                serialized_name="autoUpgradeMinorVersion",
+            )
+            properties.force_update_tag = AAZStrType(
+                serialized_name="forceUpdateTag",
+            )
+            properties.protected_settings = AAZDictType(
+                serialized_name="protectedSettings",
+            )
+            properties.protected_settings_from_key_vault = AAZObjectType(
+                serialized_name="protectedSettingsFromKeyVault",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.publisher = AAZStrType()
+            properties.roles_applied_to = AAZListType(
+                serialized_name="rolesAppliedTo",
+            )
+            properties.settings = AAZDictType()
+            properties.type = AAZStrType()
+            properties.type_handler_version = AAZStrType(
+                serialized_name="typeHandlerVersion",
+            )
+
+            protected_settings = cls._schema_on_200.properties.extension_profile.extensions.Element.properties.protected_settings
+            protected_settings.Element = AAZAnyType()
+
+            protected_settings_from_key_vault = cls._schema_on_200.properties.extension_profile.extensions.Element.properties.protected_settings_from_key_vault
+            protected_settings_from_key_vault.secret_url = AAZStrType(
+                serialized_name="secretUrl",
+            )
+            protected_settings_from_key_vault.source_vault = AAZObjectType(
+                serialized_name="sourceVault",
+            )
+            _UpdateHelper._build_schema_sub_resource_read(protected_settings_from_key_vault.source_vault)
+
+            roles_applied_to = cls._schema_on_200.properties.extension_profile.extensions.Element.properties.roles_applied_to
+            roles_applied_to.Element = AAZStrType()
+
+            settings = cls._schema_on_200.properties.extension_profile.extensions.Element.properties.settings
+            settings.Element = AAZAnyType()
+
+            network_profile = cls._schema_on_200.properties.network_profile
+            network_profile.load_balancer_configurations = AAZListType(
+                serialized_name="loadBalancerConfigurations",
+            )
+            network_profile.slot_type = AAZStrType(
+                serialized_name="slotType",
+            )
+            network_profile.swappable_cloud_service = AAZObjectType(
+                serialized_name="swappableCloudService",
+            )
+            _UpdateHelper._build_schema_sub_resource_read(network_profile.swappable_cloud_service)
+
+            load_balancer_configurations = cls._schema_on_200.properties.network_profile.load_balancer_configurations
+            load_balancer_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.network_profile.load_balancer_configurations.Element
+            _element.id = AAZStrType()
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.properties.network_profile.load_balancer_configurations.Element.properties
+            properties.frontend_ip_configurations = AAZListType(
+                serialized_name="frontendIpConfigurations",
+                flags={"required": True},
+            )
+
+            frontend_ip_configurations = cls._schema_on_200.properties.network_profile.load_balancer_configurations.Element.properties.frontend_ip_configurations
+            frontend_ip_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.network_profile.load_balancer_configurations.Element.properties.frontend_ip_configurations.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.properties.network_profile.load_balancer_configurations.Element.properties.frontend_ip_configurations.Element.properties
+            properties.private_ip_address = AAZStrType(
+                serialized_name="privateIPAddress",
+            )
+            properties.public_ip_address = AAZObjectType(
+                serialized_name="publicIPAddress",
+            )
+            _UpdateHelper._build_schema_sub_resource_read(properties.public_ip_address)
+            properties.subnet = AAZObjectType()
+            _UpdateHelper._build_schema_sub_resource_read(properties.subnet)
+
+            os_profile = cls._schema_on_200.properties.os_profile
+            os_profile.secrets = AAZListType()
+
+            secrets = cls._schema_on_200.properties.os_profile.secrets
+            secrets.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.os_profile.secrets.Element
+            _element.source_vault = AAZObjectType(
+                serialized_name="sourceVault",
+            )
+            _UpdateHelper._build_schema_sub_resource_read(_element.source_vault)
+            _element.vault_certificates = AAZListType(
+                serialized_name="vaultCertificates",
+            )
+
+            vault_certificates = cls._schema_on_200.properties.os_profile.secrets.Element.vault_certificates
+            vault_certificates.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.os_profile.secrets.Element.vault_certificates.Element
+            _element.certificate_url = AAZStrType(
+                serialized_name="certificateUrl",
+            )
+
+            role_profile = cls._schema_on_200.properties.role_profile
+            role_profile.roles = AAZListType()
+
+            roles = cls._schema_on_200.properties.role_profile.roles
+            roles.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.role_profile.roles.Element
+            _element.name = AAZStrType()
+            _element.sku = AAZObjectType()
+
+            sku = cls._schema_on_200.properties.role_profile.roles.Element.sku
+            sku.capacity = AAZIntType()
+            sku.name = AAZStrType()
+            sku.tier = AAZStrType()
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+                flags={"read_only": True},
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+                flags={"read_only": True},
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
+
+            zones = cls._schema_on_200.zones
+            zones.Element = AAZStrType()
+
+            return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    @classmethod
-    def _build_schema_sub_resource_update(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("id", AAZStrType, ".id")
-
-    _schema_cloud_service_read = None
-
-    @classmethod
-    def _build_schema_cloud_service_read(cls, _schema):
-        if cls._schema_cloud_service_read is not None:
-            _schema.id = cls._schema_cloud_service_read.id
-            _schema.location = cls._schema_cloud_service_read.location
-            _schema.name = cls._schema_cloud_service_read.name
-            _schema.properties = cls._schema_cloud_service_read.properties
-            _schema.system_data = cls._schema_cloud_service_read.system_data
-            _schema.tags = cls._schema_cloud_service_read.tags
-            _schema.type = cls._schema_cloud_service_read.type
-            _schema.zones = cls._schema_cloud_service_read.zones
-            return
-
-        cls._schema_cloud_service_read = _schema_cloud_service_read = AAZObjectType()
-
-        cloud_service_read = _schema_cloud_service_read
-        cloud_service_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        cloud_service_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        cloud_service_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        cloud_service_read.properties = AAZObjectType()
-        cloud_service_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-        )
-        cloud_service_read.tags = AAZDictType()
-        cloud_service_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-        cloud_service_read.zones = AAZListType()
-
-        properties = _schema_cloud_service_read.properties
-        properties.allow_model_override = AAZBoolType(
-            serialized_name="allowModelOverride",
-        )
-        properties.configuration = AAZStrType()
-        properties.configuration_url = AAZStrType(
-            serialized_name="configurationUrl",
-        )
-        properties.extension_profile = AAZObjectType(
-            serialized_name="extensionProfile",
-        )
-        properties.network_profile = AAZObjectType(
-            serialized_name="networkProfile",
-        )
-        properties.os_profile = AAZObjectType(
-            serialized_name="osProfile",
-        )
-        properties.package_url = AAZStrType(
-            serialized_name="packageUrl",
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.role_profile = AAZObjectType(
-            serialized_name="roleProfile",
-        )
-        properties.start_cloud_service = AAZBoolType(
-            serialized_name="startCloudService",
-        )
-        properties.unique_id = AAZStrType(
-            serialized_name="uniqueId",
-            flags={"read_only": True},
-        )
-        properties.upgrade_mode = AAZStrType(
-            serialized_name="upgradeMode",
-        )
-
-        extension_profile = _schema_cloud_service_read.properties.extension_profile
-        extension_profile.extensions = AAZListType()
-
-        extensions = _schema_cloud_service_read.properties.extension_profile.extensions
-        extensions.Element = AAZObjectType()
-
-        _element = _schema_cloud_service_read.properties.extension_profile.extensions.Element
-        _element.name = AAZStrType()
-        _element.properties = AAZObjectType()
-
-        properties = _schema_cloud_service_read.properties.extension_profile.extensions.Element.properties
-        properties.auto_upgrade_minor_version = AAZBoolType(
-            serialized_name="autoUpgradeMinorVersion",
-        )
-        properties.force_update_tag = AAZStrType(
-            serialized_name="forceUpdateTag",
-        )
-        properties.protected_settings = AAZDictType(
-            serialized_name="protectedSettings",
-        )
-        properties.protected_settings_from_key_vault = AAZObjectType(
-            serialized_name="protectedSettingsFromKeyVault",
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.publisher = AAZStrType()
-        properties.roles_applied_to = AAZListType(
-            serialized_name="rolesAppliedTo",
-        )
-        properties.settings = AAZDictType()
-        properties.type = AAZStrType()
-        properties.type_handler_version = AAZStrType(
-            serialized_name="typeHandlerVersion",
-        )
-
-        protected_settings = _schema_cloud_service_read.properties.extension_profile.extensions.Element.properties.protected_settings
-        protected_settings.Element = AAZAnyType()
-
-        protected_settings_from_key_vault = _schema_cloud_service_read.properties.extension_profile.extensions.Element.properties.protected_settings_from_key_vault
-        protected_settings_from_key_vault.secret_url = AAZStrType(
-            serialized_name="secretUrl",
-        )
-        protected_settings_from_key_vault.source_vault = AAZObjectType(
-            serialized_name="sourceVault",
-        )
-        cls._build_schema_sub_resource_read(protected_settings_from_key_vault.source_vault)
-
-        roles_applied_to = _schema_cloud_service_read.properties.extension_profile.extensions.Element.properties.roles_applied_to
-        roles_applied_to.Element = AAZStrType()
-
-        settings = _schema_cloud_service_read.properties.extension_profile.extensions.Element.properties.settings
-        settings.Element = AAZAnyType()
-
-        network_profile = _schema_cloud_service_read.properties.network_profile
-        network_profile.load_balancer_configurations = AAZListType(
-            serialized_name="loadBalancerConfigurations",
-        )
-        network_profile.slot_type = AAZStrType(
-            serialized_name="slotType",
-        )
-        network_profile.swappable_cloud_service = AAZObjectType(
-            serialized_name="swappableCloudService",
-        )
-        cls._build_schema_sub_resource_read(network_profile.swappable_cloud_service)
-
-        load_balancer_configurations = _schema_cloud_service_read.properties.network_profile.load_balancer_configurations
-        load_balancer_configurations.Element = AAZObjectType()
-
-        _element = _schema_cloud_service_read.properties.network_profile.load_balancer_configurations.Element
-        _element.id = AAZStrType()
-        _element.name = AAZStrType(
-            flags={"required": True},
-        )
-        _element.properties = AAZObjectType(
-            flags={"required": True},
-        )
-
-        properties = _schema_cloud_service_read.properties.network_profile.load_balancer_configurations.Element.properties
-        properties.frontend_ip_configurations = AAZListType(
-            serialized_name="frontendIpConfigurations",
-            flags={"required": True},
-        )
-
-        frontend_ip_configurations = _schema_cloud_service_read.properties.network_profile.load_balancer_configurations.Element.properties.frontend_ip_configurations
-        frontend_ip_configurations.Element = AAZObjectType()
-
-        _element = _schema_cloud_service_read.properties.network_profile.load_balancer_configurations.Element.properties.frontend_ip_configurations.Element
-        _element.name = AAZStrType(
-            flags={"required": True},
-        )
-        _element.properties = AAZObjectType(
-            flags={"required": True},
-        )
-
-        properties = _schema_cloud_service_read.properties.network_profile.load_balancer_configurations.Element.properties.frontend_ip_configurations.Element.properties
-        properties.private_ip_address = AAZStrType(
-            serialized_name="privateIPAddress",
-        )
-        properties.public_ip_address = AAZObjectType(
-            serialized_name="publicIPAddress",
-        )
-        cls._build_schema_sub_resource_read(properties.public_ip_address)
-        properties.subnet = AAZObjectType()
-        cls._build_schema_sub_resource_read(properties.subnet)
-
-        os_profile = _schema_cloud_service_read.properties.os_profile
-        os_profile.secrets = AAZListType()
-
-        secrets = _schema_cloud_service_read.properties.os_profile.secrets
-        secrets.Element = AAZObjectType()
-
-        _element = _schema_cloud_service_read.properties.os_profile.secrets.Element
-        _element.source_vault = AAZObjectType(
-            serialized_name="sourceVault",
-        )
-        cls._build_schema_sub_resource_read(_element.source_vault)
-        _element.vault_certificates = AAZListType(
-            serialized_name="vaultCertificates",
-        )
-
-        vault_certificates = _schema_cloud_service_read.properties.os_profile.secrets.Element.vault_certificates
-        vault_certificates.Element = AAZObjectType()
-
-        _element = _schema_cloud_service_read.properties.os_profile.secrets.Element.vault_certificates.Element
-        _element.certificate_url = AAZStrType(
-            serialized_name="certificateUrl",
-        )
-
-        role_profile = _schema_cloud_service_read.properties.role_profile
-        role_profile.roles = AAZListType()
-
-        roles = _schema_cloud_service_read.properties.role_profile.roles
-        roles.Element = AAZObjectType()
-
-        _element = _schema_cloud_service_read.properties.role_profile.roles.Element
-        _element.name = AAZStrType()
-        _element.sku = AAZObjectType()
-
-        sku = _schema_cloud_service_read.properties.role_profile.roles.Element.sku
-        sku.capacity = AAZIntType()
-        sku.name = AAZStrType()
-        sku.tier = AAZStrType()
-
-        system_data = _schema_cloud_service_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-            flags={"read_only": True},
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-            flags={"read_only": True},
-        )
-
-        tags = _schema_cloud_service_read.tags
-        tags.Element = AAZStrType()
-
-        zones = _schema_cloud_service_read.zones
-        zones.Element = AAZStrType()
-
-        _schema.id = cls._schema_cloud_service_read.id
-        _schema.location = cls._schema_cloud_service_read.location
-        _schema.name = cls._schema_cloud_service_read.name
-        _schema.properties = cls._schema_cloud_service_read.properties
-        _schema.system_data = cls._schema_cloud_service_read.system_data
-        _schema.tags = cls._schema_cloud_service_read.tags
-        _schema.type = cls._schema_cloud_service_read.type
-        _schema.zones = cls._schema_cloud_service_read.zones
 
     _schema_sub_resource_read = None
 
