@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloud-service reimage",
+    is_experimental=True,
 )
 class Reimage(AAZCommand):
     """Reimage asynchronous operation reinstalls the operating system on instances of web roles or worker roles.

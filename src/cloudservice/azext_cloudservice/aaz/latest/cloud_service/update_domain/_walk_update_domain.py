@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloud-service update-domain walk-update-domain",
+    is_experimental=True,
 )
 class WalkUpdateDomain(AAZCommand):
     """Updates the role instances in the specified update domain.

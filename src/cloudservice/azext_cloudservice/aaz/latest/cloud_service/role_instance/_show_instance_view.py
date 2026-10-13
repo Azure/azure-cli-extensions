@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloud-service role-instance show-instance-view",
+    is_experimental=True,
 )
 class ShowInstanceView(AAZCommand):
     """Get information about the run-time state of a role instance in a cloud service.

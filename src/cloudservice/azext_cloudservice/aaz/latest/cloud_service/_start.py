@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloud-service start",
+    is_experimental=True,
 )
 class Start(AAZCommand):
     """Starts the cloud service.

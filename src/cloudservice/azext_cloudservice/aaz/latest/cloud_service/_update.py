@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloud-service update",
+    is_experimental=True,
 )
 class Update(AAZCommand):
     """Update a cloud service.

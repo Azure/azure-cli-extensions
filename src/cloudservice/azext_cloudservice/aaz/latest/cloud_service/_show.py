@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloud-service show",
+    is_experimental=True,
 )
 class Show(AAZCommand):
     """Get information about a cloud service.

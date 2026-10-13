@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloud-service role show",
+    is_experimental=True,
 )
 class Show(AAZCommand):
     """Get a role from a cloud service.

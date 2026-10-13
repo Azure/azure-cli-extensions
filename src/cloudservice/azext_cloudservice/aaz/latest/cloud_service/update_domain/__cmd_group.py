@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "cloud-service update-domain",
+    is_experimental=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Update Domain

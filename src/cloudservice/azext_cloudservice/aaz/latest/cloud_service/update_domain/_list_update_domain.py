@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloud-service update-domain list-update-domain",
+    is_experimental=True,
 )
 class ListUpdateDomain(AAZCommand):
     """List a list of all update domains in a cloud service.

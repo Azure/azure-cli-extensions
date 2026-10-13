@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloud-service update-domain show-update-domain",
+    is_experimental=True,
 )
 class ShowUpdateDomain(AAZCommand):
     """Get the specified update domain of a cloud service. Use nextLink property in the response to get the next page of update domains. Do this till nextLink is null to fetch all the update domains.

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloud-service role-instance show-remote-desktop-file",
+    is_experimental=True,
 )
 class ShowRemoteDesktopFile(AAZCommand):
     """Get a remote desktop file for a role instance in a cloud service.

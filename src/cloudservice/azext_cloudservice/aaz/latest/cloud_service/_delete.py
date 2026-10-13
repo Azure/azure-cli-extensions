@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloud-service delete",
+    is_experimental=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):

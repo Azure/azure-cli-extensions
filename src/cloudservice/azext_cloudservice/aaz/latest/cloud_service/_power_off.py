@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloud-service power-off",
+    is_experimental=True,
 )
 class PowerOff(AAZCommand):
     """Power off the cloud service. Note that resources are still attached and you are getting charged for the resources.

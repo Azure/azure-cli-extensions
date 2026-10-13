@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloud-service restart",
+    is_experimental=True,
 )
 class Restart(AAZCommand):
     """Restarts one or more role instances in a cloud service.

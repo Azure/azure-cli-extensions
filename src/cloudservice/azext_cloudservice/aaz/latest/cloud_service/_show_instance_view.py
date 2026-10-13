@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloud-service show-instance-view",
+    is_experimental=True,
 )
 class ShowInstanceView(AAZCommand):
     """Get the status of a cloud service.
