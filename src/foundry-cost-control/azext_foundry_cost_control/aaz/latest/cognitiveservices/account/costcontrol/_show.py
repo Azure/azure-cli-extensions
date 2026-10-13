@@ -232,22 +232,30 @@ class Show(AAZCommand):
             )
 
             match = cls._schema_on_200.properties.rules.Element.match
-            match["foundry.caller.agent.id"] = AAZListType()
-            match["foundry.caller.identity.oid"] = AAZListType()
-            match["foundry.caller.session.id"] = AAZListType()
-            match["foundry.project.id"] = AAZListType()
+            match.agent_ids = AAZListType(
+                serialized_name="agentIds",
+            )
+            match.identity_object_ids = AAZListType(
+                serialized_name="identityObjectIds",
+            )
+            match.project_ids = AAZListType(
+                serialized_name="projectIds",
+            )
+            match.session_ids = AAZListType(
+                serialized_name="sessionIds",
+            )
 
-            foundry_caller_agent_id = match["foundry.caller.agent.id"]
-            foundry_caller_agent_id.Element = AAZStrType()
+            agent_ids = cls._schema_on_200.properties.rules.Element.match.agent_ids
+            agent_ids.Element = AAZStrType()
 
-            foundry_caller_identity_oid = match["foundry.caller.identity.oid"]
-            foundry_caller_identity_oid.Element = AAZStrType()
+            identity_object_ids = cls._schema_on_200.properties.rules.Element.match.identity_object_ids
+            identity_object_ids.Element = AAZStrType()
 
-            foundry_caller_session_id = match["foundry.caller.session.id"]
-            foundry_caller_session_id.Element = AAZStrType()
+            project_ids = cls._schema_on_200.properties.rules.Element.match.project_ids
+            project_ids.Element = AAZStrType()
 
-            foundry_project_id = match["foundry.project.id"]
-            foundry_project_id.Element = AAZStrType()
+            session_ids = cls._schema_on_200.properties.rules.Element.match.session_ids
+            session_ids.Element = AAZStrType()
 
             thresholds = cls._schema_on_200.properties.rules.Element.thresholds
             thresholds.Element = AAZObjectType()
