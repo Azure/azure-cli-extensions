@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "cloud-service create",
-)
 class Create(AAZCommand):
     """Create a cloud service. Please note some properties can be set only during cloud service creation.
 
@@ -28,6 +25,9 @@ class Create(AAZCommand):
 
     :example: Create New Cloud Service with Single Role and RDP Extension
         az cloud-service create --name "{cs-name}" --location "westus" --configuration "{ServiceConfiguration}" --extensions "[{\\\\"name\\\\":\\\\"RDPExtension\\\\",\\\\"properties\\\\":{\\\\"type\\\\":\\\\"RDP\\\\",\\\\"autoUpgradeMinorVersion\\\\":false,\\\\"protectedSettings\\\\":\\\\"<PrivateConfig><Password>{password}</Password></PrivateConfig>\\\\",\\\\"publisher\\\\":\\\\"Microsoft.Windows.Azure.Extensions\\\\",\\\\"settings\\\\":\\\\"<PublicConfig><UserName>UserAzure</UserName><Expiration>10/22/2021 15:05:45</Expiration></PublicConfig>\\\\",\\\\"typeHandlerVersion\\\\":\\\\"1.2.1\\\\"}}]" --load-balancer-configurations "[{\\\\"name\\\\":\\\\"contosolb\\\\",\\\\"properties\\\\":{\\\\"frontendIPConfigurations\\\\":[{\\\\"name\\\\":\\\\"contosofe\\\\",\\\\"properties\\\\":{\\\\"publicIPAddress\\\\":{\\\\"id\\\\":\\\\"/subscriptions/{subscription-id}/resourceGroups/ConstosoRG/providers/Microsoft.Network/publicIPAddresses/contosopublicip\\\\"}}}]}}]" --package-url "{PackageUrl}" --roles "[{\\\\"name\\\\":\\\\"ContosoFrontend\\\\",\\\\"sku\\\\":{\\\\"name\\\\":\\\\"Standard_D1_v2\\\\",\\\\"capacity\\\\":1,\\\\"tier\\\\":\\\\"Standard\\\\"}}]" --upgrade-mode "Auto" --resource-group "ConstosoRG"
+
+    :example: Create a cloud service with 2 roles, 2 load balancers (one has a public IP and another has a private IP), secrets and extensions.
+        az cloud-service create -g ResourceGroup -n CloudService --roles ContosoFrontend:Standard_D1_v2:1:Standard ContosoBackend:Standard_D1_v2:1:Standard --package-url PackageURL --configuration Config --load-balancer-configurations MyLoadBalancer:MyFe:PublicIP:: MyLoadBalancer2:MyFe2::SubnetIDd:PrivateIPID --secrets Vault0:Cert0:Cert1 Vault1:Cert2:Cert3:Cert4 --extensions "@extensions.json"
     """
 
     _aaz_info = {
