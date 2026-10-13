@@ -141,6 +141,11 @@ class TestUninstalledExtensions(MetadataTestBase):
         self.assertEqual(r['status'], 'valid')
 
 
+# Commands of synthetic extensions that can't be installed anywhere (machines may have real extensions).
+_SYNTH = {'module_name': 'azv-synth', 'name': 'azv-synth', 'commands': {'azvsynth query': {
+    'name': 'azvsynth query', 'parameters': [{'name': 'first', 'options': ['--first'], 'type': 'int'}]}},
+    'sub_groups': {}}
+
 _PROBE_LOADER = """
 from azure.cli.core import AzCommandsLoader
 
@@ -188,8 +193,11 @@ _INDEX_SESSIONS = ('INDEX', 'EXTENSION_INDEX', 'HELP_INDEX', 'EXTENSION_HELP_IND
 class _BlockedLoadBase(MetadataTestBase):
     """An installed extension reads a file outside the sandbox while loading, as one preinstalled in some
     environments does. Core loads every installed extension for a top-level command it doesn't know."""
-    responses = _responses(**{_extmeta.INDEX_URL: dict(
-        _INDEX, devops={'project': {'list': 'azure-devops'}}, azvprobe={'thing': 'azvprobe'})})
+    responses = _responses(**{
+        _extmeta.INDEX_URL: dict(_INDEX, azvsynth={'query': 'azv-synth'}, azvmissing={'list': 'azv-missing'},
+                                 azvprobe={'thing': 'azvprobe'}),
+        _EXT_URL + '/ext-azv-synth/version_list.txt': 'az_azv-synth_meta_1.0.0.json\n',
+        _EXT_URL + '/ext-azv-synth/az_azv-synth_meta_1.0.0.json': _SYNTH})
     # Core's own index of installed extensions, as a normal az run would have saved it.
     local_index = {'azvprobe': ['azext_azvprobe'], 'validate': ['azext_validate']}
     probe_loader = _PROBE_LOADER
@@ -243,7 +251,7 @@ class _BlockedLoadBase(MetadataTestBase):
 
 class TestBlockedExtensionLoad(_BlockedLoadBase):
     def test_uninstalled_extension_commands_still_checked(self):
-        code, doc, text = run_validate('--command', "az graph query -q 'x' --first abc", 'az devops project list',
+        code, doc, text = run_validate('--command', 'az azvsynth query --first abc', 'az azvmissing list',
                                        'az azvprobe thing', 'az vm craete -g rg')
         self.assertEqual(code, 0)
         got = [(r['status'], ([e['code'] for e in r['errors']] or [r.get('reason', {}).get('code')])[0])
@@ -252,12 +260,12 @@ class TestBlockedExtensionLoad(_BlockedLoadBase):
                                ('unchecked', 'ExtensionNotPublished'),
                                ('unchecked', 'InternalError'),       # the installed extension that didn't load
                                ('invalid', 'UnknownCommand')])       # core commands don't load extensions
-        self.assertEqual(doc['results'][0]['source'], 'extension:resource-graph')
+        self.assertEqual(doc['results'][0]['source'], 'extension:azv-synth')
         self.assertNotIn('PROBE-SENTINEL', text)
 
     def test_no_partial_index_saved_or_kept(self):
         before = json.dumps(self.extension_index.data, sort_keys=True)
-        run_validate('--command', 'az devops project list')
+        run_validate('--command', 'az azvmissing list')
         self.assertFalse([n for n in self.saved if n in _INDEX_SESSIONS], self.saved)
         self.assertEqual(json.dumps(self.extension_index.data, sort_keys=True), before)
 
@@ -267,7 +275,7 @@ class TestBlockedExtensionInCoreGroup(_BlockedLoadBase):
     local_index = {'vm': ['azext_azvprobe'], 'validate': ['azext_validate']}
 
     def test_later_command_in_same_run(self):
-        _, doc, _ = run_validate('--command', 'az devops project list', 'az vm azvprobe-cmd')
+        _, doc, _ = run_validate('--command', 'az azvmissing list', 'az vm azvprobe-cmd')
         r = doc['results'][1]
         self.assertEqual((r['status'], r['reason']['code']), ('unchecked', 'InternalError'))
 
