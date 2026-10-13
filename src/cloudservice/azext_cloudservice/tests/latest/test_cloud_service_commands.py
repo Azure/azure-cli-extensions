@@ -21,7 +21,13 @@ from contextlib import contextmanager
 from unittest import mock
 
 import requests
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk.base import CheckerMixin, execute
+from azure.cli.testsdk.patches import (
+    patch_load_cached_subscriptions, patch_long_run_operation_delay, patch_main_exception_handler,
+    patch_progress_controller, patch_retrieve_token_for_user)
+from azure.cli.testsdk.scenario_tests.patches import patch_time_sleep_api
+from azure.cli.testsdk.reverse_dependency import get_dummy_cli
+from azure.cli.testsdk.scenario_tests.const import MOCKED_SUBSCRIPTION_ID
 from azure.core.pipeline.transport import RequestsTransport
 from azure.core.rest._requests_basic import RestRequestsTransportResponse
 
@@ -157,6 +163,26 @@ def stub_http():
         yield recorder
 
 
+class OfflineCliTest(CheckerMixin, unittest.TestCase):
+    """Plain unittest base that drives the CLI against the stubbed transport; needs no account or recording."""
+
+    def setUp(self):
+        super().setUp()
+        self.cli_ctx = get_dummy_cli()
+        self.kwargs = {}
+        for apply_patch in (patch_main_exception_handler, patch_time_sleep_api, patch_long_run_operation_delay,
+                            patch_load_cached_subscriptions, patch_retrieve_token_for_user,
+                            patch_progress_controller):
+            apply_patch(self)
+
+    def cmd(self, command, checks=None, expect_failure=False):
+        command = self._apply_kwargs(command)
+        return execute(self.cli_ctx, command, expect_failure=expect_failure).assert_with_checks(checks)
+
+    def get_subscription_id(self):
+        return MOCKED_SUBSCRIPTION_ID
+
+
 # ---- Tests ----
 
 
@@ -200,7 +226,7 @@ def _sub_path(path):
     return '/subscriptions/{}'.format(SUB) + path.split('/subscriptions/' + SUB, 1)[-1] if SUB in path else path
 
 
-class CloudServiceRequestTest(ScenarioTest):
+class CloudServiceRequestTest(OfflineCliTest):
     """Request line and body of every command."""
 
     def _run(self, command):
@@ -254,7 +280,7 @@ class CloudServiceRequestTest(ScenarioTest):
                 self.assertEqual(BASE + '/cs1', self._run('cloud-service show ' + flags)[0]['path'])
 
 
-class CloudServiceListTest(ScenarioTest):
+class CloudServiceListTest(OfflineCliTest):
     """List commands follow nextLink and return the item array."""
 
     def test_list_follows_next_link_and_returns_array(self):
@@ -291,7 +317,7 @@ class CloudServiceListTest(ScenarioTest):
         self.assertEqual(['ud0', 'ud1'], [r['id'] for r in domains])
 
 
-class CloudServiceOutputTest(ScenarioTest):
+class CloudServiceOutputTest(OfflineCliTest):
     """Output casing, nesting and types."""
 
     def test_show_output_is_camel_case_with_integer_capacity(self):
@@ -342,7 +368,7 @@ class CloudServiceOutputTest(ScenarioTest):
         self.assertIn(RDP_TEXT.strip().splitlines()[1], result)
 
 
-class CloudServiceCommandSurfaceTest(ScenarioTest):
+class CloudServiceCommandSurfaceTest(OfflineCliTest):
     """Arguments that must / must not exist."""
 
     def test_walk_update_domain_has_no_no_wait(self):
@@ -387,7 +413,7 @@ class CloudServiceCommandSurfaceTest(ScenarioTest):
         self.assertTrue(expected.issubset(set(table.keys())), expected - set(table.keys()))
 
 
-class CloudServiceCreateTest(ScenarioTest):
+class CloudServiceCreateTest(OfflineCliTest):
     """The compact `create` syntaxes produce the expected request body."""
 
     SUB_ID = '/subscriptions/{}'.format(SUB)
