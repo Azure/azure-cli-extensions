@@ -5,6 +5,7 @@
 # pylint: disable=import-outside-toplevel
 
 from azure.cli.core import AzCommandsLoader
+from azext_cloudservice._help import helps  # pylint: disable=unused-import
 
 
 class ComputeManagementClientCommandsLoader(AzCommandsLoader):
