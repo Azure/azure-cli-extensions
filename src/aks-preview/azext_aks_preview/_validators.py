@@ -785,6 +785,13 @@ def validate_azure_keyvault_kms_key_id(namespace):
                 "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"  # pylint: disable=line-too-long
             )
             raise InvalidArgumentValueError(err_msg)
+        if len(segments) > 3 and segments[3]:
+            logger.warning(
+                "The key ID provided to --azure-keyvault-kms-key-id is versioned, which selects the legacy "
+                "KMS experience where key versions must be rotated manually. Provide an unversioned key ID "
+                "to use the new KMS experience with automatic key version rotation. See "
+                "https://learn.microsoft.com/en-us/azure/aks/kms-data-encryption-concepts for more details."
+            )
 
 
 def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
