@@ -144,7 +144,7 @@ class _ClusterClient:
             if allow_not_found and error.status == 404:
                 return None
             raise AzureResponseError(
-                "Target-cluster {} {} failed; namespace was not removed: {}".format(method, path, error)
+                "Target-cluster {} {} failed; namespace cleanup was not confirmed: {}".format(method, path, error)
             ) from error
 
     def namespace(self, name):
