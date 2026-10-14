@@ -2,6 +2,12 @@
 
 Release History
 ===============
+1.9.5
++++++++++++++++++++
+* Microsoft.ChaosStudio: record namespace creation ownership before bootstrap and preserve it on resumed installs. Callers can't override namespaceLifecycle.createdByInstall.
+* Microsoft.ChaosStudio: after confirmed synchronous extension deletion, inventory all namespaced API kinds with pagination and delete the namespace only when its creation marker matches the installation and no customer resources remain. Only controller-managed default ServiceAccounts and root CA ConfigMaps are excluded. Foreign/unmarked namespaces, learned-key state and retained ChaosEngines are preserved and reported. --no-wait and --force skip namespace cleanup; failures never trigger it.
+* Microsoft.ChaosStudio: namespace inspection requires AKS user credentials (Microsoft.ContainerService/managedClusters/listClusterUserCredential/action), kubelogin for Entra clusters, namespace get/delete and list access to every namespaced API kind. Current kube context and admin credentials aren't used. Cleanup has the chart hook's 210-second API budget and reports an error if namespace finalization doesn't complete. Engine-name reclamation and deleting the chaosengines CRD while engines remain aren't implemented.
+
 1.9.4
 +++++++++++++++++++
 * Microsoft.ChaosStudio: create the workspace operator role with a per-subscription role ID and name so installs in more than one subscription of a tenant no longer fail with RoleDefinitionWithSameNameExists. Existing roles named 'Chaos Studio Kubernetes Operator' are still reused, and explicit roles may have any name.

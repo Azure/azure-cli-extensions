@@ -60,6 +60,40 @@ Delete removes the matching owned connection before the owned workspace role
 assignment; it preserves shared role definitions and resources that fail
 ownership checks. Platform identity cleanup remains part of extension deletion.
 
+Namespace ownership and uninstall
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Before the first bootstrap, the CLI reads the release namespace from the target
+AKS cluster using user credentials, not the current kube context. It passes
+``namespaceLifecycle.createdByInstall=true`` only if that read confirms absence;
+otherwise it passes ``false``. Resumed installs keep the persisted assertion,
+and updates can't override it. The compatible chart writes
+``chaosstudio.microsoft.com/namespace-created-by=<release-namespace>/<release-name>``
+only on initial install. Older or pre-existing namespaces aren't adopted.
+
+A synchronous delete waits for the extension operation to finish before checking
+that marker and inventorying every namespaced API kind, including Secrets,
+ConfigMaps and custom resources, with pagination. An owned namespace is deleted
+only if no customer resources remain. The inventory excludes only the
+controller-managed default ServiceAccount and root CA ConfigMap, without customer
+changes or finalizers. Remaining resource names and preservation reasons are
+reported. Unmarked learned-key ConfigMaps and other runtime state aren't erased.
+``--no-wait`` and ``--force`` skip namespace cleanup because they don't confirm a
+completed Helm uninstall.
+
+This requires ``Microsoft.ContainerService/managedClusters/listClusterUserCredential/action``,
+``kubelogin`` for Entra clusters, target-cluster network access, namespace
+get/delete permission and list permission on every namespaced API kind.
+Authorization and discovery failures aren't evidence of absence. Cleanup and
+namespace finalization use the chart uninstall hook's 210-second API budget;
+failure to observe removal is an error, not a clean-uninstall result.
+
+Stopped durable ChaosEngines remain in target namespaces as name reservations.
+Their ``chaosengines.litmuschaos.io`` CRD therefore remains too. Shared/foreign
+resources and unmarked namespaces remain, and role definitions are never deleted.
+Engine-name reclamation needs the separate admission/commit drain protocol;
+namespace cleanup doesn't implement or bypass it.
+
 Staged installation (pending chart release)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
