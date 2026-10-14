@@ -8,6 +8,9 @@ import sys
 import types
 from pathlib import Path
 
+import pytest
+from x_engineering_agent.tools.copilot import validation
+
 
 PACKAGE = Path(__file__).resolve().parents[1]
 TOOLS = PACKAGE / "tools"
@@ -20,6 +23,22 @@ elif str(TOOLS) not in module.__path__:
     module.__path__.append(str(TOOLS))
 
 checks = importlib.import_module("repository_tools.validation.checks")
+REPOSITORY = "Azure/azure-cli-extensions"
+
+
+@pytest.fixture(autouse=True)
+def bound(monkeypatch):
+    """Bind this package's hooks the way the pinned job handoff does."""
+    monkeypatch.setattr(validation, "_BINDING", {
+        "repository": REPOSITORY, "settings": {"playback": True}, "live_test": True,
+    })
+    monkeypatch.setattr(validation, "_CHECKS", checks)
+
+
+def test_validation_exports_engine_hooks():
+    assert {"unit_test_scope", "python_roots", "generation_source_checks"} <= set(vars(checks))
+    assert validation._generation_source_hook("Azure/aaz") is checks.generation_source_checks
+    assert validation._generation_source_hook(REPOSITORY) is None
 
 
 def _unit_test(path, class_name):
@@ -38,4 +57,4 @@ def test_extension_validation_selects_directly_changed_test(tmp_path):
     changed = _unit_test(extension / "tests/latest/test_regression.py", "RegressionTests")
     _unit_test(extension / "tests/latest/test_unrelated.py", "UnrelatedTests")
 
-    assert checks.python_unit_files("Azure/azure-cli-extensions", tmp_path, [changed]) == [changed]
+    assert validation.python_unit_files("Azure/azure-cli-extensions", tmp_path, [changed]) == [changed]

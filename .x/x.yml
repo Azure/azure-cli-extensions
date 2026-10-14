@@ -12,10 +12,94 @@ profile:
   triage_handoffs: {}
   triage_labels:
   - bug
-  needs_info_label: agent-assist-needs-info
   title_style: cli
   pr_doc_url: https://github.com/Azure/azure-cli/tree/dev/doc/authoring_command_modules#submitting-pull-requests
   generation_source_repository: Azure/aaz
+  needs_info_label: X Engineering Agent Needs Info
+  live_repro: true
+  live_repro_workflow: live-repro.yml
+  coding_norms:
+  - 'No breaking changes to commands, arguments, defaults or output without the Azure CLI breaking-change
+    process: deprecate first (`deprecate_info`) and pre-announce in the module''s `_breaking_change.py`;
+    otherwise keep behaviour backwards compatible.'
+  - Add a release note to the extension's `src/<extension>/HISTORY.rst` and bump `VERSION` in `src/<extension>/setup.py`
+    (patch for fixes, minor for features, major for breaking changes). Never edit `src/index.json`.
+  - Never hand-edit generated code under `aaz/` directories (aaz-dev output). Change the Azure/aaz command
+    model and regenerate, or put non-modelable behaviour in handwritten code (`custom.py`, registered from
+    `commands.py`).
+  - Keep `_help.py` and `_params.py` consistent with any changed command surface and preserve `azext_metadata.json`
+    compatibility.
+  pr_conventions:
+    template_path: .github/pull_request_template.md
+    heading: '###'
+    sections:
+    - name: Description
+      content: description
+    - name: Related command
+      content: related_command
+    - name: General Guidelines
+      content: null
+    checklist:
+    - text: Have you run `azdev style <YOUR_EXT>` locally? (`pip install azdev` required)
+      match: have you run `azdev style
+      verified_by:
+      - lint
+    - text: Have you run `python scripts/ci/test_index.py -q` locally? (`pip install azdev` required)
+      match: scripts/ci/test_index.py
+      verified_by: []
+    - text: My extension version conforms to the [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)
+      match: my extension version conforms to the
+      verified_by:
+      - release-artifact
+      - extension-version
+    - text: My extension description/summary conforms to the [Extension Summary Guidelines](https://github.com/Azure/azure-cli/blob/dev/doc/extensions/extension_summary_guidelines.md).
+      match: my extension description/summary conforms
+      verified_by: []
+    issue_link: Fixes
+    title_convention: '`[Extension] Fix #<issue>: `az <command>`: <Summary>`.'
+    release_notes: Extension HISTORY.rst entry plus a setup.py VERSION bump; never src/index.json.
+  contributor_docs:
+  - https://github.com/Azure/azure-cli-extensions/blob/main/CONTRIBUTING.rst
+  - https://github.com/Azure/azure-cli/blob/dev/doc/extensions/authoring.md
+  - https://github.com/Azure/azure-cli/blob/dev/doc/authoring_tests.md
+  generated_path_rules:
+  - pattern: src/*/azext_*/aaz/**
+    kind: aaz
+    description: AAZ generated command output (aaz-dev)
+  - pattern: src/*/azext_*/vendored_sdks/**
+    kind: other_generated
+    description: vendored generated SDK
+  generated_code_kinds:
+    aaz:
+      label: Generated AAZ command code (fix the AAZ model and regenerate)
+      path_pattern: (?:^|/)aaz/[^/]+/
+      path_reason: AAZ generated command output (`aaz/<profile>/`)
+      output_dir: aaz
+      codegen_protocol: true
+      fix_route: Change the Azure/aaz command model and regenerate with `aaz-dev cli regenerate`, or override
+        the generated command in handwritten code (`custom.py` subclass registered from `commands.py`, or
+        `_params.py`); never hand-edit `aaz/` output.
+      guidance: 'The trusted analysis places the root cause in generated AAZ command code. Files under `aaz/<profile>/`
+        are aaz-dev output: a hand edit is overwritten by the next regeneration, reviewers reject it and
+        the generated-ownership gate blocks it. Fix it at the source:
+
+        1. **AAZ command model** - command naming, arguments, defaults, help, examples and API-version selection
+        live in the durable `Azure/aaz` model. Change the model and regenerate with `aaz-dev cli regenerate`;
+        the Agent pairs the regenerated output with an `Azure/aaz` source pull request before publication.
+
+        2. **Custom override** - behaviour the model cannot express goes in handwritten code: subclass the
+        generated command (for example override `_build_arguments_schema`, `pre_operations` or `_output`)
+        in `custom.py` and register it from `commands.py`, or adjust the argument in `_params.py`.
+
+        3. **API spec** - if the REST API specification itself is wrong, do not patch: finish with decision
+        `abstain_upstream` and describe the spec defect for an Azure/azure-rest-api-specs issue.'
+  generator_inputs: AAZ model, AutoRest `README.md` directive or `custom/` code
+  release_artifact_gate: true
+  repro_tools:
+  - az
+  swe_replay: true
+  validation:
+    playback: true
 dependencies:
   python:
     aaz-dev: 4.6.2
@@ -56,5 +140,39 @@ job:
   - requirements*.txt
   execution_slice_seconds: 900
   checkout_excludes:
-  - '**/recordings/*'
   - projects
+  # Recordings ship read-only, only for the touched extensions.
+  read_only_paths:
+  - '**/recordings/*'
+  recording_scopes:
+  - src/*
+
+# Scheduled GitHub automation the operator runs for this repository.
+automation:
+  pr_validation:
+    pipelines:
+    - title: Azure CLI Extensions Breaking Change Test
+      allow:
+      - Azure.azure-cli-extensions Breaking Change Test
+      result_path: /breaking_change_test/
+      group_by:
+      - TestName
+      - Module
+      single_run: true
+  new_pull_requests:
+    allowed_branches:
+    - main
+    milestone_days: 7
+    milestone_comment: false
+    file_rules:
+    - name: history-and-version
+      files:
+      - src/.*/HISTORY\.rst
+      - - src/.*/setup\.py
+        - src/.*/pyproject\.toml
+      applies_to:
+      - ^src/[^/]+/
+      comment: |
+        Please write the description of changes which can be perceived by customers into HISTORY.rst.
+        If you want to release a new extension version, please update the version in pyproject.toml (or setup.py, if the extension has not migrated yet) as well.
+  reopen: true

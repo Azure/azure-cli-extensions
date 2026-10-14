@@ -74,3 +74,13 @@ def test_readiness_without_generated_output_requires_no_validation():
 
 def test_definitions_reference_existing_engine_helpers_and_tools():
     assert testing.definition_problems(testing.local(PACKAGE, REPOSITORY)) == []
+
+
+@pytest.mark.parametrize(("files", "expected"), [
+    (["src/storage-preview/azext_storage_preview/custom.py"], ("extension", ["storage-preview"])),
+    (["src/storage-preview/azext_storage_preview/tests/latest/test_blob.py"], (None, [])),
+    (["README.md"], (None, [])),
+], ids=["extension-source", "tests-only", "root-docs"])
+def test_source_only_changes_resolve_extension_live_test_scope(files, expected):
+    kind, names = hook("live_test_source_targets", files)
+    assert (kind, list(names)) == expected
