@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "arc-multicloud generate-gcp-template",
 )
 class GenerateGcpTemplate(AAZCommand):
-    """Retrieve GCP access control template
+    """Retrieve GCP Access Control template
 
     For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
 
