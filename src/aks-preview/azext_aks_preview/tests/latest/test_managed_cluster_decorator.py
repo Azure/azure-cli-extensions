@@ -2346,7 +2346,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                 {
                     "enable_azure_keyvault_kms": True,
                     "azure_keyvault_kms_key_id": versioned_key_id,
-                    "kms_infrastructure_encryption": "Disabled",
                 }
             ),
             self.models,
@@ -2363,7 +2362,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                 {
                     "enable_azure_keyvault_kms": True,
                     "azure_keyvault_kms_key_id": versionless_key_id,
-                    "kms_infrastructure_encryption": "Disabled",
                 }
             ),
             self.models,
@@ -2662,7 +2660,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             {
                 "enable_azure_keyvault_kms": True,
                 "azure_keyvault_kms_key_id": versioned_key_id,
-                "kms_infrastructure_encryption": "Disabled",
             }
         )
         self.assertEqual(
@@ -2674,7 +2671,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             {
                 "enable_azure_keyvault_kms": True,
                 "azure_keyvault_kms_key_id": versionless_key_id,
-                "kms_infrastructure_encryption": "Disabled",
             }
         )
         # No exception should be raised since PMK validation was removed
@@ -2860,7 +2856,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ctx_no_pmk_optional = self._create_kms_context(
             {
                 "enable_azure_keyvault_kms": True,
-                "kms_infrastructure_encryption": "Disabled",
             }
         )
         self.assertIsNone(
@@ -2871,7 +2866,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ctx_no_pmk_with_resource = self._create_kms_context(
             {
                 "enable_azure_keyvault_kms": True,
-                "kms_infrastructure_encryption": "Disabled",
                 "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
             }
         )
@@ -2928,7 +2922,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertIsNone(ctx_0.get_kms_infrastructure_encryption())
 
-        # with explicit Disabled value
+        # explicitly disabling is rejected, PMK cannot be turned off once turned on
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
@@ -2939,7 +2933,8 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_kms_infrastructure_encryption(), "Disabled")
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_1.get_kms_infrastructure_encryption()
 
         # with Enabled value
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -7779,7 +7774,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-        # test with Disabled
+        # test that explicitly disabling is rejected
         dec_2 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
@@ -7790,10 +7785,8 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.set_up_kms_pmk_and_cmk(mc_2)
-        # no change expected
-        ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
-        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_2.set_up_kms_pmk_and_cmk(mc_2)
 
         # test with Enabled
         dec_3 = AKSPreviewManagedClusterCreateDecorator(
@@ -12467,7 +12460,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-        # test no change when Disabled
+        # test that explicitly disabling is rejected
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -12478,10 +12471,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.update_kms_pmk_cmk(mc_2)
-        # no change expected
-        ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
-        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_2.update_kms_pmk_cmk(mc_2)
 
         # test with Enabled on new cluster
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
@@ -12726,6 +12717,39 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             security_profile=ground_truth_security_profile_9,
         )
         self.assertEqual(dec_mc_9, ground_truth_mc_9)
+
+        # test disable Azure Key Vault KMS on a cluster without infrastructure encryption (PMK)
+        dec_9b = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_keyvault_kms": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_9b = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=self.models.ManagedClusterSecurityProfile(
+                azure_key_vault_kms=self.models.AzureKeyVaultKms(
+                    enabled=True,
+                    key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+                ),
+            ),
+        )
+        dec_9b.context.attach_mc(mc_9b)
+        dec_mc_9b = dec_9b.update_kms_pmk_cmk(mc_9b)
+
+        # should disable existing Azure Key Vault KMS even though PMK is not configured
+        ground_truth_mc_9b = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=self.models.ManagedClusterSecurityProfile(
+                azure_key_vault_kms=self.models.AzureKeyVaultKms(
+                    enabled=False,
+                    key_id="https://test-keyvault.vault.azure.net/keys/test-key",
+                ),
+            ),
+        )
+        self.assertEqual(dec_mc_9b, ground_truth_mc_9b)
 
         # test combined infrastructure encryption and Azure Key Vault KMS enable
         dec_10 = AKSPreviewManagedClusterUpdateDecorator(
