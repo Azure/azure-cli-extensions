@@ -541,7 +541,7 @@ helps['aks create'] = f"""
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.
-          long-summary: An unversioned key identifier (for example https://myvault.vault.azure.net/keys/mykey) uses the new KMS experience, where key versions are rotated automatically. A versioned key identifier (for example https://myvault.vault.azure.net/keys/mykey/<version>) uses the legacy KMS experience, where key versions must be rotated manually. For more information see https://learn.microsoft.com/en-us/azure/aks/kms-data-encryption-concepts.
+          long-summary: An unversioned key identifier (for example `https://myvault.vault.azure.net/keys/mykey`) uses the new KMS experience, where key versions are rotated automatically. A versioned key identifier (for example `https://myvault.vault.azure.net/keys/mykey/<version>`) uses the legacy KMS experience, where key versions must be rotated manually. For more information see https://learn.microsoft.com/en-us/azure/aks/kms-data-encryption-concepts.
         - name: --azure-keyvault-kms-key-vault-network-access
           type: string
           short-summary: Network Access of Azure Key Vault.
@@ -1319,7 +1319,7 @@ helps['aks update'] = """
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.
-          long-summary: An unversioned key identifier (for example https://myvault.vault.azure.net/keys/mykey) uses the new KMS experience, where key versions are rotated automatically. A versioned key identifier (for example https://myvault.vault.azure.net/keys/mykey/<version>) uses the legacy KMS experience, where key versions must be rotated manually. For more information see https://learn.microsoft.com/en-us/azure/aks/kms-data-encryption-concepts.
+          long-summary: An unversioned key identifier (for example `https://myvault.vault.azure.net/keys/mykey`) uses the new KMS experience, where key versions are rotated automatically. A versioned key identifier (for example `https://myvault.vault.azure.net/keys/mykey/<version>`) uses the legacy KMS experience, where key versions must be rotated manually. For more information see https://learn.microsoft.com/en-us/azure/aks/kms-data-encryption-concepts.
         - name: --azure-keyvault-kms-key-vault-network-access
           type: string
           short-summary: Network Access of Azure Key Vault.
