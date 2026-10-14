@@ -37,7 +37,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='foundry-cost-control',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools -- Foundry Cost Control Extension.',
+    description='Microsoft Azure Command-Line Tools Foundry Cost Control Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
