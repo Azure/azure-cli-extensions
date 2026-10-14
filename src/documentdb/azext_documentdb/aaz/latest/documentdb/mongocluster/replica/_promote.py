@@ -24,9 +24,9 @@ class Promote(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-01",
+        "version": "2026-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}/promote", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}/promote", "2026-06-15-preview"],
         ]
     }
 
@@ -76,7 +76,7 @@ class Promote(AAZCommand):
             arg_group="Body",
             help="The promote option to apply to the operation.",
             required=True,
-            enum={"Forced": "Forced"},
+            enum={"Forced": "Forced", "Planned": "Planned"},
         )
         return cls._args_schema
 
@@ -148,7 +148,7 @@ class Promote(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-06-15-preview",
                     required=True,
                 ),
             }

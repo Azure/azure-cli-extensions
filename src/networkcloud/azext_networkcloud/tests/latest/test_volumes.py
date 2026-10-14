@@ -167,8 +167,7 @@ def step_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud volume delete --resource-group {resourceGroup} "
-        " --name {name} -y"
+        "az networkcloud volume delete --resource-group {resourceGroup} --name {name} --yes"
     )
 
 

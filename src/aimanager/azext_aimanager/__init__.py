@@ -17,7 +17,7 @@ def register_aimanager_resource_type():
     # properties, so an SDKProfile-based lookup cannot resolve them. It is therefore
     # registered with api_version=None (no SDKProfile); the CustomResourceType import
     # prefix points at the versioned package so cmd.get_models resolves models from
-    # `azext_aimanager.vendored_sdks.v2026_05_02_preview.models` directly.
+    # `azext_aimanager.vendored_sdks.v2026_09_02_preview.models` directly.
     register_resource_type(
         "latest",
         CUSTOM_MGMT_AIMANAGER,

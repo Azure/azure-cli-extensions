@@ -79,20 +79,29 @@ def aks_machine_show_table_format(result):
 
 
 def aks_operation_show_table_format(result):
-    def parser(entry):
-        percentComplete = ""
-        if entry["percentComplete"]:
-            percentComplete = str(entry["percentComplete"]) + "%"
-        entry["percentComplete"] = percentComplete
-        parsed = compile_jmes("""{
-                name: name,
-                status: status,
-                startTime: startTime,
-                endTime: endTime,
-                percentComplete: percentComplete
-            }""")
-        return parsed.search(entry, Options(dict_cls=OrderedDict))
-    return parser(result)
+    return _aks_operation_table_format(result)
+
+
+def aks_operation_list_table_format(results):
+    """Format an operation list for display with "-o table"."""
+    return [_aks_operation_table_format(r) for r in results]
+
+
+def _aks_operation_table_format(result):
+    percentComplete = ""
+    if result.get("percentComplete"):
+        percentComplete = str(result["percentComplete"]) + "%"
+    result["percentComplete"] = percentComplete
+    parsed = compile_jmes("""{
+            name: name,
+            status: status,
+            operationType: operationType,
+            subOperationType: subOperationType,
+            startTime: startTime,
+            endTime: endTime,
+            percentComplete: percentComplete
+        }""")
+    return parsed.search(result, Options(dict_cls=OrderedDict))
 
 
 def aks_namespace_list_table_format(results):
@@ -611,4 +620,26 @@ def _aks_vm_sku_table_format(sku):
         ('zones', zones),
         ('restrictions', restrictions_summary),
         ('capabilities', capabilities_summary),
+    ])
+
+
+def aks_alert_config_list_table_format(results):
+    """Format a list of alert configurations as summary results for display with "-o table". """
+    return [_get_alert_config_table_row(result) for result in results]
+
+
+def aks_alert_config_show_table_format(result):
+    """Format an alert configuration as summary results for display with "-o table". """
+    return _get_alert_config_table_row(result)
+
+
+def _get_alert_config_table_row(result):
+    """Extract information from an alert configuration for table display."""
+    properties = result.get('properties') or {}
+    notification = properties.get('notification') or {}
+    return OrderedDict([
+        ('name', result.get('name', '')),
+        ('mode', properties.get('mode', '')),
+        ('actionGroupId', notification.get('actionGroupId', '')),
+        ('provisioningState', properties.get('provisioningState', '')),
     ])

@@ -60,6 +60,8 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_EXT_INSTALLATION_NAME,
     CONST_ACSTOR_V1_EXT_INSTALLATION_NAME,
     CONST_ACSTOR_VERSION_V1,
+    CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAME,
+    CONST_DISTRIBUTED_ACCELERATOR_K8S_EXTENSION_NAME,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -95,6 +97,8 @@ from azext_aks_preview.azurecontainerstorage.acstor_ops import (
     perform_disable_azure_container_storage_v1,
     perform_enable_azure_container_storage_v1,
     perform_azure_container_storage_update,
+    perform_enable_distributed_accelerator,
+    perform_disable_distributed_accelerator,
 )
 from azext_aks_preview.azuremonitormetrics.azuremonitorprofile import (
     ensure_azure_monitor_profile_prerequisites,
@@ -291,6 +295,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "perform_disable_azure_container_storage_v1"
             ] = perform_disable_azure_container_storage_v1
             external_functions["perform_azure_container_storage_update"] = perform_azure_container_storage_update
+            external_functions[
+                "perform_enable_distributed_accelerator"
+            ] = perform_enable_distributed_accelerator
+            external_functions[
+                "perform_disable_distributed_accelerator"
+            ] = perform_disable_distributed_accelerator
             external_functions["sanitize_loganalytics_ws_resource_id"] = sanitize_loganalytics_ws_resource_id
             # Override base module function with preview version that uses REST API to avoid
             # "Request Header Fields Too Large" errors
@@ -1205,6 +1215,17 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("nat_gateway_outbound_ip_prefix_ids")
 
+    def get_nat_gateway_sku(self) -> Union[str, None]:
+        """Obtain the value of nat_gateway_sku (--outbound-type-sku).
+
+        The managed NAT gateway SKU (Standard or StandardV2). GA shape: V2 is expressed via
+        outboundType=managedNATGateway + natGatewayProfile.sku=StandardV2. Region availability
+        and downgrade rules are enforced server-side by the RP.
+
+        :return: str or None
+        """
+        return self.raw_param.get("nat_gateway_sku")
+
     def get_load_balancer_outbound_ip_prefixes(self) -> Union[str, List[ResourceReference], None]:
         """Obtain the value of load_balancer_outbound_ip_prefixes.
 
@@ -1318,6 +1339,24 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return self.raw_param.get("upgrade_override_until")
+
+    def get_upgrade_gate_enabled(self) -> Union[bool, None]:
+        """Obtain the cluster-level upgrade gate setting from --enable-upgrade-gate / --disable-upgrade-gate.
+
+        :return: True if enabling, False if disabling, None if neither flag is specified
+        """
+        enable_upgrade_gate = self.raw_param.get("enable_upgrade_gate")
+        disable_upgrade_gate = self.raw_param.get("disable_upgrade_gate")
+
+        if enable_upgrade_gate and disable_upgrade_gate:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-upgrade-gate and --disable-upgrade-gate at the same time."
+            )
+        if enable_upgrade_gate:
+            return True
+        if disable_upgrade_gate:
+            return False
+        return None
 
     def get_if_match(self) -> Union[str, None]:
         """Obtain the value of if_match.
@@ -1906,6 +1945,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return properties.get("enableFIPS")
         return None
 
+    def get_enable_os_disk_full_caching(self) -> bool:
+        """Obtain the value of enable_os_disk_full_caching for the default agent pool profile.
+        :return: bool
+        """
+        return self.raw_param.get("enable_os_disk_full_caching")
+
     def get_enable_fips(self) -> bool:
         """Obtain the value of enable_fips.
         :return: bool
@@ -1934,6 +1979,42 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "Cannot specify --enable-fips and --disable-fips at the same time."
             )
         return bool(disable_fips)
+
+    def _get_enable_node_hardening_from_mc(self) -> Optional[bool]:
+        if not self.mc:
+            return None
+        if hasattr(self.mc, "enable_node_hardening") and self.mc.enable_node_hardening is not None:
+            return self.mc.enable_node_hardening
+        properties = getattr(self.mc, "properties", None)
+        if properties is not None:
+            return properties.get("enableNodeHardening")
+        return None
+
+    def get_enable_node_hardening(self) -> bool:
+        """Obtain the value of enable_node_hardening.
+        :return: bool
+        """
+        enable_node_hardening = self.raw_param.get("enable_node_hardening", False)
+        if enable_node_hardening and self.get_disable_node_hardening():
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-node-hardening and --disable-node-hardening at the same time."
+            )
+        if self.decorator_mode == DecoratorMode.CREATE:
+            value_obtained_from_mc = self._get_enable_node_hardening_from_mc()
+            if value_obtained_from_mc is not None:
+                enable_node_hardening = value_obtained_from_mc
+        return bool(enable_node_hardening)
+
+    def get_disable_node_hardening(self) -> bool:
+        """Obtain the value of disable_node_hardening.
+        :return: bool
+        """
+        disable_node_hardening = self.raw_param.get("disable_node_hardening", False)
+        if disable_node_hardening and self.raw_param.get("enable_node_hardening", False):
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-node-hardening and --disable-node-hardening at the same time."
+            )
+        return bool(disable_node_hardening)
 
     def get_disk_driver(self) -> Optional[ManagedClusterStorageProfileDiskCSIDriver]:
         """Obtain the value of storage_profile.disk_csi_driver
@@ -4551,7 +4632,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if self.context.get_nat_gateway_managed_outbound_ip_count() is not None or \
            self.context.get_nat_gateway_managed_outbound_ipv6_count() is not None or \
            self.context.get_nat_gateway_outbound_ip_ids() is not None or \
-           self.context.get_nat_gateway_outbound_ip_prefix_ids() is not None:
+           self.context.get_nat_gateway_outbound_ip_prefix_ids() is not None or \
+           self.context.get_nat_gateway_sku() is not None:
             network_profile.nat_gateway_profile = create_nat_gateway_profile(
                 self.context.get_nat_gateway_managed_outbound_ip_count(),
                 self.context.get_nat_gateway_idle_timeout(),
@@ -4559,6 +4641,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 managed_outbound_ipv6_count=self.context.get_nat_gateway_managed_outbound_ipv6_count(),
                 outbound_ip_ids=self.context.get_nat_gateway_outbound_ip_ids(),
                 outbound_ip_prefix_ids=self.context.get_nat_gateway_outbound_ip_prefix_ids(),
+                nat_gateway_sku=self.context.get_nat_gateway_sku(),
             )
 
         network_profile.network_plugin_mode = self.context.get_network_plugin_mode()
@@ -4776,6 +4859,26 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if mc.agent_pool_profiles:
                 for agentpool in mc.agent_pool_profiles:
                     agentpool.enable_fips = True
+        return mc
+
+    def set_up_enable_node_hardening(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up node hardening at the cluster level for the ManagedCluster object."""
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_node_hardening():
+            mc.enable_node_hardening = True
+        return mc
+
+    def set_up_os_disk_full_caching(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up enable_os_disk_full_caching for the default agent pool profile.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_os_disk_full_caching():
+            if mc.agent_pool_profiles:
+                mc.agent_pool_profiles[0].enable_os_disk_full_caching = True
         return mc
 
     def set_up_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
@@ -5291,6 +5394,33 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         enable_azure_container_storage_param = self.context.raw_param.get("enable_azure_container_storage")
         if enable_azure_container_storage_param:
+            from azext_aks_preview.azurecontainerstorage._helpers import is_distributed_accelerator_requested
+
+            # Distributed accelerator installs the install controller only and does
+            # not go through the v1/v2 storage pool logic below.
+            if is_distributed_accelerator_requested(enable_azure_container_storage_param):
+                from azext_aks_preview.azurecontainerstorage._validators import (
+                    validate_enable_distributed_accelerator_params,
+                )
+                validate_enable_distributed_accelerator_params(
+                    enable_azure_container_storage_param,
+                    False,
+                    self.context.raw_param.get("storage_pool_name"),
+                    self.context.raw_param.get("storage_pool_sku"),
+                    self.context.raw_param.get("storage_pool_option"),
+                    self.context.raw_param.get("storage_pool_size"),
+                    self.context.raw_param.get("ephemeral_disk_volume_type"),
+                    self.context.raw_param.get("ephemeral_disk_nvme_perf_tier"),
+                    self.context.raw_param.get("azure_container_storage_nodepools"),
+                    self.context.raw_param.get("container_storage_version"),
+                )
+                self.context.set_intermediate(
+                    "enable_distributed_accelerator",
+                    True,
+                    overwrite_exists=True,
+                )
+                return mc
+
             self.context.set_intermediate(
                 "enable_azure_container_storage",
                 enable_azure_container_storage_param,
@@ -5668,6 +5798,24 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.network_profile.pod_link_local_access = CONST_IMDS_RESTRICTION_ENABLED
         return mc
 
+    def set_up_upgrade_gate_settings(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up cluster-level upgrade gate settings for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        upgrade_gate_enabled = self.context.get_upgrade_gate_enabled()
+        if upgrade_gate_enabled:
+            if mc.upgrade_settings is None:
+                mc.upgrade_settings = self.models.ClusterUpgradeSettings()  # pylint: disable=no-member
+            mc.upgrade_settings.upgrade_gate_settings = (
+                self.models.UpgradeGateSettings(enabled=True)  # pylint: disable=no-member
+            )
+
+        # Default is disabled so no need to worry about that here
+        return mc
+
     def set_up_upstream_kubescheduler_user_configuration(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -5833,6 +5981,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_image_integrity(mc)
         # set up FIPS mode at the cluster level
         mc = self.set_up_enable_fips(mc)
+        # set up node hardening at the cluster level
+        mc = self.set_up_enable_node_hardening(mc)
+        # set up full-cache ephemeral OS disk on the default agent pool profile
+        mc = self.set_up_os_disk_full_caching(mc)
         # set up service account image pull
         mc = self.set_up_service_account_image_pull(mc)
         # set up KMS infrastructure encryption
@@ -5889,6 +6041,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_health_monitor_profile(mc)
         # set up imds restriction(a property in network profile)
         mc = self.set_up_imds_restriction(mc)
+        # set up upgrade gate settings
+        mc = self.set_up_upgrade_gate_settings(mc)
         # set up user-defined scheduler configuration for kube-scheduler upstream
         mc = self.set_up_upstream_kubescheduler_user_configuration(mc)
         # Set up hosted components. Managed System Pool creation already skipped
@@ -5954,6 +6108,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             "enable_azure_container_storage",
             default_value=False
         )
+        enable_distributed_accelerator = self.context.get_intermediate(
+            "enable_distributed_accelerator",
+            default_value=False
+        )
         enable_backup = self.context.raw_param.get("enable_backup", False)
 
         # pylint: disable=too-many-boolean-expressions
@@ -5965,6 +6123,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             (enable_managed_identity and attach_acr) or
             need_grant_vnet_permission_to_cluster_identity or
             enable_azure_container_storage or
+            enable_distributed_accelerator or
             enable_backup
         ):
             return True
@@ -6154,6 +6313,20 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # enable azure container storage
         enable_azure_container_storage = self.context.get_intermediate("enable_azure_container_storage")
         container_storage_version = self.context.get_intermediate("container_storage_version")
+
+        # enable distributed accelerator (independent of the storage pool flow)
+        enable_distributed_accelerator = self.context.get_intermediate(
+            "enable_distributed_accelerator"
+        )
+        if enable_distributed_accelerator:
+            self.context.external_functions.perform_enable_distributed_accelerator(
+                self.cmd,
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                False,
+                is_called_from_extension=True,
+            )
+
         if enable_azure_container_storage:
             if container_storage_version is not None and container_storage_version == CONST_ACSTOR_VERSION_V1:
                 if cluster.identity_profile is None or cluster.identity_profile["kubeletidentity"] is None:
@@ -6673,6 +6846,145 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
         # pylint: disable=too-many-nested-blocks
         if enable_azure_container_storage_param is not None or disable_azure_container_storage_param is not None:
+            from azext_aks_preview.azurecontainerstorage._helpers import (
+                is_distributed_accelerator_requested,
+                should_delete_extension,
+                get_container_storage_extension_installed,
+            )
+
+            # Distributed accelerator is enabled/disabled independently of the storage
+            # pool flow. Disable happens explicitly (`distributedAccelerator`) or
+            # implicitly on a full teardown (bare `--disable...` or `all`).
+            dc_enable_requested = is_distributed_accelerator_requested(enable_azure_container_storage_param)
+            dc_disable_requested_explicit = is_distributed_accelerator_requested(disable_azure_container_storage_param)
+            disable_all_or_flag = should_delete_extension(disable_azure_container_storage_param)
+
+            if dc_enable_requested or dc_disable_requested_explicit or disable_all_or_flag:
+                if enable_azure_container_storage_param is not None and \
+                        disable_azure_container_storage_param is not None:
+                    raise MutuallyExclusiveArgumentError(
+                        'Conflicting flags. Cannot set --enable-azure-container-storage '
+                        'and --disable-azure-container-storage together.'
+                    )
+
+                try:
+                    is_distributed_accelerator_installed, _ = get_container_storage_extension_installed(
+                        self.cmd,
+                        self.context.get_resource_group_name(),
+                        self.context.get_name(),
+                        CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAME,
+                        expected_extension_type=CONST_DISTRIBUTED_ACCELERATOR_K8S_EXTENSION_NAME,
+                    )
+                except Exception as ex:
+                    raise UnknownError(
+                        f"An error occurred while checking if distributed accelerator "
+                        f"is installed on the cluster: {str(ex)}"
+                    ) from ex
+
+                storage_pool_name = self.context.raw_param.get("storage_pool_name")
+                pool_sku = self.context.raw_param.get("storage_pool_sku")
+                pool_option = self.context.raw_param.get("storage_pool_option")
+                pool_size = self.context.raw_param.get("storage_pool_size")
+                nodepool_list = self.context.raw_param.get("azure_container_storage_nodepools")
+
+                if dc_enable_requested:
+                    from azext_aks_preview.azurecontainerstorage._validators import (
+                        validate_enable_distributed_accelerator_params,
+                    )
+                    validate_enable_distributed_accelerator_params(
+                        enable_azure_container_storage_param,
+                        is_distributed_accelerator_installed,
+                        storage_pool_name,
+                        pool_sku,
+                        pool_option,
+                        pool_size,
+                        self.context.raw_param.get("ephemeral_disk_volume_type"),
+                        self.context.raw_param.get("ephemeral_disk_nvme_perf_tier"),
+                        nodepool_list,
+                        self.context.raw_param.get("container_storage_version"),
+                    )
+                    self.context.set_intermediate(
+                        "enable_distributed_accelerator", True, overwrite_exists=True
+                    )
+                elif dc_disable_requested_explicit:
+                    from azext_aks_preview.azurecontainerstorage._validators import (
+                        validate_disable_distributed_accelerator_params,
+                    )
+                    validate_disable_distributed_accelerator_params(
+                        disable_azure_container_storage_param,
+                        is_distributed_accelerator_installed,
+                        storage_pool_name,
+                        pool_sku,
+                        pool_option,
+                        pool_size,
+                        self.context.raw_param.get("ephemeral_disk_volume_type"),
+                        self.context.raw_param.get("ephemeral_disk_nvme_perf_tier"),
+                        nodepool_list,
+                        self.context.raw_param.get("container_storage_version"),
+                    )
+                    self.context.set_intermediate(
+                        "disable_distributed_accelerator", True, overwrite_exists=True
+                    )
+                elif disable_all_or_flag and is_distributed_accelerator_installed:
+                    # Bare `--disable...` / `all` also tears down distributed accelerator.
+                    self.context.set_intermediate(
+                        "disable_distributed_accelerator", True, overwrite_exists=True
+                    )
+
+                self.context.set_intermediate(
+                    "is_distributed_accelerator_installed", is_distributed_accelerator_installed, overwrite_exists=True
+                )
+
+                # Explicit distributed accelerator operations do not touch the storage
+                # pool flow.
+                if dc_enable_requested or dc_disable_requested_explicit:
+                    return mc
+
+                # For a bare/all disable, only continue into the storage pool
+                # disable flow if a storage extension (v1 or v2) is installed.
+                try:
+                    is_storage_v1_installed, _ = get_container_storage_extension_installed(
+                        self.cmd,
+                        self.context.get_resource_group_name(),
+                        self.context.get_name(),
+                        CONST_ACSTOR_V1_EXT_INSTALLATION_NAME,
+                    )
+                    is_storage_v2_installed, _ = get_container_storage_extension_installed(
+                        self.cmd,
+                        self.context.get_resource_group_name(),
+                        self.context.get_name(),
+                        CONST_ACSTOR_EXT_INSTALLATION_NAME,
+                    )
+                except Exception as ex:
+                    raise UnknownError(
+                        f"An error occurred while checking if Azure Container Storage "
+                        f"is installed on the cluster: {str(ex)}"
+                    ) from ex
+                if not (is_storage_v1_installed or is_storage_v2_installed):
+                    # Distributed-cache-only cluster: teardown already queued,
+                    # nothing more to disable.
+                    if is_distributed_accelerator_installed:
+                        # This bare/`all` teardown returns before the storage pool
+                        # validation runs, so reject any storage pool scoping
+                        # parameters that would otherwise be silently ignored.
+                        from azext_aks_preview.azurecontainerstorage._validators import (
+                            validate_disable_all_distributed_accelerator_params,
+                        )
+                        validate_disable_all_distributed_accelerator_params(
+                            storage_pool_name,
+                            pool_sku,
+                            pool_option,
+                            pool_size,
+                            self.context.raw_param.get("ephemeral_disk_volume_type"),
+                            self.context.raw_param.get("ephemeral_disk_nvme_perf_tier"),
+                            nodepool_list,
+                            container_storage_version,
+                        )
+                        return mc
+                    raise InvalidArgumentValueError(
+                        'Cannot disable Azure Container Storage as it could not be found on the cluster.'
+                    )
+
             self.context.set_intermediate("container_storage_version", container_storage_version, overwrite_exists=True)
 
             enable_azure_container_storage_v1 = (
@@ -7201,6 +7513,25 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 "Unexpectedly get an empty network profile in the process of updating nat gateway profile."
             )
         outbound_type = self.context.get_outbound_type()
+        # The managed NAT gateway SKU and V2 params build a NAT gateway profile, so they are only
+        # valid when the cluster's effective outbound type is managedNATGateway. --outbound-type may
+        # be omitted on update, so reject here against the resolved type instead of silently
+        # dropping them on e.g. a loadBalancer cluster.
+        if outbound_type not in [
+            CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+            CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
+        ] and (
+            self.context.get_nat_gateway_sku() is not None or
+            self.context.get_nat_gateway_managed_outbound_ipv6_count() is not None or
+            self.context.get_nat_gateway_outbound_ip_ids() is not None or
+            self.context.get_nat_gateway_outbound_ip_prefix_ids() is not None
+        ):
+            raise InvalidArgumentValueError(
+                "--outbound-type-sku, --nat-gateway-managed-outbound-ipv6-count, "
+                "--nat-gateway-outbound-ips and --nat-gateway-outbound-ip-prefixes are only valid "
+                "when the cluster's outbound type is managedNATGateway; set "
+                "--outbound-type managedNATGateway to change the outbound type."
+            )
         if outbound_type and outbound_type not in [
             CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
             CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
@@ -7215,6 +7546,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 managed_outbound_ipv6_count=self.context.get_nat_gateway_managed_outbound_ipv6_count(),
                 outbound_ip_ids=self.context.get_nat_gateway_outbound_ip_ids(),
                 outbound_ip_prefix_ids=self.context.get_nat_gateway_outbound_ip_prefix_ids(),
+                nat_gateway_sku=self.context.get_nat_gateway_sku(),
             )
         return mc
 
@@ -7396,6 +7728,18 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
 
         mc.enable_fips = True
+        return mc
+
+    def update_enable_node_hardening(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update node hardening at the cluster level for the ManagedCluster object."""
+        self._ensure_mc(mc)
+
+        if self.context.get_disable_node_hardening():
+            mc.enable_node_hardening = False
+            return mc
+
+        if self.context.get_enable_node_hardening():
+            mc.enable_node_hardening = True
         return mc
 
     def update_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
@@ -8051,6 +8395,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 default_extended_until = datetime.datetime.utcnow() + datetime.timedelta(days=3)
                 if existing_until is None or existing_until.timestamp() < default_extended_until.timestamp():
                     mc.upgrade_settings.override_settings.until = default_extended_until
+
+        upgrade_gate_enabled = self.context.get_upgrade_gate_enabled()
+        if upgrade_gate_enabled is not None:
+            if mc.upgrade_settings is None:
+                mc.upgrade_settings = self.models.ClusterUpgradeSettings()  # pylint: disable=no-member
+            if mc.upgrade_settings.upgrade_gate_settings is None:
+                mc.upgrade_settings.upgrade_gate_settings = (
+                    self.models.UpgradeGateSettings()  # pylint: disable=no-member
+                )
+            mc.upgrade_settings.upgrade_gate_settings.enabled = upgrade_gate_enabled
 
         return mc
 
@@ -8934,6 +9288,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_image_integrity(mc)
         # update FIPS mode at the cluster level
         mc = self.update_enable_fips(mc)
+        # update node hardening at the cluster level
+        mc = self.update_enable_node_hardening(mc)
         # update service account image pull
         mc = self.update_service_account_image_pull(mc)
         # update KMS infrastructure encryption
@@ -9033,6 +9389,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             disable_azure_container_storage = self.context.get_intermediate(
                 "disable_azure_container_storage", default_value=False
             )
+            enable_distributed_accelerator = self.context.get_intermediate(
+                "enable_distributed_accelerator", default_value=False
+            )
+            disable_distributed_accelerator = self.context.get_intermediate(
+                "disable_distributed_accelerator", default_value=False
+            )
             keyvault_id = self.context.get_keyvault_id()
             enable_azure_keyvault_secrets_provider_addon = self.context.get_enable_kv() or (
                 mc.addon_profiles and mc.addon_profiles.get(CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME)
@@ -9044,6 +9406,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # Note: monitoring_addon_disable_postprocessing_required is no longer used - cleanup is done upfront
             # pylint: disable=too-many-boolean-expressions
             if (enable_azure_container_storage or disable_azure_container_storage) or \
+               (enable_distributed_accelerator or disable_distributed_accelerator) or \
                (keyvault_id and enable_azure_keyvault_secrets_provider_addon) or \
                (monitoring_addon_postprocessing_required) or \
                enable_backup:
@@ -9127,6 +9490,31 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         existing_ephemeral_disk_volume_type = self.context.get_intermediate("existing_ephemeral_disk_volume_type")
         existing_ephemeral_nvme_perf_tier = self.context.get_intermediate("current_ephemeral_nvme_perf_tier")
         pool_option = self.context.raw_param.get("storage_pool_option")
+
+        # enable/disable distributed accelerator (independent of the storage pool flow)
+        enable_distributed_accelerator = self.context.get_intermediate(
+            "enable_distributed_accelerator"
+        )
+        disable_distributed_accelerator = self.context.get_intermediate(
+            "disable_distributed_accelerator"
+        )
+        is_distributed_accelerator_installed = self.context.get_intermediate("is_distributed_accelerator_installed")
+        if enable_distributed_accelerator:
+            self.context.external_functions.perform_enable_distributed_accelerator(
+                self.cmd,
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                is_distributed_accelerator_installed,
+                is_called_from_extension=True,
+            )
+        if disable_distributed_accelerator:
+            self.context.external_functions.perform_disable_distributed_accelerator(
+                self.cmd,
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                is_distributed_accelerator_installed,
+                is_called_from_extension=True,
+            )
 
         # enable azure container storage
         if enable_azure_container_storage:

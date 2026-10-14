@@ -8,13 +8,9 @@ import os
 import unittest
 import time
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
+from azure.cli.testsdk import ScenarioTest, live_only
 
 class OracleExaScaleStorageVaultScenarioTest(ScenarioTest):
-    @live_only()
-    @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def setUp(self):
         subscription_id = self.get_subscription_id()
         self.kwargs.update({
@@ -27,6 +23,7 @@ class OracleExaScaleStorageVaultScenarioTest(ScenarioTest):
             'high_capacity_database_storage_input': 'total-size-in-gbs=300',
         })
 
+    @live_only()
     def test_exascale_storage_vault_lifecycle(self):
         # CREATE
         self.cmd('az oracle-database exascale-db-storage-vault create '

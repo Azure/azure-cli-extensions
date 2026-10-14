@@ -108,7 +108,7 @@ def get_msal_cache_file():
 
     :return: Path to token cache file
     """
-    return get_msal_cache_dir() / "token_cache.json"
+    return get_msal_cache_dir() / "token_cache_enc.json"
 
 
 def load_cache(msal_token_cache_file):
@@ -123,7 +123,8 @@ def load_cache(msal_token_cache_file):
 
     cache = SerializableTokenCache()
     if os.path.exists(msal_token_cache_file):
-        cache.deserialize(open(msal_token_cache_file, "r").read())
+        persistence = build_persistence(msal_token_cache_file)
+        cache.deserialize(persistence.load())
     return cache
 
 
@@ -136,8 +137,18 @@ def save_cache(cache, msal_token_cache_file):
     :param msal_token_cache_file: Path to cache file
     """
     if cache.has_state_changed:
-        with open(msal_token_cache_file, "w") as f:
-            f.write(cache.serialize())
+        persistence = build_persistence(msal_token_cache_file)
+        persistence.save(cache.serialize())
+
+
+def build_persistence(msal_token_cache_file):
+    """Build a suitable persistence instance based on current OS
+
+    :param msal_token_cache_file: Path to cache file
+    """
+    from msal_extensions import build_encrypted_persistence
+
+    return build_encrypted_persistence(msal_token_cache_file)
 
 
 def perform_device_code_flow(cmd):

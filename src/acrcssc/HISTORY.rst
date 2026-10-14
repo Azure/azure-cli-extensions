@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b8
+++++++++
+* Restore task operations compatibility with current Azure CLI versions.
+* Support current and legacy ACR task operation method names.
+
 1.0.0b7
 ++++++++
 * Unpin cssc image version so that the latest cached image in task infra can be automatically picked for workflow runs. This allows us to push patch updates to cssc image without needing to update the task definition and release a new version of the extension.

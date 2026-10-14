@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import copy
 import os
 import sys
 import tempfile
@@ -11,8 +12,10 @@ from typing import Optional
 from azext_confcom import oras_proxy, os_util, security_policy
 from azext_confcom._validators import resolve_stdio
 from azext_confcom.config import (
-    DEFAULT_REGO_FRAGMENTS, POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS,
-    REGO_IMPORT_FILE_STRUCTURE, ACI_FIELD_VERSION, ACI_FIELD_CONTAINERS)
+    ACI_FIELD_CONTAINERS, ACI_FIELD_SCENARIO, ACI_FIELD_VERSION,
+    DEFAULT_REGO_FRAGMENTS, KUBE_PROXY_REGO_FRAGMENT,
+    POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS,
+    REGO_IMPORT_FILE_STRUCTURE, VN2)
 from azext_confcom.cose_proxy import CoseSignToolProxy
 from azext_confcom.errors import eprint
 from azext_confcom.fragment_util import get_all_fragment_contents
@@ -20,6 +23,7 @@ from azext_confcom.init_checks import run_initial_docker_checks
 from azext_confcom.kata_proxy import KataPolicyGenProxy
 from azext_confcom.security_policy import AciPolicy, OutputType
 from azext_confcom.template_util import (
+    case_insensitive_dict_get,
     get_image_name, inject_policy_into_template, inject_policy_into_yaml,
     pretty_print_func, print_existing_policy_from_arm_template,
     print_existing_policy_from_yaml, print_func, str_to_sha256)
@@ -30,9 +34,42 @@ from azext_confcom.command.containers_from_vn2 import containers_from_vn2 as _co
 from azext_confcom.command.containers_from_radius import containers_from_radius as _containers_from_radius
 from azext_confcom.command.radius_policy_insert import radius_policy_insert as _radius_policy_insert
 from knack.log import get_logger
+from knack.util import CLIError
 from packaging.version import Version
 
 logger = get_logger(__name__)
+
+
+def _validate_allow_kubeproxy(
+    allow_kubeproxy: bool,
+    input_path: str,
+    virtual_node_yaml_path: str,
+    platform: str,
+) -> None:
+    if not allow_kubeproxy:
+        return
+
+    if platform != "linux/amd64":
+        raise CLIError("--allow-kubeproxy is currently supported only with --platform linux/amd64")
+
+    if virtual_node_yaml_path:
+        return
+
+    if input_path:
+        input_data = os_util.load_json_from_file(input_path)
+        scenario = case_insensitive_dict_get(input_data, ACI_FIELD_SCENARIO)
+        if isinstance(scenario, str) and scenario.lower() == VN2:
+            return
+
+    raise CLIError(
+        "--allow-kubeproxy is currently supported only with "
+        "--virtual-node-yaml or --input with scenario set to vn2"
+    )
+
+
+def _add_kube_proxy_fragment(container_group_policies) -> None:
+    for policy in container_group_policies:
+        policy.get_fragments().append(copy.deepcopy(KUBE_PROXY_REGO_FRAGMENT))
 
 
 # pylint: disable=too-many-locals, too-many-branches
@@ -62,6 +99,8 @@ def acipolicygen_confcom(
     include_fragments: bool = False,
     fragments_json: str = None,
     exclude_default_fragments: bool = False,
+    prerelease_policy_api: bool = False,
+    allow_kubeproxy: bool = False,
 ):
     if print_existing_policy or outraw or outraw_pretty_print:
         logger.warning(
@@ -75,6 +114,13 @@ def acipolicygen_confcom(
 
     if container_definitions is None:
         container_definitions = []
+
+    _validate_allow_kubeproxy(
+        allow_kubeproxy,
+        input_path,
+        virtual_node_yaml_path,
+        platform,
+    )
 
     stdio_enabled = resolve_stdio(enable_stdio, disable_stdio)
 
@@ -134,6 +180,7 @@ def acipolicygen_confcom(
             exclude_default_fragments=exclude_default_fragments,
             platform=platform,
             tar_mapping=tar_mapping,
+            prerelease_policy_api=prerelease_policy_api,
         )
     elif arm_template:
         container_group_policies = security_policy.load_policy_from_arm_template_file(
@@ -148,11 +195,13 @@ def acipolicygen_confcom(
             exclude_default_fragments=exclude_default_fragments,
             platform=platform,
             tar_mapping=tar_mapping,
+            prerelease_policy_api=prerelease_policy_api,
         )
     elif image_name:
         container_group_policies = security_policy.load_policy_from_image_name(
             image_name, debug_mode=debug_mode, disable_stdio=(not stdio_enabled),
             platform=platform, tar_mapping=tar_mapping,
+            prerelease_policy_api=prerelease_policy_api,
         )
     elif virtual_node_yaml_path:
         container_group_policies = security_policy.load_policy_from_virtual_node_yaml_file(
@@ -166,6 +215,7 @@ def acipolicygen_confcom(
             infrastructure_svn=infrastructure_svn,
             platform=platform,
             tar_mapping=tar_mapping,
+            prerelease_policy_api=prerelease_policy_api,
         )
     elif container_definitions:
         container_group_policies = AciPolicy(
@@ -176,6 +226,7 @@ def acipolicygen_confcom(
             debug_mode=debug_mode,
             disable_stdio=disable_stdio,
             container_definitions=container_definitions,
+            prerelease_policy_api=prerelease_policy_api,
         )
 
     exit_code = 0
@@ -202,6 +253,9 @@ def acipolicygen_confcom(
         fragment_policy_list = get_all_fragment_contents(container_names, fragment_imports)
         for policy in container_group_policies:
             policy.set_fragment_contents(fragment_policy_list)
+
+    if allow_kubeproxy:
+        _add_kube_proxy_fragment(container_group_policies)
 
     for count, policy in enumerate(container_group_policies):
         policy.populate_policy_content_for_all_images(

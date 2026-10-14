@@ -32,9 +32,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-07-01",
+        "version": "2026-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-08-01-preview"],
         ]
     }
 
@@ -164,6 +164,14 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The configuration of the managed resource group associated with the resource.",
         )
+        _args_schema.rollout_ring = AAZIntArg(
+            options=["--rollout-ring"],
+            arg_group="Properties",
+            help="The relative ordering group used to apply software updates to associated clusters. The minimum accepted value is 1; the service enforces the upper bound currently in effect, which may change over time.",
+            fmt=AAZIntArgFormat(
+                minimum=1,
+            ),
+        )
         _args_schema.vm_size = AAZStrArg(
             options=["--vm-size"],
             arg_group="Properties",
@@ -268,7 +276,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-01",
+                    "api-version", "2026-08-01-preview",
                     required=True,
                 ),
             }
@@ -326,6 +334,7 @@ class Create(AAZCommand):
                 properties.set_prop("availabilityZones", AAZListType, ".availability_zones")
                 properties.set_prop("fabricControllerId", AAZStrType, ".fabric_controller_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("managedResourceGroupConfiguration", AAZObjectType, ".managed_resource_group_configuration")
+                properties.set_prop("rolloutRing", AAZIntType, ".rollout_ring")
                 properties.set_prop("vmSize", AAZStrType, ".vm_size")
 
             availability_zones = _builder.get(".properties.availabilityZones")
@@ -455,6 +464,9 @@ class Create(AAZCommand):
             properties.relay_configuration = AAZObjectType(
                 serialized_name="relayConfiguration",
                 flags={"read_only": True},
+            )
+            properties.rollout_ring = AAZIntType(
+                serialized_name="rolloutRing",
             )
             properties.vm_size = AAZStrType(
                 serialized_name="vmSize",

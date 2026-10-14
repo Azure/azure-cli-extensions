@@ -166,15 +166,19 @@ helps['aks create'] = f"""
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
-          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
+          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
         - name: --nat-gateway-idle-timeout
           type: int
           short-summary: NAT gateway idle timeout in minutes.
-          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
+          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
+        - name: --outbound-type-sku
+          type: string
+          short-summary: SKU of the managed NAT gateway (Standard or StandardV2).
+          long-summary: Only valid with --outbound-type managedNATGateway. StandardV2 selects the NAT Gateway V2 shape, which supports IPv6, user-provided public IPs, and user-provided IP prefixes. If omitted, defaults to StandardV2 where the region supports it, otherwise Standard.
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: Select between loadBalancer, userDefinedRouting, managedNATGateway, managedNATGatewayV2, userAssignedNATGateway, none and block. If not set, defaults to type loadBalancer. managedNATGatewayV2 uses Azure NAT Gateway Standard V2 SKU and supports IPv6, user-provided public IPs, and user-provided IP prefixes.
+          long-summary: Select between loadBalancer, userDefinedRouting, managedNATGateway, userAssignedNATGateway, none and block. If not set, defaults to type loadBalancer. For NAT Gateway V2 (IPv6, user-provided public IPs, and user-provided IP prefixes), use managedNATGateway with --outbound-type-sku StandardV2. The legacy managedNATGatewayV2 value is no longer supported.
         - name: --enable-addons -a
           type: string
           short-summary: Enable the Kubernetes addons in a comma-separated list.
@@ -305,6 +309,17 @@ helps['aks create'] = f"""
             enables FIPS on the default node pool during cluster creation. Some
             addons and extensions aren't supported with cluster-wide FIPS. Verify
             addon and extension compatibility before enabling this preview feature.
+        - name: --enable-node-hardening
+          type: bool
+          short-summary: Enable node hardening at the cluster level.
+          long-summary: |-
+            Applies hardened defaults for soft eviction thresholds, kube-reserved,
+            and system-reserved on all Linux node pools in the cluster. Per-node-pool
+            kubeletConfig settings take precedence over hardening defaults. On agent
+            pools running Kubernetes 1.37 or later, node hardening is enabled by
+            default and cannot be disabled.
+            Requires the Microsoft.ContainerService/CustomNodeConfigPreview feature
+            to be registered on the subscription.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
@@ -444,6 +459,10 @@ helps['aks create'] = f"""
         - name: --enable-workload-identity
           type: bool
           short-summary: (PREVIEW) Enable workload identity addon.
+        - name: --enable-disk-driver
+          type: bool
+          short-summary: Enable AzureDisk CSI Driver.
+          long-summary: The AzureDisk CSI Driver is enabled by default, but the property is left out of the create request unless this flag is given. Pass it to set the property explicitly, which is required by features that validate storageProfile.diskCSIDriver.enabled on the request body.
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
@@ -775,7 +794,13 @@ helps['aks create'] = f"""
               Provides scaled and performance-guaranteed control plane capacity for AKS clusters.
               Enables customers to select a control plane scaling size that delivers higher API server throughput,
               increased etcd capacity, and faster pod scheduling rates. Available values are 'H2', 'H4', and 'H8'.
+        - name: --enable-upgrade-gate
+          type: bool
+          short-summary: Enable upgrade gate for the cluster. Agent pool upgrades wait for health signal validation and abort if unhealthy signals are observed.
+          long-summary: This is a cluster-wide opt-in that applies to all agent pools in the cluster; an agent pool cannot opt out of it. Health signals are HealthSignal custom resources published by monitoring components running in the cluster. Force upgrade (--enable-force-upgrade) overrides the gate. For more information, see https://aka.ms/aks/upgrade-gate.
     examples:
+        - name: Create a kubernetes cluster with upgrade gate enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-upgrade-gate
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
         - name: Create a Kubernetes cluster with a specific version.
@@ -1036,15 +1061,19 @@ helps['aks update'] = """
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
-          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
+          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
         - name: --nat-gateway-idle-timeout
           type: int
           short-summary: NAT gateway idle timeout in minutes.
-          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
+          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
+        - name: --outbound-type-sku
+          type: string
+          short-summary: SKU of the managed NAT gateway (Standard or StandardV2).
+          long-summary: Only valid with --outbound-type managedNATGateway. StandardV2 selects the NAT Gateway V2 shape, which supports IPv6, user-provided public IPs, and user-provided IP prefixes. If omitted, defaults to StandardV2 where the region supports it, otherwise Standard.
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Available options are loadbalancer, managedNATGateway, managedNATGatewayV2, userAssignedNATGateway, userDefinedRouting, none and block. For clusters using a custom virtual network, supported values are loadbalancer, userAssignedNATGateway and userDefinedRouting. For clusters using an AKS-managed virtual network, supported values are loadbalancer, managedNATGateway, managedNATGatewayV2 and userDefinedRouting.
+          long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Available options are loadbalancer, managedNATGateway, userAssignedNATGateway, userDefinedRouting, none and block. For clusters using a custom virtual network, supported values are loadbalancer, userAssignedNATGateway and userDefinedRouting. For clusters using an AKS-managed virtual network, supported values are loadbalancer, managedNATGateway and userDefinedRouting. For NAT Gateway V2, use managedNATGateway with --outbound-type-sku StandardV2; the legacy managedNATGatewayV2 value is no longer supported.
         - name: --nrg-lockdown-restriction-level
           type: string
           short-summary: Restriction level on the managed node resource.
@@ -1097,6 +1126,14 @@ helps['aks update'] = """
         - name: --upgrade-override-until
           type: string
           short-summary: Until when the cluster upgradeSettings overrides are effective. It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --force-upgrade is set to true and --upgrade-override-until is not set, by default it will be set to 3 days from now.
+        - name: --enable-upgrade-gate
+          type: bool
+          short-summary: Enable upgrade gate for the cluster. Agent pool upgrades wait for health signal validation and abort if unhealthy signals are observed.
+          long-summary: This is a cluster-wide opt-in that applies to all agent pools in the cluster; an agent pool cannot opt out of it. Health signals are HealthSignal custom resources published by monitoring components running in the cluster. Force upgrade (--enable-force-upgrade) overrides the gate. For more information, see https://aka.ms/aks/upgrade-gate.
+        - name: --disable-upgrade-gate
+          type: bool
+          short-summary: Disable upgrade gate for the cluster.
+          long-summary: Agent pools that explicitly enabled upgrade gate keep their own setting and remain gated.
         - name: --enable-managed-identity
           type: bool
           short-summary: Update current cluster to managed identity to manage cluster resource group.
@@ -1328,6 +1365,24 @@ helps['aks update'] = """
           long-summary: |-
             Disables cluster-wide FIPS enforcement for AKS-managed components.
             This doesn't disable FIPS on existing node pools.
+        - name: --enable-node-hardening
+          type: bool
+          short-summary: Enable node hardening at the cluster level.
+          long-summary: |-
+            Applies hardened defaults for soft eviction thresholds, kube-reserved,
+            and system-reserved on all Linux node pools in the cluster. Per-node-pool
+            kubeletConfig settings take precedence over hardening defaults. On agent
+            pools running Kubernetes 1.37 or later, node hardening is enabled by
+            default and cannot be disabled.
+            Requires the Microsoft.ContainerService/CustomNodeConfigPreview feature
+            to be registered on the subscription.
+        - name: --disable-node-hardening
+          type: bool
+          short-summary: Disable node hardening at the cluster level.
+          long-summary: |-
+            Turns off the cluster-level node hardening flag. Agent pools running
+            Kubernetes 1.37 or later remain hardened by default regardless of this
+            setting.
         - name: --enable-service-account-image-pull
           type: bool
           short-summary: Enable service account based image pull. For more information, see https://aka.ms/aks/identity-binding/acr-image-pull/docs.
@@ -1614,6 +1669,8 @@ helps['aks update'] = """
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
+      - name: Enable upgrade gate for a kubernetes cluster.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-upgrade-gate
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
       - name: Disable cluster-autoscaler for an existing cluster
@@ -2580,6 +2637,9 @@ helps['aks nodepool add'] = """
         - name: --enable-managed-gpu
           type: bool
           short-summary: Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver. For more details, visit aka.ms/aks/managed-gpu.
+        - name: --gpu-driver-mode --managed-gpu-driver-mode
+          type: string
+          short-summary: Specify the Managed GPU driver mode. Valid values are "DRA" and "DevicePlugin". The default is "DevicePlugin". Requires `--enable-managed-gpu` to be set to true.
         - name: --skip-gpu-driver-install
           type: bool
           short-summary: To skip GPU driver auto installation by AKS on a nodepool using GPU vm size if customers want to manage GPU driver installation by their own. If not specified, the default is false.
@@ -2592,6 +2652,10 @@ helps['aks nodepool add'] = """
         - name: --gpu-mig-strategy
           type: string
           short-summary: Specify the MIG (Multi-Instance GPU) strategy for managed MIG support. Valid values are "Single" and "Mixed". When not specified, managed MIG is disabled.
+        - name: --gpu-mig-profiles
+          type: string array
+          short-summary: Space-separated ordered list of MIG partition profiles. Valid values are "MIG1g", "MIG2g", "MIG3g", "MIG4g", and "MIG7g".
+          long-summary: Duplicate profiles are allowed and meaningful. "Single" accepts one profile; "Mixed" accepts an ordered profile layout. This option cannot be used with --gpu-instance-profile. The service validates the VM size and profile layout.
         - name: --ssh-access
           type: string
           short-summary: Configure SSH setting for the node pool. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
@@ -2632,6 +2696,9 @@ helps['aks nodepool add'] = """
             Specify secondary NICs to attach to each node. Accepts inline JSON or `@filename`.
             Example: '[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet","enableAcceleratedNetworking":true}]'
             Supported NIC types are "Standard" (requires vnetSubnetId) and "Dynamic".
+        - name: --enable-managed-dranet
+          type: bool
+          short-summary: Enable Managed DRANET on the node pool.
         - name: --upgrade-strategy
           type: string
           short-summary: Upgrade strategy for the node pool. Allowed values are "Rolling" or "BlueGreen". Default is "Rolling".
@@ -2650,6 +2717,14 @@ helps['aks nodepool add'] = """
         - name: --final-soak-duration
           type: int
           short-summary: Wait time (in minutes) after all old nodes are drained before removing them. Default is 60 minutes. Only for blue-green upgrades.
+        - name: --enable-upgrade-gate
+          type: bool
+          short-summary: Enable upgrade gate for the node pool. Upgrades of this node pool wait for health signal validation and abort if unhealthy signals are observed.
+          long-summary: When the cluster-level upgrade gate is enabled, a new node pool inherits it by default. Health signals are HealthSignal custom resources published by monitoring components running in the cluster. Force upgrade (--enable-force-upgrade) overrides the gate. For more information, see https://aka.ms/aks/upgrade-gate.
+        - name: --disable-upgrade-gate
+          type: bool
+          short-summary: Disable upgrade gate for the node pool.
+          long-summary: Rejected by the service when the cluster-level upgrade gate is enabled, since a node pool cannot opt out of a cluster-wide opt-in.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -2675,6 +2750,10 @@ helps['aks nodepool add'] = """
           text: az aks nodepool add -g MyResourceGroup -n managedsystem1 --cluster-name MyManagedCluster --mode ManagedSystem
         - name: Create a node pool with blue-green upgrade strategy and default parameters
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --upgrade-strategy BlueGreen
+        - name: Create a node pool with an ordered mixed MIG profile layout
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --enable-managed-gpu --gpu-mig-strategy Mixed --gpu-mig-profiles MIG1g MIG2g MIG2g MIG2g
+        - name: Create a node pool with upgrade gate enabled
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --enable-upgrade-gate
 """
 
 helps['aks nodepool scale'] = """
@@ -2754,6 +2833,10 @@ helps['aks nodepool update'] = """
     short-summary: Update a node pool properties.
     long-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count.  When called with no optional arguments this attempts to move the node pool to its goal state without changing the current node pool configuration. This can be used to move out of a non succeeded state.
     parameters:
+        - name: --gpu-mig-profiles
+          type: string array
+          short-summary: Space-separated ordered list of MIG partition profiles. Valid values are "MIG1g", "MIG2g", "MIG3g", "MIG4g", and "MIG7g".
+          long-summary: Duplicate profiles are allowed and meaningful. The service rejects changes to this immutable property. This option cannot be used with --gpu-instance-profile.
         - name: --enable-cluster-autoscaler -e
           type: bool
           short-summary: Enable cluster autoscaler. For VMSS pools, enables autoscaler on the pool. For VirtualMachines pools, converts all manual scale profiles to autoscale profiles using the same min/max counts.
@@ -2805,6 +2888,9 @@ helps['aks nodepool update'] = """
         - name: --asg-ids
           type: string
           short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs. Must use VMSS agent pool type.
+        - name: --enable-managed-dranet
+          type: bool
+          short-summary: Enable Managed DRANET on the node pool.
         - name: --enable-artifact-streaming
           type: bool
           short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
@@ -2814,6 +2900,9 @@ helps['aks nodepool update'] = """
         - name: --enable-managed-gpu
           type: bool
           short-summary: Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver. For more details, visit aka.ms/aks/managed-gpu.
+        - name: --gpu-driver-mode --managed-gpu-driver-mode
+          type: string
+          short-summary: Specify the Managed GPU driver mode. Valid values are "DRA" and "DevicePlugin". The default is "DevicePlugin". Requires `--enable-managed-gpu` to be set to true.
         - name: --os-sku
           type: string
           short-summary: The os-sku of the agent node pool.
@@ -2880,9 +2969,23 @@ helps['aks nodepool update'] = """
         - name: --crg-id
           type: string
           short-summary: The Capacity Reservation Group (CRG) ID used to associate the existing nodepool with the existing Capacity Reservation Group resource.
+        - name: --enable-upgrade-gate
+          type: bool
+          short-summary: Enable upgrade gate for the node pool. Upgrades of this node pool wait for health signal validation and abort if unhealthy signals are observed.
+          long-summary: Health signals are HealthSignal custom resources published by monitoring components running in the cluster. Force upgrade (--enable-force-upgrade) overrides the gate. For more information, see https://aka.ms/aks/upgrade-gate.
+        - name: --disable-upgrade-gate
+          type: bool
+          short-summary: Disable upgrade gate for the node pool.
+          long-summary: Rejected by the service when the cluster-level upgrade gate is enabled, since a node pool cannot opt out of a cluster-wide opt-in. Use 'az aks update --disable-upgrade-gate' instead.
+        - name: --node-public-ip-prefix-ids
+          type: string
+          short-summary: Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs (IPv4 and/or IPv6).
+          long-summary: At most one IPv4 and one IPv6 prefix may be specified. On an existing node pool this adds or replaces the assigned prefixes; an accepted change rolls the pool so existing nodes are recreated with the new public IPs. Requires the NodePublicIPv6PrefixPreview feature flag.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
+      - name: Enable upgrade gate for a node pool.
+        text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --enable-upgrade-gate
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks nodepool update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Disable cluster-autoscaler for an existing cluster
@@ -2899,6 +3002,8 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --zones auto
       - name: Update a node pool with blue-green upgrade settings
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --drain-batch-size 50% --drain-timeout-bg 5 --batch-soak-duration 10 --final-soak-duration 10
+      - name: Add an IPv6 public IP prefix to an existing dual-stack node pool (grows the assigned prefixes; existing nodes are recreated with the new public IPs)
+        text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-public-ip-prefix-ids "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Network/publicIPPrefixes/<v4prefix>,/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Network/publicIPPrefixes/<v6prefix>"
       - name: Update a nodepool with a Capacity Reservation Group(CRG) ID.
         text: az aks nodepool update -g MyResourceGroup -n MyNodePool --cluster-name MyMC --node-vm-size VMSize --crg-id "/subscriptions/SubID/resourceGroups/ResourceGroupName/providers/Microsoft.Compute/CapacityReservationGroups/MyCRGID"
 """
@@ -3185,6 +3290,9 @@ helps['aks machine add'] = """
        - name: --eviction-policy
          type: string
          short-summary: The eviction policy for machine. This cannot be specified unless the priority is 'Spot'. If not specified, the default is 'Delete'.
+       - name: --capacity-reservation-group --crg
+         type: string
+         short-summary: The fully qualified resource ID of the Capacity Reservation Group to associate with the machine.
 """
 
 helps['aks machine update'] = """
@@ -3283,6 +3391,33 @@ helps['aks operation show-latest'] = """
         - name: --resource-group -g
           type: string
           short-summary: Name of the resource group.
+"""
+
+helps['aks operation list'] = """
+    type: command
+    short-summary: List operations on a managed Kubernetes cluster or one of its node pools.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: The name of the managed cluster.
+        - name: --nodepool-name
+          type: string
+          short-summary: The name of the nodepool. When specified, operations are listed for the node pool instead of the cluster.
+        - name: --active-only
+          type: bool
+          short-summary: Only list operations that are currently active (not terminal).
+        - name: --resource-group -g
+          type: string
+          short-summary: Name of the resource group.
+    examples:
+        - name: List historical operations on a managed cluster.
+          text: az aks operation list -g myResourceGroup -n myAKSCluster
+        - name: List active operations on a managed cluster.
+          text: az aks operation list -g myResourceGroup -n myAKSCluster --active-only
+        - name: List historical operations on a node pool.
+          text: az aks operation list -g myResourceGroup -n myAKSCluster --nodepool-name nodepool1
+        - name: List active operations on a node pool.
+          text: az aks operation list -g myResourceGroup -n myAKSCluster --nodepool-name nodepool1 --active-only
 """
 
 helps['aks operation-abort'] = """
@@ -5127,6 +5262,126 @@ helps['aks jwtauthenticator show'] = """
     examples:
         - name: Show a specific JWT authenticator configuration
           text: az aks jwtauthenticator show -g MyResourceGroup --cluster-name MyCluster --name myjwt
+"""
+
+helps['aks alert-config'] = """
+    type: group
+    short-summary: Commands to manage AKS-managed alert configurations for a cluster.
+    long-summary: Alert configurations let AKS create and manage alerts for important cluster
+                  events and conditions, delivering notifications through an Azure Monitor
+                  action group.
+"""
+
+helps['aks alert-config add'] = """
+    type: command
+    short-summary: Add an alert configuration to a managed cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the alert configuration (must be unique within the cluster).
+        - name: --mode
+          type: string
+          short-summary: How AKS manages alerts for the cluster.
+          long-summary: Use Managed to have AKS create, update and delete the alerts and send
+                        notifications to the configured action group. Use Disabled to turn
+                        alerting off.
+        - name: --action-group-id
+          type: string
+          short-summary: Resource ID of the Azure Monitor action group to send notifications to.
+          long-summary: Optional. When omitted, the alert configuration is created without a
+                        notification target and no notifications are delivered.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Add a managed alert configuration that notifies an action group
+          text: az aks alert-config add -g MyResourceGroup --cluster-name MyCluster -n myalerts --mode Managed --action-group-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Insights/actionGroups/myag
+        - name: Add an alert configuration with alerting disabled
+          text: az aks alert-config add -g MyResourceGroup --cluster-name MyCluster -n myalerts --mode Disabled
+"""
+
+helps['aks alert-config update'] = """
+    type: command
+    short-summary: Update an alert configuration in a managed cluster.
+    long-summary: Only the properties you specify are changed; the rest are preserved.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the alert configuration to update.
+        - name: --mode
+          type: string
+          short-summary: How AKS manages alerts for the cluster.
+        - name: --action-group-id
+          type: string
+          short-summary: Resource ID of the Azure Monitor action group to send notifications to.
+          long-summary: Pass an empty string to remove the current notification target.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Turn off alerting without changing the notification target
+          text: az aks alert-config update -g MyResourceGroup --cluster-name MyCluster -n myalerts --mode Disabled
+        - name: Point an existing alert configuration at a different action group
+          text: az aks alert-config update -g MyResourceGroup --cluster-name MyCluster -n myalerts --action-group-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Insights/actionGroups/otherag
+        - name: Clear the notification target
+          text: az aks alert-config update -g MyResourceGroup --cluster-name MyCluster -n myalerts --action-group-id ""
+"""
+
+helps['aks alert-config delete'] = """
+    type: command
+    short-summary: Delete an alert configuration from a managed cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the alert configuration to delete.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Delete an alert configuration
+          text: az aks alert-config delete -g MyResourceGroup --cluster-name MyCluster -n myalerts
+"""
+
+helps['aks alert-config list'] = """
+    type: command
+    short-summary: List the alert configurations of a managed cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: List all alert configurations in a cluster
+          text: az aks alert-config list -g MyResourceGroup --cluster-name MyCluster
+"""
+
+helps['aks alert-config show'] = """
+    type: command
+    short-summary: Show the details of an alert configuration.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the managed cluster.
+        - name: --name -n
+          type: string
+          short-summary: Name of the alert configuration to show.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Show an alert configuration
+          text: az aks alert-config show -g MyResourceGroup --cluster-name MyCluster -n myalerts
 """
 
 helps['aks prepared-image-specification'] = """

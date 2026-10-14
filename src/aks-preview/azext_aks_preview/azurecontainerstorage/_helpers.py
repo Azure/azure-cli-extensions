@@ -23,6 +23,7 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
+    CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
     CONST_ACSTOR_V1_K8S_EXTENSION_NAME,
     CONST_ACSTOR_V1_EXT_INSTALLATION_NAME,
 )
@@ -304,11 +305,21 @@ def should_delete_extension(storage_options_to_remove) -> bool:
     )
 
 
+def is_distributed_accelerator_requested(storage_options) -> bool:
+    # Detect whether distributed accelerator is among the requested storage options.
+    if storage_options is None or storage_options is True:
+        return False
+    if isinstance(storage_options, list):
+        return CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR in storage_options
+    return storage_options == CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR
+
+
 def get_container_storage_extension_installed(
     cmd,
     resource_group,
     cluster_name,
     extension_name,
+    expected_extension_type=None,
 ) -> Tuple[bool, str]:
 
     client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
@@ -325,6 +336,13 @@ def get_container_storage_extension_installed(
             extension_name,
             "managedClusters",
         )
+        # show_k8s_extension only matches on the instance name, so an unrelated
+        # extension that happens to share the name would otherwise be treated as
+        # installed. When an expected extension type is supplied, verify it before
+        # reporting the extension as installed to avoid acting on the wrong resource.
+        if expected_extension_type is not None and \
+                (getattr(extension, "extension_type", None) or "").lower() != expected_extension_type.lower():
+            return False, ""
         is_extension_installed = True
         extension_version = extension.current_version
     except ResourceNotFoundError:

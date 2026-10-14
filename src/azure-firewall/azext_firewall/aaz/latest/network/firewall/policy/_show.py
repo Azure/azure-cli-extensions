@@ -19,9 +19,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies/{}", "2025-09-01"],
         ]
     }
 
@@ -48,7 +48,6 @@ class Show(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The name of the resource group.",
             required=True,
         )
         _args_schema.expand = AAZStrArg(
@@ -125,7 +124,7 @@ class Show(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -162,7 +161,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.id = AAZStrType()
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType()
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
@@ -203,6 +202,10 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.afc_managed = AAZBoolType(
+                serialized_name="afcManaged",
+                flags={"read_only": True},
+            )
             properties.base_policy = AAZObjectType(
                 serialized_name="basePolicy",
             )
@@ -224,12 +227,19 @@ class Show(AAZCommand):
             properties.intrusion_detection = AAZObjectType(
                 serialized_name="intrusionDetection",
             )
+            properties.kube_selector_groups = AAZListType(
+                serialized_name="kubeSelectorGroups",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.rule_collection_groups = AAZListType(
                 serialized_name="ruleCollectionGroups",
+                flags={"read_only": True},
+            )
+            properties.size = AAZStrType(
                 flags={"read_only": True},
             )
             properties.sku = AAZObjectType()
@@ -379,6 +389,10 @@ class Show(AAZCommand):
             _element = cls._schema_on_200.properties.intrusion_detection.configuration.signature_overrides.Element
             _element.id = AAZStrType()
             _element.mode = AAZStrType()
+
+            kube_selector_groups = cls._schema_on_200.properties.kube_selector_groups
+            kube_selector_groups.Element = AAZObjectType()
+            _ShowHelper._build_schema_sub_resource_read(kube_selector_groups.Element)
 
             rule_collection_groups = cls._schema_on_200.properties.rule_collection_groups
             rule_collection_groups.Element = AAZObjectType()

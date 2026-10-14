@@ -3,6 +3,20 @@
 Release History
 ===============
 
+1.0.0b10
+++++++++
+* Regenerated the analytics frontend client from the latest ``2026-03-01-preview`` frontend spec
+* Added: ``--scale-sku`` (``small``, ``medium``, ``large``) to ``az managedcleanroom frontend analytics query run``
+* ``az managedcleanroom frontend analytics query runresult show`` now takes ``--run-id``; ``--job-id`` is deprecated
+
+1.0.0b9
++++++++
+* Update commands to reflect new API version 2026-09-30-preview
+* Added: ``--target-config`` alias for ``az managedcleanroom collaboration create --target-resource-configuration``
+* Added: ``az managedcleanroom consortium-view contract wait``
+* Added: ``az managedcleanroom frontend collaborator list`` to list collaborators in a collaboration
+* Added: ``az managedcleanroom frontend analytics query cancel-run`` to cancel a query run
+
 1.0.0b6
 +++++++
 * Update commands to reflect new API version 2026-04-30-preview
@@ -81,3 +95,7 @@ Release History
   encryption-mode compatibility is enforced by the service.
 * SDK: ``analytics_frontend_api`` updated with the new ``store.subdirectory`` field
   in the JSON dict templates (sync + async) to match the regenerated autorest output.
+
+1.0.0b8
++++++++
+* Add encryption for token cache.

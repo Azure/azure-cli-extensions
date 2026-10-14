@@ -21,6 +21,8 @@ from .aaz.latest.grafana._update import Update as _GrafanaUpdate
 
 from ._client_factory import cf_amg
 from .utils import get_yes_or_no_option, search_folders
+from .dashboard_v2 import (is_v2_dashboard_definition, require_dashboard_v2_api_version,
+                           create_dashboard_v2, resolve_dashboard_v2_api_version, read_dashboard)
 
 logger = get_logger(__name__)
 
@@ -171,6 +173,9 @@ def _create_role_assignment(cli_ctx, principal_id, role_definition_id, scope):
     from azure.core.exceptions import HttpResponseError, ResourceExistsError
 
     assignments_client = get_mgmt_service_client(cli_ctx, AuthorizationManagementClient).role_assignments
+    # Unwrap AAZ values (e.g. instance.identity.principal_id) to a plain str so the
+    # authorization SDK can JSON-serialize the request body.
+    principal_id = str(principal_id)
     principal_types = [p.value for p in PrincipalType]
     current_principal_type = principal_types.pop(0)
 
@@ -323,9 +328,12 @@ def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to
 
 
 def show_dashboard(cmd, grafana_name, uid, resource_group_name=None, api_key_or_token=None, subscription=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/dashboards/uid/" + uid,
-                             api_key_or_token=api_key_or_token, subscription=subscription)
-    return json.loads(response.content)
+    # A v2 (dynamic dashboards) resource has no lossless classic representation, so read it through
+    # the dashboard apiserver. Classic dashboards keep using the legacy endpoint (unchanged shape).
+    endpoint, headers = _get_grafana_request_context(cmd, resource_group_name, grafana_name, subscription,
+                                                     api_key_or_token=api_key_or_token)
+    v2_version = resolve_dashboard_v2_api_version(endpoint, headers)
+    return read_dashboard(endpoint, headers, uid, v2_version)
 
 
 def list_dashboards(cmd, grafana_name, resource_group_name=None, api_key_or_token=None, subscription=None):
@@ -356,6 +364,16 @@ def create_dashboard(cmd, grafana_name, definition, title=None, folder=None, res
 
 def _create_dashboard(cmd, grafana_name, definition, title=None, folder_uid=None, resource_group_name=None,
                       overwrite=None, api_key_or_token=None, for_sync=True, subscription=None):
+    # v1 vs v2 is decided by the dashboard's own schema, not a global default: a v2 (dynamic
+    # dashboards) definition can only be created through the dashboard apiserver, while a classic
+    # definition must stay on the legacy endpoint.
+    if is_v2_dashboard_definition(definition):
+        endpoint, headers = _get_grafana_request_context(cmd, resource_group_name, grafana_name, subscription,
+                                                         api_key_or_token=api_key_or_token)
+        version = require_dashboard_v2_api_version(endpoint, headers)
+        return create_dashboard_v2(endpoint, headers, definition, version, title=title,
+                                   folder_uid=folder_uid, overwrite=overwrite)
+
     if "dashboard" in definition:
         payload = definition
     else:
@@ -395,6 +413,19 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
                                           api_key_or_token=api_key_or_token)
     if data.get("meta", {}).get("isFolder", False):
         raise ArgumentUsageError("The provided definition is a folder, not a dashboard")
+
+    # A v2 (dynamic dashboards) definition must go through the dashboard apiserver. The classic
+    # __inputs datasource remapping below is a v1-only concept and doesn't apply.
+    if is_v2_dashboard_definition(data):
+        endpoint, headers = _get_grafana_request_context(cmd, resource_group_name, grafana_name, None,
+                                                         api_key_or_token=api_key_or_token)
+        version = require_dashboard_v2_api_version(endpoint, headers)
+        folder_uid = None
+        if folder:
+            folder_uid = _find_folder(cmd, resource_group_name, grafana_name, folder,
+                                      api_key_or_token=api_key_or_token)['uid']
+        return create_dashboard_v2(endpoint, headers, data, version, folder_uid=folder_uid,
+                                   overwrite=overwrite)
 
     if "dashboard" in data:
         payload = data

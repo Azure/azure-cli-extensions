@@ -3208,6 +3208,76 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_6.get_enable_fips()
 
+    def test_get_enable_node_hardening(self):
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_node_hardening(), False)
+
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_node_hardening": True}),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_enable_node_hardening(), True)
+
+        # CREATE: value on attached mc overrides raw parameter default
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_node_hardening": False}),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        mc_3.enable_node_hardening = True
+        ctx_3.attach_mc(mc_3)
+        self.assertEqual(ctx_3.get_enable_node_hardening(), True)
+
+        # UPDATE: disable_node_hardening reads through
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_node_hardening": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_4.get_disable_node_hardening(), True)
+
+        # mutually exclusive on get_enable
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_node_hardening": True,
+                    "disable_node_hardening": True,
+                }
+            ),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_5.get_enable_node_hardening()
+
+        # mutually exclusive on get_disable
+        ctx_6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_node_hardening": True,
+                    "disable_node_hardening": True,
+                }
+            ),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_6.get_disable_node_hardening()
+
     def test_get_disk_driver(self):
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -3257,6 +3327,33 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             )
         )
         self.assertEqual(ctx_3.get_disk_driver(), ground_truth_disk_csi_driver_3)
+
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_disk_driver": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        ground_truth_disk_csi_driver_4 = (
+            self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                enabled=True,
+            )
+        )
+        self.assertEqual(ctx_4.get_disk_driver(), ground_truth_disk_csi_driver_4)
+
+        # neither flag specified on create leaves the profile unset, so the
+        # service applies its own default
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertIsNone(ctx_5.get_disk_driver())
 
     def test_get_enable_apiserver_vnet_integration(self):
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -4513,6 +4610,53 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.UPDATE,
         )
         self.assertEqual(ctx_1.get_upgrade_override_until(), "2022-11-01T13:00:00Z")
+
+    def test_get_upgrade_gate_enabled(self):
+        # neither flag
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertIsNone(ctx_0.get_upgrade_gate_enabled())
+
+        # both flags at their default (False)
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_upgrade_gate": False, "disable_upgrade_gate": False}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertIsNone(ctx_1.get_upgrade_gate_enabled())
+
+        # enable
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_upgrade_gate": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertTrue(ctx_2.get_upgrade_gate_enabled())
+
+        # disable
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_upgrade_gate": True}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertFalse(ctx_3.get_upgrade_gate_enabled())
+
+        # mutually exclusive
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_upgrade_gate": True, "disable_upgrade_gate": True}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_4.get_upgrade_gate_enabled()
 
     def test_handle_enable_disable_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -8292,6 +8436,92 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             dec_3.set_up_enable_fips(mc_3)
 
+    def test_set_up_enable_node_hardening(self):
+        # default: no flag → property not set
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_enable_node_hardening(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # enable_node_hardening=True → sets property on mc
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_node_hardening": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_enable_node_hardening(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_2.enable_node_hardening = True
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+        self.assertEqual(
+            todict(dec_mc_2, AzCliCommandInvoker.remove_additional_prop_layer).get("enableNodeHardening"),
+            True,
+        )
+
+    def test_set_up_os_disk_full_caching(self):
+        # not set, default agent pool profile should not be modified
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agentpool_profile_1 = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[agentpool_profile_1],
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_os_disk_full_caching(mc_1)
+        ground_truth_agentpool_profile_1 = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[ground_truth_agentpool_profile_1],
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # --enable-osdisk-full-caching should set the flag on the default agent pool profile
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_os_disk_full_caching": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agentpool_profile_2 = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[agentpool_profile_2],
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_os_disk_full_caching(mc_2)
+        ground_truth_agentpool_profile_2 = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            enable_os_disk_full_caching=True,
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[ground_truth_agentpool_profile_2],
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
     def test_set_up_static_egress_gateway(self):
         dec_0 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -9959,6 +10189,63 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
 
+    def test_set_up_upgrade_gate_settings(self):
+        # no flag - no change
+        dec_0 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.set_up_upgrade_gate_settings(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # enable flag set
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_upgrade_gate": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_upgrade_gate_settings(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            upgrade_settings=self.models.ClusterUpgradeSettings(
+                upgrade_gate_settings=self.models.UpgradeGateSettings(enabled=True),
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # existing upgrade settings are preserved
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_upgrade_gate": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            upgrade_settings=self.models.ClusterUpgradeSettings(
+                override_settings=self.models.UpgradeOverrideSettings(force_upgrade=True),
+            ),
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_upgrade_gate_settings(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            upgrade_settings=self.models.ClusterUpgradeSettings(
+                override_settings=self.models.UpgradeOverrideSettings(force_upgrade=True),
+                upgrade_gate_settings=self.models.UpgradeGateSettings(enabled=True),
+            ),
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+
 class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
         # manually register CUSTOM_MGMT_AKS_PREVIEW
@@ -10642,6 +10929,26 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         ground_truth_mc_1.network_profile.nat_gateway_profile = None
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+    def test_update_nat_gateway_profile_rejects_nat_params_on_non_nat_outbound(self):
+        # --outbound-type-sku / V2 params build a NAT gateway profile, so they must be rejected on a
+        # loadBalancer cluster when the outbound type is not being switched to managedNATGateway.
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"nat_gateway_sku": "StandardV2"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+                outbound_type="loadBalancer",
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_1.update_nat_gateway_profile(mc_1)
 
     def test_update_outbound_type(self):
         # default value in `aks_update`
@@ -14238,6 +14545,89 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             dec_6.update_upgrade_settings(mc_6)
 
+    def test_update_upgrade_settings_upgrade_gate(self):
+        # no flag - existing gate setting is left unchanged
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_upgrade_gate": False, "disable_upgrade_gate": False},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(
+            location="test_location",
+            upgrade_settings=self.models.ClusterUpgradeSettings(
+                upgrade_gate_settings=self.models.UpgradeGateSettings(enabled=True),
+            ),
+        )
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_upgrade_settings(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(
+            location="test_location",
+            upgrade_settings=self.models.ClusterUpgradeSettings(
+                upgrade_gate_settings=self.models.UpgradeGateSettings(enabled=True),
+            ),
+        )
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # enable on a cluster without upgrade settings
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_upgrade_gate": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_upgrade_settings(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            upgrade_settings=self.models.ClusterUpgradeSettings(
+                upgrade_gate_settings=self.models.UpgradeGateSettings(enabled=True),
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # disable, preserving override settings
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_upgrade_gate": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            upgrade_settings=self.models.ClusterUpgradeSettings(
+                override_settings=self.models.UpgradeOverrideSettings(
+                    force_upgrade=True, until=parse("2023-04-01T13:00:00Z")
+                ),
+                upgrade_gate_settings=self.models.UpgradeGateSettings(enabled=True),
+            ),
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_upgrade_settings(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            upgrade_settings=self.models.ClusterUpgradeSettings(
+                override_settings=self.models.UpgradeOverrideSettings(
+                    force_upgrade=True, until=parse("2023-04-01T13:00:00Z")
+                ),
+                upgrade_gate_settings=self.models.UpgradeGateSettings(enabled=False),
+            ),
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # mutually exclusive
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_upgrade_gate": True, "disable_upgrade_gate": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_3.update_upgrade_settings(mc_3)
+
     def test_update_optimized_addon_scaling(self):
         # Should not update mc if unset
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
@@ -15142,6 +15532,71 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_6.context.attach_mc(mc_6)
         with self.assertRaises(MutuallyExclusiveArgumentError):
             dec_6.update_enable_fips(mc_6)
+
+    def test_update_enable_node_hardening(self):
+        # default: neither flag → mc unchanged
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_enable_node_hardening(mc_1)
+        self.assertEqual(dec_mc_1, mc_1)
+
+        # enable → sets True
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_node_hardening": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_enable_node_hardening(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_2.enable_node_hardening = True
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+        self.assertEqual(
+            todict(dec_mc_2, AzCliCommandInvoker.remove_additional_prop_layer).get("enableNodeHardening"),
+            True,
+        )
+
+        # disable → sets False
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_node_hardening": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        mc_3.enable_node_hardening = True
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_enable_node_hardening(mc_3)
+        ground_truth_mc_3 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_3.enable_node_hardening = False
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+        self.assertEqual(
+            todict(dec_mc_3, AzCliCommandInvoker.remove_additional_prop_layer).get("enableNodeHardening"),
+            False,
+        )
+
+        # mutually exclusive
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_node_hardening": True,
+                "disable_node_hardening": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(location="test_location")
+        dec_4.context.attach_mc(mc_4)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_4.update_enable_node_hardening(mc_4)
 
     def test_mc_get_node_init_taints(self):
         # Default, not set.

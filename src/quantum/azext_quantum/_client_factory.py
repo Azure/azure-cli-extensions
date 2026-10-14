@@ -10,7 +10,7 @@ from ._location_helper import normalize_location
 from .__init__ import CLI_REPORTED_VERSION
 from .vendored_sdks.azure_quantum_python._client import WorkspaceClient
 from .vendored_sdks.azure_mgmt_quantum import AzureQuantumMgmtClient
-from .vendored_sdks.azure_mgmt_quantum.operations import WorkspacesOperations, OfferingsOperations
+from .vendored_sdks.azure_mgmt_quantum.operations import WorkspacesOperations, OfferingsOperations, SuiteOffersOperations
 
 
 def is_env(name):
@@ -26,6 +26,15 @@ def base_url(location):
     if is_env('dogfood'):
         return f"https://{normalized_location}.quantum-test.azure.com/"
     return f"https://{normalized_location}.quantum.azure.com/"
+
+
+def base_url_v2(location):
+    if 'AZURE_QUANTUM_BASEURL_V2' in os.environ:
+        return os.environ['AZURE_QUANTUM_BASEURL_V2']
+    normalized_location = normalize_location(location)
+    if is_env('dogfood'):
+        return f"https://{normalized_location}-v2.quantum-test.azure.com/"
+    return f"https://{normalized_location}-v2.quantum.azure.com/"
 
 
 def _get_data_credentials(cli_ctx, subscription_id=None):
@@ -57,6 +66,10 @@ def cf_offerings(cli_ctx, *_) -> OfferingsOperations:
     return cf_quantum_mgmt(cli_ctx).offerings
 
 
+def cf_suite_offers(cli_ctx, *_) -> SuiteOffersOperations:
+    return cf_quantum_mgmt(cli_ctx).suite_offers
+
+
 # Data Plane clients
 
 def cf_quantum(cli_ctx, subscription: str, resource_group: str, ws_name: str, endpoint: str | None) -> WorkspaceClient:
@@ -79,6 +92,11 @@ def cf_jobs(cli_ctx, subscription: str, resource_group: str, ws_name: str, endpo
 
 def cf_quotas(cli_ctx, subscription: str, resource_group: str, ws_name: str, endpoint: str | None):
     return cf_quantum(cli_ctx, subscription, resource_group, ws_name, endpoint).services.quotas
+
+
+def cf_suite_offers_data_plane(cli_ctx, subscription: str, location: str):
+    endpoint = base_url_v2(location)
+    return cf_quantum(cli_ctx, subscription, None, None, endpoint).services.suite_offers
 
 
 # Helper clients
