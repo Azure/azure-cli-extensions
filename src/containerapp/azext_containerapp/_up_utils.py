@@ -21,6 +21,7 @@ from azure.cli.core.azclierror import (
     CLIError, CLIInternalError,
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.util import get_safe_executable_path
 from azure.cli.command_modules.appservice._create_util import (
     check_resource_group_exists,
 )
@@ -56,7 +57,7 @@ from ._clients import ContainerAppPreviewClient, GitHubActionClient, ContainerAp
 
 from ._utils import (
     is_docker_running,
-    get_docker_exec_path, get_pack_exec_path, _validate_custom_loc_and_location, _validate_connected_k8s_exists, get_custom_location,
+    get_pack_exec_path, _validate_custom_loc_and_location, _validate_connected_k8s_exists, get_custom_location,
     create_extension, create_custom_location, get_cluster_extension, validate_environment_location,
     list_environment_locations, get_randomized_name_with_dash, get_randomized_name, get_connected_k8s,
     list_cluster_extensions, list_custom_location, is_cloud_supported_by_connected_env
@@ -534,7 +535,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         from azure.cli.command_modules.acr.custom import acr_login
         from azure.cli.core.profiles import ResourceType
 
-        docker_exec_path = get_docker_exec_path()
+        docker_exec_path = get_safe_executable_path("docker")
         if not docker_exec_path:
             raise CLIError("Docker executable could not be found.")
 
@@ -551,9 +552,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                         logger.warning(f"The current user isn't authenticated to the {self.acr.name} ACR instance. Triggering an ACR login and retrying to push the image...")
                         # Logic to login to ACR
                         task_command_kwargs = {"resource_type": ResourceType.MGMT_CONTAINERREGISTRY, 'operation_group': 'webhooks'}
+                        missing = object()
                         old_command_kwargs = {}
                         for key in task_command_kwargs:  # pylint: disable=consider-using-dict-items
-                            old_command_kwargs[key] = self.cmd.command_kwargs.get(key)
+                            old_command_kwargs[key] = self.cmd.command_kwargs.get(key, missing)
                             self.cmd.command_kwargs[key] = task_command_kwargs[key]
                         old_docker_command = os.environ.get("DOCKER_COMMAND")
                         try:
@@ -566,7 +568,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                             else:
                                 os.environ["DOCKER_COMMAND"] = old_docker_command
                             for k, v in old_command_kwargs.items():
-                                self.cmd.command_kwargs[k] = v
+                                if v is missing:
+                                    self.cmd.command_kwargs.pop(k, None)
+                                else:
+                                    self.cmd.command_kwargs[k] = v
 
                         self._docker_push_to_container_registry(image_name, True)
                     else:

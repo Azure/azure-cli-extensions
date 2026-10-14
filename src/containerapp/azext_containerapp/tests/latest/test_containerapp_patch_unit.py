@@ -84,7 +84,7 @@ _FUNC_GLOBALS = {
     "logger": mock.MagicMock(),
     "CLIError": CLIError,
     "validate_image_name": validate_image_name,
-    "get_docker_exec_path": lambda: "/usr/local/bin/docker",
+    "get_safe_executable_path": lambda _: "/usr/local/bin/docker",
     "update_containerapp": mock.MagicMock(return_value={}),
 }
 
@@ -224,7 +224,7 @@ class TestPatchCliCall(unittest.TestCase):
 
         with mock.patch.dict(
                 _FUNC_GLOBALS,
-                {"subprocess": mock_subprocess, "get_docker_exec_path": lambda: None}
+                {"subprocess": mock_subprocess, "get_safe_executable_path": lambda _: None}
         ):
             fn = _extract_function("patch_cli_call")
             with self.assertRaises(CLIError):

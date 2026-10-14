@@ -25,6 +25,7 @@ from azure.cli.core.azclierror import (
     ResourceNotFoundError,
     ArgumentUsageError,
     MutuallyExclusiveArgumentError)
+from azure.cli.core.util import get_safe_executable_path
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobDecorator
@@ -143,7 +144,7 @@ from ._models import (
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, DebugWebSocketConnection, read_debug_ssh)
 
 from ._utils import (connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check,
-                     get_docker_exec_path, get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity)
+                     get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity)
 from ._utils_validation import validate_image_name
 
 from ._arc_utils import (extract_domain_from_configmap, get_core_dns_deployment, get_core_dns_configmap, backup_custom_core_dns_configmap,
@@ -1898,7 +1899,7 @@ def patch_cli_call(cmd, resource_group, container_app_name, container_name, targ
         logger.warning("Applying patch for container app: " + container_app_name + " container: " + container_name)
         validate_image_name(target_image_name)
         validate_image_name(new_run_image)
-        docker_exec_path = get_docker_exec_path()
+        docker_exec_path = get_safe_executable_path("docker")
         if not docker_exec_path:
             raise CLIError("Docker executable could not be found.")
         subprocess.run([pack_exec_path, "rebase", "-q", target_image_name, "--run-image", new_run_image, "--force"], check=True)

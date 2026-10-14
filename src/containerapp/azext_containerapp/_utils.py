@@ -13,7 +13,6 @@ import zipfile
 import hashlib
 import re
 import requests
-import shutil
 import packaging.version as SemVer
 import random
 
@@ -28,6 +27,7 @@ from azure.cli.command_modules.containerapp._client_factory import handle_raw_ex
 from azure.cli.core._profile import Profile
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, CLIError, InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
+from azure.cli.core.util import get_safe_executable_path
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
 from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 from ._utils_validation import validate_image_name  # noqa: F401
@@ -263,38 +263,8 @@ def list_environment_locations(cmd, resource_type=MANAGED_ENVIRONMENT_RESOURCE_T
     return res_locations
 
 
-def get_docker_exec_path():
-    docker_exec_path = shutil.which("docker")
-    if not docker_exec_path:
-        return None
-
-    try:
-        cwd = os.path.abspath(os.getcwd())
-        docker_exec_path = os.path.abspath(docker_exec_path)
-        resolved_paths = (docker_exec_path, os.path.realpath(docker_exec_path))
-
-        for resolved_path in resolved_paths:
-            resolved_dir = os.path.dirname(resolved_path)
-            try:
-                is_cwd = os.path.samefile(resolved_dir, cwd)
-            except (OSError, ValueError):
-                is_cwd = os.path.normcase(os.path.normpath(resolved_dir)) == os.path.normcase(os.path.normpath(cwd))
-
-            if is_cwd:
-                raise CLIError(
-                    "Refusing to use Docker executable '{}' because it is located in the current working directory."
-                    .format(resolved_path)
-                )
-    except CLIError:
-        raise
-    except (OSError, ValueError) as ex:
-        raise CLIError("Unable to verify Docker executable path safety.") from ex
-
-    return docker_exec_path
-
-
 def is_docker_running():
-    docker_exec_path = get_docker_exec_path()
+    docker_exec_path = get_safe_executable_path("docker")
     if not docker_exec_path:
         return False
 
