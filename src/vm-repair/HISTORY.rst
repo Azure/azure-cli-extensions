@@ -2,6 +2,14 @@
 Release History
 ===============
 
+2.4.6
+++++++
+* Fixed a Windows command-injection gap: untrusted VM properties (for example the unmanaged-disk URI) reached a nested ``cmd.exe`` call unvalidated. Now any unsafe character (quote, ``%``, ``!``, control char) is rejected on every nested ``az`` command, not just tags.
+* Rejection errors no longer echo the offending value, and this now also covers values passed via ``secure_params`` (e.g. a repair password), closing a prior masking-order bypass.
+* ``restore`` and ``reset-nic`` now validate the follow-up command (re-attach disk / revert NIC) before the preceding, hard-to-reverse step runs, so a rejected value can't strand a disk or NIC mid-operation.
+* Rejection errors now name the affected property (e.g. ``storageProfile.osDisk.vhd.uri``) when known.
+* Fixed an argument-injection gap in unmanaged-disk restore: an embedded quote in the disk URI could previously slip past validation (consumed as shlex quoting syntax) and inject extra arguments into the nested ``az vm update`` call. The URI assignment is now built with ``shlex.quote()`` so an embedded quote is caught instead.
+
 2.4.5
 ++++++
 Documenting the Windows Generation 2 NVMe boot-driver recovery now available through the ``win-enable-nvme-boot-driver`` run id. The README and command help show the read-only report, explicit repair, and rollback flow, including the detector signatures that require the operator to stop instead of modifying the offline disk. Linux recovery and Generation 1 conversion remain unavailable.
