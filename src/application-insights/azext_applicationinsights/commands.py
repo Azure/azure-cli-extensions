@@ -17,6 +17,9 @@ from azext_applicationinsights._client_factory import (
 
 def load_command_table(self, _):
 
+    from ._trace import TraceContainerCreate
+    self.command_table['monitor account trace-container create'] = TraceContainerCreate(loader=self)
+
     components_sdk = CliCommandType(
         operations_tmpl='azext_applicationinsights.vendored_sdks.mgmt_applicationinsights.operations.components_operations#ComponentsOperations.{}',
         client_factory=cf_components
