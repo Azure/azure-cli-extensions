@@ -934,7 +934,7 @@ def load_arguments(self, _):
         c.argument(
             "nodepool_name",
             default="nodepool1",
-            help="Node pool name, upto 12 alphanumeric characters",
+            help="Node pool name, alphanumeric characters only. See https://aka.ms/aks-naming-rules for length limits.",
             validator=validate_nodepool_name,
         )
         c.argument(
@@ -2292,7 +2292,7 @@ def load_arguments(self, _):
     with self.argument_context("aks scale") as c:
         c.argument(
             "nodepool_name",
-            help="Node pool name, upto 12 alphanumeric characters",
+            help="Node pool name, alphanumeric characters only. See https://aka.ms/aks-naming-rules for length limits.",
             validator=validate_nodepool_name,
         )
 
