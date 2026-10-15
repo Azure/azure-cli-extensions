@@ -20,7 +20,7 @@ class OracleDatabasePrivateIpAddressScenario(ScenarioTest):
         subnet_id = os.environ.get('AZURE_ORACLE_DATABASE_SUBNET_ID', '<subnet-ocid>')
         vnic_id = os.environ.get('AZURE_ORACLE_DATABASE_VNIC_ID', '<vnic-ocid>')
 
-        self.cmd(
+        result = self.cmd(
             'az oracle-database cloud-vm-cluster list-private-ip-address '
             '--resource-group {} '
             '--cloudvmclustername {} '
@@ -31,4 +31,7 @@ class OracleDatabasePrivateIpAddressScenario(ScenarioTest):
                 subnet_id,
                 vnic_id,
             )
-        )
+        ).get_output_in_json()
+        self.assertIsInstance(result, list)
+        self.assertTrue(result)
+        self.assertTrue(all('ipAddress' in address for address in result))

@@ -28,10 +28,11 @@ class ListPrivateIpAddress(AAZCommand):
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -96,8 +97,9 @@ class ListPrivateIpAddress(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
     class CloudVmClustersListPrivateIpAddresses(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
