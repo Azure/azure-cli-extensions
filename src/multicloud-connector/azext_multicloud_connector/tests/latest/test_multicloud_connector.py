@@ -411,9 +411,21 @@ class MulticloudConnectorScenario(ScenarioTest):
         )
 
         # test solution-type list
+        #
+        # The returned set is a service-wide catalog rather than anything this test creates,
+        # so its size drifts as the service adds solution types (it was 2 when these
+        # recordings were first captured and is 9 today). Assert the properties that are
+        # actually meaningful -- the list is non-empty and advertises the solution type
+        # exercised above -- instead of pinning an exact count that breaks on every catalog
+        # change.
         self.cmd(
             'arc-multicloud solution-type list '
             '--resource-group {rg} '
             '--subscription {sub}',
-            checks=[self.check('length(@)', 2)]
+            checks=[
+                self.check('length(@) > `0`', True),
+                self.check(
+                    "contains(@[].properties.solutionType, 'Microsoft.AssetManagement')",
+                    True),
+            ]
         )
