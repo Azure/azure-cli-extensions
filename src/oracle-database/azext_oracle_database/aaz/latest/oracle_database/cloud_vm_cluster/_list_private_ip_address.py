@@ -22,9 +22,9 @@ class ListPrivateIpAddress(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-01",
+        "version": "2026-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}/listprivateipaddresses", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}/listprivateipaddresses", "2026-07-01-preview"],
         ]
     }
 
@@ -147,7 +147,7 @@ class ListPrivateIpAddress(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-07-01-preview",
                     required=True,
                 ),
             }
@@ -192,12 +192,20 @@ class ListPrivateIpAddress(AAZCommand):
             if cls._schema_on_200 is not None:
                 return cls._schema_on_200
 
-            cls._schema_on_200 = AAZListType()
+            cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.Element = AAZObjectType()
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
-            _element = cls._schema_on_200.Element
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
             _element.display_name = AAZStrType(
                 serialized_name="displayName",
                 flags={"required": True},
