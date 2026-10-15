@@ -15,6 +15,8 @@ Pending
 * `az aks create`: Add `--enable-upgrade-gate` to enable health-aware upgrade gating for the cluster.
 * `az aks update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the cluster.
 * `az aks nodepool add/update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the node pool.
+* `az aks create/update`: `--kms-infrastructure-encryption` now only accepts `Enabled`, since infrastructure encryption for Kubernetes resource objects cannot be turned off once it has been turned on.
+* `az aks create/update`: Document that an unversioned `--azure-keyvault-kms-key-id` selects the new KMS experience with automatic key version rotation, while a versioned key identifier selects the legacy KMS experience.
 
 22.0.0b13
 +++++++++

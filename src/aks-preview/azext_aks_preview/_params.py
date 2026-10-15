@@ -52,6 +52,7 @@ from azext_aks_preview._consts import (
     CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
+    CONST_KMS_INFRASTRUCTURE_ENCRYPTION_ENABLED,
     CONST_NAMESPACE_ADOPTION_POLICY_NEVER,
     CONST_NAMESPACE_ADOPTION_POLICY_IFIDENTICAL,
     CONST_NAMESPACE_ADOPTION_POLICY_ALWAYS,
@@ -875,8 +876,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "kms_infrastructure_encryption",
-            arg_type=get_enum_type(["Enabled", "Disabled"]),
-            default="Disabled",
+            arg_type=get_enum_type([CONST_KMS_INFRASTRUCTURE_ENCRYPTION_ENABLED]),
             is_preview=True,
         )
         c.argument("http_proxy_config")
@@ -1668,7 +1668,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "kms_infrastructure_encryption",
-            arg_type=get_enum_type(["Enabled", "Disabled"]),
+            arg_type=get_enum_type([CONST_KMS_INFRASTRUCTURE_ENCRYPTION_ENABLED]),
             is_preview=True,
         )
         c.argument("http_proxy_config")
