@@ -107,7 +107,7 @@ from .containerapp_function_keys_decorator import (
 
 from .containerapp_debug_command_decorator import ContainerAppDebugCommandDecorator
 from .dotnet_component_decorator import DotNetComponentDecorator
-from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
+from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception, handle_show_exception
 from ._clients import (
     GitHubActionPreviewClient,
     ContainerAppPreviewClient,
@@ -703,7 +703,14 @@ def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
     )
     containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    return containerapp_base_decorator.show()
+    # Handle HTTP 404 before the core decorator normalizes it to CLIInternalError.
+    try:
+        containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        if show_secrets:
+            containerapp_base_decorator.set_up_get_existing_secrets(containerapp_def)
+        return containerapp_def
+    except CLIError as e:
+        handle_show_exception(e)
 
 
 def list_containerapp(cmd, resource_group_name=None, managed_env=None, environment_type="all", kind=None):
@@ -906,7 +913,11 @@ def show_managed_environment(cmd, name, resource_group_name):
     )
     containerapp_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    return containerapp_env_decorator.show()
+    # Handle HTTP 404 before the core decorator normalizes it to CLIInternalError.
+    try:
+        return ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except CLIError as e:
+        handle_show_exception(e)
 
 
 def list_managed_environments(cmd, resource_group_name=None):
