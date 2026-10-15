@@ -15,6 +15,8 @@ Pending
 * `az aks create`: Add `--enable-upgrade-gate` to enable health-aware upgrade gating for the cluster.
 * `az aks update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the cluster.
 * `az aks nodepool add/update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the node pool.
+* `az aks nodepool scale`: extend `--use-patch-api` to VirtualMachines node pools so they also scale via the dedicated PATCH agent pool API.
+* `az aks nodepool manual-scale add/update/delete`: add `--use-patch-api` to manage the manual scale profiles of a VirtualMachines node pool via the dedicated PATCH agent pool API instead of the default PUT API.
 
 22.0.0b13
 +++++++++
