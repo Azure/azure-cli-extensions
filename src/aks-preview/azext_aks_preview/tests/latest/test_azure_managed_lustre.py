@@ -145,6 +145,36 @@ class AzureManagedLustreValidatorsTestCase(unittest.TestCase):
         ):
             validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
 
+    def test_ubuntu_2204_node_pool_architecture(self):
+        cluster = SimpleNamespace(
+            location="eastus",
+            agent_pool_profiles=[SimpleNamespace(os_sku="Ubuntu2204", vm_size="Standard_D2ps_v5")],
+        )
+        with patch(
+            "azext_aks_preview.azuremanagedlustre._validators._get_vm_sku_architectures",
+            return_value={"standard_d2ps_v5": "arm64"},
+        ):
+            with self.assertRaisesRegex(InvalidArgumentValueError, "ARM64"):
+                validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+
+    def test_azure_linux_alias_uses_kubernetes_version(self):
+        for kubernetes_version, should_raise in [("1.31.9", False), ("1.32.0", True)]:
+            with self.subTest(kubernetes_version=kubernetes_version):
+                cluster = SimpleNamespace(
+                    location="eastus",
+                    kubernetes_version=kubernetes_version,
+                    agent_pool_profiles=[SimpleNamespace(os_sku="AzureLinux", vm_size="Standard_D2ps_v5")],
+                )
+                with patch(
+                    "azext_aks_preview.azuremanagedlustre._validators._get_vm_sku_architectures",
+                    return_value={"standard_d2ps_v5": "arm64"},
+                ):
+                    if should_raise:
+                        with self.assertRaisesRegex(InvalidArgumentValueError, "ARM64"):
+                            validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+                    else:
+                        validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+
     def test_unknown_azure_linux_3_node_pool_architecture(self):
         cluster = SimpleNamespace(
             location="eastus",
@@ -308,7 +338,7 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
                 decorator = self.make_decorator(create)
                 mc = decorator.context.mc
                 with patch(DECORATOR + ".get_azure_managed_lustre_extension_client") as dependency, \
-                        patch(DECORATOR + ".check_if_azure_managed_lustre_is_installed") as installed:
+                        patch(DECORATOR + ".get_installed_azure_managed_lustre_extension") as installed:
                     setup = decorator.set_up_azure_managed_lustre if create else decorator.update_azure_managed_lustre
                     self.assertIs(setup(mc), mc)
                 dependency.assert_not_called()
@@ -319,20 +349,20 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
         decorator = self.make_decorator(
             False, enable_azure_managed_lustre=True, disable_azure_managed_lustre=True
         )
-        with patch(DECORATOR + ".check_if_azure_managed_lustre_is_installed") as installed:
+        with patch(DECORATOR + ".get_installed_azure_managed_lustre_extension") as installed:
             with self.assertRaises(MutuallyExclusiveArgumentError):
                 decorator.update_azure_managed_lustre(decorator.context.mc)
         installed.assert_not_called()
 
     def test_update_rejects_disable_when_not_installed(self):
         decorator = self.make_decorator(False, disable_azure_managed_lustre=True)
-        with patch(DECORATOR + ".check_if_azure_managed_lustre_is_installed", return_value=False):
+        with patch(DECORATOR + ".get_installed_azure_managed_lustre_extension", return_value=None):
             with self.assertRaisesRegex(InvalidArgumentValueError, "not enabled"):
                 decorator.update_azure_managed_lustre(decorator.context.mc)
 
     def test_update_propagates_lookup_errors_before_cluster_request(self):
         decorator = self.make_decorator(False, enable_azure_managed_lustre=True)
-        with patch(DECORATOR + ".check_if_azure_managed_lustre_is_installed",
+        with patch(DECORATOR + ".get_installed_azure_managed_lustre_extension",
                    side_effect=HttpResponseError("Forbidden")):
             with self.assertRaisesRegex(HttpResponseError, "Forbidden"):
                 decorator.update_azure_managed_lustre(decorator.context.mc)
@@ -345,8 +375,9 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
                     False, enable_azure_managed_lustre=enable, disable_azure_managed_lustre=not enable
                 )
                 mc = decorator.context.mc
-                with patch(DECORATOR + ".check_if_azure_managed_lustre_is_installed",
-                           return_value=installed) as lookup:
+                extension = SimpleNamespace(provisioning_state="Succeeded") if installed else None
+                with patch(DECORATOR + ".get_installed_azure_managed_lustre_extension",
+                           return_value=extension) as lookup:
                     self.assertIs(decorator.update_azure_managed_lustre(mc), mc)
                 lookup.assert_called_once_with(self.cmd, "rg", "cluster")
                 self.assertEqual(decorator.context.get_intermediate("enable_azure_managed_lustre"), enable)
@@ -356,12 +387,25 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
     def test_update_preserves_existing_extension_configuration(self):
         decorator = self.make_decorator(False, enable_azure_managed_lustre=True)
         mc = decorator.context.mc
-        with patch(DECORATOR + ".check_if_azure_managed_lustre_is_installed", return_value=True), \
+        extension = SimpleNamespace(provisioning_state="Succeeded")
+        with patch(DECORATOR + ".get_installed_azure_managed_lustre_extension", return_value=extension), \
                 patch(DECORATOR + ".validate_azure_managed_lustre_node_compatibility") as validate:
             self.assertIs(decorator.update_azure_managed_lustre(mc), mc)
         validate.assert_not_called()
         self.assertFalse(decorator.context.get_intermediate("enable_azure_managed_lustre"))
         self.assertFalse(decorator.check_is_postprocessing_required(mc))
+
+    def test_update_rejects_unsuccessful_existing_extension(self):
+        for provisioning_state in ["Failed", "Canceled"]:
+            with self.subTest(provisioning_state=provisioning_state):
+                decorator = self.make_decorator(False, enable_azure_managed_lustre=True)
+                extension = SimpleNamespace(provisioning_state=provisioning_state)
+                with patch(
+                    DECORATOR + ".get_installed_azure_managed_lustre_extension", return_value=extension
+                ):
+                    with self.assertRaisesRegex(InvalidArgumentValueError, provisioning_state):
+                        decorator.update_azure_managed_lustre(decorator.context.mc)
+                self.assertFalse(decorator.check_is_postprocessing_required(decorator.context.mc))
 
     def test_postprocessing_performs_requested_operation(self):
         for create, enable in [(True, True), (False, True), (False, False)]:

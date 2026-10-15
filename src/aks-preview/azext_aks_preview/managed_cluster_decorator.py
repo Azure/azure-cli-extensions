@@ -101,7 +101,7 @@ from azext_aks_preview.azurecontainerstorage.acstor_ops import (
     perform_disable_distributed_accelerator,
 )
 from azext_aks_preview.azuremanagedlustre._helpers import (
-    check_if_extension_is_installed as check_if_azure_managed_lustre_is_installed,
+    get_installed_extension as get_installed_azure_managed_lustre_extension,
     get_azure_managed_lustre_extension_client,
 )
 from azext_aks_preview.azuremanagedlustre._validators import (
@@ -6824,11 +6824,19 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         disable = self.context.raw_param.get("disable_azure_managed_lustre", False)
         validate_azure_managed_lustre_params(enable, disable)
         if enable or disable:
-            installed = check_if_azure_managed_lustre_is_installed(
+            extension = get_installed_azure_managed_lustre_extension(
                 self.cmd, self.context.get_resource_group_name(), self.context.get_name()
             )
+            installed = extension is not None
             validate_azure_managed_lustre_params(enable, disable, installed)
             if enable and installed:
+                provisioning_state = getattr(extension, "provisioning_state", None)
+                if not provisioning_state or provisioning_state.lower() != "succeeded":
+                    raise InvalidArgumentValueError(
+                        "Cannot enable Azure Managed Lustre because the existing extension is in provisioning "
+                        f"state '{provisioning_state or 'Unknown'}'. Disable Azure Managed Lustre and enable it "
+                        "again to recover the installation."
+                    )
                 logger.warning("Azure Managed Lustre is already enabled. The existing configuration was preserved.")
                 enable = False
             elif enable:

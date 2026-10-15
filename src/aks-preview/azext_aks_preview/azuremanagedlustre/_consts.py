@@ -8,4 +8,4 @@ CONST_AMLFS_K8S_EXTENSION_NAME = "microsoft.azuremanagedlustre"
 CONST_AMLFS_VERSION = "0.6.0"
 CONST_AMLFS_RELEASE_TRAIN = "stable"
 CONST_AMLFS_UNSUPPORTED_OS_SKUS = frozenset(("flatcar", "ubuntu2604"))
-CONST_AMLFS_ARM64_UNSUPPORTED_OS_SKUS = frozenset(("azurelinux3",))
+CONST_AMLFS_ARM64_UNSUPPORTED_OS_SKUS = frozenset(("azurelinux3", "ubuntu2204"))

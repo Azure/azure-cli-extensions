@@ -39,6 +39,16 @@ def _get_vm_sku_architectures(cli_ctx, location):
     return architectures
 
 
+def _resolves_to_azure_linux_3(os_sku, kubernetes_version):
+    if os_sku != "azurelinux" or not kubernetes_version:
+        return False
+    version_parts = str(kubernetes_version).lstrip("v").split(".")
+    try:
+        return (int(version_parts[0]), int(version_parts[1].split("-")[0])) >= (1, 32)
+    except (IndexError, ValueError):
+        return False
+
+
 def validate_azure_managed_lustre_node_compatibility(cmd, cluster):
     pools = cluster.agent_pool_profiles or []
     architecture_sensitive_pools = []
@@ -47,7 +57,13 @@ def validate_azure_managed_lustre_node_compatibility(cmd, cluster):
         os_sku = (pool.os_sku or "").lower()
         if os_sku in CONST_AMLFS_UNSUPPORTED_OS_SKUS:
             continue
-        if os_sku in CONST_AMLFS_ARM64_UNSUPPORTED_OS_SKUS:
+        kubernetes_version = (
+            getattr(pool, "orchestrator_version", None) or getattr(cluster, "kubernetes_version", None)
+        )
+        if (
+            os_sku in CONST_AMLFS_ARM64_UNSUPPORTED_OS_SKUS or
+            _resolves_to_azure_linux_3(os_sku, kubernetes_version)
+        ):
             architecture_sensitive_pools.append(pool)
             continue
         return
@@ -70,6 +86,6 @@ def validate_azure_managed_lustre_node_compatibility(cmd, cluster):
 
     raise InvalidArgumentValueError(
         "Cannot enable Azure Managed Lustre because none of the cluster's node pools support "
-        "Azure Managed Lustre extension version 0.6.0. Flatcar, Ubuntu 26.04, and Azure Linux 3 "
-        "on ARM64 node pools aren't supported."
+        "Azure Managed Lustre extension version 0.6.0. Flatcar and Ubuntu 26.04 aren't supported; "
+        "Ubuntu 22.04 and Azure Linux 3 on ARM64 aren't supported."
     )
