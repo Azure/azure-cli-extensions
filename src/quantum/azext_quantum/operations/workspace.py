@@ -443,11 +443,15 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
         quantum_workspace.properties.api_key_enabled = workspace_kind_value != WorkspaceKind.V2.value
         if workspace_kind:
             quantum_workspace.properties.workspace_kind = workspace_kind
-        poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
-        while not poller.done():
-            time.sleep(POLLING_TIME_DURATION)
-        quantum_workspace = poller.result()
-        return quantum_workspace
+        if not storage_account:
+            poller = client.begin_create_or_update(
+                info.resource_group, info.name, quantum_workspace
+            )
+        else:
+            poller = client.begin_create_or_update(
+                info.resource_group, info.name, quantum_workspace, polling=False
+            )
+        return poller.result()
 
     # ARM-template-based code to create an Azure Quantum workspace and make it a "Contributor" to the storage account
     template_path = os.path.join(os.path.dirname(
