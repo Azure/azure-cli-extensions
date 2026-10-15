@@ -3,6 +3,9 @@
 Release History
 ===============
 
+3.0.1
+++++++
+* Update listPrivate Ips command for cloud vm cluster operations
 
 3.0.0
 ++++++
