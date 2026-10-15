@@ -248,6 +248,20 @@ class MulticloudConnectorScenario(ScenarioTest):
         with open(template_path) as template_file:
             self.assertIsInstance(json.load(template_file), dict)
 
+        # the write happens in _output, after a successful service call, so a write failure
+        # must surface as a command failure rather than a success envelope with a nonzero
+        # exit swallowed. Point --output-directory at an existing *file*: the directory
+        # check passes, and opening a path beneath a file fails on every platform.
+        self.kwargs.update({'badoutdir': template_path})
+        self.cmd(
+            'arc-multicloud generate-gcp-template '
+            '--connector-id {cid} '
+            '--subscription {sub} '
+            '--gcp-template-format terraform '
+            '--output-directory "{badoutdir}"',
+            expect_failure=True
+        )
+
         # test public-cloud-connector delete
         self.cmd(
             'arc-multicloud public-cloud-connector delete '
