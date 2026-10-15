@@ -51,3 +51,14 @@ def validate_log_analytic_workspace_name_or_id(cmd, namespace):
                 type='workspaces',
                 name=namespace.workspace_resource_id
             )
+
+
+def validate_component_trace_flags(namespace):
+    from ._trace_component import validate_component_trace_options
+    validate_component_trace_options(
+        enable_traces=namespace.enable_traces,
+        disable_traces=getattr(namespace, 'disable_traces', None),
+        trace_workspace=namespace.trace_workspace,
+        trace_retention_days=namespace.trace_retention_days,
+        trace_metrics=namespace.trace_metrics,
+    )
