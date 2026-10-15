@@ -2,6 +2,16 @@
 
 Preview Azure CLI extension for local and runtime-backed Logic Apps Standard developer workflows.
 
+**Preview - for evaluation and development.** Commands, parameters, and output
+formats may change between releases. Production readiness has not been
+established; use non-production resources for evaluation. Some commands modify
+deployed workflows, connections, and identities; preview does not mean sandboxed
+or read-only.
+
+Preview status applies only to this extension's new commands, not the existing
+core-owned `az logicapp` app-management, app-settings, and ZIP-deployment commands,
+which are not overridden.
+
 ## Install the preview
 
 Requires Azure CLI 2.67.0 or newer and Python 3.10 or newer. Install a locally
