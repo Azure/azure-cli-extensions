@@ -335,7 +335,12 @@ def _check_or_create_public_private_files(public_key_file, private_key_file, cre
 def _write_cert_file(certificate_contents, cert_file):
     with open(cert_file, 'w', encoding='utf-8') as f:
         f.write(f"ssh-rsa-cert-v01@openssh.com {certificate_contents}")
-    oschmod.set_mode(cert_file, 0o644)
+    # Some filesystems do not support permissions or return a missing Windows DACL.
+    try:
+        oschmod.set_mode(cert_file, 0o644)
+    except (OSError, AttributeError) as e:
+        logger.warning("Couldn't set permissions to 0644 for certificate file %s. "
+                       "Please check the file permissions manually. Error: %s", cert_file, str(e))
     return cert_file
 
 

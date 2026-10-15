@@ -1,5 +1,10 @@
 Release History
 ===============
+2.0.10
+------
+* [Bug Fix] ``az ssh cert``: Warn when certificate permissions cannot be set on
+  filesystems without permission or ACL support. Certificate writing failures remain fatal.
+
 2.0.9
 -----
 * Migrate code from Azure SDK to AAZ based commands for compute operations (VM)

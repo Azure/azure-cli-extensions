@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import io
+import os
+import tempfile
 import unittest
 from unittest import mock
 from azext_ssh import custom
@@ -297,17 +299,96 @@ class SshCustomCommandTest(unittest.TestCase):
             mock.call("private")
         ])
 
+    @mock.patch('azext_ssh.custom.logger.warning')
     @mock.patch('builtins.open')
     @mock.patch('oschmod.set_mode')
-    def test_write_cert_file(self, mock_mode, mock_open):
+    def test_write_cert_file(self, mock_mode, mock_open, mock_warning):
         mock_file = mock.Mock()
         mock_open.return_value.__enter__.return_value = mock_file
 
-        custom._write_cert_file("cert", "publickey-aadcert.pub")
+        result = custom._write_cert_file("cert", "publickey-aadcert.pub")
 
+        self.assertEqual(result, "publickey-aadcert.pub")
         mock_mode.assert_called_once_with("publickey-aadcert.pub", 0o644)
         mock_open.assert_called_once_with("publickey-aadcert.pub", 'w', encoding='utf-8')
         mock_file.write.assert_called_once_with("ssh-rsa-cert-v01@openssh.com cert")
+        mock_warning.assert_not_called()
+
+    def test_write_cert_file_permission_errors(self):
+        errors = (
+            OSError("Filesystem does not support permissions"),
+            AttributeError("'NoneType' object has no attribute 'GetAceCount'"),
+        )
+        for error in errors:
+            with self.subTest(error=error), tempfile.TemporaryDirectory() as temp_dir:
+                cert_file = os.path.join(temp_dir, "publickey-aadcert.pub")
+                with mock.patch('azext_ssh.custom.oschmod.set_mode', side_effect=error) as mock_mode:
+                    with self.assertLogs(custom.logger, level='WARNING') as logs:
+                        result = custom._write_cert_file("cert", cert_file)
+
+                self.assertEqual(result, cert_file)
+                mock_mode.assert_called_once_with(cert_file, 0o644)
+                with open(cert_file, 'rb') as certificate:
+                    self.assertEqual(certificate.read(), b"ssh-rsa-cert-v01@openssh.com cert")
+                self.assertEqual(len(logs.records), 1)
+                self.assertEqual(logs.records[0].levelname, 'WARNING')
+                warning = logs.records[0].getMessage()
+                self.assertIn(cert_file, warning)
+                self.assertIn('0644', warning)
+                self.assertIn(str(error), warning)
+
+    @mock.patch('azext_ssh.custom.logger.warning')
+    @mock.patch('azext_ssh.custom.oschmod.set_mode')
+    def test_write_cert_file_io_errors_are_fatal(self, mock_mode, mock_warning):
+        for operation in ('open', 'write', 'close'):
+            with self.subTest(operation=operation):
+                error = OSError("Cannot {} certificate".format(operation))
+                mock_open = mock.mock_open()
+                if operation == 'open':
+                    mock_open.side_effect = error
+                elif operation == 'write':
+                    mock_open.return_value.write.side_effect = error
+                else:
+                    mock_open.return_value.__exit__.side_effect = error
+
+                with mock.patch('builtins.open', mock_open):
+                    with self.assertRaises(OSError) as raised:
+                        custom._write_cert_file("cert", "publickey-aadcert.pub")
+
+                self.assertIs(raised.exception, error)
+                mock_mode.assert_not_called()
+                mock_warning.assert_not_called()
+
+    @mock.patch('azext_ssh.custom.logger.warning')
+    @mock.patch('builtins.open', new_callable=mock.mock_open)
+    @mock.patch('azext_ssh.custom.oschmod.set_mode')
+    def test_write_cert_file_unexpected_permission_error_is_fatal(self, mock_mode, mock_open, mock_warning):
+        error = ValueError("Unexpected permission error")
+        mock_mode.side_effect = error
+
+        with self.assertRaises(ValueError) as raised:
+            custom._write_cert_file("cert", "publickey-aadcert.pub")
+
+        self.assertIs(raised.exception, error)
+        mock_open.return_value.write.assert_called_once_with("ssh-rsa-cert-v01@openssh.com cert")
+        mock_mode.assert_called_once_with("publickey-aadcert.pub", 0o644)
+        mock_warning.assert_not_called()
+
+    @mock.patch('azext_ssh.custom.logger.warning')
+    @mock.patch('azext_ssh.custom._write_cert_file')
+    @mock.patch('azure.cli.core._profile.Profile')
+    @mock.patch('azext_ssh.custom._prepare_jwk_data')
+    def test_get_and_write_certificate_generation_error(self, mock_jwk, mock_profile, mock_write, mock_warning):
+        error = OSError("Certificate generation failed")
+        mock_profile.return_value.get_msal_token.side_effect = error
+
+        with self.assertRaises(OSError) as raised:
+            custom._get_and_write_certificate(mock.Mock(), "publickey.pub", "publickey-aadcert.pub", None)
+
+        self.assertIs(raised.exception, error)
+        mock_jwk.assert_called_once_with("publickey.pub")
+        mock_write.assert_not_called()
+        mock_warning.assert_not_called()
 
     @mock.patch('azext_ssh.rsa_parser.RSAParser')
     @mock.patch('os.path.isfile')
