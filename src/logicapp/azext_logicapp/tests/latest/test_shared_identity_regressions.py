@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 """Offline deletion regressions; runnable with unittest and Azure CLI's Python."""
 
+from azext_logicapp import _connection, _managed_connection as managed
+from azure.cli.core.azclierror import ClientRequestError, InvalidArgumentValueError, ResourceNotFoundError, ValidationError
 import copy
 import json
 import sys
@@ -11,17 +13,20 @@ import unittest
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
+from urllib.parse import quote, unquote
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
-
-from azure.cli.core.azclierror import ClientRequestError, ResourceNotFoundError, ValidationError
-from azext_logicapp import _connection
 
 
 CONNECTION_ID = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Web/connections/shared"
 UAMI_ID = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/shared"
 SYSTEM_AUTH = {"type": "ManagedServiceIdentity"}
 UAMI_AUTH = {"type": "ManagedServiceIdentity", "identity": UAMI_ID}
+UNSAFE_POLICY_NAMES = (
+    ".", "..", "foo/bar", "foo\\bar", "foo?api-version=bad", "foo#fragment",
+    "foo%2fbar", "foo%2Fbar", "foo%5cbar", "foo%5Cbar", "foo%252fbar", "%64up",
+    "foo\u2028bar", "foo\u200bbar",
+) + tuple("foo" + chr(value) + "bar" for value in (0, 1, 10, 13, 31, 127, 128, 159))
 
 
 def _entry(authentication):
@@ -104,7 +109,7 @@ class _MemoryArm:
             payload = (copy.deepcopy(self.policy_listing) if self.policy_listing is not None
                        else {"value": copy.deepcopy(self.policies)})
         elif method == "DELETE" and resource_id.startswith(CONNECTION_ID + "/accessPolicies/"):
-            name = resource_id.rsplit("/", 1)[-1]
+            name = unquote(resource_id.rsplit("/", 1)[-1])
             self.policies = [item for item in self.policies if item["name"] != name]
             payload = {}
         elif method == "DELETE" and resource_id == CONNECTION_ID:
@@ -129,6 +134,61 @@ class SharedIdentityDeletionTests(unittest.TestCase):
         self.assertNotIn("selected", vfs.payload["managedApiConnections"])
         self.assertEqual(1, len(vfs.writes))
         return result
+
+    def test_managed_id_refuses_unsafe_or_cross_scope_before_arm_and_unlink(self):
+        invalid = (
+            None, "", False, True, 1, [], {},
+            "https://management.azure.com" + CONNECTION_ID,
+            "https://untrusted.invalid" + CONNECTION_ID,
+            "//untrusted.invalid" + CONNECTION_ID,
+            CONNECTION_ID + "/", CONNECTION_ID + "/accessPolicies/child",
+            CONNECTION_ID + "?api-version=bad", CONNECTION_ID + "#fragment",
+            CONNECTION_ID.replace("/sub/", "/other-sub/"),
+            CONNECTION_ID.replace("/rg/", "/other-group/"),
+            CONNECTION_ID.replace("Microsoft.Web", "Microsoft.Other"),
+            CONNECTION_ID.replace("/connections/", "/sites/"),
+            CONNECTION_ID.replace("/sub/", "/%73ub/"),
+            CONNECTION_ID.replace("/rg/", "/rg%2fother/"),
+            CONNECTION_ID.replace("/shared", "/.."),
+            CONNECTION_ID.replace("/shared", "/foo\\bar"),
+            CONNECTION_ID + "\n", CONNECTION_ID.replace("/rg/", "/r\x01g/"),
+        )
+        cmd = SimpleNamespace(cli_ctx=object())
+        for value in invalid:
+            for keep in (False, True):
+                with self.subTest(value=value, keep_resource=keep):
+                    vfs = _MemoryVfs(SYSTEM_AUTH)
+                    vfs.payload["managedApiConnections"]["selected"]["connection"]["id"] = value
+                    before = copy.deepcopy(vfs.payload)
+                    arm = _MemoryArm(_site_identity(), [_policy("own", "system-a")])
+                    with patch("azure.cli.core.commands.client_factory.get_subscription_id", return_value="sub"):
+                        with self.assertRaises(ValidationError):
+                            _connection.connection_delete(
+                                cmd, "rg", "app-a", "selected", keep_resource=keep,
+                                client=vfs, sender=arm.send)
+                    self.assertEqual([], arm.calls)
+                    self.assertEqual([], vfs.writes)
+                    self.assertEqual(before, vfs.payload)
+
+    def test_managed_id_scope_is_case_insensitive_without_rewriting_identity(self):
+        value = CONNECTION_ID.upper()
+        cmd = SimpleNamespace(cli_ctx=object())
+        with patch("azure.cli.core.commands.client_factory.get_subscription_id", return_value="SuB"):
+            self.assertEqual(value, _connection._managed_cleanup_id(cmd, "rG", value))
+
+    def test_managed_inspection_validates_routes_without_inventing_cleanup_scope(self):
+        cmd = SimpleNamespace(cli_ctx=object())
+        for value in ("https://untrusted.invalid/" + CONNECTION_ID, CONNECTION_ID + "?other=1",
+                      "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Web/sites/other"):
+            with self.subTest(value=value):
+                arm = _MemoryArm(_site_identity(), [])
+                with self.assertRaises(ValidationError):
+                    _connection._get_arm_connection(cmd, value, sender=arm.send)
+                self.assertEqual([], arm.calls)
+        foreign = CONNECTION_ID.replace("/rg/", "/other-group/")
+        sender = unittest.mock.Mock(return_value=SimpleNamespace(content=b"{}"))
+        _connection._get_arm_connection(cmd, foreign, sender=sender)
+        self.assertIn(foreign, sender.call_args.args[2])
 
     def test_shared_uami_two_apps_preserve_acl_and_resource_including_keep_resource(self):
         for keep_resource in (False, True):
@@ -280,6 +340,117 @@ class SharedIdentityDeletionTests(unittest.TestCase):
         self.assertTrue(arm.exists)
         self.assertEqual([CONNECTION_ID + "/accessPolicies/system-policy"], arm.deletes)
         self.assertIn("--keep-resource", result["resource"]["reason"])
+
+    def test_duplicate_policy_names_never_authorize_acl_or_resource_deletion(self):
+        for duplicate_name in ("system-policy", "SYSTEM-POLICY"):
+            for principals in (("system-a", "system-b"), ("system-b", "system-a"),
+                               ("system-a", "system-a"), ("system-b", "system-b")):
+                for keep_resource in (False, True):
+                    with self.subTest(name=duplicate_name, principals=principals,
+                                      keep_resource=keep_resource):
+                        policies = [_policy("system-policy", principals[0]),
+                                    _policy(duplicate_name, principals[1])]
+                        arm = _MemoryArm(_site_identity(), policies)
+                        result = self._delete(_MemoryVfs(SYSTEM_AUTH), arm, keep_resource)
+                        self.assertEqual([], arm.deletes)
+                        self.assertEqual(policies, arm.policies)
+                        self.assertTrue(arm.exists)
+                        self.assertEqual([], result["accessPolicies"]["removed"])
+                        self.assertEqual(["system-policy", duplicate_name],
+                                         result["accessPolicies"]["retained"])
+                        self.assertIn("Duplicate access policy names", result["resource"]["reason"])
+
+    def test_duplicate_policy_names_preserve_verified_unique_acl_cleanup(self):
+        for duplicate_name in ("ambiguous-policy", "AMBIGUOUS-POLICY"):
+            with self.subTest(name=duplicate_name):
+                duplicate = [_policy("ambiguous-policy", "system-a"),
+                             _policy(duplicate_name, "system-b")]
+                arm = _MemoryArm(_site_identity(), [_policy("unique-policy", "system-a")] + duplicate)
+                result = self._delete(_MemoryVfs(SYSTEM_AUTH), arm)
+                self.assertEqual([CONNECTION_ID + "/accessPolicies/unique-policy"], arm.deletes)
+                self.assertEqual(duplicate, arm.policies)
+                self.assertTrue(arm.exists)
+                self.assertEqual(["unique-policy"], result["accessPolicies"]["removed"])
+                self.assertEqual(["ambiguous-policy", duplicate_name], result["accessPolicies"]["retained"])
+
+    def test_duplicate_policy_names_are_rechecked_after_unlink(self):
+        for duplicate_name in ("system-policy", "SYSTEM-POLICY"):
+            for keep_resource in (False, True):
+                with self.subTest(name=duplicate_name, keep_resource=keep_resource):
+                    vfs = _MemoryVfs(SYSTEM_AUTH)
+                    arm = _MemoryArm(_site_identity(), [_policy("system-policy", "system-a")])
+                    original_put = vfs.put_raw
+
+                    def add_duplicate(*args, **kwargs):
+                        receipt = original_put(*args, **kwargs)
+                        arm.policies.append(_policy(duplicate_name, "system-b"))
+                        return receipt
+
+                    vfs.put_raw = add_duplicate
+                    result = self._delete(vfs, arm, keep_resource)
+                    self.assertEqual([], arm.deletes)
+                    self.assertTrue(arm.exists)
+                    self.assertEqual(["system-policy", duplicate_name], result["accessPolicies"]["retained"])
+
+    def test_invalid_policy_names_never_establish_ownership(self):
+        for name in (None, "", " ", "\t\n", False, True, 0, 1, 1.0, [], {}, " policy", "policy ") + UNSAFE_POLICY_NAMES:
+            with self.subTest(name=name):
+                policy = _policy(name, "system-a")
+                arm = _MemoryArm(_site_identity(), [policy])
+                result = self._delete(_MemoryVfs(SYSTEM_AUTH), arm)
+                self.assertEqual([], arm.deletes)
+                self.assertEqual([policy], arm.policies)
+                self.assertTrue(arm.exists)
+                self.assertIn("complete access policy list", result["resource"]["reason"])
+
+    def test_unsafe_policy_evidence_blocks_other_acl_cleanup_before_and_after_unlink(self):
+        for unsafe in UNSAFE_POLICY_NAMES:
+            for late in (False, True):
+                with self.subTest(name=unsafe, late=late):
+                    vfs = _MemoryVfs(SYSTEM_AUTH)
+                    own = _policy("dup", "system-a")
+                    foreign = _policy("foo", "system-b")
+                    ambiguous = _policy(unsafe, "system-b")
+                    policies = [own, foreign] if late else [own, foreign, ambiguous]
+                    arm = _MemoryArm(_site_identity(), policies)
+                    if late:
+                        original_put = vfs.put_raw
+
+                        def add_unsafe(*args, **kwargs):
+                            receipt = original_put(*args, **kwargs)
+                            arm.policies.append(ambiguous)
+                            return receipt
+
+                        vfs.put_raw = add_unsafe
+                    result = self._delete(vfs, arm)
+                    self.assertEqual([], arm.deletes)
+                    self.assertEqual([own, foreign, ambiguous], arm.policies)
+                    self.assertTrue(arm.exists)
+                    self.assertEqual(["dup", "foo"], result["accessPolicies"]["retained"])
+
+    def test_safe_policy_names_are_quoted_as_single_child_segments(self):
+        for name in ("policy-name_1.2", "policy name", "caf\u00e9", "policy:plus+at@"):
+            with self.subTest(name=name):
+                arm = _MemoryArm(_site_identity(), [_policy(name, "system-a")])
+                result = self._delete(_MemoryVfs(SYSTEM_AUTH), arm)
+                self.assertEqual([CONNECTION_ID + "/accessPolicies/" + quote(name, safe=""),
+                                  CONNECTION_ID], arm.deletes)
+                self.assertEqual([name], result["accessPolicies"]["removed"])
+                self.assertEqual([], arm.policies)
+
+    def test_explicit_acl_routes_reject_unsafe_names_before_arm_io(self):
+        cmd = SimpleNamespace(cli_ctx=object())
+        for name in UNSAFE_POLICY_NAMES:
+            for operation in (managed.acl_show, managed.acl_add, managed.acl_remove):
+                with self.subTest(name=name, operation=operation.__name__):
+                    arm = _MemoryArm(_site_identity(), [])
+                    kwargs = {"policy": name, "sender": arm.send}
+                    if operation is managed.acl_add:
+                        kwargs["object_id"] = "system-a"
+                    with patch.object(managed, "_connection_id", return_value=CONNECTION_ID):
+                        with self.assertRaises(InvalidArgumentValueError):
+                            operation(cmd, "rg", "shared", **kwargs)
+                    self.assertEqual([], arm.calls)
 
     def test_system_identity_only_revokes_own_acl_on_shared_resource(self):
         arm = _MemoryArm(_site_identity(), [
@@ -441,6 +612,48 @@ class SharedIdentityDeletionTests(unittest.TestCase):
         self.assertEqual([], arm.deletes)
         self.assertEqual(["unknown-policy"], result["accessPolicies"]["retained"])
 
+    def test_false_valued_policy_continuations_retain_all_acls_before_and_after_unlink(self):
+        policies = [_policy("system-policy", "system-a"), _policy("second-policy", "system-a")]
+        for continuation in (False, 0, 0.0, [], {}):
+            for keep_resource in (False, True):
+                for after_unlink in (False, True):
+                    with self.subTest(continuation=continuation, keep_resource=keep_resource,
+                                      after_unlink=after_unlink):
+                        vfs = _MemoryVfs(SYSTEM_AUTH)
+                        arm = _MemoryArm(_site_identity(), policies)
+                        incomplete = {"value": policies, "nextLink": continuation}
+                        if after_unlink:
+                            write = vfs.put_raw
+
+                            def change_listing(*args, **kwargs):
+                                receipt = write(*args, **kwargs)
+                                arm.policy_listing = incomplete
+                                return receipt
+
+                            vfs.put_raw = change_listing
+                        else:
+                            arm.policy_listing = incomplete
+                        result = self._delete(vfs, arm, keep_resource=keep_resource)
+                        self.assertTrue(arm.exists)
+                        self.assertEqual(policies, arm.policies)
+                        self.assertEqual([], arm.deletes)
+                        self.assertEqual([], result["accessPolicies"]["removed"])
+                        self.assertEqual(["system-policy", "second-policy"],
+                                         result["accessPolicies"]["retained"])
+                        self.assertNotIn("selected", vfs.payload["managedApiConnections"])
+                        self.assertFalse(result["resource"]["removed"])
+
+    def test_only_absent_null_or_empty_string_policy_continuations_prove_completeness(self):
+        policy = _policy("system-policy", "system-a")
+        for listing in ({"value": [policy]}, {"value": [policy], "nextLink": None},
+                        {"value": [policy], "nextLink": ""}):
+            with self.subTest(listing=listing):
+                arm = _MemoryArm(_site_identity(), [policy])
+                arm.policy_listing = listing
+                result = self._delete(_MemoryVfs(SYSTEM_AUTH), arm)
+                self.assertEqual([CONNECTION_ID + "/accessPolicies/system-policy", CONNECTION_ID], arm.deletes)
+                self.assertTrue(result["resource"]["removed"])
+
     def test_connections_entry_is_persisted_before_any_arm_delete(self):
         vfs = _MemoryVfs(SYSTEM_AUTH)
         arm = _MemoryArm(_site_identity(), [_policy("system-policy", "system-a")])
@@ -522,6 +735,7 @@ class SharedIdentityDeletionTests(unittest.TestCase):
         self.assertEqual([], arm.deletes)
         self.assertEqual([policy], arm.policies)
         self.assertTrue(arm.exists)
+
     def test_already_removed_system_acl_does_not_abort_resource_delete(self):
         vfs = _MemoryVfs(SYSTEM_AUTH)
         arm = _MemoryArm(_site_identity(), [_policy("system-policy", "system-a")])

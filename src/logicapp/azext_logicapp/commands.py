@@ -37,7 +37,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'workflow_list', table_transformer=workflow_list_table_format)
         g.custom_show_command('show', 'workflow_show', table_transformer=workflow_show_table_format)
         g.custom_command('export', 'workflow_export')
-        g.custom_command('update', 'workflow_update', confirmation=False)
+        g.custom_command('set', 'workflow_set', confirmation=False)
         g.custom_command('delete', 'workflow_delete', confirmation=False)
         g.custom_command('enable', 'workflow_enable', confirmation=False)
         g.custom_command('disable', 'workflow_disable', confirmation=False)
@@ -48,6 +48,9 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'connection_show', table_transformer=connection_show_table_format)
         g.custom_command('test', 'connection_test')
         g.custom_command('delete', 'connection_delete', confirmation=False)
+
+    with self.command_group('logicapp connection managed') as g:
+        g.custom_command('create', 'connection_managed_create')
 
     with self.command_group('logicapp deployment') as g:
         g.custom_command('package', 'deployment_package')
@@ -92,6 +95,9 @@ def load_command_table(self, _):
         g.custom_command('wait', 'run_wait', table_transformer=execution_table_format)
         g.custom_command('cancel', 'run_cancel', confirmation=False, table_transformer=execution_table_format)
         g.custom_command('resubmit', 'run_resubmit', confirmation=False, table_transformer=execution_table_format)
+
+    with self.command_group('logicapp trigger history') as g:
+        g.custom_command('resubmit', 'trigger_history_resubmit', confirmation=False, table_transformer=execution_table_format)
 
     with self.command_group('logicapp run action') as g:
         g.custom_command('list', 'run_action_list')

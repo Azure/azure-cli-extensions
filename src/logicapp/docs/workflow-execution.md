@@ -1,18 +1,22 @@
 # Stateful workflow execution controls
 
-Version **0.1.15** adds `az logicapp run wait/cancel/resubmit`. Existing
-`run start/list/show` and action inspection retain their return contracts.
+Version **0.1.15** introduced Stateful wait, cancellation and trigger replay.
+As of **0.1.21**, use `az logicapp run wait`, `az logicapp run cancel`,
+`az logicapp trigger history resubmit` and genuine `az logicapp run resubmit
+--action`. The former trigger-replay meaning of `run resubmit` is removed.
+Existing `run start/list/show` contracts are preserved; action inspection adds
+nullable Boolean `canResubmit` eligibility.
 These controls do not author workflows, change shared configuration, or
 automatically retry, repair, resume or orchestrate recovery.
 
 ## Targets and support
 
-| Target/model | Wait | Cancel | Resubmit |
-| --- | --- | --- | --- |
-| Running local Standard Stateful host | Supported; owned Windows host verified | Supported; observed `Cancelled` verified | Supported; verified history association and distinct new execution verified |
-| Deployed Standard Stateful `Microsoft.Web/sites` | Documented API; isolated ARM transport fixtures verified, no live Azure validation | Same | Same |
-| Stateless, including debug run history | Rejected | Rejected before POST | Rejected before POST |
-| Consumption, slots, hybrid, offline project path | Not exposed by these commands | Not exposed | Not exposed |
+| Target/model | Wait | Cancel | Trigger history | One action |
+| --- | --- | --- | --- | --- |
+| Running local Standard Stateful host | Owned Windows host verified | Observed `Cancelled` verified | Direct-history fixtures and earlier 0.1.15 live replay evidence | Conditional on runtime eligibility; sequential Windows native execution verified in 0.1.21 |
+| Deployed Standard Stateful `Microsoft.Web/sites` | API/ARM transport fixtures; no live Azure qualification | Same | Same | Runtime eligibility required; ARM transport fixtures only, no live Azure qualification |
+| Stateless, including debug run history | Rejected | Rejected before POST | Rejected before POST | Rejected before POST |
+| Consumption, slots, hybrid, offline project path | Not exposed | Not exposed | Not exposed | Not exposed |
 
 Use `--local --port 7071`, deployed `-g my-rg -n my-app`, or `--context dev`.
 With no explicit target the existing active context is used. Target combinations
@@ -59,6 +63,13 @@ streaming can otherwise hide wire traffic from deadline checks. Such a response
 is a sanitized `invalidResponse`, not a successful acknowledgement. After a
 mutation POST, the remote outcome can still be uncertain; the command never
 retries that POST to recover an unreadable receipt.
+
+Execution mutation acknowledgements require a truly empty raw response body.
+Nonempty bodies, including JSON `null`, whitespace and empty JSON objects, are
+rejected before JSON decoding. After a cancellation or either resubmission POST,
+this leaves an attempted, uncertain operation with no claimed acknowledgement or
+new run identity and no retry. Empty receipts still use the operation-specific
+HTTP status checks; GET responses retain strict JSON decoding.
 
 ## Invoke, then wait
 
@@ -118,10 +129,10 @@ uncertain outcome is never retried automatically. Preflight and the post-confirm
 submission/readback each have a 60-second deadline, excluding human confirmation.
 An optional wait begins after acknowledgement and uses `--timeout`.
 
-## Resubmission
+## Trigger-history resubmission
 
 ```powershell
-$result = az logicapp run resubmit --context dev --workflow hello --run-id SOURCE_RUN_ID --yes | ConvertFrom-Json
+$result = az logicapp trigger history resubmit --context dev --workflow hello --trigger manual --history-name HISTORY_ID --yes | ConvertFrom-Json
 if ($result.newRunId) {
     az logicapp run wait --context dev --workflow hello --run-id $result.newRunId --timeout 60 --interval 2
 }
@@ -133,28 +144,100 @@ retry-an-action, or exactly-once recovery. It does not change the original run.
 No historical definition or configuration is restored by this command; do not
 assume a resubmission reproduces an earlier deployment's behavior.
 
-The Standard API resubmits a **trigger history**, not a workflow run directly.
-The command reads the selected run's trigger, examines at most ten pages of
-100 retained histories, and selects only a fired history whose run reference
-matches the selected workflow/run. It never assumes that a run ID is a history
-ID. Both local relative run references and deployed site-qualified management
-resource IDs are recognized. A deployed reference must match the selected site
-as well as the exact workflow/run; a matching run name does not override a
-conflicting resource ID. References are compared, never followed as URLs.
+This command calls the Standard **trigger-history** API, not the action-level
+run-resubmit API. Required workflow/trigger/history coordinates identify the
+resource directly. The CLI reads and verifies the selected trigger and fired
+history, without searching histories or requiring the associated source run
+to remain readable. Run IDs are never substituted for history IDs. The earlier
+preview's trigger-replay meaning of `run resubmit` has been removed, not kept
+as a redundant alias.
 Execution responses reject duplicate JSON fields and nonfinite/overflowing
 numbers. Body reads use bounded 64-KiB chunks; raw receive budgeting still bounds
 buffer filling, and the 1-MiB payload limit and EOF/decode deadline checks remain.
-Use optional `--trigger-history-id HISTORY_ID` to verify a known retained
-history without the bounded search. Missing/expired history, an unsupported
-page, ambiguous association, or a changed trigger/history fails before POST.
-The association and Stateful kind are checked again after confirmation.
+Missing/expired or unfired history, invalid identifiers/metadata, or a changed
+trigger/history fails before POST. Selected trigger/history snapshots and
+Stateful kind are checked again after confirmation; content URLs are not followed.
+Reports identify `operation: triggerHistoryResubmit`, `triggerName` and
+`triggerHistoryId`; `runId` is null because no source run was selected.
 
 A valid 202 receipt reports `accepted`. `newRunId` is supplied only from a
-validated, distinct `x-ms-workflow-run-id`; if it is absent, the outcome is
+validated `x-ms-workflow-run-id`; if it is absent, the outcome is
 `acceptedNewRunIdUnknown` with a null ID. Location headers are neither followed
 nor printed, and a new identity is never guessed by selecting the latest run.
 Neither outcome proves a new execution completed. Preflight and post-confirmation
 submission each have a 60-second deadline; no non-idempotent POST is retried.
+Both replay operations reject duplicate/case-conflicting or comma-combined run-ID
+headers and invalid run-ID characters. A valid acknowledgement remains recorded
+when its identity is ambiguous; it is not a usable ID or permission to retry.
+
+## Action-level run resubmission
+
+```powershell
+$result = az logicapp run resubmit --context dev --workflow hello --run-id SOURCE_RUN_ID --action Send_HTTP --yes | ConvertFrom-Json
+if ($result.newRunId) {
+    az logicapp run wait --context dev --workflow hello --run-id $result.newRunId --timeout 60 --interval 2
+}
+```
+
+This is a different resource and operation from trigger-history replay:
+`POST workflows/{workflow}/runs/{run}/resubmit` with
+`{"actionsToResubmit":[{"name":"Send_HTTP"}]}`. Exactly one `--action` is required.
+There is no history lookup, whole-trigger fallback, or multiple-action interface.
+The selected source must be a readable completed Stateful run. The selected
+executed action must have literal Boolean `properties.canResubmit: true`.
+Missing/false/malformed eligibility and skipped/unexecuted actions fail before
+confirmation or POST. The CLI never enables the feature or attempts to reproduce
+the runtime's graph/repetition eligibility rules; the server remains authoritative.
+Action inspection exposes this eligibility as nullable Boolean `canResubmit`.
+Case-conflicting eligibility fields or property containers report unknown
+(`null`), even when one or both values say true.
+
+Confirmation warns that this creates a **new execution**, not in-place resume,
+repair or exactly-once delivery. The runtime uses retained results and the source
+workflow version, rerunning the selected action and downstream dependents as governed
+by the service. This can repeat external effects. It does not restore earlier
+connections, application settings or external state, so a historical definition
+does not imply a historically identical environment.
+
+After confirmation, the CLI rereads the workflow kind, exact run/action identities
+and eligibility. It compares stable status, timing, tracking and source-version
+metadata, preserving JSON scalar types. It does not treat regenerated signed
+input/output links as revisions, follow those links, or read the current authored
+definition to substitute for the source version.
+
+An empty HTTP 202 acknowledges a request, not successful execution.
+Reports identify `operation: "actionResubmit"`, `actionName`, the source
+`runId`/`sourceRunId`, and the source status. `newRunStatus` remains null.
+`newRunId` comes only from a validated service response header and cannot equal
+the source identity. Missing identity reports `acceptedNewRunIdUnknown`; malformed
+or conflicting identity retains known acknowledgement but reports a protocol
+failure. No Location/latest-run guess, observation retry or resubmit POST retry
+is attempted. Preflight and post-confirmation submission each use a 60-second
+deadline, excluding interactive confirmation.
+
+### Native action qualification
+
+The exact private 0.1.21 installation was exercised on Windows with cached
+Functions Core Tools **4.15.2** and workflow bundle **1.170.91**, explicit offline
+mode, private random-port Azurite storage and loopback-only HTTP actions.
+A source run failed at `Selected`, leaving `After` skipped. Resubmitting `After`
+was refused without POST. Resubmitting `Selected` created a distinct successful
+run whose `previousRunId` identified the original. `Before` was not called again;
+`Selected` and `After` executed, while the failed source action/run stayed failed.
+
+After changing a fixture Compose marker, a fresh trigger run used the new marker;
+a second resubmission of the original run used the original marker. Both action
+POSTs carried the exact one-action body. No feature settings changed, no tools or
+test SDK were restored, all owned helpers stopped, and user-global snapshots
+were unchanged. Initial qualification failures are retained: exact-version
+ranges normalized to an empty cache interval in Core Tools' offline resolver.
+The successful check used a bounded adjacent-patch range containing only the
+single copied cached bundle, not an online upgrade.
+
+This proves the described sequential Stateful fixture on that cached Windows
+runtime, not live Azure, Linux/macOS, parallel/nested/repeating graph parity, or a
+universal minimum bundle version. Runtime eligibility and server enforcement
+remain required on every target.
 
 ## Agent-facing reports and exit codes
 
@@ -174,9 +257,12 @@ Operation reports use `schemaVersion: "1.0"`, `workflow`, `workflowKind`, `runId
 `runCorrelationId`, `requestCorrelationId`, `exitCode` and `error`.
 `error` is null or a sanitized `{kind, message}` object, never raw provider prose.
 Correlation values are exposed only when they have a service UUID shape;
-unreported/unrecognized values are null. Resubmit adds `sourceRunId`,
-`triggerName`, `triggerHistoryId`, `newRunId` and `newRunStatus` (null: not observed).
-Its `runId`, `status` and run correlation describe the **source**, not the new run.
+unreported/unrecognized values are null. Direct replay uses
+`operation: "triggerHistoryResubmit"` and adds `triggerName`, `triggerHistoryId`,
+`newRunId` and `newRunStatus` (null: not observed). It does not select a source
+run: `runId`, `status` and `runCorrelationId` remain null, and `sourceRunId`
+is not emitted. A new identity comes only from the service acknowledgement,
+not an assumed source-run association or an observed execution outcome.
 
 Reports omit authored inputs/outputs, workflow/action error payloads, signed
 content/callback URLs and arbitrary response headers. Table output summarizes

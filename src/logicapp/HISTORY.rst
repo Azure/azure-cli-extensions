@@ -6,7 +6,7 @@ Release History
 1.0.0b1
 +++++++
 
-* Contribute the complete 55-command Logic Apps Standard preview to the official
+* Contribute the complete 57-command Logic Apps Standard preview to the official
   extension repository, retaining core app, settings and ZIP deployment commands.
 * Relocate developer and contract guides under the extension and generate GA help
   controls with the same stock CLI in isolated configuration/extension directories.
@@ -14,6 +14,28 @@ Release History
   Azure CLI 2.67.0 or newer. Platform and live-cloud qualification remain separate.
 * Preserve Rohitha's original extension and subsequent staging improvements;
   workflow testing remains a read-only foundation with no SDK/business-test execution.
+* Incorporate reviewed improvements through the historical 0.1.23 baseline,
+  retaining the existing public preview version and historical report producers.
+* Add genuine one-action run resubmission with completed-source, literal runtime
+  eligibility and stable selected-evidence rechecks. Move trigger replay to
+  trigger history resubmit; never substitute it for action-level recovery.
+* Rename complete-document workflow replacement to workflow set. Share completed
+  runtime-template validation and refuse unfinished or malformed receipts.
+* Add connection managed create with distinct connection and site names, retaining
+  deprecated legacy semantics and accurate OAuth resource-retention guidance.
+* Isolate saved contexts by Azure CLI configuration, reject incompatible explicit
+  cloud authoring targets and honor saved local runtime ports.
+* Return 0 for successful planning and retain blocked exit 4 with --strict.
+  Closed schema-2 reports record policy; supported schema-1 reports retain their
+  historical exits. Neither mode executes business tests or clears SDK gates.
+* Preserve execution bearer authentication against netrc substitution and reject
+  every nonempty mutation acknowledgement before JSON decoding.
+* Harden cloud coordinates, ACL collection completeness and duplicate-name
+  ownership checks. Bind connection-file compensation to its completed write
+  revision, retaining ambiguous or cross-scope state.
+* Distinguish exited Windows process objects, exclude only verified pre-existing
+  stale-parent subtrees and bound cleanup waits. Recover cleanup-pending receipts
+  only on explicit, ownership-safe stop retries, with exact-snapshot locking.
 
 0.1.19
 ++++++

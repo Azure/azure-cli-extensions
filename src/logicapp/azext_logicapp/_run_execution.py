@@ -3,12 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=import-error,no-name-in-module
-"""Stateful run waiting, cancellation and verified trigger-history resubmission."""
+"""Stateful execution controls with bounded, non-retried mutations."""
 
 from collections import OrderedDict
 import re
 import time
-from urllib.parse import parse_qs, urlsplit
+from urllib.parse import unquote, urlsplit
 
 from azure.cli.core.azclierror import ClientRequestError, InvalidArgumentValueError
 from azure.cli.core.util import user_confirmation
@@ -16,8 +16,10 @@ from knack.log import get_logger
 
 from ._execution_transport import DeadlineExpired, ExecutionError, ExecutionTransport
 from ._runtime_client import (
-    _MANAGEMENT_PREFIX, trigger_histories_path, trigger_history_path, trigger_history_resubmit_path,
-    workflow_path, workflow_run_cancel_path, workflow_run_path)
+    trigger_history_path, trigger_history_resubmit_path,
+    run_action_path, workflow_path, workflow_run_cancel_path, workflow_run_path,
+    workflow_run_resubmit_path, workflow_trigger_path)
+from ._json import json_equal
 from ._workflow import validate_workflow_name
 from ._workflow_discovery import workflow_metadata
 
@@ -26,7 +28,6 @@ _TERMINAL = ("Succeeded", "Failed", "Cancelled", "TimedOut", "Aborted", "Faulted
 _ACTIVE = ("Running", "Waiting", "Paused", "Suspended")
 _KNOWN = {value.casefold(): value for value in _TERMINAL + _ACTIVE}
 _PREFLIGHT_TIMEOUT = 60
-_HISTORY_PAGES = 10
 
 
 def _segment(value, flag, upstream=False):
@@ -39,13 +40,11 @@ def _segment(value, flag, upstream=False):
     return value
 
 
-def validate_execution_options(workflow, run_id, timeout=None, interval=None, trigger_history_id=None):
+def validate_execution_options(workflow, run_id, timeout=None, interval=None):
     if not workflow:
         raise InvalidArgumentValueError("--workflow is required.")
     validate_workflow_name(workflow)
     _segment(run_id, "--run-id")
-    if trigger_history_id is not None:
-        _segment(trigger_history_id, "--trigger-history-id")
     for value, flag, maximum in ((timeout, "--timeout", 86400), (interval, "--interval", 300)):
         if value is not None and (isinstance(value, bool) or not isinstance(value, int) or not 1 <= value <= maximum):
             raise InvalidArgumentValueError("{} must be a whole number between 1 and {} seconds.".format(flag, maximum))
@@ -60,6 +59,15 @@ def _field(payload, name):
     if len(matches) > 1:
         raise ExecutionError("invalidResponse", "Execution endpoint returned ambiguous fields.")
     return matches[0] if matches else None
+
+
+def _resubmit_new_run_id(headers, source_run=None):
+    new_id = _field(dict(headers), "x-ms-workflow-run-id")
+    if new_id is not None:
+        _segment(new_id, "new run", upstream=True)
+        if not re.fullmatch(r"[A-Za-z0-9._-]+", new_id) or new_id == source_run:
+            raise ExecutionError("invalidResponse", "Resubmission returned a conflicting or invalid new run identity.")
+    return new_id
 
 
 def _object(payload):
@@ -98,6 +106,10 @@ def _stateful(transport, workflow, deadline):
 
 def _run(transport, workflow, run_id, deadline):
     payload = _read(transport, workflow_run_path(workflow, run_id), deadline)
+    return _run_state(payload, run_id)
+
+
+def _run_state(payload, run_id):
     if _field(payload, "name") != run_id:
         raise ExecutionError("invalidResponse", "Execution endpoint returned a different or unidentified run.")
     props = _properties(payload)
@@ -238,123 +250,164 @@ def cancel_run(client, workflow, run_id, yes=False, wait=False, timeout=300, int
         return _failure(result, ex, submitted)
 
 
-def _run_reference(reference, workflow, run_id, site_resource_id=None):
-    reference = _object(reference)
-    name = _field(reference, "name")
-    identifier = _field(reference, "id")
-    if name is not None and _segment(name, "run reference", upstream=True) != run_id:
-        return False
+def validate_history_options(workflow, trigger, history_name):
+    if not workflow:
+        raise InvalidArgumentValueError("--workflow is required.")
+    validate_workflow_name(workflow)
+    _segment(trigger, "--trigger")
+    _segment(history_name, "--history-name")
+
+
+def validate_action_resubmit_options(workflow, run_id, action):
+    validate_execution_options(workflow, run_id)
+    _segment(action, "--action")
+
+
+def _selected_identity(payload, name, path, client):
+    if _field(payload, "name") != name:
+        raise ExecutionError("invalidResponse", "Execution endpoint returned a different or unidentified resource.")
+    identifier = _field(payload, "id")
     if identifier is None:
-        return name == run_id
+        return
+    relative = "/" + unquote(path)
+    expected = unquote(urlsplit(client._build_url(path)).path)  # pylint: disable=protected-access
     if not isinstance(identifier, str):
-        raise ExecutionError("invalidResponse", "Trigger history returned an invalid run reference.")
-    # Match an exact runtime resource reference; never navigate to its URL.
-    expected = {"/workflows/{}/runs/{}".format(workflow, run_id),
-                "/" + workflow_run_path(workflow, run_id)}
-    if identifier in expected:
-        return True
-    if site_resource_id is None:
-        return False
-    prefix = site_resource_id.rstrip("/") + "/" + _MANAGEMENT_PREFIX
-    return any(identifier.endswith(path) and identifier[:-len(path)].casefold() == prefix.casefold()
-               for path in expected)
+        raise ExecutionError("invalidResponse", "Execution endpoint returned an invalid resource identity.")
+    identifier = unquote(identifier)
+    if (identifier != relative and
+            not (identifier.endswith(relative)
+                 and identifier[:-len(relative)].casefold() == expected[:-len(relative)].casefold())):
+        raise ExecutionError("invalidResponse", "Execution endpoint returned a conflicting resource identity.")
 
 
-def _matching_history(payload, workflow, run_id, expected=None, site_resource_id=None):
-    name = _segment(_field(payload, "name"), "history", upstream=True)
-    if expected is not None and name != expected:
-        raise ExecutionError("invalidResponse", "Execution endpoint returned a different trigger history.")
-    props = _properties(payload)
-    if _field(props, "fired") is not True:
-        return None
-    reference = _field(props, "run")
-    if reference is not None and _run_reference(reference, workflow, run_id, site_resource_id):
-        return name
-    return None
+def _stable_execution_snapshot(props):
+    snapshot = {name: _field(props, name) for name in (
+        "status", "code", "startTime", "endTime", "correlationId", "canResubmit")}
+    # Signed content links are regenerated on reads and are not revision evidence.
+    for name, fields in (
+            ("workflow", ("id", "name", "version")),
+            ("trigger", ("name", "status", "code", "startTime", "endTime")),
+            ("correlation", ("actionTrackingId", "clientTrackingId", "trackingId"))):
+        value = _field(props, name)
+        snapshot[name] = None if value is None else {
+            field: _field(_object(value), field) for field in fields}
+    return snapshot
 
 
-def _history(transport, workflow, trigger, run_id, deadline, history_id, site_resource_id=None):
-    if history_id:
-        payload = _read(transport, trigger_history_path(workflow, trigger, history_id), deadline)
-        if _matching_history(payload, workflow, run_id, history_id, site_resource_id) is None:
-            raise ExecutionError("historyMismatch", "Selected trigger history is not associated with the selected run.")
-        return history_id
-    params = {"$top": 100}
-    seen = set()
-    for _ in range(_HISTORY_PAGES):
-        payload = _read(transport, trigger_histories_path(workflow, trigger), deadline, params)
-        items = _field(payload, "value")
-        if not isinstance(items, list) or len(items) > 100:
-            raise ExecutionError("invalidResponse", "Trigger history returned an invalid or oversized page.")
-        matches = [_matching_history(item, workflow, run_id, site_resource_id=site_resource_id) for item in items]
-        matches = [name for name in matches if name is not None]
-        if len(matches) > 1:
-            raise ExecutionError("invalidResponse", "More than one trigger history identifies the selected run.")
-        if matches:
-            return matches[0]
-        link = _field(payload, "nextLink")
-        if not link:
-            break
-        if not isinstance(link, str):
-            raise ExecutionError("invalidResponse", "Trigger history returned an invalid continuation.")
-        try:
-            tokens = parse_qs(urlsplit(link).query).get("$skiptoken")
-        except ValueError:
-            raise ExecutionError("invalidResponse", "Trigger history returned a malformed continuation URL.") from None
-        if (not tokens or len(tokens) != 1 or tokens[0] in seen or len(tokens[0]) > 4096
-                or any(ord(character) < 32 for character in tokens[0])):
-            raise ExecutionError("invalidResponse", "Trigger history returned an unsupported or repeated continuation.")
-        seen.add(tokens[0])
-        params = {"$top": 100, "$skiptoken": tokens[0]}
-    raise ExecutionError("historyNotFound", "No associated retained trigger history was found in the bounded lookup. "
-                         "Use --trigger-history-id to verify a known retained history, or check retention.")
+def _selected_action(transport, client, workflow, run_id, action, deadline):
+    source = _read(transport, workflow_run_path(workflow, run_id), deadline)
+    _selected_identity(source, run_id, workflow_run_path(workflow, run_id), client)
+    status, props = _run_state(source, run_id)
+    if status not in _TERMINAL:
+        raise ExecutionError("sourceNotCompleted", "Action resubmission requires a completed source run.")
+    path = run_action_path(workflow, run_id, action)
+    selected = _read(transport, path, deadline)
+    _selected_identity(selected, action, path, client)
+    selected_props = _properties(selected)
+    action_status = _field(selected_props, "status")
+    normalized = _KNOWN.get(action_status.casefold()) if isinstance(action_status, str) else None
+    if (normalized not in _TERMINAL or normalized in ("Skipped", "Ignored")
+            or _field(selected_props, "canResubmit") is not True):
+        raise ExecutionError(
+            "actionNotEligible", "The runtime did not advertise this executed action as resubmittable. "
+            "No feature was enabled and no resubmit was attempted.")
+    return status, props, [_stable_execution_snapshot(props), _stable_execution_snapshot(selected_props)]
 
 
-def resubmit_run(client, workflow, run_id, yes=False, trigger_history_id=None):
-    validate_execution_options(workflow, run_id, trigger_history_id=trigger_history_id)
-    result = _report(workflow, run_id, "resubmit")
-    result.update(sourceRunId=run_id, newRunId=None, newRunStatus=None, triggerName=None, triggerHistoryId=None)
+def resubmit_run_action(client, workflow, run_id, action, yes=False):
+    validate_action_resubmit_options(workflow, run_id, action)
+    result = _report(workflow, run_id, "actionResubmit")
+    result.update(sourceRunId=run_id, actionName=action, newRunId=None, newRunStatus=None)
     transport = ExecutionTransport(client)
-    site_resource_id = None if client.is_local else client.site_resource_id
     deadline = time.monotonic() + _PREFLIGHT_TIMEOUT
     submitted = False
     try:
         _stateful(transport, workflow, deadline)
         result["workflowKind"] = "Stateful"
-        status, props = _run(transport, workflow, run_id, deadline)
+        status, props, before = _selected_action(transport, client, workflow, run_id, action, deadline)
         _observe(result, status, props)
-        trigger = _segment(_field(_field(props, "trigger"), "name"), "trigger", upstream=True)
-        history_id = _history(transport, workflow, trigger, run_id, deadline, trigger_history_id, site_resource_id)
-        result.update(triggerName=trigger, triggerHistoryId=history_id)
         user_confirmation(
-            "Resubmit run '{}' in workflow '{}' at '{}' as a NEW execution using retained trigger history '{}'? "
-            "This can duplicate external side effects. It is not resume, recovery or exactly-once delivery, "
-            "and does not modify the original run.".format(
-                run_id, workflow, client.site_resource_id, history_id), yes)
+            "Resubmit action '{}' from completed run '{}' in workflow '{}' at '{}' as a NEW execution? "
+            "The runtime uses retained history and the source workflow version. The selected action "
+            "and dependent actions can repeat external effects; current connections/settings still apply. "
+            "This is not in-place resume or exactly-once recovery.".format(
+                action, run_id, workflow, client.site_resource_id), yes)
         deadline = time.monotonic() + _PREFLIGHT_TIMEOUT
         _stateful(transport, workflow, deadline)
-        current_status, current = _run(transport, workflow, run_id, deadline)
-        _observe(result, current_status, current)
-        if _field(_field(current, "trigger"), "name") != trigger:
-            raise ExecutionError("changed", "The run trigger changed during confirmation. No resubmit was attempted.")
-        _history(transport, workflow, trigger, run_id, deadline, history_id, site_resource_id)
+        status, props, after = _selected_action(transport, client, workflow, run_id, action, deadline)
+        _observe(result, status, props)
+        if not json_equal(before, after):
+            raise ExecutionError("changed", "The selected run/action changed during confirmation. No resubmit was attempted.")
         result["action"] = "resubmitAttempted"
         submitted = True
-        receipt = transport.request("POST", trigger_history_resubmit_path(workflow, trigger, history_id), deadline)
-        if receipt["statusCode"] != 202 or receipt["payload"] is not None:
+        receipt = transport.request(
+            "POST", workflow_run_resubmit_path(workflow, run_id), deadline,
+            body={"actionsToResubmit": [{"name": action}]})
+        if type(receipt["statusCode"]) is not int or receipt["statusCode"] != 202 or receipt["payload"] is not None:  # pylint: disable=unidiomatic-typecheck
+            raise ExecutionError("invalidResponse", "Action resubmission returned an unexpected acknowledgement.")
+        result.update(action="resubmitRequested", requestAcknowledged=True)
+        result["requestCorrelationId"] = _correlation(_field(dict(receipt["headers"]), "x-ms-correlation-id"))
+        new_id = _resubmit_new_run_id(receipt["headers"], run_id)
+        result.update(newRunId=new_id, outcome="accepted" if new_id else "acceptedNewRunIdUnknown")
+        result["message"] = (
+            "A new execution was requested, not observed completed. The source run was not resumed "
+            "or overwritten. No request was retried; follow the new identity separately.")
+        return result
+    except DeadlineExpired as ex:
+        unsent = _unsent_mutation(result, ex, submitted)
+        result.update(outcome="requestDeadlineExpired", exitCode=2)
+        result["message"] = ("Deadline expired before submission. No resubmit was attempted."
+                             if unsent else "Deadline expired; the resubmit outcome is uncertain. No retry was attempted.")
+        return result
+    except ExecutionError as ex:
+        return _failure(result, ex, submitted)
+
+
+def _selected_history(transport, workflow, trigger, history_name, deadline):
+    selected_trigger = _read(transport, workflow_trigger_path(workflow, trigger), deadline)
+    if _field(selected_trigger, "name") != trigger:
+        raise ExecutionError("invalidResponse", "Execution endpoint returned a different or unidentified trigger.")
+    history = _read(transport, trigger_history_path(workflow, trigger, history_name), deadline)
+    if _field(history, "name") != history_name:
+        raise ExecutionError("invalidResponse", "Execution endpoint returned a different or unidentified history.")
+    if _field(_properties(history), "fired") is not True:
+        raise ExecutionError("historyNotFired", "Selected retained history did not fire. No resubmit was attempted.")
+    return selected_trigger, history
+
+
+def resubmit_trigger_history(client, workflow, trigger, history_name, yes=False):
+    validate_history_options(workflow, trigger, history_name)
+    result = _report(workflow, None, "triggerHistoryResubmit")
+    result.update(newRunId=None, newRunStatus=None, triggerName=trigger, triggerHistoryId=history_name)
+    transport = ExecutionTransport(client)
+    deadline = time.monotonic() + _PREFLIGHT_TIMEOUT
+    submitted = False
+    try:
+        _stateful(transport, workflow, deadline)
+        result["workflowKind"] = "Stateful"
+        before = _selected_history(transport, workflow, trigger, history_name, deadline)
+        user_confirmation(
+            "Resubmit trigger '{}' history '{}' in workflow '{}' at '{}' as a NEW execution? "
+            "This can duplicate external side effects. It is not resume, recovery or exactly-once delivery, "
+            "and does not modify a source run.".format(
+                trigger, history_name, workflow, client.site_resource_id), yes)
+        deadline = time.monotonic() + _PREFLIGHT_TIMEOUT
+        _stateful(transport, workflow, deadline)
+        after = _selected_history(transport, workflow, trigger, history_name, deadline)
+        if not all(json_equal(previous, current) for previous, current in zip(before, after)):
+            raise ExecutionError("changed", "The selected trigger/history changed during confirmation. No resubmit was attempted.")
+        result["action"] = "resubmitAttempted"
+        submitted = True
+        receipt = transport.request("POST", trigger_history_resubmit_path(workflow, trigger, history_name), deadline)
+        if type(receipt["statusCode"]) is not int or receipt["statusCode"] != 202 or receipt["payload"] is not None:  # pylint: disable=unidiomatic-typecheck
             raise ExecutionError("invalidResponse", "Resubmission returned an unexpected acknowledgement.")
         result["action"] = "resubmitRequested"
         result["requestAcknowledged"] = True
         result["requestCorrelationId"] = _correlation(_field(dict(receipt["headers"]), "x-ms-correlation-id"))
-        new_id = next((value for key, value in receipt["headers"].items()
-                       if key.casefold() == "x-ms-workflow-run-id"), None)
-        if new_id is not None:
-            _segment(new_id, "new run", upstream=True)
-            if new_id == run_id:
-                raise ExecutionError("invalidResponse", "Resubmission did not identify a distinct new run.")
+        new_id = _resubmit_new_run_id(receipt["headers"])
         result.update(newRunId=new_id, outcome="accepted" if new_id else "acceptedNewRunIdUnknown")
         result["message"] = ("A new execution was requested, not observed completed. "
-                             "No request was retried; the original run was not changed.")
+                             "No request was retried; no source run was selected or changed.")
         return result
     except DeadlineExpired as ex:
         unsent = _unsent_mutation(result, ex, submitted)
@@ -367,11 +420,17 @@ def resubmit_run(client, workflow, run_id, yes=False, trigger_history_id=None):
 
 
 def execution_table_format(result):
-    return [OrderedDict((("Workflow", result["workflow"]), ("Run", result["runId"]),
-                         ("Operation", result["operation"]), ("Status", result["status"]),
-                         ("Outcome", result["outcome"]), ("NewRun", result.get("newRunId")),
-                         ("Error", (result.get("error") or {}).get("kind")),
-                         ("ExitCode", result["exitCode"])))]
+    row = OrderedDict((("Workflow", result["workflow"]), ("Run", result["runId"]),
+                       ("Operation", result["operation"]), ("Status", result["status"]),
+                       ("Outcome", result["outcome"]), ("NewRun", result.get("newRunId")),
+                       ("Error", (result.get("error") or {}).get("kind")),
+                       ("ExitCode", result["exitCode"])))
+    if result["operation"] == "triggerHistoryResubmit":
+        row["Trigger"] = result["triggerName"]
+        row["History"] = result["triggerHistoryId"]
+    elif result["operation"] == "actionResubmit":
+        row["Action"] = result["actionName"]
+    return [row]
 
 
 def finish_execution_command(cmd, report):

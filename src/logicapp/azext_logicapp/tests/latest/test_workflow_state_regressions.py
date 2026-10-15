@@ -38,6 +38,7 @@ def http_error(status):
 
 class StateTransport:
     """Models whole-map App Service PUT separately from runtime propagation."""
+
     def __init__(self):
         self.settings = {"AppSecret": PRIVATE, "Workflows.keep.FlowState": "Enabled"}
         self.kind = "Stateful"
@@ -243,8 +244,8 @@ class WorkflowStateRegressions(unittest.TestCase):
         for resource in (SITE + "/slots/staging", SITE + "?query=injected",
                          SITE.replace("/sites/app", "/sites/app%2fslots%2fstaging")):
             with self.subTest(resource=resource):
-                self.client = _runtime_client.SiteRuntimeClient(self.cmd, resource, sender=self.transport)
                 with self.assertRaisesRegex(InvalidArgumentValueError, "not a slot or nested resource"):
+                    self.client = _runtime_client.SiteRuntimeClient(self.cmd, resource, sender=self.transport)
                     self.change()
         self.assertEqual([], self.transport.calls)
         self.confirm.assert_not_called()

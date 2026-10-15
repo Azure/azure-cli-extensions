@@ -63,15 +63,26 @@ resources, credentials, runtimes and workflow history are never deleted.
 Missing names fail rather than report success.
 
 Runtime/cloud commands without an active context then require explicit target
-coordinates or a deliberate `context use`. Existing offline local-authoring
-commands retain their current-directory default when no local context is
-selected. An invalid/unreadable active store is not silently treated as no
+coordinates or a deliberate `context use`. Offline local-authoring commands
+use the current directory when no context is selected, but refuse an explicitly
+selected cloud context even with `--path`. An active cloud context without an
+explicit path is also refused instead of becoming a local destination.
+Cloud runtime validation is a separate dual-plane operation:
+`workflow validate --context orders-cloud --path .\orders --workflow hello --with-runtime`
+validates the explicit local authored file against the deployed runtime.
+An invalid/unreadable active store is not silently treated as no
 context; supply an explicit project path or repair the saved store deliberately.
 
 ## Storage and concurrency boundaries
 
-The existing location remains `~\.azure\logicapp\contexts.json`, regardless of
-`AZURE_CONFIG_DIR`; no migration or new context-root flag is introduced.
+The location is `<Azure CLI configuration directory>\logicapp\contexts.json`,
+using Azure CLI's configuration-root resolver. Without `AZURE_CONFIG_DIR`, this
+is the existing `~\.azure\logicapp\contexts.json` location. A custom config root
+has an independent store and active selection, with no global-store fallback,
+automatic import, cross-profile merge or write-on-read migration. To reuse
+shortcuts in another profile, deliberately recreate them there with `context
+create`; the original store remains untouched. Cooperating writers use the lock
+beside the selected profile's store.
 Original unversioned stores are accepted. An explicit `version`, if present,
 must be integer `1`; unsupported versions are refused without rewriting them.
 All known records and active references are checked on read, including duplicate
@@ -79,9 +90,15 @@ JSON keys, non-finite numbers, conflicting target coordinates and wrong types.
 Numeric overflow (for example `1e9999`) and nesting deeper than 128 levels are
 refused with sanitized errors; invalid bytes are not rewritten and parser errors
 do not silently select the current directory.
+Cloud resource-group/app coordinates must be literal printable single-segment
+names, not dot segments or percent-escaped values. Creation, update and saved-store
+loading reject unsafe coordinates without rewriting the store. The same check
+guards runtime/identity ARM site-ID construction, including explicit coordinates;
+malformed or child-resource site targets cannot substitute another ARM route.
 Absent optional inapplicable coordinates are accepted for old valid records.
 Unknown top-level, record and target fields are retained through writes.
-List/show never create a directory, JSON file or lock file.
+Context list/show never create a context directory, JSON file or lock file;
+Azure CLI itself may initialize its configuration directory during startup.
 
 Create/use/update/delete share a bounded native advisory file lock on
 `contexts.json.lock` (Windows byte-range lock, POSIX `flock`). After a prompt
@@ -90,6 +107,9 @@ record or selection causes an explicit conflict, not a blind overwrite or
 automatic retry. Comparisons preserve JSON scalar types, including unknown
 nested metadata: `true`, `1` and `1.0` are distinct changes. Identical values with
 reordered object members remain no-ops without replacing the file.
+Publication failure preserves the prior store. If temporary-file cleanup also
+fails, the sanitized error identifies retained temporary state for inspection;
+an already-removed temporary is tolerated without masking the publication error.
 A busy lock fails after five seconds. The lock file remains
 in place so its identity is not replaced while another process waits.
 
@@ -105,3 +125,36 @@ treating the snapshot check as a universal compare-and-swap.
 
 Validation uses private, session-only stores and fake target clients. No live
 Azure resource calls or user-global context edits are needed to exercise CRUD.
+Independent-process regressions also use the real resolver with a shared fake
+home and separate config roots, so isolation is not inferred from a mocked path.
+
+## Local runtime lifecycle
+
+Bare `runtime start`, `runtime show`, and `runtime stop` use the active local
+context's saved port, matching runtime API consumers and doctor. Explicit
+`--port` wins, including an explicit 7071; 7071 is the fallback without a saved
+or explicit port. Start with an explicit port still uses the active local path.
+An explicit `runtime start --path` selects an independent project and uses
+7071 unless a port is supplied, as doctor does. Bare lifecycle commands refuse
+an active cloud context. Explicit show/stop ports do not require a project
+context. `runtime stop --all` still selects all CLI-owned runtime records,
+independent of active context, and never broadens process ownership.
+
+Stop verifies the saved PID and process-creation identity before signalling.
+On Windows, an exited process can remain in the PID table while a handle is
+open; a native exit timestamp distinguishes that case from a running or
+unverifiable process.
+Windows process-tree snapshots can also retain an old parent PID. A process
+whose verified current birth predates the selected parent's birth cannot be its
+child: it and that unrelated subtree are excluded, never signalled. If that
+earlier identity cannot still be verified, cleanup remains conservative.
+
+If a failed stop leaves a `cleanupPending` receipt, retry the same
+`az logicapp runtime stop --port <port>` command. The retry removes that exact
+unchanged receipt only after every recorded process and launch consumer is
+confirmed exited/absent and the port is idle. It reports `result: already-exited`,
+not a new termination. A live, recycled or unverifiable PID, occupied port,
+malformed receipt, or concurrent receipt replacement retains the record and
+returns an error. An ordinary stale receipt without `cleanupPending` still
+refuses identity-mismatched stop. Shared Azurite is released only when no other
+runtime or launch consumer needs it.

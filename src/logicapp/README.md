@@ -9,9 +9,9 @@ built wheel with `az extension add --source <wheel-path> --allow-preview true`.
 Source publication is handled by the upstream release pipeline after merge;
 this contribution does not manually change the extension index.
 
-The complete extension contributes 55 leaves, preserving core `az logicapp`
+The complete extension contributes 57 leaves, preserving core `az logicapp`
 app management, app settings and ZIP deployment. Rohitha authored the original
-extension; subsequent staging work adds 17 leaves and safety repairs. See the
+extension; subsequent staging work adds 19 leaves and safety repairs. See the
 [contribution provenance and qualification boundaries](docs/contribution.md).
 Declared Python support is not a claim that every platform/version or live
 Azure scenario has been exercised.
@@ -47,15 +47,19 @@ or the testing foundation. Never put secret values in `--parameter` or
 
 ```powershell
 az logicapp test plan --path .\App --workflow Orders --output json
+az logicapp test plan --path .\App --workflow Orders --strict --output json
 az logicapp test plan --path .\App --workflow Orders --test-project .\Tests\App.csproj --report-path .\Reports\plan.json
 az logicapp test results show --result-file .\Reports\plan.json --workflow-file .\App\Orders\workflow.json
 ```
 
-This is the **0.1.17 SDK-ready foundation only**. Explicit local files, bounded
+This remains the **SDK-ready foundation introduced in 0.1.17**. Explicit local files, bounded
 top-level authoring/literal-reference checks and XML metadata inspection do not
-execute workflows, evaluate MSBuild or resolve dependencies. Valid plans still
-exit `4` with immutable SDK adoption/restore/execution gates and `notExecuted`
-markers. Default stdout only; optional reports require an existing directory,
+execute workflows, evaluate MSBuild or resolve dependencies. Since **0.1.22**,
+successful planning exits `0`; `--strict` exits `4` for blocked execution gates.
+Neither means tests passed: both preserve immutable SDK gates, `notExecuted`
+markers and zero executed business tests. Other diagnostic errors remain nonzero.
+New reports use closed schema 2.0 with an explicit exit policy; supported older
+schema-1 reports retain their original outcomes. Default stdout only; optional reports require an existing directory,
 and overwrites require `--force`. `results show` accepts only closed foundation
 preflight reports, not native SDK/TRX output; exit `0` means inspected, not tests
 passed. No active context, cloud target, install, generation, host or SDK run is
@@ -71,6 +75,26 @@ confirmation or `--yes`, and deleting it clears selection without choosing
 another target. Contexts do not bind subscription/tenant or store credentials.
 See [saved target management](docs/context-management.md) for JSON shapes,
 partial edits, deliberate type changes, storage and concurrency boundaries.
+Stores and active selection follow `AZURE_CONFIG_DIR`; custom profiles never
+inherit the default profile's active target. Bare local runtime lifecycle
+commands honor saved ports. File-authoring commands reject explicit cloud
+contexts instead of falling through to another local project.
+
+## Create managed connections with distinct names
+
+```powershell
+az logicapp connection managed create -g my-rg --logic-app-name my-app --name blobProd --connector azureblob -l eastus --auth-mode managed-identity
+az logicapp connection managed create -g my-rg --logic-app-name my-app --name outlook --connector office365 -l eastus --auth-mode oauth
+```
+
+`--name` names the connection; `--logic-app-name` names its consuming site.
+The existing guarded identity/OAuth creation and conservative recovery remain
+unchanged. OAuth timeout/failure may retain connection/access-policy resources;
+inspect the reported state before retrying. Legacy
+`connection create --managed-api -n APP --connection-name CONNECTION` remains
+available, with a deprecation warning and its original interpretation throughout
+this preview. Removing it requires an announced breaking change, not a silent
+flip of `--name`.
 
 ## Execute and control Stateful runs
 
@@ -78,23 +102,32 @@ partial edits, deliberate type changes, storage and concurrency boundaries.
 $started = az logicapp run start --local --workflow hello --trigger manual | ConvertFrom-Json
 az logicapp run wait --local --workflow hello --run-id $started.runId --timeout 60 --interval 2
 az logicapp run cancel --local --workflow hello --run-id RUN_ID --yes --wait --timeout 60 --interval 2
-az logicapp run resubmit -g my-rg -n my-app --workflow hello --run-id SOURCE_RUN_ID --yes
+az logicapp trigger history resubmit -g my-rg -n my-app --workflow hello --trigger manual --history-name HISTORY_ID --yes
+az logicapp run resubmit --local --workflow hello --run-id COMPLETED_RUN_ID --action Send_HTTP --yes
 ```
 
 Only wait if start returned a real run ID. The same saved/active target contexts
 apply. Stateful controls reject Stateless workflows, including debug history.
 Wait is bounded and never cancels implicitly. Cancel reports requested/pending
-versus observed `Cancelled`; it does not undo side effects. Resubmit verifies
-retained trigger history and requests a **new execution**, not resume or
+versus observed `Cancelled`; it does not undo side effects. Trigger-history
+resubmit directly verifies an explicit retained fired history without a source
+run read or history search and requests a **new execution**, not resume or
 exactly-once recovery; it can duplicate side effects. Missing new IDs are
 reported honestly, and non-idempotent requests are never automatically retried.
+Action-level `run resubmit` instead requires one executed action in a completed
+source run and literal runtime `canResubmit=true`, which action inspection now
+exposes as a nullable Boolean. The runtime uses retained results and the source
+definition version; selected/dependent actions can repeat effects with current
+settings and connections. The CLI rechecks stable run/action evidence after
+confirmation, never enables the feature, and never substitutes trigger replay.
+Its service-backed new run identity must be observed separately with `run wait`.
 
 Agent-facing sanitized JSON/table/query results are emitted before nonzero
 report exits: `0` for the expected observation or acknowledged request/no-op,
 `2` for a CLI deadline, `4` for another terminal outcome, and `1` for observation
 or protocol errors. Workflow `TimedOut` is distinct from a CLI wait deadline.
 See [execution contracts and support matrix](docs/workflow-execution.md).
-Existing start/inspection contracts and GA app-management commands are unchanged.
+Existing start contracts and GA app-management commands are unchanged.
 
 ## Investigate a failed run
 
@@ -159,20 +192,25 @@ Core `az logicapp` already manages app resources, cloud app settings and ZIP
 deployment. See the [capability investigation and roadmap](docs/cli-capability-investigation.md)
 for that existing coverage and the remaining workflow lifecycle work.
 
-## Update or delete one existing workflow
+## Set or delete one existing workflow
 
 ```powershell
 $saved = az logicapp workflow export --local --workflow hello --output-path .\backup\hello.json | ConvertFrom-Json
 # Prepare a complete edited workflow.json separately; retain the backup.
-az logicapp workflow update --local --workflow hello --file .\edited\workflow.json --if-match $saved.etag --allow-non-atomic --yes
+az logicapp workflow set --local --workflow hello --file .\edited\workflow.json --if-match $saved.etag --allow-non-atomic --yes
 az logicapp workflow delete --local --workflow hello --allow-non-atomic
 ```
 
-The same local, deployed `-g/-n`, and saved-context targets apply. Update replaces
+The same local, deployed `-g/-n`, and saved-context targets apply. Set replaces
 the **complete authored workflow.json**, not a bare definition or partial patch.
 It requires the existing Stateful/Stateless kind, static validation and target
 runtime definition preflight. Missing/unreadable/unsupported workflows are not
 created or silently replaced. There is no kind conversion in this command.
+The preview's former `workflow update` name is removed; `set` explicitly means
+complete replacement, not selective update or graph merging.
+Standalone `workflow validate --with-runtime` and replacement share the same
+completed 200/204 response gate. An unfinished 202 or error/malformed envelope
+cannot claim completed runtime-template coverage or authorize a write.
 
 Both mutations read the current strong ETag, confirm the target unless `--yes`
 is supplied, recheck after confirmation and use an **exact** `If-Match`. Optional
@@ -188,7 +226,7 @@ the file. This was verified against a real local runtime and the first-party
 implementation. Coordinate writers and retain an export; no CLI flag can turn
 these primitives into a guaranteed transaction.
 
-Update verifies the acknowledged write revision and exact bytes. A mismatched
+Set verifies the acknowledged write revision and exact bytes. A mismatched
 file is conditionally restored only when the current revision can be attributed
 to that write. Newer or missing files are not blindly restored; unexpected
 creation, missing receipts, unreadable verification and uncertain request
@@ -302,15 +340,18 @@ and access policies: even an acknowledged unconditional upsert after preflight
 absence does not prove exclusive rollback ownership. No automatic ARM deletion
 or policy replay is attempted. Authentication or granted access may have changed;
 inspect retained state and deliberately recover it before retrying. Guarded
-file-entry restoration still preserves unrelated/newer entries, subject to VFS
-limits. `--force` is not a concurrency guarantee; ARM reads omit some credentials.
+File-entry restoration requires a completed write receipt with a strong ETag
+and a current file still at that exact owned revision. A lost response or a
+newer revision retains the file for manual recovery, even if the selected entry
+has identical content. `--force` is not a concurrency guarantee; ARM reads omit some credentials.
 Unreadable or malformed existing connection files are not silently replaced.
 
 Managed connection creation and deployed connection removal require an existing
 `connections.json` with a usable strong VFS ETag. Creation checks this before ARM
 mutations; missing/unversioned/weak files fail closed instead of attempting an
-unqualified create-only write. Publication, selected-entry restoration and
-removal send the exact ETag from their latest reread. A revision conflict (`412`)
+unqualified create-only write. Publication and removal send the exact ETag from
+their latest reread; restoration additionally requires that revision to match
+the completed publication receipt. A revision conflict (`412`)
 does not trigger a wildcard retry or authorize ARM cleanup; a rejected
 publication does not adopt another writer's identical entry for restoration.
 Prepare/deploy the authored file and verify the provider returns strong revisions
@@ -327,7 +368,7 @@ Managed creation also requires an existing selected policy to match the selected
 ActiveDirectory principal's object and tenant IDs, checked before forced connection
 update and again before ACL publication. `--force` cannot replace unrelated access.
 Those observations are not atomic ARM preconditions.
-Connection snapshot/readback/recovery comparisons and workflow update no-op
+Connection snapshot/readback/recovery comparisons and workflow set no-op
 detection preserve JSON scalar types: booleans, integers and floating-point
 numbers are not interchangeable. Object member ordering remains insignificant.
 Managed deletion performs read-only ARM ownership preflight before unlinking the
@@ -351,7 +392,21 @@ The site's tenant is not inferred from the CLI login. Missing/malformed tenant
 evidence or the same object ID in another tenant retains that policy and the ARM
 connection; other verified exclusive policies may still be revoked on a shared
 connection. Both site and policy evidence are refreshed after verified unlink.
+Exact or case-equivalent duplicate access-policy names are checked before
+ownership classification: every affected policy and the ARM connection are
+retained, even when one duplicate matches the selected principal. An incomplete
+or unsafe-name collection cannot authorize any ACL cleanup: an escaped alias
+could contradict an otherwise valid name. Printable single-child names are
+quoted by the shared automatic/explicit ACL route builder; path, query, fragment,
+percent escapes, control characters and dot segments are rejected. Other uniquely
+named verified policies may still be revoked from a complete duplicate-bearing
+collection; duplicate content is not identity uniqueness.
 Retained resources include an explanatory reason.
+Before any managed-cleanup ARM request or file unlink, the authored connection
+ID must be a canonical relative `Microsoft.Web/connections` resource ID in the
+selected subscription and resource group. Absolute URLs, malformed IDs and
+cross-scope references refuse without changing the wiring, including with
+`--keep-resource`. Manage cross-scope resources explicitly instead.
 
 Local runtime ownership is verified with PID and process creation time on
 Windows, Linux, and macOS. Unknown or recycled process identities are never

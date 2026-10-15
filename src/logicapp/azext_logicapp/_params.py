@@ -28,6 +28,7 @@ def load_arguments(self, _):
         c.argument('test_project', options_list=['--test-project'], completer=FilesCompleter(), help='Optional existing .csproj to inspect as XML only. No MSBuild/import evaluation or test discovery.')
         c.argument('report_path', options_list=['--report-path'], completer=FilesCompleter(), help='Optional .json report in an existing local directory. Default stdout only; no directories are created.')
         c.argument('force', options_list=['--force'], action='store_true', help='Replace an existing regular report only. Requires --report-path; cannot authorize SDK restore or execution.')
+        c.argument('strict', options_list=['--strict'], action='store_true', help='Exit 4 for blocked execution gates after successful planning. Default exit 0 means plan generated, not tests passed; SDK execution stays blocked.')
 
     with self.argument_context('logicapp test results show') as c:
         c.argument('result_file', options_list=['--result-file'], required=True, completer=FilesCompleter(), help='Saved foundation preflight report only, not native SDK/TRX results. Embedded paths are never followed.')
@@ -73,9 +74,9 @@ def load_arguments(self, _):
         c.argument('kind', options_list=['--kind'], choices=['Stateful', 'Stateless'], help='Workflow kind. Defaults to Stateful, or the kind in --file.')
         c.argument('file', options_list=['--file'], completer=FilesCompleter(), help='Existing workflow.json or bare definition to use instead of the starter template.')
         c.argument('force', options_list=['--force'], action='store_true', help='Replace the workflow if it already exists. Not safe to retry without it.')
-        c.argument('context', arg_type=target_context_type)
+        c.argument('context', arg_type=target_context_type, help='Named local project context. Cloud contexts are refused, not replaced by another local target.')
 
-    for command in ('list', 'show', 'export', 'update', 'delete', 'enable', 'disable'):
+    for command in ('list', 'show', 'export', 'set', 'delete', 'enable', 'disable'):
         with self.argument_context('logicapp workflow ' + command) as c:
             _target_args(c, resource_group_name_type, app_name_type, port_type, host_key_type, target_context_type)
             if command == 'list':
@@ -85,11 +86,11 @@ def load_arguments(self, _):
             if command == 'export':
                 c.argument('output_path', options_list=['--output-path'], required=True, completer=FilesCompleter(), help='Destination .json file for one workflow. Not a full app export. Definitions can contain authored secrets.')
                 c.argument('force', options_list=['--force'], action='store_true', help='Atomically replace an existing regular output file.')
-            if command in ('update', 'delete'):
+            if command in ('set', 'delete'):
                 c.argument('if_match', options_list=['--if-match'], help='Exact ETag from workflow show/export. Refuse a stale edit. Wildcards and weak ETags are rejected; ETags are always checked even when omitted.')
                 c.argument('yes', options_list=['--yes', '-y'], action='store_true', help='Do not prompt for confirmation. Does not bypass revision checks or non-atomic acknowledgement.')
                 c.argument('allow_non_atomic', options_list=['--allow-non-atomic'], action='store_true', help='Required acknowledgement that VFS mutations are not transactional and cannot guarantee rollback or prevent every race.')
-            if command == 'update':
+            if command == 'set':
                 c.argument('file', options_list=['--file'], required=True, completer=FilesCompleter(), help='Complete authored workflow.json replacing the existing workflow, with the same Stateful/Stateless kind. Not a bare definition or partial patch.')
             if command in ('enable', 'disable'):
                 c.argument('yes', options_list=['--yes', '-y'], action='store_true', help='Do not prompt for confirmation. Does not bypass snapshot checks or non-atomic acknowledgement.')
@@ -106,8 +107,8 @@ def load_arguments(self, _):
         c.argument('parameter_set', options_list=['--parameter-set'], help='Connector parameter set name. Defaults to connectionString.')
         c.argument('force', options_list=['--force'], action='store_true', help='Replace an existing connection or app setting.')
         c.argument('no_gitignore', options_list=['--no-gitignore'], action='store_true', help='Do not add local.settings.json to .gitignore.')
-        c.argument('context', arg_type=target_context_type)
-        c.argument('managed_api', options_list=['--managed-api'], action='store_true', help='Create an Azure managed API connection for a deployed app instead of a local service provider connection. Changes the meaning of --name to the Logic App name.')
+        c.argument('context', arg_type=target_context_type, help='Named local project context. Cloud contexts are refused; unavailable in legacy --managed-api mode.')
+        c.argument('managed_api', options_list=['--managed-api'], action='store_true', help='Deprecated compatibility mode. Prefer connection managed create --name CONNECTION --logic-app-name APP. Legacy --name still means the app.')
         c.argument('resource_group_name', arg_type=resource_group_name_type, help='Resource group of the Logic App. Required with --managed-api.')
         c.argument('connection_name', options_list=['--connection-name'], help='Name of the managed API connection to create. Required with --managed-api.')
         c.argument('location', options_list=['--location', '-l'], help='Azure location for the connection and its managed API. Required with --managed-api.')
@@ -115,7 +116,23 @@ def load_arguments(self, _):
         c.argument('display_name', options_list=['--display-name'], help='Display name for the connection. Defaults to --connection-name.')
         c.argument('user_assigned_identity', options_list=['--user-assigned-identity'], help='Resource id of a user-assigned identity already assigned to the app. Defaults to the system-assigned identity.')
         c.argument('no_browser', options_list=['--no-browser'], action='store_true', arg_group='OAuth consent', help='Print the consent URL instead of launching a browser. The command still listens for the redirect, so the browser must be able to reach this machine on loopback. Only with --auth-mode oauth.')
-        c.argument('consent_timeout', options_list=['--consent-timeout'], type=int, arg_group='OAuth consent', help='Seconds to wait for browser consent before giving up and retaining ARM resources for manual recovery. Default 300. Only with --auth-mode oauth.')
+        c.argument('consent_timeout', options_list=['--consent-timeout'], type=int, arg_group='OAuth consent', help='Seconds to wait for browser consent before failing. Default 300. Connection/access-policy resources may be retained; inspect them before retrying. Only with --auth-mode oauth.')
+
+    with self.argument_context('logicapp connection managed create') as c:
+        c.argument('name', options_list=['--name', '-n'], required=True, help='Managed API connection name.')
+        c.argument('logic_app_name', options_list=['--logic-app-name'], required=True, help='Logic App Standard site that will use the connection.')
+        c.argument('resource_group_name', arg_type=resource_group_name_type, required=True)
+        c.argument('connector', options_list=['--connector'], required=True, help='Managed API connector name or ARM managedApis id.')
+        c.argument('location', options_list=['--location', '-l'], required=True)
+        c.argument('auth_mode', options_list=['--auth-mode'], required=True, choices=list(MANAGED_AUTH_MODES), help='Authentication used by the connection. OAuth requires browser consent; managed-identity uses an identity already assigned to the app.')
+        c.argument('display_name', options_list=['--display-name'], help='Display name. Defaults to --name.')
+        c.argument('parameter', options_list=['--parameter'], nargs='+', action='append', help='Non-secret NAME=VALUE connection parameter, repeatable.')
+        c.argument('secret_parameter', options_list=['--secret-parameter'], help='Secret parameter name. The value is read from standard input, never the command line.')
+        c.argument('parameter_set', options_list=['--parameter-set'], help='Connector parameter set name.')
+        c.argument('user_assigned_identity', options_list=['--user-assigned-identity'], help='Resource id of an identity already assigned to the app. Defaults to the system identity.')
+        c.argument('no_browser', options_list=['--no-browser'], action='store_true', help='Print the OAuth consent URL instead of opening a browser. Loopback callback still required.')
+        c.argument('consent_timeout', options_list=['--consent-timeout'], type=int, help='OAuth consent timeout in seconds, default 300. On failure resources may be retained; inspect before retrying.')
+        c.argument('force', options_list=['--force'], action='store_true', help='Replace existing managed connection wiring with revision and ownership checks.')
 
     with self.argument_context('logicapp connection acl list') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, required=True, help='Resource group containing the connection.')
@@ -251,16 +268,16 @@ def load_arguments(self, _):
 
     with self.argument_context('logicapp runtime start') as c:
         c.argument('path', arg_type=path_type, help='Project root to run.')
-        c.argument('port', arg_type=port_type, default=7071, help='Listener port.')
+        c.argument('port', arg_type=port_type, default=None, help='Listener port. Defaults to the saved local context port, otherwise 7071.')
         c.argument('background', options_list=['--background'], action='store_true', help='Detach and record process identity for stop.')
         c.argument('ready_timeout', options_list=['--ready-timeout'], type=int, default=30, help='Seconds to wait for the management endpoint to answer when running in the background. 0 returns immediately without waiting.')
         c.argument('no_azurite', options_list=['--no-azurite'], action='store_true', help='Do not start the Azurite storage emulator. By default it is started when the project uses development storage and nothing is already serving on port 10000.')
 
     with self.argument_context('logicapp runtime show') as c:
-        c.argument('port', arg_type=port_type, default=7071, help='Local runtime port to inspect.')
+        c.argument('port', arg_type=port_type, default=None, help='Local runtime port to inspect. Defaults to the saved local context port, otherwise 7071.')
 
     with self.argument_context('logicapp runtime stop') as c:
-        c.argument('port', arg_type=port_type, default=7071, help='Stop CLI-started runtime on this port.')
+        c.argument('port', arg_type=port_type, default=None, help='Stop CLI-started runtime on this port. Defaults to the saved local context port, otherwise 7071. Ignored with --all.')
         c.argument('all', options_list=['--all'], action='store_true', help='Stop all runtimes previously started by this CLI.')
 
     with self.argument_context('logicapp run start') as c:
@@ -269,24 +286,37 @@ def load_arguments(self, _):
         c.argument('payload_file', options_list=['--payload-file'], completer=FilesCompleter(), help='JSON payload file.')
         _target_args(c, resource_group_name_type, app_name_type, port_type, host_key_type, target_context_type)
 
-    for command in ('wait', 'cancel', 'resubmit'):
+    for command in ('wait', 'cancel'):
         with self.argument_context('logicapp run ' + command) as c:
             c.argument('workflow', arg_type=workflow_type, required=True)
             c.argument('run_id', arg_type=run_id_type, required=True)
             _target_args(c, resource_group_name_type, app_name_type, port_type, host_key_type, target_context_type)
-            if command != 'resubmit':
-                c.argument('timeout', options_list=['--timeout'], type=int, default=300,
-                           help='Observation deadline in seconds (1-86400). Timeout never cancels a run. Defaults to 300.')
-                c.argument('interval', options_list=['--interval'], type=int, default=5,
-                           help='Polling interval in seconds (1-300), no greater than timeout. Defaults to 5.')
+            c.argument('timeout', options_list=['--timeout'], type=int, default=300,
+                       help='Observation deadline in seconds (1-86400). Timeout never cancels a run. Defaults to 300.')
+            c.argument('interval', options_list=['--interval'], type=int, default=5,
+                       help='Polling interval in seconds (1-300), no greater than timeout. Defaults to 5.')
             if command != 'wait':
                 c.argument('yes', options_list=['--yes', '-y'], action='store_true', help='Skip interactive confirmation.')
             if command == 'cancel':
                 c.argument('wait', options_list=['--wait'], action='store_true',
                            help='Wait for observed Cancelled status, not just POST acknowledgement.')
-            if command == 'resubmit':
-                c.argument('trigger_history_id', options_list=['--trigger-history-id'],
-                           help='Optional retained history identifier, verified against the source run. Otherwise search at most 10 pages of 100 histories.')
+
+    with self.argument_context('logicapp run resubmit') as c:
+        c.argument('workflow', arg_type=workflow_type, required=True)
+        c.argument('run_id', arg_type=run_id_type, required=True)
+        c.argument('action', options_list=['--action'], required=True,
+                   help='One executed action in the completed source run; requires runtime canResubmit=true.')
+        c.argument('yes', options_list=['--yes', '-y'], action='store_true',
+                   help='Skip confirmation of a new execution and potentially repeated external effects.')
+        _target_args(c, resource_group_name_type, app_name_type, port_type, host_key_type, target_context_type)
+
+    with self.argument_context('logicapp trigger history resubmit') as c:
+        c.argument('workflow', arg_type=workflow_type, required=True)
+        c.argument('trigger', arg_type=trigger_type, required=True)
+        c.argument('history_name', options_list=['--history-name'], required=True,
+                   help='Exact retained fired trigger history to replay. Does not require a readable associated run.')
+        c.argument('yes', options_list=['--yes', '-y'], action='store_true', help='Skip confirmation of potentially duplicated external effects.')
+        _target_args(c, resource_group_name_type, app_name_type, port_type, host_key_type, target_context_type)
 
     with self.argument_context('logicapp run show') as c:
         c.argument('workflow', arg_type=workflow_type, required=True)

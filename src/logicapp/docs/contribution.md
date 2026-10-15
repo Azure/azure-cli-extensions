@@ -10,8 +10,13 @@ Follow-up `db3389f47272a2d0cd6298c702f5153102a24fe9` requires managed deletion
 to match the selected site's system principal and tenant using creation's shared
 ActiveDirectory matcher. Missing or unrelated tenant evidence retains policies
 and ARM resources; site and policy evidence are refreshed after verified unlink.
-Subsequent staging features and safety repairs preserve its original 38 leaves
-and add 17 leaves, for 55 total. Upstream packaging starts at preview `1.0.0b1`.
+The reviewed follow-up baseline `1eaa335d635e62a41607b4c7d06acd4b96e49dfb`
+(historical 0.1.23) includes all later feature and safety increments. These
+preserve the original extension and add 19 leaves, for 57 total. Upstream
+packaging remains at the unpublished preview `1.0.0b1`; the version change does
+not invalidate supported saved reports. The upstream contribution retains its
+Python 3.10/Azure CLI 2.67.0 minimums, portable GA controls and style helpers
+rather than copying staging packaging or machine-specific tests.
 
 The stock-CLI additivity control is generated, not copied from a private
 development machine. Each help control runs `python -m azure.cli ... --help`
@@ -20,7 +25,7 @@ extension and system-extension directories. Dynamic extension installation,
 version checks and telemetry are disabled. This keeps the reference matched
 to the CLI under test without requiring live Azure or a frozen help transcript.
 Independent assertions pin the 13 existing GA leaves to the core App Service
-loader, reject command overrides and preserve all 55 extension leaves.
+loader, reject command overrides and preserve all 57 extension leaves.
 
 The extension-local guides distinguish historical staging evidence from release
 qualification. Historical Windows loopback/runtime exercises do not establish
@@ -45,11 +50,12 @@ repository write access and cannot use Enterprise Managed User email identities.
 Those account/access qualifications have not been verified. This contribution
 does not grant permissions or add collaborators.
 
-## Local upstream qualification
+## Initial import qualification (historical)
 
-The migrated preview was exercised on Windows with Python 3.12.12, Azure CLI
+The initial 0.1.19-based import was exercised on Windows with Python 3.12.12, Azure CLI
 2.91.0, azdev 0.2.13 and Node.js 22.18.0. This is not a completed Python/platform
-matrix or a claim about live Azure.
+matrix or a claim about live Azure. These results predate the complete
+0.1.23-based synchronization and do not qualify that later diff.
 
 | Check | Result |
 | --- | --- |
@@ -75,3 +81,50 @@ Style adaptations use standard indentation formatting and extract bounded
 foundation/report checks into helpers. Narrow annotations retain exact integer
 type guards and small logging/transport protocol classes; no repository-wide
 lint rules or regression checks were disabled.
+
+## Reviewed synchronization qualification
+
+The complete synchronization uses the reviewed 0.1.23 source baseline above,
+not the earlier import's test results. All production modules were compared
+against that immutable input. Differences are limited to retained upstream
+report/testing helper extraction, explicit historical public report producers,
+an equivalent CLI subscription-factory import, required parameter help and
+escaped help markup. The portable GA controls and Python-only wheel contract
+remain upstream-specific.
+
+The current and minimum CLI runs use separate private configurations and
+extension installations. Source and exact-wheel suites run serially because
+the regression fixtures share a work directory. Windows Python 3.12.12/current
+CLI 2.91.0 and Python 3.12.7/minimum CLI 2.67.0 are not a Python 3.10-3.14 or
+cross-platform matrix.
+
+| Synchronization check | Result |
+| --- | --- |
+| Complete current-CLI source suite, with production origins enforced | 853 tests / 2,332 subtests passed. |
+| Complete current-CLI exact-installed suite, with production origins enforced | 853 tests / 2,332 subtests passed. |
+| Complete minimum-CLI source suite, with production origins enforced | 853 tests / 2,332 subtests passed. |
+| Complete minimum-CLI exact-installed suite, with production origins enforced | 853 tests / 2,332 subtests passed. |
+| `azdev test logicapp --series --discover --no-exitfirst --pytest-args -q` | 853 source tests passed under the official runner. |
+| Source/wheel/both native installations | All 30 production Python/metadata files byte-identical; preview/minimum/Python-only metadata and excluded test content checked. |
+| `azdev style logicapp`, `azdev linter logicapp`, `azdev verify license` | Passed style, command/help/argument/custom rules and license headers. |
+| `python scripts\ci\test_index.py -q` | 9 tests completed successfully (2 CI-only network checks skipped locally); no index edit. |
+| `python scripts\ci\validate_external_source_urls.py --cached` | Passed staged external-source URL policy. |
+| `azdev scan --confidence-level MEDIUM --directory-path src\logicapp --recursive --continue-on-failure` | No detected secrets; no added exclusions. |
+| `python -m pip check`, tracked privacy and local Markdown links | Passed; no private input URLs/paths/artifacts published. |
+
+The older public Azure Pipelines failure was inspected rather than treated as
+green from development evidence. Its Linux Windows-API tests mocked
+`sys.platform` without isolating executable discovery; the unit fixture now
+supplies its synthetic PowerShell executable without changing native cleanup.
+The reviewed timestamp parser also avoids the earlier Python 3.10 parsing gap.
+The medium scanner's synthetic credentialed URL is now assembled from explicit
+nonsecret test components, preserving identical runtime input, refusal checks
+and no-network assertions; no scanner exclusion or privacy test was removed.
+Old style/linter jobs compared unrelated main-branch files, including the index.
+Those upstream CI diff-scope failures were not worked around by editing the
+index or unrelated pipeline configuration.
+
+Latest-head public AI review, current upstream CI/maintainer approval, supported
+Python compatibility and effective CODEOWNERS eligibility remain independent
+gates. Historical cached-runtime evidence does not close them. The contribution
+stays draft while they are unresolved; no live Azure or SDK execution is implied.

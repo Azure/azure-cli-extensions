@@ -262,7 +262,7 @@ def validate_workflow_document(payload, workflow, path, findings):
     if not isinstance(triggers, dict) or not triggers:
         _finding(findings, workflow, path, "$.definition.triggers", "workflow.triggers.missing", "error", "definition.triggers must be a non-empty object.", "Add at least one trigger.")
         triggers = {}
-    if actions is not None and not isinstance(actions, dict):
+    if not isinstance(actions, dict):
         _finding(findings, workflow, path, "$.definition.actions", "workflow.actions.invalid", "error", "definition.actions must be an object.", "Use an object for actions.")
         actions = {}
     actions = actions or {}

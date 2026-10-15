@@ -36,7 +36,7 @@ from requests.exceptions import RequestException as RequestsRequestException
 from ._args import flatten_repeatable
 from ._constants import LOGICAPP_REDACTION_SENTINEL
 from ._json import json_equal, strict_json_loads
-from ._managed_api import response_status_from_error
+from ._managed_api import _quote_segment, response_status_from_error
 from ._oauth_consent import DEFAULT_CONSENT_TIMEOUT, run_consent_flow, verify_connected
 from ._runtime_client import validate_file_etag
 from ._workflow_discovery import response_etag
@@ -339,6 +339,7 @@ class _ConnectionsFile:
         self.before, self.raw_before, etag = _read_connections_file(self.client)
         validate_file_etag(etag, description=CONNECTIONS_FILE)
         self.entry = _ABSENT
+        self.written_etag = None
 
     def _entry(self, payload):
         return payload.get(MANAGED_CLASS, {}).get(self.name, _ABSENT)
@@ -369,13 +370,15 @@ class _ConnectionsFile:
             raise ClientRequestError(
                 "The connections.json revision changed before publication. The runtime rejected "
                 "the ETag; no retry or file restoration was attempted. Inspect retained ARM state.")
-        if not isinstance(receipt, dict) or receipt.get("statusCode") not in (200, 201, 204):
+        if (not isinstance(receipt, dict) or type(receipt.get("statusCode")) is not int  # pylint: disable=unidiomatic-typecheck
+                or receipt["statusCode"] not in (200, 201, 204)):
             # An asynchronous or unsupported receipt does not establish completed
             # publication, including for best-effort file restoration.
             self.entry = _ABSENT
             raise ClientRequestError(
                 "The connections.json write did not return a completed receipt. "
                 "Publication is uncertain; inspect the file and retained ARM state before retrying.")
+        self.written_etag = validate_file_etag(response_etag(receipt), description=CONNECTIONS_FILE)
         try:
             published, _, _ = _read_connections_file(self.client)
         except (CLIError, OSError, ValueError, TypeError) as error:
@@ -395,6 +398,14 @@ class _ConnectionsFile:
         previous = self._entry(self.before)
         if json_equal(self._entry(current), previous):
             return
+        if self.written_etag is None:
+            raise ValidationError(
+                "No completed connections.json write revision was established; "
+                "refusing automatic restoration. Inspect the retained file and ARM state.")
+        if etag != self.written_etag:
+            raise ValidationError(
+                "The connections.json entry changed or its owned revision was replaced; "
+                "refusing to overwrite another writer during rollback.")
         if not json_equal(self._entry(current), self.entry):
             raise ValidationError("The connections.json entry changed; refusing to overwrite it during rollback.")
         etag = validate_file_etag(etag, description=CONNECTIONS_FILE)
@@ -408,7 +419,8 @@ class _ConnectionsFile:
         content = (self.raw_before if json_equal(current, self.before)
                    else json.dumps(current, indent=2, allow_nan=False).encode("utf-8"))
         receipt = self.client.put_raw(CONNECTIONS_FILE, content, if_match=etag)
-        if not isinstance(receipt, dict) or receipt.get("statusCode") not in (200, 201, 204):
+        if (not isinstance(receipt, dict) or type(receipt.get("statusCode")) is not int  # pylint: disable=unidiomatic-typecheck
+                or receipt["statusCode"] not in (200, 201, 204)):
             raise ClientRequestError("Conditional connections.json restoration did not return a completed receipt.")
 
 
@@ -430,6 +442,8 @@ def acl_show(cmd, resource_group_name, connection, policy, sender=None):
 def acl_add(cmd, resource_group_name, connection, object_id, tenant_id=None, policy=None,
             location=None, sender=None):
     connection_id = _connection_id(cmd, resource_group_name, connection)
+    policy_name = policy or object_id
+    policy_id = _access_policy_id(connection_id, policy_name)
     existing = _arm(cmd, "GET", connection_id, None, sender)
     if str(existing.get("kind") or "").upper() != "V2":
         raise ValidationError(
@@ -441,10 +455,9 @@ def acl_add(cmd, resource_group_name, connection, object_id, tenant_id=None, pol
     if not resolved_location:
         raise RequiredArgumentMissingError("--location is required; the connection did not report one.")
     resolved_tenant = tenant_id or _tenant_id(cmd)
-    policy_name = policy or object_id
     _refuse_duplicate_principal(cmd, connection_id, connection, object_id, policy_name, sender)
     body = build_access_policy_body(resolved_location, resolved_tenant, object_id)
-    return _policy_view(_arm(cmd, "PUT", _access_policy_id(connection_id, policy_name), body, sender))
+    return _policy_view(_arm(cmd, "PUT", policy_id, body, sender))
 
 
 def acl_remove(cmd, resource_group_name, connection, policy, sender=None):
@@ -619,7 +632,8 @@ def _existing_resource(cmd, resource_id, sender=None):
 def _already_exists(connection_name):
     raise ValidationError(
         "Connection '{}' already exists. Re-run with --force to overwrite it, or choose another "
-        "--connection-name.".format(connection_name))
+        "--name (connection managed create) or --connection-name "
+        "(legacy connection create).".format(connection_name))
 
 
 def _refuse_duplicate_principal(cmd, connection_id, connection, object_id, policy_name, sender=None):
@@ -694,8 +708,17 @@ def _access_policies_id(connection_id):
     return "{}/accessPolicies".format(connection_id)
 
 
+def _valid_access_policy_name(value):
+    return (isinstance(value, str) and bool(value) and value == value.strip()
+            and value not in (".", "..") and value.isprintable()
+            and not any(character in value for character in "/\\%?#"))
+
+
 def _access_policy_id(connection_id, policy_name):
-    return "{}/accessPolicies/{}".format(connection_id, policy_name)
+    if not _valid_access_policy_name(policy_name):
+        raise InvalidArgumentValueError(
+            "Access policy name must be a non-empty single identifier, not a path, URL or escaped value.")
+    return "{}/accessPolicies/{}".format(connection_id, _quote_segment(policy_name))
 
 
 def _arm(cmd, method, resource_id, body=None, sender=None):

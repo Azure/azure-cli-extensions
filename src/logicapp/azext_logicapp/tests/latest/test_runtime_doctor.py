@@ -88,7 +88,7 @@ class DoctorTests(unittest.TestCase):
         for name in ("host.json", "local.settings.json", os.path.join("hello", "workflow.json")):
             path = self.project / name
             original = path.read_text()
-            for content in (None, '{"secret":"' + secret, "[]", '"'+secret+'"'):
+            for content in (None, '{"secret":"' + secret, "[]", '"' + secret + '"'):
                 with self.subTest(name=name, content=content):
                     if content is None:
                         path.unlink()
@@ -171,7 +171,7 @@ class DoctorTests(unittest.TestCase):
             ("ordinary appsetting('ABSENT') text", "pass"), ("@@appsetting('ABSENT')", "pass"),
             ("@concat('appsetting(''ABSENT'')', 'literal')", "unknown"),
             ("@{appsetting('ABSENT')}", "unknown"), ("@appsetting(variables('name'))", "unknown"),
-            ("@appsetting('A''B')", "unknown"), ("@concat(appsetting('ABSENT'), 'x')", "unknown")):
+                ("@appsetting('A''B')", "unknown"), ("@concat(appsetting('ABSENT'), 'x')", "unknown")):
             with self.subTest(text=text):
                 rows = []
                 doctor._references(rows, {"input": text}, "ref", {}, set())
@@ -186,7 +186,7 @@ class DoctorTests(unittest.TestCase):
         self.write("parameters.json", {"assigned": {"type": "String", "value": "@appsetting('MISSING')"}})
         self.write("connections.json", {"serviceProviderConnections": {
             "connection": {"parameterValues": {"secret": "@parameters('assigned')",
-                                                "other": "@parameters('ABSENT')"}}}})
+                                               "other": "@parameters('ABSENT')"}}}})
         result = self.report()
         self.assertEqual(["MISSING"], self.row(result, "references.project-parameters")["evidence"]["missingAppSettings"])
         self.assertEqual(["ABSENT"], self.row(result, "references.connections")["evidence"]["missingParameters"])
@@ -208,6 +208,24 @@ class DoctorTests(unittest.TestCase):
         row = self.row(result, "configuration.workflow.0.structure")
         self.assertEqual(["graph.missing_action"], row["evidence"]["rules"])
         self.assertNotIn("hidden-value", json.dumps(result))
+
+    def test_structure_requires_actions_object_but_allows_empty_actions(self):
+        for kind in ("Stateful", "Stateless"):
+            for value in ("missing", None, [], {}):
+                with self.subTest(kind=kind, actions=value):
+                    document = _workflow.workflow_json(kind)
+                    if value == "missing":
+                        document["definition"].pop("actions")
+                    else:
+                        document["definition"]["actions"] = value
+                    path = self.write(os.path.join("hello", "workflow.json"), document)
+                    before = path.read_bytes()
+                    row = self.row(self.report(), "configuration.workflow.0.structure")
+                    self.assertEqual("pass" if isinstance(value, dict) else "fail", row["status"])
+                    self.assertEqual([] if isinstance(value, dict) else ["workflow.actions.invalid"],
+                                     row["evidence"]["rules"])
+                    self.assertEqual(before, path.read_bytes())
+        self.http.assert_not_called()
 
     def test_cache_matching_range_and_missing_downloads(self):
         (self.root / "cache" / "v1.2.3").mkdir(parents=True)
@@ -326,14 +344,43 @@ class DoctorTests(unittest.TestCase):
                        {"port": 0}, {"probe_timeout": 0}, {"probe_timeout": 11}):
             self.assertEqual(1, doctor.doctor_report(**kwargs)["exitCode"])
 
+    def test_explicit_empty_context_cannot_be_combined_with_explicit_target(self):
+        for target in ({"path": str(self.project)}, {"port": 17071},
+                       {"path": str(self.project), "port": 17071}):
+            with self.subTest(target=target), \
+                    mock.patch.object(_context, "get_context", return_value=(None, {})) as select, \
+                    mock.patch.object(_local, "find_tool", return_value=(None, "not-found")) as tool:
+                result = doctor.doctor_report(context="", **target)
+                self.assertEqual(1, result["exitCode"])
+                row = self.row(result, "target.local")
+                self.assertEqual("fail", row["status"])
+                self.assertIn("--context cannot be combined", row["reason"])
+                self.assertFalse(result["coverage"]["toolSelection"])
+                self.assertFalse(result["coverage"]["localHostInspection"])
+                select.assert_not_called()
+                tool.assert_not_called()
+        self.http.assert_not_called()
+        self.run.assert_not_called()
+
+    def test_explicit_empty_context_does_not_select_active_context(self):
+        self.write_context({"active": "local", "contexts": {
+            "local": {"name": "local", "target": {"kind": "local", "path": str(self.project), "port": 17071}}}})
+        before = (self.root / "contexts.json").read_bytes()
+        result = doctor.doctor_report(context="")
+        self.assertEqual("fail", self.row(result, "target.local")["status"])
+        self.assertFalse(result["coverage"]["toolSelection"])
+        self.assertEqual(before, (self.root / "contexts.json").read_bytes())
+        self.http.assert_not_called()
+
     def test_storage_endpoint_policy_never_contacts_external_or_ambiguous_urls(self):
         endpoints, reason = doctor._storage_endpoints({"AzureWebJobsStorage": "true"})
         self.assertIsNone(reason)
         self.assertEqual([10000, 10001, 10002], [endpoint[2] for endpoint in endpoints])
+        synthetic_credentials = ":".join(("user", "secret"))
         for storage in ("AccountName=private;AccountKey=secret", "UseDevelopmentStorage=true;ProxyUri=http://external",
                         "BlobEndpoint=http://example.com;QueueEndpoint=http://localhost:2;TableEndpoint=http://localhost:3",
                         "BlobEndpoint=http://localhost:1;QueueEndpoint=http://localhost:2;TableEndpoint=http://localhost:3?sig=secret",
-                        "BlobEndpoint=http://user:secret@localhost;QueueEndpoint=http://localhost:2;TableEndpoint=http://localhost:3",
+                        "BlobEndpoint=http://{}@localhost;QueueEndpoint=http://localhost:2;TableEndpoint=http://localhost:3".format(synthetic_credentials),
                         "UseDevelopmentStorage=true;UseDevelopmentStorage=false",
                         "BlobEndpoint=http://localhost:70000;QueueEndpoint=http://localhost:2;TableEndpoint=http://localhost:3",
                         "BlobEndpoint=https://localhost:1;QueueEndpoint=http://localhost:2;TableEndpoint=http://localhost:3"):
@@ -345,8 +392,8 @@ class DoctorTests(unittest.TestCase):
                 self.assertEqual("unknown", rows[0]["status"])
                 self.assertNotIn("secret", json.dumps(rows))
         endpoints, reason = doctor._storage_endpoints({"AzureWebJobsStorage":
-            "AccountKey=secret;BlobEndpoint=http://localhost:1234/account;"
-            "QueueEndpoint=http://127.0.0.1:1235/account;TableEndpoint=http://[::1]:1236/account"})
+                                                       "AccountKey=secret;BlobEndpoint=http://localhost:1234/account;"
+                                                       "QueueEndpoint=http://127.0.0.1:1235/account;TableEndpoint=http://[::1]:1236/account"})
         self.assertIsNone(reason)
         self.assertEqual([("blob", "127.0.0.1", 1234), ("queue", "127.0.0.1", 1235), ("table", "::1", 1236)], endpoints)
 

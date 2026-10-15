@@ -10,7 +10,9 @@ import uuid
 from collections import OrderedDict
 
 VERSION = "1.0.0b1"
-SCHEMA = "1.0"
+SCHEMA = "2.0"
+_V1_PRODUCERS = ("0.1.17", "0.1.18", "0.1.19", "0.1.20", "0.1.21", "1.0.0b1")
+_V2_PRODUCERS = ("0.1.22", "0.1.23", "1.0.0b1", VERSION)
 SDK_PACKAGE = "Microsoft.Azure.Workflows.WebJobs.Tests.Extension"
 WORKFLOW_SCHEMA = ("https://schema.management.azure.com/providers/Microsoft.Logic/"
                    "schemas/2016-06-01/workflowdefinition.json#")
@@ -93,7 +95,7 @@ def finding(rule, source="options", pointer=""):
             "jsonPointer": pointer, "message": message, "recommendation": recommendation}
 
 
-def new_report(phase="preflight"):
+def new_report(phase="preflight", strict=False):
     return {
         "reportType": "logicapp-test-foundation", "schemaVersion": SCHEMA,
         "invocationId": str(uuid.uuid4()), "phase": phase,
@@ -115,7 +117,8 @@ def new_report(phase="preflight"):
                   "platformQualification": "unknown", "networkIsolation": "unknown"},
         "qualification": "blocked", "executionState": "notExecuted", "businessTests": "notExecuted",
         "summary": {"executed": 0, "passed": 0, "failed": 0, "errors": 0, "warnings": 0},
-        "findings": [], "inspection": None, "outcome": "blocked", "exitCode": 4,
+        "findings": [], "inspection": None, "exitPolicy": "strict" if strict else "planning",
+        "outcome": "blocked" if strict else "planned", "exitCode": 4 if strict else 0,
     }
 
 
@@ -134,8 +137,10 @@ def finalize(report):
         outcome, code = "inspected", 0
     elif any(row["severity"] == "error" and row["category"] == "authoring" for row in rows):
         outcome, code = "authoringInvalid", 1
-    else:
+    elif report["schemaVersion"] == "1.0" or report["exitPolicy"] == "strict":
         outcome, code = "blocked", 4
+    else:
+        outcome, code = "planned", 0
     report.update(outcome=outcome, exitCode=code)
     return report
 
@@ -151,9 +156,19 @@ def _exact(actual, expected):
 def _valid_header(value, template):
     if not isinstance(value, dict) or set(value) != set(template):
         return False
-    variable = {"invocationId", "workflow", "inputs", "coverage", "dependencies",
-                "summary", "findings", "outcome", "exitCode"}
+    legacy = value["schemaVersion"] == "1.0"
+    if not legacy and value["exitPolicy"] not in ("planning", "strict"):
+        return False
+    variable = {"invocationId", "provenance", "workflow", "inputs", "coverage", "dependencies",
+                "summary", "findings", "outcome", "exitCode", "exitPolicy"}
     if any(not _exact(value[key], template[key]) for key in set(template) - variable):
+        return False
+    provenance = value["provenance"]
+    producers = _V1_PRODUCERS if legacy else _V2_PRODUCERS
+    if not isinstance(provenance, dict) or provenance.get("cliVersion") not in producers:
+        return False
+    expected_provenance = dict(template["provenance"], cliVersion=provenance["cliVersion"])
+    if not _exact(provenance, expected_provenance):
         return False
     if not isinstance(value["invocationId"], str):
         return False
@@ -223,8 +238,13 @@ def _validated_inputs(inputs):
 
 
 def validate_report(value):
-    """Reject extensions in v1, including arbitrary text that could leak secrets."""
+    """Validate each closed schema without reinterpreting historical exits."""
+    if not isinstance(value, dict) or value.get("schemaVersion") not in ("1.0", SCHEMA):
+        return False
     template = new_report()
+    if value["schemaVersion"] == "1.0":
+        template["schemaVersion"] = "1.0"
+        del template["exitPolicy"]
     if not _valid_header(value, template):
         return False
     workflow = value["workflow"]

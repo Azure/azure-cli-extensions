@@ -30,6 +30,10 @@ NONE = "None"
 
 def site_url(cmd, resource_group_name, name):
     from azure.cli.core.commands.client_factory import get_subscription_id
+    from ._context import _cloud_coordinate
+
+    resource_group_name = _cloud_coordinate(resource_group_name)
+    name = _cloud_coordinate(name)
     subscription_id = get_subscription_id(cmd.cli_ctx)
     return (
         "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}"

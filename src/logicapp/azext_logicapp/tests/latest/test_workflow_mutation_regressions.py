@@ -33,6 +33,7 @@ def http_error(status):
 
 class VfsTransport:
     """Models observed VFS behavior, including its missing-file conditional PUT defect."""
+
     def __init__(self):
         self.document = _workflow.workflow_json("Stateful")
         self.content = json.dumps(self.document, indent=2).encode()
@@ -148,7 +149,7 @@ class WorkflowMutationRegressions(unittest.TestCase):
 
     def update(self, **kwargs):
         kwargs.setdefault("allow_non_atomic", True)
-        return _workflow_mutation.update_workflow(self.client, "hello", str(self.file), **kwargs)
+        return _workflow_mutation.set_workflow(self.client, "hello", str(self.file), **kwargs)
 
     def delete(self, **kwargs):
         kwargs.setdefault("allow_non_atomic", True)
@@ -229,6 +230,7 @@ class WorkflowMutationRegressions(unittest.TestCase):
                                               ["Compose_greeting"]["inputs"]["greeting"]))
                 self.assertEqual(authored, self.file.read_bytes())
                 self.assertEqual(self.mutations()[0][2]["body"], self.transport.content)
+
     def test_local_raw_get_put_delete_keep_key_in_headers_and_skip_azure_auth(self):
         self.update()
         self.delete()
@@ -255,6 +257,7 @@ class WorkflowMutationRegressions(unittest.TestCase):
     def test_real_azure_cli_sender_preserves_raw_vfs_write_bytes(self):
         content = b'{\n  "literal": "authored\\u00e9",\n  "kind": "Stateful"\n}\n'
         captured = []
+
         def send(_session, request, **_kwargs):
             captured.append((request.body.read(), request.headers))
             response = Response()
@@ -263,7 +266,7 @@ class WorkflowMutationRegressions(unittest.TestCase):
             response.headers["ETag"] = '"written"'
             return response
         client = _runtime_client.SiteRuntimeClient(self.cmd, "http://localhost:17071", host_key="local-key")
-        with patch.dict(self.cmd.cli_ctx.data, {"command": "logicapp workflow update"}), \
+        with patch.dict(self.cmd.cli_ctx.data, {"command": "logicapp workflow set"}), \
                 patch("requests.Session.send", new=send):
             result = client.vfs_client().put_raw("hello/workflow.json", content, if_match='"before"')
         self.assertEqual(content, captured[0][0])
@@ -316,8 +319,9 @@ class WorkflowMutationRegressions(unittest.TestCase):
         document = copy.deepcopy(self.candidate)
         del document["definition"]["actions"]
         self.write_input(document)
-        with self.assertRaises(InvalidArgumentValueError):
+        with self.assertRaises(ValidationError) as raised:
             self.update()
+        self.assertEqual("workflow.actions.invalid", json.loads(str(raised.exception))["findings"][0]["rule"])
         self.assertEqual([], self.transport.calls)
 
     def test_kind_conversion_is_not_an_implicit_update(self):
@@ -604,6 +608,7 @@ class WorkflowMutationRegressions(unittest.TestCase):
 
     def test_rollback_race_never_overwrites_concurrent_edit(self):
         newer = json.dumps(self.transport.document).encode()
+
         def corrupt_first_write():
             self.transport.content = b"partial-write"
             self.transport.after_put = None
@@ -665,7 +670,7 @@ class WorkflowMutationRegressions(unittest.TestCase):
         self.assertIn("If-Match=*", self.mutations()[0][2]["headers"])
 
     def test_command_registration_required_flags_and_no_force_bypass(self):
-        for suffix in ("update", "delete"):
+        for suffix in ("set", "delete"):
             command = "logicapp workflow " + suffix
             cli = get_default_cli()
             cli.invocation = SimpleNamespace(data={"command_string": command})
@@ -678,19 +683,19 @@ class WorkflowMutationRegressions(unittest.TestCase):
                              "if_match", "yes", "allow_non_atomic"} <= set(args))
             self.assertNotIn("force", args)
             self.assertNotIn("path", args)
-            if suffix == "update":
+            if suffix == "set":
                 self.assertTrue(args["file"].settings["required"])
 
     def test_custom_commands_share_target_resolution_and_validation(self):
         with patch.object(_runtime_client, "send_raw_request", side_effect=self.transport), \
                 patch.object(_runtime_client, "_site_resource_id", return_value=SITE):
-            result = custom.workflow_update(self.cmd, "hello", str(self.file), local=True, port=17071,
-                                            host_key="local-key", allow_non_atomic=True, yes=True)
+            result = custom.workflow_set(self.cmd, "hello", str(self.file), local=True, port=17071,
+                                         host_key="local-key", allow_non_atomic=True, yes=True)
             self.assertEqual("updated", result["action"])
             result = custom.workflow_delete(self.cmd, "hello", resource_group_name="rg", name="app",
                                             allow_non_atomic=True, yes=True)
             self.assertEqual("deleted", result["action"])
-        for operation, required in ((custom.workflow_update, {"file": str(self.file)}), (custom.workflow_delete, {})):
+        for operation, required in ((custom.workflow_set, {"file": str(self.file)}), (custom.workflow_delete, {})):
             for kwargs in ({"local": True, "name": "app"}, {"context": "ctx", "port": 17071},
                            {"resource_group_name": "rg", "name": "app", "host_key": "key"}):
                 with self.subTest(operation=operation.__name__, kwargs=kwargs):

@@ -65,6 +65,7 @@ class FoundationTests(unittest.TestCase):
         self.assertEqual("notExecuted", report["businessTests"])
         self.assertEqual(0, report["summary"]["executed"])
         self.assertEqual(0, report["summary"]["passed"])
+        self.assertEqual(0, report["summary"]["failed"])
         self.assertEqual("blocked", report["gates"]["sdkRestore"])
         self.assertEqual("blocked", report["gates"]["sdkExecution"])
         self.assertEqual("unresolved", report["gates"]["sdkAdoption"])
@@ -73,7 +74,10 @@ class FoundationTests(unittest.TestCase):
     def test_healthy_definition_is_limited_inspection_not_test_pass(self):
         before = {path: path.read_bytes() for path in self.root.rglob("*") if path.is_file()}
         report = self.plan(test_project=str(self.test_project))
-        self.assertEqual(4, report["exitCode"])
+        self.assertEqual(0, report["exitCode"])
+        self.assertEqual("planned", report["outcome"])
+        self.assertEqual("planning", report["exitPolicy"])
+        self.assertEqual("2.0", report["schemaVersion"])
         self.assertEqual("passedLimited", report["coverage"]["static"])
         self.assertEqual("1.0.3", report["dependencies"]["declaredSdkVersion"])
         self.assertEqual("net8.0", report["dependencies"]["declaredTargetFramework"])
@@ -81,6 +85,107 @@ class FoundationTests(unittest.TestCase):
         self.assertTrue(protocol.validate_report(report))
         self.assert_gated(report)
         self.assertEqual(before, {path: path.read_bytes() for path in self.root.rglob("*") if path.is_file()})
+
+    def test_strict_plan_preserves_execution_gates_and_reports_without_running_tests(self):
+        report = self.plan(strict=True, report_path=str(self.result_file))
+        self.assertEqual(4, report["exitCode"])
+        self.assertEqual("blocked", report["outcome"])
+        self.assertEqual("strict", report["exitPolicy"])
+        self.assertTrue(protocol.validate_report(report))
+        self.assertEqual(report, json.loads(self.result_file.read_text()))
+        self.assert_gated(report)
+        inspected = testing.results_report(str(self.result_file))
+        self.assertEqual(0, inspected["exitCode"])
+        self.assertEqual("strict", inspected["exitPolicy"])
+        self.assertEqual(4, inspected["inspection"]["sourceExitCode"])
+        self.assertEqual("blocked", inspected["inspection"]["sourceOutcome"])
+        self.assert_gated(inspected)
+
+    def test_plan_policy_does_not_override_error_precedence(self):
+        for strict in (False, True):
+            for rule, outcome, code in (
+                    ("workflow.actions.invalid", "authoringInvalid", 1),
+                    ("input.invalidJson", "inputError", 3),
+                    ("input.changed", "stale", 5),
+                    ("report.publication", "publicationError", 6)):
+                with self.subTest(strict=strict, rule=rule):
+                    report = self.plan(strict=strict)
+                    report["findings"].append(protocol.finding(rule, "workflow"))
+                    protocol.finalize(report)
+                    self.assertEqual((outcome, code), (report["outcome"], report["exitCode"]))
+                    self.assert_gated(report)
+            self.definition.write_text("{}", encoding="utf-8")
+            self.assertEqual(1, self.plan(strict=strict)["exitCode"])
+            self.definition.write_text("{", encoding="utf-8")
+            self.assertEqual(3, self.plan(strict=strict)["exitCode"])
+            self.write("Orders", _workflow.workflow_json("Stateful"), workflow=True)
+            self.assertEqual(6, self.plan(strict=strict, report_path=str(self.root / "missing" / "p.json"))["exitCode"])
+            with mock.patch.object(testing, "_recheck", side_effect=lambda report, _snapshots:
+                                   report["findings"].append(protocol.finding("input.changed", "workflow"))):
+                self.assertEqual(5, self.plan(strict=strict)["exitCode"])
+
+    def test_previous_schema2_reports_preserve_both_exit_policies_and_blocked_sdk_gates(self):
+        for strict in (False, True):
+            with self.subTest(strict=strict):
+                earlier = self.plan(strict=strict)
+                earlier["provenance"]["cliVersion"] = "0.1.22"
+                self.assertTrue(protocol.validate_report(earlier))
+                inspected = testing.results_report(self.save(earlier))
+                self.assertEqual(0, inspected["exitCode"])
+                self.assertEqual("2.0", inspected["schemaVersion"])
+                self.assertEqual("0.1.22", inspected["provenance"]["cliVersion"])
+                self.assertEqual("strict" if strict else "planning", inspected["exitPolicy"])
+                self.assertEqual(4 if strict else 0, inspected["inspection"]["sourceExitCode"])
+                self.assertEqual("blocked" if strict else "planned", inspected["inspection"]["sourceOutcome"])
+                self.assert_gated(inspected)
+
+    def test_closed_policy_rejects_inconsistent_exits_and_schema_producer_combinations(self):
+        for strict in (False, True):
+            source = self.plan(strict=strict)
+            for edit in (
+                    lambda doc: doc.pop("exitPolicy"),
+                    lambda doc: doc.update(exitPolicy=None),
+                    lambda doc: doc.update(exitPolicy=[]),
+                    lambda doc: doc.update(exitPolicy={}),
+                    lambda doc: doc.update(exitPolicy=True),
+                    lambda doc: doc.update(exitPolicy="execution"),
+                    lambda doc: doc.update(exitPolicy="planning" if strict else "strict"),
+                    lambda doc: doc.update(exitCode=0 if strict else 4),
+                    lambda doc: doc.update(outcome="planned" if strict else "blocked"),
+                    lambda doc: doc.update(schemaVersion="1.0"),
+                    lambda doc: doc["provenance"].update(cliVersion="0.1.21")):
+                with self.subTest(strict=strict, edit=edit):
+                    invalid = copy.deepcopy(source)
+                    edit(invalid)
+                    self.assertFalse(protocol.validate_report(invalid))
+                    self.assertEqual(3, testing.results_report(self.save(invalid))["exitCode"])
+
+    def test_legacy_reports_preserve_source_exits_without_adopting_planning_policy(self):
+        for version in ("0.1.17", "0.1.18", "0.1.19", "0.1.20", "0.1.21", "1.0.0b1"):
+            legacy = self.plan()
+            legacy["schemaVersion"] = "1.0"
+            legacy["provenance"]["cliVersion"] = version
+            del legacy["exitPolicy"]
+            protocol.finalize(legacy)
+            with self.subTest(version=version):
+                self.assertEqual(("blocked", 4), (legacy["outcome"], legacy["exitCode"]))
+                self.assertTrue(protocol.validate_report(legacy))
+                inspected = testing.results_report(self.save(legacy))
+                self.assertEqual(0, inspected["exitCode"])
+                self.assertEqual("1.0", inspected["schemaVersion"])
+                self.assertNotIn("exitPolicy", inspected)
+                self.assertEqual(version, inspected["provenance"]["cliVersion"])
+                self.assertEqual(4, inspected["inspection"]["sourceExitCode"])
+                self.assertEqual("blocked", inspected["inspection"]["sourceOutcome"])
+                self.assert_gated(inspected)
+                for edit in (
+                        lambda doc: doc.update(exitCode=0, outcome="planned"),
+                        lambda doc: doc.update(exitPolicy="planning"),
+                        lambda doc: doc.update(schemaVersion="2.0"),
+                        lambda doc: doc["provenance"].update(cliVersion="unknown")):
+                    invalid = copy.deepcopy(legacy)
+                    edit(invalid)
+                    self.assertFalse(protocol.validate_report(invalid))
 
     def test_stateless_is_preserved_not_qualified(self):
         self.write("Orders", _workflow.workflow_json("Stateless"), workflow=True)
@@ -188,7 +293,7 @@ class FoundationTests(unittest.TestCase):
         self.write("parameters.json", {"SECRET_PARAMETER": {"value": SECRET}})
         self.write("connections.json", {"managedApiConnections": {"SECRET_CONNECTION": {"authentication": SECRET}}})
         report = self.plan()
-        self.assertEqual(4, report["exitCode"])
+        self.assertEqual(0, report["exitCode"])
         self.assertEqual("checkedLiteralDeclarations", report["coverage"]["configurationReferences"])
         text = json.dumps(report)
         for private in (SECRET, "SECRET_SETTING", "SECRET_PARAMETER", "SECRET_CONNECTION"):
@@ -209,18 +314,18 @@ class FoundationTests(unittest.TestCase):
         doc["definition"]["actions"]["Compose_greeting"]["inputs"] = "@parameters('DEFAULT')"
         self.write("Orders", doc, workflow=True)
         report = self.plan()
-        self.assertEqual(4, report["exitCode"])
+        self.assertEqual(0, report["exitCode"])
         self.assertNotIn(SECRET, json.dumps(report))
         self.assertFalse((self.project / "parameters.json").exists())
         self.write("parameters.json", {})
-        self.assertEqual(4, self.plan()["exitCode"])
+        self.assertEqual(0, self.plan()["exitCode"])
 
     def test_business_payload_connection_names_are_not_connection_declarations(self):
         doc = _workflow.workflow_json("Stateful")
         doc["definition"]["actions"]["Compose_greeting"]["inputs"] = {
             "referenceName": SECRET, "connectionName": SECRET}
         self.write("Orders", doc, workflow=True)
-        self.assertEqual(4, self.plan()["exitCode"])
+        self.assertEqual(0, self.plan()["exitCode"])
         self.assertFalse((self.project / "connections.json").exists())
 
     def test_duplicate_historical_change_finding_does_not_hide_current_drift(self):
@@ -232,6 +337,7 @@ class FoundationTests(unittest.TestCase):
         data = self.definition.read_bytes()
         original = testing._read
         reads = []
+
         def drifting(path):
             if path == str(self.definition):
                 reads.append(path)
@@ -250,7 +356,7 @@ class FoundationTests(unittest.TestCase):
         self.write("local.settings.json", {"IsEncrypted": True, "Values": SECRET})
         report = self.plan()
         self.assertIn("reference.dynamic", self.rules(report))
-        self.assertEqual(4, report["exitCode"])
+        self.assertEqual(0, report["exitCode"])
         self.write("local.settings.json", {"IsEncrypted": False, "Values": []})
         self.assertIn("reference.shape", self.rules(self.plan()))
         doc["definition"]["actions"]["Compose_greeting"]["inputs"] = "@parameters(concat('" + SECRET + "'))"
@@ -262,7 +368,7 @@ class FoundationTests(unittest.TestCase):
             with self.subTest(extra=extra):
                 self.test_project.write_text(XML.replace("</PropertyGroup>", extra + "</PropertyGroup>"), encoding="utf-8")
                 report = self.plan(test_project=str(self.test_project))
-                self.assertEqual(4, report["exitCode"])
+                self.assertEqual(0, report["exitCode"])
                 self.assert_gated(report)
                 self.assertTrue(protocol.validate_report(report))
 
@@ -303,6 +409,7 @@ class FoundationTests(unittest.TestCase):
         original = testing._test_project
         for remove in (False, True):
             self.write("Orders", _workflow.workflow_json("Stateful"), workflow=True)
+
             def change(report, data):
                 original(report, data)
                 if remove:
@@ -392,14 +499,14 @@ class FoundationTests(unittest.TestCase):
             row["message"] for row in report["findings"] if row["rule"] == "report.publication"))
         published = json.loads(self.result_file.read_bytes())
         self.assertTrue(protocol.validate_report(published))
-        self.assertEqual(4, published["exitCode"])
+        self.assertEqual(0, published["exitCode"])
         self.assertEqual("notExecuted", published["executionState"])
         self.assertEqual(1, len(list(self.root.glob(".logicapp-test-*"))))
         self.assertNotIn(SECRET, json.dumps(report))
 
     def test_symbolic_links_and_reparse_components_are_not_inspected_or_written(self):
         with mock.patch.object(testing.os, "lstat", return_value=SimpleNamespace(st_mode=stat_mode(),
-                                                                              st_file_attributes=0x400)):
+                                                                                 st_file_attributes=0x400)):
             self.assertEqual(3, self.plan()["exitCode"])
             report = testing.results_report(str(self.result_file))
             self.assertEqual(3, report["exitCode"])
@@ -413,8 +520,9 @@ class FoundationTests(unittest.TestCase):
         self.assertEqual(0, report["exitCode"])
         self.assertEqual("inspected", report["outcome"])
         self.assertEqual("inspection", report["phase"])
-        self.assertEqual(4, report["inspection"]["sourceExitCode"])
-        self.assertEqual("blocked", report["inspection"]["sourceOutcome"])
+        self.assertEqual(0, report["inspection"]["sourceExitCode"])
+        self.assertEqual("planned", report["inspection"]["sourceOutcome"])
+        self.assertEqual("planning", report["exitPolicy"])
         self.assertEqual("notAttested", report["inspection"]["authenticity"])
         self.assertEqual("notChecked", report["inspection"]["workflowIdentity"])
         self.assertEqual(source["findings"], report["findings"])
@@ -457,7 +565,7 @@ class FoundationTests(unittest.TestCase):
     def test_protocol_tampering_types_enums_counts_provenance_and_relationships(self):
         source = self.plan(test_project=str(self.test_project))
         mutations = (
-            lambda obj: obj.update(schemaVersion="2.0"),
+            lambda obj: obj.update(schemaVersion="3.0"),
             lambda obj: obj.update(invocationId=SECRET),
             lambda obj: obj.update(phase="execute"),
             lambda obj: obj.update(executionState="completed"),
@@ -513,7 +621,7 @@ class FoundationTests(unittest.TestCase):
             register_event=lambda key, func: handlers.setdefault(key, []).append(func),
             unregister_event=lambda key, func: handlers[key].remove(func))
         cmd = SimpleNamespace(cli_ctx=cli)
-        result = custom.test_plan(cmd, str(self.project), "Orders")
+        result = custom.test_plan(cmd, str(self.project), "Orders", strict=True)
         self.assertEqual(4, result["exitCode"])
         rows = protocol.table_format(result)
         self.assertEqual("notExecuted", rows[0]["Execution"])
@@ -521,8 +629,11 @@ class FoundationTests(unittest.TestCase):
             handlers[EVENT_CLI_SUCCESSFUL_EXECUTE][0](cli)
         self.assertEqual(4, raised.exception.code)
         self.assertTrue(all(not value for value in handlers.values()))
-        custom.test_plan(cmd, str(self.project), "Orders")
+        custom.test_plan(cmd, str(self.project), "Orders", strict=True)
         handlers[EVENT_CLI_POST_EXECUTE][0](cli)
+        self.assertTrue(all(not value for value in handlers.values()))
+        result = custom.test_plan(cmd, str(self.project), "Orders")
+        self.assertEqual(0, result["exitCode"])
         self.assertTrue(all(not value for value in handlers.values()))
         custom.test_results_show(cmd, self.save())
         self.assertTrue(all(not value for value in handlers.values()))

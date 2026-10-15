@@ -235,6 +235,7 @@ class WorkflowDiscoveryRegressions(unittest.TestCase):
                 _workflow_discovery.list_workflows(self.client, next_token="e30=")
         self.assertNotIn("private-token", str(caught.exception))
         self.assertEqual([], self.sender.requests)
+
     def test_non_alphabet_continuations_fail_before_json_or_inventory_reads(self):
         valid = _paging.encode_token(1)
         for invalid in ("!", "?", "#", " ", "\n", "\r", "\t", "\0", "\x7f"):
@@ -386,7 +387,7 @@ class WorkflowDiscoveryRegressions(unittest.TestCase):
         with patch.object(_workflow_mutation, "user_confirmation") as mutation_confirmation, \
                 patch.object(self.client, "vfs_client") as vfs_factory:
             for operation in (
-                    lambda: _workflow_mutation.update_workflow(
+                    lambda: _workflow_mutation.set_workflow(
                         self.client, "hello", str(file), yes=True, allow_non_atomic=True),
                     lambda: _workflow_mutation.delete_workflow(
                         self.client, "hello", yes=True, allow_non_atomic=True)):

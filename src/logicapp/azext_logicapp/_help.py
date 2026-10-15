@@ -20,8 +20,9 @@ short-summary: Produce a bounded, versioned local preflight report; never run te
 long-summary: >
   Inspects Standard workflow bytes, limited top-level structure and literal
   configuration declarations. Optional test project is XML metadata only.
-  Outputs notExecuted markers even for valid authoring. Exits: 1 authoring,
-  3 input, 4 SDK policy blocked, 5 changed inputs, 6 publication error.
+  Outputs notExecuted markers even for valid authoring. Exit 0 means successful
+  planning, never tests passed. --strict exits 4 for blocked execution gates.
+  Other exits: 1 authoring, 3 input, 5 changed inputs, 6 publication error.
   Default stdout only; --report-path writes a sanitized report to an existing
   directory. Global output/query flags work before diagnostic nonzero exits.
 examples:
@@ -29,6 +30,8 @@ examples:
     text: az logicapp test plan --path .\\App --workflow Orders --output json
   - name: Inspect declared test metadata and save the preflight report.
     text: az logicapp test plan --path .\\App --workflow Orders --test-project .\\Tests\\App.csproj --report-path .\\Reports\\plan.json
+  - name: Generate a preflight report and fail the invocation if execution gates remain blocked.
+    text: az logicapp test plan --path .\\App --workflow Orders --strict --output json
 """
 
 helps['logicapp test results'] = """
@@ -38,15 +41,16 @@ short-summary: Inspect saved foundation preflight reports, not native SDK result
 
 helps['logicapp test results show'] = """
 type: command
-short-summary: Validate and inspect a saved foundation report without following embedded paths.
+short-summary: Inspect a saved preflight report; no tests executed and no embedded paths followed.
 long-summary: >
-  Accepts only version 1.0 foundation preflight documents with closed fields
-  and notExecuted markers. Validation is not a signature or provenance
+  Accepts closed version 1.0 and 2.0 foundation preflight documents with
+  notExecuted markers, preserving the recorded exit policy and source result.
+  Validation is not a signature or provenance
   attestation. Exit 0 means inspection succeeded, never testsPassed; the source
   outcome and exit remain in inspection. Optional --workflow-file compares
   exact bytes and exits 5 on drift. Native SDK, TRX and legacy results are unsupported.
 examples:
-  - name: Inspect a saved plan and explicitly check the current definition identity.
+  - name: Inspect a saved preflight report (no tests executed) and check the current definition identity.
     text: az logicapp test results show --result-file .\\Reports\\plan.json --workflow-file .\\App\\Orders\\workflow.json
 """
 
@@ -138,6 +142,29 @@ type: group
 short-summary: Author local and inspect deployed Logic Apps Standard connections.
 """
 
+helps['logicapp connection managed'] = """
+type: group
+short-summary: Create managed API connections for deployed Logic Apps Standard sites.
+"""
+
+helps['logicapp connection managed create'] = """
+type: command
+short-summary: Create and wire a managed API connection using distinct connection and app names.
+long-summary: >
+  --name always names the connection; --logic-app-name names the consuming site.
+  Uses the same guarded managed API/OAuth/identity creation as legacy
+  connection create --managed-api. That legacy mode is deprecated but retains
+  its original --name meaning throughout this preview; removal requires an
+  announced breaking change. Does not broaden identity ownership or cleanup.
+  OAuth failures may retain connection/access-policy resources. Inspect the
+  reported state before retrying; timeout does not promise resource removal.
+examples:
+  - name: Create an Azure Blob connection for the site's managed identity.
+    text: az logicapp connection managed create -g my-rg --logic-app-name my-app -n blobProd --connector azureblob -l eastus --auth-mode managed-identity
+  - name: Create an Office 365 connection with browser consent.
+    text: az logicapp connection managed create -g my-rg --logic-app-name my-app -n outlook --connector office365 -l eastus --auth-mode oauth
+"""
+
 helps['logicapp context list'] = """
 type: command
 short-summary: List saved targets with their active selection.
@@ -226,7 +253,7 @@ long-summary: >
   credentials, or other app files. Authored definitions can themselves contain
   sensitive literals. JSON output contains the definition; table output shows
   only name, kind, state and health.
-  The etag can be passed to update/delete --if-match to guard an editing session.
+  The etag can be passed to set/delete --if-match to guard an editing session.
 examples:
   - name: Read one local workflow.
     text: az logicapp workflow show --local --workflow hello
@@ -252,7 +279,7 @@ examples:
     text: az logicapp workflow export -g my-rg -n my-app --workflow hello --output-path .\\hello.json
 """
 
-helps['logicapp workflow update'] = """
+helps['logicapp workflow set'] = """
 type: command
 short-summary: Replace one existing workflow.json with revision checks and runtime preflight.
 long-summary: >
@@ -278,9 +305,9 @@ long-summary: >
   targets may reject writes; use documented deployment commands instead.
 examples:
   - name: Update a workflow on a running local host after retaining an export.
-    text: az logicapp workflow update --local --workflow hello --file .\\edited\\workflow.json --allow-non-atomic --yes
+    text: az logicapp workflow set --local --workflow hello --file .\\edited\\workflow.json --allow-non-atomic --yes
   - name: Guard a deployed update using the ETag obtained during export.
-    text: az logicapp workflow update -g my-rg -n my-app --workflow hello --file .\\edited\\workflow.json --if-match saved-etag --allow-non-atomic
+    text: az logicapp workflow set -g my-rg -n my-app --workflow hello --file .\\edited\\workflow.json --if-match saved-etag --allow-non-atomic
 """
 
 helps['logicapp workflow delete'] = """
@@ -541,6 +568,10 @@ long-summary: >
   sends that exact revision. Missing/weak ETags or a revision conflict stop the
   command without ARM cleanup or an unconditional retry. VFS receipt/readback
   checks remain required; these are not a cross-resource transaction.
+  The authored managed connection ID must be a canonical relative resource ID
+  in the selected subscription and resource group. Absolute, malformed or
+  cross-scope IDs refuse before connection-resource ARM access or unlink,
+  including with --keep-resource. Manage cross-scope resources explicitly.
 examples:
   - name: Remove a connection from an app, without prompting.
     text: az logicapp connection delete -g rg-lacli-ri2bg8 -n la-cli-pilot-ri2bg8 --connection cliPilotBlob --yes
@@ -781,6 +812,11 @@ examples:
 helps['logicapp runtime stop'] = """
 type: command
 short-summary: Stop a local runtime started by this CLI.
+long-summary: |
+  A retry can remove a cleanup-pending receipt once every recorded process and
+  launch consumer has exited and the port is idle. It never signals a recycled or
+  unverifiable PID. Confirmed exited Windows processes may still have open handles.
+  Recovered receipts report result already-exited rather than terminated.
 examples:
   - name: Stop one CLI-started runtime.
     text: az logicapp runtime stop --port 7071
@@ -839,13 +875,46 @@ examples:
 
 helps['logicapp run resubmit'] = """
 type: command
-short-summary: Request a new Stateful execution using its verified retained trigger history.
+short-summary: Request a new Stateful execution starting from one eligible action of a completed run.
+long-summary: |
+  Requires --workflow, --run-id and one --action, plus confirmation or --yes.
+  This is the run-resubmit API with actionsToResubmit, not trigger-history replay.
+  The runtime must advertise canResubmit=true for that executed action; missing,
+  false or malformed eligibility, skipped actions and active source runs refuse
+  before POST. The CLI never enables the feature or emulates graph eligibility.
+  Run/action identity and stable metadata are rechecked after confirmation.
+  The runtime uses the source workflow version and retained prior results.
+  Selected/dependent actions can repeat external effects with current connections
+  and settings. This is a new execution, not in-place resume or exactly-once recovery.
+  HTTP 202 reports accepted, not completed. newRunId comes only from the service;
+  a missing identity reports acceptedNewRunIdUnknown. No Location/latest-run fallback,
+  trigger-history substitution, configuration restore or automatic POST retry.
+  Use run wait separately when a new identity is returned. Preflight/submission
+  each use a 60-second deadline excluding interactive confirmation time.
+examples:
+  - name: Resubmit one eligible action from a retained completed Stateful run.
+    text: az logicapp run resubmit --local --workflow hello --run-id RUN_ID --action Send_HTTP --yes
+"""
+
+helps['logicapp trigger'] = """
+type: group
+short-summary: Manage Logic Apps Standard workflow triggers.
+"""
+
+helps['logicapp trigger history'] = """
+type: group
+short-summary: Replay explicitly selected retained trigger histories.
+"""
+
+helps['logicapp trigger history resubmit'] = """
+type: command
+short-summary: Request a new Stateful execution from an explicit retained fired trigger history.
 long-summary: |
   Requires confirmation or --yes and may duplicate external side effects. This
-  is not resume or exactly-once recovery; the original run remains unchanged.
-  Resolves the run's trigger and verifies a fired history referencing that run
-  before calling the Standard trigger-history resubmit API. Searches at most
-  1000 histories; optionally specify a retained --trigger-history-id to verify.
+  is not resume or exactly-once recovery; no source run is selected or changed.
+  Requires --workflow, --trigger and --history-name. Reads the selected trigger
+  and fired history directly, rechecking after confirmation. It does not search
+  histories or require a readable associated source run.
   Never substitutes a run id for a history id. Missing history, Stateless and
   invalid metadata fail before POST. A 202 reports accepted, not completed, with
   newRunId only if the response identifies it. Otherwise it reports
@@ -853,8 +922,8 @@ long-summary: |
   no resubmit request is retried. Preflight and submission each use a 60-second
   deadline; interactive confirmation time is excluded.
 examples:
-  - name: Resubmit a retained deployed Stateful run as a new execution.
-    text: az logicapp run resubmit -g my-rg -n my-app --workflow hello --run-id RUN_ID --yes
+  - name: Replay an explicitly selected retained fired trigger history.
+    text: az logicapp trigger history resubmit -g my-rg -n my-app --workflow hello --trigger manual --history-name HISTORY_ID --yes
 """
 
 helps['logicapp run action'] = """

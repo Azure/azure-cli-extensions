@@ -50,10 +50,12 @@ REQUIRED_EXTENSION_COMMANDS = {
     "logicapp run wait",
     "logicapp run cancel",
     "logicapp run resubmit",
+    "logicapp trigger history resubmit",
+    "logicapp connection managed create",
     "logicapp workflow list",
     "logicapp workflow show",
     "logicapp workflow export",
-    "logicapp workflow update",
+    "logicapp workflow set",
     "logicapp workflow delete",
     "logicapp workflow enable",
     "logicapp workflow disable",
@@ -74,6 +76,7 @@ REQUIRED_EXTENSION_COMMANDS = {
     "logicapp connection acl remove",
 }
 
+
 def _extension_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
@@ -81,7 +84,9 @@ def _extension_root() -> Path:
 def _load_cli_command_table():
     cli = get_default_cli()
     invoker = cli.invocation_cls(cli_ctx=cli, commands_loader_cls=cli.commands_loader_cls)
-    command_table = invoker.commands_loader.load_command_table(args=["logicapp"])
+    # A fresh CLI index only knows the core group. Load the complete catalog
+    # rather than depending on a prior extension invocation warming that index.
+    command_table = invoker.commands_loader.load_command_table(args=[])
     return invoker, command_table
 
 
@@ -209,7 +214,7 @@ class LogicAppAdditivityTests(ScenarioTest):
 
     def test_complete_extension_surface_is_preserved(self):
         commands, _ = _extension_loader_surface()
-        self.assertEqual(55, len(commands))
+        self.assertEqual(57, len(commands))
         self.assertTrue(REQUIRED_EXTENSION_COMMANDS.issubset(commands))
         self.assertTrue(PINNED_GA_LOGICAPP_COMMANDS.isdisjoint(commands))
 
@@ -226,6 +231,7 @@ class LogicAppAdditivityTests(ScenarioTest):
         # nargs='+' without action='append'.
         expected = {
             "logicapp connection create": {"parameter": "+", "app_setting": "+"},
+            "logicapp connection managed create": {"parameter": "+"},
             "logicapp identity assign": {"user_assigned": "+"},
             "logicapp identity remove": {"user_assigned": "+"},
             "logicapp dependency check": {"kind": None},

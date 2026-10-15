@@ -82,13 +82,13 @@ def _read_json(path, rows, check, required=True, optional=False):
 
 
 def _target(rows, path, context, port):
-    if context and (path is not None or port is not None):
+    if context is not None and (path is not None or port is not None):
         _finding(rows, "target.local", "fail", True,
                  "--context cannot be combined with --path or --port.",
                  "Use the saved local target, or explicit --path/--port.")
         return None, None
     ctx = None
-    if context or path is None:
+    if context is not None or path is None:
         try:
             ctx, _ = _context.get_context(context)
         except (OSError, TypeError, ValueError, _context.CLIError):
@@ -126,7 +126,8 @@ def _probe_version(path, environment, timeout):
                        FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT="1")
     try:
         result = subprocess.run([path, "--version"], env=environment, cwd=os.path.dirname(path),
-                                capture_output=True, text=True, errors="replace",
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                universal_newlines=True, errors="replace",
                                 timeout=timeout, check=False)
     except subprocess.TimeoutExpired:
         return None, "Version probe timed out."

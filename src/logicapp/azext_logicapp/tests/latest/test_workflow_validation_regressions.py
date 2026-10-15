@@ -57,6 +57,34 @@ class WorkflowValidationRegressions(unittest.TestCase):
             {finding["rule"] for finding in report["findings"]},
         )
 
+    def test_missing_or_nonobject_actions_return_structured_findings(self):
+        for kind in ("Stateful", "Stateless"):
+            for value in ("missing", None, [], "invalid", 1, True):
+                with self.subTest(kind=kind, actions=value):
+                    document = _workflow.workflow_json(kind)
+                    if value == "missing":
+                        document["definition"].pop("actions")
+                    else:
+                        document["definition"]["actions"] = value
+                    self._write(document)
+                    report = _workflow.static_validate(self.folder.name, workflow="hello")
+                    self.assertFalse(report["valid"])
+                    self.assertEqual({"errors": 1, "warnings": 0, "workflows": 1}, report["summary"])
+                    self.assertEqual("workflow.actions.invalid", report["findings"][0]["rule"])
+                    self.assertEqual("$.definition.actions", report["findings"][0]["jsonPath"])
+                    with self.assertRaises(ValidationError):
+                        custom.workflow_validate(None, path=self.folder.name, workflow="hello")
+
+    def test_empty_actions_objects_remain_valid(self):
+        for kind in ("Stateful", "Stateless"):
+            with self.subTest(kind=kind):
+                document = _workflow.workflow_json(kind)
+                document["definition"]["actions"] = {}
+                self._write(document)
+                report = custom.workflow_validate(None, path=self.folder.name, workflow="hello")
+                self.assertTrue(report["valid"])
+                self.assertEqual([], report["findings"])
+
     def test_non_object_triggers_preserve_action_and_reference_findings(self):
         self._write({
             "kind": "Stateful",

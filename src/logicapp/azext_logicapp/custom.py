@@ -7,6 +7,7 @@
 import json
 import os
 import sys
+from knack.log import get_logger
 
 from azure.cli.core.azclierror import ClientRequestError, InvalidArgumentValueError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ValidationError
 from azure.cli.core.util import user_confirmation
@@ -19,7 +20,7 @@ from ._connection import (
 from ._context import get_context, store_path
 from . import _context
 from ._dependencies import INSTALLABLE_KINDS, install_dependency, refusal_message, uninstall_dependency
-from ._local import dependencies_root, dependency_report, find_tool, start_runtime, stop_runtime, show_runtime
+from ._local import dependencies_root, dependency_report, find_tool, start_runtime, stop_runtime, show_runtime, validate_port
 from ._identity import apply_identity, get_identity, plan_assign, plan_remove
 from ._paging import operation_kind
 from . import _managed_api
@@ -31,14 +32,17 @@ from . import _run_execution
 from ._runtime_client import (
     build_runtime_client, operation_group_operation_path, operation_group_operations_path,
     operation_group_path, operation_groups_path, page_items, run_action_path, run_actions_path,
-    trigger_run_path, workflow_run_path, workflow_runs_path, workflow_validate_path)
+    trigger_run_path, workflow_run_path, workflow_runs_path)
+from ._workflow_validation import validate_runtime_workflow
 from ._workflow import HOST_JSON, LOCAL_SETTINGS_JSON, abs_path, create_workflow_file, deterministic_package, static_validate, validate_workflow_name, workflow_json, write_json_file
 
+logger = get_logger(__name__)
 
-def test_plan(cmd, path, workflow, test_project=None, report_path=None, force=False):
+
+def test_plan(cmd, path, workflow, test_project=None, report_path=None, force=False, strict=False):
     from ._runtime_doctor import finish_doctor_command
     from ._testing import plan_report
-    return finish_doctor_command(cmd, plan_report(path, workflow, test_project, report_path, force))
+    return finish_doctor_command(cmd, plan_report(path, workflow, test_project, report_path, force, strict))
 
 
 def test_results_show(cmd, result_file, workflow_file=None):
@@ -101,11 +105,11 @@ def workflow_export(cmd, workflow, output_path, force=False, resource_group_name
     return _workflow_discovery.export_workflow(client, workflow, output_path, force)
 
 
-def workflow_update(cmd, workflow, file, if_match=None, yes=False, allow_non_atomic=False,
-                    resource_group_name=None, name=None, local=False, port=None, host_key=None, context=None):
+def workflow_set(cmd, workflow, file, if_match=None, yes=False, allow_non_atomic=False,
+                 resource_group_name=None, name=None, local=False, port=None, host_key=None, context=None):
     validate_workflow_name(workflow)
     client, _ = _client_from_target(cmd, resource_group_name, name, local, port, host_key, context)
-    return _workflow_mutation.update_workflow(client, workflow, file, if_match, yes, allow_non_atomic)
+    return _workflow_mutation.set_workflow(client, workflow, file, if_match, yes, allow_non_atomic)
 
 
 def workflow_delete(cmd, workflow, if_match=None, yes=False, allow_non_atomic=False,
@@ -136,6 +140,9 @@ def connection_create(cmd, name, connector, secret=None, path=None, secret_param
                       location=None, auth_mode=None, display_name=None,
                       user_assigned_identity=None, no_browser=False, consent_timeout=None):
     if managed_api:
+        logger.warning(
+            "connection create --managed-api is deprecated. Use connection managed create "
+            "--name CONNECTION --logic-app-name APP. Legacy --name still identifies the app.")
         return _connection_create_managed(
             cmd, name, connector, resource_group_name=resource_group_name,
             connection_name=connection_name, location=location, auth_mode=auth_mode,
@@ -167,6 +174,18 @@ def connection_create(cmd, name, connector, secret=None, path=None, secret_param
                                    parameter_set=parameter_set or "connectionString",
                                    parameters=parameter, app_settings=app_setting,
                                    force=force, manage_gitignore=not no_gitignore)
+
+
+def connection_managed_create(cmd, name, logic_app_name, resource_group_name, connector, location,
+                              auth_mode, display_name=None, parameter=None, secret_parameter=None,
+                              parameter_set=None, user_assigned_identity=None, no_browser=False,
+                              consent_timeout=None, force=False):
+    return _connection_create_managed(
+        cmd, logic_app_name, connector, resource_group_name=resource_group_name,
+        connection_name=name, location=location, auth_mode=auth_mode,
+        display_name=display_name, parameter=parameter, secret_parameter=secret_parameter,
+        parameter_set=parameter_set, user_assigned_identity=user_assigned_identity,
+        no_browser=no_browser, consent_timeout=consent_timeout, force=force)
 
 
 def _connection_create_managed(cmd, name, connector, resource_group_name=None, connection_name=None,
@@ -299,11 +318,11 @@ def context_delete(cmd, name, yes=False):
 
 
 def workflow_validate(cmd, path=None, workflow=None, all=False, with_runtime=False, fail_on_warning=False, resource_group_name=None, name=None, local=False, port=None, host_key=None, context=None):
-    root = _project_path_from_context(path, context)
+    root = _project_path_from_context(path, context, allow_cloud=with_runtime)
     report = static_validate(root, workflow=workflow, all_workflows=all)
     if with_runtime:
         client, resolved = _client_from_target(cmd, resource_group_name, name, local, port, host_key, context)
-        template_checked = False
+        checked = 0
         if workflow:
             target_workflows = [(workflow, os.path.join(root, workflow, "workflow.json"))]
         else:
@@ -312,15 +331,12 @@ def workflow_validate(cmd, path=None, workflow=None, all=False, with_runtime=Fal
             resolved_path = workflow_path or os.path.join(root, workflow_name, "workflow.json")
             try:
                 body = _runtime_validate_body(resolved_path, workflow_name, root)
-                client.post(workflow_validate_path(workflow_name), body=body)
-                template_checked = True
-            except ClientRequestError as ex:
-                report["findings"].append({"workflow": workflow_name, "file": os.path.abspath(resolved_path), "jsonPath": "$", "rule": "validation.runtime_failed", "severity": "error", "message": str(ex), "recommendation": "Fix the runtime validation error and retry."})
-            except Exception as ex:  # pylint: disable=broad-except
-                template_checked = True
+                validate_runtime_workflow(client, workflow_name, body)
+                checked += 1
+            except _workflow_mutation._REQUEST_ERRORS as ex:
                 report["findings"].append({"workflow": workflow_name, "file": os.path.abspath(resolved_path), "jsonPath": "$", "rule": "validation.runtime_failed", "severity": "error", "message": str(ex), "recommendation": "Fix the runtime validation error and retry."})
         report["coverage"]["runtime"] = True
-        report["coverage"]["checks"]["runtimeTemplate"] = template_checked
+        report["coverage"]["checks"]["runtimeTemplate"] = bool(target_workflows) and checked == len(target_workflows)
         report["coverage"]["target"] = resolved
         _recount(report)
     if report["summary"]["errors"] or (fail_on_warning and report["summary"]["warnings"]):
@@ -521,18 +537,24 @@ def runtime_doctor(cmd, path=None, context=None, port=None, probe_timeout=2, str
     return finish_doctor_command(cmd, doctor_report(path, context, port, probe_timeout, strict))
 
 
-def runtime_start(cmd, path=None, port=7071, background=False, ready_timeout=30, no_azurite=False):
-    return start_runtime(cmd, path or _active_context_path() or os.curdir, port=port, background=background,
+def runtime_start(cmd, path=None, port=None, background=False, ready_timeout=30, no_azurite=False):
+    root, port = _local_lifecycle_target(path, port, require_path=True)
+    return start_runtime(cmd, root, port=port, background=background,
                          ready_timeout=ready_timeout, no_azurite=no_azurite)
 
 
-def runtime_show(cmd, port=7071):
+def runtime_show(cmd, port=None):
     del cmd
+    _, port = _local_lifecycle_target(None, port)
     return show_runtime(port=port)
 
 
-def runtime_stop(cmd, port=7071, all=False):
+def runtime_stop(cmd, port=None, all=False):
     del cmd
+    if not all:
+        _, port = _local_lifecycle_target(None, port)
+    elif port is not None:
+        validate_port(port)
     return stop_runtime(port=port, all_records=all)
 
 
@@ -571,11 +593,19 @@ def run_cancel(cmd, workflow, run_id, yes=False, wait=False, timeout=300, interv
     return _run_execution.finish_execution_command(cmd, report)
 
 
-def run_resubmit(cmd, workflow, run_id, yes=False, trigger_history_id=None, resource_group_name=None,
-                 name=None, local=False, port=None, host_key=None, context=None):
-    _run_execution.validate_execution_options(workflow, run_id, trigger_history_id=trigger_history_id)
+def trigger_history_resubmit(cmd, workflow, trigger, history_name, yes=False, resource_group_name=None,
+                             name=None, local=False, port=None, host_key=None, context=None):
+    _run_execution.validate_history_options(workflow, trigger, history_name)
     client, _ = _client_from_target(cmd, resource_group_name, name, local, port, host_key, context)
-    report = _run_execution.resubmit_run(client, workflow, run_id, yes, trigger_history_id)
+    report = _run_execution.resubmit_trigger_history(client, workflow, trigger, history_name, yes)
+    return _run_execution.finish_execution_command(cmd, report)
+
+
+def run_resubmit(cmd, workflow, run_id, action, yes=False, resource_group_name=None,
+                 name=None, local=False, port=None, host_key=None, context=None):
+    _run_execution.validate_action_resubmit_options(workflow, run_id, action)
+    client, _ = _client_from_target(cmd, resource_group_name, name, local, port, host_key, context)
+    report = _run_execution.resubmit_run_action(client, workflow, run_id, action, yes)
     return _run_execution.finish_execution_command(cmd, report)
 
 
@@ -738,6 +768,12 @@ def _trigger_name(props):
 
 def _run_action_response(raw, workflow, run_id, show_content_urls, action=None):
     props = _properties(raw or {})
+    containers = [value for key, value in (raw or {}).items()
+                  if str(key).casefold() == "properties"] if isinstance(raw, dict) else []
+    source = containers[0] if len(containers) == 1 else (props if not containers else {})
+    eligibility = [value for key, value in source.items()
+                   if str(key).casefold() == "canresubmit"] if isinstance(source, dict) else []
+    can_resubmit = eligibility[0] if len(eligibility) == 1 and isinstance(eligibility[0], bool) else None
     return {
         "action": _field(raw, "name") or _field(props, "name") or action,
         "workflow": workflow,
@@ -749,21 +785,36 @@ def _run_action_response(raw, workflow, run_id, show_content_urls, action=None):
         "endTime": _field(props, "endTime"),
         "trackingId": _field(props, "trackingId"),
         "correlation": _field(props, "correlation"),
+        "canResubmit": can_resubmit,
         "retryHistory": _redact(_field(props, "retryHistory"), show_content_urls),
         "inputsLink": _redact({"inputsLink": _field(props, "inputsLink")}, show_content_urls).get("inputsLink"),
         "outputsLink": _redact({"outputsLink": _field(props, "outputsLink")}, show_content_urls).get("outputsLink"),
     }
 
 
-def _project_path_from_context(path, context):
-    if path:
-        return abs_path(path)
-    if context:
+def _project_path_from_context(path, context, allow_cloud=False):
+    ctx = None
+    if context is not None or not path:
         ctx, _ = get_context(context)
-        if ctx.get("target", {}).get("kind") == "local":
-            return ctx["target"].get("path")
-    active_path = _active_context_path()
-    return active_path or abs_path(os.curdir)
+    target = ctx.get("target", {}) if ctx else None
+    if target and target.get("kind") != "local":
+        if allow_cloud and path:
+            return abs_path(path)
+        raise MutuallyExclusiveArgumentError(
+            "A cloud context cannot select a local project. Use a local context or explicit --path. "
+            "With cloud runtime validation, pass --path and --with-runtime together.")
+    return abs_path(path or (target.get("path") if target else None) or os.curdir)
+
+
+def _local_lifecycle_target(path, port, require_path=False):
+    ctx, _ = get_context(None) if path is None and (port is None or require_path) else (None, None)
+    target = ctx.get("target", {}) if ctx else None
+    if target and target.get("kind") != "local":
+        raise MutuallyExclusiveArgumentError(
+            "Runtime lifecycle commands require a local target. Select a local context "
+            "or pass explicit --path/--port.")
+    root = abs_path(path or (target.get("path") if target else None) or os.curdir)
+    return root, validate_port(port if port is not None else target.get("port") if target else None)
 
 
 def _active_context_path():
@@ -776,7 +827,7 @@ def _active_context_path():
 def _client_from_target(cmd, resource_group_name=None, name=None, local=False, port=None, host_key=None, context=None):
     explicit_cloud = resource_group_name is not None or name is not None
     explicit_local = bool(local)
-    if context:
+    if context is not None:
         if explicit_cloud or explicit_local:
             raise MutuallyExclusiveArgumentError("--context cannot be combined with explicit target flags.")
         if port is not None:
@@ -813,9 +864,12 @@ def _runtime_validate_body(workflow_path, workflow_name, root):
     try:
         with open(path, "r", encoding="utf-8") as handle:
             payload = strict_json_loads(handle.read())
-    except (ValueError, RecursionError):
+    except (ValueError, UnicodeError, RecursionError):
         raise ClientRequestError(
             "The authored workflow is not valid JSON. No runtime validation request was attempted.") from None
+    except OSError:
+        raise ClientRequestError(
+            "The authored workflow could not be read. No runtime validation request was attempted.") from None
     if isinstance(payload, dict) and "properties" in payload:
         return payload
     properties = {}

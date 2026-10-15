@@ -19,11 +19,15 @@ from unittest.mock import patch
 
 from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import (
-    CLIError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError,
+    CLIError, InvalidArgumentValueError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError,
     ResourceNotFoundError, ValidationError)
 from azure.cli.core.util import user_confirmation
 
-from azext_logicapp import COMMAND_LOADER_CLS, _context, _runtime_client, custom
+from azext_logicapp import COMMAND_LOADER_CLS, _context, _identity, _runtime_client, custom
+
+
+UNSAFE_CLOUD_COORDINATES = (".", "..", "rg%2Fother", "rg%2fother", "app%5cother",
+                            "rg%252fother", "app%3fquery", "app%23fragment", "app\u2028name")
 
 
 class ContextManagementTests(unittest.TestCase):
@@ -275,6 +279,75 @@ class ContextManagementTests(unittest.TestCase):
         self.assertTrue(custom.context_use(self.cmd, "cloud")["active"])
         self.assertFalse(custom.context_show(self.cmd, "dev")["active"])
 
+    def test_cloud_coordinate_mutations_refuse_encoded_and_dot_segments(self):
+        self.cloud(use=True)
+        before = self.original()
+        for field in ("resource_group_name", "logic_app_name"):
+            for value in UNSAFE_CLOUD_COORDINATES:
+                for operation in ("create", "update"):
+                    with self.subTest(field=field, value=value, operation=operation):
+                        self.store.write_bytes(before)
+                        arguments = {field: value}
+                        with self.assertRaises(ValidationError):
+                            if operation == "create":
+                                arguments = {"resource_group_name": "rg", "logic_app_name": "app"}
+                                arguments[field] = value
+                                custom.context_create(self.cmd, "unsafe", **arguments)
+                            else:
+                                custom.context_update(self.cmd, "cloud", **arguments)
+                        self.assertEqual(before, self.original())
+
+    def test_cloud_coordinate_loading_refuses_unsafe_names_without_rewrite(self):
+        self.cloud(use=True)
+        valid = _context.load_store()
+        for field in ("resourceGroup", "logicAppName"):
+            for value in UNSAFE_CLOUD_COORDINATES:
+                with self.subTest(field=field, value=value):
+                    document = copy.deepcopy(valid)
+                    document["contexts"]["cloud"]["target"][field] = value
+                    self.write(document)
+                    before = self.original()
+                    with self.assertRaisesRegex(CLIError, "schema"):
+                        custom.context_show(self.cmd, "cloud")
+                    self.assertEqual(before, self.original())
+
+    def test_cloud_arm_sinks_refuse_unsafe_coordinates_before_subscription_lookup(self):
+        for field in ("resource_group_name", "name"):
+            for value in UNSAFE_CLOUD_COORDINATES:
+                for build in (_runtime_client._site_resource_id, _identity.site_url):
+                    with self.subTest(field=field, value=value, build=build.__name__), \
+                            patch("azure.cli.core.commands.client_factory.get_subscription_id") as subscription:
+                        arguments = {"resource_group_name": "rg", "name": "app"}
+                        arguments[field] = value
+                        with self.assertRaises(ValidationError):
+                            build(self.cmd, **arguments)
+                        subscription.assert_not_called()
+                site = "/subscriptions/sub/resourceGroups/{}/providers/Microsoft.Web/sites/{}".format(
+                    value if field == "resource_group_name" else "rg", value if field == "name" else "app")
+                with self.subTest(field=field, value=value, build="normalize"):
+                    with self.assertRaises(InvalidArgumentValueError):
+                        _runtime_client._normalize_site_resource_id(site)
+
+    def test_cloud_literal_coordinate_paths_are_preserved(self):
+        for group, app in (("rg.prod_1-(x)", "app-1"), ("rg with space", "app_2")):
+            with self.subTest(group=group, app=app), \
+                    patch("azure.cli.core.commands.client_factory.get_subscription_id", return_value="sub"):
+                site = "/subscriptions/sub/resourceGroups/{}/providers/Microsoft.Web/sites/{}".format(group, app)
+                self.assertEqual(site, _runtime_client._site_resource_id(self.cmd, group, app))
+                self.assertEqual(site + "?api-version=" + _identity.SITE_API_VERSION,
+                                 _identity.site_url(self.cmd, group, app))
+                self.assertEqual(site, _runtime_client._normalize_site_resource_id(site))
+
+    def test_runtime_site_targets_are_exact_roots_not_child_routes(self):
+        site = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Web/sites/app"
+        for value in (site + "/slots/other", site + "/hostruntime/path", site + "?query=injected",
+                      site + "#fragment", site.replace("/rg/", "//"),
+                      site.replace("Microsoft.Web", "Microsoft.Other")):
+            with self.subTest(value=value):
+                with self.assertRaises(CLIError):
+                    _runtime_client._normalize_site_resource_id(value)
+        self.assertEqual(site, _runtime_client._normalize_site_resource_id(site + "/"))
+
     def test_create_different_target_and_missing_use_are_not_upserts(self):
         self.create()
         before = self.original()
@@ -473,6 +546,7 @@ class ContextManagementTests(unittest.TestCase):
         for operation in ("update", "delete"):
             with self.subTest(operation=operation):
                 self.create(use=True)
+
                 def change_store(*_args, **_kwargs):
                     data = _context.load_store()
                     data["future"] = operation
@@ -501,6 +575,7 @@ class ContextManagementTests(unittest.TestCase):
                 real_reader = _context.load_store
                 snapshot = real_reader()
                 calls = []
+
                 def changed_reader():
                     calls.append(True)
                     if len(calls) == 1:
@@ -606,11 +681,47 @@ class ContextManagementTests(unittest.TestCase):
         self.assertEqual(before, self.original())
         self.assertEqual([], list(self.store.parent.glob(".contexts-*.tmp")))
 
+    def test_failed_publication_and_cleanup_keep_sanitized_preservation_error(self):
+        self.create()
+        before = self.original()
+        with patch.object(_context.os, "replace", side_effect=PermissionError("PRIVATE-PUBLISH-REASON")), \
+                patch.object(_context.os, "unlink", side_effect=PermissionError("PRIVATE-CLEANUP-REASON")):
+            with self.assertRaisesRegex(CLIError, "previous store was not replaced") as caught:
+                custom.context_update(self.cmd, "local", port=17079)
+        self.assertIn("temporary", str(caught.exception).lower())
+        self.assertNotIn("PRIVATE-", str(caught.exception))
+        self.assertEqual(before, self.original())
+        self.assertEqual(1, len(list(self.store.parent.glob(".contexts-*.tmp"))))
+
+    def test_already_removed_publish_temporary_preserves_original_error(self):
+        self.create()
+        before = self.original()
+        actual_unlink = os.unlink
+
+        def remove_then_report_absent(path):
+            actual_unlink(path)
+            raise FileNotFoundError("PRIVATE-ALREADY-REMOVED")
+        with patch.object(_context.os, "replace", side_effect=PermissionError("PRIVATE-PUBLISH-REASON")), \
+                patch.object(_context.os, "unlink", side_effect=remove_then_report_absent):
+            with self.assertRaisesRegex(CLIError, "previous store was not replaced") as caught:
+                custom.context_update(self.cmd, "local", port=17079)
+        self.assertNotIn("PRIVATE-", str(caught.exception))
+        self.assertEqual(before, self.original())
+        self.assertEqual([], list(self.store.parent.glob(".contexts-*.tmp")))
+
+    def test_successful_publication_never_unlinks_replacement(self):
+        self.create()
+        with patch.object(_context.os, "unlink", side_effect=PermissionError("Must not remove published data")) as unlink:
+            result = custom.context_update(self.cmd, "local", port=17079)
+        self.assertEqual(17079, result["target"]["port"])
+        unlink.assert_not_called()
+
     def test_publish_uses_same_directory_flush_then_atomic_replace(self):
         self.create()
         before = self.original()
         actual_replace = os.replace
         observed = []
+
         def replace(source, destination):
             self.assertEqual(self.store.parent, Path(source).parent)
             self.assertEqual(self.store, Path(destination))

@@ -3,15 +3,17 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import copy
 import json
 import os
+import re
 import shutil
 import socket
 import subprocess
 import sys
 import time
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from urllib.error import HTTPError as HTTPURLError, URLError
 from urllib.request import Request, urlopen
 
@@ -21,6 +23,8 @@ import psutil
 from azure.cli.core.azclierror import CLIError, FileOperationError, InvalidArgumentValueError, ValidationError
 
 from ._constants import DEFAULT_LOCAL_PORT
+from ._context import _store_lock
+from ._json import json_equal
 
 
 DEPENDENCY_KINDS = ("core-tools", "node", "dotnet", "azurite", "bundle")
@@ -261,7 +265,8 @@ def _dependency_version(path, kind):
     if os.path.splitext(executable)[1].lower() == ".ps1":
         return None
     try:
-        completed = subprocess.run([executable, "--version"], capture_output=True, text=True, timeout=20,
+        completed = subprocess.run([executable, "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                   universal_newlines=True, timeout=20,
                                    check=False, env=dependency_environment(executable))
     except (OSError, subprocess.SubprocessError):
         return None
@@ -479,7 +484,7 @@ def stop_azurite():
         return {"stopped": False, "reason": "cleanup-pending", "pid": pid,
                 "remediation": "A process could not be safely stopped. Its ownership record was retained."}
     deadline = time.monotonic() + 5
-    while _runtime_has_live_process(record) and time.monotonic() < deadline:
+    while (_runtime_has_live_process(record) or _unverified_cleanup_pending(record)) and time.monotonic() < deadline:
         time.sleep(0.1)
     owned_still_live = _runtime_has_live_process(record) or _unverified_cleanup_pending(record)
     if owned_still_live:
@@ -764,9 +769,16 @@ def _process_may_exist(pid):
     if not _valid_record_pid(pid):
         return False
     try:
-        return psutil.pid_exists(pid)
+        exists = psutil.pid_exists(pid)
     except (psutil.Error, OSError):
         return True
+    if exists and sys.platform == "win32":
+        # Windows retains exited process objects while handles are open. A PID
+        # in that table is not evidence of a running or unverifiable process.
+        _, exited = _windows_process_snapshot(pid)
+        if exited:
+            return False
+    return exists
 
 
 def _remember_runtime_children(record):
@@ -796,12 +808,14 @@ def _remember_runtime_children(record):
                 snapshot.append((child.pid, parent_pid, creation_time))
         # Enumeration can cross a recycled root/child PID. Only a still-matching
         # root and current ancestry/birth chain authorize adopting new identities.
-        proven = (_descendant_process_records(record["pid"], record["processCreateTimeUtc"], snapshot)
+        excluded = set()
+        proven = (_descendant_process_records(record["pid"], record["processCreateTimeUtc"], snapshot,
+                                              excluded=excluded)
                   if _record_matches(record) else [])
         identities = {item["pid"]: item for item in proven}
         known = {item["pid"] for item in children}
         for candidate in observed:
-            if candidate["pid"] not in known:
+            if candidate["pid"] not in known and candidate["pid"] not in excluded:
                 children.append(identities.get(candidate["pid"], candidate))
                 known.add(candidate["pid"])
     if children:
@@ -917,7 +931,18 @@ def stop_runtime(port=None, all_records=False):
         if not record:
             refused.append(_refusal(item_port, None, "runtime.no_record", "No CLI runtime record exists for this port."))
             continue
+        original = copy.deepcopy(record)
         if not _runtime_has_live_process(record):
+            if record.get("cleanupPending"):
+                try:
+                    _remove_runtime_record(item_port, original, recover=True)
+                except CLIError as ex:
+                    refused.append(_refusal(item_port, record.get("pid"), "runtime.cleanup_pending", str(ex)))
+                    continue
+                stopped.append({"port": item_port, "pid": record.get("pid"),
+                                "processCreateTimeUtc": record.get("processCreateTimeUtc"),
+                                "result": "already-exited", "recordPath": _record_file(item_port)})
+                continue
             refused.append(_refusal(item_port, record.get("pid"), "runtime.identity_mismatch", "The recorded process identity no longer matches a live process."))
             continue
         try:
@@ -929,17 +954,19 @@ def stop_runtime(port=None, all_records=False):
             while _runtime_has_live_process(record) and time.monotonic() < deadline:
                 time.sleep(0.1)
             if _runtime_has_live_process(record) or _unverified_cleanup_pending(record):
-                _write_record(item_port, record)
                 raise OSError("The runtime still has a live process; its record was retained.")
-            try:
-                os.remove(_record_file(item_port))
-            except FileNotFoundError:
-                pass
+            _remove_runtime_record(item_port, original)
             stopped.append({"port": item_port, "pid": record.get("pid"), "processCreateTimeUtc": record.get("processCreateTimeUtc"), "result": "terminated", "recordPath": _record_file(item_port)})
-        except (OSError, subprocess.SubprocessError) as ex:
+        except FileOperationError as ex:
+            refused.append(_refusal(item_port, record.get("pid"), "runtime.record_changed", str(ex)))
+        except (OSError, CLIError, subprocess.SubprocessError) as ex:
             record["cleanupPending"] = True
-            _write_record(item_port, record)
-            refused.append(_refusal(item_port, record.get("pid"), "runtime.stop_failed", str(ex)))
+            try:
+                _write_record(item_port, record, expected=original)
+            except CLIError as write_error:
+                refused.append(_refusal(item_port, record.get("pid"), "runtime.record_changed", str(write_error)))
+            else:
+                refused.append(_refusal(item_port, record.get("pid"), "runtime.stop_failed", str(ex)))
     if refused and not stopped:
         raise CLIError(refused[0]["message"])
     result = {"stopped": stopped, "refused": refused}
@@ -951,6 +978,21 @@ def stop_runtime(port=None, all_records=False):
         if azurite:
             result["azurite"] = azurite
     return result
+
+
+def _remove_runtime_record(port, expected, recover=False):
+    with _store_lock(_record_file(port), label="Logic Apps runtime ownership state"):
+        current = _read_record(port)
+        if not json_equal(current, expected):
+            raise FileOperationError("Runtime ownership record changed during cleanup; no record was removed. Inspect it and retry.")
+        if recover:
+            processes = _runtime_process_records(current)
+            if current.get("consumerPid"):
+                processes.append({"pid": current["consumerPid"]})
+            if any(_process_may_exist(item.get("pid")) for item in processes) or not _port_free(port):
+                raise CLIError("Runtime cleanup is still pending: a recorded process or launch consumer may be running, "
+                               "or the port is occupied. Its record was retained; inspect it and retry after it exits.")
+        os.remove(_record_file(port))
 
 
 def _live_runtime_records():
@@ -1103,21 +1145,26 @@ def _record_file(port):
     return os.path.join(STATE_DIR, "runtime-{}.json".format(int(port)))
 
 
-def _write_record(port, record):
-    _write_state_record(_record_file(port), record, "Could not write runtime state record.")
+def _write_record(port, record, expected=None):
+    _write_state_record(_record_file(port), record, "Could not write runtime state record.", expected=expected)
 
 
-def _write_state_record(path, record, message):
+def _write_state_record(path, record, message, expected=None):
     staging = "{}.{}.write".format(path, uuid.uuid4().hex)
     try:
         os.makedirs(STATE_DIR, exist_ok=True)
-        with open(staging, "x", encoding="utf-8") as handle:
-            json.dump(record, handle, indent=2, sort_keys=True)
-            handle.write("\n")
-        # Readers must always see a complete consumer record while a foreground
-        # host updates its child identities, not a transient partial JSON file.
-        os.replace(staging, path)
-    except OSError as ex:
+        with _store_lock(path, label="Logic Apps runtime ownership state"):
+            if expected is not None and not json_equal(_read_state_record(path, message), expected):
+                raise FileOperationError("Runtime ownership record changed during cleanup; no record was written. Inspect it and retry.")
+            with open(staging, "x", encoding="utf-8") as handle:
+                json.dump(record, handle, indent=2, sort_keys=True)
+                handle.write("\n")
+            # Readers must always see a complete consumer record while a foreground
+            # host updates its child identities, not a transient partial JSON file.
+            os.replace(staging, path)
+    except FileOperationError:
+        raise
+    except (OSError, CLIError) as ex:
         raise FileOperationError(message) from ex
     finally:
         try:
@@ -1234,6 +1281,10 @@ def process_create_time_utc(pid):
 
 
 def _windows_process_create_time_utc(pid):
+    return _windows_process_snapshot(pid)[0]
+
+
+def _windows_process_snapshot(pid):
     # CIM's CreationDate has microsecond precision, formatted as seven fractional
     # digits. Keep that representation so existing verified Windows records match.
     import ctypes
@@ -1248,20 +1299,20 @@ def _windows_process_create_time_utc(pid):
     kernel32.CloseHandle.restype = wintypes.BOOL
     handle = kernel32.OpenProcess(0x1000, False, pid)  # PROCESS_QUERY_LIMITED_INFORMATION
     if not handle:
-        return None
+        return None, False
     try:
         creation, exit_time, kernel, user = (wintypes.FILETIME() for _ in range(4))
         if not kernel32.GetProcessTimes(handle, ctypes.byref(creation), ctypes.byref(exit_time),
                                         ctypes.byref(kernel), ctypes.byref(user)):
-            return None
+            return None, False
         if exit_time.dwHighDateTime or exit_time.dwLowDateTime:
-            return None
+            return None, True
         ticks = (creation.dwHighDateTime << 32) | creation.dwLowDateTime
         seconds, fraction = divmod(ticks - 116444736000000000, 10000000)
         value = datetime.fromtimestamp(seconds, timezone.utc)
-        return "{}.{:06d}0Z".format(value.strftime("%Y-%m-%dT%H:%M:%S"), fraction // 10)
+        return "{}.{:06d}0Z".format(value.strftime("%Y-%m-%dT%H:%M:%S"), fraction // 10), False
     except (OSError, OverflowError, ValueError):
-        return None
+        return None, False
     finally:
         kernel32.CloseHandle(handle)
 
@@ -1274,7 +1325,8 @@ def _process_tree_snapshot():
               "| ConvertTo-Json -Compress")
     try:
         completed = subprocess.run([_powershell_executable(), "-NoProfile", "-Command", script],
-                                   capture_output=True, text=True, timeout=30, check=False)
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                   universal_newlines=True, timeout=30, check=False)
     except (OSError, subprocess.SubprocessError) as ex:
         raise OSError("Could not verify the process tree; no processes were stopped.") from ex
     if completed.returncode:
@@ -1337,14 +1389,26 @@ def _descendant_pids(pid):
 def _creation_datetime(value):
     if not isinstance(value, str):
         return None
+    match = re.fullmatch(
+        r"(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(?:\.(\d{1,7}))?(Z|[+-]\d{2}:\d{2})", value)
+    if not match:
+        return None
     try:
-        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
-        return parsed if parsed.utcoffset() is not None else None
+        base, fraction, offset = match.groups()
+        zone = timezone.utc
+        if offset != "Z":
+            hours, minutes = int(offset[1:3]), int(offset[4:6])
+            if hours > 23 or minutes > 59:
+                return None
+            delta = timedelta(hours=hours, minutes=minutes)
+            zone = timezone(-delta if offset[0] == "-" else delta)
+        return datetime.strptime(base, "%Y-%m-%dT%H:%M:%S").replace(
+            microsecond=int(((fraction or "") + "000000")[:6]), tzinfo=zone)
     except (ValueError, OverflowError):
         return None
 
 
-def _descendant_process_records(pid, expected, snapshot):
+def _descendant_process_records(pid, expected, snapshot, excluded=None):
     children = {}
     identities = {}
     for item in snapshot:
@@ -1354,6 +1418,7 @@ def _descendant_process_records(pid, expected, snapshot):
     if identities.get(pid) != expected:
         raise OSError("The parent process identity changed; no processes were stopped.")
     records = []
+    excluded = set() if excluded is None else excluded
     frontier = [(pid, _creation_datetime(expected))]
     seen = {pid}
     while frontier:
@@ -1365,7 +1430,15 @@ def _descendant_process_records(pid, expected, snapshot):
                     continue
                 seen.add(child)
                 created = _creation_datetime(identities.get(child))
-                proven = parent_created is not None and created is not None and created >= parent_created
+                # Stale PPIDs can refer to a newer, unrelated parent after PID
+                # reuse. Exclude only a still-verifiable earlier incarnation.
+                preexisting = parent in excluded or (parent_created is not None and created is not None and
+                                                     created < parent_created)
+                if preexisting and _record_matches({"pid": child, "processCreateTimeUtc": identities[child]}):
+                    excluded.add(child)
+                    next_level.append((child, created))
+                    continue
+                proven = parent not in excluded and parent_created is not None and created is not None and created >= parent_created
                 record = {"pid": child, "processCreateTimeUtc": identities[child] if proven else None}
                 if not proven:
                     record["cleanupPending"] = True
@@ -1421,12 +1494,25 @@ def _stop_process(pid, check, expected=None):
               "Stop-Process -InputObject $process -Force -ErrorAction Stop").format(
                   pid, expected.replace("'", "''"))
     subprocess.run([_powershell_executable(), "-NoProfile", "-Command", script],
-                   check=check, capture_output=True)
+                   check=check, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
 def _powershell_executable():
     return shutil.which("powershell") or os.path.join(
         os.environ.get("SystemRoot", r"C:\Windows"), "System32", "WindowsPowerShell", "v1.0", "powershell.exe")
+
+
+def _wait_for_recorded_exit(record):
+    deadline = time.monotonic() + 5
+    while _process_may_exist(record["pid"]):
+        actual = process_create_time_utc(record["pid"])
+        expected = record.get("processCreateTimeUtc")
+        if actual and actual != expected:
+            return False
+        if time.monotonic() >= deadline:
+            return False
+        time.sleep(0.1)
+    return True
 
 
 def _terminate(pid, expected=None):
@@ -1443,16 +1529,18 @@ def _terminate(pid, expected=None):
         try:
             _stop_process(pid, check=True, expected=expected)
         except (OSError, subprocess.SubprocessError) as ex:
-            raise _ProcessCleanupError(descendants) from ex
+            if not _wait_for_recorded_exit({"pid": pid, "processCreateTimeUtc": expected}):
+                raise _ProcessCleanupError(descendants) from ex
         refused = False
         for child in descendants:
             if _record_matches(child):
                 try:
                     _stop_process(child["pid"], check=True, expected=child["processCreateTimeUtc"])
                 except (OSError, subprocess.SubprocessError):
-                    child["cleanupPending"] = True
-                    refused = True
-            elif _process_may_exist(child["pid"]):
+                    if not _wait_for_recorded_exit(child):
+                        child["cleanupPending"] = True
+                        refused = True
+            elif not _wait_for_recorded_exit(child):
                 child["cleanupPending"] = True
                 refused = True
         if refused:

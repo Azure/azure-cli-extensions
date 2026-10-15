@@ -19,6 +19,7 @@ from azure.cli.core.azclierror import (
     CLIError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError,
     ResourceNotFoundError, ValidationError)
 from azure.cli.core.util import user_confirmation
+from azure.cli.core._environment import get_config_dir
 
 from ._json import json_equal
 from ._workflow import abs_path
@@ -32,7 +33,7 @@ _MAX_STORE_DEPTH = 128
 
 
 def store_path():
-    return os.path.abspath(os.path.join(os.path.expanduser("~"), ".azure", STORE_DIRNAME, STORE_FILENAME))
+    return os.path.abspath(os.path.join(get_config_dir(), STORE_DIRNAME, STORE_FILENAME))
 
 
 def load_store():
@@ -66,10 +67,10 @@ def _invalid_constant(_value):
     raise ValueError("Non-finite numbers are not valid context store JSON.")
 
 
-def _regular_file(path):
+def _regular_file(path, label="Logic Apps context storage"):
     info = os.lstat(path)
     if not stat.S_ISREG(info.st_mode):
-        raise CLIError("Logic Apps context storage must be a regular file, not a link or directory.")
+        raise CLIError("{} must be a regular file, not a link or directory.".format(label))
 
 
 def _text(value, label):
@@ -86,6 +87,14 @@ def _port(value):
     return value
 
 
+def _cloud_coordinate(value):
+    value = _text(value, "Cloud target coordinate")
+    if (value in (".", "..") or not value.isprintable()
+            or any(char in value for char in "/\\%?#")):
+        raise ValidationError("Cloud targets require literal single-segment names, not resource IDs, URLs or escaped values.")
+    return value
+
+
 def _validate_target(target):
     if not isinstance(target, dict):
         raise ValidationError("A context target must be an object.")
@@ -99,9 +108,7 @@ def _validate_target(target):
             raise ValidationError("Local contexts cannot contain cloud coordinates.")
     elif kind == "cloud":
         for field in ("resourceGroup", "logicAppName"):
-            value = _text(target.get(field), "Cloud context coordinate")
-            if any(char in value for char in ("/", "\\", "?", "#")):
-                raise ValidationError("Cloud contexts require names, not resource IDs or URLs.")
+            _cloud_coordinate(target.get(field))
         if target.get("path") is not None or target.get("port") is not None:
             raise ValidationError("Cloud contexts cannot contain local coordinates.")
     else:
@@ -137,17 +144,17 @@ def _validate_store(data):
 
 
 @contextmanager
-def _store_lock(path):
+def _store_lock(path, label="Logic Apps context store"):
     lock_path = path + ".lock"
     handle = None
     locked = False
     try:
         os.makedirs(os.path.dirname(path), exist_ok=True)
         if os.path.lexists(lock_path):
-            _regular_file(lock_path)
+            _regular_file(lock_path, label)
         handle = os.open(lock_path, os.O_CREAT | os.O_RDWR | getattr(os, "O_NOFOLLOW", 0), 0o600)
         if not stat.S_ISREG(os.fstat(handle).st_mode):
-            raise CLIError("Logic Apps context lock must be a regular file.")
+            raise CLIError("{} lock must be a regular file.".format(label))
         deadline = time.monotonic() + LOCK_TIMEOUT
         while not locked:
             try:
@@ -157,11 +164,11 @@ def _store_lock(path):
                 if ex.errno not in (errno.EACCES, errno.EAGAIN, errno.EDEADLK):
                     raise
                 if time.monotonic() >= deadline:
-                    raise CLIError("Logic Apps context store is busy. Retry after the other context writer finishes.") from ex
+                    raise CLIError("{} is busy. Retry after the other writer finishes.".format(label)) from ex
                 time.sleep(0.05)
         yield
     except OSError as ex:
-        raise CLIError("Could not lock or write Logic Apps context store: {}".format(path)) from ex
+        raise CLIError("Could not lock or write {}: {}".format(label, path)) from ex
     finally:
         if handle is not None:
             try:
@@ -220,7 +227,14 @@ def _publish_store(path, data):
         raise CLIError("Could not publish Logic Apps context store; the previous store was not replaced: {}".format(path)) from ex
     finally:
         if temporary is not None:
-            os.unlink(temporary)
+            try:
+                os.unlink(temporary)
+            except FileNotFoundError:
+                pass
+            except OSError as ex:
+                raise CLIError(
+                    "Could not publish Logic Apps context store; the previous store was not replaced. "
+                    "Temporary-file cleanup also failed; inspect: {}".format(temporary)) from ex
 
 
 def reject_secret_shaped_value(value):

@@ -56,8 +56,6 @@ def _workspace(name: str) -> Path:
     return root
 
 
-
-
 class _FakeCmd:
     cli_ctx = object()
 
@@ -98,6 +96,11 @@ class _RecordingVfsClient:
     def __init__(self, payload):
         self.payload = payload
         self.written = None
+        self.revision = 0
+
+    @property
+    def etag(self):
+        return '"recording-{}"'.format(self.revision)
 
     def get(self, _path):
         if isinstance(self.payload, Exception):
@@ -105,15 +108,16 @@ class _RecordingVfsClient:
         return json.loads(json.dumps(self.payload))
 
     def get_raw(self, path):
-        return {"content": json.dumps(self.get(path)).encode("utf-8"), "headers": {"ETag": '"recording"'},
+        return {"content": json.dumps(self.get(path)).encode("utf-8"), "headers": {"ETag": self.etag},
                 "statusCode": 200}
 
     def put_raw(self, _path, content, params=None, if_match=None):
-        if if_match != '"recording"':
+        if if_match != self.etag:
             raise AssertionError("Expected an exact file revision")
         self.written = content
         self.payload = json.loads(content)
-        return {"content": b"", "headers": {}, "statusCode": 204}
+        self.revision += 1
+        return {"content": b"", "headers": {"ETag": self.etag}, "statusCode": 204}
 
 
 @contextlib.contextmanager
@@ -326,8 +330,10 @@ class LogicAppOfflineCommandTests(ScenarioTest):
         fake_home.mkdir()
         old_userprofile = os.environ.get("USERPROFILE")
         old_home = os.environ.get("HOME")
+        old_config = os.environ.get("AZURE_CONFIG_DIR")
         os.environ["USERPROFILE"] = str(fake_home)
         os.environ["HOME"] = str(fake_home)
+        os.environ["AZURE_CONFIG_DIR"] = str(fake_home / ".azure")
         try:
             project = workspace / "orders"
             custom.project_create(None, str(project), workflow="process-order")
@@ -342,6 +348,10 @@ class LogicAppOfflineCommandTests(ScenarioTest):
             persisted = json.loads(Path(_context.store_path()).read_text(encoding="utf-8"))
             self.assertEqual("orders-local", persisted["active"])
         finally:
+            if old_config is None:
+                os.environ.pop("AZURE_CONFIG_DIR", None)
+            else:
+                os.environ["AZURE_CONFIG_DIR"] = old_config
             if old_userprofile is None:
                 os.environ.pop("USERPROFILE", None)
             else:
@@ -388,7 +398,6 @@ class LogicAppOfflineCommandTests(ScenarioTest):
         sanitized = _sanitize_text(unsanitized)
         self.assertNotEqual(unsanitized, sanitized, "sanitizer guard must be observed changing a credential-shaped value")
         _assert_no_secret_markers(self, sanitized)
-
 
     def test_core_tools_under_managed_root_is_found_when_absent_from_path(self):
         # A tool installed under the managed dependency root is not on PATH.
@@ -625,6 +634,7 @@ class LogicAppOfflineCommandTests(ScenarioTest):
         replaced = _connection.create_local_connection(
             str(root), "serviceBus", "serviceBus", "sb_conn", secret, force=True)
         self.assertTrue(replaced["appSettingReplaced"])
+
     def test_connection_create_nests_auth_provider_for_an_identity_connection(self):
         # This is the exact shape that was verified against a live runtime, locally
         # as the signed-in user and in Azure as a managed identity. A flat
@@ -985,7 +995,7 @@ class DependencyInstallOfflineTests(unittest.TestCase):
 
     def test_download_urls_match_each_publisher_layout(self):
         with mock.patch("azext_logicapp._dependencies.platform.system", return_value="Windows"), \
-             mock.patch("azext_logicapp._dependencies.platform.machine", return_value="AMD64"):
+                mock.patch("azext_logicapp._dependencies.platform.machine", return_value="AMD64"):
             self.assertEqual(
                 _dependencies.build_download_url("core-tools", "4.14.0"),
                 "https://github.com/Azure/azure-functions-core-tools/releases/download/4.14.0/"
@@ -996,7 +1006,7 @@ class DependencyInstallOfflineTests(unittest.TestCase):
 
     def test_node_archive_is_a_tarball_off_windows(self):
         with mock.patch("azext_logicapp._dependencies.platform.system", return_value="Linux"), \
-             mock.patch("azext_logicapp._dependencies.platform.machine", return_value="x86_64"):
+                mock.patch("azext_logicapp._dependencies.platform.machine", return_value="x86_64"):
             self.assertTrue(_dependencies.build_download_url("node", "24.15.0").endswith("-linux-x64.tar.gz"))
 
     def test_zip_entries_escaping_the_target_are_refused(self):
@@ -1116,7 +1126,6 @@ class DependencySharedFolderTests(unittest.TestCase):
             report = _local.dependency_report(kind=["core-tools"])
             self.assertEqual(report["root"], _local.dependencies_root())
             self.assertEqual(report["root"], override)
-
 
     def test_managed_connector_list_pages_and_filters_without_network(self):
         calls = []
@@ -2755,6 +2764,7 @@ class OAuthCreateIntegrationTests(unittest.TestCase):
     """create_managed_connection's oauth path, including the unwind contract."""
 
     CONNECTOR = "/subscriptions/s/providers/Microsoft.Web/locations/eastus/managedApis/office365"
+
     @staticmethod
     def _identity_sender(*_args, **_kwargs):
         return _FakeResponse({"identity": {"type": "SystemAssigned", "principalId": "object-1"}})
@@ -2762,6 +2772,7 @@ class OAuthCreateIntegrationTests(unittest.TestCase):
     def _run(self, consent_runner, connected=True):
         sent = []
         seen_put = {"done": False}
+
         def _arm_sender(_ctx, method, url, **_kwargs):
             sent.append((method, url))
             if method == "GET" and "/accessPolicies?" in url:
@@ -3075,7 +3086,6 @@ class AzuriteProbeTests(unittest.TestCase):
     def test_transport_failure_reads_as_absent_rather_than_raising(self):
         with mock.patch.object(_local, "urlopen", side_effect=OSError("refused")):
             self.assertIsNone(_local.probe_azurite(timeout=0.1))
-
 
 
 class EnsureAzuriteTests(unittest.TestCase):

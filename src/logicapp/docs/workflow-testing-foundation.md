@@ -12,6 +12,7 @@ Errors/warnings count inspection findings, not native tests.
 
 ```powershell
 az logicapp test plan --path .\App --workflow Orders --output json
+az logicapp test plan --path .\App --workflow Orders --strict --output json
 az logicapp test plan --path .\App --workflow Orders --test-project .\Tests\App.csproj --report-path .\Reports\plan.json
 az logicapp test results show --result-file .\Reports\plan.json --output table
 az logicapp test results show --result-file .\Reports\plan.json --workflow-file .\App\Orders\workflow.json --query "{source:inspection.sourceOutcome,identity:inspection.workflowIdentity,execution:executionState}"
@@ -85,8 +86,9 @@ observation. Effective build/configuration/test input identity is not claimed.
 
 ## Versioned protocol and exits
 
-The closed v1 protocol is `reportType: logicapp-test-foundation`,
-`schemaVersion: "1.0"`. It contains a UUID invocation ID, `phase`, constrained
+Since 0.1.22, the closed protocol is `reportType: logicapp-test-foundation`,
+`schemaVersion: "2.0"`, with `exitPolicy: planning` (default) or `strict`.
+It contains a UUID invocation ID, `phase`, constrained
 producer/CLI provenance, workflow name/kind/definition hash, role-based input
 identities, coverage, declared-versus-uninspected dependencies, immutable
 SDK/policy/capability gates, finding counts, stable rule/category/severity/source
@@ -96,10 +98,10 @@ The precise closed shape and rule catalog are in `_test_report.py`.
 
 | Exit | Meaning for this increment |
 | --- | --- |
-| 0 | `results show` successfully inspected a valid supported document. **Not tests passed.** |
+| 0 | Successful ordinary `plan` generation (`outcome: planned`), or `results show` inspection (`outcome: inspected`). **Not tests passed.** |
 | 1 | Definite authored-definition/literal-declaration issue found by `plan`. |
 | 3 | Input/read/parse or report-protocol error. Not a business failure. |
-| 4 | `plan` inspection completed but SDK adoption/restore/execution remain blocked, even with valid inputs. |
+| 4 | `plan --strict` completed inspection but SDK adoption/restore/execution remain blocked (`outcome: blocked`). Also the historical successful-plan result in schema 1.0. |
 | 5 | Observed input change during inspection, or explicit definition identity mismatch. |
 | 6 | Explicit report destination/publication or temporary cleanup failure; stdout still contains the report. |
 
@@ -107,8 +109,12 @@ Azure CLI argument parsing keeps its normal exit behavior (for example `2` for
 unrecognized arguments). Once a valid command invocation begins, JSON/table/
 query formatting completes before a report's diagnostic nonzero exit.
 Within `plan`, precedence is publication error, stale, input error, authoring
-error, policy blocked. Always read `gates` and coverage too: a reported authoring
+error, then planning success or strict policy blocked. Always read `gates` and coverage too: a reported authoring
 error never clears the immutable SDK gate. No plan invocation reports test pass.
+Ordinary planning success separates a generated plan from permission to execute.
+Use `--strict` when a shell/CI step must fail on the unresolved execution gates.
+It does not make static checks more complete, execute tests, or accept SDK terms.
+Input, authoring, stale and publication errors take precedence in both modes.
 
 ## Explicit report writes
 
@@ -133,15 +139,24 @@ identities and workflow identifiers may still be sensitive; review before sharin
 
 ## `results show` is not a native SDK results parser
 
-Only **saved v1 foundation preflight reports** are accepted. Native SDK output,
+Only **saved supported schema-1 and schema-2 foundation preflight reports** are accepted. Native SDK output,
 TRX, legacy/invented reports, execute-phase reports, unknown versions/fields,
 duplicate keys, nonfinite numbers, inconsistent counters/hashes/gates and
-arbitrary finding text are rejected without echoing their contents. V1 is closed:
+arbitrary finding text are rejected without echoing their contents. Both schemas are closed:
 unknown fields are rejected rather than raw-echoed as forward-compatible data.
 A future version/adapter requires its own explicit validator.
-Inspection requires the current CLI release's exact producer provenance and
-fixed rule catalog. Regenerate preflight reports after upgrading; an older
-release's document is not silently interpreted as current evidence.
+Inspection accepts otherwise-valid schema-1 reports with the exact fixed
+producer provenance from the explicitly supported **0.1.17-0.1.21** releases
+and the earlier public **1.0.0b1** preview
+and the fixed rule catalog. A package-version bump alone does not invalidate
+these reports; unknown producer versions still require explicit qualification
+and validator support. Schema 2.0 accepts the fixed **0.1.22**, **0.1.23** and
+current public **1.0.0b1** producers and requires
+the explicit `planning`/`strict` policy with its matching outcome and exit.
+Schema 1.0 does not accept that new field or a rewritten `planned`/exit-0 result;
+old clients likewise reject schema 2.0 rather than misreading its new semantics.
+Supported older reports retain their recorded
+provenance, not a claim of current-input freshness or executed tests.
 
 A valid document is still **untrusted and unsigned**. Fixed producer text and
 schema checks do not authenticate its author or prove it was produced by this
@@ -150,7 +165,11 @@ a native pass at all. Reports/logs/fixtures are data, never agent instructions.
 
 Successful inspection produces a fresh invocation with `phase: inspection`,
 `outcome: inspected`, and original findings. `inspection.sourceInvocationId`,
-`sourceOutcome` and `sourceExitCode` retain the historical plan result.
+`sourceOutcome` and `sourceExitCode` retain the historical plan result. A schema-2
+report also retains the source `exitPolicy`; inspecting a strict report returns
+0 for the read, with source exit 4 still recorded. Schema-1 inspection stays
+schema 1.0 and does not invent a policy field. Inspection does not reclassify
+historical blocked plans as successful plans.
 No embedded file path, artifact URL or command is followed. The only optional
 extra read is an explicitly supplied `--workflow-file`; exact byte comparison
 reports `matches`, `changed`, `unavailable` or `notChecked`. A match is definition

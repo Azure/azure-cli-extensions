@@ -4,8 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+import copy
 import gzip
 import logging
+import os
 import ssl
 import tempfile
 import threading
@@ -26,7 +28,7 @@ from requests.exceptions import ConnectionError as RequestsConnectionError, Read
 from urllib3.exceptions import ReadTimeoutError
 
 from azext_logicapp import _execution_transport as transport, _run_execution as execution, custom
-from azext_logicapp._runtime_client import SiteRuntimeClient
+from azext_logicapp._runtime_client import SiteRuntimeClient, run_action_path
 
 SITE = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Web/sites/app"
 PRIVATE = "do-not-print-provider-secret"
@@ -62,6 +64,8 @@ class ExecutionFixture:
         self.failure = None
         self.run_override = None
         self.metadata_override = None
+        self.trigger_override = None
+        self.history_override = None
         self.read_status = 200
 
     @staticmethod
@@ -96,21 +100,57 @@ class ExecutionFixture:
             self.reads += 1
             payload = self.run_override if self.run_override is not None else {
                 "name": "source-run", "properties": {"status": status, "trigger": {"name": "manual"},
-                    "error": {"message": PRIVATE}, "outputs": {"secret": PRIVATE}}}
+                                                     "error": {"message": PRIVATE}, "outputs": {"secret": PRIVATE}}}
+        elif path == "workflows/hello/triggers/manual":
+            payload = self.trigger_override if self.trigger_override is not None else {"name": "manual"}
         elif path.endswith("/histories"):
             payload = self.history_pages[min(self.pages, len(self.history_pages) - 1)]
             self.pages += 1
         elif "/histories/" in path:
-            payload = self.history(path.rsplit("/", 1)[-1])
+            payload = self.history_override if self.history_override is not None else self.history(path.rsplit("/", 1)[-1])
         else:
             raise AssertionError(path)
         return {"statusCode": self.read_status, "payload": payload, "headers": {}}
 
 
-class RunExecutionTests(unittest.TestCase):
+class ActionExecutionFixture(ExecutionFixture):
+    def __init__(self):
+        super().__init__()
+        self.statuses = ["Failed"]
+        self.selected = {"name": "Send_HTTP", "properties": {
+            "status": "Failed", "code": "BadGateway", "canResubmit": True,
+            "correlation": {"actionTrackingId": "action-tracking"},
+            "error": {"message": PRIVATE}}}
+        self.action_reads = 0
+        self.bodies = []
+        self.header_override = None
+
+    def request(self, method, path, deadline, params=None, body=None):
+        if method == "POST":
+            self.bodies.append(copy.deepcopy(body))
+        if method == "GET" and "/actions/" in path:
+            self.calls.append((method, path, deadline, params))
+            if self.failure:
+                error = self.failure(method, path)
+                if error:
+                    raise error
+            self.action_reads += 1
+            selected = copy.deepcopy(self.selected)
+            selected.setdefault("properties", {})["outputsLink"] = {
+                "uri": "https://untrusted.invalid/?sig={}&read={}".format(PRIVATE, self.action_reads)}
+            return {"statusCode": self.read_status, "payload": selected, "headers": {}}
+        result = super().request(method, path, deadline, params)
+        if method == "POST" and self.header_override is not None:
+            result["headers"] = self.header_override
+        return result
+
+
+class _ExecutionTestCase(unittest.TestCase):
+    fixture_type = ExecutionFixture
+
     def setUp(self):
         self.clock = Clock()
-        self.fixture = ExecutionFixture()
+        self.fixture = self.fixture_type()
         self.cmd = SimpleNamespace(cli_ctx=get_default_cli())
         self.client = SiteRuntimeClient(self.cmd, SITE)
         for target, name, value in ((execution.time, "monotonic", self.clock.monotonic),
@@ -129,8 +169,8 @@ class RunExecutionTests(unittest.TestCase):
     def cancel(self, **kwargs):
         return execution.cancel_run(self.client, "hello", "source-run", **kwargs)
 
-    def resubmit(self, **kwargs):
-        return execution.resubmit_run(self.client, "hello", "source-run", **kwargs)
+    def resubmit(self, history_name="different-history", **kwargs):
+        return execution.resubmit_trigger_history(self.client, "hello", "manual", history_name, **kwargs)
 
     def assert_private(self, result):
         self.assertNotIn(PRIVATE, json.dumps(result))
@@ -151,6 +191,238 @@ class RunExecutionTests(unittest.TestCase):
         self.fixture.history_pages = [{"value": [history()]}]
         self.fixture.pages = 0
 
+
+class ActionResubmitTests(_ExecutionTestCase):
+    fixture_type = ActionExecutionFixture
+
+    def resubmit_action(self, **kwargs):
+        return execution.resubmit_run_action(self.client, "hello", "source-run", "Send_HTTP", **kwargs)
+
+    def assert_no_post(self):
+        self.assertFalse(any(call[0] == "POST" for call in self.fixture.calls))
+
+    def test_action_post_has_exact_run_route_and_body_without_history_fallback(self):
+        result = self.resubmit_action(yes=True)
+        self.assertEqual("accepted", result["outcome"])
+        self.assertEqual("actionResubmit", result["operation"])
+        self.assertEqual("Send_HTTP", result["actionName"])
+        self.assertEqual("source-run", result["sourceRunId"])
+        self.assertEqual("Failed", result["status"])
+        self.assertEqual("new-run", result["newRunId"])
+        self.assertIsNone(result["newRunStatus"])
+        self.assertTrue(result["requestAcknowledged"])
+        self.assertEqual([{"actionsToResubmit": [{"name": "Send_HTTP"}]}], self.fixture.bodies)
+        self.assertEqual(["workflows/hello/runs/source-run/resubmit"],
+                         [call[1] for call in self.fixture.calls if call[0] == "POST"])
+        self.assertFalse(any("/histories" in call[1] for call in self.fixture.calls))
+        self.assertEqual(2, self.fixture.action_reads)
+        self.assert_private(result)
+
+    def test_missing_or_untrusted_eligibility_refuses_without_confirmation_or_post(self):
+        for value in (False, None, "true", 1, 1.0, {}, []):
+            with self.subTest(value=value):
+                self.fixture.selected["properties"]["canResubmit"] = value
+                result = self.resubmit_action()
+                self.assert_error(result, "actionNotEligible")
+                self.assert_no_post()
+                self.confirm.assert_not_called()
+                self.assert_private(result)
+        self.fixture.selected["properties"].pop("canResubmit")
+        self.assert_error(self.resubmit_action(), "actionNotEligible")
+        self.assert_no_post()
+
+    def test_active_source_unknown_status_and_unexecuted_actions_refuse(self):
+        for status in execution._ACTIVE + ("NotSpecified",):
+            with self.subTest(source_status=status):
+                self.fixture.statuses, self.fixture.reads = [status], 0
+                result = self.resubmit_action()
+                self.assert_error(result, "unknownStatus" if status == "NotSpecified" else "sourceNotCompleted")
+                self.assert_no_post()
+        self.fixture.statuses, self.fixture.reads = ["Failed"], 0
+        for status in ("Skipped", "Ignored", "Running", None, "unknown"):
+            with self.subTest(action_status=status):
+                self.fixture.selected["properties"]["status"] = status
+                self.assert_error(self.resubmit_action(), "actionNotEligible")
+                self.assert_no_post()
+
+    def test_stateless_decline_and_post_confirmation_eligibility_loss_do_not_post(self):
+        self.fixture.kind = "Stateless"
+        with self.assertRaises(InvalidArgumentValueError):
+            self.resubmit_action()
+        self.fixture.kind = "Stateful"
+        self.confirm.side_effect = CLIError("Declined")
+        with self.assertRaises(CLIError):
+            self.resubmit_action()
+        self.confirm.side_effect = lambda *_args: self.fixture.selected["properties"].update(canResubmit=False)
+        self.assert_error(self.resubmit_action(), "actionNotEligible")
+        self.assert_no_post()
+
+    def test_source_and_action_stable_metadata_changes_refuse_including_scalar_types(self):
+        for member, before, after in (("code", False, 0), ("endTime", "before", "after"),
+                                      ("correlation", {"actionTrackingId": "old"},
+                                       {"actionTrackingId": "new"})):
+            with self.subTest(member=member):
+                self.fixture.selected["properties"][member] = before
+                self.confirm.side_effect = lambda *_args: self.fixture.selected["properties"].update({member: after})
+                self.assert_error(self.resubmit_action(), "changed")
+                self.assert_no_post()
+        self.confirm.side_effect = None
+        self.fixture.statuses, self.fixture.reads = ["Failed", "Succeeded"], 0
+        self.assert_error(self.resubmit_action(), "changed")
+        self.assert_no_post()
+
+    def test_original_workflow_version_is_rechecked_without_reading_current_definition(self):
+        self.fixture.run_override = {"name": "source-run", "properties": {
+            "status": "Failed", "workflow": {"id": "/workflows/hello/versions/original"}}}
+        self.confirm.side_effect = lambda *_args: self.fixture.run_override["properties"]["workflow"].update(
+            id="/workflows/hello/versions/new")
+        self.assert_error(self.resubmit_action(), "changed")
+        self.assert_no_post()
+        self.assertFalse(any("/versions/" in call[1] or call[1].endswith("workflow.json")
+                             for call in self.fixture.calls))
+
+    def test_optional_id_must_match_selected_site_workflow_run_and_action(self):
+        path = run_action_path("hello", "source-run", "Send_HTTP")
+        for identifier in ("/" + path, urlsplit(self.client._build_url(path)).path):
+            with self.subTest(valid=identifier):
+                self.fixture.selected["id"] = identifier
+                self.assertEqual("accepted", self.resubmit_action()["outcome"])
+        for identifier in ("/workflows/other/runs/source-run/actions/Send_HTTP",
+                           "/" + path.replace("source-run", "another-run"),
+                           urlsplit(self.client._build_url(path)).path.replace("/sites/app/", "/sites/other/"),
+                           "https://untrusted.invalid/" + path, {}, "/" + path + "?sig=" + PRIVATE):
+            with self.subTest(invalid=identifier):
+                self.fixture.calls.clear()
+                self.fixture.selected["id"] = identifier
+                self.assert_error(self.resubmit_action(), "invalidResponse")
+                self.assert_no_post()
+        self.fixture.selected.pop("id")
+        self.fixture.run_override = {"name": "source-run", "id": "/workflows/other/runs/source-run",
+                                     "properties": {"status": "Failed"}}
+        self.assert_error(self.resubmit_action(), "invalidResponse")
+
+    def test_ambiguous_identity_and_eligibility_are_not_positive_evidence(self):
+        for change in ({"Name": "Send_HTTP"}, {"name": "different"},
+                       {"properties": {"status": "Failed", "canResubmit": True, "CanResubmit": True}}):
+            with self.subTest(change=change):
+                previous = copy.deepcopy(self.fixture.selected)
+                self.fixture.selected.update(change)
+                self.assert_error(self.resubmit_action(), "invalidResponse")
+                self.assert_no_post()
+                self.fixture.selected = previous
+
+    def test_missing_new_identity_is_acknowledged_but_never_guessed(self):
+        self.fixture.new_id = None
+        result = self.resubmit_action()
+        self.assertEqual("acceptedNewRunIdUnknown", result["outcome"])
+        self.assertTrue(result["requestAcknowledged"])
+        self.assertIsNone(result["newRunId"])
+        self.assertEqual(2, self.fixture.reads)
+        self.assert_private(result)
+
+    def test_action_inspection_only_exposes_unambiguous_boolean_eligibility(self):
+        cases = (
+            ({"canResubmit": True}, True), ({"CanResubmit": False}, False),
+            ({}, None), ({"canResubmit": "true"}, None), ({"canResubmit": 1}, None),
+            ({"canResubmit": True, "CanResubmit": False}, None),
+            ({"canResubmit": True, "CANRESUBMIT": True}, None),
+        )
+        for properties, expected in cases:
+            for container in ("properties", "Properties"):
+                with self.subTest(properties=properties, container=container):
+                    result = custom._run_action_response(
+                        {container: properties}, "hello", "source-run", False)
+                    self.assertIs(expected, result["canResubmit"])
+        result = custom._run_action_response(
+            {"properties": {"canResubmit": True}, "Properties": {"canResubmit": True}},
+            "hello", "source-run", False)
+        self.assertIsNone(result["canResubmit"])
+
+    def test_invalid_or_conflicting_new_identity_preserves_known_acknowledgement(self):
+        for new_id in ("source-run", "", "new,other", "https://untrusted.invalid/" + PRIVATE, [], 1):
+            with self.subTest(new_id=new_id):
+                self.fixture.new_id = new_id
+                result = self.resubmit_action()
+                self.assert_error(result, "invalidResponse")
+                self.assertTrue(result["requestAcknowledged"])
+                self.assertIsNone(result["newRunId"])
+                self.assertEqual("resubmitRequested", result["action"])
+                self.assert_private(result)
+        self.fixture.header_override = {"x-ms-workflow-run-id": "new",
+                                        "X-Ms-Workflow-Run-Id": "other"}
+        self.assert_error(self.resubmit_action(), "invalidResponse")
+
+    def test_unexpected_receipts_and_failed_post_are_uncertain_without_retry(self):
+        for status in (200, 201, 204, 202.0, "202"):
+            with self.subTest(status=status):
+                self.fixture.receipt_status = status
+                self.fixture.calls.clear()
+                result = self.resubmit_action()
+                self.assert_error(result, "invalidResponse")
+                self.assertFalse(result["requestAcknowledged"])
+                self.assertEqual(1, sum(call[0] == "POST" for call in self.fixture.calls))
+        self.fixture.receipt_status = 202
+        self.fixture.receipt_body = {"secret": PRIVATE}
+        self.assert_private(self.resubmit_action())
+        self.fixture.receipt_body = None
+        self.fixture.failure = lambda method, _path: transport.ExecutionError(
+            "unavailable", "Request failed") if method == "POST" else None
+        result = self.resubmit_action()
+        self.assertFalse(result["requestAcknowledged"])
+        self.assertEqual("observationFailed", result["outcome"])
+
+    def test_pre_send_authentication_and_deadline_failures_do_not_claim_submission(self):
+        for error in (transport.ExecutionError("authentication", "Credential unavailable", before_send=True),
+                      transport.DeadlineExpired(before_send=True)):
+            with self.subTest(error=type(error).__name__):
+                self.fixture.failure = lambda method, _path: error if method == "POST" else None
+                result = self.resubmit_action()
+                self.assertIsNone(result["action"])
+                self.assertFalse(result["requestAcknowledged"])
+                self.assertIn("before submission", result["message"])
+
+    def test_identifiers_are_validated_before_target_io_and_action_names_are_quoted(self):
+        for action in (None, "", True, "a/b", "a%2fb", "a?sig=" + PRIVATE, ["a"], ".."):
+            with self.subTest(action=action), patch.object(custom, "_client_from_target") as target:
+                with self.assertRaises(InvalidArgumentValueError):
+                    custom.run_resubmit(None, "hello", "source-run", action, local=True)
+                target.assert_not_called()
+        self.fixture.selected["name"] = "Send HTTP"
+        result = execution.resubmit_run_action(self.client, "hello", "source-run", "Send HTTP")
+        self.assertEqual("accepted", result["outcome"])
+        self.assertTrue(any(call[1].endswith("/actions/Send%20HTTP") for call in self.fixture.calls))
+        self.assertEqual({"actionsToResubmit": [{"name": "Send HTTP"}]}, self.fixture.bodies[-1])
+
+    def test_real_prepared_transport_sends_json_body_and_selected_cloud_api_only(self):
+        requests_sent = []
+        fixture = self.fixture
+
+        def send(_session, request, **_kwargs):
+            requests_sent.append(request)
+            path = "workflows/" + urlsplit(request.url).path.split("/workflows/", 1)[1]
+            body = json.loads(request.body) if request.body else None
+            receipt = fixture.request(request.method, path, self.clock.now + 60, body=body)
+            response = Response()
+            response.status_code = receipt["statusCode"]
+            response._content = b"" if receipt["payload"] is None else json.dumps(receipt["payload"]).encode()
+            response._content_consumed = True
+            response.headers.update(receipt["headers"])
+            return response
+
+        with patch.object(execution, "ExecutionTransport", transport.ExecutionTransport), \
+                patch("requests.Session.send", send), patch.object(transport, "Profile") as profile:
+            profile.return_value.get_raw_token.return_value = (("Bearer", PRIVATE), None, None)
+            self.assertEqual("accepted", self.resubmit_action()["outcome"])
+        posts = [request for request in requests_sent if request.method == "POST"]
+        self.assertEqual(1, len(posts))
+        self.assertEqual({"actionsToResubmit": [{"name": "Send_HTTP"}]}, json.loads(posts[0].body))
+        self.assertTrue(all(parse_qs(urlsplit(request.url).query)["api-version"] == ["2024-11-01"]
+                            for request in requests_sent))
+        self.assertTrue(all(request.body is None for request in requests_sent if request.method == "GET"))
+        self.assertTrue(all(request.headers["Authorization"] == "Bearer " + PRIVATE for request in requests_sent))
+
+
+class RunExecutionTests(_ExecutionTestCase):
     def test_wait_all_terminal_statuses_and_case_handling(self):
         for status in execution._TERMINAL:
             with self.subTest(status=status):
@@ -358,11 +630,14 @@ class RunExecutionTests(unittest.TestCase):
         self.assertEqual("observationFailed", result["outcome"])
         self.assertEqual(1, result["exitCode"])
 
-    def test_resubmit_verifies_history_association_not_run_id_equivalence(self):
+    def test_resubmit_selects_history_directly_without_source_run_or_search(self):
         result = self.resubmit(yes=True)
         self.assertEqual("different-history", result["triggerHistoryId"])
         self.assertEqual("new-run", result["newRunId"])
-        self.assertEqual("source-run", result["sourceRunId"])
+        self.assertIsNone(result["runId"])
+        self.assertNotIn("sourceRunId", result)
+        self.assertFalse(any("/runs/" in path or path.endswith("/histories")
+                             for _, path, _, _ in self.fixture.calls))
         self.assertEqual("accepted", result["outcome"])
         self.assertEqual(1, self.fixture.posts)
         self.assertEqual("workflows/hello/triggers/manual/histories/different-history/resubmit",
@@ -381,132 +656,90 @@ class RunExecutionTests(unittest.TestCase):
         self.assert_private(result)
         self.assertFalse(any("https://" in path for _, path, _, _ in self.fixture.calls))
 
-    def test_resubmit_accepts_full_selected_site_reference_in_search_and_explicit_history(self):
-        for prefix in (SITE, SITE.lower()):
-            for run_name in ("source-run", None):
-                for history_id in (None, "retained-history"):
-                    with self.subTest(prefix=prefix, run_name=run_name, history_id=history_id):
-                        identifier = prefix + "/hostruntime/runtime/webhooks/workflow/api/management/workflows/hello/runs/source-run"
-                        self.set_history_reference(identifier, run_name)
-                        posts = self.fixture.posts
-                        result = self.resubmit(yes=True, trigger_history_id=history_id)
-                        self.assertEqual("accepted", result["outcome"])
-                        self.assertEqual("new-run", result["newRunId"])
-                        self.assertEqual(posts + 1, self.fixture.posts)
-                        self.assert_private(result)
+    def test_trigger_resubmit_rejects_ambiguous_headers_without_losing_acknowledgement(self):
+        headers = (
+            {"x-ms-workflow-run-id": "new,other"},
+            {"x-ms-workflow-run-id": "new other"},
+            {"x-ms-workflow-run-id": "new", "X-Ms-Workflow-Run-Id": "other"},
+            {"x-ms-workflow-run-id": "new", "X-Ms-Workflow-Run-Id": "new"},
+        )
+        original = self.fixture.request
+        for values in headers:
+            def response(method, *args, **kwargs):
+                receipt = original(method, *args, **kwargs)
+                if method == "POST":
+                    receipt["headers"] = values
+                return receipt
 
-    def test_resubmit_full_reference_rejects_foreign_targets_and_conflicting_identity(self):
-        selected = SITE + "/hostruntime/runtime/webhooks/workflow/api/management/workflows/hello/runs/source-run"
-        cases = [
-            (selected.replace("/subscriptions/sub/", "/subscriptions/other/"), "source-run"),
-            (selected.replace("/resourceGroups/rg/", "/resourceGroups/other/"), "source-run"),
-            (selected.replace("/sites/app/", "/sites/other/"), "source-run"),
-            (selected.replace("/sites/app/", "/sites/app2/"), "source-run"),
-            (selected.replace("/sites/app/", "/sites/app/slots/test/"), "source-run"),
-            (selected.replace("/workflows/hello/", "/workflows/other/"), "source-run"),
-            (selected.replace("/workflows/hello/", "/workflows/HELLO/"), "source-run"),
-            (selected.replace("/runs/source-run", "/runs/other-run"), "source-run"),
-            ("https://management.azure.com" + selected, "source-run"),
-            (selected + "?sig=" + PRIVATE, "source-run"),
-            (selected + "#fragment", "source-run"),
-            (selected + "/", "source-run"),
-            (selected, "other-run"),
-        ]
-        for identifier, run_name in cases:
-            for history_id in (None, "retained-history"):
-                with self.subTest(identifier=identifier, run_name=run_name, history_id=history_id):
-                    self.set_history_reference(identifier, run_name)
-                    result = self.resubmit(yes=True, trigger_history_id=history_id)
-                    self.assert_error(result, "historyMismatch" if history_id else "historyNotFound")
-                    self.assertFalse(result["requestAcknowledged"])
-                    self.assert_private(result)
-        self.assertEqual(0, self.fixture.posts)
-        self.confirm.assert_not_called()
+            with self.subTest(headers=values), patch.object(self.fixture, "request", response):
+                before = self.fixture.posts
+                result = self.resubmit()
+                self.assert_error(result, "invalidResponse")
+                self.assertTrue(result["requestAcknowledged"])
+                self.assertEqual("resubmitRequested", result["action"])
+                self.assertIsNone(result["newRunId"])
+                self.assertEqual(before + 1, self.fixture.posts)
 
-    def test_resubmit_rechecks_full_site_reference_after_confirmation(self):
-        selected = SITE + "/hostruntime/runtime/webhooks/workflow/api/management/workflows/hello/runs/source-run"
-        self.set_history_reference(selected)
-        self.confirm.side_effect = lambda *_args: self.set_history_reference(
-            selected.replace("/sites/app/", "/sites/other/"))
-        result = self.resubmit()
-        self.assert_error(result, "historyMismatch")
-        self.assertEqual(0, self.fixture.posts)
-        self.confirm.assert_called_once()
+    def test_trigger_resubmit_requires_integer_accepted_status(self):
+        for status in (202.0, "202"):
+            with self.subTest(status=status):
+                self.fixture.receipt_status = status
+                before = self.fixture.posts
+                result = self.resubmit()
+                self.assert_error(result, "invalidResponse")
+                self.assertFalse(result["requestAcknowledged"])
+                self.assertEqual(before + 1, self.fixture.posts)
 
-    def test_local_resubmit_preserves_relative_reference(self):
-        self.client = SiteRuntimeClient(self.cmd, "http://localhost:17071")
-        self.set_history_reference("/workflows/hello/runs/source-run")
-        result = self.resubmit()
-        self.assertEqual("accepted", result["outcome"])
-        self.assertEqual(1, self.fixture.posts)
+    def test_direct_history_accepts_missing_associated_run_in_local_and_cloud_targets(self):
+        for target in (SITE, "http://localhost:17071"):
+            with self.subTest(target=target):
+                self.client = SiteRuntimeClient(self.cmd, target)
+                self.fixture.history_override = {"name": "different-history", "properties": {"fired": True}}
+                result = self.resubmit(yes=True)
+                self.assertEqual("accepted", result["outcome"])
+                self.assertIsNone(result["runId"])
+                self.assert_private(result)
+        self.assertEqual(2, self.fixture.posts)
 
-    def test_local_resubmit_does_not_accept_deployed_reference(self):
-        self.client = SiteRuntimeClient(self.cmd, "http://localhost:17071")
-        self.set_history_reference(SITE + "/hostruntime/runtime/webhooks/workflow/api/management/workflows/hello/runs/source-run")
-        result = self.resubmit(trigger_history_id="retained-history")
-        self.assert_error(result, "historyMismatch")
-        self.assertEqual(0, self.fixture.posts)
-        self.confirm.assert_not_called()
-
-    def test_resubmit_invalid_or_same_new_id_fails_after_single_request(self):
-        for new_id in ("source-run", "https://untrusted.invalid/?sig=" + PRIVATE, "", "a/b"):
+    def test_resubmit_invalid_new_id_fails_after_single_request(self):
+        for new_id in ("https://untrusted.invalid/?sig=" + PRIVATE, "", "a/b"):
             with self.subTest(new_id=new_id):
                 self.fixture.new_id = new_id
                 result = self.resubmit()
                 self.assertEqual(1, result["exitCode"])
                 self.assert_private(result)
-        self.assertEqual(4, self.fixture.posts)
+        self.assertEqual(3, self.fixture.posts)
 
-    def test_resubmit_paging_uses_only_skiptoken_not_next_url(self):
-        self.fixture.history_pages = [{"value": [self.fixture.history(run="other-run")],
-                                      "nextLink": "https://untrusted.invalid/?sig=" + PRIVATE + "&%24skiptoken=next"},
-                                     {"value": [self.fixture.history()]}]
-        result = self.resubmit()
-        self.assertEqual("accepted", result["outcome"])
-        calls = [call for call in self.fixture.calls if call[1].endswith("/histories")]
-        self.assertEqual({"$top": 100, "$skiptoken": "next"}, calls[1][3])
-        self.assert_private(result)
-
-    def test_resubmit_bounded_absent_retention_does_not_invoke(self):
-        self.fixture.history_pages = [{"value": [], "nextLink": "?%24skiptoken={}".format(i)}
-                                     for i in range(11)]
-        result = self.resubmit()
-        self.assertEqual("historyNotFound", result["error"]["kind"])
-        self.assertEqual(10, self.fixture.pages)
+    def test_direct_history_missing_or_unfired_refuses_without_search_or_post(self):
+        for error in (transport.ExecutionError("notFound", "Selected history was not found."), None):
+            with self.subTest(error=error):
+                self.fixture.failure = lambda method, path: error if "/histories/" in path else None
+                self.fixture.history_override = {"name": "different-history", "properties": {"fired": False}}
+                result = self.resubmit()
+                self.assert_error(result, "notFound" if error else "historyNotFired")
+                self.assertEqual(0, self.fixture.pages)
         self.assertEqual(0, self.fixture.posts)
         self.confirm.assert_not_called()
-
-    def test_repeated_malformed_and_oversized_history_tokens_fail(self):
-        for link in ("http://[bad/?$skiptoken=x", "?$skiptoken=" + "x" * 4097,
-                     "?$skiptoken=%0a", "?$skiptoken=x&$skiptoken=y"):
-            with self.subTest(link=link[:50]):
-                self.fixture.history_pages = [{"value": [], "nextLink": link}]
-                self.fixture.pages = 0
-                self.assertEqual("invalidResponse", self.resubmit()["error"]["kind"])
-        self.fixture.history_pages = [{"value": [], "nextLink": "?$skiptoken=x"}]
-        self.fixture.pages = 0
-        self.assertEqual("invalidResponse", self.resubmit()["error"]["kind"])
-        self.assertEqual(0, self.fixture.posts)
 
     def test_resubmit_confirmation_decline_and_changed_trigger_prevent_post(self):
         self.confirm.side_effect = CLIError("Operation cancelled.")
         with self.assertRaises(CLIError):
             self.resubmit()
-        self.confirm.side_effect = lambda *_args: setattr(self.fixture, "run_override", {
-            "name": "source-run", "properties": {"status": "Succeeded", "trigger": {"name": "other"}}})
+        self.confirm.side_effect = lambda *_args: setattr(self.fixture, "trigger_override", {
+            "name": "manual", "properties": {"workflowVersion": "changed"}})
         result = self.resubmit()
         self.assertEqual("changed", result["error"]["kind"])
         self.assertEqual(0, self.fixture.posts)
 
     def test_resubmit_malformed_ambiguous_and_mismatching_histories_fail_before_post(self):
-        cases = [{"value": [self.fixture.history(fired=False)]},
-                 {"value": [self.fixture.history(run="different-run")]},
-                 {"value": [self.fixture.history(), self.fixture.history()]},
-                 {"value": [{}]}, {"value": None}, {"value": [], "nextLink": "?sig=" + PRIVATE}]
-        for page in cases:
-            with self.subTest(page=page):
-                self.fixture.history_pages = [page]
-                self.fixture.pages = 0
+        cases = [{}, {"name": "other", "properties": {"fired": True}},
+                 {"name": "different-history", "properties": []},
+                 {"name": "different-history", "properties": {"fired": False}},
+                 {"name": "different-history", "properties": {"fired": "true"}},
+                 {"name": "different-history", "Name": "other", "properties": {"fired": True}}]
+        for payload in cases:
+            with self.subTest(payload=payload):
+                self.fixture.history_override = payload
                 result = self.resubmit()
                 self.assertEqual(1, result["exitCode"])
                 self.assert_private(result)
@@ -514,7 +747,7 @@ class RunExecutionTests(unittest.TestCase):
         self.confirm.assert_not_called()
 
     def test_explicit_history_is_verified_without_listing(self):
-        result = self.resubmit(trigger_history_id="retained-history")
+        result = self.resubmit(history_name="retained-history")
         self.assertEqual("retained-history", result["triggerHistoryId"])
         self.assertEqual(0, self.fixture.pages)
 
@@ -522,7 +755,7 @@ class RunExecutionTests(unittest.TestCase):
         self.confirm.side_effect = lambda *_args: setattr(
             self.fixture, "history", lambda *_args: ExecutionFixture.history(run="different-run"))
         result = self.resubmit()
-        self.assertEqual("historyMismatch", result["error"]["kind"])
+        self.assertEqual("changed", result["error"]["kind"])
         self.assertEqual(0, self.fixture.posts)
 
     def test_deadline_failures_do_not_trigger_mutation_retries(self):
@@ -543,12 +776,14 @@ class RunExecutionTests(unittest.TestCase):
         self.assert_private(result)
 
     def test_shared_target_conflicts_rejected_for_all_execution_handlers(self):
-        for handler in (custom.run_wait, custom.run_cancel, custom.run_resubmit):
+        for handler, arguments in ((custom.run_wait, ("hello", "source-run")),
+                                   (custom.run_cancel, ("hello", "source-run")),
+                                   (custom.trigger_history_resubmit, ("hello", "manual", "different-history"))):
             with self.subTest(handler=handler):
                 with self.assertRaises(MutuallyExclusiveArgumentError):
-                    handler(self.cmd, "hello", "source-run", local=True, resource_group_name="rg", name="app")
+                    handler(self.cmd, *arguments, local=True, resource_group_name="rg", name="app")
                 with self.assertRaises(MutuallyExclusiveArgumentError):
-                    handler(self.cmd, "hello", "source-run", context="saved", local=True)
+                    handler(self.cmd, *arguments, context="saved", local=True)
 
 
 class ExecutionTransportTests(unittest.TestCase):
@@ -600,6 +835,7 @@ class ExecutionTransportTests(unittest.TestCase):
             self.assertTrue(issubclass(wrapped, SpecializedPool))
             self.assertTrue(issubclass(wrapped.ConnectionCls, SpecializedConnection))
             self.assertIs(wrapped, adapter.proxy_manager_for("http://127.0.0.1:1").pool_classes_by_scheme["http"])
+
     def test_local_header_key_timeout_no_redirect_no_proxy_or_login(self):
         with patch.object(transport, "Profile", side_effect=AssertionError("No local login")):
             receipt = self.request()
@@ -626,6 +862,103 @@ class ExecutionTransportTests(unittest.TestCase):
         self.assertEqual("Bearer " + PRIVATE, prepared.headers["Authorization"])
         self.assertNotIn("x-functions-key", prepared.headers)
         self.assertTrue(prepared.url.startswith(self.cli.cloud.endpoints.resource_manager.rstrip("/") + SITE))
+
+    def test_netrc_cannot_replace_cloud_bearer_auth_but_environment_proxy_and_ca_survive(self):
+        self.client = SiteRuntimeClient(self.cmd, SITE)
+        with tempfile.TemporaryDirectory() as directory:
+            netrc = Path(directory) / "credentials"
+            ca_bundle = str(Path(directory) / "test-ca.pem")
+            host = urlsplit(self.cli.cloud.endpoints.resource_manager).hostname
+            for entry in ("machine " + host, "default"):
+                netrc.write_text(entry + " login synthetic-user password synthetic-password\n", encoding="ascii")
+                for method in ("GET", "POST"):
+                    with self.subTest(entry=entry, method=method), \
+                            patch.dict(os.environ, {"NETRC": str(netrc), "REQUESTS_CA_BUNDLE": ca_bundle,
+                                                    "HTTPS_PROXY": "http://127.0.0.1:1",
+                                                    "https_proxy": "http://127.0.0.1:1",
+                                                    "NO_PROXY": "", "no_proxy": ""}), \
+                            patch.object(transport, "Profile") as profile:
+                        profile.return_value.get_raw_token.return_value = (("Bearer", PRIVATE, None), None, None)
+                        self.send.reset_mock()
+                        self.response._content = b"" if method == "POST" else b'{"name":"hello"}'
+                        self.request(method)
+                        session, prepared = self.send.call_args.args
+                        self.assertTrue(session.trust_env)
+                        self.assertEqual("Bearer " + PRIVATE, prepared.headers["Authorization"])
+                        self.assertEqual("http://127.0.0.1:1", self.send.call_args.kwargs["proxies"]["https"])
+                        self.assertEqual(ca_bundle, self.send.call_args.kwargs["verify"])
+                        self.assertEqual(1, self.send.call_count)
+                        self.assertFalse(self.send.call_args.kwargs["allow_redirects"])
+
+    def test_nonempty_post_bodies_are_not_empty_receipts_or_decoded_json(self):
+        for status in (200, 202, 204):
+            for raw in (b"null", b" null \n", b" ", b"{}", b"[]", json.dumps(PRIVATE).encode()):
+                with self.subTest(status=status, raw=raw):
+                    self.response.status_code = status
+                    self.response._content = raw
+                    self.send.reset_mock()
+                    with patch.object(transport, "strict_json_loads") as decode:
+                        with self.assertRaises(transport.ExecutionError) as caught:
+                            self.request("POST")
+                    self.assertEqual("invalidResponse", caught.exception.kind)
+                    self.assertFalse(caught.exception.before_send)
+                    self.assertNotIn(PRIVATE, str(caught.exception))
+                    decode.assert_not_called()
+                    self.send.assert_called_once()
+        self.response.status_code = 200
+        self.response._content = b"null"
+        self.assertIsNone(self.request("GET")["payload"])
+
+    def test_raw_null_post_responses_leave_all_mutations_uncertain_without_retry(self):
+        operations = (
+            (execution.cancel_run, ("hello", "source-run"), {"wait": False}, (200, 202, 204), 4),
+            (execution.cancel_run, ("hello", "source-run"), {"wait": True}, (200, 202, 204), 4),
+            (execution.resubmit_trigger_history, ("hello", "manual", "different-history"), {}, (202,), 6),
+            (execution.resubmit_run_action, ("hello", "source-run", "Send_HTTP"), {}, (202,), 6),
+        )
+        for operation, arguments, options, statuses, reads in operations:
+            for status in statuses:
+                for raw in (b"", b"null", b" null \n"):
+                    with self.subTest(operation=operation.__name__, options=options, status=status, raw=raw):
+                        fixture = ActionExecutionFixture()
+                        if operation is execution.cancel_run:
+                            fixture.statuses = ["Running"]
+                        self.send.reset_mock()
+
+                        def send(_session, prepared, **_kwargs):
+                            path = urlsplit(prepared.url).path.split("/api/management/", 1)[1]
+                            receipt = fixture.request(
+                                prepared.method, path, time.monotonic() + 60,
+                                body=json.loads(prepared.body) if prepared.body else None)
+                            response = Response()
+                            response.status_code = status if prepared.method == "POST" else receipt["statusCode"]
+                            response._content = raw if prepared.method == "POST" else json.dumps(receipt["payload"]).encode()
+                            response._content_consumed = True
+                            response.headers.update(receipt["headers"])
+                            return response
+
+                        self.send.side_effect = send
+                        with patch.object(transport, "Profile") as profile, \
+                                patch.object(execution, "user_confirmation"):
+                            profile.return_value.get_raw_token.return_value = (("Bearer", PRIVATE, None), None, None)
+                            result = operation(SiteRuntimeClient(self.cmd, SITE), *arguments, yes=True, **options)
+                        self.assertEqual(1, fixture.posts)
+                        self.assertEqual(1, sum(call.args[1].method == "POST" for call in self.send.call_args_list))
+                        self.assertNotIn(PRIVATE, json.dumps(result))
+                        if not raw:
+                            self.assertTrue(result["requestAcknowledged"])
+                            self.assertEqual(0, result["exitCode"])
+                            continue
+                        self.assertEqual("observationFailed", result["outcome"])
+                        self.assertEqual(1, result["exitCode"])
+                        self.assertEqual("invalidResponse", (result["error"] or {}).get("kind"))
+                        self.assertFalse(result["requestAcknowledged"])
+                        self.assertEqual("cancelAttempted" if operation is execution.cancel_run else "resubmitAttempted",
+                                         result["action"])
+                        self.assertIn("may have been accepted", result["message"])
+                        self.assertIn("No retry", result["message"])
+                        self.assertIsNone(result.get("newRunId"))
+                        self.assertEqual(reads + 1, self.send.call_count)
 
     def test_cloud_resubmit_matches_full_history_id_through_prepared_transport(self):
         fixture = ExecutionFixture()
@@ -655,7 +988,8 @@ class ExecutionTransportTests(unittest.TestCase):
         self.send.side_effect = send
         with patch.object(transport, "Profile") as profile, patch.object(execution, "user_confirmation"):
             profile.return_value.get_raw_token.return_value = (("Bearer", PRIVATE, None), None, None)
-            result = execution.resubmit_run(SiteRuntimeClient(self.cmd, SITE), "hello", "source-run", yes=True)
+            result = execution.resubmit_trigger_history(
+                SiteRuntimeClient(self.cmd, SITE), "hello", "manual", "different-history", yes=True)
         self.assertEqual("accepted", result["outcome"])
         self.assertEqual("new-run", result["newRunId"])
         self.assertEqual(1, fixture.posts)
@@ -720,7 +1054,7 @@ class ExecutionTransportTests(unittest.TestCase):
         self.send.assert_not_called()
 
     def test_mutation_token_failure_reports_no_submission_through_prepared_transport(self):
-        for operation, preflight_reads in ((execution.cancel_run, 4), (execution.resubmit_run, 6)):
+        for operation, preflight_reads in ((execution.cancel_run, 4), (execution.resubmit_trigger_history, 6)):
             with self.subTest(operation=operation.__name__):
                 fixture = ExecutionFixture()
                 fixture.statuses = ["Running"]
@@ -744,7 +1078,9 @@ class ExecutionTransportTests(unittest.TestCase):
                 with patch.object(transport, "Profile") as profile, \
                         patch.object(execution, "user_confirmation"):
                     profile.return_value.get_raw_token.side_effect = token
-                    result = operation(SiteRuntimeClient(self.cmd, SITE), "hello", "source-run", yes=True)
+                    arguments = ("hello", "source-run") if operation is execution.cancel_run else (
+                        "hello", "manual", "different-history")
+                    result = operation(SiteRuntimeClient(self.cmd, SITE), *arguments, yes=True)
                 self.assertEqual("readFailed", result["outcome"])
                 self.assertIsNone(result["action"])
                 self.assertFalse(result["requestAcknowledged"])
@@ -799,7 +1135,7 @@ class ExecutionTransportTests(unittest.TestCase):
         for operation, reads, options in (
                 (execution.cancel_run, 4, {"wait": False}),
                 (execution.cancel_run, 4, {"wait": True}),
-                (execution.resubmit_run, 6, {})):
+                (execution.resubmit_trigger_history, 6, {})):
             for stage in ("credential", "setup"):
                 with self.subTest(operation=operation.__name__, options=options, stage=stage):
                     clock = Clock()
@@ -832,8 +1168,10 @@ class ExecutionTransportTests(unittest.TestCase):
                             patch.object(transport, "_deadline_adapter", side_effect=adapter), \
                             patch.object(execution, "user_confirmation"):
                         profile.return_value.get_raw_token.side_effect = token
+                        arguments = ("hello", "source-run") if operation is execution.cancel_run else (
+                            "hello", "manual", "different-history")
                         result = operation(
-                            SiteRuntimeClient(self.cmd, SITE), "hello", "source-run", yes=True, **options)
+                            SiteRuntimeClient(self.cmd, SITE), *arguments, yes=True, **options)
                     self.assertEqual("requestDeadlineExpired", result["outcome"])
                     self.assertIsNone(result["action"])
                     self.assertFalse(result["requestAcknowledged"])
@@ -901,6 +1239,7 @@ class ExecutionTransportTests(unittest.TestCase):
 
     def test_route_names_are_percent_quoted_without_new_paths(self):
         from azext_logicapp._runtime_client import trigger_history_resubmit_path
+        self.response._content = b""
         self.request("POST", trigger_history_resubmit_path("hello", "trigger space", "history space"))
         self.assertIn("/triggers/trigger%20space/histories/history%20space/resubmit?",
                       self.send.call_args.args[1].url)
@@ -1005,7 +1344,7 @@ class ExecutionTransportTests(unittest.TestCase):
                     self.response.headers["Content-Encoding"] = encoding
                     self.response.status_code = status
                     self.response._content = body
-                    receipt = self.request("POST")
+                    receipt = self.request("GET" if body else "POST")
                     self.assertEqual(status, receipt["statusCode"])
                     self.assertEqual({"name": "hello"} if body else None, receipt["payload"])
 
@@ -1086,7 +1425,7 @@ class ExecutionTransportTests(unittest.TestCase):
         self.send.assert_called_once()
 
     def test_execution_never_acknowledges_late_empty_post_receipts(self):
-        for operation, statuses in ((execution.cancel_run, (202, 204)), (execution.resubmit_run, (202,))):
+        for operation, statuses in ((execution.cancel_run, (202, 204)), (execution.resubmit_trigger_history, (202,))):
             for status in statuses:
                 for elapsed, exit_code in (
                         (transport.REQUEST_TIMEOUT + 1, 1), (execution._PREFLIGHT_TIMEOUT + 1, 2)):
@@ -1111,7 +1450,9 @@ class ExecutionTransportTests(unittest.TestCase):
                                 patch.object(execution, "ExecutionTransport",
                                              return_value=SimpleNamespace(request=request)), \
                                 patch.object(execution, "user_confirmation"):
-                            result = operation(self.client, "hello", "source-run", yes=True)
+                            arguments = ("hello", "source-run") if operation is execution.cancel_run else (
+                                "hello", "manual", "different-history")
+                            result = operation(self.client, *arguments, yes=True)
                         self.assertEqual(exit_code, result["exitCode"])
                         self.assertFalse(result["requestAcknowledged"])
                         self.assertEqual(
@@ -1121,7 +1462,7 @@ class ExecutionTransportTests(unittest.TestCase):
                             self.assertEqual("requestTimeout", result["error"]["kind"])
                         else:
                             self.assertEqual("requestDeadlineExpired", result["outcome"])
-                        if operation is execution.resubmit_run:
+                        if operation is execution.resubmit_trigger_history:
                             self.assertIsNone(result["newRunId"])
                         self.send.assert_called_once()
                         self.assertEqual("POST", self.send.call_args.args[1].method)
@@ -1151,7 +1492,7 @@ class ExecutionTransportTests(unittest.TestCase):
         with patch.object(transport.time, "monotonic", clock.monotonic), \
                 patch.object(transport, "strict_json_loads", side_effect=decode):
             with self.assertRaises(transport.ExecutionError) as caught:
-                self.request("POST")
+                self.request("GET")
         self.assertEqual("requestTimeout", caught.exception.kind)
         self.send.assert_called_once()
 
@@ -1327,8 +1668,8 @@ class NativeExecutionStreamTests(unittest.TestCase):
         certificate_file.write_bytes(certificate.public_bytes(serialization.Encoding.PEM))
         key_file = root / "key.pem"
         key_file.write_bytes(key.private_bytes(serialization.Encoding.PEM,
-                                              serialization.PrivateFormat.PKCS8,
-                                              serialization.NoEncryption()))
+                                               serialization.PrivateFormat.PKCS8,
+                                               serialization.NoEncryption()))
         observed = []
         trickle = threading.Event()
         stop = threading.Event()

@@ -374,14 +374,15 @@ def connection_delete(cmd, resource_group_name, name, connection, connection_cla
     connections.json entry pointing at a deleted connection breaks every workflow
     that uses it. If this is going to fail part way, it must fail on the harmless side.
     """
-    from ._managed_connection import _read_connections_file
+    from ._managed_connection import _access_policy_id, _read_connections_file
 
     client = client or _vfs_client(cmd, resource_group_name, name)
     payload, _, _ = _read_connections_file(client)
     class_name, entry_name, entry = _resolve_connection_entry(payload, connection, connection_class)
 
     arm_id = _nested(entry, "connection", "id") if class_name == "managedApiConnections" else None
-    if arm_id:
+    if class_name == "managedApiConnections":
+        arm_id = _managed_cleanup_id(cmd, resource_group_name, arm_id)
         _managed_delete_plan(cmd, resource_group_name, name, arm_id,
                              keep_resource=keep_resource, sender=sender, entry=entry,
                              referenced_elsewhere=_other_connection_reference(payload, arm_id, entry_name))
@@ -397,7 +398,7 @@ def connection_delete(cmd, resource_group_name, name, connection, connection_cla
         for policy_name in plan["ownPolicies"]:
             try:
                 _send_arm(cmd, "DELETE", _with_connection_api_version(
-                    "{}/accessPolicies/{}".format(arm_id, policy_name)), sender=sender)
+                    _access_policy_id(arm_id, policy_name)), sender=sender)
                 removed_policies.append(policy_name)
             except ResourceNotFoundError:
                 continue
@@ -435,6 +436,36 @@ def connection_delete(cmd, resource_group_name, name, connection, connection_cla
     return result
 
 
+def _canonical_managed_id(value):
+    from ._managed_connection import _valid_access_policy_name
+
+    parts = value.split("/") if isinstance(value, str) else []
+    if (len(parts) != 9 or parts[0]
+            or [parts[index].casefold() for index in (1, 3, 5, 6, 7)] != [
+                "subscriptions", "resourcegroups", "providers", "microsoft.web", "connections"]
+            or not all(_valid_access_policy_name(parts[index]) for index in (2, 4, 8))
+            or not CONNECTION_NAME.fullmatch(parts[8])):
+        raise ValidationError(
+            "A canonical relative Microsoft.Web/connections resource ID is required. "
+            "No connection-resource ARM request or connections.json change was attempted.")
+    return value
+
+
+def _managed_cleanup_id(cmd, resource_group_name, value):
+    from azure.cli.core.commands import client_factory
+
+    value = _canonical_managed_id(value)
+    parts = value.split("/")
+    subscription = client_factory.get_subscription_id(cmd.cli_ctx)
+    if (not isinstance(subscription, str) or not isinstance(resource_group_name, str)
+            or parts[2].casefold() != subscription.casefold()
+            or parts[4].casefold() != resource_group_name.casefold()):
+        raise ValidationError(
+            "Managed cleanup is limited to the selected subscription and resource group. "
+            "Cross-scope connections must be inspected and managed explicitly; connections.json was not changed.")
+    return value
+
+
 def _resolve_connection_entry(payload, connection, connection_class=None):
     """Locate exactly one connections.json entry, refusing an ambiguous name."""
     if connection_class is not None and connection_class not in _CONNECTION_CLASSES:
@@ -469,7 +500,7 @@ def _managed_delete_plan(cmd, resource_group_name, name, arm_id,
     Only the selected system-assigned principal and matching tenant establish
     exclusive access.
     """
-    from ._managed_connection import _policy_principal_matches
+    from ._managed_connection import _policy_principal_matches, _valid_access_policy_name
 
     authentication = _nested(entry, "authentication")
     authentication = authentication if isinstance(authentication, dict) else {}
@@ -485,15 +516,25 @@ def _managed_delete_plan(cmd, resource_group_name, name, arm_id,
     except ResourceNotFoundError:
         listed = {}
     if (not isinstance(listed, dict) or not isinstance(listed.get("value"), list)
-            or listed.get("nextLink")):
+            or listed.get("nextLink") not in (None, "")):
         unverified_policies = True
+    policies, names, duplicate_names = [], set(), set()
     for item in _value(listed):
         policy_name = item.get("name") if isinstance(item, dict) else None
-        if not policy_name:
+        if not _valid_access_policy_name(policy_name):
             unverified_policies = True
             continue
-        principal = _nested(item, "properties", "principal")
-        if system_principal and _policy_principal_matches(principal, system_principal):
+        normalized_name = policy_name.casefold()
+        if normalized_name in names:
+            duplicate_names.add(normalized_name)
+        names.add(normalized_name)
+        policies.append((policy_name, _nested(item, "properties", "principal")))
+    incomplete_policies = unverified_policies
+    for policy_name, principal in policies:
+        if incomplete_policies or policy_name.casefold() in duplicate_names:
+            unverified_policies = True
+            other_policies.append(policy_name)
+        elif system_principal and _policy_principal_matches(principal, system_principal):
             own_policies.append(policy_name)
         else:
             other_policies.append(policy_name)
@@ -531,6 +572,9 @@ def _managed_delete_plan(cmd, resource_group_name, name, arm_id,
     if unverified_policies:
         reasons.append(
             "The complete access policy list could not be verified, so the ARM resource was retained.")
+    if duplicate_names:
+        reasons.append(
+            "Duplicate access policy names have ambiguous ownership; all affected policies were retained.")
     reason = " ".join(reasons) or None
     return {
         "ownPolicies": own_policies,
@@ -860,6 +904,7 @@ def _finish_connection_test(result, exit_on_nonzero=True):
 
 
 def _get_arm_connection(cmd, connection_id, sender=None):
+    connection_id = _canonical_managed_id(connection_id)
     return _send_arm(cmd, "GET", _with_connection_api_version(connection_id), sender=sender)
 
 

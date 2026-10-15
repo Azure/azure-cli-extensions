@@ -398,8 +398,8 @@ def _publish(report, path, force, protected):
                 raise InputError("report.publication") from ex
 
 
-def plan_report(path, workflow, test_project=None, report_path=None, force=False):
-    report, snapshots, protected = protocol.new_report(), {}, set()
+def plan_report(path, workflow, test_project=None, report_path=None, force=False, strict=False):
+    report, snapshots, protected = protocol.new_report(strict=strict), {}, set()
     try:
         if not isinstance(workflow, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}", workflow):
             raise InputError("input.options")

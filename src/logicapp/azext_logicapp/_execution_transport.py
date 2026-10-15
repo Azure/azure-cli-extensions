@@ -43,6 +43,11 @@ class DeadlineExpired(Exception):
         self.before_send = before_send
 
 
+class _PreserveTargetAuthentication(requests.auth.AuthBase):  # pylint: disable=too-few-public-methods
+    def __call__(self, request):
+        return request
+
+
 class _SuppressHttpDetails(logging.Filter):  # pylint: disable=too-few-public-methods
     def filter(self, _record):
         return False
@@ -133,7 +138,7 @@ class ExecutionTransport:  # pylint: disable=too-few-public-methods
         self.runtime = SiteRuntimeClient(client.cmd, target, api_version=EXECUTION_API_VERSION,
                                          host_key=client.host_key)
 
-    def request(self, method, path, deadline, params=None):
+    def request(self, method, path, deadline, params=None, body=None):
         remaining = deadline - time.monotonic()
         if remaining <= 0:
             raise DeadlineExpired(before_send=True)
@@ -163,6 +168,8 @@ class ExecutionTransport:  # pylint: disable=too-few-public-methods
         # The CLI REST helper has no timeout and follows redirects. A separate
         # session confines these controls without changing other runtime commands.
         with _private_transport_logs(), requests.Session() as session:
+            # Explicit auth prevents netrc substitution without disabling cloud proxies or CA bundles.
+            session.auth = _PreserveTargetAuthentication()
             adapter = _deadline_adapter(request_deadline)
             session.mount("http://", adapter)
             session.mount("https://", adapter)
@@ -171,7 +178,8 @@ class ExecutionTransport:  # pylint: disable=too-few-public-methods
             try:
                 _check_deadline(deadline, request_deadline, before_send=True)
                 with session.request(method, url, headers=headers, allow_redirects=False, stream=True,
-                                     timeout=Timeout(total=budget, connect=budget, read=budget)) as response:
+                                     timeout=Timeout(total=budget, connect=budget, read=budget),
+                                     **({"json": body} if body is not None else {})) as response:
                     _check_deadline(deadline, request_deadline)
                     status = response.status_code
                     if not 200 <= status < 300:
@@ -191,6 +199,10 @@ class ExecutionTransport:  # pylint: disable=too-few-public-methods
                             raise ExecutionError("invalidResponse", "Execution response exceeded the size limit.")
                         content.extend(chunk)
                     _check_deadline(deadline, request_deadline)
+                    if method.upper() == "POST" and content:
+                        raise ExecutionError(
+                            "invalidResponse", "Execution mutation returned a nonempty response body; "
+                            "an empty acknowledgement was required.")
                     try:
                         payload = strict_json_loads(content) if content else None
                     except (ValueError, RecursionError):

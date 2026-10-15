@@ -185,13 +185,16 @@ class _Vfs:
         failure = self.write_failures.get(self.writes)
         if failure and not failure[1]:
             raise failure[0]
+        published_etag = self.etag
         if self.apply_write:
             self.content = content
+            published_etag = self.etag
             if self.on_write:
                 self.on_write(self)
         if failure:
             raise failure[0]
-        return {"content": b"", "headers": {}, "statusCode": self.write_status}
+        return {"content": b"", "headers": {"ETag": published_etag} if published_etag else {},
+                "statusCode": self.write_status}
 
     def delete(self, path):
         self.calls.append(("DELETE", path))
@@ -329,8 +332,10 @@ class ManagedLifecycleRegressions(unittest.TestCase):
 
     def test_existing_without_force_is_rejected_without_mutation(self):
         arm, vfs = _Arm(existing=True), _Vfs({})
-        with self.assertRaisesRegex(ValidationError, "already exists"):
+        with self.assertRaisesRegex(ValidationError, "already exists") as caught:
             self._create(arm, vfs)
+        self.assertIn("--name (connection managed create)", str(caught.exception))
+        self.assertIn("--connection-name (legacy connection create)", str(caught.exception))
         self.assertEqual(arm.mutations, [])
         self.assertEqual(vfs.calls, [])
 
@@ -681,7 +686,7 @@ class ManagedLifecycleRegressions(unittest.TestCase):
         self.assertEqual(vfs.payload["serviceProviderConnections"], original["serviceProviderConnections"])
         self.assertEqual(arm.deletes, [])
 
-    def test_vfs_write_cancellation_rolls_back_guarded_file_only_and_retains_arm_state(self):
+    def test_vfs_write_cancellation_retains_unowned_file_and_arm_state(self):
         for existing in (False, True):
             for error in (KeyboardInterrupt(), SystemExit(130), asyncio.CancelledError()):
                 for after in (False, True):
@@ -695,12 +700,12 @@ class ManagedLifecycleRegressions(unittest.TestCase):
                             with self.assertRaises(type(error)) as caught:
                                 self._create(arm, vfs, force=existing)
                         self.assertIs(caught.exception, error)
-                        self.assertEqual(vfs.content, before)
+                        self.assertEqual(vfs.content == before, not after)
                         self._assert_attempted_acl_retained(arm, policies)
                         self.assertIsNotNone(arm.connection)
                         self.assertEqual(arm.deletes, [])
 
-    def test_vfs_failed_response_after_applied_write_restores_original_bytes(self):
+    def test_vfs_failed_response_after_applied_write_retains_unowned_revision(self):
         original = {
             "managedApiConnections": {"conn": {"old": True}, "other": {"keep": True}},
             "serviceProviderConnections": {"blob": {"keep": True}},
@@ -715,11 +720,12 @@ class ManagedLifecycleRegressions(unittest.TestCase):
                 if existing:
                     self._assert_retained_failure(arm, vfs, error)
                 else:
-                    with self.assertRaises(OSError):
+                    with self.assertRaisesRegex(CLIInternalError, "Could not restore"):
                         self._create(arm, vfs)
                     self.assertIsNotNone(arm.connection)
                     self._assert_attempted_acl_retained(arm)
-                self.assertEqual(vfs.content, before)
+                self.assertNotEqual(vfs.content, before)
+                self.assertEqual(1, vfs.writes)
 
     def test_existing_file_and_unrelated_entries_are_preserved(self):
         for initial in ({}, {
@@ -823,9 +829,9 @@ class ManagedLifecycleRegressions(unittest.TestCase):
                     client.content = json.dumps(payload).encode("utf-8")
 
                 vfs.on_write = concurrent_edit
-                with self.assertRaises(OSError):
+                with self.assertRaisesRegex(CLIInternalError, "Could not restore"):
                     self._create(arm, vfs)
-                self.assertNotIn("conn", vfs.payload.get("managedApiConnections", {}))
+                self.assertIn("conn", vfs.payload.get("managedApiConnections", {}))
                 self.assertEqual(vfs.payload["serviceProviderConnections"], {"new-other": {"keep": True}})
                 self.assertIsNotNone(arm.connection)
                 self._assert_attempted_acl_retained(arm)
@@ -886,7 +892,7 @@ class ManagedLifecycleRegressions(unittest.TestCase):
                     self.assertIs(type(new), type(vfs.payload["managedApiConnections"]["conn"]["value"]))
                     self.assertEqual(1, vfs.writes)
 
-    def test_type_only_unrelated_changes_are_preserved_by_restoration(self):
+    def test_type_only_unrelated_changes_block_restoration_of_another_revision(self):
         for old, new in ((True, 1), (1, 1.0)):
             with self.subTest(old=old, new=new):
                 vfs = _Vfs({"custom": {"values": [old]}})
@@ -895,10 +901,61 @@ class ManagedLifecycleRegressions(unittest.TestCase):
                 current = vfs.payload
                 current["custom"]["values"][0] = new
                 vfs.content = json.dumps(current).encode()
-                wiring.restore()
-                self.assertNotIn("managedApiConnections", vfs.payload)
+                with self.assertRaisesRegex(ValidationError, "owned revision"):
+                    wiring.restore()
+                self.assertIn("managedApiConnections", vfs.payload)
                 self.assertIs(type(new), type(vfs.payload["custom"]["values"][0]))
-                self.assertEqual(2, vfs.writes)
+                self.assertEqual(1, vfs.writes)
+
+    def test_uncertain_write_never_restores_an_identical_entry_owned_by_another_writer(self):
+        for http in (False, True):
+            with self.subTest(http=http):
+                arm, vfs = _Arm(), _Vfs({})
+
+                def competing_write(client):
+                    current = client.payload
+                    current["custom"] = {"concurrent": True}
+                    client.content = json.dumps(current).encode()
+
+                vfs.on_write = competing_write
+                vfs.write_failures[1] = (OSError("Response lost"), True)
+                with self.assertRaisesRegex(CLIInternalError, "Could not restore"):
+                    self._create(arm, _vfs_client(vfs, http))
+                self.assertIn("conn", vfs.payload["managedApiConnections"])
+                self.assertEqual({"concurrent": True}, vfs.payload["custom"])
+                self.assertEqual(1, vfs.writes)
+                self._assert_attempted_acl_retained(arm)
+
+    def test_completed_write_receipt_does_not_authorize_restoring_a_newer_revision(self):
+        vfs = _Vfs({})
+        wiring = managed._ConnectionsFile(None, "rg", "app", "conn", vfs)
+        wiring.write({"created": True})
+        current = vfs.payload
+        current["custom"] = {"concurrent": True}
+        vfs.content = json.dumps(current).encode()
+        with self.assertRaisesRegex(ValidationError, "owned revision"):
+            wiring.restore()
+        self.assertEqual(current, vfs.payload)
+        self.assertEqual(1, vfs.writes)
+
+    def test_completed_write_requires_a_strong_receipt_revision_not_readback_revision(self):
+        for etag in (None, "*", 'W/"weak"', '"a","b"', ""):
+            with self.subTest(etag=etag):
+                vfs = _Vfs({})
+                send = vfs.put_raw
+
+                def receipt(*args, **kwargs):
+                    result = send(*args, **kwargs)
+                    result["headers"] = {"ETag": etag} if etag is not None else {}
+                    return result
+
+                with mock.patch.object(vfs, "put_raw", side_effect=receipt):
+                    wiring = managed._ConnectionsFile(None, "rg", "app", "conn", vfs)
+                    with self.assertRaises(ClientRequestError):
+                        wiring.write({"created": True})
+                    with self.assertRaisesRegex(ValidationError, "No completed"):
+                        wiring.restore()
+                self.assertEqual(1, vfs.writes)
 
     def test_decline_logs_retained_arm_state_without_attempting_unsafe_cleanup(self):
         arm, vfs = _Arm(), _Vfs({})
@@ -1081,12 +1138,14 @@ class ManagedLifecycleRegressions(unittest.TestCase):
                         arm, vfs = _Arm(), _Vfs({"custom": {"keep": True}})
                         before = vfs.content
                         vfs.write_failures[1] = (error, after)
-                        with self.assertRaisesRegex(ClientRequestError, "publication could not be verified") as caught:
+                        expected = CLIInternalError if after else ClientRequestError
+                        message = "Could not restore" if after else "publication could not be verified"
+                        with self.assertRaisesRegex(expected, message) as caught:
                             self._create(arm, _vfs_client(vfs, http))
                         self.assertNotIn("private-token", str(caught.exception))
                         self.assertNotIn("private-file-content", str(caught.exception))
                         self.assertNotIn("provider body", str(caught.exception))
-                        self.assertEqual(before, vfs.content)
+                        self.assertEqual(vfs.content == before, not after)
                         self.assertIsNotNone(arm.connection)
                         self._assert_attempted_acl_retained(arm)
 
@@ -1208,7 +1267,7 @@ class ManagedLifecycleRegressions(unittest.TestCase):
         for http in (False, True):
             with self.subTest(http=http):
                 arm, vfs = _Arm(), _Vfs({})
-                vfs.write_failures[1] = (OSError("Receipt lost"), True)
+                vfs.read_failures[3] = OSError("Readback lost after completed receipt")
 
                 def arm_restoration_race(client):
                     def competing_write(target):
@@ -1231,10 +1290,11 @@ class ConnectionRemovalPublicationRegressions(unittest.TestCase):
     def _payload(self):
         return {"managedApiConnections": {
             "conn": managed.build_connections_entry(CONNECTOR_ID, CONNECTION_ID, None)},
-                "serviceProviderConnections": {"other": {"keep": True}}}
+            "serviceProviderConnections": {"other": {"keep": True}}}
 
     def _delete(self, arm, vfs):
-        with mock.patch.object(_connection, "_app_system_principal", return_value=PRINCIPAL):
+        with mock.patch.object(_connection, "_app_system_principal", return_value=PRINCIPAL), \
+                mock.patch("azure.cli.core.commands.client_factory.get_subscription_id", return_value="sub"):
             return _connection.connection_delete(
                 SimpleNamespace(cli_ctx=object()), "rg", "app", "conn",
                 client=vfs, sender=arm.send)
@@ -1500,6 +1560,7 @@ class ConnectionRemovalPublicationRegressions(unittest.TestCase):
                                                   ["metadata"]["values"][0]))
                     self.assertEqual(0, vfs.writes)
                     self.assertEqual([], arm.mutations)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

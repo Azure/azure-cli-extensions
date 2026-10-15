@@ -14,7 +14,8 @@ from azure.cli.core.util import user_confirmation
 from requests.exceptions import ConnectionError as RequestsConnectionError, Timeout as RequestsTimeout
 
 from ._json import json_equal, strict_json_loads
-from ._runtime_client import validate_file_etag, vfs_workflow_file_path, workflow_path, workflow_validate_path
+from ._runtime_client import validate_file_etag, vfs_workflow_file_path, workflow_path
+from ._workflow_validation import validate_runtime_workflow
 from ._workflow import abs_path, validate_workflow_document, validate_workflow_name
 from ._workflow_discovery import read_workflow_file, response_etag, workflow_metadata
 
@@ -130,7 +131,7 @@ def _restore_owned_revision(vfs, path, before, written_etag):
         return "Conditional restoration failed; the workflow may contain changed or partial content."
 
 
-def update_workflow(client, workflow, file, if_match=None, yes=False, allow_non_atomic=False):
+def set_workflow(client, workflow, file, if_match=None, yes=False, allow_non_atomic=False):
     _require_acknowledgement(allow_non_atomic)
     if not workflow:
         raise InvalidArgumentValueError("--workflow is required.")
@@ -139,19 +140,11 @@ def update_workflow(client, workflow, file, if_match=None, yes=False, allow_non_
     document = load_update_file(file, workflow)
     vfs, before = _current_workflow(client, workflow, expected)
     if document["kind"] != before["document"]["kind"]:
-        raise InvalidArgumentValueError("workflow update does not convert Stateful/Stateless kind. No mutation was attempted.")
+        raise InvalidArgumentValueError("workflow set does not convert Stateful/Stateless kind. No mutation was attempted.")
     try:
-        receipt = client.post_with_receipt(
-            workflow_validate_path(workflow),
-            body={"properties": {"definition": document["definition"], "kind": document["kind"]}})
-        if (not isinstance(receipt, dict) or receipt.get("statusCode") not in (200, 204)
-                or "payload" not in receipt):
-            raise ClientRequestError(
-                "The runtime did not return a completed validation receipt. "
-                "No operation URL was followed and no polling or retry was attempted.")
-        validation = receipt["payload"]
-        if validation is not None and (not isinstance(validation, dict) or "error" in validation):
-            raise ClientRequestError("The runtime returned an invalid or failing validation response.")
+        validate_runtime_workflow(
+            client, workflow,
+            {"properties": {"definition": document["definition"], "kind": document["kind"]}})
     except _REQUEST_ERRORS as ex:
         raise ValidationError(
             "The target runtime rejected or could not validate the incoming definition. "

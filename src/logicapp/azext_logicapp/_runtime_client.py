@@ -11,7 +11,8 @@ from io import BytesIO
 from urllib.parse import quote, urlencode
 
 from azure.cli.core.azclierror import (
-    ClientRequestError, HTTPError, InvalidArgumentValueError, ResourceNotFoundError, UnauthorizedError)
+    ClientRequestError, HTTPError, InvalidArgumentValueError, ResourceNotFoundError, UnauthorizedError,
+    ValidationError)
 from azure.cli.core.util import send_raw_request
 from requests.exceptions import ConnectionError as RequestsConnectionError
 
@@ -187,6 +188,10 @@ def workflow_run_path(workflow, run_id):
 
 def workflow_run_cancel_path(workflow, run_id):
     return "{}/cancel".format(workflow_run_path(workflow, run_id))
+
+
+def workflow_run_resubmit_path(workflow, run_id):
+    return "{}/resubmit".format(workflow_run_path(workflow, run_id))
 
 
 def run_actions_path(workflow, run_id):
@@ -421,12 +426,22 @@ class SiteVfsClient(SiteRuntimeClient):
 
 
 def _normalize_site_resource_id(site_resource_id):
-    value = str(site_resource_id or "").strip()
-    if not value.startswith("/subscriptions/"):
-        raise InvalidArgumentValueError("site_resource_id must be a Microsoft.Web/sites ARM resource id")
-    if "/providers/Microsoft.Web/sites/" not in value:
-        raise InvalidArgumentValueError("site_resource_id must target a Microsoft.Web/sites resource")
-    return value.rstrip("/")
+    from ._context import _cloud_coordinate
+
+    value = str(site_resource_id or "").strip().rstrip("/")
+    parts = value.split("/")
+    message = ("site_resource_id must be a canonical Microsoft.Web/sites ARM resource id, "
+               "not a slot or nested resource, query or escaped coordinate")
+    if (len(parts) != 9 or parts[0]
+            or [parts[index].casefold() for index in (1, 3, 5, 6, 7)] != [
+                "subscriptions", "resourcegroups", "providers", "microsoft.web", "sites"]):
+        raise InvalidArgumentValueError(message)
+    try:
+        for index in (2, 4, 8):
+            _cloud_coordinate(parts[index])
+    except ValidationError as ex:
+        raise InvalidArgumentValueError(message) from ex
+    return value
 
 
 def local_base_url(port, host=None):
@@ -467,6 +482,10 @@ DEFAULT_LOCAL_PORT = 7071
 def _site_resource_id(cmd, resource_group_name, name):
     """Build the ``Microsoft.Web/sites`` id for a deployed logic app."""
     from azure.cli.core.commands.client_factory import get_subscription_id
+    from ._context import _cloud_coordinate
+
+    resource_group_name = _cloud_coordinate(resource_group_name)
+    name = _cloud_coordinate(name)
     return "/subscriptions/{}/resourceGroups/{}{}{}".format(
         get_subscription_id(cmd.cli_ctx), resource_group_name, _SITE_PROVIDER, name)
 

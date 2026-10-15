@@ -20,6 +20,8 @@ With no `--path`, a named or active **local** context supplies the project path 
 port. Without a context, the current directory and port 7071 are used. An explicit
 path overrides the active context; explicit paths do not load the context store.
 `--context` cannot be combined with `--path` or `--port`. Cloud contexts are refused.
+An explicitly empty context is invalid, not an omitted selection; it cannot
+silently fall back to an active context or bypass those target conflicts.
 Cloud flags such as `--resource-group`, `--name`, and `--host-key` are unsupported.
 There is no Azure account lookup, cloud diagnostic, log streaming, or telemetry.
 
@@ -60,7 +62,9 @@ unreachable **configured local storage** remains a required failure.
 - `host.json`, `local.settings.json`, direct child workflow files, and optional
   `connections.json`/`parameters.json`. JSON object shape, host schema, worker
   setting, string-valued unencrypted settings, project parameter entries, and
-  existing basic workflow structure checks are evaluated. This is not full schema
+  existing basic workflow structure checks are evaluated. The definition must
+  include an actions object; missing/null actions fail, while an explicit empty
+  object is valid. This is not full schema
   validation, connector validation, expression evaluation, or business testing.
   Files above 4 MiB, content deeper than 128 levels, and encrypted settings remain
   unknown, without decryption. Duplicate members, nonstandard JSON constants and

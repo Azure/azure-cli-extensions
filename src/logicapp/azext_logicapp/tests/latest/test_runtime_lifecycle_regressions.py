@@ -13,6 +13,7 @@ import unittest
 import uuid
 import warnings
 from pathlib import Path
+from types import SimpleNamespace
 from unittest import mock
 
 import psutil
@@ -44,6 +45,42 @@ class IsolatedRuntimeTest(unittest.TestCase):
         record.update(extra)
         _local._write_record(port, record)
         return record
+
+
+class SubprocessCompatibilityTests(IsolatedRuntimeTest):
+    def test_production_probes_and_identity_stop_use_python36_subprocess_keywords(self):
+        created = "2026-10-06T15:00:00.1234560Z"
+        calls = []
+
+        def python36_run(args, stdout=None, stderr=None, universal_newlines=False,
+                         timeout=None, check=False, env=None, cwd=None, errors=None):
+            calls.append((args, universal_newlines))
+            self.assertEqual(subprocess.PIPE, stdout)
+            self.assertEqual(subprocess.PIPE, stderr)
+            output = json.dumps([{"ProcessId": 1234, "ParentProcessId": 1,
+                                  "ProcessCreateTimeUtc": created}]) if "-Command" in args else "4.15.2\n"
+            return SimpleNamespace(returncode=0, stdout=output, stderr="")
+
+        self.patch(_local.subprocess, "run", side_effect=python36_run)
+        self.patch(_local, "dependency_environment", return_value={})
+        self.patch(_local, "_powershell_executable", return_value="powershell")
+        self.assertEqual("4.15.2", _local._dependency_version("func", "core-tools"))
+        self.assertEqual("4.15.2", _runtime_doctor._probe_version("func", {}, 2)[0])
+        self.assertEqual([(1234, 1, created)], _local._process_tree_snapshot())
+        _local._stop_process(1234, check=False, expected=created)
+        self.assertEqual([True, True, True, False], [call[1] for call in calls])
+
+    def test_aware_identity_parser_preserves_precision_and_rejects_unproven_timestamps(self):
+        for value in ("2026-10-06T15:00:00.1234560Z", "2026-10-06T15:00:00.1234567+00:00"):
+            parsed = _local._creation_datetime(value)
+            self.assertEqual(123456, parsed.microsecond)
+            self.assertEqual(0, parsed.utcoffset().total_seconds())
+        self.assertEqual(3600, _local._creation_datetime(
+            "2026-10-06T15:00:00+01:00").utcoffset().total_seconds())
+        for value in (None, "", "2026-10-06T15:00:00", "2026-13-06T15:00:00Z",
+                      "2026-10-06T15:00:00+24:00", "2026-10-06T15:00:00+00:99"):
+            with self.subTest(value=value):
+                self.assertIsNone(_local._creation_datetime(value))
 
 
 class PortableIdentityTests(IsolatedRuntimeTest):
@@ -265,6 +302,7 @@ class MalformedOwnershipRecordTests(IsolatedRuntimeTest):
         corrupt_path.write_text('["{}"]'.format(self.PRIVATE), encoding="utf-8")
         _local._write_azurite_record({"pid": 480003, "processCreateTimeUtc": self.CREATED})
         live = {self.PID: self.CREATED, 480003: self.CREATED}
+
         def stop(pid, expected=None):
             self.assertEqual(expected, self.CREATED)
             live.pop(pid)
@@ -297,6 +335,7 @@ class WindowsDescendantIdentityTests(IsolatedRuntimeTest):
         self.live = {self.PARENT: self.CREATED, self.CHILD: self.CREATED,
                      self.GRANDCHILD: self.CREATED, self.SIBLING: self.CREATED}
         self.patch(_local.sys, "platform", "win32")
+        self.patch(_local, "_powershell_executable", return_value="powershell")
         self.patch(_local, "process_create_time_utc", side_effect=lambda pid: self.live.get(pid))
         self.patch(_local, "_is_running", side_effect=lambda pid: pid in self.live)
         self.patch(_local.psutil, "pid_exists", side_effect=lambda pid: pid in self.live)
@@ -459,15 +498,60 @@ class WindowsDescendantIdentityTests(IsolatedRuntimeTest):
         self.live[self.PARENT] = self.REPLACEMENT
         self.patch(_local, "_process_tree_snapshot", return_value=[
             (self.PARENT, 1, self.REPLACEMENT), (self.CHILD, self.PARENT, self.CREATED)])
-        with self.assertRaises(OSError):
-            _local._terminate(self.PARENT)
+        _local._terminate(self.PARENT)
         self.assertEqual(self.stopped, [self.PARENT])
         self.assertIn(self.CHILD, self.live)
+
+    def test_preexisting_process_subtree_is_neither_owned_nor_a_cleanup_guard(self):
+        self.live[self.PARENT] = self.REPLACEMENT
+        self.patch(_local, "_process_tree_snapshot", return_value=[
+            (self.PARENT, 1, self.REPLACEMENT), (self.CHILD, self.PARENT, self.CREATED),
+            (self.GRANDCHILD, self.CHILD, self.CREATED)])
+        _local._terminate(self.PARENT, expected=self.REPLACEMENT)
+        self.assertEqual(self.stopped, [self.PARENT])
+        self.assertIn(self.CHILD, self.live)
+        self.assertIn(self.GRANDCHILD, self.live)
+
+    def test_changed_or_unverifiable_preexisting_snapshot_remains_a_cleanup_guard(self):
+        self.live[self.PARENT] = self.REPLACEMENT
+        for actual in (None, self.REPLACEMENT):
+            with self.subTest(actual=actual):
+                self.live[self.PARENT] = self.REPLACEMENT
+                self.live[self.CHILD] = actual
+                self.stopped.clear()
+                self.patch(_local, "_process_tree_snapshot", return_value=[
+                    (self.PARENT, 1, self.REPLACEMENT), (self.CHILD, self.PARENT, self.CREATED)])
+                with self.assertRaises(OSError):
+                    _local._terminate(self.PARENT, expected=self.REPLACEMENT)
+                self.assertEqual(self.stopped, [self.PARENT])
+                self.assertIn(self.CHILD, self.live)
 
     def test_already_exited_children_do_not_make_verified_cleanup_fail(self):
         self.on_parent_stop = lambda: (self.live.pop(self.CHILD), self.live.pop(self.GRANDCHILD))
         _local._terminate(self.PARENT)
         self.assertEqual(self.stopped, [self.PARENT])
+
+    def test_child_exiting_during_native_signal_is_not_retained_as_unverified(self):
+        def signal(pid, check, expected=None):
+            if pid == self.GRANDCHILD:
+                self.live.pop(pid)
+                raise subprocess.CalledProcessError(1, "fixture exited before Get-Process")
+            return self.signal(pid, check, expected)
+
+        self.stop.side_effect = signal
+        _local._terminate(self.PARENT)
+        self.assertEqual(self.stopped, [self.PARENT, self.CHILD])
+
+    def test_parent_exiting_during_native_signal_still_cleans_verified_children(self):
+        def signal(pid, check, expected=None):
+            if pid == self.PARENT:
+                self.live.pop(pid)
+                raise subprocess.CalledProcessError(1, "fixture exited before Get-Process")
+            return self.signal(pid, check, expected)
+
+        self.stop.side_effect = signal
+        _local._terminate(self.PARENT, expected=self.CREATED)
+        self.assertEqual(self.stopped, [self.GRANDCHILD, self.CHILD])
 
     def test_cycle_does_not_grant_ownership_to_unrelated_processes_or_loop(self):
         self.patch(_local, "_process_tree_snapshot", return_value=[
@@ -510,7 +594,7 @@ class WindowsDescendantIdentityTests(IsolatedRuntimeTest):
         runner = self.patch(_local.subprocess, "run",
                             return_value=subprocess.CompletedProcess([], 0, json.dumps(payload)))
         self.assertEqual(self.real_snapshot(), [(self.PARENT, 1, self.CREATED),
-                                               (self.CHILD, self.PARENT, self.CREATED)])
+                                                (self.CHILD, self.PARENT, self.CREATED)])
         self.assertIn("CreationDate.ToUniversalTime().ToString('o')", runner.call_args.args[0][-1])
         for invalid in (None, True, 42, [None], [{"ProcessId": True, "ParentProcessId": 1}],
                         [{"ProcessId": -1, "ParentProcessId": 1}],
@@ -524,6 +608,210 @@ class WindowsDescendantIdentityTests(IsolatedRuntimeTest):
             self.real_snapshot()
         self.assertNotIn("private-process-output", str(error.exception))
         self.stop.assert_not_called()
+
+
+class RuntimeCleanupRecoveryTests(IsolatedRuntimeTest):
+    PORT = 17071
+    PARENT = 480001
+    CHILD = 480002
+    CONSUMER = 480003
+    CREATED = "2026-10-06T15:00:00.1234560Z"
+    REPLACEMENT = "2026-10-07T15:00:00.1234560Z"
+
+    def setUp(self):
+        super().setUp()
+        self.live = {}
+        self.patch(_local, "process_create_time_utc", side_effect=self.live.get)
+        self.patch(_local, "_is_running", side_effect=lambda pid: pid in self.live)
+        self.patch(_local.psutil, "pid_exists", side_effect=lambda pid: pid in self.live)
+        self.patch(_local, "_port_free", return_value=True)
+        self.release = self.patch(_local, "_release_azurite_if_idle", return_value=None)
+        self.signal = self.patch(_local, "_terminate")
+        self.record = self.write_record(
+            self.PORT, self.PARENT, self.CREATED, cleanupPending=True, launchId="failed-launch",
+            childProcesses=[{"pid": self.CHILD, "processCreateTimeUtc": self.CREATED}])
+        self.before = Path(_local._record_file(self.PORT)).read_bytes()
+
+    def assert_retained(self):
+        with self.assertRaises(CLIError):
+            _local.stop_runtime(self.PORT)
+        self.assertEqual(self.before, Path(_local._record_file(self.PORT)).read_bytes())
+        self.signal.assert_not_called()
+        self.release.assert_not_called()
+
+    def test_retry_recovers_exact_failed_receipt_after_all_recorded_processes_exit(self):
+        result = _local.stop_runtime(self.PORT)
+        self.assertEqual("already-exited", result["stopped"][0]["result"])
+        self.assertEqual([], result["refused"])
+        self.assertIsNone(_local._read_record(self.PORT))
+        self.signal.assert_not_called()
+        self.release.assert_called_once()
+
+    def test_recycled_parent_or_child_cannot_authorize_cleanup_or_shared_storage_release(self):
+        for pid in (self.PARENT, self.CHILD):
+            with self.subTest(pid=pid):
+                self.live = {pid: self.REPLACEMENT}
+                self.assert_retained()
+
+    def test_unverifiable_process_keeps_receipt_and_storage_guard(self):
+        self.patch(_local.psutil, "pid_exists", return_value=True)
+        self.assert_retained()
+
+    def test_process_existence_probe_failure_keeps_receipt(self):
+        self.patch(_local.psutil, "pid_exists", side_effect=psutil.AccessDenied(self.PARENT))
+        self.assert_retained()
+
+    def test_running_or_recycled_launch_consumer_prevents_receipt_recovery(self):
+        self.record.update(consumerPid=self.CONSUMER, consumerProcessCreateTimeUtc=self.CREATED)
+        _local._write_record(self.PORT, self.record)
+        self.before = Path(_local._record_file(self.PORT)).read_bytes()
+        for actual in (self.CREATED, self.REPLACEMENT, None):
+            with self.subTest(actual=actual):
+                self.live = {self.CONSUMER: actual}
+                self.assert_retained()
+
+    def test_occupied_port_prevents_recovery_without_attempting_a_signal(self):
+        self.patch(_local, "_port_free", return_value=False)
+        self.assert_retained()
+
+    def test_ordinary_stale_receipt_does_not_gain_cleanup_authority(self):
+        self.record.pop("cleanupPending")
+        _local._write_record(self.PORT, self.record)
+        self.before = Path(_local._record_file(self.PORT)).read_bytes()
+        self.assert_retained()
+
+    def test_concurrent_replacement_is_retained_not_deleted_or_overwritten(self):
+        replacement = dict(self.record, launchId="new-launch", pid=self.CONSUMER)
+
+        def replace(_record):
+            _local._write_record(self.PORT, replacement)
+            return False
+
+        self.patch(_local, "_runtime_has_live_process", side_effect=replace)
+        with self.assertRaisesRegex(CLIError, "changed during cleanup"):
+            _local.stop_runtime(self.PORT)
+        self.assertEqual(replacement, _local._read_record(self.PORT))
+        self.signal.assert_not_called()
+        self.release.assert_not_called()
+
+    def test_failed_stop_does_not_overwrite_a_new_launch_receipt(self):
+        self.live[self.PARENT] = self.CREATED
+        replacement = dict(self.record, launchId="new-launch", pid=self.CONSUMER)
+        self.patch(_local.psutil, "Process", return_value=mock.Mock(children=mock.Mock(return_value=[])))
+
+        def signal(_pid, expected=None):
+            self.assertEqual(self.CREATED, expected)
+            _local._write_record(self.PORT, replacement)
+            raise OSError("fixture interrupted cleanup")
+
+        self.signal.side_effect = signal
+        with self.assertRaisesRegex(CLIError, "changed during cleanup"):
+            _local.stop_runtime(self.PORT)
+        self.assertEqual(replacement, _local._read_record(self.PORT))
+        self.release.assert_not_called()
+
+    def test_receipt_removal_error_retains_recoverable_failed_stop(self):
+        self.record.pop("cleanupPending")
+        _local._write_record(self.PORT, self.record)
+        self.live[self.PARENT] = self.CREATED
+        self.patch(_local.psutil, "Process", return_value=mock.Mock(children=mock.Mock(return_value=[])))
+
+        def signal(pid, expected=None):
+            self.assertEqual(self.CREATED, expected)
+            self.live.pop(pid)
+
+        self.signal.side_effect = signal
+        remove = _local.os.remove
+
+        def fail_receipt(path):
+            if path == _local._record_file(self.PORT):
+                raise PermissionError("fixture removal failure")
+            return remove(path)
+
+        with mock.patch.object(_local.os, "remove", side_effect=fail_receipt):
+            with self.assertRaises(CLIError):
+                _local.stop_runtime(self.PORT)
+        self.assertTrue(_local._read_record(self.PORT)["cleanupPending"])
+        self.release.assert_not_called()
+        self.assertEqual("already-exited", _local.stop_runtime(self.PORT)["stopped"][0]["result"])
+        self.assertIsNone(_local._read_record(self.PORT))
+        self.signal.assert_called_once_with(self.PARENT, expected=self.CREATED)
+
+    def test_stop_all_recovers_only_finished_receipts_and_reports_other_refusals(self):
+        other = self.write_record(self.PORT + 1, self.CONSUMER, self.CREATED, cleanupPending=True)
+        self.live[self.CONSUMER] = self.REPLACEMENT
+        result = _local.stop_runtime(all_records=True)
+        self.assertEqual([self.PORT], [item["port"] for item in result["stopped"]])
+        self.assertEqual("already-exited", result["stopped"][0]["result"])
+        self.assertEqual([self.PORT + 1], [item["port"] for item in result["refused"]])
+        self.assertEqual(other, _local._read_record(self.PORT + 1))
+        self.signal.assert_not_called()
+
+    def test_native_recovery_lock_rechecks_receipt_after_independent_writer_finishes(self):
+        replacement = dict(self.record, launchId="new-launch")
+        script = (
+            "import sys; from azext_logicapp import _local; "
+            "_local.STATE_DIR = sys.argv[1]; port = int(sys.argv[2]); "
+            "expected = _local._read_record(port); print('waiting', flush=True); "
+            "_local._remove_runtime_record(port, expected, recover=True)"
+        )
+        environment = dict(os.environ, PYTHONPATH=str(Path(__file__).resolve().parents[3]),
+                           PYTHONDONTWRITEBYTECODE="1")
+        process = None
+        try:
+            with _local._store_lock(_local._record_file(self.PORT)):
+                process = subprocess.Popen(
+                    [sys.executable, "-c", script, str(self.state), str(self.PORT)],
+                    env=environment, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    universal_newlines=True)
+                self.assertEqual("waiting", process.stdout.readline().strip())
+                self.assertIsNone(process.poll())
+                Path(_local._record_file(self.PORT)).write_text(json.dumps(replacement), encoding="utf-8")
+            _, stderr = process.communicate(timeout=20)
+            self.assertNotEqual(0, process.returncode)
+            self.assertIn("changed during cleanup", stderr)
+            self.assertEqual(replacement, _local._read_record(self.PORT))
+        finally:
+            if process is not None and process.poll() is None:
+                process.terminate()
+                process.communicate(timeout=10)
+
+
+class WindowsExitedProcessTests(IsolatedRuntimeTest):
+    @unittest.skipUnless(sys.platform == "win32", "Native Windows exit timestamp with held handle")
+    def test_exited_process_object_is_not_a_live_or_unverified_storage_consumer(self):
+        process = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)"])
+        try:
+            created = _local.process_create_time_utc(process.pid)
+            self.assertIsNotNone(created)
+            self.assertTrue(_local._process_may_exist(process.pid))
+            process.terminate()
+            process.wait(timeout=10)
+            # The held handle still exposes the native exit timestamp, even
+            # when a conservative PID-presence probe reports the object.
+            self.assertEqual((None, True), _local._windows_process_snapshot(process.pid))
+            self.assertIsNone(_local.process_create_time_utc(process.pid))
+            self.assertFalse(_local._process_may_exist(process.pid))
+            with mock.patch.object(_local.psutil, "pid_exists", return_value=True):
+                self.assertFalse(_local._process_may_exist(process.pid))
+            self.write_record(17071, process.pid, created, cleanupPending=True)
+            self.patch(_local, "_port_free", return_value=True)
+            self.patch(_local, "_release_azurite_if_idle", return_value=None)
+            signal = self.patch(_local, "_terminate")
+            self.assertEqual("already-exited", _local.stop_runtime(17071)["stopped"][0]["result"])
+            self.assertIsNone(_local._read_record(17071))
+            signal.assert_not_called()
+        finally:
+            if process.poll() is None:
+                process.terminate()
+                process.wait(timeout=10)
+
+    def test_unavailable_windows_exit_timestamp_is_not_proof_of_exit(self):
+        self.patch(_local.sys, "platform", "win32")
+        self.patch(_local.psutil, "pid_exists", return_value=True)
+        self.patch(_local, "_windows_process_snapshot", return_value=(None, False))
+        self.assertTrue(_local._process_may_exist(480001))
+
 
 class DependencyEnvironmentTests(IsolatedRuntimeTest):
     def tool(self, root, kind):
@@ -564,7 +852,7 @@ class DependencyEnvironmentTests(IsolatedRuntimeTest):
         npm.write_text("", encoding="utf-8")
         npm.chmod(0o755)
         with mock.patch.dict(os.environ, {"PATH": str(ignored_node.parent),
-                                        "LA_DEPENDENCIES_PATH": str(ignored_node.parent.parent)}):
+                                          "LA_DEPENDENCIES_PATH": str(ignored_node.parent.parent)}):
             self.assertEqual(_dependencies._resolve_npm(str(explicit)), str(npm))
             runner = self.patch(_dependencies.subprocess, "run",
                                 return_value=subprocess.CompletedProcess([], 0, "ok"))
@@ -824,7 +1112,6 @@ class ForegroundConsumerTests(IsolatedRuntimeTest):
         self.assertIsNotNone(_local.read_azurite_record())
         self.assertNotIn(self.STORAGE, self.killed)
 
-
     def test_zero_ready_timeout_keeps_live_background_host_record_and_storage(self):
         result = self.start(background=True, ready_timeout=0)
         self.assertEqual(result["status"], "starting")
@@ -858,7 +1145,7 @@ class ForegroundConsumerTests(IsolatedRuntimeTest):
         self.spawn.return_value = FakeProcess(self.STORAGE, self.live)
         with self.assertRaises(OSError):
             _local.start_azurite(str(self.root / "azurite.cmd"), timeout=0,
-                                prober=mock.Mock(side_effect=OSError("fixture probe failure")))
+                                 prober=mock.Mock(side_effect=OSError("fixture probe failure")))
         self.assertEqual(self.killed, [self.STORAGE])
         self.assertIsNone(_local.read_azurite_record())
 
@@ -951,6 +1238,15 @@ class ChildObservationIdentityTests(IsolatedRuntimeTest):
         self.assertIsNone(observed["processCreateTimeUtc"])
         self.assertTrue(_local._unverified_cleanup_pending(self.record))
 
+    def test_verified_preexisting_process_is_not_adopted_from_a_reused_parent_pid(self):
+        self.live[self.PARENT] = self.REPLACEMENT
+        self.record["processCreateTimeUtc"] = self.REPLACEMENT
+        self.parent.children.return_value = [self.child(self.CHILD, self.PARENT),
+                                             self.child(self.GRANDCHILD, self.CHILD)]
+        _local._remember_runtime_children(self.record)
+        self.assertNotIn("childProcesses", self.record)
+        self.signal.assert_not_called()
+
 
 class WindowsManagedLauncherTests(IsolatedRuntimeTest):
     @unittest.skipUnless(sys.platform == "win32", "Actual npm-generated Windows shim")
@@ -967,6 +1263,7 @@ class WindowsManagedLauncherTests(IsolatedRuntimeTest):
         launcher_dir.mkdir()
         shutil.copyfile(node, node_dir / "node.exe")
         launcher = launcher_dir / "azurite.cmd"
+
         def shim(path, script):
             path.write_text(
                 '@ECHO off\r\nSETLOCAL\r\nSET "dp0=%~dp0"\r\n'
@@ -981,7 +1278,7 @@ class WindowsManagedLauncherTests(IsolatedRuntimeTest):
         npm = node_dir / "npm.cmd"
         shim(npm, "npm.js")
         (node_dir / "npm.js").write_text('console.log("node: \'" + process.versions.node + "\'");',
-                                        encoding="utf-8")
+                                         encoding="utf-8")
         func_dir = managed / "FuncCoreTools"
         func_dir.mkdir()
         func = func_dir / "func.cmd"
