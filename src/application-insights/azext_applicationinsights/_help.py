@@ -7,6 +7,12 @@ from knack.help_files import helps
 
 # pylint: disable=line-too-long
 
+helps['monitor trace-association'] = """
+    type: group
+    short-summary: Manage trace routing from Application Insights components, resource groups, and subscriptions.
+    long-summary: Associations add destinations. Resource group and subscription associations also apply to their descendants.
+"""
+
 helps['monitor app-insights'] = """
     type: group
     short-summary: Commands for querying data in Application Insights applications.

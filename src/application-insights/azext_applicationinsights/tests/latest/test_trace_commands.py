@@ -9,17 +9,23 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
 
-from azure.core.exceptions import HttpResponseError
+from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
 from azure.core.pipeline.policies import ContentDecodePolicy
 from azure.cli.core.mock import DummyCli
 from knack.util import CLIError
 
-from azext_applicationinsights._trace import TraceContainerCreate, _container_settings, _workspace_arguments
+from azext_applicationinsights._trace import (
+    TraceAssociationCreate, TraceAssociationDelete, TraceAssociationList, TraceAssociationShow,
+    TraceContainerCreate, _container_settings, _destinations, _workspace_arguments,
+)
 from azext_applicationinsights.aaz.latest.monitor.account.trace_container import Show, Update
 
 
 SUBSCRIPTION = "00000000-0000-0000-0000-000000000000"
 WORKSPACE = f"/subscriptions/{SUBSCRIPTION}/resourceGroups/observability/providers/Microsoft.Monitor/accounts/myAmw"
+SUBSCRIPTION_SCOPE = f"/subscriptions/{SUBSCRIPTION}"
+GROUP_SCOPE = SUBSCRIPTION_SCOPE + "/resourceGroups/apps"
+COMPONENT_SCOPE = GROUP_SCOPE + "/providers/Microsoft.Insights/components/myAi"
 CONTAINER = {
     "id": WORKSPACE + "/traceContainers/default",
     "name": "default",
@@ -74,7 +80,16 @@ class _ArmClient:
         return _Polling(lambda: on_success(session))
 
 
-class TraceContainerTests(unittest.TestCase):
+def _association(scope, workspace=WORKSPACE):
+    return {
+        "id": scope + "/providers/Microsoft.Monitor/traceAssociations/default",
+        "name": "default",
+        "type": "Microsoft.Monitor/traceAssociations",
+        "properties": {"azureMonitorWorkspaceResourceId": workspace},
+    }
+
+
+class _TraceCommandTests(unittest.TestCase):
     def setUp(self):
         self.cli_ctx = DummyCli(random_config_dir=True)
         self.arguments = {
@@ -91,6 +106,8 @@ class TraceContainerTests(unittest.TestCase):
                 result = result.result()
         return result, client.requests
 
+
+class TraceContainerTests(_TraceCommandTests):
     def test_trace_container_create_defaults(self):
         result, requests = self.invoke(TraceContainerCreate, [(404, {}), (201, CONTAINER)])
         self.assertEqual([request.method for request in requests], ["GET", "PUT"])
@@ -168,3 +185,124 @@ class TraceContainerTests(unittest.TestCase):
             with self.subTest(workspace=workspace):
                 with self.assertRaises(CLIError):
                     _workspace_arguments(workspace)
+
+
+class TraceAssociationTests(_TraceCommandTests):
+    def setUp(self):
+        super().setUp()
+        self.arguments = {"resource_uri": COMPONENT_SCOPE}
+
+    def test_trace_association_create_at_each_scope(self):
+        for scope in (COMPONENT_SCOPE, GROUP_SCOPE, SUBSCRIPTION_SCOPE):
+            with self.subTest(scope=scope):
+                result, requests = self.invoke(TraceAssociationCreate, [
+                    (200, {"value": []}), (404, {}), (201, CONTAINER), (200, _association(scope)),
+                ], resource_uri=scope, azure_monitor_workspace=WORKSPACE)
+                self.assertEqual([request.method for request in requests], ["GET", "GET", "PUT", "PUT"])
+                self.assertEqual(requests[3].url, "https://management.azure.com" + _association(scope)["id"])
+                self.assertEqual(requests[3].content, {
+                    "properties": {"azureMonitorWorkspaceResourceId": WORKSPACE},
+                })
+                self.assertEqual(result, _association(scope))
+
+    def test_trace_association_reuses_shared_container_without_changing_it(self):
+        _, requests = self.invoke(TraceAssociationCreate, [
+            (200, {"value": [_association(SUBSCRIPTION_SCOPE)]}),
+            (200, CONTAINER), (200, _association(COMPONENT_SCOPE)),
+        ], azure_monitor_workspace=WORKSPACE)
+        self.assertEqual([request.method for request in requests], ["GET", "GET", "PUT"])
+        self.assertTrue(requests[2].url.endswith("/traceAssociations/default"))
+
+    def test_trace_association_rejects_conflicting_container_settings(self):
+        for arguments in ({"trace_retention_days": 90}, {"trace_metrics": "Enabled"}):
+            with self.subTest(arguments=arguments):
+                client = _ArmClient([(200, {"value": []}), (200, CONTAINER)])
+                with patch("azure.cli.core.aaz._command_ctx.AAZCommandCtx.get_http_client", return_value=client):
+                    with self.assertRaisesRegex(CLIError, "does not modify shared settings"):
+                        TraceAssociationCreate(cli_ctx=self.cli_ctx)(command_args={
+                            **self.arguments, "azure_monitor_workspace": WORKSPACE, **arguments,
+                        })
+                self.assertEqual([request.method for request in client.requests], ["GET", "GET"])
+
+    def test_trace_association_create_waits_for_an_existing_container(self):
+        pending = copy.deepcopy(CONTAINER)
+        pending["properties"]["provisioningState"] = "Creating"
+        _, requests = self.invoke(TraceAssociationCreate, [
+            (200, {"value": []}), (200, pending), (200, CONTAINER), (200, CONTAINER),
+            (200, _association(COMPONENT_SCOPE)),
+        ], azure_monitor_workspace=WORKSPACE)
+        self.assertEqual([request.method for request in requests], ["GET", "GET", "GET", "GET", "PUT"])
+
+    def test_trace_association_container_timeout_is_an_error(self):
+        pending = copy.deepcopy(CONTAINER)
+        pending["properties"]["provisioningState"] = "Creating"
+        with patch("azext_applicationinsights._trace.WaitCommandOperation.wait", return_value=CLIError("timed out")):
+            with self.assertRaisesRegex(CLIError, "timed out"):
+                self.invoke(TraceAssociationCreate, [(200, {"value": []}), (200, pending)],
+                            azure_monitor_workspace=WORKSPACE)
+
+    def test_trace_association_container_permissions_name_the_owner_command(self):
+        with self.assertRaisesRegex(CLIError, "Ask the workspace owner to run"):
+            self.invoke(TraceAssociationCreate, [
+                (200, {"value": []}), (404, {}), (403, {"error": {"code": "AuthorizationFailed"}}),
+            ], azure_monitor_workspace=WORKSPACE)
+
+    def test_trace_association_write_failure_reports_partial_state(self):
+        with self.assertRaisesRegex(CLIError, "container is ready"):
+            self.invoke(TraceAssociationCreate, [
+                (200, {"value": []}), (200, CONTAINER), (500, {"error": {"code": "InternalServerError"}}),
+            ], azure_monitor_workspace=WORKSPACE)
+
+    def test_trace_association_delete_is_idempotent_and_reports_inherited_routes(self):
+        for status in (200, 204, 404):
+            with self.subTest(status=status):
+                with patch("azext_applicationinsights._trace.logger") as logs:
+                    result, requests = self.invoke(TraceAssociationDelete, [
+                        (status, {}), (200, {"value": [_association(SUBSCRIPTION_SCOPE)]}),
+                    ])
+                self.assertIsNone(result)
+                self.assertEqual([request.method for request in requests], ["DELETE", "GET"])
+                self.assertTrue(requests[0].url.endswith(_association(COMPONENT_SCOPE)["id"]))
+                self.assertIn(SUBSCRIPTION_SCOPE, str(logs.warning.call_args_list))
+                self.assertFalse(any("/traceContainers/" in request.url for request in requests))
+
+    def test_trace_association_delete_report_failure_is_not_success(self):
+        with self.assertRaisesRegex(CLIError, "is removed, but reading remaining destinations failed"):
+            self.invoke(TraceAssociationDelete, [(204, {}), (500, {"error": {"code": "InternalServerError"}})])
+
+    def test_trace_association_show_does_not_substitute_an_inherited_association(self):
+        with self.assertRaises(ResourceNotFoundError):
+            self.invoke(TraceAssociationShow, [(404, {})])
+
+    def test_trace_association_list_paginates_and_keeps_each_association(self):
+        first, second = _association(COMPONENT_SCOPE), _association(SUBSCRIPTION_SCOPE)
+        result, requests = self.invoke(TraceAssociationList, [
+            (200, {"value": [first], "nextLink": "https://management.azure.com/next?api-version=2026-09-03-preview"}),
+            (200, {"value": [second]}),
+        ])
+        self.assertEqual(result, [first, second])
+        self.assertEqual(len(requests), 2)
+
+    def test_trace_association_destinations_deduplicate_workspaces_not_scopes(self):
+        result = _destinations([_association(COMPONENT_SCOPE), _association(SUBSCRIPTION_SCOPE)])
+        self.assertEqual(result, [{"workspace": WORKSPACE, "scopes": [COMPONENT_SCOPE, SUBSCRIPTION_SCOPE]}])
+
+    def test_trace_association_invalid_scope_fails_before_requests(self):
+        for scope in ("/providers/Microsoft.Management/managementGroups/group",
+                      COMPONENT_SCOPE + "/children/child",
+                      COMPONENT_SCOPE.replace("Microsoft.Insights/components", "Microsoft.Compute/virtualMachines"),
+                      "/subscriptions/not-a-subscription-id"):
+            with self.subTest(scope=scope):
+                with self.assertRaises(CLIError):
+                    self.invoke(TraceAssociationCreate, [], resource_uri=scope, azure_monitor_workspace=WORKSPACE)
+
+    def test_trace_association_invalid_workspace_fails_before_requests(self):
+        with self.assertRaises(CLIError):
+            self.invoke(TraceAssociationCreate, [], azure_monitor_workspace="not-an-arm-id")
+
+    def test_trace_association_helper_commands_are_not_registered(self):
+        from azext_applicationinsights import ApplicationInsightsCommandsLoader
+        commands = ApplicationInsightsCommandsLoader(cli_ctx=self.cli_ctx).load_command_table([])
+        self.assertIsInstance(commands["monitor trace-association create"], TraceAssociationCreate)
+        for scope in ("resource", "resource-group", "subscription"):
+            self.assertFalse(any(name.startswith("monitor trace-association " + scope) for name in commands))
