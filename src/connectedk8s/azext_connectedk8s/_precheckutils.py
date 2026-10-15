@@ -29,6 +29,7 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import time
 from subprocess import PIPE, Popen
 from typing import TYPE_CHECKING, Any
 
@@ -38,6 +39,7 @@ from azure.cli.core.azclierror import (
 )
 from knack.log import get_logger
 from kubernetes import config, watch
+from kubernetes.client.rest import ApiException
 
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._errors as errors
@@ -70,6 +72,47 @@ prediagnostic_dns_check = consts.Diagnostic_Check_Starting
 prediagnostic_outbound_check = consts.Diagnostic_Check_Starting
 prediagnostic_entra_check = consts.Diagnostic_Check_Starting
 prediagnostic_crd_check = consts.Diagnostic_Check_Starting
+
+_POD_LOG_READ_MAX_ATTEMPTS = 4
+_TRANSIENT_KUBERNETES_API_STATUSES = frozenset({429, 500, 502, 503, 504})
+
+
+def _read_diagnostic_pod_log(corev1_api_instance: CoreV1Api, pod_name: str) -> Any:
+    for attempt in range(1, _POD_LOG_READ_MAX_ATTEMPTS + 1):
+        try:
+            return corev1_api_instance.read_namespaced_pod_log(
+                name=pod_name,
+                container="cluster-diagnostic-checks-container",
+                namespace="azure-arc-release",
+            )
+        except ApiException as exception:
+            if exception.status not in _TRANSIENT_KUBERNETES_API_STATUSES:
+                raise
+
+            if attempt == _POD_LOG_READ_MAX_ATTEMPTS:
+                message = (
+                    "The diagnostic job completed, but its logs could not be retrieved after "
+                    f"{_POD_LOG_READ_MAX_ATTEMPTS} attempts due to transient Kubernetes API "
+                    f"error {exception.status}. Continuing onboarding without verified "
+                    "pre-onboarding diagnostic results."
+                )
+                logger.warning(message)
+                _send_onboarding_telemetry_event(
+                    "prediagnostics-log-retrieval-unavailable",
+                    message,
+                )
+                return ""
+
+            retry_delay_seconds = 2 ** (attempt - 1)
+            logger.warning(
+                "Transient Kubernetes API error %s while reading diagnostic pod logs; "
+                "retrying in %s seconds (attempt %s of %s)",
+                exception.status,
+                retry_delay_seconds,
+                attempt + 1,
+                _POD_LOG_READ_MAX_ATTEMPTS,
+            )
+            time.sleep(retry_delay_seconds)
 
 
 # ---------------------------------------------------------------------------
@@ -950,12 +993,9 @@ def executing_cluster_diagnostic_checks_job(
                 each_pod = matching_pods[0]
                 pod_name = each_pod.metadata.name
                 try:
-                    cluster_diagnostic_checks_container_log = (
-                        corev1_api_instance.read_namespaced_pod_log(
-                            name=pod_name,
-                            container="cluster-diagnostic-checks-container",
-                            namespace="azure-arc-release",
-                        )
+                    cluster_diagnostic_checks_container_log = _read_diagnostic_pod_log(
+                        corev1_api_instance,
+                        pod_name,
                     )
                     cluster_diagnostic_checks_container_log = normalize_container_log(
                         cluster_diagnostic_checks_container_log
