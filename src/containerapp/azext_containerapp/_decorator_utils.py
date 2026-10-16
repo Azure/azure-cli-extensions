@@ -84,6 +84,21 @@ def process_loaded_yaml(yaml_containerapp):
     return yaml_containerapp
 
 
+def restore_user_assigned_identity_resource_ids(source_containerapp, normalized_containerapp):
+    source_identities = safe_get(source_containerapp, "identity", "userAssignedIdentities")
+    if source_identities is None:
+        return normalized_containerapp
+
+    if normalized_containerapp.get("identity") is None:
+        normalized_containerapp["identity"] = {}
+
+    normalized_containerapp["identity"]["userAssignedIdentities"] = {
+        identity_resource_id: identity_def for identity_resource_id, identity_def in source_identities.items()
+    }
+
+    return normalized_containerapp
+
+
 def process_containerapp_resiliency_yaml(containerapp_resiliency):
 
     if not isinstance(containerapp_resiliency, dict):  # pylint: disable=unidiomatic-typecheck
