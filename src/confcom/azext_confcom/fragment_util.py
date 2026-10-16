@@ -48,6 +48,7 @@ def combine_fragments_with_policy(all_fragments):
 def get_all_fragment_contents(
     image_names: List[str],
     fragment_imports: List[dict],
+    platform: str = None,
 ) -> List[str]:
     # was getting errors with pass by reference so we need to copy it
     remaining_fragments = copy.deepcopy(fragment_imports)
@@ -62,7 +63,7 @@ def get_all_fragment_contents(
     for image in image_names:
         # TODO: make sure this doesn't error out if the images aren't in a registry.
         # This will probably be in the discover function
-        image_attached_fragments, feeds = oras_proxy.pull_all_image_attached_fragments(image)
+        image_attached_fragments, feeds = oras_proxy.pull_all_image_attached_fragments(image, platform)
         for fragment, feed in zip(image_attached_fragments, feeds):
             all_feeds = [
                 case_insensitive_dict_get(temp_fragment, config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED)

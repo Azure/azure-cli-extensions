@@ -95,6 +95,7 @@ def acipolicygen_confcom(
     enable_stdio: Optional[bool] = None,
     print_existing_policy: bool = False,
     faster_hashing: bool = False,
+    debug_skip_windows_version_check: bool = False,
     omit_id: bool = False,
     include_fragments: bool = False,
     fragments_json: str = None,
@@ -250,7 +251,7 @@ def acipolicygen_confcom(
             for container in policy.get_images():
                 container_names.append(container.get_container_image())
         # get all the fragments that are being used in the policy
-        fragment_policy_list = get_all_fragment_contents(container_names, fragment_imports)
+        fragment_policy_list = get_all_fragment_contents(container_names, fragment_imports, platform=platform)
         for policy in container_group_policies:
             policy.set_fragment_contents(fragment_policy_list)
 
@@ -259,7 +260,8 @@ def acipolicygen_confcom(
 
     for count, policy in enumerate(container_group_policies):
         policy.populate_policy_content_for_all_images(
-            individual_image=bool(image_name), tar_mapping=tar_mapping, faster_hashing=faster_hashing
+            individual_image=bool(image_name), tar_mapping=tar_mapping, faster_hashing=faster_hashing,
+            debug_skip_windows_version_check=debug_skip_windows_version_check,
         )
 
         if validate_sidecar:
@@ -325,6 +327,9 @@ def acifragmentgen_confcom(
     no_print: bool = False,
     fragments_json: str = "",
     out_signed_fragment: bool = False,
+    debug_skip_windows_version_check: bool = False,
+    platform: str = "linux/amd64",
+    prerelease_policy_api: bool = False,
 ):
     if container_definitions is None:
         container_definitions = []
@@ -386,6 +391,8 @@ def acifragmentgen_confcom(
         policy = security_policy.load_policy_from_image_name(
             image_name, debug_mode=debug_mode, disable_stdio=(not stdio_enabled),
             tar_mapping=tar_mapping,
+            platform=platform,
+            prerelease_policy_api=prerelease_policy_api,
         )
     elif input_path:
         # this is using --input
@@ -394,6 +401,8 @@ def acifragmentgen_confcom(
         policy = security_policy.load_policy_from_json_file(
             input_path, debug_mode=debug_mode, disable_stdio=(not stdio_enabled),
             tar_mapping=tar_mapping,
+            platform=platform,
+            prerelease_policy_api=prerelease_policy_api,
         )
     elif container_definitions:
         policy = AciPolicy(
@@ -404,6 +413,7 @@ def acifragmentgen_confcom(
             debug_mode=debug_mode,
             disable_stdio=disable_stdio,
             container_definitions=container_definitions,
+            prerelease_policy_api=prerelease_policy_api,
         )
     else:
         eprint("Either --image-name, --input, or --container-definitions must be provided", exit_code=2)
@@ -416,10 +426,11 @@ def acifragmentgen_confcom(
     fragment_imports = policy.get_fragments()
     for container in policy.get_images():
         container_names.append(container.get_container_image())
-    fragment_policy_list = get_all_fragment_contents(container_names, fragment_imports)
+    fragment_policy_list = get_all_fragment_contents(container_names, fragment_imports, platform=platform)
     policy.set_fragment_contents(fragment_policy_list)
     policy.populate_policy_content_for_all_images(
-        individual_image=bool(image_name), tar_mapping=tar_mapping
+        individual_image=bool(image_name), tar_mapping=tar_mapping,
+        debug_skip_windows_version_check=debug_skip_windows_version_check,
     )
 
     # make sure we have images to generate a fragment
