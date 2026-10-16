@@ -57,5 +57,5 @@ helps["aldo system-configuration create"] = """
     examples:
       - name: Replace the system configuration with a DNS forwarder and connection intent.
         text: >-
-            az aldo system-configuration create --dns-forwarder-ip-address 192.0.2.53 --connection-intent Connected
+            az aldo system-configuration create --dns-forwarder-ip 192.0.2.53 --connection-intent Connected
 """

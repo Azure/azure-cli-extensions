@@ -14,7 +14,7 @@ The command uses the public `Microsoft.EdgeOperator ObservabilityConfiguration R
 Use ``az aldo system-configuration show`` to retrieve the active system configuration.
 
 Use ``az aldo system-configuration create`` to create or fully replace the configuration with
-``--dns-forwarder-ip-address``, ``--connection-intent``, ``--stamp-id``, and ``--device-resource-id``.
+``--dns-forwarder-ip``, ``--connection-intent``, ``--stamp-id``, and ``--device-resource-id``.
 This command uses PUT, not PATCH: omitted writable fields are not preserved. Supply all writable
 values you want to retain. Both commands require the Operator subscription.
 
