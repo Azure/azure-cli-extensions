@@ -8,10 +8,18 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
+import time
+
+from azure.cli.core.util import sdk_no_wait
+from azure.core.exceptions import HttpResponseError
 from knack.util import CLIError
 from knack.log import get_logger
 
 DATA_FLOW_SUBTYPES = ["Flowlet", "MappingDataFlow", "WranglingDataFlow"]
+
+_TRIGGER_PROVISIONING_ERROR = "Resource cannot be updated during provisioning"
+_TRIGGER_START_MAX_RETRIES = 10
+_TRIGGER_START_RETRY_DELAY = 30  # seconds
 
 
 def datafactory_create(
@@ -216,3 +224,40 @@ def datafactory_data_flow_update(
         if_match=None,
         data_flow=data_flow_data,
     )
+
+
+def datafactory_trigger_start(
+    client, resource_group_name, factory_name, trigger_name, no_wait=False
+):
+    logger = get_logger(__name__)
+
+    for attempt in range(_TRIGGER_START_MAX_RETRIES + 1):
+        try:
+            return sdk_no_wait(
+                no_wait,
+                client.begin_start,
+                resource_group_name=resource_group_name,
+                factory_name=factory_name,
+                trigger_name=trigger_name,
+            )
+        except HttpResponseError as ex:
+            error_message = (ex.error.message if ex.error else None) or str(ex)
+            if _TRIGGER_PROVISIONING_ERROR.lower() in error_message.lower():
+                if attempt < _TRIGGER_START_MAX_RETRIES:
+                    logger.warning(
+                        "Trigger '%s' is still being provisioned. Waiting %d seconds before retrying "
+                        "(attempt %d/%d)...",
+                        trigger_name,
+                        _TRIGGER_START_RETRY_DELAY,
+                        attempt + 1,
+                        _TRIGGER_START_MAX_RETRIES,
+                    )
+                    time.sleep(_TRIGGER_START_RETRY_DELAY)
+                else:
+                    raise CLIError(
+                        f"Trigger '{trigger_name}' could not be started because it is still being provisioned "
+                        f"after {_TRIGGER_START_MAX_RETRIES} retries. "
+                        "Please wait for the trigger to finish provisioning and try again."
+                    ) from ex
+            else:
+                raise
