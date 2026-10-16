@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.13.1
+++++++
+* `az dataprotection enable-backup trigger`: Preserve backup vault discovery and creation errors, including full service errors when storage-type fallback fails. Preserve service-error fallback without masking local validation or programming errors. Require successful provisioning for new and reused vaults before assigning roles; fail on readiness timeout instead of proceeding with an unready vault.
+* `az dataprotection enable-backup trigger`: Preserve the existing reversible soft-delete setting for automatically created AKS backup vaults using a compatible API version. Do not silently enable irreversible AlwaysOn soft delete when the general backup-vault commands move to a newer API.
+* `az dataprotection enable-backup trigger`: Scope automatic storage account discovery to the resolved backup resource group, propagate discovery errors, and use the selected storage account's actual resource group when configuring the backup extension.
+
 1.13.0
 ++++++
 * ``az dataprotection backup-vault create/update``: Added ``--cost-management-granularity`` (alias ``--cost-granularity``) to configure vault cost management settings. Supported values are ``VaultLevel``, ``ProtectedItemLevel``, and ``ProtectedItemWithParentTag``; vault creation defaults to ``VaultLevel``.
