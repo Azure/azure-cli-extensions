@@ -156,6 +156,63 @@ The same public build's Python 3.11 and 3.13 jobs stopped earlier in an unrelate
 Storage Sync recording/API-version mismatch. Its style/linter diff also included
 unrelated main-branch index and Storage Sync changes that are absent from this
 PR's file list. Neither those files nor pipeline diff selection were modified.
+
+## Windows architecture dependency qualification
+
+Both x86 and x64 Windows Azure CLI are preview installation targets. Psutil
+[stopped publishing 32-bit wheels in 7.1.2](https://github.com/giampaolo/psutil/blob/release-7.2.2/HISTORY.rst#712);
+32-bit Python remains supported upstream only through a source build. The
+previous unbounded dependency selected 7.2.2 and failed ordinary x86 extension
+installation because Microsoft C++ Build Tools were absent.
+
+The preview therefore requires `psutil>=5.9.0,<7.1.2` on Windows and retains
+`psutil>=5.9.0` elsewhere. This is a Windows-only ceiling, not a global exact pin.
+The same ceiling applies to x64: real 32-bit Python under WOW64 reports `AMD64`,
+so a `platform_machine` marker cannot reliably distinguish the architectures.
+This intentionally keeps Windows resolution on an older release; future
+dependency refreshes require a qualified x86 binary-delivery strategy rather
+than silently introducing a compiler prerequisite.
+
+Current CLI 2.91.0 x86 and x64 used the publisher's signed MSI payloads, extracted
+read-only without running installer actions or modifying shared installations.
+Both contained native Python 3.14.7 interpreters. Minimum CLI 2.67.0 used its
+existing x64 Python 3.12.7 with private configuration and extension directories.
+Ordinary `az extension add --source <wheel-path> --yes` succeeded in all three
+environments and installed the matching psutil 7.1.1 publisher wheel without
+binary-only flags, dependency suppression, constraints or a compiler. A package
+mirror was used after a direct package-host TLS handshake failed; publisher
+SHA256 hashes and all 30 installed psutil files were independently verified.
+TLS verification was not disabled.
+
+| Architecture qualification | Result |
+| --- | --- |
+| Current x86 source and exact-installed full suites | Each passed 855 tests / 2,366 subtests. |
+| Current x64 source and exact-installed full suites | Each passed 855 tests / 2,366 subtests. |
+| Minimum x64 source and exact-installed full suites | Each passed 855 tests / 2,366 subtests with the newly resolved dependency. |
+| Source/wheel/all three installations | All 30 production Python/metadata files match; production and dependency import origins verified. |
+| Wheel dependency markers | 30 Python/platform cases preserve the Windows ceiling, non-Windows range and 5.9.0 floor, including WOW64's `AMD64` result. |
+
+Full suites ran serially. For tests only, the private MSI extractions used an
+import-path bootstrap for repository/test dependencies because the MSI
+interpreter ignores `PYTHONPATH`; it was removed afterward. No production API,
+clock, process observation or ownership guard was patched by that bootstrap.
+
+Separate native probes exercised actual CLI extension loading, PE machine type,
+CIM/native birth-identity agreement, listener ownership and real cross-x86/x64
+child discovery. Mismatched birth identities refused termination and unknown
+birth identities remained nonowning; verified stops and held-handle exit
+timestamps succeeded. Both the stock CLI-preloaded psutil 6.1.0 and explicitly
+loaded extension psutil 7.1.1 were exercised in all three environments. An
+extension dependency does not replace a module already loaded by CLI core.
+
+These results add native architecture evidence, not live Azure/Functions/SDK
+qualification or proof that earlier native filesystem/timing variability is
+eliminated. On the preceding public fixture-only head, Azure Pipelines build
+361916 also passed the five Linux Python 3.10-3.14 jobs, each with 849 tests,
+2,336 subtests and five Windows-only skips. Its remaining style/linter failure
+identified missing `logicapp` service metadata, addressed through the existing
+service registry rather than changing CI selection or exclusions. Later heads
+still require their own public CI and completed review.
 The Linux/Python matrix and latest-head public review still require successful
 upstream evidence.
 

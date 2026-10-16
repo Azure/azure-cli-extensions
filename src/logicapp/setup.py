@@ -37,5 +37,10 @@ setup(
     package_data={'azext_logicapp': ['azext_metadata.json']},
     packages=find_packages(exclude=["tests", "tests.*", "*.tests", "*.tests.*"]),
     python_requires='>=3.10',
-    install_requires=["psutil>=5.9.0"]
+    # Later psutil releases require a source build on Windows x86. WOW64 reports
+    # AMD64 too, so an architecture marker would not reliably preserve its wheel.
+    install_requires=[
+        "psutil>=5.9.0,<7.1.2; sys_platform == 'win32'",
+        "psutil>=5.9.0; sys_platform != 'win32'",
+    ]
 )

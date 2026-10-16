@@ -19,6 +19,14 @@ built wheel with `az extension add --source <wheel-path> --allow-preview true`.
 Source publication is handled by the upstream release pipeline after merge;
 this contribution does not manually change the extension index.
 
+Both 32-bit and 64-bit Windows Azure CLI are intended installation targets.
+Windows uses `psutil>=5.9.0,<7.1.2`: later releases stopped publishing 32-bit
+wheels and otherwise require Microsoft C++ Build Tools during extension
+installation. The same bound applies to x64 because a 32-bit interpreter under
+WOW64 can also report `AMD64`; an architecture marker is not reliable.
+Non-Windows installations retain `psutil>=5.9.0`. This dependency choice does
+not qualify every Python/platform combination or change runtime ownership guards.
+
 The complete extension contributes 57 leaves, preserving core `az logicapp`
 app management, app settings and ZIP deployment. Rohitha authored the original
 extension; subsequent staging work adds 19 leaves and safety repairs. See the

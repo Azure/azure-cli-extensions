@@ -36,6 +36,9 @@ Release History
 * Distinguish exited Windows process objects, exclude only verified pre-existing
   stale-parent subtrees and bound cleanup waits. Recover cleanup-pending receipts
   only on explicit, ownership-safe stop retries, with exact-snapshot locking.
+* Keep Windows psutil below 7.1.2 so both x86 and x64 CLI installations use
+  publisher wheels without requiring a C++ compiler; non-Windows resolution and
+  all PID/birth-identity cleanup guards remain unchanged.
 
 0.1.19
 ++++++

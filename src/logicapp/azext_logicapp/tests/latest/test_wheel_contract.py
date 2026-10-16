@@ -15,6 +15,8 @@ import tempfile
 import unittest
 import zipfile
 
+from packaging.requirements import Requirement
+
 from azext_logicapp import _test_report
 
 
@@ -59,8 +61,31 @@ class WheelContractTests(unittest.TestCase):
             metadata = self.metadata(archive)
         self.assertEqual("logicapp", metadata["Name"])
         self.assertEqual(_test_report.VERSION, metadata["Version"])
-        requirements = [value.replace(" ", "") for value in metadata.get_all("Requires-Dist", [])]
-        self.assertIn("psutil>=5.9.0", requirements)
+        requirements = [Requirement(value) for value in metadata.get_all("Requires-Dist", [])]
+        self.assertEqual(["psutil", "psutil"], [requirement.name for requirement in requirements])
+
+    def test_process_dependency_preserves_windows_binary_installation_under_wow64(self):
+        with zipfile.ZipFile(self.wheel) as archive:
+            metadata = self.metadata(archive)
+        requirements = [Requirement(value) for value in metadata.get_all("Requires-Dist", [])]
+        for platform, machine in (
+                ("win32", "AMD64"), ("win32", "x86"),
+                ("linux", "x86_64"), ("linux", "i686"),
+                ("darwin", "arm64"), ("darwin", "x86_64")):
+            for python in ("3.10", "3.11", "3.12", "3.13", "3.14"):
+                environment = {"sys_platform": platform, "platform_machine": machine, "python_version": python}
+                with self.subTest(platform=platform, machine=machine, python=python):
+                    applicable = [
+                        requirement for requirement in requirements
+                        if requirement.marker is None or requirement.marker.evaluate(environment)
+                    ]
+                    self.assertEqual(1, len(applicable))
+                    specifier = applicable[0].specifier
+                    self.assertNotIn("5.8.0", specifier)
+                    self.assertIn("5.9.0", specifier)
+                    self.assertIn("7.1.1", specifier)
+                    self.assertEqual(platform != "win32", "7.1.2" in specifier)
+                    self.assertEqual(platform != "win32", "7.2.2" in specifier)
 
     def test_preview_metadata_and_python3_only_wheel(self):
         self.assertTrue(self.wheel.name.endswith("-py3-none-any.whl"))
