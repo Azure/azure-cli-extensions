@@ -8,7 +8,7 @@
 from typing import TYPE_CHECKING
 import warnings
 
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
@@ -55,9 +55,12 @@ class VirtualMachineOperations(object):
     ):
         # type: (...) -> None
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-03-01-preview"
+        accept = "application/json"
 
         # Construct URL
         url = self._start_initial.metadata['url']  # type: ignore
@@ -74,6 +77,7 @@ class VirtualMachineOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -133,7 +137,13 @@ class VirtualMachineOperations(object):
             if cls:
                 return cls(pipeline_response, None, {})
 
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'vmName': self._serialize.url("vm_name", vm_name, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+        }
+
+        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -155,9 +165,12 @@ class VirtualMachineOperations(object):
     ):
         # type: (...) -> None
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-03-01-preview"
+        accept = "application/json"
 
         # Construct URL
         url = self._stop_initial.metadata['url']  # type: ignore
@@ -174,6 +187,7 @@ class VirtualMachineOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -233,7 +247,13 @@ class VirtualMachineOperations(object):
             if cls:
                 return cls(pipeline_response, None, {})
 
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'vmName': self._serialize.url("vm_name", vm_name, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+        }
+
+        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -247,165 +267,33 @@ class VirtualMachineOperations(object):
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_stop.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Swiftlet/virtualMachines/{vmName}/stop'}  # type: ignore
 
-    def list_image(
-        self,
-        location,  # type: str
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> Iterable["models.SwiftletImageListResult"]
-        """List all Swiftlet images available for the specified subscription and Azure location.
-
-        :param location: The name of a supported Azure region.
-        :type location: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either SwiftletImageListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~swiftlet_management_client.models.SwiftletImageListResult]
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.SwiftletImageListResult"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-03-01-preview"
-
-        def prepare_request(next_link=None):
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            if not next_link:
-                # Construct URL
-                url = self.list_image.metadata['url']  # type: ignore
-                path_format_arguments = {
-                    'location': self._serialize.url("location", location, 'str'),
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                }
-                url = self._client.format_url(url, **path_format_arguments)
-                # Construct parameters
-                query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-                request = self._client.get(url, query_parameters, header_parameters)
-            else:
-                url = next_link
-                query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
-            return request
-
-        def extract_data(pipeline_response):
-            deserialized = self._deserialize('SwiftletImageListResult', pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, iter(list_of_elem)
-
-        def get_next(next_link=None):
-            request = prepare_request(next_link)
-
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-        return ItemPaged(
-            get_next, extract_data
-        )
-    list_image.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Swiftlet/locations/{location}/swiftletImages'}  # type: ignore
-
-    def list_bundle(
-        self,
-        location,  # type: str
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> Iterable["models.SwiftletBundleListResult"]
-        """List all Swiftlet bundles available for the specified subscription and Azure location.
-
-        :param location: The name of a supported Azure region.
-        :type location: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either SwiftletBundleListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~swiftlet_management_client.models.SwiftletBundleListResult]
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.SwiftletBundleListResult"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-03-01-preview"
-
-        def prepare_request(next_link=None):
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            if not next_link:
-                # Construct URL
-                url = self.list_bundle.metadata['url']  # type: ignore
-                path_format_arguments = {
-                    'location': self._serialize.url("location", location, 'str'),
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                }
-                url = self._client.format_url(url, **path_format_arguments)
-                # Construct parameters
-                query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-                request = self._client.get(url, query_parameters, header_parameters)
-            else:
-                url = next_link
-                query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
-            return request
-
-        def extract_data(pipeline_response):
-            deserialized = self._deserialize('SwiftletBundleListResult', pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, iter(list_of_elem)
-
-        def get_next(next_link=None):
-            request = prepare_request(next_link)
-
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-        return ItemPaged(
-            get_next, extract_data
-        )
-    list_bundle.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Swiftlet/locations/{location}/swiftletBundles'}  # type: ignore
-
     def _create_or_update_initial(
         self,
         resource_group_name,  # type: str
         vm_name,  # type: str
         location,  # type: str
-        swiftlet_bundle_sku,  # type: str
-        swiftlet_image_id,  # type: str
         tags=None,  # type: Optional[Dict[str, str]]
+        bundle_sku=None,  # type: Optional[str]
+        image_id=None,  # type: Optional[str]
+        snapshot_id=None,  # type: Optional[str]
         username=None,  # type: Optional[str]
         ssh_public_key=None,  # type: Optional[str]
-        password=None,  # type: Optional[str]
         ports=None,  # type: Optional[List["models.Port"]]
+        password=None,  # type: Optional[str]
         startup_script=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.VirtualMachine"
         cls = kwargs.pop('cls', None)  # type: ClsType["models.VirtualMachine"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.VirtualMachine(tags=tags, location=location, swiftlet_bundle_sku=swiftlet_bundle_sku, swiftlet_image_id=swiftlet_image_id, username=username, ssh_public_key=ssh_public_key, password=password, ports=ports, startup_script=startup_script)
+        parameters = models.VirtualMachineCreateParameters(tags=tags, location=location, bundle_sku=bundle_sku, image_id=image_id, snapshot_id=snapshot_id, username=username, ssh_public_key=ssh_public_key, ports=ports, password=password, startup_script=startup_script)
         api_version = "2020-03-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
@@ -423,13 +311,12 @@ class VirtualMachineOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_parameters, 'VirtualMachine')
+        body_content = self._serialize.body(parameters, 'VirtualMachineCreateParameters')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -454,13 +341,14 @@ class VirtualMachineOperations(object):
         resource_group_name,  # type: str
         vm_name,  # type: str
         location,  # type: str
-        swiftlet_bundle_sku,  # type: str
-        swiftlet_image_id,  # type: str
         tags=None,  # type: Optional[Dict[str, str]]
+        bundle_sku=None,  # type: Optional[str]
+        image_id=None,  # type: Optional[str]
+        snapshot_id=None,  # type: Optional[str]
         username=None,  # type: Optional[str]
         ssh_public_key=None,  # type: Optional[str]
-        password=None,  # type: Optional[str]
         ports=None,  # type: Optional[List["models.Port"]]
+        password=None,  # type: Optional[str]
         startup_script=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
@@ -473,25 +361,27 @@ class VirtualMachineOperations(object):
         :type vm_name: str
         :param location: The geo-location where the resource lives.
         :type location: str
-        :param swiftlet_bundle_sku: Specifies the Swiftlet bundle of this virtual machine (which
-         specifies the selected tier of memory, processing, and storage).
-        :type swiftlet_bundle_sku: str
-        :param swiftlet_image_id: The image ID to use. The image "platform" must match the
-         "supportedImagePlatform" of the specified swiftletBundleSku.
-        :type swiftlet_image_id: str
         :param tags: Resource tags.
         :type tags: dict[str, str]
+        :param bundle_sku: Specifies the Swiftlet VM bundle of this virtual machine (which specifies
+         the selected tier of memory, processing, and storage).
+        :type bundle_sku: str
+        :param image_id: The image ID to use. The image "platform" must match the
+         "supportedImagePlatform" of the specified bundleSku.
+        :type image_id: str
+        :param snapshot_id: The ID of the VM snapshot from which this VM was created.
+        :type snapshot_id: str
         :param username: The username for connecting the the virtual machine.
         :type username: str
         :param ssh_public_key: The SSH public key used to connect to this virtual machine. Only
          supported on Linux images. If specified on a Windows image, an error will be returned.
         :type ssh_public_key: str
+        :param ports: The ports on which inbound traffic will be allowed.
+        :type ports: list[~swiftlet_management_client.models.Port]
         :param password: The password for connecting to this Swiftlet. If the image platform type is
          "linux", this is optional if sshPublicKey is set. If the image platform type is "windows", this
          is required.
         :type password: str
-        :param ports: The ports on which inbound traffic will be allowed.
-        :type ports: list[~swiftlet_management_client.models.Port]
         :param startup_script: An inline script that will run upon startup of the virtual machine.
         :type startup_script: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -516,13 +406,14 @@ class VirtualMachineOperations(object):
                 resource_group_name=resource_group_name,
                 vm_name=vm_name,
                 location=location,
-                swiftlet_bundle_sku=swiftlet_bundle_sku,
-                swiftlet_image_id=swiftlet_image_id,
                 tags=tags,
+                bundle_sku=bundle_sku,
+                image_id=image_id,
+                snapshot_id=snapshot_id,
                 username=username,
                 ssh_public_key=ssh_public_key,
-                password=password,
                 ports=ports,
+                password=password,
                 startup_script=startup_script,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -538,7 +429,13 @@ class VirtualMachineOperations(object):
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vmName': self._serialize.url("vm_name", vm_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+        }
+
+        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -562,12 +459,15 @@ class VirtualMachineOperations(object):
     ):
         # type: (...) -> "models.VirtualMachine"
         cls = kwargs.pop('cls', None)  # type: ClsType["models.VirtualMachine"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.VirtualMachineUpdate(tags=tags, ports=ports)
+        parameters = models.VirtualMachineUpdate(tags=tags, ports=ports)
         api_version = "2020-03-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self._update_initial.metadata['url']  # type: ignore
@@ -585,13 +485,12 @@ class VirtualMachineOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_parameters, 'VirtualMachineUpdate')
+        body_content = self._serialize.body(parameters, 'VirtualMachineUpdate')
         body_content_kwargs['content'] = body_content
         request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -628,7 +527,7 @@ class VirtualMachineOperations(object):
         :type vm_name: str
         :param tags: Resource tags.
         :type tags: dict[str, str]
-        :param ports: Specifies the list of ports to be opened.
+        :param ports: The ports on which inbound traffic will be allowed.
         :type ports: list[~swiftlet_management_client.models.Port]
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
@@ -667,7 +566,13 @@ class VirtualMachineOperations(object):
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vmName': self._serialize.url("vm_name", vm_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+        }
+
+        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -689,9 +594,12 @@ class VirtualMachineOperations(object):
     ):
         # type: (...) -> None
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-03-01-preview"
+        accept = "application/json"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
@@ -708,6 +616,7 @@ class VirtualMachineOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -767,7 +676,13 @@ class VirtualMachineOperations(object):
             if cls:
                 return cls(pipeline_response, None, {})
 
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'vmName': self._serialize.url("vm_name", vm_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+        }
+
+        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -800,9 +715,12 @@ class VirtualMachineOperations(object):
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.VirtualMachine"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-03-01-preview"
+        accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -819,7 +737,7 @@ class VirtualMachineOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -854,14 +772,17 @@ class VirtualMachineOperations(object):
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.VirtualMachineListResult"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-03-01-preview"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
@@ -920,14 +841,17 @@ class VirtualMachineOperations(object):
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.VirtualMachineListResult"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-03-01-preview"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
             if not next_link:
                 # Construct URL

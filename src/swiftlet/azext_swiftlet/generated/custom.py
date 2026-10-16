@@ -30,13 +30,14 @@ def swiftlet_virtual_machine_create(client,
                                     resource_group_name,
                                     vm_name,
                                     location,
-                                    swiftlet_bundle_sku,
-                                    swiftlet_image_id,
                                     tags=None,
+                                    bundle_sku=None,
+                                    image_id=None,
+                                    snapshot_id=None,
                                     username=None,
                                     ssh_public_key=None,
-                                    password=None,
                                     ports=None,
+                                    password=None,
                                     startup_script=None,
                                     no_wait=False):
     return sdk_no_wait(no_wait,
@@ -45,12 +46,13 @@ def swiftlet_virtual_machine_create(client,
                        vm_name=vm_name,
                        tags=tags,
                        location=location,
-                       swiftlet_bundle_sku=swiftlet_bundle_sku,
-                       swiftlet_image_id=swiftlet_image_id,
+                       bundle_sku=bundle_sku,
+                       image_id=image_id,
+                       snapshot_id=snapshot_id,
                        username=username,
                        ssh_public_key=ssh_public_key,
-                       password=password,
                        ports=ports,
+                       password=password,
                        startup_script=startup_script)
 
 
@@ -78,16 +80,6 @@ def swiftlet_virtual_machine_delete(client,
                        vm_name=vm_name)
 
 
-def swiftlet_virtual_machine_list_bundle(client,
-                                         location):
-    return client.list_bundle(location=location)
-
-
-def swiftlet_virtual_machine_list_image(client,
-                                        location):
-    return client.list_image(location=location)
-
-
 def swiftlet_virtual_machine_start(client,
                                    vm_name,
                                    resource_group_name,
@@ -106,3 +98,83 @@ def swiftlet_virtual_machine_stop(client,
                        client.begin_stop,
                        vm_name=vm_name,
                        resource_group_name=resource_group_name)
+
+
+def swiftlet_virtual_machine_image_list(client,
+                                        location):
+    return client.list(location=location)
+
+
+def swiftlet_virtual_machine_image_show(client,
+                                        image_name,
+                                        location):
+    return client.get(image_name=image_name,
+                      location=location)
+
+
+def swiftlet_virtual_machine_bundle_list(client,
+                                         location):
+    return client.list(location=location)
+
+
+def swiftlet_virtual_machine_bundle_show(client,
+                                         bundle_name,
+                                         location):
+    return client.get(bundle_name=bundle_name,
+                      location=location)
+
+
+def swiftlet_virtual_machine_snapshot_list(client,
+                                           vm_name=None,
+                                           resource_group_name=None):
+    if vm_name is not None and resource_group_name:
+        return client.list_by_virtual_machine(vm_name=vm_name,
+                                              resource_group_name=resource_group_name)
+    elif resource_group_name:
+        return client.list_by_resource_group(resource_group_name=resource_group_name)
+    return client.list_by_subscription()
+
+
+def swiftlet_virtual_machine_snapshot_show(client,
+                                           resource_group_name,
+                                           snapshot_name):
+    return client.get(resource_group_name=resource_group_name,
+                      snapshot_name=snapshot_name)
+
+
+def swiftlet_virtual_machine_snapshot_create(client,
+                                             resource_group_name,
+                                             snapshot_name,
+                                             location,
+                                             virtual_machine_id,
+                                             tags=None,
+                                             no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name=resource_group_name,
+                       snapshot_name=snapshot_name,
+                       tags=tags,
+                       location=location,
+                       virtual_machine_id=virtual_machine_id)
+
+
+def swiftlet_virtual_machine_snapshot_update(client,
+                                             resource_group_name,
+                                             snapshot_name,
+                                             tags=None,
+                                             no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       snapshot_name=snapshot_name,
+                       tags=tags)
+
+
+def swiftlet_virtual_machine_snapshot_delete(client,
+                                             resource_group_name,
+                                             snapshot_name,
+                                             no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       snapshot_name=snapshot_name)
