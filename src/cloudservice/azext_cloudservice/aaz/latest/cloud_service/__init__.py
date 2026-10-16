@@ -9,4 +9,16 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._create import *
+from ._delete import *
+from ._delete_instance import *
+from ._list import *
+from ._power_off import *
+from ._rebuild import *
 from ._reimage import *
+from ._restart import *
+from ._show import *
+from ._show_instance_view import *
+from ._start import *
+from ._update import *
+from ._wait import *

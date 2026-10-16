@@ -13,12 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "cloud-service role-instance reimage",
+    is_experimental=True,
 )
 class Reimage(AAZCommand):
     """The reimage role instance asynchronous operation reinstalls the operating system on instances of web roles or worker roles.
 
     :example: Role instance reimage
-        az cloud-service role-instance reimage -g rg --cloud-service-name cloudservice --role-instances-name name
+        az cloud-service role-instance reimage -g rg --cloud-service-name cloudservice --role-instance-name name
     """
 
     _aaz_info = {

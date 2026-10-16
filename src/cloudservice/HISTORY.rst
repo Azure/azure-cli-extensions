@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.2
+++++++
+* Migrate `az cloud-service` commands from the Compute SDK to AAZ (API version `2022-09-04`).
+
 1.0.1
 ++++++
 * Remove direct call to `msrestazure`
