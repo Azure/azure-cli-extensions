@@ -451,6 +451,16 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
 
+    @ResourceGroupPreparer(location="australiaeast")
+    def test_containerapp_env_default_logs_destination(self, resource_group):
+        self.cmd('configure --defaults location=australiaeast')
+        default_env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        self.cmd('containerapp env create -g {} -n {}'.format(resource_group, default_env_name), checks=[
+            JMESPathCheck('properties.appLogsConfiguration.destination', "azure-monitor"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration', None),
+        ])
+        self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, default_env_name))
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="australiaeast")
     def test_containerapp_env_la_dynamic_json(self, resource_group):
@@ -472,7 +482,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         sub_id2 = create_vnet_subnet(self, resource_group, self.create_random_name(prefix='name', length=24))
 
         default_env_name2 = self.create_random_name(prefix='containerapp-env', length=24)
-        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} -j false -s {}'.format(resource_group, default_env_name2, logs_workspace_id, logs_workspace_key, sub_id2),checks=[
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics -j false -s {}'.format(resource_group, default_env_name2, logs_workspace_id, logs_workspace_key, sub_id2),checks=[
             JMESPathCheck('name', default_env_name2),
             JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
             JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.dynamicJsonColumns', False),
