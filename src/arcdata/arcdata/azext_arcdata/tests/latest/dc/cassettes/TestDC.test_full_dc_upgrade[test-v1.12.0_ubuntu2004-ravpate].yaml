@@ -1,0 +1,1119 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/apiextensions.k8s.io/v1/customresourcedefinitions
+  response:
+    body:
+      string: '{"kind":"CustomResourceDefinitionList","apiVersion":"apiextensions.k8s.io/v1","metadata":{"resourceVersion":"1313876"},"items":[{"metadata":{"name":"activedirectoryconnectors.arcdata.microsoft.com","uid":"4d7d29dd-c608-4c06-a0c1-8087e0510b50","resourceVersion":"1293295","generation":1,"creationTimestamp":"2022-09-23T18:49:55Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"arcdata.microsoft.com","names":{"plural":"activedirectoryconnectors","singular":"activedirectoryconnector","shortNames":["adc","adcon","adconnector"],"kind":"ActiveDirectoryConnector","listKind":"ActiveDirectoryConnectorList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1beta2","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"activedirectoryconnectors","singular":"activedirectoryconnector","shortNames":["adc","adcon","adconnector"],"kind":"ActiveDirectoryConnector","listKind":"ActiveDirectoryConnectorList"},"storedVersions":["v1"]}},{"metadata":{"name":"arccertificates.clusterconfig.azure.com","uid":"02920dd8-66e3-44c2-9993-5775b1f89d97","resourceVersion":"506460","generation":1,"creationTimestamp":"2022-09-19T18:41:47Z","labels":{"app.kubernetes.io/managed-by":"Helm"},"annotations":{"controller-gen.kubebuilder.io/version":"v0.4.1","meta.helm.sh/release-name":"azure-arc","meta.helm.sh/release-namespace":"default"},"managedFields":[{"manager":"helm","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:controller-gen.kubebuilder.io/version":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"clusterconfig.azure.com","names":{"plural":"arccertificates","singular":"arccertificate","kind":"ArcCertificate","listKind":"ArcCertificateList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"description":"ArcCertificate
+        is the Schema for the arccertificates API","type":"object","properties":{"apiVersion":{"description":"APIVersion
+        defines the versioned schema of this representation of an object. Servers
+        should convert recognized schemas to the latest internal value, and may reject
+        unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources","type":"string"},"kind":{"description":"Kind
+        is a string value representing the REST resource this object represents. Servers
+        may infer this from the endpoint the client submits requests to. Cannot be
+        updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds","type":"string"},"metadata":{"type":"object"},"spec":{"description":"ArcCertificateSpec
+        defines the desired state of ArcCertificate","type":"object","properties":{"issuer":{"type":"string"},"serviceName":{"description":"Foo
+        is an example field of ArcCertificate. Edit arccertificate_types.go to remove/update","type":"string"}}},"status":{"description":"ArcCertificateStatus
+        defines the observed state of ArcCertificate","type":"object","properties":{"errorMessage":{"type":"string"},"expirationTime":{"type":"string"},"lastSyncTime":{"description":"INSERT
+        ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run
+        \"make\" to regenerate code after modifying this file","type":"string"},"secretName":{"type":"string"}}}}}},"subresources":{"status":{}}}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"arccertificates","singular":"arccertificate","kind":"ArcCertificate","listKind":"ArcCertificateList"},"storedVersions":["v1beta1"]}},{"metadata":{"name":"azureclusteridentityrequests.clusterconfig.azure.com","uid":"c73e05f6-10d0-4af1-aceb-62a584565d5f","resourceVersion":"506440","generation":1,"creationTimestamp":"2022-09-19T18:41:47Z","labels":{"app.kubernetes.io/managed-by":"Helm"},"annotations":{"controller-gen.kubebuilder.io/version":"v0.2.4","meta.helm.sh/release-name":"azure-arc","meta.helm.sh/release-namespace":"default"},"managedFields":[{"manager":"helm","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:controller-gen.kubebuilder.io/version":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"clusterconfig.azure.com","names":{"plural":"azureclusteridentityrequests","singular":"azureclusteridentityrequest","shortNames":["azidentityreq"],"kind":"AzureClusterIdentityRequest","listKind":"AzureClusterIdentityRequestList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"description":"AzureClusterIdentityRequest
+        is the Schema for the azureclusteridentityrequests API","type":"object","properties":{"apiVersion":{"description":"APIVersion
+        defines the versioned schema of this representation of an object. Servers
+        should convert recognized schemas to the latest internal value, and may reject
+        unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources","type":"string"},"kind":{"description":"Kind
+        is a string value representing the REST resource this object represents. Servers
+        may infer this from the endpoint the client submits requests to. Cannot be
+        updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds","type":"string"},"metadata":{"type":"object"},"spec":{"description":"AzureClusterIdentityRequestSpec
+        defines the desired state of AzureClusterIdentityRequest","type":"object","properties":{"apiVersion":{"type":"string"},"audience":{"type":"string"},"resourceId":{"type":"string"}}},"status":{"description":"AzureClusterIdentityRequestStatus
+        defines the observed state of AzureClusterIdentityRequest","type":"object","properties":{"expirationTime":{"type":"string"},"tokenReference":{"description":"INSERT
+        ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run
+        \"make\" to regenerate code after modifying this file","type":"object","properties":{"dataName":{"type":"string"},"secretName":{"type":"string"}}}}}}}},"subresources":{"status":{}}}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"azureclusteridentityrequests","singular":"azureclusteridentityrequest","shortNames":["azidentityreq"],"kind":"AzureClusterIdentityRequest","listKind":"AzureClusterIdentityRequestList"},"storedVersions":["v1beta1"]}},{"metadata":{"name":"azureextensionidentities.clusterconfig.azure.com","uid":"a7a8f378-284a-4a23-b13e-16c28dde157f","resourceVersion":"506473","generation":1,"creationTimestamp":"2022-09-19T18:41:47Z","labels":{"app.kubernetes.io/managed-by":"Helm"},"annotations":{"controller-gen.kubebuilder.io/version":"v0.2.4","meta.helm.sh/release-name":"azure-arc","meta.helm.sh/release-namespace":"default"},"managedFields":[{"manager":"helm","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:controller-gen.kubebuilder.io/version":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"clusterconfig.azure.com","names":{"plural":"azureextensionidentities","singular":"azureextensionidentity","kind":"AzureExtensionIdentity","listKind":"AzureExtensionIdentityList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"description":"AzureExtensionIdentity
+        is the Schema for the azureextensionidentities API","type":"object","properties":{"apiVersion":{"description":"APIVersion
+        defines the versioned schema of this representation of an object. Servers
+        should convert recognized schemas to the latest internal value, and may reject
+        unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources","type":"string"},"kind":{"description":"Kind
+        is a string value representing the REST resource this object represents. Servers
+        may infer this from the endpoint the client submits requests to. Cannot be
+        updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds","type":"string"},"metadata":{"type":"object"},"spec":{"description":"AzureExtensionIdentitySpec
+        defines the desired state of AzureExtensionIdentity","type":"object","properties":{"serviceAccounts":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"namespace":{"type":"string"}}}},"tokenNamespace":{"type":"string"}}},"status":{"description":"AzureExtensionIdentityStatus
+        defines the observed state of AzureExtensionIdentity","type":"object"}}}},"subresources":{"status":{}}}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"azureextensionidentities","singular":"azureextensionidentity","kind":"AzureExtensionIdentity","listKind":"AzureExtensionIdentityList"},"storedVersions":["v1beta1"]}},{"metadata":{"name":"connectedclusters.arc.azure.com","uid":"57b24e97-2d9b-4b68-a4c4-ac7cbe014648","resourceVersion":"506436","generation":1,"creationTimestamp":"2022-09-19T18:41:47Z","labels":{"app.kubernetes.io/managed-by":"Helm","azuresync":"true"},"annotations":{"meta.helm.sh/release-name":"azure-arc","meta.helm.sh/release-namespace":"default","resourceSync.arc.azure.com/ProviderNamespace":"Microsoft.Kubernetes","resourceSync.arc.azure.com/ResourceType":"ConnectedClusters"},"managedFields":[{"manager":"helm","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{},"f:resourceSync.arc.azure.com/ProviderNamespace":{},"f:resourceSync.arc.azure.com/ResourceType":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:azuresync":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"arc.azure.com","names":{"plural":"connectedclusters","singular":"connectedcluster","kind":"ConnectedCluster","listKind":"ConnectedClusterList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"description":"ConnectedCluster
+        is the object for the ConnectedClusters API","type":"object","properties":{"apiVersion":{"description":"APIVersion
+        defines the versioned schema of this representation of an object. Servers
+        should convert recognized schemas to the latest internal value, and may reject
+        unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources","type":"string"},"kind":{"description":"Kind
+        is a string value representing the REST resource this object represents. Servers
+        may infer this from the endpoint the client submits requests to. Cannot be
+        updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds","type":"string"},"metadata":{"type":"object"},"spec":{"description":"ConnectedClusterSpec
+        defines the desired state of ConnectedCluster","type":"object","properties":{"azureResourceId":{"description":"AzureResourceId
+        is the armId of the cluster","type":"string"}}},"status":{"description":"ConnectedClusterStatus
+        defines the observed state of ConnectedCluster","type":"object","properties":{"arcAgentVersion":{"description":"ArcAgentVersion
+        is the version of the arc agents in the cluster","type":"string"},"coreCount":{"description":"CoreCount
+        is the collective no of cores limit over all nodes present in the cluster","type":"integer"},"kubernetesAPIServerVersion":{"description":"KubernetesAPIServerVersion
+        is the kubernetes version the cluster is running on","type":"string"},"lastConnectivityTime":{"type":"string","format":"date-time"},"managedIdentityCertificateExpirationTime":{"type":"string","format":"date-time"},"nodeCount":{"description":"NodeCount
+        is the no of the nodes present in the cluster","type":"integer"}}}}}},"subresources":{"status":{}}}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"connectedclusters","singular":"connectedcluster","kind":"ConnectedCluster","listKind":"ConnectedClusterList"},"storedVersions":["v1beta1"]}},{"metadata":{"name":"customlocationsettings.clusterconfig.azure.com","uid":"10b29171-3d28-4845-9b18-a4724dcf8881","resourceVersion":"506452","generation":1,"creationTimestamp":"2022-09-19T18:41:47Z","labels":{"app.kubernetes.io/managed-by":"Helm"},"annotations":{"controller-gen.kubebuilder.io/version":"v0.2.4","meta.helm.sh/release-name":"azure-arc","meta.helm.sh/release-namespace":"default"},"managedFields":[{"manager":"helm","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:controller-gen.kubebuilder.io/version":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"clusterconfig.azure.com","names":{"plural":"customlocationsettings","singular":"customlocationsettings","kind":"CustomLocationSettings","listKind":"CustomLocationSettingsList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"description":"CustomLocationSettings
+        is the Schema for the customlocationsettings API","type":"object","properties":{"apiVersion":{"description":"APIVersion
+        defines the versioned schema of this representation of an object. Servers
+        should convert recognized schemas to the latest internal value, and may reject
+        unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources","type":"string"},"kind":{"description":"Kind
+        is a string value representing the REST resource this object represents. Servers
+        may infer this from the endpoint the client submits requests to. Cannot be
+        updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds","type":"string"},"metadata":{"type":"object"},"spec":{"description":"CustomLocationSettingsSpec
+        defines the desired state of CustomLocationSettings","type":"object","properties":{"ClusterRole":{"type":"string"},"EnabledResourceTypes":{"type":"array","items":{"type":"object","properties":{"ApiVersion":{"type":"string"},"ResourceMapping":{"type":"object","properties":{"Group":{"type":"string"},"Kind":{"type":"string"},"Name":{"type":"string"},"Version":{"type":"string"}}},"ResourceProviderNamespace":{"type":"string"},"ResourceType":{"type":"string"}}}},"ExtensionRegistrationTime":{"type":"integer"},"ExtensionType":{"type":"string"},"RPAppId":{"description":"Foo
+        is an example field of CustomLocationSettings. Edit CustomLocationSettings_types.go
+        to remove/update","type":"string"}}},"status":{"description":"CustomLocationSettingsStatus
+        defines the observed state of CustomLocationSettings","type":"object"}}}},"subresources":{"status":{}}}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"customlocationsettings","singular":"customlocationsettings","kind":"CustomLocationSettings","listKind":"CustomLocationSettingsList"},"storedVersions":["v1beta1"]}},{"metadata":{"name":"datacontrollers.arcdata.microsoft.com","uid":"f88234ba-f14d-4976-a3c2-8dcb1c8f59f4","resourceVersion":"1293303","generation":1,"creationTimestamp":"2022-09-23T18:49:55Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"arcdata.microsoft.com","names":{"plural":"datacontrollers","singular":"datacontroller","shortNames":["arcdc"],"kind":"DataController","listKind":"DataControllerList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"}]},{"name":"v1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"}]},{"name":"v2","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"}]},{"name":"v3","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"}]},{"name":"v4","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"}]},{"name":"v5","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"datacontrollers","singular":"datacontroller","shortNames":["arcdc"],"kind":"DataController","listKind":"DataControllerList"},"storedVersions":["v5"]}},{"metadata":{"name":"exporttasks.tasks.arcdata.microsoft.com","uid":"cb73a7e3-4a09-4727-a7a7-b854f271c8cb","resourceVersion":"1293313","generation":1,"creationTimestamp":"2022-09-23T18:49:55Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"tasks.arcdata.microsoft.com","names":{"plural":"exporttasks","singular":"exporttask","shortNames":["export"],"kind":"ExportTask","listKind":"ExportTaskList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v2","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"exporttasks","singular":"exporttask","shortNames":["export"],"kind":"ExportTask","listKind":"ExportTaskList"},"storedVersions":["v2"]}},{"metadata":{"name":"extensionconfigs.clusterconfig.azure.com","uid":"74656fac-da77-4daf-be61-6c44c47fe7b5","resourceVersion":"506445","generation":1,"creationTimestamp":"2022-09-19T18:41:47Z","labels":{"app.kubernetes.io/managed-by":"Helm"},"annotations":{"controller-gen.kubebuilder.io/version":"v0.8.0","meta.helm.sh/release-name":"azure-arc","meta.helm.sh/release-namespace":"default"},"managedFields":[{"manager":"helm","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:controller-gen.kubebuilder.io/version":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"clusterconfig.azure.com","names":{"plural":"extensionconfigs","singular":"extensionconfig","shortNames":["ec"],"kind":"ExtensionConfig","listKind":"ExtensionConfigList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"description":"ExtensionConfig
+        is the Schema for the extensionconfigs API","type":"object","properties":{"apiVersion":{"description":"APIVersion
+        defines the versioned schema of this representation of an object. Servers
+        should convert recognized schemas to the latest internal value, and may reject
+        unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources","type":"string"},"kind":{"description":"Kind
+        is a string value representing the REST resource this object represents. Servers
+        may infer this from the endpoint the client submits requests to. Cannot be
+        updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds","type":"string"},"metadata":{"type":"object"},"spec":{"description":"ExtensionConfigSpec
+        defines the desired state of ExtensionConfig","type":"object","properties":{"autoUpgradeMinorVersion":{"type":"boolean"},"correlationId":{"type":"string"},"extensionRegistrationTime":{"type":"integer","format":"int64"},"extensionType":{"type":"string"},"lastModifiedTime":{"type":"string","format":"date-time"},"operationId":{"type":"string"},"parameter":{"type":"object","additionalProperties":{"type":"string"}},"protectedParameters":{"type":"object","properties":{"referenceName":{"type":"string"},"version":{"type":"string"}}},"reconcilerIntervalInSeconds":{"type":"integer"},"releaseTrain":{"type":"string"},"repoUrl":{"type":"string"},"softDelete":{"type":"boolean"},"version":{"type":"string"}}},"status":{"description":"ExtensionConfigStatus
+        defines the observed state of ExtensionConfig","type":"object","properties":{"configAppliedTime":{"description":"INSERT
+        ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run
+        \"make\" to regenerate code after modifying this file","type":"string"},"lastSuccessfulReconciledTime":{"type":"string"},"message":{"type":"string"},"observedGeneration":{"type":"integer","format":"int64"},"observedOperationId":{"type":"string"},"operatorPropertiesHashed":{"type":"string"},"reconciliationError":{"type":"string"},"status":{"type":"string"},"syncStatus":{"type":"object","properties":{"isSyncedWithAzure":{"type":"boolean"},"lastSyncTime":{"type":"string"}}}}}}}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Type","type":"string","description":"Extension
+        Type","jsonPath":".spec.extensionType"},{"name":"Version","type":"string","description":"Extension
+        Version","jsonPath":".spec.version"},{"name":"Age","type":"date","description":"Extension
+        Creation Time","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"extensionconfigs","singular":"extensionconfig","shortNames":["ec"],"kind":"ExtensionConfig","listKind":"ExtensionConfigList"},"storedVersions":["v1beta1"]}},{"metadata":{"name":"failovergroups.sql.arcdata.microsoft.com","uid":"33a44109-673e-493d-8e3d-284106f83966","resourceVersion":"1293316","generation":1,"creationTimestamp":"2022-09-23T18:49:55Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"sql.arcdata.microsoft.com","names":{"plural":"failovergroups","singular":"failovergroup","shortNames":["fog"],"kind":"FailoverGroup","listKind":"FailoverGroupList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Results","type":"string","jsonPath":".status.results"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1beta2","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Results","type":"string","jsonPath":".status.results"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Results","type":"string","jsonPath":".status.results"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"failovergroups","singular":"failovergroup","shortNames":["fog"],"kind":"FailoverGroup","listKind":"FailoverGroupList"},"storedVersions":["v1"]}},{"metadata":{"name":"gitconfigs.clusterconfig.azure.com","uid":"97767cc5-42ed-4b1b-bad5-8a7e78de8e5f","resourceVersion":"506474","generation":1,"creationTimestamp":"2022-09-19T18:41:47Z","labels":{"app.kubernetes.io/managed-by":"Helm"},"annotations":{"meta.helm.sh/release-name":"azure-arc","meta.helm.sh/release-namespace":"default"},"managedFields":[{"manager":"helm","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"clusterconfig.azure.com","names":{"plural":"gitconfigs","singular":"gitconfig","kind":"GitConfig","listKind":"GitConfigList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"description":"GitConfig
+        is the Schema for the gitconfigs API","type":"object","properties":{"apiVersion":{"description":"APIVersion
+        defines the versioned schema of this representation of an object. Servers
+        should convert recognized schemas to the latest internal value, and may reject
+        unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources","type":"string"},"kind":{"description":"Kind
+        is a string value representing the REST resource this object represents. Servers
+        may infer this from the endpoint the client submits requests to. Cannot be
+        updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds","type":"string"},"metadata":{"type":"object"},"spec":{"description":"GitConfigSpec
+        defines the desired state of GitConfig","type":"object","required":["giturl","operatorClientLocation","operatorParams","operatorType","operatorScope","operatorInstanceName","enableHelmOperator"],"properties":{"correlationId":{"type":"string"},"deleteOperator":{"type":"boolean"},"enableHelmOperator":{"type":"boolean"},"giturl":{"type":"string"},"helmOperatorProperties":{"type":"object","properties":{"chartName":{"type":"string"},"chartValues":{"type":"string"},"chartVersion":{"type":"string"},"repoUrl":{"type":"string"}}},"operatorClientLocation":{"type":"string"},"operatorInstanceName":{"type":"string"},"operatorParams":{"type":"string"},"operatorScope":{"type":"string"},"operatorType":{"type":"string"},"protectedParameters":{"type":"object","required":["referenceName","version"],"properties":{"referenceName":{"type":"string"},"version":{"type":"string"}}},"sshKnownHostsContents":{"type":"string"}}},"status":{"description":"GitConfigStatus
+        defines the observed state of GitConfig","type":"object","required":["configAppliedTime","lastPolledStatusTime","message","proxyConfigHash","publicKey","status","isSyncedWithAzure","retryCountPublicKey"],"properties":{"configAppliedTime":{"type":"string"},"errorsInTheLastSynced":{"type":"string"},"isSyncedWithAzure":{"type":"boolean"},"lastGitCommitInformation":{"type":"string"},"lastPolledStatusTime":{"type":"string"},"message":{"type":"string"},"mostRecentEventsFromFlux":{"type":"array","items":{"type":"string"}},"proxyConfigHash":{"type":"string"},"publicKey":{"type":"string"},"retryCountPublicKey":{"type":"integer"},"status":{"type":"string"}}}}}},"subresources":{"status":{}}}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"gitconfigs","singular":"gitconfig","kind":"GitConfig","listKind":"GitConfigList"},"storedVersions":["v1beta1"]}},{"metadata":{"name":"healthstates.clusterconfig.azure.com","uid":"1cf79fde-b253-4635-8df6-0887bd87a8b5","resourceVersion":"506450","generation":1,"creationTimestamp":"2022-09-19T18:41:47Z","labels":{"app.kubernetes.io/managed-by":"Helm"},"annotations":{"controller-gen.kubebuilder.io/version":"v0.4.1","meta.helm.sh/release-name":"azure-arc","meta.helm.sh/release-namespace":"default"},"managedFields":[{"manager":"helm","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:controller-gen.kubebuilder.io/version":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-19T18:41:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"clusterconfig.azure.com","names":{"plural":"healthstates","singular":"healthstate","kind":"HealthState","listKind":"HealthStateList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"description":"HealthState
+        is the Schema for the healthstates API","type":"object","properties":{"apiVersion":{"description":"APIVersion
+        defines the versioned schema of this representation of an object. Servers
+        should convert recognized schemas to the latest internal value, and may reject
+        unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources","type":"string"},"kind":{"description":"Kind
+        is a string value representing the REST resource this object represents. Servers
+        may infer this from the endpoint the client submits requests to. Cannot be
+        updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds","type":"string"},"metadata":{"type":"object"},"spec":{"description":"HealthStateSpec
+        defines the desired state of HealthState","type":"object","properties":{"healthStateObjects":{"description":"HealthStateObjects
+        is the list of HealthState objects which contains state of the resource to
+        be verified","type":"array","items":{"type":"object","properties":{"errorCodeForFailure":{"description":"ErrorCodeForFailure
+        is the error metric to be emitted if resource is not present","type":"string"},"id":{"description":"Id
+        is the full ARM Resource Id of the parent resource (eg: Custom Location) that
+        this object belongs to.","type":"string"},"location":{"description":"Location
+        is the location of the parent resource (eg: Custom Location)","type":"string"},"name":{"description":"Name
+        is the name of the resource that we need to verify","type":"string"},"namespace":{"description":"Namespace
+        is the namespace that the resource is present in","type":"string"},"type":{"description":"Type
+        is the type of the resource that we need to verify","type":"string"}}}}}},"status":{"description":"HealthStateStatus
+        defines the observed state of HealthState","type":"object"}}}}}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-19T18:41:47Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"healthstates","singular":"healthstate","kind":"HealthState","listKind":"HealthStateList"},"storedVersions":["v1beta1"]}},{"metadata":{"name":"kafkas.arcdata.microsoft.com","uid":"0a950d00-0469-4653-b488-a9bfde7ee610","resourceVersion":"1293319","generation":1,"creationTimestamp":"2022-09-23T18:49:55Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"arcdata.microsoft.com","names":{"plural":"kafkas","singular":"kafka","shortNames":["kafka"],"kind":"Kafka","listKind":"KafkaList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"kafkas","singular":"kafka","shortNames":["kafka"],"kind":"Kafka","listKind":"KafkaList"},"storedVersions":["v1beta1"]}},{"metadata":{"name":"monitors.arcdata.microsoft.com","uid":"d8fdb53a-eec7-436a-9b3a-b4839badd19e","resourceVersion":"1293322","generation":1,"creationTimestamp":"2022-09-23T18:49:55Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"arcdata.microsoft.com","names":{"plural":"monitors","singular":"monitor","shortNames":["monitor"],"kind":"Monitor","listKind":"MonitorList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v2","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"monitors","singular":"monitor","shortNames":["monitor"],"kind":"Monitor","listKind":"MonitorList"},"storedVersions":["v2"]}},{"metadata":{"name":"telemetrycollectors.arcdata.microsoft.com","uid":"05fa718b-271c-4f93-912b-6a89968fb360","resourceVersion":"1293325","generation":1,"creationTimestamp":"2022-09-23T18:49:55Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"arcdata.microsoft.com","names":{"plural":"telemetrycollectors","singular":"telemetrycollector","shortNames":["telemetrycollector"],"kind":"TelemetryCollector","listKind":"TelemetryCollectorList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"telemetrycollectors","singular":"telemetrycollector","shortNames":["telemetrycollector"],"kind":"TelemetryCollector","listKind":"TelemetryCollectorList"},"storedVersions":["v1beta1"]}},{"metadata":{"name":"postgresqls.arcdata.microsoft.com","uid":"fc3557ec-8066-41c7-86a8-a8266aa3fafe","resourceVersion":"1293329","generation":1,"creationTimestamp":"2022-09-23T18:49:55Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"arcdata.microsoft.com","names":{"plural":"postgresqls","singular":"postgresql","shortNames":["postgres"],"kind":"PostgreSql","listKind":"PostgreSqlList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"},{"name":"Ready-Pods","type":"string","jsonPath":".status.readyPods"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.primaryEndpoint"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1beta2","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"},{"name":"Ready-Pods","type":"string","jsonPath":".status.readyPods"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.primaryEndpoint"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1beta3","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"State","type":"string","jsonPath":".status.state"},{"name":"Ready-Pods","type":"string","jsonPath":".status.readyPods"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.primaryEndpoint"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"postgresqls","singular":"postgresql","shortNames":["postgres"],"kind":"PostgreSql","listKind":"PostgreSqlList"},"storedVersions":["v1beta3"]}},{"metadata":{"name":"sqlmanagedinstancereprovisionreplicatasks.tasks.sql.arcdata.microsoft.com","uid":"0ae2a4cd-e520-4c31-b3db-421a970267b5","resourceVersion":"1293341","generation":1,"creationTimestamp":"2022-09-23T18:49:55Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"tasks.sql.arcdata.microsoft.com","names":{"plural":"sqlmanagedinstancereprovisionreplicatasks","singular":"sqlmanagedinstancereprovisionreplicatask","shortNames":["sqlmireprovisionreplicatask"],"kind":"SqlManagedInstanceReprovisionReplicaTask","listKind":"SqlManagedInstanceReprovisionReplicaTaskList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","properties":{"apiVersion":{"type":"string"},"kind":{"type":"string"},"spec":{"type":"object","properties":{"replicaName":{"type":"string"}}},"status":{"type":"object","properties":{"endpoints":{"type":"object","additionalProperties":{"type":"string"},"x-kubernetes-preserve-unknown-fields":true},"healthState":{"type":"string"},"lastUpdateTime":{"type":"string","format":"date-time"},"message":{"type":"string"},"observedGeneration":{"type":"integer"},"percentComplete":{"type":"integer"},"reason":{"type":"string"},"runningVersion":{"type":"string"},"state":{"type":"string"}}}}}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"sqlmanagedinstancereprovisionreplicatasks","singular":"sqlmanagedinstancereprovisionreplicatask","shortNames":["sqlmireprovisionreplicatask"],"kind":"SqlManagedInstanceReprovisionReplicaTask","listKind":"SqlManagedInstanceReprovisionReplicaTaskList"},"storedVersions":["v1beta1"]}},{"metadata":{"name":"sqlmanagedinstancerestoretasks.tasks.sql.arcdata.microsoft.com","uid":"8830d633-859d-40c5-aabe-64d1c3f705e3","resourceVersion":"1293344","generation":1,"creationTimestamp":"2022-09-23T18:49:55Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"tasks.sql.arcdata.microsoft.com","names":{"plural":"sqlmanagedinstancerestoretasks","singular":"sqlmanagedinstancerestoretask","shortNames":["sqlmirestoretask"],"kind":"SqlManagedInstanceRestoreTask","listKind":"SqlManagedInstanceRestoreTaskList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"sqlmanagedinstancerestoretasks","singular":"sqlmanagedinstancerestoretask","shortNames":["sqlmirestoretask"],"kind":"SqlManagedInstanceRestoreTask","listKind":"SqlManagedInstanceRestoreTaskList"},"storedVersions":["v1"]}},{"metadata":{"name":"sqlmanagedinstances.sql.arcdata.microsoft.com","uid":"8f362c19-22e4-48f6-8abc-04f6fe0e29ad","resourceVersion":"1293338","generation":1,"creationTimestamp":"2022-09-23T18:49:55Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"sql.arcdata.microsoft.com","names":{"plural":"sqlmanagedinstances","singular":"sqlmanagedinstance","shortNames":["sqlmi"],"kind":"SqlManagedInstance","listKind":"SqlManagedInstanceList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Replicas","type":"string","jsonPath":".status.readyReplicas"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.primaryEndpoint"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v1","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Replicas","type":"string","jsonPath":".status.readyReplicas"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.primaryEndpoint"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v2","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Replicas","type":"string","jsonPath":".status.readyReplicas"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.primaryEndpoint"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v3","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Replicas","type":"string","jsonPath":".status.readyReplicas"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.primaryEndpoint"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v4","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Replicas","type":"string","jsonPath":".status.roles.sql.readyReplicas"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.endpoints.primary"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v5","served":true,"storage":false,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Replicas","type":"string","jsonPath":".status.roles.sql.readyReplicas"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.endpoints.primary"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]},{"name":"v6","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Replicas","type":"string","jsonPath":".status.roles.sql.readyReplicas"},{"name":"Primary-Endpoint","type":"string","jsonPath":".status.endpoints.primary"},{"name":"Desired-Version","type":"string","jsonPath":".spec.update.desiredVersion"},{"name":"Running-Version","type":"string","jsonPath":".status.runningVersion"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"sqlmanagedinstances","singular":"sqlmanagedinstance","shortNames":["sqlmi"],"kind":"SqlManagedInstance","listKind":"SqlManagedInstanceList"},"storedVersions":["v6"]}},{"metadata":{"name":"telemetryrouters.arcdata.microsoft.com","uid":"96ee3741-f00b-4b64-ad3b-b530cfd26a1d","resourceVersion":"1293347","generation":1,"creationTimestamp":"2022-09-23T18:49:55Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"helm.sh/resource-policy":"keep","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:helm.sh/resource-policy":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:conversion":{".":{},"f:strategy":{}},"f:group":{},"f:names":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:scope":{},"f:versions":{}}}},{"manager":"kube-apiserver","operation":"Update","apiVersion":"apiextensions.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:acceptedNames":{"f:kind":{},"f:listKind":{},"f:plural":{},"f:shortNames":{},"f:singular":{}},"f:conditions":{"k:{\"type\":\"Established\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"NamesAccepted\"}":{".":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}}}]},"spec":{"group":"arcdata.microsoft.com","names":{"plural":"telemetryrouters","singular":"telemetryrouter","shortNames":["telemetryrouter"],"kind":"TelemetryRouter","listKind":"TelemetryRouterList"},"scope":"Namespaced","versions":[{"name":"v1beta1","served":true,"storage":true,"schema":{"openAPIV3Schema":{"type":"object","x-kubernetes-preserve-unknown-fields":true}},"subresources":{"status":{}},"additionalPrinterColumns":[{"name":"Status","type":"string","jsonPath":".status.state"},{"name":"Age","type":"date","jsonPath":".metadata.creationTimestamp"}]}],"conversion":{"strategy":"None"}},"status":{"conditions":[{"type":"NamesAccepted","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"NoConflicts","message":"no
+        conflicts found"},{"type":"Established","status":"True","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"InitialNamesAccepted","message":"the
+        initial names have been accepted"}],"acceptedNames":{"plural":"telemetryrouters","singular":"telemetryrouter","shortNames":["telemetryrouter"],"kind":"TelemetryRouter","listKind":"TelemetryRouterList"},"storedVersions":["v1beta1"]}}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v1beta3/namespaces/test/postgresqls
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v1beta3","items":[],"kind":"PostgreSqlList","metadata":{"continue":"","resourceVersion":"1313876"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '137'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/sql.arcdata.microsoft.com/v1beta2/namespaces/test/dags
+  response:
+    body:
+      string: '404 page not found
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '19'
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      X-Content-Type-Options:
+      - nosniff
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-09-23T18:50:04Z","generation":1,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-09-23T18:54:20Z"}],"name":"datacontroller-ravpate-4881c1a57","namespace":"test","resourceVersion":"1294332","uid":"edd415e9-6395-417c-b169-996b47e4de3d"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.12.0_ubuntu2004-ravpate","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-ravpate-4881c1a57","logs.rotation.days":"7","logs.rotation.size":"5000"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-09-23T18:54:20.659462Z","observedGeneration":1,"runningVersion":"v1.12.0_ubuntu2004-ravpate","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"1313876"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-09-23T18:50:04Z","generation":1,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-09-23T18:54:20Z"}],"name":"datacontroller-ravpate-4881c1a57","namespace":"test","resourceVersion":"1294332","uid":"edd415e9-6395-417c-b169-996b47e4de3d"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.12.0_ubuntu2004-ravpate","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-ravpate-4881c1a57","logs.rotation.days":"7","logs.rotation.size":"5000"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-09-23T18:54:20.659462Z","observedGeneration":1,"runningVersion":"v1.12.0_ubuntu2004-ravpate","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"1313876"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/api/v1/namespaces/test/secrets/arc-private-registry
+  response:
+    body:
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"secrets
+        \"arc-private-registry\" not found","reason":"NotFound","details":{"name":"arc-private-registry","kind":"secrets"},"code":404}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '214'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://mock-host/v2/arcdata-dev/arc-controller/tags/list
+  response:
+    body:
+      string: '{"name":"arcdata-dev/arc-controller","tags":["latest","public-preview-apr-2021","public-preview-dec-2020","public-preview-feb-2021","public-preview-jan-2021","public-preview-jun-2021","public-preview-mar-2021","public-preview-may-2021","public-preview-oct-2020","public-preview-sep-2020","v1.0.0_2021-07-30","v1.1.0_2021-11-02","v1.10.0_2022-08-09","v1.10.0_ubuntu2004-","v1.10.0_ubuntu2004-mdrrahman","v1.10.0_ubuntu2004-patelchintan","v1.10.0_ubuntu2004-safeitle","v1.10.0_ubuntu2004-yuronhe","v1.10.1_ubuntu2004-dishadchopra","v1.11.0_2022-09-13","v1.11.0_ubuntu2004-brkoc","v1.11.0_ubuntu2004-lawynn","v1.11.0_ubuntu2004-mdrrahman","v1.11.0_ubuntu2004-safeitle","v1.12.0_ubuntu2004-mdrrahman","v1.2.0_2021-12-15","v1.3.0_2022-01-27","v1.4.0_2022-02-25","v1.4.1_2022-03-08","v1.5.0_2022-04-05","v1.5.0_ubuntu2004-bilia","v1.6.0_2022-05-02","v1.6.0_ubuntu2004-safeitle","v1.6.0_ubuntu2004-shashta","v1.7.0_2022-05-24","v1.7.0_ubuntu2004-safeitle","v1.7.0_ubuntu2004-yuronhe","v1.8.0_2022-06-14","v1.8.0_ubuntu2004-safeitle","v1.8.0_ubuntu2004-yuronhe","v1.9.0_2022-07-12","v1.9.0_ubuntu2004-","v1.9.0_ubuntu2004-mdrrahman","v1.9.0_ubuntu2004-safeitle","v1.9.0_ubuntu2004-yuronhe"]}
+
+        '
+    headers:
+      Access-Control-Expose-Headers:
+      - Docker-Content-Digest
+      - WWW-Authenticate
+      - Link
+      - X-Ms-Correlation-Request-Id
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1184'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      Docker-Distribution-Api-Version:
+      - registry/2.0
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      - max-age=31536000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ms-Correlation-Request-Id:
+      - 27974417-9512-4eea-9ba8-616a346d0c93
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-09-23T18:50:04Z","generation":1,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-09-23T18:54:20Z"}],"name":"datacontroller-ravpate-4881c1a57","namespace":"test","resourceVersion":"1294332","uid":"edd415e9-6395-417c-b169-996b47e4de3d"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.12.0_ubuntu2004-ravpate","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-ravpate-4881c1a57","logs.rotation.days":"7","logs.rotation.size":"5000"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-09-23T18:54:20.659462Z","observedGeneration":1,"runningVersion":"v1.12.0_ubuntu2004-ravpate","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"1313876"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"apiVersion": "v1", "kind": "ServiceAccount", "metadata": {"name": "sa-arc-deployer"}}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/strategic-merge-patch+json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: PATCH
+    uri: https://mock-host/api/v1/namespaces/test/serviceaccounts/sa-arc-deployer
+  response:
+    body:
+      string: '{"kind":"ServiceAccount","apiVersion":"v1","metadata":{"name":"sa-arc-deployer","namespace":"test","uid":"e9131131-45f0-4371-a83b-33ed7f411cb7","resourceVersion":"1293263","creationTimestamp":"2022-09-23T18:49:54Z"},"secrets":[{"name":"sa-arc-deployer-token-bdlh2"}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '268'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"apiVersion": "rbac.authorization.k8s.io/v1", "kind": "ClusterRole", "metadata":
+      {"name": "test:cr-deployer"}, "rules": [{"apiGroups": ["apiextensions.k8s.io"],
+      "resources": ["customresourcedefinitions"], "verbs": ["create", "list", "get"]},
+      {"apiGroups": ["apiextensions.k8s.io"], "resources": ["customresourcedefinitions"],
+      "resourceNames": ["activedirectoryconnectors.arcdata.microsoft.com", "datacontrollers.arcdata.microsoft.com",
+      "exporttasks.tasks.arcdata.microsoft.com", "failovergroups.sql.arcdata.microsoft.com",
+      "kafkas.arcdata.microsoft.com", "monitors.arcdata.microsoft.com", "telemetrycollectors.arcdata.microsoft.com",
+      "telemetryrouters.arcdata.microsoft.com", "postgresqls.arcdata.microsoft.com",
+      "sqlmanagedinstancerestoretasks.tasks.sql.arcdata.microsoft.com", "sqlmanagedinstancereprovisionreplicatasks.tasks.sql.arcdata.microsoft.com",
+      "sqlmanagedinstances.sql.arcdata.microsoft.com"], "verbs": ["update", "patch"]},
+      {"apiGroups": ["admissionregistration.k8s.io"], "resources": ["mutatingwebhookconfigurations"],
+      "verbs": ["create"]}, {"apiGroups": ["admissionregistration.k8s.io"], "resources":
+      ["mutatingwebhookconfigurations"], "resourceNames": ["arcdata.microsoft.com-webhook-test"],
+      "verbs": ["delete", "get", "patch"]}, {"apiGroups": ["rbac.authorization.k8s.io"],
+      "resources": ["clusterroles"], "verbs": ["create", "get"]}, {"apiGroups": ["rbac.authorization.k8s.io"],
+      "resources": ["clusterroles"], "resourceNames": ["test:cr-arc-crd-reader", "test:cr-arc-metricsdc-reader",
+      "cr-arc-webhook-job"], "verbs": ["delete", "patch"]}, {"apiGroups": ["rbac.authorization.k8s.io"],
+      "resources": ["clusterrolebindings"], "verbs": ["create", "get"]}, {"apiGroups":
+      ["rbac.authorization.k8s.io"], "resources": ["clusterrolebindings"], "resourceNames":
+      ["test:crb-arc-crd-reader", "test:crb-arc-metricsdc-reader", "crb-arc-webhook-job"],
+      "verbs": ["delete", "patch"]}, {"apiGroups": [""], "resources": ["namespaces"],
+      "verbs": ["create", "list"]}, {"apiGroups": [""], "resources": ["namespaces"],
+      "resourceNames": ["test"], "verbs": ["get", "patch"]}, {"apiGroups": [""], "resources":
+      ["nodes/stats", "nodes/proxy", "pods"], "verbs": ["list", "get"]}]}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/strategic-merge-patch+json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: PATCH
+    uri: https://mock-host/apis/rbac.authorization.k8s.io/v1/clusterroles/test%3Acr-deployer
+  response:
+    body:
+      string: '{"kind":"ClusterRole","apiVersion":"rbac.authorization.k8s.io/v1","metadata":{"name":"test:cr-deployer","uid":"8f1ce0d2-ad41-4be6-b521-0482e0613d50","resourceVersion":"204966","creationTimestamp":"2022-09-16T22:13:35Z","managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-09-16T22:13:35Z","fieldsType":"FieldsV1","fieldsV1":{"f:rules":{}}}]},"rules":[{"verbs":["create","list","get"],"apiGroups":["apiextensions.k8s.io"],"resources":["customresourcedefinitions"]},{"verbs":["update","patch"],"apiGroups":["apiextensions.k8s.io"],"resources":["customresourcedefinitions"],"resourceNames":["activedirectoryconnectors.arcdata.microsoft.com","datacontrollers.arcdata.microsoft.com","exporttasks.tasks.arcdata.microsoft.com","failovergroups.sql.arcdata.microsoft.com","kafkas.arcdata.microsoft.com","monitors.arcdata.microsoft.com","telemetrycollectors.arcdata.microsoft.com","telemetryrouters.arcdata.microsoft.com","postgresqls.arcdata.microsoft.com","sqlmanagedinstancerestoretasks.tasks.sql.arcdata.microsoft.com","sqlmanagedinstancereprovisionreplicatasks.tasks.sql.arcdata.microsoft.com","sqlmanagedinstances.sql.arcdata.microsoft.com"]},{"verbs":["create"],"apiGroups":["admissionregistration.k8s.io"],"resources":["mutatingwebhookconfigurations"]},{"verbs":["delete","get","patch"],"apiGroups":["admissionregistration.k8s.io"],"resources":["mutatingwebhookconfigurations"],"resourceNames":["arcdata.microsoft.com-webhook-test"]},{"verbs":["create","get"],"apiGroups":["rbac.authorization.k8s.io"],"resources":["clusterroles"]},{"verbs":["delete","patch"],"apiGroups":["rbac.authorization.k8s.io"],"resources":["clusterroles"],"resourceNames":["test:cr-arc-crd-reader","test:cr-arc-metricsdc-reader","cr-arc-webhook-job"]},{"verbs":["create","get"],"apiGroups":["rbac.authorization.k8s.io"],"resources":["clusterrolebindings"]},{"verbs":["delete","patch"],"apiGroups":["rbac.authorization.k8s.io"],"resources":["clusterrolebindings"],"resourceNames":["test:crb-arc-crd-reader","test:crb-arc-metricsdc-reader","crb-arc-webhook-job"]},{"verbs":["create","list"],"apiGroups":[""],"resources":["namespaces"]},{"verbs":["get","patch"],"apiGroups":[""],"resources":["namespaces"],"resourceNames":["test"]},{"verbs":["list","get"],"apiGroups":[""],"resources":["nodes/stats","nodes/proxy","pods"]}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"kind": "ClusterRoleBinding", "apiVersion": "rbac.authorization.k8s.io/v1",
+      "metadata": {"name": "test:crb-deployer"}, "subjects": [{"kind": "ServiceAccount",
+      "name": "sa-arc-deployer", "namespace": "test"}], "roleRef": {"kind": "ClusterRole",
+      "name": "test:cr-deployer", "apiGroup": "rbac.authorization.k8s.io"}}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/strategic-merge-patch+json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: PATCH
+    uri: https://mock-host/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/test%3Acrb-deployer
+  response:
+    body:
+      string: '{"kind":"ClusterRoleBinding","apiVersion":"rbac.authorization.k8s.io/v1","metadata":{"name":"test:crb-deployer","uid":"9f7a7e77-f879-4543-af79-61f5eab1f946","resourceVersion":"204967","creationTimestamp":"2022-09-16T22:13:35Z","managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-09-16T22:13:35Z","fieldsType":"FieldsV1","fieldsV1":{"f:roleRef":{"f:apiGroup":{},"f:kind":{},"f:name":{}},"f:subjects":{}}}]},"subjects":[{"kind":"ServiceAccount","name":"sa-arc-deployer","namespace":"test"}],"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"ClusterRole","name":"test:cr-deployer"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '662'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"apiVersion": "rbac.authorization.k8s.io/v1", "kind": "Role", "metadata":
+      {"name": "role-deployer", "namespace": "test"}, "rules": [{"apiGroups": [""],
+      "resources": ["pods/log"], "verbs": ["get"]}, {"apiGroups": [""], "resources":
+      ["secrets"], "verbs": ["get", "delete"]}, {"apiGroups": [""], "resources": ["serviceaccounts"],
+      "resourceNames": ["sa-arc-webhook-job", "sa-arc-bootstrapper"], "verbs": ["delete"]},
+      {"apiGroups": ["apps"], "resources": ["deployments"], "verbs": ["delete"]},
+      {"apiGroups": ["rbac.authorization.k8s.io"], "resources": ["roles", "rolebindings"],
+      "verbs": ["delete"]}, {"apiGroups": ["batch"], "resources": ["jobs"], "verbs":
+      ["create", "get", "list", "delete"]}, {"apiGroups": ["arcdata.microsoft.com"],
+      "resources": ["datacontrollers"], "verbs": ["create", "update", "patch", "delete"]}]}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/strategic-merge-patch+json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: PATCH
+    uri: https://mock-host/apis/rbac.authorization.k8s.io/v1/namespaces/test/roles/role-deployer
+  response:
+    body:
+      string: '{"kind":"Role","apiVersion":"rbac.authorization.k8s.io/v1","metadata":{"name":"role-deployer","namespace":"test","uid":"da7c4634-dedf-4c62-9b20-a9a43522ad37","resourceVersion":"1293264","creationTimestamp":"2022-09-23T18:49:54Z","managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-09-23T18:49:54Z","fieldsType":"FieldsV1","fieldsV1":{"f:rules":{}}}]},"rules":[{"verbs":["get"],"apiGroups":[""],"resources":["pods/log"]},{"verbs":["get","delete"],"apiGroups":[""],"resources":["secrets"]},{"verbs":["delete"],"apiGroups":[""],"resources":["serviceaccounts"],"resourceNames":["sa-arc-webhook-job","sa-arc-bootstrapper"]},{"verbs":["delete"],"apiGroups":["apps"],"resources":["deployments"]},{"verbs":["delete"],"apiGroups":["rbac.authorization.k8s.io"],"resources":["roles","rolebindings"]},{"verbs":["create","get","list","delete"],"apiGroups":["batch"],"resources":["jobs"]},{"verbs":["create","update","patch","delete"],"apiGroups":["arcdata.microsoft.com"],"resources":["datacontrollers"]}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '1068'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/rbac.authorization.k8s.io/v1/namespaces/test/rolebindings/rb-deployer
+  response:
+    body:
+      string: '{"kind":"RoleBinding","apiVersion":"rbac.authorization.k8s.io/v1","metadata":{"name":"rb-deployer","namespace":"test","uid":"292180cf-a43a-4f83-a839-e4ccf3c9deae","resourceVersion":"1293265","creationTimestamp":"2022-09-23T18:49:54Z","managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-09-23T18:49:54Z","fieldsType":"FieldsV1","fieldsV1":{"f:roleRef":{"f:apiGroup":{},"f:kind":{},"f:name":{}},"f:subjects":{}}}]},"subjects":[{"kind":"ServiceAccount","name":"sa-arc-deployer"}],"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"Role","name":"role-deployer"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '640'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"apiVersion": "rbac.authorization.k8s.io/v1", "kind": "Role", "metadata":
+      {"name": "role-bootstrapper", "namespace": "test"}, "rules": [{"apiGroups":
+      [""], "resources": ["pods"], "verbs": ["delete", "get", "list", "patch", "update",
+      "watch"]}, {"apiGroups": [""], "resources": ["configmaps", "persistentvolumeclaims",
+      "secrets"], "verbs": ["delete"]}, {"apiGroups": [""], "resources": ["configmaps",
+      "events", "persistentvolumeclaims", "secrets", "serviceaccounts", "services"],
+      "verbs": ["create", "get", "list", "patch", "update", "watch"]}, {"apiGroups":
+      ["apps"], "resources": ["daemonsets", "deployments", "replicasets", "statefulsets"],
+      "verbs": ["create", "get", "list", "patch", "update", "watch"]}, {"apiGroups":
+      ["rbac.authorization.k8s.io"], "resources": ["roles", "rolebindings"], "verbs":
+      ["create", "get", "list", "patch", "update"]}, {"apiGroups": ["arcdata.microsoft.com"],
+      "resources": ["activedirectoryconnectors", "monitors", "telemetrycollectors", "telemetryrouters",
+      "kafkas"], "verbs": ["create", "patch", "update"]}, {"apiGroups": ["sql.arcdata.microsoft.com",
+      "tasks.sql.arcdata.microsoft.com", "tasks.arcdata.microsoft.com", "arcdata.microsoft.com"],
+      "resources": ["activedirectoryconnectors", "datacontrollers", "exporttasks",
+      "kafkas", "monitors", "telemetrycollectors", "telemetryrouters", "postgresqls", "sqlmanagedinstances",
+      "sqlmanagedinstancerestoretasks", "sqlmanagedinstancereprovisionreplicatasks"],
+      "verbs": ["get", "list", "watch"]}, {"apiGroups": ["sql.arcdata.microsoft.com",
+      "tasks.sql.arcdata.microsoft.com", "tasks.arcdata.microsoft.com", "arcdata.microsoft.com"],
+      "resources": ["activedirectoryconnectors/status", "datacontrollers/status",
+      "exporttasks/status", "kafkas/status", "monitors/status", "telemetrycollectors/status",
+      "telemetryrouters/status", "postgresqls/status", "sqlmanagedinstances/status",
+      "sqlmanagedinstancerestoretasks/status", "sqlmanagedinstancereprovisionreplicatasks/status"],
+      "verbs": ["patch", "update"]}, {"apiGroups": ["sql.arcdata.microsoft.com"],
+      "resources": ["failovergroups"], "verbs": ["get", "list", "watch", "update"]},
+      {"apiGroups": ["sql.arcdata.microsoft.com"], "resources": ["failovergroups/status"],
+      "verbs": ["get", "patch", "update"]}, {"apiGroups": ["clusterconfig.azure.com"],
+      "resources": ["azureclusteridentityrequests"], "verbs": ["create", "delete",
+      "get"]}, {"apiGroups": ["clusterconfig.azure.com"], "resources": ["azureclusteridentityrequests/status"],
+      "verbs": ["patch", "update"]}]}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/strategic-merge-patch+json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: PATCH
+    uri: https://mock-host/apis/rbac.authorization.k8s.io/v1/namespaces/test/roles/role-bootstrapper
+  response:
+    body:
+      string: '{"kind":"Role","apiVersion":"rbac.authorization.k8s.io/v1","metadata":{"name":"role-bootstrapper","namespace":"test","uid":"ad80a93c-be24-495e-a6e8-43032466abec","resourceVersion":"1293355","creationTimestamp":"2022-09-23T18:49:54Z","labels":{"app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-09-23T18:49:54Z","fieldsType":"FieldsV1","fieldsV1":{"f:rules":{}}},{"manager":"Go-http-client","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}},{"manager":"bootstrapper","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{"f:helm.sh/chart":{}}}}}]},"rules":[{"verbs":["delete","get","list","patch","update","watch"],"apiGroups":[""],"resources":["pods"]},{"verbs":["delete"],"apiGroups":[""],"resources":["configmaps","persistentvolumeclaims","secrets"]},{"verbs":["create","get","list","patch","update","watch"],"apiGroups":[""],"resources":["configmaps","events","persistentvolumeclaims","secrets","serviceaccounts","services"]},{"verbs":["create","get","list","patch","update","watch"],"apiGroups":["apps"],"resources":["daemonsets","deployments","replicasets","statefulsets"]},{"verbs":["create","get","list","patch","update"],"apiGroups":["rbac.authorization.k8s.io"],"resources":["roles","rolebindings"]},{"verbs":["create","patch","update"],"apiGroups":["arcdata.microsoft.com"],"resources":["activedirectoryconnectors","monitors","telemetrycollectors","telemetryrouters","kafkas"]},{"verbs":["get","list","watch"],"apiGroups":["sql.arcdata.microsoft.com","tasks.sql.arcdata.microsoft.com","tasks.arcdata.microsoft.com","arcdata.microsoft.com"],"resources":["activedirectoryconnectors","datacontrollers","exporttasks","kafkas","monitors","telemetrycollectors","telemetryrouters","postgresqls","sqlmanagedinstances","sqlmanagedinstancerestoretasks","sqlmanagedinstancereprovisionreplicatasks"]},{"verbs":["patch","update"],"apiGroups":["sql.arcdata.microsoft.com","tasks.sql.arcdata.microsoft.com","tasks.arcdata.microsoft.com","arcdata.microsoft.com"],"resources":["activedirectoryconnectors/status","datacontrollers/status","exporttasks/status","kafkas/status","monitors/status","telemetrycollectors/status","telemetryrouters/status","postgresqls/status","sqlmanagedinstances/status","sqlmanagedinstancerestoretasks/status","sqlmanagedinstancereprovisionreplicatasks/status"]},{"verbs":["get","list","watch","update"],"apiGroups":["sql.arcdata.microsoft.com"],"resources":["failovergroups"]},{"verbs":["get","patch","update"],"apiGroups":["sql.arcdata.microsoft.com"],"resources":["failovergroups/status"]},{"verbs":["create","delete","get"],"apiGroups":["clusterconfig.azure.com"],"resources":["azureclusteridentityrequests"]},{"verbs":["patch","update"],"apiGroups":["clusterconfig.azure.com"],"resources":["azureclusteridentityrequests/status"]}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/rbac.authorization.k8s.io/v1/namespaces/test/rolebindings/rb-deployer-bootstrapper
+  response:
+    body:
+      string: '{"kind":"RoleBinding","apiVersion":"rbac.authorization.k8s.io/v1","metadata":{"name":"rb-deployer-bootstrapper","namespace":"test","uid":"12a3f880-df03-4d28-affa-33b10cef3982","resourceVersion":"1293267","creationTimestamp":"2022-09-23T18:49:54Z","managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"rbac.authorization.k8s.io/v1","time":"2022-09-23T18:49:54Z","fieldsType":"FieldsV1","fieldsV1":{"f:roleRef":{"f:apiGroup":{},"f:kind":{},"f:name":{}},"f:subjects":{}}}]},"subjects":[{"kind":"ServiceAccount","name":"sa-arc-deployer"}],"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"Role","name":"role-bootstrapper"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '657'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-09-23T18:50:04Z","generation":1,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-09-23T18:54:20Z"}],"name":"datacontroller-ravpate-4881c1a57","namespace":"test","resourceVersion":"1294332","uid":"edd415e9-6395-417c-b169-996b47e4de3d"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.12.0_ubuntu2004-ravpate","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-ravpate-4881c1a57","logs.rotation.days":"7","logs.rotation.size":"5000"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-09-23T18:54:20.659462Z","observedGeneration":1,"runningVersion":"v1.12.0_ubuntu2004-ravpate","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"1313876"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: DELETE
+    uri: https://mock-host/apis/batch/v1/namespaces/test/jobs/arc-bootstrapper-job
+  response:
+    body:
+      string: '{"kind":"Job","apiVersion":"batch/v1","metadata":{"name":"arc-bootstrapper-job","namespace":"test","uid":"75add27d-dd37-4204-a524-b302eacc9e86","resourceVersion":"1313877","creationTimestamp":"2022-09-23T21:18:36Z","deletionTimestamp":"2022-09-23T21:21:39Z","deletionGracePeriodSeconds":0,"labels":{"controller-uid":"75add27d-dd37-4204-a524-b302eacc9e86","job-name":"arc-bootstrapper-job"},"finalizers":["orphan"],"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"batch/v1","time":"2022-09-23T21:18:36Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:backoffLimit":{},"f:completions":{},"f:parallelism":{},"f:template":{"f:spec":{"f:containers":{"k:{\"name\":\"bootstrapper\"}":{".":{},"f:args":{},"f:command":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:imagePullSecrets":{".":{},"k:{\"name\":\"arc-private-registry\"}":{".":{},"f:name":{}}},"f:nodeSelector":{".":{},"f:kubernetes.io/os":{}},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:serviceAccount":{},"f:serviceAccountName":{},"f:terminationGracePeriodSeconds":{}}},"f:ttlSecondsAfterFinished":{}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"batch/v1","time":"2022-09-23T21:18:36Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:active":{},"f:startTime":{}}}}]},"spec":{"parallelism":1,"completions":1,"backoffLimit":0,"selector":{"matchLabels":{"controller-uid":"75add27d-dd37-4204-a524-b302eacc9e86"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"controller-uid":"75add27d-dd37-4204-a524-b302eacc9e86","job-name":"arc-bootstrapper-job"}},"spec":{"containers":[{"name":"bootstrapper","image":"arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","command":["/opt/bootstrapper/bin/bootstrapper"],"args":["-image","arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","-policy","IfNotPresent","-chart","/opt/helm/arcdataservices","-bootstrap"],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Never","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"sa-arc-deployer","serviceAccount":"sa-arc-deployer","securityContext":{},"imagePullSecrets":[{"name":"arc-private-registry"}],"schedulerName":"default-scheduler"}},"ttlSecondsAfterFinished":86400},"status":{"startTime":"2022-09-23T21:18:36Z","active":1}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/batch/v1/namespaces/test/jobs
+  response:
+    body:
+      string: '{"kind":"JobList","apiVersion":"batch/v1","metadata":{"resourceVersion":"1313877"},"items":[{"metadata":{"name":"arc-bootstrapper-job","namespace":"test","uid":"75add27d-dd37-4204-a524-b302eacc9e86","resourceVersion":"1313877","creationTimestamp":"2022-09-23T21:18:36Z","deletionTimestamp":"2022-09-23T21:21:39Z","deletionGracePeriodSeconds":0,"labels":{"controller-uid":"75add27d-dd37-4204-a524-b302eacc9e86","job-name":"arc-bootstrapper-job"},"finalizers":["orphan"],"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"batch/v1","time":"2022-09-23T21:18:36Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:backoffLimit":{},"f:completions":{},"f:parallelism":{},"f:template":{"f:spec":{"f:containers":{"k:{\"name\":\"bootstrapper\"}":{".":{},"f:args":{},"f:command":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:imagePullSecrets":{".":{},"k:{\"name\":\"arc-private-registry\"}":{".":{},"f:name":{}}},"f:nodeSelector":{".":{},"f:kubernetes.io/os":{}},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:serviceAccount":{},"f:serviceAccountName":{},"f:terminationGracePeriodSeconds":{}}},"f:ttlSecondsAfterFinished":{}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"batch/v1","time":"2022-09-23T21:18:36Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:active":{},"f:startTime":{}}}}]},"spec":{"parallelism":1,"completions":1,"backoffLimit":0,"selector":{"matchLabels":{"controller-uid":"75add27d-dd37-4204-a524-b302eacc9e86"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"controller-uid":"75add27d-dd37-4204-a524-b302eacc9e86","job-name":"arc-bootstrapper-job"}},"spec":{"containers":[{"name":"bootstrapper","image":"arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","command":["/opt/bootstrapper/bin/bootstrapper"],"args":["-image","arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.10.0_ubuntu2004-sachaga","-policy","IfNotPresent","-chart","/opt/helm/arcdataservices","-bootstrap"],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Never","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"sa-arc-deployer","serviceAccount":"sa-arc-deployer","securityContext":{},"imagePullSecrets":[{"name":"arc-private-registry"}],"schedulerName":"default-scheduler"}},"ttlSecondsAfterFinished":86400},"status":{"startTime":"2022-09-23T21:18:36Z","active":1}}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:39 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/batch/v1/namespaces/test/jobs
+  response:
+    body:
+      string: '{"kind":"JobList","apiVersion":"batch/v1","metadata":{"resourceVersion":"1313904"},"items":[]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '95'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:49 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"apiVersion": "batch/v1", "kind": "Job", "metadata": {"name": "arc-bootstrapper-job"},
+      "spec": {"template": {"spec": {"nodeSelector": {"kubernetes.io/os": "linux"},
+      "imagePullSecrets": [{"name": "arc-private-registry"}], "containers": [{"name":
+      "bootstrapper", "image": "arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.12.0_ubuntu2004-ravpate",
+      "imagePullPolicy": "IfNotPresent", "command": ["/opt/bootstrapper/bin/bootstrapper"],
+      "args": ["-image", "arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.12.0_ubuntu2004-ravpate",
+      "-policy", "IfNotPresent", "-chart", "/opt/helm/arcdataservices", "-bootstrap"]}],
+      "restartPolicy": "Never", "serviceAccountName": "sa-arc-deployer"}}, "ttlSecondsAfterFinished":
+      86400, "backoffLimit": 0}}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: POST
+    uri: https://mock-host/apis/batch/v1/namespaces/test/jobs
+  response:
+    body:
+      string: '{"kind":"Job","apiVersion":"batch/v1","metadata":{"name":"arc-bootstrapper-job","namespace":"test","uid":"b03d8684-924f-4f13-87a1-2316f4f871d3","resourceVersion":"1313905","creationTimestamp":"2022-09-23T21:21:49Z","labels":{"controller-uid":"b03d8684-924f-4f13-87a1-2316f4f871d3","job-name":"arc-bootstrapper-job"},"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"batch/v1","time":"2022-09-23T21:21:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:backoffLimit":{},"f:completions":{},"f:parallelism":{},"f:template":{"f:spec":{"f:containers":{"k:{\"name\":\"bootstrapper\"}":{".":{},"f:args":{},"f:command":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:imagePullSecrets":{".":{},"k:{\"name\":\"arc-private-registry\"}":{".":{},"f:name":{}}},"f:nodeSelector":{".":{},"f:kubernetes.io/os":{}},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:serviceAccount":{},"f:serviceAccountName":{},"f:terminationGracePeriodSeconds":{}}},"f:ttlSecondsAfterFinished":{}}}}]},"spec":{"parallelism":1,"completions":1,"backoffLimit":0,"selector":{"matchLabels":{"controller-uid":"b03d8684-924f-4f13-87a1-2316f4f871d3"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"controller-uid":"b03d8684-924f-4f13-87a1-2316f4f871d3","job-name":"arc-bootstrapper-job"}},"spec":{"containers":[{"name":"bootstrapper","image":"arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.12.0_ubuntu2004-ravpate","command":["/opt/bootstrapper/bin/bootstrapper"],"args":["-image","arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.12.0_ubuntu2004-ravpate","-policy","IfNotPresent","-chart","/opt/helm/arcdataservices","-bootstrap"],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Never","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"sa-arc-deployer","serviceAccount":"sa-arc-deployer","securityContext":{},"imagePullSecrets":[{"name":"arc-private-registry"}],"schedulerName":"default-scheduler"}},"ttlSecondsAfterFinished":86400},"status":{}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:49 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/batch/v1/namespaces/test/jobs
+  response:
+    body:
+      string: '{"kind":"JobList","apiVersion":"batch/v1","metadata":{"resourceVersion":"1313905"},"items":[{"metadata":{"name":"arc-bootstrapper-job","namespace":"test","uid":"b03d8684-924f-4f13-87a1-2316f4f871d3","resourceVersion":"1313905","creationTimestamp":"2022-09-23T21:21:49Z","labels":{"controller-uid":"b03d8684-924f-4f13-87a1-2316f4f871d3","job-name":"arc-bootstrapper-job"},"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"batch/v1","time":"2022-09-23T21:21:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:backoffLimit":{},"f:completions":{},"f:parallelism":{},"f:template":{"f:spec":{"f:containers":{"k:{\"name\":\"bootstrapper\"}":{".":{},"f:args":{},"f:command":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:imagePullSecrets":{".":{},"k:{\"name\":\"arc-private-registry\"}":{".":{},"f:name":{}}},"f:nodeSelector":{".":{},"f:kubernetes.io/os":{}},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:serviceAccount":{},"f:serviceAccountName":{},"f:terminationGracePeriodSeconds":{}}},"f:ttlSecondsAfterFinished":{}}}}]},"spec":{"parallelism":1,"completions":1,"backoffLimit":0,"selector":{"matchLabels":{"controller-uid":"b03d8684-924f-4f13-87a1-2316f4f871d3"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"controller-uid":"b03d8684-924f-4f13-87a1-2316f4f871d3","job-name":"arc-bootstrapper-job"}},"spec":{"containers":[{"name":"bootstrapper","image":"arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.12.0_ubuntu2004-ravpate","command":["/opt/bootstrapper/bin/bootstrapper"],"args":["-image","arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.12.0_ubuntu2004-ravpate","-policy","IfNotPresent","-chart","/opt/helm/arcdataservices","-bootstrap"],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Never","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"sa-arc-deployer","serviceAccount":"sa-arc-deployer","securityContext":{},"imagePullSecrets":[{"name":"arc-private-registry"}],"schedulerName":"default-scheduler"}},"ttlSecondsAfterFinished":86400},"status":{}}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:49 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/batch/v1/namespaces/test/jobs
+  response:
+    body:
+      string: '{"kind":"JobList","apiVersion":"batch/v1","metadata":{"resourceVersion":"1313987"},"items":[{"metadata":{"name":"arc-bootstrapper-job","namespace":"test","uid":"b03d8684-924f-4f13-87a1-2316f4f871d3","resourceVersion":"1313909","creationTimestamp":"2022-09-23T21:21:49Z","labels":{"controller-uid":"b03d8684-924f-4f13-87a1-2316f4f871d3","job-name":"arc-bootstrapper-job"},"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"batch/v1","time":"2022-09-23T21:21:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:backoffLimit":{},"f:completions":{},"f:parallelism":{},"f:template":{"f:spec":{"f:containers":{"k:{\"name\":\"bootstrapper\"}":{".":{},"f:args":{},"f:command":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:imagePullSecrets":{".":{},"k:{\"name\":\"arc-private-registry\"}":{".":{},"f:name":{}}},"f:nodeSelector":{".":{},"f:kubernetes.io/os":{}},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:serviceAccount":{},"f:serviceAccountName":{},"f:terminationGracePeriodSeconds":{}}},"f:ttlSecondsAfterFinished":{}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"batch/v1","time":"2022-09-23T21:21:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:active":{},"f:startTime":{}}}}]},"spec":{"parallelism":1,"completions":1,"backoffLimit":0,"selector":{"matchLabels":{"controller-uid":"b03d8684-924f-4f13-87a1-2316f4f871d3"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"controller-uid":"b03d8684-924f-4f13-87a1-2316f4f871d3","job-name":"arc-bootstrapper-job"}},"spec":{"containers":[{"name":"bootstrapper","image":"arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.12.0_ubuntu2004-ravpate","command":["/opt/bootstrapper/bin/bootstrapper"],"args":["-image","arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.12.0_ubuntu2004-ravpate","-policy","IfNotPresent","-chart","/opt/helm/arcdataservices","-bootstrap"],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Never","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"sa-arc-deployer","serviceAccount":"sa-arc-deployer","securityContext":{},"imagePullSecrets":[{"name":"arc-private-registry"}],"schedulerName":"default-scheduler"}},"ttlSecondsAfterFinished":86400},"status":{"startTime":"2022-09-23T21:21:49Z","active":1}}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:21:59 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/batch/v1/namespaces/test/jobs
+  response:
+    body:
+      string: '{"kind":"JobList","apiVersion":"batch/v1","metadata":{"resourceVersion":"1314014"},"items":[{"metadata":{"name":"arc-bootstrapper-job","namespace":"test","uid":"b03d8684-924f-4f13-87a1-2316f4f871d3","resourceVersion":"1314006","creationTimestamp":"2022-09-23T21:21:49Z","labels":{"controller-uid":"b03d8684-924f-4f13-87a1-2316f4f871d3","job-name":"arc-bootstrapper-job"},"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"batch/v1","time":"2022-09-23T21:21:49Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:backoffLimit":{},"f:completions":{},"f:parallelism":{},"f:template":{"f:spec":{"f:containers":{"k:{\"name\":\"bootstrapper\"}":{".":{},"f:args":{},"f:command":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:imagePullSecrets":{".":{},"k:{\"name\":\"arc-private-registry\"}":{".":{},"f:name":{}}},"f:nodeSelector":{".":{},"f:kubernetes.io/os":{}},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:serviceAccount":{},"f:serviceAccountName":{},"f:terminationGracePeriodSeconds":{}}},"f:ttlSecondsAfterFinished":{}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"batch/v1","time":"2022-09-23T21:22:05Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:completionTime":{},"f:conditions":{},"f:startTime":{},"f:succeeded":{}}}}]},"spec":{"parallelism":1,"completions":1,"backoffLimit":0,"selector":{"matchLabels":{"controller-uid":"b03d8684-924f-4f13-87a1-2316f4f871d3"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"controller-uid":"b03d8684-924f-4f13-87a1-2316f4f871d3","job-name":"arc-bootstrapper-job"}},"spec":{"containers":[{"name":"bootstrapper","image":"arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.12.0_ubuntu2004-ravpate","command":["/opt/bootstrapper/bin/bootstrapper"],"args":["-image","arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.12.0_ubuntu2004-ravpate","-policy","IfNotPresent","-chart","/opt/helm/arcdataservices","-bootstrap"],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Never","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"sa-arc-deployer","serviceAccount":"sa-arc-deployer","securityContext":{},"imagePullSecrets":[{"name":"arc-private-registry"}],"schedulerName":"default-scheduler"}},"ttlSecondsAfterFinished":86400},"status":{"conditions":[{"type":"Complete","status":"True","lastProbeTime":"2022-09-23T21:22:05Z","lastTransitionTime":"2022-09-23T21:22:05Z"}],"startTime":"2022-09-23T21:21:49Z","completionTime":"2022-09-23T21:22:05Z","succeeded":1}}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:22:09 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-09-23T18:50:04Z","generation":1,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-09-23T18:54:20Z"}],"name":"datacontroller-ravpate-4881c1a57","namespace":"test","resourceVersion":"1294332","uid":"edd415e9-6395-417c-b169-996b47e4de3d"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.12.0_ubuntu2004-ravpate","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-ravpate-4881c1a57","logs.rotation.days":"7","logs.rotation.size":"5000"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-09-23T18:54:20.659462Z","observedGeneration":1,"runningVersion":"v1.12.0_ubuntu2004-ravpate","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"1314014"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:22:09 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"spec": {"docker": {"imageTag": "v1.12.0_ubuntu2004-ravpate"}}}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: PATCH
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers/datacontroller-ravpate-4881c1a57
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-09-23T18:50:04Z","generation":1,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-09-23T18:54:20Z"}],"name":"datacontroller-ravpate-4881c1a57","namespace":"test","resourceVersion":"1294332","uid":"edd415e9-6395-417c-b169-996b47e4de3d"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.12.0_ubuntu2004-ravpate","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-ravpate-4881c1a57","logs.rotation.days":"7","logs.rotation.size":"5000"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-09-23T18:54:20.659462Z","observedGeneration":1,"runningVersion":"v1.12.0_ubuntu2004-ravpate","state":"Ready"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:22:09 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-09-23T18:50:04Z","generation":1,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-09-23T18:54:20Z"}],"name":"datacontroller-ravpate-4881c1a57","namespace":"test","resourceVersion":"1294332","uid":"edd415e9-6395-417c-b169-996b47e4de3d"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.12.0_ubuntu2004-ravpate","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-ravpate-4881c1a57","logs.rotation.days":"7","logs.rotation.size":"5000"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-09-23T18:54:20.659462Z","observedGeneration":1,"runningVersion":"v1.12.0_ubuntu2004-ravpate","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"1314014"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:22:09 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v5/namespaces/test/datacontrollers
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v5","items":[{"apiVersion":"arcdata.microsoft.com/v5","kind":"DataController","metadata":{"creationTimestamp":"2022-09-23T18:50:04Z","generation":1,"managedFields":[{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:observedGeneration":{}}},"manager":"Go-http-client","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:credentials":{".":{},"f:dockerRegistry":{},"f:domainServiceAccount":{},"f:serviceAccount":{}},"f:docker":{".":{},"f:imagePullPolicy":{},"f:imageTag":{},"f:registry":{},"f:repository":{}},"f:infrastructure":{},"f:security":{".":{},"f:allowDumps":{},"f:allowNodeMetricsCollection":{},"f:allowPodMetricsCollection":{}},"f:services":{},"f:settings":{".":{},"f:ElasticSearch":{".":{},"f:vm.max_map_count":{}},"f:azure":{".":{},"f:connectionMode":{},"f:location":{},"f:resourceGroup":{},"f:subscription":{}},"f:controller":{".":{},"f:displayName":{},"f:logs.rotation.days":{},"f:logs.rotation.size":{}}},"f:storage":{".":{},"f:data":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}},"f:logs":{".":{},"f:accessMode":{},"f:className":{},"f:size":{}}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2022-09-23T18:50:04Z"},{"apiVersion":"arcdata.microsoft.com/v5","fieldsType":"FieldsV1","fieldsV1":{"f:IsValid":{},"f:status":{"f:lastUpdateTime":{},"f:runningVersion":{},"f:state":{}}},"manager":"unknown","operation":"Update","time":"2022-09-23T18:54:20Z"}],"name":"datacontroller-ravpate-4881c1a57","namespace":"test","resourceVersion":"1294332","uid":"edd415e9-6395-417c-b169-996b47e4de3d"},"spec":{"credentials":{"dockerRegistry":"arc-private-registry","domainServiceAccount":"domain-service-account-secret","serviceAccount":"sa-arc-controller"},"docker":{"imagePullPolicy":"IfNotPresent","imageTag":"v1.12.0_ubuntu2004-ravpate","registry":"arcdatadev.azurecr.io","repository":"arcdata-dev"},"infrastructure":"onpremises","security":{"allowDumps":true,"allowNodeMetricsCollection":true,"allowPodMetricsCollection":true},"services":[{"name":"controller","port":30080,"serviceType":"NodePort"}],"settings":{"ElasticSearch":{"vm.max_map_count":"-1"},"azure":{"connectionMode":"indirect","location":"eastasia","resourceGroup":"GCI","subscription":"a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39"},"controller":{"displayName":"datacontroller-ravpate-4881c1a57","logs.rotation.days":"7","logs.rotation.size":"5000"}},"storage":{"data":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"15Gi"},"logs":{"accessMode":"ReadWriteOnce","className":"local-storage","size":"10Gi"}}},"status":{"lastUpdateTime":"2022-09-23T18:54:20.659462Z","observedGeneration":1,"runningVersion":"v1.12.0_ubuntu2004-ravpate","state":"Ready"}}],"kind":"DataControllerList","metadata":{"continue":"","resourceVersion":"1314014"}}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:22:09 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/apps/v1/namespaces/test/deployments
+  response:
+    body:
+      string: '{"kind":"DeploymentList","apiVersion":"apps/v1","metadata":{"resourceVersion":"1314014"},"items":[{"metadata":{"name":"bootstrapper","namespace":"test","uid":"b215f983-de3b-4051-9463-57a57890052c","resourceVersion":"1313976","generation":2,"creationTimestamp":"2022-09-23T18:49:55Z","labels":{"app":"bootstrapper","app.kubernetes.io/managed-by":"Helm","helm.sh/chart":"arcdataservices-1.0.0"},"annotations":{"deployment.kubernetes.io/revision":"2","meta.helm.sh/release-name":"bootstrap","meta.helm.sh/release-namespace":"test"},"managedFields":[{"manager":"bootstrapper","operation":"Update","apiVersion":"apps/v1","time":"2022-09-23T18:49:55Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app":{},"f:app.kubernetes.io/managed-by":{},"f:helm.sh/chart":{}}},"f:spec":{"f:progressDeadlineSeconds":{},"f:replicas":{},"f:revisionHistoryLimit":{},"f:selector":{},"f:strategy":{"f:rollingUpdate":{".":{},"f:maxSurge":{},"f:maxUnavailable":{}},"f:type":{}},"f:template":{"f:metadata":{"f:annotations":{".":{},"f:releaseRevision":{}},"f:labels":{".":{},"f:app":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"bootstrapper\"}":{".":{},"f:env":{".":{},"k:{\"name\":\"ACCEPT_EULA\"}":{".":{},"f:name":{},"f:value":{}}},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:securityContext":{".":{},"f:runAsGroup":{},"f:runAsUser":{}},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:imagePullSecrets":{".":{},"k:{\"name\":\"arc-private-registry\"}":{".":{},"f:name":{}}},"f:nodeSelector":{".":{},"f:kubernetes.io/os":{}},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{".":{},"f:fsGroup":{}},"f:serviceAccount":{},"f:serviceAccountName":{},"f:terminationGracePeriodSeconds":{}}}}}},{"manager":"kube-controller-manager","operation":"Update","apiVersion":"apps/v1","time":"2022-09-23T21:21:56Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{"f:deployment.kubernetes.io/revision":{}}},"f:status":{"f:availableReplicas":{},"f:conditions":{".":{},"k:{\"type\":\"Available\"}":{".":{},"f:lastTransitionTime":{},"f:lastUpdateTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}},"k:{\"type\":\"Progressing\"}":{".":{},"f:lastTransitionTime":{},"f:lastUpdateTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}},"f:observedGeneration":{},"f:readyReplicas":{},"f:replicas":{},"f:updatedReplicas":{}}}}]},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"bootstrapper"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"bootstrapper"},"annotations":{"releaseRevision":"2"}},"spec":{"containers":[{"name":"bootstrapper","image":"arcdatadev.azurecr.io/arcdata-dev/arc-bootstrapper:v1.12.0_ubuntu2004-ravpate","env":[{"name":"ACCEPT_EULA","value":"Y"}],"resources":{"limits":{"cpu":"200m","memory":"200Mi"},"requests":{"cpu":"100m","memory":"100Mi"}},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent","securityContext":{"runAsUser":1000700001,"runAsGroup":1000700001}}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","nodeSelector":{"kubernetes.io/os":"linux"},"serviceAccountName":"sa-arc-bootstrapper","serviceAccount":"sa-arc-bootstrapper","securityContext":{"fsGroup":1000700001},"imagePullSecrets":[{"name":"arc-private-registry"}],"schedulerName":"default-scheduler"}},"strategy":{"type":"RollingUpdate","rollingUpdate":{"maxUnavailable":"25%","maxSurge":"25%"}},"revisionHistoryLimit":0,"progressDeadlineSeconds":600},"status":{"observedGeneration":2,"replicas":1,"updatedReplicas":1,"readyReplicas":1,"availableReplicas":1,"conditions":[{"type":"Available","status":"True","lastUpdateTime":"2022-09-23T18:49:57Z","lastTransitionTime":"2022-09-23T18:49:57Z","reason":"MinimumReplicasAvailable","message":"Deployment
+        has minimum availability."},{"type":"Progressing","status":"True","lastUpdateTime":"2022-09-23T21:21:56Z","lastTransitionTime":"2022-09-23T18:49:55Z","reason":"NewReplicaSetAvailable","message":"ReplicaSet
+        \"bootstrapper-787849756c\" has successfully progressed."}]}}]}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 23 Sep 2022 21:22:10 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - d2ce2ccf-a063-4314-a793-9e6bebd3ca8a
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - a7a39781-e536-4096-aa9a-cb4808f7d50f
+    status:
+      code: 200
+      message: OK
+version: 1

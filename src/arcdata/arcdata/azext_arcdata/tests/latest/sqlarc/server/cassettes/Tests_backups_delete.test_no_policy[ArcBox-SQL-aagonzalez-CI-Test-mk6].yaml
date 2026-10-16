@@ -1,0 +1,123 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.11.8 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - 1579d7e8-caad-11ee-bcfd-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/aagonzalez-CI-Test-mk6/providers/Microsoft.AzureArcData/sqlServerInstances/ArcBox-SQL?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/aagonzalez-CI-Test-mk6/providers/Microsoft.AzureArcData/sqlServerInstances/ArcBox-SQL","name":"ArcBox-SQL","type":"microsoft.azurearcdata/sqlserverinstances","location":"eastus","systemData":{"createdBy":"a12e8ccb-0fcd-46f8-b6a1-b9df7a9d7231","createdByType":"Application","createdAt":"2024-02-08T16:58:34.0669699Z","lastModifiedBy":"aagonzalez@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-02-13T20:10:49.3673559Z"},"properties":{"version":"SQL
+        Server 2019","edition":"Developer","containerResourceId":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourcegroups/aagonzalez-CI-Test-mk6/providers/Microsoft.HybridCompute/machines/ArcBox-SQL","createTime":null,"vCore":"1","cores":null,"status":"Connected","patchLevel":"15.0.2104.1","collation":"SQL_Latin1_General_CP1_CI_AS","currentVersion":"15.0.2000.5","instanceName":"MSSQLSERVER","tcpDynamicPorts":"","tcpStaticPorts":"1433","productId":"Unknown","licenseType":"Free","azureDefenderStatusLastUpdated":null,"azureDefenderStatus":"Unknown","provisioningState":"Succeeded","lastInventoryUploadTime":"2024-02-13T20:07:38.2473705Z","lastUsageUploadTime":"2024-02-13T19:18:54.5933551Z","hostType":null,"alwaysOnRole":"None","failoverCluster":null,"backupPolicy":null,"upgradeLockedUntil":null,"monitoring":{"enabled":true},"migration":{"assessment":{"enabled":true}}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '1419'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 13 Feb 2024 20:18:43 GMT
+      ETag:
+      - '"de03fe35-0000-0100-0000-65cbccd10000"'
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 43FF31931B6F4332B98C96C1CC567DBC Ref B: BN1AA2051015009 Ref C: 2024-02-13T20:18:44Z'
+      x-ms-correlation-request-id:
+      - 7e3d4183-4033-4871-9836-0fb67f517c6b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99999'
+      x-ms-request-id:
+      - 2995fb61-fd0d-4306-9e3c-af9e7ef921ef
+      x-ms-routing-request-id:
+      - EASTUS:20240213T201844Z:7e3d4183-4033-4871-9836-0fb67f517c6b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourcegroups/aagonzalez-CI-Test-mk6/providers/Microsoft.HybridCompute/machines/ArcBox-SQL/extensions/WindowsAgent.SqlServer?api-version=2023-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/aagonzalez-CI-Test-mk6/providers/Microsoft.HybridCompute/machines/ArcBox-SQL/extensions/WindowsAgent.SqlServer","name":"WindowsAgent.SqlServer","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.AzureData","type":"WindowsAgent.SqlServer","typeHandlerVersion":"1.1.2566.109","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"SqlManagement":{"IsEnabled":true},"ExcludedSqlInstances":[""],"LicenseType":"Paid","cloudprovider":"N/A"},"provisioningState":"Succeeded","instanceView":{"name":"WindowsAgent.SqlServer","type":"WindowsAgent.SqlServer","typeHandlerVersion":"1.1.2566.109","status":{"code":"0","level":"Information","message":"Extension
+        Message: SQL Server Extension Agent: Healthy; timestampUTC : 2024/02/13, 20:10:03.511;
+        uploadStatus : OK;AutomaticBackups: Running;PurviewPlugin: {};AzureActiveDirectoryPlugin:
+        {\r\n  \"MSSQLSERVER\": \"\",\r\n  \"MSSQLSERVER01\": \"\"\r\n};: Listening
+        on port 0;DatabaseMonitorArcPlugin: {\"State\":\"Running\",\"MetricsUploadStatus\":\"OK\"},
+        SqlAgentPlugin: {\"$type\":\"Microsoft.Azure.Hybrid.Sql.Models.AutomaticSqlBackupConfiguration,
+        SqlAgent\",\"retentionPeriodInDays\":7,\"profiles\":{\"$type\":\"System.Collections.Generic.List`1[[Microsoft.Azure.Hybrid.Sql.Models.ShortTermRetentionAutomaticSqlBackupProfile,
+        SqlAgent]], System.Private.CoreLib\",\"$values\":[{\"$type\":\"Microsoft.Azure.Hybrid.Sql.Models.ShortTermRetentionAutomaticSqlBackupProfile,
+        SqlAgent\",\"instanceName\":\"MSSQLSERVER\",\"differentialBackupHours\":12,\"fullBackupDays\":7,\"tLogBackupMinutes\":5,\"retentionPeriodInDays\":7,\"enabled\":true},{\"$type\":\"Microsoft.Azure.Hybrid.Sql.Models.ShortTermRetentionAutomaticSqlBackupProfile,
+        SqlAgent\",\"instanceName\":\"MSSQLSERVER01\",\"differentialBackupHours\":12,\"fullBackupDays\":7,\"tLogBackupMinutes\":5,\"retentionPeriodInDays\":10,\"enabled\":true}]}},
+        Purview plugin: [], Azure active directory configuration plugin: [], Assessment
+        Status: {\"AssessmentHistory\":[],\"Enabled\":false,\"ErrorMessage\":\"\",\"NextScheduledTime\":null,\"RunStatus\":\"NotRunning\",\"StartTime\":null},
+        ODataServiceHostPlugin: {\"$type\":\"ArcSqlOData.ServiceHost.Models.ArcSqlODataConfiguration,
+        ArcSqlOData.ServiceHost\"}, DatabaseMonitorArcPlugin: {\"$type\":\"Microsoft.SqlServer.Management.SqlServerHandlerData.DatabaseMonitorConfiguration,
+        Microsoft.SqlServer.Management.SqlServerHandlerData\",\"endpointUrl\":\"https://telemetry.{0}.arcdataservices.com/\",\"endpointAppId\":\"524058e3-2702-4b98-932b-b2d1de613fd2\"}"}}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '2648'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 13 Feb 2024 20:18:43 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 0D42D6B8414341E2B5F95535919663E7 Ref B: BN1AA2051014027 Ref C: 2024-02-13T20:18:44Z'
+      x-ms-correlation-request-id:
+      - c59dc784-2b33-46b7-9321-d15824355e5e
+      x-ms-ratelimit-remaining-subscription-reads:
+      - '11999'
+      x-ms-request-id:
+      - 31f7e31c-9b2b-4f80-9ec4-84c9d5057c7c
+      x-ms-routing-request-id:
+      - EASTUS:20240213T201844Z:c59dc784-2b33-46b7-9321-d15824355e5e
+    status:
+      code: 200
+      message: OK
+version: 1

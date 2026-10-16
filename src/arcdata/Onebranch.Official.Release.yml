@@ -1,0 +1,19 @@
+trigger: none
+variables:
+- group: arcdataservices-extension-release_candidate - all (base)
+resources:
+  repositories:
+  - repository: onebranchTemplates
+    type: git
+    name: OneBranch.Pipelines/GovernedTemplates
+    ref: refs/heads/main
+  pipelines:
+  - pipeline: release-artifacts
+    trigger: none
+    source: 'Arcdata.CLIBuild.Production.Official.Release'
+    project: Tina
+extends:
+  template: v2/OneBranch.Official.CrossPlat.yml@onebranchTemplates
+  parameters:
+    stages:
+    - template: /projects/azure-cli-extension/scripts/ci/pipeline-templates/push-to-production-blob.yaml@self

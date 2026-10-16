@@ -1,0 +1,144 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/apis/arcdata.microsoft.com/v1/namespaces/test/activedirectoryconnectors/arcadcauto
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v1","kind":"ActiveDirectoryConnector","metadata":{"creationTimestamp":"2023-01-09T20:06:47Z","generation":1,"labels":{"management.azure.com/resourceProvider":"Microsoft.AzureArcData"},"managedFields":[{"apiVersion":"arcdata.microsoft.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:activeDirectory":{".":{},"f:domainControllers":{".":{},"f:primaryDomainController":{".":{},"f:hostname":{}},"f:secondaryDomainControllers":{}},"f:domainServiceAccountSecret":{},"f:netbiosDomainName":{},"f:ouDistinguishedName":{},"f:realm":{},"f:serviceAccountProvisioning":{}},"f:dns":{".":{},"f:domainName":{},"f:nameserverIPAddresses":{},"f:preferK8sDnsForPtrLookups":{},"f:replicas":{}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2023-01-09T20:06:47Z"},{"apiVersion":"arcdata.microsoft.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:lastUpdateTime":{},"f:observedGeneration":{},"f:state":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2023-01-09T20:06:47Z"}],"name":"arcadcauto","namespace":"test","ownerReferences":[{"apiVersion":"arcdata.microsoft.com/v5","controller":true,"kind":"DataController","name":"datacontroller-sachaga-e80fdd9cd","uid":"325e913f-85cf-4fac-af21-37e209179a53"}],"resourceVersion":"365998","uid":"905a2939-43bb-4461-b990-6638e31ab45a"},"spec":{"activeDirectory":{"domainControllers":{"primaryDomainController":{"hostname":"aris-win2016-dc.bdc.aris.local"},"secondaryDomainControllers":[{"hostname":"bdcarislocal2.bdc.aris.local"},{"hostname":"bdcarislocal2.bdc.aris.local"}]},"domainServiceAccountSecret":"arcadc-domain-service-account-secret","netbiosDomainName":"BDC","ouDistinguishedName":"OU=arcou,DC=bdc,DC=aris,DC=local","realm":"BDC.ARIS.LOCAL","serviceAccountProvisioning":"automatic"},"dns":{"domainName":"bdc.aris.local","nameserverIPAddresses":["10.91.136.121","10.91.136.203"],"preferK8sDnsForPtrLookups":false,"replicas":2}},"status":{"lastUpdateTime":"2023-01-09T20:06:47.975226Z","observedGeneration":1,"state":"Creating"}}
+
+        '
+    headers:
+      Audit-Id:
+      - 6f025dbb-dc86-4bc2-b6c7-4d86e8ccc1f0
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 09 Jan 2023 20:06:48 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - e6e09f29-5051-48c5-86d9-98ef1d4e9e24
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 968de22f-58d3-4cf5-9a45-91df5471c595
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/api/v1/namespaces/test/secrets/arcadc-domain-service-account-secret
+  response:
+    body:
+      string: '{"kind":"Secret","apiVersion":"v1","metadata":{"name":"arcadc-domain-service-account-secret","namespace":"test","uid":"93f9f3da-a126-4ad5-85e6-1b0eb7abe921","resourceVersion":"365999","creationTimestamp":"2023-01-09T20:06:47Z","ownerReferences":[{"apiVersion":"arcdata.microsoft.com/v1","kind":"ActiveDirectoryConnector","name":"arcadcauto","uid":"905a2939-43bb-4461-b990-6638e31ab45a","controller":true}],"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"v1","time":"2023-01-09T20:06:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:password":{},"f:username":{}},"f:type":{}}},{"manager":"unknown","operation":"Update","apiVersion":"v1","time":"2023-01-09T20:06:48Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:ownerReferences":{".":{},"k:{\"uid\":\"905a2939-43bb-4461-b990-6638e31ab45a\"}":{}}}}}]},"data":{"password":"Placeholder001","username":"dXNlcm5hbWU="},"type":"Opaque"}
+
+        '
+    headers:
+      Audit-Id:
+      - d8cbcc7c-24d1-489e-95ba-f626ae75a405
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '941'
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 09 Jan 2023 20:06:48 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - e6e09f29-5051-48c5-86d9-98ef1d4e9e24
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 968de22f-58d3-4cf5-9a45-91df5471c595
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: GET
+    uri: https://mock-host/api/v1/namespaces/test/secrets/arcadc-domain-service-account-secret
+  response:
+    body:
+      string: '{"kind":"Secret","apiVersion":"v1","metadata":{"name":"arcadc-domain-service-account-secret","namespace":"test","uid":"93f9f3da-a126-4ad5-85e6-1b0eb7abe921","resourceVersion":"365999","creationTimestamp":"2023-01-09T20:06:47Z","ownerReferences":[{"apiVersion":"arcdata.microsoft.com/v1","kind":"ActiveDirectoryConnector","name":"arcadcauto","uid":"905a2939-43bb-4461-b990-6638e31ab45a","controller":true}],"managedFields":[{"manager":"OpenAPI-Generator","operation":"Update","apiVersion":"v1","time":"2023-01-09T20:06:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:password":{},"f:username":{}},"f:type":{}}},{"manager":"unknown","operation":"Update","apiVersion":"v1","time":"2023-01-09T20:06:48Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:ownerReferences":{".":{},"k:{\"uid\":\"905a2939-43bb-4461-b990-6638e31ab45a\"}":{}}}}}]},"data":{"password":"Placeholder001","username":"dXNlcm5hbWU="},"type":"Opaque"}
+
+        '
+    headers:
+      Audit-Id:
+      - 9e286265-d4e9-4617-a039-653e99841119
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '941'
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 09 Jan 2023 20:06:48 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - e6e09f29-5051-48c5-86d9-98ef1d4e9e24
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 968de22f-58d3-4cf5-9a45-91df5471c595
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"apiVersion": "arcdata.microsoft.com/v1", "kind": "ActiveDirectoryConnector",
+      "spec": {"activeDirectory": {"domainServiceAccountSecret": "arcadc-domain-service-account-secret",
+      "domainControllers": {"primaryDomainController": {"hostname": "newdc.contoso.local"},
+      "secondaryDomainControllers": [{"hostname": "bdcarislocal2.bdc.aris.local"},
+      {"hostname": "bdcarislocal2.bdc.aris.local"}, {"hostname": "bdcarislocal2.bdc.aris.local"},
+      {"hostname": "bdcarislocal2.bdc.aris.local"}]}}}, "metadata": {"name": "arcadcauto",
+      "namespace": "test"}}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: PATCH
+    uri: https://mock-host/apis/arcdata.microsoft.com/v1/namespaces/test/activedirectoryconnectors/arcadcauto
+  response:
+    body:
+      string: '{"apiVersion":"arcdata.microsoft.com/v1","kind":"ActiveDirectoryConnector","metadata":{"creationTimestamp":"2023-01-09T20:06:47Z","generation":2,"labels":{"management.azure.com/resourceProvider":"Microsoft.AzureArcData"},"managedFields":[{"apiVersion":"arcdata.microsoft.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:status":{".":{},"f:lastUpdateTime":{},"f:observedGeneration":{},"f:state":{}}},"manager":"unknown","operation":"Update","subresource":"status","time":"2023-01-09T20:06:47Z"},{"apiVersion":"arcdata.microsoft.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{".":{},"f:activeDirectory":{".":{},"f:domainControllers":{".":{},"f:primaryDomainController":{".":{},"f:hostname":{}},"f:secondaryDomainControllers":{}},"f:domainServiceAccountSecret":{},"f:netbiosDomainName":{},"f:ouDistinguishedName":{},"f:realm":{},"f:serviceAccountProvisioning":{}},"f:dns":{".":{},"f:domainName":{},"f:nameserverIPAddresses":{},"f:preferK8sDnsForPtrLookups":{},"f:replicas":{}}}},"manager":"OpenAPI-Generator","operation":"Update","time":"2023-01-09T20:06:48Z"}],"name":"arcadcauto","namespace":"test","ownerReferences":[{"apiVersion":"arcdata.microsoft.com/v5","controller":true,"kind":"DataController","name":"datacontroller-sachaga-e80fdd9cd","uid":"325e913f-85cf-4fac-af21-37e209179a53"}],"resourceVersion":"366010","uid":"905a2939-43bb-4461-b990-6638e31ab45a"},"spec":{"activeDirectory":{"domainControllers":{"primaryDomainController":{"hostname":"newdc.contoso.local"},"secondaryDomainControllers":[{"hostname":"bdcarislocal2.bdc.aris.local"},{"hostname":"bdcarislocal2.bdc.aris.local"},{"hostname":"bdcarislocal2.bdc.aris.local"},{"hostname":"bdcarislocal2.bdc.aris.local"}]},"domainServiceAccountSecret":"arcadc-domain-service-account-secret","netbiosDomainName":"BDC","ouDistinguishedName":"OU=arcou,DC=bdc,DC=aris,DC=local","realm":"BDC.ARIS.LOCAL","serviceAccountProvisioning":"automatic"},"dns":{"domainName":"bdc.aris.local","nameserverIPAddresses":["10.91.136.121","10.91.136.203"],"preferK8sDnsForPtrLookups":false,"replicas":2}},"status":{"lastUpdateTime":"2023-01-09T20:06:47.975226Z","observedGeneration":1,"state":"Creating"}}
+
+        '
+    headers:
+      Audit-Id:
+      - c84d667c-cfda-4628-a1e2-f64cb1174d5f
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 09 Jan 2023 20:06:48 GMT
+      Transfer-Encoding:
+      - chunked
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - e6e09f29-5051-48c5-86d9-98ef1d4e9e24
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 968de22f-58d3-4cf5-9a45-91df5471c595
+    status:
+      code: 200
+      message: OK
+version: 1

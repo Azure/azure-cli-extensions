@@ -1,0 +1,113 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - f8c80c94-c77f-11ee-9bc2-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4","name":"LAPTOP-OIUS4TO4","type":"microsoft.azurearcdata/sqlserverinstances","location":"eastus2euap","systemData":{"createdBy":"a12e8ccb-0fcd-46f8-b6a1-b9df7a9d7231","createdByType":"Application","createdAt":"2023-12-07T20:57:32.5401341Z","lastModifiedBy":"aagonzalez@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-02-09T19:07:07.585729Z"},"properties":{"version":"SQL
+        Server 2022","edition":"Developer","containerResourceId":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourcegroups/lawynn-dotnet8Upgrade/providers/Microsoft.HybridCompute/machines/LAPTOP-OIUS4TO4","createTime":null,"vCore":"12","cores":null,"status":"Connected","patchLevel":"16.0.1110.1","collation":"SQL_Latin1_General_CP1_CI_AS","currentVersion":"16.0.1000.6","instanceName":"MSSQLSERVER","tcpDynamicPorts":"","tcpStaticPorts":"1433","productId":"Unknown","licenseType":"Free","azureDefenderStatusLastUpdated":null,"azureDefenderStatus":"Unknown","provisioningState":"Succeeded","lastInventoryUploadTime":"2024-02-09T18:53:29.8649486Z","lastUsageUploadTime":"2024-02-09T16:16:09.7522786Z","hostType":null,"alwaysOnRole":"None","failoverCluster":null,"backupPolicy":null,"upgradeLockedUntil":null,"monitoring":{"enabled":true},"migration":{"assessment":{"enabled":true}}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '1437'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 09 Feb 2024 19:18:14 GMT
+      ETag:
+      - '"03002919-0000-3400-0000-65c677e90000"'
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 550818BB8E8348F0B67193CABFA60AF4 Ref B: BN1AA2051012029 Ref C: 2024-02-09T19:18:14Z'
+      x-ms-correlation-request-id:
+      - 41c61d12-5f28-4fd1-8e6e-940b746f8e17
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99999'
+      x-ms-request-id:
+      - 5ac72090-bcb5-46ff-b0f7-6fc9d75871f4
+      x-ms-routing-request-id:
+      - EASTUS:20240209T191814Z:41c61d12-5f28-4fd1-8e6e-940b746f8e17
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - f9101eb8-c77f-11ee-b912-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/lawynn-dotnet8Upgrade/providers/Microsoft.AzureArcData/sqlServerInstances/LAPTOP-OIUS4TO4/databases/MyDatabaseash
+  response:
+    body:
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.AzureArcData/SqlServerInstances/LAPTOP-OIUS4TO4/Databases/MyDatabaseash''
+        under resource group ''lawynn-dotnet8Upgrade'' was not found. For more details
+        please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '274'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 09 Feb 2024 19:18:14 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 15D3B26914264A1CA8009D7A2DC33426 Ref B: BN1AA2051012029 Ref C: 2024-02-09T19:18:14Z'
+      x-ms-correlation-request-id:
+      - f1db1284-a806-4a63-be85-b39483a99096
+      x-ms-failure-cause:
+      - gateway
+      x-ms-request-id:
+      - f1db1284-a806-4a63-be85-b39483a99096
+      x-ms-routing-request-id:
+      - EASTUS:20240209T191815Z:f1db1284-a806-4a63-be85-b39483a99096
+    status:
+      code: 404
+      message: Not Found
+version: 1
