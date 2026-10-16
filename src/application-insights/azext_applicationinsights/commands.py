@@ -17,6 +17,18 @@ from azext_applicationinsights._client_factory import (
 
 def load_command_table(self, _):
 
+    from ._trace import (
+        TraceAssociationCreate, TraceAssociationDelete, TraceAssociationList, TraceAssociationShow,
+        TraceContainerCreate, TraceContainerUpdate,
+    )
+    self.command_table['monitor account trace-container create'] = TraceContainerCreate(loader=self)
+    self.command_table['monitor account trace-container update'] = TraceContainerUpdate(loader=self)
+    with self.command_group('monitor trace-association', is_preview=True):
+        self.command_table['monitor trace-association create'] = TraceAssociationCreate(loader=self)
+        self.command_table['monitor trace-association delete'] = TraceAssociationDelete(loader=self)
+        self.command_table['monitor trace-association list'] = TraceAssociationList(loader=self)
+        self.command_table['monitor trace-association show'] = TraceAssociationShow(loader=self)
+
     components_sdk = CliCommandType(
         operations_tmpl='azext_applicationinsights.vendored_sdks.mgmt_applicationinsights.operations.components_operations#ComponentsOperations.{}',
         client_factory=cf_components

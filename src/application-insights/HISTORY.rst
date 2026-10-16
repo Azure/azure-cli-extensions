@@ -2,6 +2,13 @@
 
 Release History
 ===============
+2.0.0b3
+++++++++++++++++++
+* Add distributed trace onboarding, retargeting, and offboarding flags to ``monitor app-insights component create/update``.
+* Add ``monitor trace-association create/show/list/delete`` for Application Insights, resource group, and subscription scopes.
+* Add ``monitor account trace-container create/update/show/wait`` with settings-preserving updates and asynchronous provisioning support.
+* Require Azure CLI 2.75.0 or later.
+
 2.0.0b2
 ++++++++++++++++++
 * Pre-announce the `az monitor app-insights query` breaking change planned for `3.0.0b1`: the default `--offset` will change from one hour to not set.

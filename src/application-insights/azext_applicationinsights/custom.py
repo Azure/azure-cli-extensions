@@ -8,6 +8,7 @@
 # pylint: disable=too-many-statements, too-many-locals, too-many-branches
 
 import datetime
+from functools import partial
 import isodate
 from knack.util import CLIError
 from knack.log import get_logger
@@ -92,7 +93,32 @@ def get_metrics_metadata(cmd, application, resource_group_name=None):
 
 def create_or_update_component(cmd, client, application, resource_group_name, location, tags=None,
                                kind="web", application_type='web', workspace_resource_id=None,
-                               public_network_access_for_ingestion=None, public_network_access_for_query=None, retention_in_days=None):
+                               public_network_access_for_ingestion=None, public_network_access_for_query=None,
+                               retention_in_days=None, enable_traces=None, trace_workspace=None,
+                               trace_retention_days=None, trace_metrics=None):
+    from ._trace_component import run_component_operation
+    return run_component_operation(
+        cmd, application, resource_group_name,
+        partial(_create_or_update_component, cmd, client, application, resource_group_name),
+        {
+            "location": location, "tags": tags, "kind": kind, "application_type": application_type,
+            "workspace_resource_id": workspace_resource_id,
+            "public_network_access_for_ingestion": public_network_access_for_ingestion,
+            "public_network_access_for_query": public_network_access_for_query,
+            "retention_in_days": retention_in_days,
+        },
+        {
+            "enable_traces": enable_traces, "trace_workspace": trace_workspace,
+            "trace_retention_days": trace_retention_days, "trace_metrics": trace_metrics,
+        },
+        creating=True,
+    )
+
+
+def _create_or_update_component(cmd, client, application, resource_group_name, location, tags=None,
+                                kind="web", application_type='web', workspace_resource_id=None,
+                                public_network_access_for_ingestion=None, public_network_access_for_query=None,
+                                retention_in_days=None):
     # due to service limitation, we have to do such a hack. We must refract the logic later.
     if workspace_resource_id is None:
         from .vendored_sdks.mgmt_applicationinsights.v2018_05_01_preview.models import ApplicationInsightsComponent
@@ -146,7 +172,29 @@ def _apm_migration_consent(cmd, new_workspace_resource_id, existing_workspace_re
 
 
 def update_component(cmd, client, application, resource_group_name, kind=None, workspace_resource_id=None,
-                     public_network_access_for_ingestion=None, public_network_access_for_query=None, retention_in_days=None):
+                     public_network_access_for_ingestion=None, public_network_access_for_query=None,
+                     retention_in_days=None, enable_traces=None, disable_traces=None, trace_workspace=None,
+                     trace_retention_days=None, trace_metrics=None):
+    from ._trace_component import run_component_operation
+    return run_component_operation(
+        cmd, application, resource_group_name,
+        partial(_update_component, cmd, client, application, resource_group_name),
+        {
+            "kind": kind, "workspace_resource_id": workspace_resource_id,
+            "public_network_access_for_ingestion": public_network_access_for_ingestion,
+            "public_network_access_for_query": public_network_access_for_query,
+            "retention_in_days": retention_in_days,
+        },
+        {
+            "enable_traces": enable_traces, "disable_traces": disable_traces, "trace_workspace": trace_workspace,
+            "trace_retention_days": trace_retention_days, "trace_metrics": trace_metrics,
+        },
+    )
+
+
+def _update_component(cmd, client, application, resource_group_name, kind=None, workspace_resource_id=None,
+                      public_network_access_for_ingestion=None, public_network_access_for_query=None,
+                      retention_in_days=None):
     from ._client_factory import applicationinsights_mgmt_plane_client
     if workspace_resource_id is not None:
         if retention_in_days is not None:

@@ -9,10 +9,10 @@ from azext_applicationinsights.action import (
     AddContentValidation,
     AddHeaders
 )
-from azure.cli.core.commands.parameters import get_datetime_type, get_location_type, tags_type, get_three_state_flag, get_enum_type
+from azure.cli.core.commands.parameters import get_datetime_type, get_location_type, tags_type, get_three_state_flag, get_enum_type, get_resource_name_completion_list
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.command_modules.monitor.actions import get_period_type
-from ._validators import validate_applications, validate_storage_account_name_or_id, validate_log_analytic_workspace_name_or_id, validate_dest_account
+from ._validators import validate_applications, validate_storage_account_name_or_id, validate_log_analytic_workspace_name_or_id, validate_dest_account, validate_component_trace_flags
 
 
 def load_arguments(self, _):
@@ -29,6 +29,21 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('application-type', options_list=['application-type', '--type', '-t'], help="Type of application being monitored. Possible values include: 'web', 'other'. Default value: 'web' .")
         c.argument('kind', options_list=['--kind', '-k'], help='The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone.')
+        c.argument('disable_traces', arg_type=get_three_state_flag(), arg_group='Distributed traces',
+                   help="Remove this component's trace association. Inherited associations remain in effect.")
+
+    for operation in ['create', 'update']:
+        with self.argument_context('monitor app-insights component ' + operation) as c:
+            c.argument('enable_traces', arg_type=get_three_state_flag(), arg_group='Distributed traces',
+                       validator=validate_component_trace_flags,
+                       help='Enable distributed traces. Reuse existing routing or create a default trace workspace.')
+            c.argument('trace_workspace', arg_group='Distributed traces',
+                       completer=get_resource_name_completion_list('Microsoft.Monitor/accounts'),
+                       help='Azure Monitor workspace name or resource ID. A name resolves in this component\'s resource group and subscription; cross-subscription targets require a resource ID.')
+            c.argument('trace_retention_days', type=int, arg_group='Distributed traces',
+                       help='Retention for a newly created trace container, 4-730 days. Default: 30. Existing containers are not modified.')
+            c.argument('trace_metrics', arg_type=get_enum_type(['Enabled', 'Disabled']), arg_group='Distributed traces',
+                       help='Trace-derived metrics for a newly created container. Default: Enabled. Metrics are billed; existing container settings are not modified.')
 
     with self.argument_context('monitor app-insights component') as c:
         c.argument('workspace_resource_id', options_list=['--workspace'], validator=validate_log_analytic_workspace_name_or_id,
