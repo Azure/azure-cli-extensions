@@ -6,6 +6,7 @@
 import json
 import os
 import re
+import shutil
 import subprocess
 from tempfile import mkdtemp
 from typing import List, Optional
@@ -22,6 +23,43 @@ SHA256_PREFIX = "@sha256:"
 FRAGMENT_DISCOVERY_PLATFORM = "linux/amd64"
 
 logger = get_logger(__name__)
+
+
+def resolve_oras_path() -> str:
+    """Resolve ORAS outside CWD to prevent executable search path hijacking."""
+    current_directory = os.path.normcase(os.path.realpath(os.getcwd()))
+    executable_extensions = [""]
+    if os.name == "nt":
+        executable_extensions = [
+            extension if extension.startswith(".") else f".{extension}"
+            for extension in os.environ.get("PATHEXT", ".COM;.EXE;.BAT;.CMD").split(os.pathsep)
+            if extension
+        ]
+
+    for path_entry in os.environ.get("PATH", "").split(os.pathsep):
+        # Normalize quoted entries before rejecting empty or relative paths.
+        path_entry = path_entry.strip().strip('"')
+        if not path_entry or not os.path.isabs(path_entry):
+            continue
+        if os.name == "nt" and not os.path.splitdrive(path_entry)[0]:
+            continue
+
+        resolved_directory = os.path.realpath(path_entry)
+        # Exclude CWD as recommended for preventing binary planting attacks:
+        # https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-security
+        if os.path.normcase(resolved_directory) == current_directory:
+            continue
+
+        for extension in executable_extensions:
+            oras_path = shutil.which(os.path.join(resolved_directory, f"oras{extension}"))
+            if oras_path:
+                resolved_oras_path = os.path.realpath(os.path.abspath(oras_path))
+                if os.path.normcase(os.path.dirname(resolved_oras_path)) != current_directory:
+                    return resolved_oras_path
+
+    eprint("ORAS CLI not found in absolute PATH entries. Please install ORAS CLI: "
+           "https://oras.land/docs/installation")
+    raise RuntimeError("ORAS path resolution failed")
 
 
 def prepend_docker_registry(image_name: str) -> str:
@@ -54,7 +92,12 @@ def prepend_docker_registry(image_name: str) -> str:
 
 
 def call_oras_cli(args, check=False):
-    return subprocess.run(args, check=check, capture_output=True, timeout=120)
+    return subprocess.run(
+        [resolve_oras_path(), *args],
+        check=check,
+        capture_output=True,
+        timeout=120,
+    )
 
 
 def manifest_fetch(image_tag: str) -> Optional[dict]:
@@ -64,7 +107,7 @@ def manifest_fetch(image_tag: str) -> Optional[dict]:
     """
     try:
         result = subprocess.run(
-            ["oras", "manifest", "fetch", "--format", "json", image_tag],
+            [resolve_oras_path(), "manifest", "fetch", "--format", "json", image_tag],
             capture_output=True,
             text=True,
             timeout=30,
@@ -86,7 +129,7 @@ def manifest_fetch_config(image_tag: str) -> Optional[dict]:
     """
     try:
         result = subprocess.run(
-            ["oras", "manifest", "fetch-config", image_tag],
+            [resolve_oras_path(), "manifest", "fetch-config", image_tag],
             capture_output=True,
             text=True,
             timeout=30,
@@ -179,7 +222,7 @@ def discover(
     # normalize the name in case the docker registry is implied
     image = prepend_docker_registry(image)
 
-    arg_list = ["oras", "discover", image, "-o", "json", "--artifact-type", ARTIFACT_TYPE]
+    arg_list = ["discover", image, "-o", "json", "--artifact-type", ARTIFACT_TYPE]
     if platform:
         arg_list.extend(["--platform", platform])
 
@@ -242,7 +285,7 @@ def pull(
     logger.info("Pulling fragment: %s", full_path)
 
     temp_folder = mkdtemp()
-    arg_list = ["oras", "pull", full_path, "-o", temp_folder]
+    arg_list = ["pull", full_path, "-o", temp_folder]
 
     item = call_oras_cli(arg_list, check=False)
 
@@ -340,13 +383,10 @@ def pull_all_standalone_fragments(fragment_imports):
 
 
 def check_oras_cli():
-    text = "ORAS CLI not installed. Please install ORAS CLI: https://oras.land/docs/installation"
-    try:
-        item = call_oras_cli(["oras", "version"], check=False)
-        if item.returncode != 0:
-            eprint(text)
-    except FileNotFoundError:
-        eprint(text)
+    item = call_oras_cli(["version"], check=False)
+    if item.returncode != 0:
+        eprint("ORAS CLI could not be executed. Please install ORAS CLI: "
+               "https://oras.land/docs/installation")
 
 
 # used for image-attached fragments
@@ -355,7 +395,6 @@ def attach_fragment_to_image(image_name: str, filename: str, platform: Optional[
         image_name += ":latest"
     # attach the fragment to the image
     arg_list = [
-        "oras",
         "attach",
         "--artifact-type",
         ARTIFACT_TYPE,
@@ -406,7 +445,6 @@ def generate_imports_from_image_name(image_name: str, minimum_svn: str) -> List[
 def push_fragment_to_registry(feed_name: str, filename: str) -> None:
     # push the fragment to the registry
     arg_list = [
-        "oras",
         "push",
         feed_name,
         "--artifact-type",

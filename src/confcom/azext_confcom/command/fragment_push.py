@@ -9,6 +9,7 @@ import sys
 import tempfile
 from typing import Optional
 
+from azext_confcom import oras_proxy
 from azext_confcom.errors import eprint
 
 
@@ -18,7 +19,7 @@ def oras_push(
 ) -> None:
     subprocess.run(
         [
-            "oras",
+            oras_proxy.resolve_oras_path(),
             "push",
             "--artifact-type", "application/x-ms-ccepolicy-frag",
             manifest_tag,
