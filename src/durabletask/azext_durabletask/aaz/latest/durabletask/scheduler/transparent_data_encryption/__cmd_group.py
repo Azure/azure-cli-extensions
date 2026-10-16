@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "durabletask scheduler transparent-data-encryption",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Transparent Data Encryption
