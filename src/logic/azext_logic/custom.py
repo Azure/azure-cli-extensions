@@ -8,10 +8,12 @@
 # pylint: disable=too-many-lines, wildcard-import
 # pylint: disable=too-many-statements, line-too-long, protected-access
 
+import yaml
 from knack.log import get_logger
 from azure.cli.core.aaz import has_value, register_command
 from azure.cli.core.azclierror import RequiredArgumentMissingError
 from azext_logic.aaz.latest.logic.workflow import Create as _WorkflowCreate
+from azext_logic.aaz.latest.logic.workflow import Show as _WorkflowShow
 from azext_logic.aaz.latest.logic.workflow import Update as _WorkflowUpdate
 from azext_logic.aaz.latest.logic.workflow import List as _WorkflowList
 from azext_logic.aaz.latest.logic.workflow.identity import Assign as _IdentityAssign
@@ -25,6 +27,21 @@ from azext_logic.aaz.latest.logic.integration_account.partner import List as _Pa
 from azext_logic.aaz.latest.logic.integration_account.session import List as _SessionList
 
 logger = get_logger(__name__)
+
+
+def _format_workflow_show_output(cli_ctx, result):
+    invocation = getattr(cli_ctx, "invocation", None)
+    output_data = getattr(invocation, "data", None)
+    if not hasattr(output_data, "get") or output_data.get("output") != "yaml":
+        return result
+    output_data["output"] = "tsv"
+    return yaml.safe_dump(
+        result,
+        default_flow_style=False,
+        allow_unicode=True,
+        sort_keys=False,
+        width=2147483647,
+    ).rstrip()
 
 
 class MapCreate(_MapCreate):
@@ -157,6 +174,13 @@ class WorkflowCreate(_WorkflowCreate):
                     identity.to_serialized_data(): {}
                 })
             args.identity.user_assigned_identities = user_assigned_identities
+
+
+class WorkflowShow(_WorkflowShow):
+    def _output(self, *args, **kwargs):
+        result = super()._output(*args, **kwargs)
+        cli_ctx = getattr(self, "cli_ctx", None) or getattr(self.ctx, "cli_ctx", None)
+        return _format_workflow_show_output(cli_ctx, result)
 
 
 class WorkflowUpdate(_WorkflowUpdate):
