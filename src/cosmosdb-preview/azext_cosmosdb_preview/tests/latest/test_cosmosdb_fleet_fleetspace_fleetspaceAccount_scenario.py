@@ -332,6 +332,34 @@ class CosmosdbFleetCommandTest(unittest.TestCase):
 
 class CosmosdbFleetScenarioTest(ScenarioTest):
 
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_nonpooled', location='westus2')
+    def test_cosmosdb_fleetspace_non_pooled(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group,
+            'fleet': self.create_random_name('fleet', 15),
+            'fsp': self.create_random_name('fs', 10),
+        })
+        with tempfile.TemporaryDirectory() as directory:
+            body_path = os.path.join(directory, 'fleetspace.json')
+            with open(body_path, 'w', encoding='utf-8') as body_file:
+                json.dump({'properties': {
+                    'serviceTier': 'GeneralPurpose',
+                    'dataRegions': ['West US 2'],
+                }}, body_file)
+            self.kwargs['fspbody'] = body_path.replace('\\', '/')
+
+            self.cmd('az cosmosdb fleet create -g {rg} -n {fleet} -l westus2')
+            self.cmd('az cosmosdb fleetspace create -g {rg} --fleet-name {fleet} -n {fsp} --body @{fspbody}')
+            self.cmd('az cosmosdb fleetspace show -g {rg} --fleet-name {fleet} -n {fsp}', checks=[
+                self.check('provisioningState', 'Succeeded'),
+                self.check('serviceTier', 'GeneralPurpose'),
+                self.check('dataRegions', ['West US 2']),
+                self.check('throughputPoolConfiguration.minThroughput', None),
+                self.check('throughputPoolConfiguration.maxThroughput', None),
+            ])
+            self.cmd('az cosmosdb fleetspace delete -g {rg} --fleet-name {fleet} -n {fsp} --yes')
+            self.cmd('az cosmosdb fleet delete -g {rg} -n {fleet} --yes')
+
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_fleet', location='westus2')
     def test_cosmosdb_fleet_fleetspace_fleetspaceAccount(self, resource_group):
         # Names
