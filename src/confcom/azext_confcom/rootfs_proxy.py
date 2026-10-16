@@ -11,6 +11,7 @@ import platform
 import stat
 import subprocess
 import sys
+from pathlib import Path
 from typing import List, Dict
 
 import requests
@@ -39,14 +40,24 @@ _dmverity_vhd_binaries = [
     # Linux
     {
         "path": _binaries_dir / "dmverity-vhd",
-        "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd",
-        "sha256": "85b383bcce609e7acf0b0eae4b6e214d795b30c4d9d96c21377ab97ea3161a28",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.3/dmverity-vhd",
+        "sha256": "0f10df304f9a4b77a371aba2f500cd7a19cb547bca5e9cd2b921803f5e67080f",
     },
     # Windows
     {
         "path": _binaries_dir / "dmverity-vhd.exe",
-        "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd.exe",
-        "sha256": "83681d2e26b8406098e06e24db80c8eaf7b17eee08a5f8b313c88620f0612b66",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.3/dmverity-vhd.exe",
+        "sha256": "c3652fb1a4ce1155c388e0e2f7db6b2b985e0ad6da7db062ce82a00bb2b6b6f8",
+    },
+    {
+        "path": _binaries_dir / "dmverity-vhd-darwin-arm64",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.3/dmverity-vhd-darwin-arm64",
+        "sha256": "e7174315c8df15ceb59120d720b63cb62f7cbd1ec6cb3b13436370da72c792be",
+    },
+    {
+        "path": _binaries_dir / "dmverity-vhd-darwin-amd64",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.3/dmverity-vhd-darwin-amd64",
+        "sha256": "4cb5a2970030b120370afd03b25b12605343fd098c4ce539f9f117a17fc2112d",
     },
     {
         "path": _binaries_dir / "CimWriter.dll",
@@ -59,6 +70,30 @@ _dmverity_vhd_binaries = [
         "sha256": "a8099a63704a7aaa672e82a3785bf6921400da28dc9c2958bf512e440c39e787",
     },
 ]
+
+
+def get_dmverity_vhd_path() -> Path:
+    """Return the host-specific dmverity-vhd binary path."""
+    binary_name = "dmverity-vhd"
+
+    if host_os == "Windows":
+        if machine.endswith("64"):
+            binary_name += ".exe"
+        else:
+            eprint("32-bit Windows is not supported.")
+    elif host_os == "Darwin":
+        if machine == "arm64":
+            binary_name += "-darwin-arm64"
+        elif machine in ("x86_64", "amd64"):
+            binary_name += "-darwin-amd64"
+        else:
+            eprint(f"Unsupported MacOS architecture: {machine}.")
+    elif host_os != "Linux":
+        eprint(
+            "Unknown target platform. The extension only works with Windows, Linux, and Darwin"
+        )
+
+    return Path(__file__).parent / "bin" / binary_name
 
 
 class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
@@ -78,26 +113,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
                 f.write(dmverity_vhd_fetch_resp.content)
 
     def __init__(self):
-        script_directory = os.path.dirname(os.path.realpath(__file__))
-        DEFAULT_LIB = "./bin/dmverity-vhd"
-
-        if host_os == "Linux":
-            pass
-        elif host_os == "Windows":
-            if machine.endswith("64"):
-                DEFAULT_LIB += ".exe"
-            else:
-                eprint(
-                    "32-bit Windows is not supported."
-                )
-        elif host_os == "Darwin":
-            eprint("The extension for MacOS has not been implemented.")
-        else:
-            eprint(
-                "Unknown target platform. The extension only works with Windows and Linux"
-            )
-
-        self.policy_bin = os.path.join(f"{script_directory}", f"{DEFAULT_LIB}")
+        self.policy_bin = str(get_dmverity_vhd_path())
 
         # check if the extension binary exists
         if not os.path.exists(self.policy_bin):

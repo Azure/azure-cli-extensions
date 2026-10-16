@@ -40,6 +40,16 @@ _cosesign1_binaries = {
         "url": "https://github.com/microsoft/cosesign1go/releases/download/v1.4.0/sign1util.exe",
         "sha256": "f33cccf2b1bb8c3a495c730984b47d0f0715678981dbfe712248a2452dd53303",
     },
+    "Darwin-arm64": {
+        "path": _binaries_dir / "sign1util-darwin-arm64",
+        "url": "https://github.com/microsoft/cosesign1go/releases/download/v1.7.0/sign1util-darwin-arm64",
+        "sha256": "c0c89b54f42e33317127697936a8eed70281934d4546acfc1446e588fcf2fe69",
+    },
+    "Darwin-amd64": {
+        "path": _binaries_dir / "sign1util-darwin-amd64",
+        "url": "https://github.com/microsoft/cosesign1go/releases/download/v1.7.0/sign1util-darwin-amd64",
+        "sha256": "82168735a472002faca5ffad5342eeda3c307d06e892cd851c64766d5aa02049",
+    },
 }
 
 
@@ -75,10 +85,15 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
         elif host_os == "Windows":
             DEFAULT_LIB += ".exe"
         elif host_os == "Darwin":
-            eprint("The extension for MacOS has not been implemented.")
+            if machine == "arm64":
+                DEFAULT_LIB += "-darwin-arm64"
+            elif machine in ("x86_64", "amd64"):
+                DEFAULT_LIB += "-darwin-amd64"
+            else:
+                eprint(f"Unsupported MacOS architecture: {machine}.")
         else:
             eprint(
-                "Unknown target platform. The extension only works with Windows and Linux"
+                "Unknown target platform. The extension only works with Windows, Linux, and Darwin"
             )
 
         self.policy_bin = os.path.join(f"{script_directory}", f"{DEFAULT_LIB}")

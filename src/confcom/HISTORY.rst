@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.4.0
++++++
+* Add MacOS support for Linux-container policy generation
+
 2.3.0
 +++++
 * Add an option to include the kube-proxy image-attached fragment in Linux VN2 policies
