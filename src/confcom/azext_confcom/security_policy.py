@@ -254,9 +254,18 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
     def generate_fragment(self, namespace: str, svn: str, output_type: int, omit_id: bool = False) -> str:
         # get rid of fields that aren't strictly needed for the fragment import
         sanitized_fragments = sanitize_fragment_fields(self.get_fragments())
+        use_prerelease_policy = (
+            self._platform.startswith("windows") or self._prerelease_policy_api
+        )
+        framework_version = (
+            config.PRERELEASE_POLICY_FRAMEWORK_VERSION
+            if use_prerelease_policy
+            else config.DEFAULT_POLICY_FRAMEWORK_VERSION
+        )
         return config.CUSTOMER_REGO_FRAGMENT % (
             namespace,
             pretty_print_func(svn),
+            pretty_print_func(framework_version),
             pretty_print_func(sanitized_fragments),
             self.get_serialized_output(output_type, rego_boilerplate=False, include_sidecars=False, omit_id=omit_id),
         )
@@ -1164,6 +1173,9 @@ def load_policy_from_image_name(
             config.ACI_FIELD_VERSION: "1.0",
             config.ACI_FIELD_CONTAINERS: containers,
         },
+        rego_fragments=copy.deepcopy(
+            config.get_default_rego_fragments(platform, prerelease_policy_api=prerelease_policy_api)
+        ),
         debug_mode=debug_mode,
         disable_stdio=disable_stdio,
         prerelease_policy_api=prerelease_policy_api,
@@ -1403,7 +1415,9 @@ def load_policy_from_json(
         rego_fragments.extend(
             copy.deepcopy(
                 config.get_default_rego_fragments(
-                    platform, prerelease_policy_api=prerelease_policy_api
+                    platform,
+                    is_vn2=scenario.lower() == config.VN2,
+                    prerelease_policy_api=prerelease_policy_api,
                 )
             )
         )

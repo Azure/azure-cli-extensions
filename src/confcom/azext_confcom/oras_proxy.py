@@ -240,7 +240,7 @@ def pull(
     elif artifact and hash_val:
         # response from discover function includes "sha256:" but not "@"
         full_path = f"{artifact}@{hash_val}"
-    elif ":" in artifact:
+    elif ":" in artifact.rsplit("/", maxsplit=1)[-1]:
         artifact, tag = artifact.rsplit(":", maxsplit=1)
         full_path = f"{artifact}:{tag}"
     else:
@@ -327,7 +327,8 @@ def pull_all_standalone_fragments(fragment_imports):
         else:
             # A feed is only an identifier matched against the signed fragment; it is
             # pullable only when it carries a digest or tag
-            if SHA256_PREFIX not in feed and ":" not in feed:
+            # a colon in the registry host (port) is not a tag separator
+            if SHA256_PREFIX not in feed and ":" not in feed.rsplit("/", maxsplit=1)[-1]:
                 logger.warning(
                     "No attached fragment found for feed %s and it is not a pullable reference. "
                     "Keeping the import without fragment contents.",
@@ -397,9 +398,11 @@ def attach_fragment_to_image(image_name: str, filename: str, platform: Optional[
     print(f"Fragment attached to image '{image_name}' with Digest:{digest}")
 
 
-def generate_imports_from_image_name(image_name: str, minimum_svn: str) -> List[dict]:
+def generate_imports_from_image_name(
+    image_name: str, minimum_svn: str, platform: str = FRAGMENT_DISCOVERY_PLATFORM
+) -> List[dict]:
     cose_proxy = CoseSignToolProxy()
-    image_exists, fragment_hashes = discover(image_name, platform=FRAGMENT_DISCOVERY_PLATFORM)
+    image_exists, fragment_hashes = discover(image_name, platform=platform)
     import_list = []
 
     if image_exists:

@@ -318,7 +318,7 @@ def extract_user(container_json: Any, from_input: bool = False) -> Dict:
         # a fragment for infra sidecars that are started through their own special path
         # which specifies runAsUserName.
         run_as_username_value = None
-        if from_input:
+        if from_input and container_json.get("platform", "linux/amd64").startswith("windows"):
             windows_options = case_insensitive_dict_get(
                 security_context, config.ACI_FIELD_CONTAINERS_WINDOWS_OPTIONS
             ) or {}

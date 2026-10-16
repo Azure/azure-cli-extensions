@@ -353,7 +353,9 @@ def acifragmentgen_confcom(
                 os_util.clean_up_temp_folder(fragment_path)
 
         elif image_name:
-            import_statements = oras_proxy.generate_imports_from_image_name(image_name, minimum_svn=minimum_svn)
+            import_statements = oras_proxy.generate_imports_from_image_name(
+                image_name, minimum_svn=minimum_svn, platform=platform
+            )
 
         fragments_file_contents = {}
         fragments_list = []
