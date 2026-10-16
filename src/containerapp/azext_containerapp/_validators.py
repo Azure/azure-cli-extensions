@@ -20,6 +20,7 @@ from ._constants import ACR_IMAGE_SUFFIX, \
     EXTENDED_LOCATION_RP, CUSTOM_LOCATION_RESOURCE_TYPE, MAXIMUM_SECRET_LENGTH, CONTAINER_APPS_RP, \
     CONNECTED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_TYPE, \
     RUNTIME_GENERIC
+from ._utils import is_acr_registry
 
 logger = get_logger(__name__)
 
@@ -37,9 +38,9 @@ def validate_create(registry_identity, registry_pass, registry_user, registry_se
     if repo:
         if not registry_server:
             raise RequiredArgumentMissingError('Usage error: --registry-server is required while using --repo')
-        if ACR_IMAGE_SUFFIX not in registry_server:
+        if not is_acr_registry(registry_server):
             raise InvalidArgumentValueError("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --repo")
-    if repo and registry_server and "azurecr.io" in registry_server:
+    if repo and registry_server and is_acr_registry(registry_server):
         parsed = urlparse(registry_server)
         registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
         if registry_name and len(registry_name) > MAXIMUM_SECRET_LENGTH:
@@ -51,7 +52,7 @@ def validate_create(registry_identity, registry_pass, registry_user, registry_se
         raise MutuallyExclusiveArgumentError("--no-wait is not supported with system registry identity")
     if registry_identity and not is_valid_resource_id(registry_identity) and not is_registry_msi_system(registry_identity) and not is_registry_msi_system_environment(registry_identity):
         raise InvalidArgumentValueError("--registry-identity must be an identity resource ID or 'system' or 'system-environment'")
-    if registry_identity and ACR_IMAGE_SUFFIX not in (registry_server or ""):
+    if registry_identity and not is_acr_registry(registry_server):
         raise InvalidArgumentValueError("--registry-identity: expected an ACR registry (*.azurecr.io) for --registry-server")
     if target_label and (not revisions_mode or revisions_mode.lower() != 'labels'):
         raise InvalidArgumentValueError("--target-label must only be specified with --revisions-mode labels.")
