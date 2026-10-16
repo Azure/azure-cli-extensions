@@ -39,10 +39,25 @@ from ._workflow import HOST_JSON, LOCAL_SETTINGS_JSON, abs_path, create_workflow
 logger = get_logger(__name__)
 
 
-def test_plan(cmd, path, workflow, test_project=None, report_path=None, force=False, strict=False):
+def test_plan(cmd, path=None, workflow=None, test_project=None, report_path=None, force=False,
+              strict=False, context=None):
     from ._runtime_doctor import finish_doctor_command
     from ._testing import plan_report
-    return finish_doctor_command(cmd, plan_report(path, workflow, test_project, report_path, force, strict))
+    if path is not None and (not isinstance(path, str) or not path.strip()):
+        raise InvalidArgumentValueError("--path must name a local project; omit it to use a local context.")
+    try:
+        root = _project_path_from_context(path, context)
+    except MutuallyExclusiveArgumentError as ex:
+        raise MutuallyExclusiveArgumentError(
+            "Test planning requires a local project. Select a local context or pass explicit --path "
+            "without a cloud --context.") from ex
+    if isinstance(report_path, str):
+        if os.path.splitdrive(report_path)[0] and not os.path.isabs(report_path):
+            raise InvalidArgumentValueError(
+                "--report-path must be fully qualified or relative to the selected local project, "
+                "not drive-relative.")
+        report_path = os.path.join(root, report_path)
+    return finish_doctor_command(cmd, plan_report(root, workflow, test_project, report_path, force, strict))
 
 
 def test_results_show(cmd, result_file, workflow_file=None):

@@ -67,7 +67,10 @@ or the testing foundation. Never put secret values in `--parameter` or
 az logicapp test plan --path .\App --workflow Orders --output json
 az logicapp test plan --path .\App --workflow Orders --strict --output json
 az logicapp test plan --path .\App --workflow Orders --test-project .\Tests\App.csproj --report-path .\Reports\plan.json
-az logicapp test results show --result-file .\Reports\plan.json --workflow-file .\App\Orders\workflow.json
+az logicapp context create --name development --path .\App --port 7079 --use
+az logicapp test plan --workflow Orders --output json
+az logicapp test plan --context development --workflow Orders --report-path .\Reports\plan.json
+az logicapp test results show --result-file .\App\Reports\plan.json --workflow-file .\App\Orders\workflow.json
 ```
 
 This remains the **SDK-ready foundation introduced in 0.1.17**. Explicit local files, bounded
@@ -80,8 +83,14 @@ New reports use closed schema 2.0 with an explicit exit policy; supported older
 schema-1 reports retain their original outcomes. Default stdout only; optional reports require an existing directory,
 and overwrites require `--force`. `results show` accepts only closed foundation
 preflight reports, not native SDK/TRX output; exit `0` means inspected, not tests
-passed. No active context, cloud target, install, generation, host or SDK run is
-involved. See [testing foundation contracts](docs/workflow-testing-foundation.md)
+passed. Planning now defaults to the named/active local project's path, then the
+current directory. Explicit `--path` overrides that path and bypasses an implicit
+active context; an explicitly named cloud context is refused. Relative report
+destinations use the selected project and absolute destinations remain unchanged.
+No implicit report or output directory is created. Optional test-project and
+results-inspection input paths remain relative to the shell's current directory.
+No cloud target, install, generation, host or SDK run is involved.
+See [testing foundation contracts](docs/workflow-testing-foundation.md)
 for schema, exit codes, sensitive input limits and deferred adoption approval.
 
 ## Inspect and maintain saved targets

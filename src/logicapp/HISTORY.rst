@@ -39,6 +39,10 @@ Release History
 * Keep Windows psutil below 7.1.2 so both x86 and x64 CLI installations use
   publisher wheels without requiring a C++ compiler; non-Windows resolution and
   all PID/birth-identity cleanup guards remain unchanged.
+* Default test planning to a selected local context or current directory after
+  explicit paths. Anchor relative report destinations to that project without
+  implicit writes or SDK execution. Preserve exact historical report catalogs,
+  including both schema-2 guidance variants of the unchanged public 1.0.0b1.
 
 0.1.19
 ++++++

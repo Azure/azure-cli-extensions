@@ -220,3 +220,45 @@ Latest-head public AI review, current upstream CI/maintainer approval, supported
 Python compatibility and effective CODEOWNERS eligibility remain independent
 gates. Historical cached-runtime evidence does not close them. The contribution
 stays draft while they are unresolved; no live Azure or SDK execution is implied.
+
+### Reviewed local-context planning follow-up
+
+The separately reviewed context-defaults change selects explicit `--path`, then
+a named/active local context, then the current directory. Explicit paths bypass
+implicit active contexts, but explicitly named cloud contexts are refused.
+Relative report destinations use the selected project; absolute destinations and
+optional test-project/results input semantics are unchanged. Planning does not
+write contexts or create implicit reports/directories, and all SDK/business
+execution gates remain closed.
+
+Public packaging stays at unpublished **1.0.0b1**. Report validation preserves
+schema-1 historical producers and adds historical schema-2 **0.1.24**. Public
+schema-2 **1.0.0b1** accepts exactly its old or new fixed `input.options` guidance,
+including after a future package-version change; mixed or arbitrary guidance is
+rejected. The actual pre-change public input-error report was inspected unchanged
+through the new source and all three native installed CLIs.
+
+| Context follow-up qualification | Result |
+| --- | --- |
+| Current CLI 2.91.0 / Python 3.14.7 / Windows x86 complete source and exact-installed suites | Each passed 865 tests / 2,389 subtests. |
+| Minimum CLI 2.67.0 / Python 3.12.7 / Windows x64 complete source and exact-installed suites | Each passed 865 tests / 2,389 subtests. |
+| Current CLI 2.91.0 / Python 3.14.7 / Windows x64 changed regression files, source and exact-installed | Each passed 72 tests / 209 subtests. These are focused follow-up runs, not a rerun of the earlier complete architecture suites. |
+| `azdev test logicapp --series --discover --no-exitfirst --pytest-args -q` | Passed all 865 source tests on the isolated Python 3.12.12 development environment. |
+| Separate native installed CLI processes | 24 commands per environment: selection/profile isolation, cloud refusal, report destinations/guards, JSON/table/query/nonzero behavior and genuine historical report inspection. |
+| Native ownership probes after test-bootstrap removal | Stock CLI-preloaded psutil 6.1.0 and explicit dependency-first 7.1.1 both passed cross-architecture birth/listener/refusal/stop/held-handle checks in all three environments. |
+| Exact wheel and dependency bytes | All 30 production files match source/wheel/three fresh installations. All 30 installed psutil files match independently hash-verified publisher wheels. |
+
+Suites ran serially with production origins enforced. The context wheel's fresh
+installs resolved dependencies from the already verified local publisher wheels;
+the earlier architecture qualification established unrestricted ordinary online
+installation. The current embedded MSI interpreters required the same test-only
+import-path bootstrap described above; it was removed after their suites.
+No production APIs, clocks, process observations or guards were patched.
+
+Native x86 CLI qualification also reproduced a pre-existing first-context
+creation issue: omitting `--port` supplies Knack's wrapped default integer,
+rejected by the existing exact-integer validator. The native planning probes
+created contexts with explicit `--port`; this reviewed planning delta does not
+fix the separately tracked creation issue. Earlier native filesystem variability,
+full Windows Python/minimum-x86 coverage, latest-head public AI/CI, effective
+ownership and live-runtime/SDK qualification remain independent limitations.

@@ -115,11 +115,14 @@ class FeedbackTargetContracts(unittest.TestCase):
     def test_real_config_resolver_is_profile_isolated_in_independent_processes(self):
         script = """
 import json
-from azext_logicapp import _context
+from azext_logicapp import _context, custom
 import sys
 if len(sys.argv) > 1:
     _context.create_context(sys.argv[1], path=sys.argv[2], port=7079, use=True)
-print(json.dumps({'store': _context.store_path(), 'data': _context.load_store()}))
+context, _ = _context.get_context()
+print(json.dumps({'store': _context.store_path(), 'data': _context.load_store(),
+                  'project': custom._project_path_from_context(None, None),
+                  'plan': custom.test_plan(None, workflow='Orders') if context else None}))
 """
         home = self.root / "home"
         home.mkdir()
@@ -134,19 +137,34 @@ print(json.dumps({'store': _context.store_path(), 'data': _context.load_store()}
         for index, profile in enumerate(profiles):
             env = dict(environment, AZURE_CONFIG_DIR=str(profile))
             result = subprocess.run([sys.executable, "-c", script], env=env,
-                                    capture_output=True, text=True, check=True)
+                                    cwd=str(self.root), capture_output=True, text=True, check=True)
             value = json.loads(result.stdout)
             self.assertEqual(str(profile / "logicapp" / "contexts.json"), value["store"])
             self.assertEqual({"active": None, "contexts": {}}, value["data"])
+            self.assertEqual(str(self.root), value["project"])
+            self.assertIsNone(value["plan"])
             self.assertFalse((profile / "logicapp").exists())
-            result = subprocess.run([sys.executable, "-c", script, "local-" + str(index), str(self.root)],
-                                    env=env, capture_output=True, text=True, check=True)
+            project = self.root / ("App" + str(index))
+            (project / "Orders").mkdir(parents=True)
+            kind = "Stateful" if index == 0 else "Stateless"
+            (project / "host.json").write_text(json.dumps(_workflow.HOST_JSON), encoding="utf-8")
+            (project / "Orders" / "workflow.json").write_text(
+                json.dumps(_workflow.workflow_json(kind)), encoding="utf-8")
+            before = {str(path): path.read_bytes() for path in project.rglob("*") if path.is_file()}
+            result = subprocess.run([sys.executable, "-c", script, "local-" + str(index), str(project)],
+                                    env=env, cwd=str(self.root), capture_output=True, text=True, check=True)
             value = json.loads(result.stdout)
             self.assertEqual("local-" + str(index), value["data"]["active"])
             self.assertEqual(["local-" + str(index)], list(value["data"]["contexts"]))
+            self.assertEqual(str(project), value["project"])
+            self.assertEqual(kind, value["plan"]["workflow"]["kind"])
+            self.assertEqual(0, value["plan"]["exitCode"])
+            self.assertEqual("notExecuted", value["plan"]["businessTests"])
+            self.assertEqual("blocked", value["plan"]["gates"]["sdkExecution"])
+            self.assertEqual(before, {str(path): path.read_bytes() for path in project.rglob("*") if path.is_file()})
         self.assertEqual(sentinel, legacy.read_bytes())
         environment.pop("AZURE_CONFIG_DIR", None)
-        result = subprocess.run([sys.executable, "-c", script], env=environment,
+        result = subprocess.run([sys.executable, "-c", script], env=environment, cwd=str(self.root),
                                 capture_output=True, text=True, check=True)
         self.assertEqual(str(legacy), json.loads(result.stdout)["store"])
         self.assertEqual(sentinel, legacy.read_bytes())
@@ -228,7 +246,7 @@ class FeedbackValidationContracts(unittest.TestCase):
                 self.assertTrue(_test_report.validate_report(earlier))
                 self.assertEqual("notExecuted", earlier["executionState"])
                 self.assertEqual(4, earlier["exitCode"])
-        for version in ("0.1.22", "0.1.23", "1.0.0b1"):
+        for version in ("0.1.22", "0.1.23", "0.1.24", "1.0.0b1"):
             for policy in ("planning", "strict"):
                 with self.subTest(version=version, policy=policy):
                     earlier = copy.deepcopy(report)
@@ -257,7 +275,7 @@ class FeedbackValidationContracts(unittest.TestCase):
         exec(compile(module, "<future-report-producer>", "exec"), namespace)
         (self.root / "host.json").write_text(json.dumps(_workflow.HOST_JSON), encoding="utf-8")
         report = _testing.plan_report(str(self.root), "hello")
-        for schema, producers in (("1.0", ("1.0.0b1",)), ("2.0", ("0.1.22", "0.1.23", "1.0.0b1"))):
+        for schema, producers in (("1.0", ("1.0.0b1",)), ("2.0", ("0.1.22", "0.1.23", "0.1.24", "1.0.0b1"))):
             for producer in producers:
                 with self.subTest(schema=schema, producer=producer):
                     saved = copy.deepcopy(report)
@@ -269,3 +287,20 @@ class FeedbackValidationContracts(unittest.TestCase):
                     original = copy.deepcopy(saved)
                     self.assertTrue(namespace["validate_report"](saved))
                     self.assertEqual(original, saved)
+        source = _testing.plan_report(str(self.root), "")
+        for schema, legacy in (("1.0", True), ("2.0", True), ("2.0", False)):
+            saved = copy.deepcopy(source)
+            saved["schemaVersion"] = schema
+            saved["provenance"]["cliVersion"] = "1.0.0b1"
+            if schema == "1.0":
+                del saved["exitPolicy"]
+            if legacy:
+                row = next(item for item in saved["findings"] if item["rule"] == "input.options")
+                row["message"] = "Explicit local paths and a bounded workflow name are required."
+                row["recommendation"] = (
+                    "Supply --path and --workflow; do not use URLs, device paths or target contexts.")
+            _test_report.finalize(saved)
+            with self.subTest(schema=schema, legacy=legacy):
+                self.assertTrue(namespace["validate_report"](saved))
+                saved["provenance"]["cliVersion"] = "1.0.0b2"
+                self.assertEqual(schema == "2.0" and not legacy, namespace["validate_report"](saved))

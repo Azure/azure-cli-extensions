@@ -23,10 +23,11 @@ def load_arguments(self, _):
     run_id_type = CLIArgumentType(options_list=['--run-id'], help='Workflow run id.')
 
     with self.argument_context('logicapp test plan') as c:
-        c.argument('path', arg_type=path_type, required=True, help='Explicit existing local Standard project. No active context is inherited.')
+        c.argument('path', arg_type=path_type, help='Existing local Standard project. Overrides the local context path; defaults to the named/active local context, then current directory. Cloud contexts cannot supply a local project.')
+        c.argument('context', arg_type=target_context_type, help='Named local project context. Defaults to the active context when --path is omitted. No runtime or cloud operation is performed.')
         c.argument('workflow', arg_type=workflow_type, required=True, help='One explicit local workflow directory name.')
         c.argument('test_project', options_list=['--test-project'], completer=FilesCompleter(), help='Optional existing .csproj to inspect as XML only. No MSBuild/import evaluation or test discovery.')
-        c.argument('report_path', options_list=['--report-path'], completer=FilesCompleter(), help='Optional .json report in an existing local directory. Default stdout only; no directories are created.')
+        c.argument('report_path', options_list=['--report-path'], completer=FilesCompleter(), help='Optional .json report. Relative paths use the selected local project; absolute paths are unchanged. Parent must exist. Default stdout only; no directories are created.')
         c.argument('force', options_list=['--force'], action='store_true', help='Replace an existing regular report only. Requires --report-path; cannot authorize SDK restore or execution.')
         c.argument('strict', options_list=['--strict'], action='store_true', help='Exit 4 for blocked execution gates after successful planning. Default exit 0 means plan generated, not tests passed; SDK execution stays blocked.')
 

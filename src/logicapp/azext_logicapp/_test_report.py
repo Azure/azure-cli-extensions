@@ -12,7 +12,8 @@ from collections import OrderedDict
 VERSION = "1.0.0b1"
 SCHEMA = "2.0"
 _V1_PRODUCERS = ("0.1.17", "0.1.18", "0.1.19", "0.1.20", "0.1.21", "1.0.0b1")
-_V2_PRODUCERS = ("0.1.22", "0.1.23", "1.0.0b1", VERSION)
+_V2_PRODUCERS = ("0.1.22", "0.1.23", "0.1.24", "1.0.0b1", VERSION)
+_LEGACY_INPUT_OPTIONS_PRODUCERS = _V1_PRODUCERS + ("0.1.22", "0.1.23")
 SDK_PACKAGE = "Microsoft.Azure.Workflows.WebJobs.Tests.Extension"
 WORKFLOW_SCHEMA = ("https://schema.management.azure.com/providers/Microsoft.Logic/"
                    "schemas/2016-06-01/workflowdefinition.json#")
@@ -22,8 +23,8 @@ POINTERS = ("", "/kind", "/definition", "/definition/$schema", "/definition/trig
 
 # Text is selected by rule, never copied from workflow values, XML or parser errors.
 RULES = {
-    "input.options": ("input", "error", "Explicit local paths and a bounded workflow name are required.",
-                      "Supply --path and --workflow; do not use URLs, device paths or target contexts."),
+    "input.options": ("input", "error", "A local project and a bounded workflow name are required.",
+                      "Select an existing local project with --path or a local context and supply --workflow; do not use URLs or device paths."),
     "input.unsafe": ("input", "error", "Input must be a local regular file without linked path components.",
                      "Select a regular local file; linked files and directories are not inspected."),
     "input.unreadable": ("input", "error", "The selected input is missing or unreadable.",
@@ -89,8 +90,11 @@ RULES = {
 }
 
 
-def finding(rule, source="options", pointer=""):
+def finding(rule, source="options", pointer="", producer_version=None):
     category, severity, message, recommendation = RULES[rule]
+    if rule == "input.options" and producer_version in _LEGACY_INPUT_OPTIONS_PRODUCERS:
+        message = "Explicit local paths and a bounded workflow name are required."
+        recommendation = "Supply --path and --workflow; do not use URLs, device paths or target contexts."
     return {"rule": rule, "category": category, "severity": severity, "source": source,
             "jsonPointer": pointer, "message": message, "recommendation": recommendation}
 
@@ -237,6 +241,21 @@ def _validated_inputs(inputs):
     return seen
 
 
+def _valid_finding(row, schema, producer):
+    if not isinstance(row, dict) or set(row) != set(finding("sdk.policy")):
+        return False
+    rule, source, pointer = row["rule"], row["source"], row["jsonPointer"]
+    if not all(isinstance(item, str) for item in (rule, source, pointer)):
+        return False
+    if rule not in RULES or source not in ROLES or pointer not in POINTERS:
+        return False
+    if row == finding(rule, source, pointer, producer):
+        return True
+    # The unpublished public version spans both exact schema-2 guidance catalogs.
+    return (schema == "2.0" and producer == "1.0.0b1" and rule == "input.options" and
+            row == finding(rule, source, pointer))
+
+
 def validate_report(value):
     """Validate each closed schema without reinterpreting historical exits."""
     if not isinstance(value, dict) or value.get("schemaVersion") not in ("1.0", SCHEMA):
@@ -259,14 +278,7 @@ def validate_report(value):
     if workflow["definitionHash"] != (seen.get("workflow") or {}).get("sha256"):
         return False
     for row in rows:
-        if not isinstance(row, dict) or set(row) != set(finding("sdk.policy")):
-            return False
-        rule, source, pointer = row["rule"], row["source"], row["jsonPointer"]
-        if not all(isinstance(item, str) for item in (rule, source, pointer)):
-            return False
-        if rule not in RULES or source not in ROLES or pointer not in POINTERS:
-            return False
-        if row != finding(rule, source, pointer):
+        if not _valid_finding(row, value["schemaVersion"], value["provenance"]["cliVersion"]):
             return False
     if not all(any(row["rule"] == rule for row in rows)
                for rule in ("sdk.policy", "sdk.qualification", "scope.business")):

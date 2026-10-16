@@ -18,6 +18,7 @@ from unittest import mock
 
 from azure.cli.core import get_default_cli, util
 from azure.cli.core import extension
+from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, ResourceNotFoundError
 from azure.cli.core.extension import DevExtension
 
 from azext_logicapp import _context, _run_execution, _runtime_doctor, _workflow, custom
@@ -124,6 +125,120 @@ class CliContractRegressions(unittest.TestCase):
         self.invoke(self.plan("--strict", "--report-path", str(self.root / "absent" / "p.json")), expected=6)
         self.invoke(["logicapp", "test", "results", "show", "--result-file", str(self.report_file), "--strict"],
                     expected=2)
+
+    def test_plan_uses_active_or_named_local_context_without_writing_or_executing(self):
+        context = {"name": "development", "target": {"kind": "local", "path": str(self.project), "port": 7071}}
+        before = {str(path): path.read_bytes() for path in self.project.rglob("*") if path.is_file()}
+        for name in (None, "development"):
+            with self.subTest(context=name), \
+                    mock.patch.object(custom, "get_context", return_value=(context, {})) as get_context:
+                args = ["logicapp", "test", "plan", "--workflow", "Orders"]
+                if name:
+                    args += ["--context", name]
+                report, text = self.invoke(args)
+                get_context.assert_called_once_with(name)
+                self.assertEqual("planned", report["outcome"])
+                self.assertEqual("Stateful", report["workflow"]["kind"])
+                self.assertEqual("notExecuted", report["businessTests"])
+                self.assertEqual([0, 0, 0], [report["summary"][key] for key in ("executed", "passed", "failed")])
+                self.assertEqual("blocked", report["gates"]["sdkRestore"])
+                self.assertEqual("blocked", report["gates"]["sdkExecution"])
+                self.assertNotIn(str(self.project), text)
+        self.assertEqual(before, {str(path): path.read_bytes()
+                                  for path in self.project.rglob("*") if path.is_file()})
+
+    def test_plan_explicit_path_bypasses_implicit_context_and_empty_paths_do_not_fall_back(self):
+        with mock.patch.object(custom, "get_context", side_effect=AssertionError("Active context consulted")):
+            self.invoke(self.plan(), query="executionState")
+            for value in ("", " "):
+                self.invoke(["logicapp", "test", "plan", "--path", value, "--workflow", "Orders"], expected=1)
+
+    def test_plan_named_context_is_validated_but_explicit_path_selects_project_and_output_base(self):
+        other = self.root / "Other"
+        (other / "Reports").mkdir(parents=True)
+        context = {"name": "development", "target": {"kind": "local", "path": str(other), "port": 7071}}
+        (self.project / "Reports").mkdir()
+        with mock.patch.object(custom, "get_context", return_value=(context, {})) as get_context:
+            report, _ = self.invoke(self.plan("--context", "development",
+                                             "--report-path", os.path.join("Reports", "plan.json")))
+            get_context.assert_called_once_with("development")
+        self.assertEqual("Stateful", report["workflow"]["kind"])
+        self.assertEqual(report, json.loads((self.project / "Reports" / "plan.json").read_text()))
+        self.assertFalse((other / "Reports" / "plan.json").exists())
+
+    def test_plan_relative_report_uses_context_project_and_preserves_publication_guards(self):
+        context = {"name": "development", "target": {"kind": "local", "path": str(self.project), "port": 7071}}
+        (self.project / "Reports").mkdir()
+        args = ["logicapp", "test", "plan", "--workflow", "Orders", "--strict",
+                "--report-path", os.path.join("Reports", "plan.json")]
+        with mock.patch.object(custom, "get_context", return_value=(context, {})):
+            report, _ = self.invoke(args, expected=4)
+            saved = self.project / "Reports" / "plan.json"
+            original = saved.read_bytes()
+            self.assertEqual(report, json.loads(original))
+            self.assertEqual("notExecuted", report["executionState"])
+            refused, _ = self.invoke(args, expected=6)
+            self.assertEqual("publicationError", refused["outcome"])
+            self.assertEqual(original, saved.read_bytes())
+            self.invoke(args + ["--force"], expected=4)
+            before = self.definition.read_bytes()
+            protected, _ = self.invoke(
+                ["logicapp", "test", "plan", "--workflow", "Orders", "--force",
+                 "--report-path", os.path.join("Orders", "workflow.json")], expected=6)
+            self.assertEqual("publicationError", protected["outcome"])
+            self.assertEqual(before, self.definition.read_bytes())
+            missing = self.project / "Absent" / "plan.json"
+            self.invoke(["logicapp", "test", "plan", "--workflow", "Orders",
+                         "--report-path", os.path.join("Absent", "plan.json")], expected=6)
+            self.assertFalse(missing.parent.exists())
+
+    def test_plan_context_keeps_absolute_report_destination_unchanged(self):
+        context = {"name": "development", "target": {"kind": "local", "path": str(self.project), "port": 7071}}
+        with mock.patch.object(custom, "get_context", return_value=(context, {})):
+            report, _ = self.invoke(["logicapp", "test", "plan", "--workflow", "Orders",
+                                     "--report-path", str(self.report_file)])
+        self.assertEqual(report, json.loads(self.report_file.read_text()))
+
+    def test_plan_no_context_defaults_to_current_directory_and_keeps_test_project_input_relative_to_cwd(self):
+        previous = os.getcwd()
+        os.chdir(self.project)
+        try:
+            with mock.patch.object(custom, "get_context", return_value=(None, {})) as get_context:
+                report, _ = self.invoke(["logicapp", "test", "plan", "--workflow", "Orders"])
+                get_context.assert_called_once_with(None)
+                self.assertEqual("Stateful", report["workflow"]["kind"])
+        finally:
+            os.chdir(previous)
+        test_project = self.root / "Tests.csproj"
+        test_project.write_text(
+            '<Project><PropertyGroup><TargetFramework>net8.0</TargetFramework></PropertyGroup></Project>',
+            encoding="utf-8")
+        os.chdir(self.root)
+        try:
+            with mock.patch.object(custom, "get_context", return_value=(
+                    {"target": {"kind": "local", "path": str(self.project)}}, {})):
+                report, _ = self.invoke(["logicapp", "test", "plan", "--workflow", "Orders",
+                                         "--test-project", "Tests.csproj"])
+                self.assertEqual("net8.0", report["dependencies"]["declaredTargetFramework"])
+        finally:
+            os.chdir(previous)
+
+    def test_plan_cloud_and_missing_named_contexts_never_fall_back_to_a_local_project(self):
+        cloud = {"name": "cloud", "target": {"kind": "cloud", "resourceGroup": "rg", "name": "app"}}
+        with mock.patch.object(custom, "get_context", return_value=(cloud, {})):
+            self.invoke(["logicapp", "test", "plan", "--workflow", "Orders"], expected=1)
+            self.invoke(self.plan("--context", "cloud"), expected=1)
+            with self.assertRaises(MutuallyExclusiveArgumentError) as caught:
+                custom.test_plan(None, workflow="Orders", context="cloud")
+            self.assertNotIn("--with-runtime", str(caught.exception))
+        with mock.patch.object(custom, "get_context",
+                               side_effect=ResourceNotFoundError("Selected context was not found.")):
+            self.invoke(["logicapp", "test", "plan", "--context", "missing", "--workflow", "Orders"], expected=3)
+            self.invoke(self.plan("--context", "missing"), expected=3)
+
+    @unittest.skipUnless(os.name == "nt", "Windows drive-relative path syntax")
+    def test_plan_rejects_drive_relative_reports_instead_of_using_per_drive_current_directory(self):
+        self.invoke(self.plan("--report-path", "C:plan.json"), expected=1)
 
     def test_required_and_forbidden_arguments_do_not_execute_business_tests(self):
         for args in (

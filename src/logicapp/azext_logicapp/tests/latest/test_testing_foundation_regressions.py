@@ -194,6 +194,92 @@ class FoundationTests(unittest.TestCase):
         self.assert_gated(report)
         self.assertEqual("unknown", report["gates"]["platformQualification"])
 
+    def test_context_guidance_and_version_bump_preserve_closed_historical_report_catalogs(self):
+        source = testing.plan_report(str(self.project), "")
+        self.assertEqual(3, source["exitCode"])
+        self.assertTrue(protocol.validate_report(source))
+        self.assert_gated(source)
+        for version in ("0.1.17", "0.1.18", "0.1.19", "0.1.20", "0.1.21", "0.1.22", "0.1.23"):
+            earlier = copy.deepcopy(source)
+            earlier["provenance"]["cliVersion"] = version
+            if version not in ("0.1.22", "0.1.23"):
+                earlier["schemaVersion"] = "1.0"
+                del earlier["exitPolicy"]
+            for row in earlier["findings"]:
+                if row["rule"] == "input.options":
+                    row["message"] = "Explicit local paths and a bounded workflow name are required."
+                    row["recommendation"] = (
+                        "Supply --path and --workflow; do not use URLs, device paths or target contexts.")
+            protocol.finalize(earlier)
+            with self.subTest(version=version):
+                self.assertTrue(protocol.validate_report(earlier))
+                inspected = testing.results_report(self.save(earlier))
+                self.assertEqual(0, inspected["exitCode"])
+                self.assertEqual(version, inspected["provenance"]["cliVersion"])
+                self.assertEqual(earlier["findings"], inspected["findings"])
+                self.assertEqual(3, inspected["inspection"]["sourceExitCode"])
+                self.assert_gated(inspected)
+                invalid = copy.deepcopy(earlier)
+                invalid["findings"][0]["recommendation"] = "Arbitrary unsupported guidance"
+                self.assertFalse(protocol.validate_report(invalid))
+                invalid = copy.deepcopy(earlier)
+                invalid["summary"]["executed"] = 1
+                self.assertFalse(protocol.validate_report(invalid))
+        for version in ("0.1.22", "0.1.23"):
+            for strict in (False, True):
+                earlier = self.plan(strict=strict)
+                earlier["provenance"]["cliVersion"] = version
+                with self.subTest(version=version, strict=strict):
+                    self.assertTrue(protocol.validate_report(earlier))
+                    inspected = testing.results_report(self.save(earlier))
+                    self.assertEqual(0, inspected["exitCode"])
+                    self.assertEqual(4 if strict else 0, inspected["inspection"]["sourceExitCode"])
+                    self.assert_gated(inspected)
+        invalid = self.plan()
+        invalid["provenance"]["cliVersion"] = "0.1.25"
+        self.assertFalse(protocol.validate_report(invalid))
+        invalid = copy.deepcopy(source)
+        invalid["provenance"]["cliVersion"] = "0.1.24"
+        for row in invalid["findings"]:
+            if row["rule"] == "input.options":
+                row["message"] = "Explicit local paths and a bounded workflow name are required."
+                row["recommendation"] = (
+                    "Supply --path and --workflow; do not use URLs, device paths or target contexts.")
+        self.assertFalse(protocol.validate_report(invalid))
+
+    def test_public_preview_preserves_only_exact_legacy_and_current_options_catalogs(self):
+        source = testing.plan_report(str(self.project), "")
+        current = next(row for row in source["findings"] if row["rule"] == "input.options")
+        old_message = "Explicit local paths and a bounded workflow name are required."
+        old_recommendation = "Supply --path and --workflow; do not use URLs, device paths or target contexts."
+        for schema, legacy in (("1.0", True), ("1.0", False), ("2.0", True), ("2.0", False)):
+            report = copy.deepcopy(source)
+            report["schemaVersion"] = schema
+            report["provenance"]["cliVersion"] = "1.0.0b1"
+            if schema == "1.0":
+                del report["exitPolicy"]
+            row = next(item for item in report["findings"] if item["rule"] == "input.options")
+            if legacy:
+                row.update(message=old_message, recommendation=old_recommendation)
+            protocol.finalize(report)
+            with self.subTest(schema=schema, legacy=legacy):
+                if schema == "1.0" and not legacy:
+                    self.assertFalse(protocol.validate_report(report))
+                    continue
+                original = copy.deepcopy(report)
+                self.assertTrue(protocol.validate_report(report))
+                inspected = testing.results_report(self.save(report))
+                self.assertEqual(0, inspected["exitCode"])
+                self.assertEqual(original, report)
+                self.assertEqual(report["findings"], inspected["findings"])
+                self.assertEqual(3, inspected["inspection"]["sourceExitCode"])
+                self.assert_gated(inspected)
+                for field, old in (("message", old_message), ("recommendation", old_recommendation)):
+                    invalid = copy.deepcopy(report)
+                    changed = next(item for item in invalid["findings"] if item["rule"] == "input.options")
+                    changed[field] = current[field] if legacy else old
+                    self.assertFalse(protocol.validate_report(invalid))
+
     def test_absent_empty_and_invalid_project_never_create_files(self):
         missing = self.root / "missing"
         before = sorted(str(path) for path in self.root.rglob("*"))

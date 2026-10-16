@@ -11,7 +11,8 @@ short-summary: Inspect local workflow testing prerequisites without executing te
 long-summary: >
   SDK-ready foundation only. No restore, build, discovery, generation, SDK load
   or business test execution. SDK adoption and qualification remain gated.
-  Explicit local files only; no active context, Azure target or login is used.
+  Local files only. Planning can use a named or active local project context;
+  no runtime, Azure resource target or login is used.
 """
 
 helps['logicapp test plan'] = """
@@ -23,11 +24,22 @@ long-summary: >
   Outputs notExecuted markers even for valid authoring. Exit 0 means successful
   planning, never tests passed. --strict exits 4 for blocked execution gates.
   Other exits: 1 authoring, 3 input, 5 changed inputs, 6 publication error.
+  --path overrides the project path from a named or active local context;
+  otherwise the current directory is used. Cloud contexts cannot supply a
+  local project. An explicit --path bypasses the active context; a named cloud
+  --context is refused even with --path.
+  CLI argument and context resolution errors occur before a report is available.
   Default stdout only; --report-path writes a sanitized report to an existing
-  directory. Global output/query flags work before diagnostic nonzero exits.
+  directory. Relative report paths use the selected project, not the shell's
+  current directory; absolute report paths are unchanged.
+  Global output/query flags work before diagnostic nonzero exits.
 examples:
   - name: Inspect one workflow without changing files.
     text: az logicapp test plan --path .\\App --workflow Orders --output json
+  - name: Inspect one workflow in the active local context without changing files.
+    text: az logicapp test plan --workflow Orders --output json
+  - name: Save a report under a named local project's existing Reports directory.
+    text: az logicapp test plan --context development --workflow Orders --report-path .\\Reports\\plan.json
   - name: Inspect declared test metadata and save the preflight report.
     text: az logicapp test plan --path .\\App --workflow Orders --test-project .\\Tests\\App.csproj --report-path .\\Reports\\plan.json
   - name: Generate a preflight report and fail the invocation if execution gates remain blocked.
@@ -51,7 +63,7 @@ long-summary: >
   exact bytes and exits 5 on drift. Native SDK, TRX and legacy results are unsupported.
 examples:
   - name: Inspect a saved preflight report (no tests executed) and check the current definition identity.
-    text: az logicapp test results show --result-file .\\Reports\\plan.json --workflow-file .\\App\\Orders\\workflow.json
+    text: az logicapp test results show --result-file .\\App\\Reports\\plan.json --workflow-file .\\App\\Orders\\workflow.json
 """
 
 helps['logicapp context'] = """

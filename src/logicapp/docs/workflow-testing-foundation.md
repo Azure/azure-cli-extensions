@@ -14,15 +14,36 @@ Errors/warnings count inspection findings, not native tests.
 az logicapp test plan --path .\App --workflow Orders --output json
 az logicapp test plan --path .\App --workflow Orders --strict --output json
 az logicapp test plan --path .\App --workflow Orders --test-project .\Tests\App.csproj --report-path .\Reports\plan.json
-az logicapp test results show --result-file .\Reports\plan.json --output table
-az logicapp test results show --result-file .\Reports\plan.json --workflow-file .\App\Orders\workflow.json --query "{source:inspection.sourceOutcome,identity:inspection.workflowIdentity,execution:executionState}"
+az logicapp context create --name development --path .\App --port 7079 --use
+az logicapp test plan --workflow Orders --output json
+az logicapp test plan --context development --workflow Orders --report-path .\Reports\plan.json
+az logicapp test results show --result-file .\App\Reports\plan.json --output table
+az logicapp test results show --result-file .\App\Reports\plan.json --workflow-file .\App\Orders\workflow.json --query "{source:inspection.sourceOutcome,identity:inspection.workflowIdentity,execution:executionState}"
 ```
 
-`--path` and `--workflow` are required. Select an existing local Standard project
-and one workflow directory; an explicit Stateful/Stateless kind is required.
-Active/saved contexts are not consulted. There are no cloud/local-runtime target
-modes or login requirements. Inherited Azure CLI output/query/subscription flags
-do not turn this command into a cloud operation. There is no `test run`,
+`--workflow` is required. The local project is selected by explicit `--path`,
+otherwise the named `--context` or active local context, otherwise the current
+directory. An explicit `--path` bypasses the active context. An explicitly named
+context is still validated; a cloud `--context` is refused even with `--path`,
+rather than silently selecting a different local target. A cloud active context
+without an explicit local path is also refused. Context selection uses the
+current Azure CLI configuration profile; isolated profiles do not inherit a
+global active context. Planning does not create or change a context.
+CLI argument and context resolution errors are reported by Azure CLI before a
+preflight document is available; the report's diagnostic exit policy applies
+only after local project selection succeeds.
+
+The context-creation example deliberately supplies `--port`. Native CLI 2.91.0
+x86 qualification reproduced an existing omitted-port defect: Knack supplies a
+wrapped default integer that the current context validator refuses. This planning
+follow-up does not fix that separately tracked defect; an explicit integer port
+works without relaxing the validator.
+
+Select an existing local Standard project and one workflow directory; an explicit
+Stateful/Stateless kind is required. These are project-file defaults, not
+cloud/local-runtime execution targets or login requirements. Inherited Azure CLI
+output/query/subscription flags do not turn this command into a cloud operation.
+There is no `test run`,
 `prepare`, `generate`, SDK acceptance flag or policy file that enables execution.
 
 ## Bounded read-only inspection
@@ -30,7 +51,11 @@ do not turn this command into a cloud operation. There is no `test run`,
 Default `plan` writes nothing: no directory, context, cache, runtime state,
 fixture, dependency, result store or temporary file. It reads only the selected
 `host.json`, `<workflow>\workflow.json`, optional explicit `.csproj`, and project
-configuration files needed for recognized literal references. No recursive
+configuration files needed for recognized literal references. Local-context
+selection additionally reads the selected CLI profile's context store when
+needed. Optional `--test-project` keeps its existing input-file semantics:
+relative paths are resolved from the shell's current directory, not discovered
+or inferred from the selected project. No recursive
 inventory, home/tool/package/credential search, remote schema or NuGet query,
 subprocess, executable test discovery, assembly import, host launch or network
 probe occurs. Missing files are findings, not generated defaults.
@@ -119,7 +144,17 @@ Input, authoring, stale and publication errors take precedence in both modes.
 ## Explicit report writes
 
 `--report-path` is optional and the only write boundary. Its parent must already
-exist and be outside the filesystem root. The destination must be a `.json`
+exist and be outside the filesystem root. A relative report path is now resolved
+against the selected local project, including an explicit `--path`; absolute
+report paths remain unchanged. For example, selecting `C:\Apps\Orders` with
+`--report-path .\Reports\plan.json` selects `C:\Apps\Orders\Reports\plan.json`,
+regardless of the shell's current directory. This intentionally changes relative
+report-path resolution from earlier builds, which used the current directory.
+No report is saved unless `--report-path` is supplied, and missing output
+directories are not created. Windows drive-relative paths such as `C:plan.json`
+are refused; use a fully qualified path or a path relative to the selected project.
+
+The destination must be a `.json`
 regular file or absent; existing files require `--force`. Inputs, hard links to
 inputs, reserved workflow/config filenames, directories and linked components
 cannot be overwritten. `--force` without `--report-path` is invalid.
@@ -150,11 +185,17 @@ producer provenance from the explicitly supported **0.1.17-0.1.21** releases
 and the earlier public **1.0.0b1** preview
 and the fixed rule catalog. A package-version bump alone does not invalidate
 these reports; unknown producer versions still require explicit qualification
-and validator support. Schema 2.0 accepts the fixed **0.1.22**, **0.1.23** and
+and validator support. Schema 2.0 accepts the fixed **0.1.22**, **0.1.23**, **0.1.24** and
 current public **1.0.0b1** producers and requires
 the explicit `planning`/`strict` policy with its matching outcome and exit.
 Schema 1.0 does not accept that new field or a rewritten `planned`/exit-0 result;
 old clients likewise reject schema 2.0 rather than misreading its new semantics.
+The changed `input.options` guidance uses the selected producer's exact catalog.
+Historical schema-1 public **1.0.0b1** retains its old guidance. Because the
+unpublished public preview version remains **1.0.0b1** across this follow-up,
+schema-2 reports from that producer accept exactly its old or new guidance
+variant; arbitrary text and mixed message/recommendation variants are rejected.
+Later producers do not inherit the legacy variant merely from a version bump.
 Supported older reports retain their recorded
 provenance, not a claim of current-input freshness or executed tests.
 
