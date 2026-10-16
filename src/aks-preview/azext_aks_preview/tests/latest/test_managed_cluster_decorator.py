@@ -3147,7 +3147,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             AKSManagedClusterParamDict(
                 {
                     "enable_fips": True,
-                    "kubernetes_version": "1.34.0",
+                    "kubernetes_version": "1.35.0",
                 }
             ),
             self.models,
@@ -3161,7 +3161,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             AKSManagedClusterParamDict(
                 {
                     "enable_fips": True,
-                    "kubernetes_version": "1.33.9",
+                    "kubernetes_version": "1.34.9",
                 }
             ),
             self.models,
@@ -3179,7 +3179,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         mc_4 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
         )
         mc_4.properties["enableFIPS"] = True
         ctx_4.attach_mc(mc_4)
@@ -3199,7 +3199,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                 {
                     "enable_fips": True,
                     "disable_fips": True,
-                    "kubernetes_version": "1.34.0",
+                    "kubernetes_version": "1.35.0",
                 }
             ),
             self.models,
@@ -8388,7 +8388,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "enable_fips": True,
-                "kubernetes_version": "1.34.0",
+                "kubernetes_version": "1.35.0",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -8398,7 +8398,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         mc_2 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
             agent_pool_profiles=[agentpool_profile],
         )
         dec_2.context.attach_mc(mc_2)
@@ -8409,7 +8409,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
             agent_pool_profiles=[ground_truth_agentpool_profile],
         )
         ground_truth_mc_2.enable_fips = True
@@ -8424,13 +8424,13 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "enable_fips": True,
-                "kubernetes_version": "1.33.9",
+                "kubernetes_version": "1.34.9",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_3 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.33.9",
+            kubernetes_version="1.34.9",
         )
         dec_3.context.attach_mc(mc_3)
         with self.assertRaises(InvalidArgumentValueError):
@@ -15418,7 +15418,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_1 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
         )
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.update_enable_fips(mc_1)
@@ -15436,14 +15436,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_2 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
             agent_pool_profiles=[agentpool_profile],
         )
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.update_enable_fips(mc_2)
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
             agent_pool_profiles=[agentpool_profile],
         )
         ground_truth_mc_2.enable_fips = True
@@ -15465,7 +15465,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_3 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
             agent_pool_profiles=[non_fips_agentpool_profile],
         )
         dec_3.context.attach_mc(mc_3)
@@ -15480,7 +15480,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_4 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.33.9",
+            kubernetes_version="1.34.9",
         )
         dec_4.context.attach_mc(mc_4)
         with self.assertRaises(InvalidArgumentValueError):
@@ -15498,7 +15498,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_5 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
             agent_pool_profiles=[agentpool_profile_5],
         )
         mc_5.properties["enableFIPS"] = True
@@ -15506,7 +15506,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_mc_5 = dec_5.update_enable_fips(mc_5)
         ground_truth_mc_5 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
             agent_pool_profiles=[agentpool_profile_5],
         )
         ground_truth_mc_5.enable_fips = False
@@ -15527,7 +15527,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_6 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
         )
         dec_6.context.attach_mc(mc_6)
         with self.assertRaises(MutuallyExclusiveArgumentError):

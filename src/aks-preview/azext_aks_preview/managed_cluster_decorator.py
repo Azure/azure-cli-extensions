@@ -1932,8 +1932,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             minor = int(version_parts[1].split("-")[0])
         except ValueError:
             return
-        if (major, minor) < (1, 34):
-            raise InvalidArgumentValueError("--enable-fips requires Kubernetes version 1.34 or later.")
+        if (major, minor) < (1, 35):
+            raise InvalidArgumentValueError("--enable-fips requires Kubernetes version 1.35 or later.")
 
     def _get_enable_fips_from_mc(self) -> Optional[bool]:
         if not self.mc:
