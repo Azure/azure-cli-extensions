@@ -9,7 +9,7 @@ from azext_applicationinsights.action import (
     AddContentValidation,
     AddHeaders
 )
-from azure.cli.core.commands.parameters import get_datetime_type, get_location_type, tags_type, get_three_state_flag, get_enum_type
+from azure.cli.core.commands.parameters import get_datetime_type, get_location_type, tags_type, get_three_state_flag, get_enum_type, get_resource_name_completion_list
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.command_modules.monitor.actions import get_period_type
 from ._validators import validate_applications, validate_storage_account_name_or_id, validate_log_analytic_workspace_name_or_id, validate_dest_account, validate_component_trace_flags
@@ -38,6 +38,7 @@ def load_arguments(self, _):
                        validator=validate_component_trace_flags,
                        help='Enable distributed traces. Reuse existing routing or create a default trace workspace.')
             c.argument('trace_workspace', arg_group='Distributed traces',
+                       completer=get_resource_name_completion_list('Microsoft.Monitor/accounts'),
                        help='Azure Monitor workspace name or resource ID. A name resolves in this component\'s resource group and subscription; cross-subscription targets require a resource ID.')
             c.argument('trace_retention_days', type=int, arg_group='Distributed traces',
                        help='Retention for a newly created trace container, 4-730 days. Default: 30. Existing containers are not modified.')

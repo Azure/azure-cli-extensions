@@ -50,6 +50,10 @@ class _Polling:
     def resource():
         return None
 
+    @staticmethod
+    def status():
+        return "Succeeded"
+
 
 class _ArmClient:
     def __init__(self, responses):
@@ -173,6 +177,19 @@ class TraceContainerTests(_TraceCommandTests):
         with self.assertRaisesRegex(CLIError, "missing required settings"):
             _container_settings({"properties": {"traceRetentionInDays": 30}})
 
+    def test_trace_container_write_does_not_accept_an_empty_response(self):
+        with self.assertRaisesRegex(CLIError, "missing required settings"):
+            self.invoke(TraceContainerCreate, [(404, {}), (201, {})])
+
+    def test_trace_container_invalid_response_settings_fail_loudly(self):
+        for name, value in (("traceRetentionInDays", None), ("traceMetricsState", None),
+                            ("traceDurationWindowInSeconds", 0), ("traceRetentionInDays", 731)):
+            with self.subTest(name=name, value=value):
+                container = copy.deepcopy(CONTAINER)
+                container["properties"][name] = value
+                with self.assertRaisesRegex(CLIError, "returned invalid settings"):
+                    _container_settings(container)
+
     def test_trace_workspace_arguments_use_the_workspace_subscription(self):
         other_subscription = "11111111-1111-1111-1111-111111111111"
         arguments = _workspace_arguments(WORKSPACE.replace(SUBSCRIPTION, other_subscription))
@@ -247,11 +264,35 @@ class TraceAssociationTests(_TraceCommandTests):
                 (200, {"value": []}), (404, {}), (403, {"error": {"code": "AuthorizationFailed"}}),
             ], azure_monitor_workspace=WORKSPACE)
 
+    def test_trace_association_does_not_follow_an_empty_container_response(self):
+        with self.assertRaisesRegex(CLIError, "missing required settings"):
+            self.invoke(TraceAssociationCreate, [
+                (200, {"value": []}), (404, {}), (201, {}),
+            ], azure_monitor_workspace=WORKSPACE)
+
     def test_trace_association_write_failure_reports_partial_state(self):
         with self.assertRaisesRegex(CLIError, "container is ready"):
             self.invoke(TraceAssociationCreate, [
                 (200, {"value": []}), (200, CONTAINER), (500, {"error": {"code": "InternalServerError"}}),
             ], azure_monitor_workspace=WORKSPACE)
+
+    def test_trace_association_unsupported_location_explains_the_region_gate(self):
+        with self.assertRaisesRegex(CLIError, "backing Log Analytics workspace region"):
+            self.invoke(TraceAssociationCreate, [
+                (200, {"value": []}), (200, CONTAINER),
+                (400, {"error": {"code": "UnsupportedLocation", "message": "Region is not enabled"}}),
+            ], azure_monitor_workspace=WORKSPACE)
+
+    def test_trace_association_retarget_names_old_and_new_workspaces(self):
+        target = WORKSPACE.replace("myAmw", "otherAmw")
+        with patch("azext_applicationinsights._trace.logger") as logs:
+            self.invoke(TraceAssociationCreate, [
+                (200, {"value": [_association(COMPONENT_SCOPE)]}), (200, CONTAINER),
+                (200, _association(COMPONENT_SCOPE, target)),
+            ], azure_monitor_workspace=target)
+        self.assertIn("Replaced the trace destination", str(logs.warning.call_args_list))
+        self.assertIn(WORKSPACE, str(logs.warning.call_args_list))
+        self.assertIn(target, str(logs.warning.call_args_list))
 
     def test_trace_association_delete_is_idempotent_and_reports_inherited_routes(self):
         for status in (200, 204, 404):

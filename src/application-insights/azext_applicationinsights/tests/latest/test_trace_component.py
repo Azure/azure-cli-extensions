@@ -3,6 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from contextlib import redirect_stderr, redirect_stdout
+from io import StringIO
+from pathlib import Path
+import shlex
+import tempfile
 from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch, sentinel
@@ -27,10 +32,10 @@ def _not_found():
     return error
 
 
-class TraceComponentTests(unittest.TestCase):
+class _TraceComponentTests(unittest.TestCase):
     def setUp(self):
         self.cli_ctx = DummyCli(random_config_dir=True)
-        self.cmd = SimpleNamespace(cli_ctx=self.cli_ctx)
+        self.command = SimpleNamespace(cli_ctx=self.cli_ctx)
         self.component = ApplicationInsightsComponent(location="eastus", kind="web", application_type="web")
         self.component.id = COMPONENT_SCOPE
         self.client = Mock()
@@ -61,12 +66,14 @@ class TraceComponentTests(unittest.TestCase):
         with patch("azure.cli.core.aaz._command_ctx.AAZCommandCtx.get_http_client", return_value=self.arm):
             if creating:
                 result = create_or_update_component(
-                    self.cmd, self.client, "myAi", "apps", "eastus", **arguments,
+                    self.command, self.client, "myAi", "apps", "eastus", **arguments,
                 )
             else:
-                result = update_component(self.cmd, self.client, "myAi", "apps", **arguments)
+                result = update_component(self.command, self.client, "myAi", "apps", **arguments)
         return result, self.arm.requests
 
+
+class TraceComponentTests(_TraceComponentTests):
     def test_trace_component_explicit_onboarding_does_not_put_the_component(self):
         result, requests = self.invoke([
             (200, {"value": []}), (404, {}), (201, CONTAINER), (200, _association(COMPONENT_SCOPE)),
@@ -208,6 +215,14 @@ class TraceComponentTests(unittest.TestCase):
                 workspace = _resolve_default_workspace(self.cli_ctx, COMPONENT_SCOPE, source)
                 self.assertTrue(workspace.endswith("/DefaultAzureMonitorWorkspace-" + expected))
 
+    def test_trace_component_default_workspace_failure_reports_reusable_group(self):
+        self.resources.resources.get_by_id.side_effect = _not_found()
+        self.resources.resources.begin_create_or_update_by_id.return_value.result.side_effect = HttpResponseError(
+            "workspace creation rejected",
+        )
+        with self.assertRaisesRegex(CLIError, "resource group is reusable"):
+            _resolve_default_workspace(self.cli_ctx, COMPONENT_SCOPE, "eastus")
+
     def test_trace_component_offboarding_keeps_inherited_routing(self):
         result, requests = self.invoke([
             (404, {}), (200, {"value": [_association(SUBSCRIPTION_SCOPE)]}),
@@ -270,3 +285,107 @@ class TraceComponentTests(unittest.TestCase):
         self.assertEqual(requests, [])
         self.assertEqual(write.call_args.kwargs["kind"], "other")
         self.factory.assert_not_called()
+
+
+class TraceCliTests(_TraceComponentTests):
+    def setUp(self):
+        super().setUp()
+        from azure.cli.core import AzCli, MainCommandsLoader
+        from azure.cli.core.azlogging import AzCliLogging
+        from azure.cli.core.commands import AzCliCommandInvoker
+        from azure.cli.core.extension import DevExtension
+        from azure.cli.core.parser import AzCliCommandParser
+        from azure.cli.core._help import AzCliHelp
+        from azure.cli.core._output import AzOutputProducer
+        config = tempfile.TemporaryDirectory()
+        self.addCleanup(config.cleanup)
+        self.cli_ctx = AzCli(
+            cli_name="az", config_dir=config.name, config_env_var_prefix="AZURE",
+            commands_loader_cls=MainCommandsLoader, invocation_cls=AzCliCommandInvoker,
+            parser_cls=AzCliCommandParser, logging_cls=AzCliLogging,
+            output_cls=AzOutputProducer, help_cls=AzCliHelp,
+        )
+        self.cli_ctx.config.set_value("extension", "use_dynamic_install", "no")
+        self.cli_ctx.config.set_value("core", "collect_telemetry", "no")
+        extension = DevExtension("application-insights", str(Path(__file__).resolve().parents[3]))
+        extensions = patch("azure.cli.core.extension.get_extensions", return_value=[extension])
+        extensions.start()
+        self.addCleanup(extensions.stop)
+        self.values = {
+            "subscription": SUBSCRIPTION, "workspace": WORKSPACE, "scope": COMPONENT_SCOPE,
+            "other": WORKSPACE.replace("myAmw", "otherAmw"),
+            "law": GROUP_SCOPE + "/providers/Microsoft.OperationalInsights/workspaces/myLaw",
+        }
+
+    def cmd(self, command, responses, expected_code=0):
+        client = _ArmClient(responses)
+        output, errors = StringIO(), StringIO()
+        self.cli_ctx.out_file = output
+        with patch("azure.cli.core.aaz._command_ctx.AAZCommandCtx.get_http_client", return_value=client):
+            with patch("requests.sessions.Session.request", side_effect=AssertionError("Unexpected network request")):
+                with redirect_stdout(output), redirect_stderr(errors):
+                    code = self.cli_ctx.invoke(shlex.split(command.format(**self.values)))
+        self.assertEqual(code, expected_code, errors.getvalue() + output.getvalue())
+        with self.assertRaises(StopIteration):
+            next(client.responses)
+        return client.requests
+
+    def test_trace_cli_container_and_scoped_association_commands(self):
+        self.cmd("monitor account trace-container create --subscription {subscription} -g observability -w myAmw "
+                 "--retention-days 30 --trace-duration-window 600 --trace-metrics Enabled",
+            [(404, {}), (201, CONTAINER)],
+        )
+        self.cmd("monitor account trace-container update --subscription {subscription} -g observability -w myAmw "
+                 "--retention-days 90 --trace-duration-window 120 --trace-metrics Disabled",
+            [(200, CONTAINER), (200, CONTAINER)],
+        )
+        self.cmd("monitor account trace-container show --subscription {subscription} -g observability -w myAmw",
+                 [(200, CONTAINER)])
+        self.cmd("monitor account trace-container wait --subscription {subscription} -g observability -w myAmw --created",
+                 [(200, CONTAINER)])
+        self.cmd("monitor account trace-container create --subscription {subscription} -g observability -w myAmw --no-wait",
+            [(200, CONTAINER), (200, CONTAINER)],
+        )
+        for scope in (COMPONENT_SCOPE, GROUP_SCOPE, SUBSCRIPTION_SCOPE):
+            with self.subTest(scope=scope):
+                self.values["scope"] = scope
+                self.cmd("monitor trace-association create --resource-uri {scope} --azure-monitor-workspace {workspace} "
+                         "--trace-retention-days 60 --trace-metrics Disabled",
+                    [(200, {"value": []}), (200, CONTAINER), (200, _association(scope))],
+                )
+                self.cmd("monitor trace-association show --resource-uri {scope}", [(200, _association(scope))])
+                self.cmd("monitor trace-association list --resource-uri {scope}",
+                         [(200, {"value": [_association(scope)]})])
+                self.cmd("monitor trace-association delete --resource-uri {scope}",
+                         [(204, {}), (200, {"value": []})])
+
+    def test_trace_cli_component_onboarding_retargeting_and_offboarding(self):
+        self.client.get.side_effect = _not_found()
+        self.cmd("monitor app-insights component create -g apps -a myAi -l eastus --workspace {law} "
+                 "--enable-traces --trace-workspace {workspace}",
+            [(200, {"value": []}), (404, {}), (201, CONTAINER), (200, _association(COMPONENT_SCOPE))],
+        )
+        self.client.get.side_effect = None
+        self.cmd("monitor app-insights component update -g apps -a myAi --enable-traces --trace-workspace {workspace} "
+                 "--trace-retention-days 60 --trace-metrics Disabled",
+            [(200, {"value": []}), (200, CONTAINER), (200, _association(COMPONENT_SCOPE))],
+        )
+        self.cmd("monitor app-insights component update -g apps -a myAi --enable-traces",
+                 [(200, {"value": [_association(COMPONENT_SCOPE)]}), (200, CONTAINER)])
+        target = (f"/subscriptions/{SUBSCRIPTION}/resourceGroups/DefaultResourceGroup-eastus"
+                  "/providers/Microsoft.Monitor/accounts/DefaultAzureMonitorWorkspace-eastus")
+        self.cmd("monitor app-insights component update -g apps -a myAi --enable-traces",
+            [(200, {"value": []}), (200, CONTAINER), (200, _association(COMPONENT_SCOPE, target))],
+        )
+        self.cmd("monitor app-insights component update -g apps -a myAi --trace-workspace {other}",
+            [(200, {"value": [_association(COMPONENT_SCOPE)]}), (200, CONTAINER),
+             (200, _association(COMPONENT_SCOPE, self.values["other"]))],
+        )
+        self.cmd("monitor app-insights component update -g apps -a myAi --disable-traces",
+                 [(204, {}), (200, {"value": [_association(SUBSCRIPTION_SCOPE)]})])
+
+    def test_trace_cli_invalid_flags_fail_without_network_requests(self):
+        self.cmd("monitor app-insights component update -g apps -a myAi --enable-traces --disable-traces",
+                 [], expected_code=1)
+        self.factory.assert_not_called()
+        self.client.create_or_update.assert_not_called()

@@ -46,6 +46,9 @@ helps['monitor app-insights component create'] = """
       - name: Create a component with kind web and location.
         text: |
           az monitor app-insights component create --app demoApp --location westus2 --kind web -g demoRg --application-type web --retention-time 120
+      - name: Create a component and enable distributed traces on an Azure Monitor workspace.
+        text: |
+          az monitor app-insights component create -g myRg -a myAi -l eastus --workspace <log-analytics-id> --enable-traces --trace-workspace <amw-id>
 """
 
 helps['monitor app-insights component update'] = """
@@ -59,6 +62,18 @@ helps['monitor app-insights component update'] = """
       - name: Update a component with kind web.
         text: |
           az monitor app-insights component update --app demoApp -k web -g demoRg --retention-time 120
+      - name: Enable distributed traces on an existing component.
+        text: |
+          az monitor app-insights component update -g myRg -a myAi --enable-traces --trace-workspace <amw-id>
+      - name: Reuse existing trace routing or provision a default workspace when nothing routes the component.
+        text: |
+          az monitor app-insights component update -g myRg -a myAi --enable-traces
+      - name: Change the component's own trace destination without removing inherited destinations.
+        text: |
+          az monitor app-insights component update -g myRg -a myAi --trace-workspace <other-amw-id>
+      - name: Remove this component's trace association and report any inherited destinations that remain.
+        text: |
+          az monitor app-insights component update -g myRg -a myAi --disable-traces
 """
 
 helps['monitor app-insights component update-tags'] = """

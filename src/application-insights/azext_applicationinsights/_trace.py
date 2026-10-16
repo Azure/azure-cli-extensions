@@ -16,6 +16,7 @@ from knack.util import CLIError
 
 from .aaz.latest.monitor.account.trace_container import Create as _TraceContainerCreate
 from .aaz.latest.monitor.account.trace_container import Show as _TraceContainerShow
+from .aaz.latest.monitor.account.trace_container import Update as _TraceContainerUpdate
 from .aaz.latest.monitor.trace_association import resource as _ResourceAssociations
 from .aaz.latest.monitor.trace_association import resource_group as _ResourceGroupAssociations
 from .aaz.latest.monitor.trace_association import subscription as _SubscriptionAssociations
@@ -48,6 +49,10 @@ def _workspace_arguments(workspace_id):
     if (parts["resource_namespace"].lower() != "microsoft.monitor"
             or parts["resource_type"].lower() != "accounts" or parts["resource_parent"]):
         raise InvalidArgumentValueError("The trace workspace must be a Microsoft.Monitor/accounts resource.")
+    try:
+        UUID(parts["subscription"])
+    except ValueError as error:
+        raise InvalidArgumentValueError("The trace workspace resource ID must contain a subscription ID.") from error
     return {
         "subscription": parts["subscription"],
         "resource_group": parts["resource_group"],
@@ -57,21 +62,33 @@ def _workspace_arguments(workspace_id):
 
 def _get_container(cli_ctx, workspace_arguments):
     try:
-        return _TraceContainerShow(cli_ctx=cli_ctx)(command_args=workspace_arguments)
+        container = _TraceContainerShow(cli_ctx=cli_ctx)(command_args=workspace_arguments)
     except ResourceNotFoundError:
         return None
+    _container_settings(container)
+    return container
 
 
 def _container_settings(container):
     if container is None:
-        return dict(_CONTAINER_DEFAULTS)
+        raise CLIError("The trace container API returned no resource. Inspect the workspace before retrying.")
     properties = container.get("properties", {})
     missing = _CONTAINER_DEFAULTS.keys() - properties.keys()
     if missing:
         raise CLIError(
             "The trace container response is missing required settings: {}.".format(", ".join(sorted(missing)))
         )
-    return {name: properties[name] for name in _CONTAINER_DEFAULTS}
+    settings = {name: properties[name] for name in _CONTAINER_DEFAULTS}
+    try:
+        if settings["traceRetentionInDays"] is None or settings["traceMetricsState"] is None:
+            raise InvalidArgumentValueError("Required settings cannot be null.")
+        _validate_trace_settings(settings["traceRetentionInDays"], settings["traceMetricsState"])
+        duration = settings["traceDurationWindowInSeconds"]
+        if not isinstance(duration, int) or isinstance(duration, bool) or not 120 <= duration <= 600:
+            raise InvalidArgumentValueError("The duration window must be between 120 and 600 seconds.")
+    except InvalidArgumentValueError as error:
+        raise CLIError("The trace container returned invalid settings: {}.".format(error)) from error
+    return settings
 
 
 def _optional(value):
@@ -89,7 +106,7 @@ def _validate_trace_settings(retention_days, trace_metrics):
 def _container_command(workspace_id):
     args = _workspace_arguments(workspace_id)
     return (
-        "az monitor account trace-container create --subscription {} -g {} -w {}"
+        'az monitor account trace-container create --subscription "{}" -g "{}" -w "{}"'
         .format(args["subscription"], args["resource_group"], args["azure_monitor_workspace_name"])
     )
 
@@ -114,7 +131,7 @@ def _ensure_container(cli_ctx, workspace_id, retention_days=None, trace_metrics=
         if isinstance(result, CLIError):
             raise result
         container = _TraceContainerShow(cli_ctx=cli_ctx)(command_args=arguments)
-    settings = _container_settings(container)
+    settings = dict(_CONTAINER_DEFAULTS) if created else _container_settings(container)
     requested = {"traceRetentionInDays": retention_days, "traceMetricsState": trace_metrics}
     for name, value in requested.items():
         if value is None:
@@ -207,9 +224,12 @@ def _put_association(cli_ctx, scope, workspace_id):
             **arguments, "azure_monitor_workspace": workspace_id,
         })
     except HttpResponseError as error:
+        details = str(error)
+        if getattr(getattr(error, "error", None), "code", None) == "UnsupportedLocation":
+            details = "The backing Log Analytics workspace region is not enabled for traces. " + details
         raise CLIError(
             "The trace container is ready on {}, but writing the association on {} failed: {}. "
-            "Re-run the same command once resolved.".format(workspace_id, scope, error)
+            "Re-run the same command once resolved.".format(workspace_id, scope, details)
         ) from error
 
 
@@ -220,13 +240,24 @@ def _replace_association(associations, scope, replacement):
     ] + [replacement]
 
 
+def _report_association_update(scope, associations, replacement):
+    for association in associations:
+        if _association_scope(association).lower() == scope.rstrip("/").lower():
+            old = association["properties"]["azureMonitorWorkspaceResourceId"]
+            new = replacement["properties"]["azureMonitorWorkspaceResourceId"]
+            if old.rstrip("/").lower() != new.rstrip("/").lower():
+                logger.warning("Replaced the trace destination at %s: %s -> %s. Ancestor associations are unchanged.",
+                               scope, old, new)
+    _report_destinations(scope, _replace_association(associations, scope, replacement))
+
+
 def _create_association(cli_ctx, scope, workspace_id, retention_days=None, trace_metrics=None):
     _validate_trace_settings(retention_days, trace_metrics)
     _workspace_arguments(workspace_id)
     associations = _list_associations(cli_ctx, scope)
     _ensure_container(cli_ctx, workspace_id, retention_days, trace_metrics)
     result = _put_association(cli_ctx, scope, workspace_id)
-    _report_destinations(scope, _replace_association(associations, scope, result))
+    _report_association_update(scope, associations, result)
     return result
 
 
@@ -257,11 +288,20 @@ class TraceContainerCreate(_TraceContainerCreate):
             "resource_group": args.resource_group.to_serialized_data(),
             "azure_monitor_workspace_name": args.azure_monitor_workspace_name.to_serialized_data(),
         }
-        settings = _container_settings(_get_container(self.cli_ctx, workspace_arguments))
+        container = _get_container(self.cli_ctx, workspace_arguments)
+        settings = dict(_CONTAINER_DEFAULTS) if container is None else _container_settings(container)
         for argument, property_name in _CONTAINER_ARGUMENTS.items():
             value = getattr(args, argument)
             if not has_value(value):
                 setattr(args, argument, settings[property_name])
+
+    def post_operations(self):
+        _container_settings(self._output())
+
+
+class TraceContainerUpdate(_TraceContainerUpdate):
+    def post_operations(self):
+        _container_settings(self._output())
 
 
 class _TraceAssociationCommand(AAZCommand):
@@ -311,7 +351,11 @@ class TraceAssociationCreate(_TraceAssociationCommand):
 
 @register_command("monitor trace-association show", is_preview=True)
 class TraceAssociationShow(_TraceAssociationCommand):
-    """Show the association configured at exactly this scope, excluding inherited associations."""
+    """Show the association configured at exactly this scope, excluding inherited associations.
+
+    :example: Show a scope's own association
+        az monitor trace-association show --resource-uri <scope-id>
+    """
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -321,7 +365,11 @@ class TraceAssociationShow(_TraceAssociationCommand):
 
 @register_command("monitor trace-association list", is_preview=True)
 class TraceAssociationList(_TraceAssociationCommand):
-    """List associations applying to this scope, including resource group and subscription ancestors."""
+    """List associations applying to this scope, including resource group and subscription ancestors.
+
+    :example: Show every association applying to an Application Insights component
+        az monitor trace-association list --resource-uri <component-id>
+    """
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -330,7 +378,11 @@ class TraceAssociationList(_TraceAssociationCommand):
 
 @register_command("monitor trace-association delete", is_preview=True)
 class TraceAssociationDelete(_TraceAssociationCommand):
-    """Remove this scope's association without deleting its trace container or ancestor associations."""
+    """Remove this scope's association without deleting its trace container or ancestor associations.
+
+    :example: Remove routing configured at a resource group
+        az monitor trace-association delete --resource-uri <resource-group-id>
+    """
 
     def _handler(self, command_args):
         super()._handler(command_args)

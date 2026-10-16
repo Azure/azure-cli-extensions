@@ -17,6 +17,11 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Show trace container settings.
+
+    Omitted settings are preserved on existing containers. New containers default to 30 days retention, a 600-second duration window, and Enabled trace metrics. Trace-derived metrics are billed.
+
+    :example: Show the default trace container for an Azure Monitor workspace
+        az monitor account trace-container show -g obsRg -w myAmw
     """
 
     _aaz_info = {

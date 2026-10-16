@@ -19,9 +19,10 @@ def load_command_table(self, _):
 
     from ._trace import (
         TraceAssociationCreate, TraceAssociationDelete, TraceAssociationList, TraceAssociationShow,
-        TraceContainerCreate,
+        TraceContainerCreate, TraceContainerUpdate,
     )
     self.command_table['monitor account trace-container create'] = TraceContainerCreate(loader=self)
+    self.command_table['monitor account trace-container update'] = TraceContainerUpdate(loader=self)
     with self.command_group('monitor trace-association', is_preview=True):
         self.command_table['monitor trace-association create'] = TraceAssociationCreate(loader=self)
         self.command_table['monitor trace-association delete'] = TraceAssociationDelete(loader=self)

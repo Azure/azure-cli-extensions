@@ -17,6 +17,11 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create trace container settings.
+
+    Omitted settings are preserved on existing containers. New containers default to 30 days retention, a 600-second duration window, and Enabled trace metrics. Trace-derived metrics are billed.
+
+    :example: Create the default trace container for an Azure Monitor workspace
+        az monitor account trace-container create -g obsRg -w myAmw --retention-days 30 --trace-duration-window 600 --trace-metrics Enabled
     """
 
     _aaz_info = {
@@ -70,7 +75,7 @@ class Create(AAZCommand):
         _args_schema.trace_metrics = AAZStrArg(
             options=["--trace-metrics"],
             arg_group="Properties",
-            help="Controls whether trace-derived metrics are emitted for this trace container.",
+            help="Controls trace-derived metrics. New containers default to Enabled. Metrics are billed.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.retention_days = AAZIntArg(

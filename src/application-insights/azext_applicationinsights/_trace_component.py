@@ -15,7 +15,7 @@ from knack.util import CLIError
 
 from ._trace import (
     _association_scope, _delete_association, _destinations, _ensure_container, _get_container,
-    _list_associations, _put_association, _replace_association, _report_destinations,
+    _list_associations, _put_association, _report_association_update, _report_destinations,
     _scope_arguments, _validate_trace_settings, _workspace_arguments, _container_command,
 )
 
@@ -35,6 +35,8 @@ def validate_component_trace_options(enable_traces=None, disable_traces=None, tr
     _validate_trace_settings(trace_retention_days, trace_metrics)
     if trace_workspace is not None and not trace_workspace.strip():
         raise InvalidArgumentValueError("--trace-workspace cannot be empty.")
+    if trace_workspace is not None and trace_workspace.startswith("/"):
+        _workspace_arguments(trace_workspace)
     if disable_traces and (enable_traces or trace_workspace is not None
                            or trace_retention_days is not None or trace_metrics is not None):
         raise InvalidArgumentValueError("--disable-traces cannot be combined with other trace options.")
@@ -168,14 +170,15 @@ def _complete_onboarding(cli_ctx, plan, operation):
             _, source = _scope_arguments(plan.scope)
             raise CLIError(
                 "Component {} was {}, but enabling traces failed: {}\nRetry:\n"
-                "  az monitor app-insights component update --subscription {} -g {} -a {} "
-                "--enable-traces --trace-workspace {}".format(
+                '  az monitor app-insights component update --subscription "{}" -g "{}" -a "{}" '
+                '--enable-traces --trace-workspace "{}"'.format(
                     source["resource_name"], operation, error, source["subscription"],
                     source["resource_group"], source["resource_name"], plan.workspace,
                 )
             ) from error
-        associations = _replace_association(associations, plan.scope, association)
-    _report_destinations(plan.scope, associations)
+        _report_association_update(plan.scope, associations, association)
+    else:
+        _report_destinations(plan.scope, associations)
 
 
 def run_component_operation(cmd, application, resource_group_name, write_component, component_arguments,
