@@ -19,3 +19,7 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         self.command_table['stack-hci cluster create'] = ClusterCreate(loader=self)
         self.command_table['stack-hci cluster identity assign'] = IdentityAssign(loader=self)
         self.command_table['stack-hci cluster identity remove'] = IdentityRemove(loader=self)
+
+    with self.command_group('stack-hci vmconnect', ...) as g:
+        g.custom_command('enable', 'vmconnect_enable')
+        g.custom_command('disable', 'vmconnect_disable')
