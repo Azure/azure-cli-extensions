@@ -36,6 +36,8 @@ Show information on a single taskhub:
 Delete a taskhub:
 ` az durabletask taskhub delete -g <resource-group-name> -s <scheduler-name> -n <task-hub-name> `
 
+Taskqueue commands use `-t` or `--taskhub-name` to select the task hub; `-h` displays help.
+
 Create a retention policy for a particular scheduler:
 ` az durabletask retention-policy create -g <resource-group-name> --scheduler-name <scheduler-name> --default-days 30 `
 

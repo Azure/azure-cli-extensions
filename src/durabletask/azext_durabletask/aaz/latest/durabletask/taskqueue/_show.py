@@ -54,7 +54,7 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.taskhub_name = AAZStrArg(
-            options=["-h", "--taskhub-name"],
+            options=["-t", "--taskhub-name"],
             help="The name of the TaskHub",
             required=True,
             id_part="child_name_1",
