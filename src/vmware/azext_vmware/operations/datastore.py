@@ -36,6 +36,9 @@ class DatastoreNetappVolumeCreate(_DatastoreCreate):
 )
 class DatastoreDiskPoolVolumeCreate(_DatastoreCreate):
     """Create a VMFS datastore in a private cloud cluster using Microsoft.StoragePool provided iSCSI target.
+
+    :example: Create a VMFS datastore in a private cloud cluster using Microsoft.StoragePool provided iSCSI target.
+        az vmware datastore disk-pool-volume create --name Datastore1 -g rg --private-cloud privatecloud --cluster Cluster1 --target-id target-resource-id --lun-name lun
     """
 
     @classmethod
