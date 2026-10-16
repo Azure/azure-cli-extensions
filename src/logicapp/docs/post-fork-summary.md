@@ -1,8 +1,8 @@
 # Extension improvements and remaining work
 
 The upstream preview **1.0.0b1** contains the complete original extension and
-the reviewed improvements developed through the historical **0.1.23** baseline.
-It contributes **57 leaf commands**, 19 more than the original 38-command
+the reviewed improvements through the historical **0.1.26** SDK-testing baseline.
+It contributes **59 leaf commands**, 21 more than the original 38-command
 extension, while preserving the 13 core-owned GA app, settings and ZIP deployment
 commands. See [contribution provenance](contribution.md) for packaging,
 attribution and qualification boundaries.
@@ -21,6 +21,8 @@ Saved contexts support read-only inspection and guarded update/delete.
 Storage and active selection follow `AZURE_CONFIG_DIR`; custom profiles do not
 inherit another profile's targets. Explicit cloud contexts cannot silently
 select a local authored project. Local lifecycle commands honor saved ports.
+Omitted context-create ports normalize to 7071 through the real CLI parser
+without relaxing strict explicit-port or stored-context validation.
 
 `runtime doctor` performs bounded, conservative local readiness inspection,
 not installation or execution. Runtime cleanup retains PID/birth-identity
@@ -57,6 +59,17 @@ schema-2 reports record this policy. Supported schema-1 reports retain their
 historical outcomes; supported producer versions remain readable after package
 version changes. See [testing contracts](workflow-testing-foundation.md).
 
+The separate native workflow adds source-only `test create` and explicitly
+trusted `test run`. Scaffolds remain ignored/inconclusive until authored.
+Every run requires SDK-terms and project-trust acknowledgements; restore is
+separately opt-in. Locked SDK 1.0.3/engine 1.165.50/MSTest 4.0.2 and .NET 8
+selection, bounded consistent TRX counts, ownership-checked cleanup and a
+retained-process-receipt retry hold do not provide a sandbox or coverage
+attestation. `results show` inspects original sanitized native JSON without
+rerunning; raw TRX remains sensitive and local. Dedicated native test/state
+directories and raw TRX are deployment-excluded; runtime/test colocation is
+refused. Arbitrary trusted code can still write outside those boundaries.
+
 ## Qualification boundaries
 
 Historical development evidence is not an upstream CI result or universal
@@ -72,9 +85,12 @@ those trials. Doctor deliberately preserves unknowns. Nested static validation,
 agent bootstrap guidance and callback-response improvements remain follow-ups,
 not delivered features.
 
-SDK adoption, package restore/build/discovery, license acceptance and native
-business-test execution remain outside the foundation. No test scaffolding,
-assertion rewriting, native verdict interpretation or automatic rerun is added.
+SDK adoption, restore/build/execution and terms remain outside the read-only
+foundation; the separate native command requires explicit invocation approvals.
+No SDK binary redistribution, assertion rewriting, automatic rerun, denied-egress
+or complete platform/connector coverage is claimed. The SDK's typed top-level
+output cast failure remains documented; workflow semantics are not rewritten
+to hide it.
 Contexts are shortcuts, not subscription/tenant bindings or effective-permission
 proof. VFS, settings and ARM operations are not transactions. Public AI review,
 maintainer approval, upstream CI, supported Python compatibility and effective

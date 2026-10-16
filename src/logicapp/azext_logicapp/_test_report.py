@@ -12,8 +12,9 @@ from collections import OrderedDict
 VERSION = "1.0.0b1"
 SCHEMA = "2.0"
 _V1_PRODUCERS = ("0.1.17", "0.1.18", "0.1.19", "0.1.20", "0.1.21", "1.0.0b1")
-_V2_PRODUCERS = ("0.1.22", "0.1.23", "0.1.24", "1.0.0b1", VERSION)
+_V2_PRODUCERS = ("0.1.22", "0.1.23", "0.1.24", "0.1.25", "0.1.26", "1.0.0b1", VERSION)
 _LEGACY_INPUT_OPTIONS_PRODUCERS = _V1_PRODUCERS + ("0.1.22", "0.1.23")
+_LEGACY_REPORT_INVALID_PRODUCERS = _V1_PRODUCERS + ("0.1.22", "0.1.23", "0.1.24")
 SDK_PACKAGE = "Microsoft.Azure.Workflows.WebJobs.Tests.Extension"
 WORKFLOW_SCHEMA = ("https://schema.management.azure.com/providers/Microsoft.Logic/"
                    "schemas/2016-06-01/workflowdefinition.json#")
@@ -81,8 +82,8 @@ RULES = {
                           "A separately approved qualification increment is required; declarations are not installed facts."),
     "scope.business": ("coverage", "warning", "No business tests, native runner or SDK were executed.",
                        "Use this report only for bounded authoring inspection, not a workflow test verdict."),
-    "report.invalid": ("protocol", "error", "The result is not a supported foundation preflight report.",
-                       "Supply a report saved by test plan; native SDK/TRX/legacy reports are not supported."),
+    "report.invalid": ("protocol", "error", "The result is not a supported preflight or sanitized native test report.",
+                       "Supply original supported JSON saved by test plan or test run; raw SDK/TRX and unknown producers are not supported."),
     "report.publication": ("artifact", "error", "Report publication or temporary-file cleanup failed; the destination may already exist.",
                            "Inspect the destination before retrying; use an existing local directory and a regular .json destination, with --force only for intended replacement."),
     "report.stale": ("input", "error", "The explicitly selected workflow file differs from the recorded definition.",
@@ -95,6 +96,9 @@ def finding(rule, source="options", pointer="", producer_version=None):
     if rule == "input.options" and producer_version in _LEGACY_INPUT_OPTIONS_PRODUCERS:
         message = "Explicit local paths and a bounded workflow name are required."
         recommendation = "Supply --path and --workflow; do not use URLs, device paths or target contexts."
+    if rule == "report.invalid" and producer_version in _LEGACY_REPORT_INVALID_PRODUCERS:
+        message = "The result is not a supported foundation preflight report."
+        recommendation = "Supply a report saved by test plan; native SDK/TRX/legacy reports are not supported."
     return {"rule": rule, "category": category, "severity": severity, "source": source,
             "jsonPointer": pointer, "message": message, "recommendation": recommendation}
 
@@ -252,7 +256,7 @@ def _valid_finding(row, schema, producer):
     if row == finding(rule, source, pointer, producer):
         return True
     # The unpublished public version spans both exact schema-2 guidance catalogs.
-    return (schema == "2.0" and producer == "1.0.0b1" and rule == "input.options" and
+    return (schema == "2.0" and producer == "1.0.0b1" and rule in ("input.options", "report.invalid") and
             row == finding(rule, source, pointer))
 
 
@@ -310,6 +314,14 @@ def validate_report(value):
 
 
 def table_format(report):
+    if report.get("reportType") == "logicapp-sdk-test":
+        return [OrderedDict((("Phase", report["phase"]), ("Outcome", report["outcome"]),
+                             ("Execution", report["executionState"]),
+                             ("SourceOutcome", (report["inspection"] or {}).get("sourceOutcome", "")),
+                             ("Executed", report["summary"]["executed"]),
+                             ("Passed", report["summary"]["passed"]), ("Failed", report["summary"]["failed"]),
+                             ("Skipped", report["summary"]["skipped"]), ("ExitCode", report["exitCode"]),
+                             ("Reason", " ".join(row["message"] for row in report["findings"]))))]
     header = OrderedDict((("Phase", report["phase"]), ("Outcome", report["outcome"]),
                           ("Execution", report["executionState"]), ("ExitCode", report["exitCode"]),
                           ("Rule", ""), ("Severity", ""), ("Source", ""), ("Reason", "")))

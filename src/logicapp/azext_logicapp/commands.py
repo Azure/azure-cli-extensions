@@ -15,7 +15,9 @@ from ._test_report import table_format as test_table_format
 
 def load_command_table(self, _):
     with self.command_group('logicapp test') as g:
+        g.custom_command('create', 'test_create')
         g.custom_command('plan', 'test_plan', table_transformer=test_table_format)
+        g.custom_command('run', 'test_run', table_transformer=test_table_format)
 
     with self.command_group('logicapp test results') as g:
         g.custom_show_command('show', 'test_results_show', table_transformer=test_table_format)

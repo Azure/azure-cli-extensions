@@ -12,7 +12,7 @@ from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, InvalidArgumentValueError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ValidationError
 from azure.cli.core.util import user_confirmation
 
-from ._constants import LOGICAPP_REDACTION_SENTINEL
+from ._constants import DEFAULT_LOCAL_PORT, LOGICAPP_REDACTION_SENTINEL
 from ._connection import (
     connection_delete as _connection_delete,
     connection_list as _connection_list, connection_show as _connection_show,
@@ -39,24 +39,50 @@ from ._workflow import HOST_JSON, LOCAL_SETTINGS_JSON, abs_path, create_workflow
 logger = get_logger(__name__)
 
 
+def _test_project_root(path, context):
+    if path is not None and (not isinstance(path, str) or not path.strip()):
+        raise InvalidArgumentValueError("--path must name a local project; omit it to use a local context.")
+    try:
+        return _project_path_from_context(path, context)
+    except MutuallyExclusiveArgumentError as ex:
+        raise MutuallyExclusiveArgumentError(
+            "Workflow testing requires a local project. Select a local context or pass explicit --path "
+            "without a cloud --context.") from ex
+
+
+def _test_output_path(root, value):
+    if isinstance(value, str):
+        if os.path.splitdrive(value)[0] and not os.path.isabs(value):
+            raise InvalidArgumentValueError(
+                "Test output paths must be fully qualified or relative to the selected local project, "
+                "not drive-relative.")
+        return os.path.join(root, value)
+    return value
+
+
+def test_create(cmd, workflow, path=None, context=None, output_path=None, trigger=None):
+    del cmd
+    from ._test_scaffold import create_project
+    root = _test_project_root(path, context)
+    return create_project(root, workflow, _test_output_path(root, output_path), trigger)
+
+
+def test_run(cmd, workflow, path=None, context=None, test_project=None, accept_sdk_terms=False,
+             trust_project=False, restore=False, nuget_config=None, timeout=300, report_path=None):
+    from ._runtime_doctor import finish_doctor_command
+    from ._sdk_testing import run_report
+    root = _test_project_root(path, context)
+    return finish_doctor_command(cmd, run_report(
+        root, workflow, test_project, accept_sdk_terms, trust_project, restore, nuget_config,
+        timeout, _test_output_path(root, report_path)))
+
+
 def test_plan(cmd, path=None, workflow=None, test_project=None, report_path=None, force=False,
               strict=False, context=None):
     from ._runtime_doctor import finish_doctor_command
     from ._testing import plan_report
-    if path is not None and (not isinstance(path, str) or not path.strip()):
-        raise InvalidArgumentValueError("--path must name a local project; omit it to use a local context.")
-    try:
-        root = _project_path_from_context(path, context)
-    except MutuallyExclusiveArgumentError as ex:
-        raise MutuallyExclusiveArgumentError(
-            "Test planning requires a local project. Select a local context or pass explicit --path "
-            "without a cloud --context.") from ex
-    if isinstance(report_path, str):
-        if os.path.splitdrive(report_path)[0] and not os.path.isabs(report_path):
-            raise InvalidArgumentValueError(
-                "--report-path must be fully qualified or relative to the selected local project, "
-                "not drive-relative.")
-        report_path = os.path.join(root, report_path)
+    root = _test_project_root(path, context)
+    report_path = _test_output_path(root, report_path)
     return finish_doctor_command(cmd, plan_report(root, workflow, test_project, report_path, force, strict))
 
 
@@ -304,9 +330,10 @@ def _read_secret_from_stdin(setting_name):
     return value
 
 
-def context_create(cmd, name, path=None, resource_group_name=None, logic_app_name=None, port=7071, use=False):
+def context_create(cmd, name, path=None, resource_group_name=None, logic_app_name=None, port=None, use=False):
     del cmd
-    return _context.create_context(name, path, resource_group_name, logic_app_name, port, use)
+    return _context.create_context(name, path, resource_group_name, logic_app_name,
+                                   DEFAULT_LOCAL_PORT if port is None else port, use)
 
 
 def context_use(cmd, name):

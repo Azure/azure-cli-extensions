@@ -12,7 +12,8 @@ ActiveDirectory matcher. Missing or unrelated tenant evidence retains policies
 and ARM resources; site and policy evidence are refreshed after verified unlink.
 The reviewed follow-up baseline `1eaa335d635e62a41607b4c7d06acd4b96e49dfb`
 (historical 0.1.23) includes all later feature and safety increments. These
-preserve the original extension and add 19 leaves, for 57 total. Upstream
+preserve the original extension and add 19 leaves, for 57 total at that baseline.
+The separately reviewed SDK follow-up below adds two further leaves. Upstream
 packaging remains at the unpublished preview `1.0.0b1`; the version change does
 not invalidate supported saved reports. The upstream contribution retains its
 Python 3.10/Azure CLI 2.67.0 minimums, portable GA controls and style helpers
@@ -25,7 +26,7 @@ extension and system-extension directories. Dynamic extension installation,
 version checks and telemetry are disabled. This keeps the reference matched
 to the CLI under test without requiring live Azure or a frozen help transcript.
 Independent assertions pin the 13 existing GA leaves to the core App Service
-loader, reject command overrides and preserve all 57 extension leaves.
+loader, reject command overrides and preserve all 59 current extension leaves.
 
 The extension-local guides distinguish historical staging evidence from release
 qualification. Historical Windows loopback/runtime exercises do not establish
@@ -34,11 +35,10 @@ proxy behavior or repeatable native shutdown/timing reliability. Process cleanup
 continues to require PID and original birth identity; unresolved children retain
 non-signaling cleanup/storage guards.
 
-Workflow test commands remain a read-only foundation. All business tests are
-`notExecuted` with zero executed counts. SDK licensing, use/data/update terms,
-restore/build/discovery/execution, platform/network isolation and native report
-qualification remain unresolved. No SDK DLL, installation, EULA acceptance or
-business-test runner is included.
+The original workflow testing foundation remains read-only with zero executed
+business tests. The separately reviewed SDK follow-up below adds source-only
+scaffolding and explicit trusted native execution, not implicit approval from a
+plan or saved report. No SDK DLL or redistribution permission is included.
 
 Conditional VFS updates, whole-map app settings and ARM operations are not
 transactions. Receipt uncertainty, selected-target validation, retention and
@@ -262,3 +262,90 @@ created contexts with explicit `--port`; this reviewed planning delta does not
 fix the separately tracked creation issue. Earlier native filesystem variability,
 full Windows Python/minimum-x86 coverage, latest-head public AI/CI, effective
 ownership and live-runtime/SDK qualification remain independent limitations.
+
+### SDK follow-up qualification
+
+The SDK follow-up was qualified independently of the historical results above.
+Current Windows CLI 2.91.0 x86/x64 used Python 3.14.7; minimum CLI 2.67.0 x64
+used Python 3.12.7. Source and exact-installed suites ran serially with production
+module origins enforced. The development environment used Python 3.12.12,
+CLI 2.91.0 and azdev 0.2.13.
+
+| SDK follow-up check | Result |
+| --- | --- |
+| Current x86 exact-installed, current x64 source/exact-installed, minimum x64 source/exact-installed full suites | Five serial runs each passed 892 tests / 2,463 subtests. |
+| Current x86 source full suite | 891 passed / 2,463 subtests passed; one unchanged native Azurite-shim fixture failed during teardown with a Windows executable cleanup access error. This full run is not green. |
+| `azdev test logicapp --series --discover --no-exitfirst --pytest-args -q` | All 892 source tests passed in the isolated development environment. |
+| Focused SDK, historical report, feedback and actual-parser regressions | 99 tests / 279 subtests passed. |
+| Reviewed native-report validator parity | 2,737 shape/type/record mutations agreed after normalizing only the intended producer mappings. Production AST inventory accounts for every reviewed module and upstream adaptation. |
+| Real synthetic SDK execution | Source API and each of three exact-installed native CLIs passed four SDK assertions. Each installed run reported five selected, four executed/passed and one skipped; these counts are not business coverage or SDK-call attestation. |
+| Separate native CLI contracts | 46 processes covered omitted-port context creation, cloud refusal, source-only scaffolding/no clobber, selected-context planning, approval refusal, query/table, native/history inspection, genuine failed/empty/build-failure/timeout outcomes, retained-receipt refusal and deployment boundaries. |
+| Native ownership after test-bootstrap removal | All six stock-first/dependency-first probes passed across the three environments: native PE/pointer width, cross-architecture discovery, CIM/birth identity, listener ownership, unknown/mismatched refusal and verified stop/held-handle exit checks. |
+| Exact package/dependency bytes | All 32 production files match source, wheel and three fresh installations; all 30 installed psutil files match independently hash-verified publisher wheels. |
+| `azdev style logicapp`, `azdev linter logicapp`, `azdev verify license` | Passed without broad exclusions or weakened scalar/ownership checks. |
+| `python scripts\ci\service_name.py` | Passed with all 59 extension leaves loaded and the existing service registration. |
+| `python scripts\ci\validate_external_source_urls.py --cached`, `python scripts\ci\test_index.py -q` | Passed; index test ran nine tests with two CI-only broad-network skips. |
+| `azdev scan --confidence-level MEDIUM --directory-path src\logicapp --recursive --continue-on-failure` | No detected secrets, no custom exclusions. Generated binary test artifacts emitted UTF-8 warnings; their binary contents were not parsed. |
+| `python -m pip check`, tracked privacy/local-link checks, `git diff --check` | Passed. |
+
+The Python 3-only wheel SHA256 is
+`7f4c60255cfea5411ca19e07358ac33fb36966a065770035ed22b5c6012028ac`.
+Fresh installs resolved the unchanged Windows dependency ceiling from verified
+local publisher wheels; no compiler, dependency suppression or shared installation
+changes were used. Temporary test import bootstraps were removed before the
+real CLI/native ownership probes.
+
+Native SDK trials used approved synthetic source and a copied, isolated package
+cache, explicit per-invocation acknowledgements and separately requested restore.
+They exercised SDK 1.0.3, engine 1.165.50, MSTest 4.0.2 and .NET SDK 8.0.426.
+Genuine saved 0.1.25/0.1.26 native reports and a pre-context public 1.0.0b1
+foundation report were inspected without rewriting their inputs. No retained
+process receipts remained after the completed trials; runtime/test colocation
+was refused while an ordinary runtime DLL remained in the deployment package.
+
+The x86 source teardown failure and its original evidence were retained rather
+than replaced by repeated full runs. A later exact-path process inspection found
+no remaining fixture process and only that completed fixture directory was
+cleaned, without signalling a process. This does not establish the error's root
+cause or universal native filesystem stability. No production guard, deadline or
+test exclusion was relaxed.
+
+These are local qualification results, not latest-head public CI or completed
+public AI review. No live Azure changes, SDK binary redistribution, universal
+platform/connector coverage, denied egress or production readiness is claimed.
+Human safety review and the existing public contribution gates remain required.
+
+## Reviewed native SDK testing follow-up
+
+The separately reviewed source input is
+`ea68b867939845e7d7492e4d261eb77ff0d41d3e` (historical 0.1.26), following
+the reviewed 0.1.24 context input. It adds source-only `test create`, explicit
+`test run`, sanitized native-report inspection, default scaffold metadata
+inspection, deployment test/state exclusions and colocation refusal, and a
+retained-process-receipt retry hold. The complete extension now has 59 leaves
+(the original 38 plus 21 additions); the 13 core-owned GA leaves remain separate.
+The omitted-port context-create fix normalizes only the CLI boundary; storage
+and explicit port validation remain strict.
+
+Public packaging remains unpublished **1.0.0b1**, Python >=3.10 and Azure CLI
+>=2.67.0. The existing Windows psutil ceiling, service registry, portable GA
+controls, Linux-native fixture isolation and process ownership guards are
+retained. Native report validation is extracted into bounded helpers for
+upstream style rules, preserving exact scalar checks and closed evidence.
+
+Supported foundation producers retain schema-1 0.1.17-0.1.21/public 1.0.0b1
+and schema-2 0.1.22-0.1.26/public 1.0.0b1. Native execution JSON explicitly
+retains 0.1.25, 0.1.26 and public 1.0.0b1, including after later package-version
+changes. The unpublished public schema-2 producer spans exact old/new
+`input.options` and `report.invalid` row catalogs; mixed or arbitrary row text is
+rejected. Public schema-1 remains legacy-only. Saved counts and approvals are
+historical, unauthenticated evidence, never authority for another run.
+
+The native contract pins SDK 1.0.3, engine 1.165.50, MSTest 4.0.2 and net8.0.
+Per-invocation terms and project-trust acknowledgements remain necessary,
+and restore is separately opt-in. Native code is trusted, not sandboxed;
+counts do not attest useful workflow coverage or SDK invocation. SDK telemetry
+is not proven disabled by CLI opt-out. The known typed top-level-output cast
+failure is documented rather than hidden by changing workflow semantics.
+Human safety review, live/connector/platform qualification, SDK terms and
+effective CODEOWNERS eligibility remain independent requirements.

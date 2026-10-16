@@ -39,7 +39,9 @@ PINNED_GA_LOGICAPP_COMMANDS = {
 }
 
 REQUIRED_EXTENSION_COMMANDS = {
+    "logicapp test create",
     "logicapp test plan",
+    "logicapp test run",
     "logicapp test results show",
     "logicapp context create",
     "logicapp context use",
@@ -214,7 +216,7 @@ class LogicAppAdditivityTests(ScenarioTest):
 
     def test_complete_extension_surface_is_preserved(self):
         commands, _ = _extension_loader_surface()
-        self.assertEqual(57, len(commands))
+        self.assertEqual(59, len(commands))
         self.assertTrue(REQUIRED_EXTENSION_COMMANDS.issubset(commands))
         self.assertTrue(PINNED_GA_LOGICAPP_COMMANDS.isdisjoint(commands))
 

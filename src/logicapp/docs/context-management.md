@@ -8,6 +8,11 @@ tenant, slot, environment variables or app settings are stored. `az login`,
 `az account set` and inherited `--subscription` determine Azure authentication
 and subscription on each deployed operation.
 
+Local `context create` defaults to port 7071 when `--port` is omitted; explicit
+ports must be integers from 1 through 65535. This works through the CLI parser,
+not only direct command calls. Stored-context validation remains strict:
+boolean, floating-point and string port values are invalid.
+
 ```powershell
 az logicapp context create --name orders-local --path .\orders --port 7071 --use
 az logicapp context create --name orders-cloud -g my-rg --logic-app-name my-app

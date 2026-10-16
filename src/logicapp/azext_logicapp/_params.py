@@ -22,17 +22,36 @@ def load_arguments(self, _):
     trigger_type = CLIArgumentType(options_list=['--trigger'], help='Trigger name.')
     run_id_type = CLIArgumentType(options_list=['--run-id'], help='Workflow run id.')
 
+    for command in ('create', 'run'):
+        with self.argument_context('logicapp test ' + command) as c:
+            c.argument('path', arg_type=path_type, help='Existing local Standard project. Defaults to the named/active local context, then current directory. An explicit path bypasses the implicit active context.')
+            c.argument('context', arg_type=target_context_type, help='Named local project context. Cloud contexts cannot supply a local test project.')
+            c.argument('workflow', arg_type=workflow_type, required=True, help='One explicit local workflow directory name.')
+
+    with self.argument_context('logicapp test create') as c:
+        c.argument('output_path', options_list=['--output-path'], completer=FilesCompleter(), help='New test directory. Relative paths use the selected project; default Tests/WORKFLOW. Existing directories are refused, not overwritten. No restore or execution.')
+        c.argument('trigger', arg_type=trigger_type, help='Existing workflow trigger to mock. Required only when more than one trigger exists.')
+
+    with self.argument_context('logicapp test run') as c:
+        c.argument('test_project', options_list=['--test-project'], completer=FilesCompleter(), help='Existing native MSTest .csproj. Explicit relative inputs use shell CWD. Defaults to the selected project Tests/WORKFLOW/Workflow.Tests.csproj.')
+        c.argument('accept_sdk_terms', options_list=['--accept-sdk-terms'], action='store_true', help='Acknowledge the Microsoft Logic Apps Tests SDK 1.0.3 use, data collection and update terms for this invocation. Does not authorize redistribution.')
+        c.argument('trust_project', options_list=['--trust-project'], action='store_true', help='Acknowledge that the reviewed project, restore/build targets and test code can execute arbitrary code and contact services. Mocking and private caches are not a sandbox.')
+        c.argument('restore', options_list=['--restore'], action='store_true', help='Explicitly allow native NuGet restore into project-private caches. Existing lockfiles use locked mode. Without this flag build/test use --no-restore.')
+        c.argument('nuget_config', options_list=['--nuget-config'], completer=FilesCompleter(), help='Reviewed NuGet configuration used only with --restore. Explicit relative inputs use shell CWD; default NuGet.Config next to the test project. No inherited user feed/credential configuration is selected by the CLI.')
+        c.argument('timeout', options_list=['--timeout'], type=int, default=300, help='Total native toolchain/restore/build/test deadline, 1-3600 seconds. Identity-checked cleanup can take additional time.')
+        c.argument('report_path', options_list=['--report-path'], completer=FilesCompleter(), help='Optional new sanitized .json report; relative paths use the selected local project. Parent must exist. Existing destinations are refused. Raw local TRX is not exported.')
+
     with self.argument_context('logicapp test plan') as c:
         c.argument('path', arg_type=path_type, help='Existing local Standard project. Overrides the local context path; defaults to the named/active local context, then current directory. Cloud contexts cannot supply a local project.')
         c.argument('context', arg_type=target_context_type, help='Named local project context. Defaults to the active context when --path is omitted. No runtime or cloud operation is performed.')
         c.argument('workflow', arg_type=workflow_type, required=True, help='One explicit local workflow directory name.')
-        c.argument('test_project', options_list=['--test-project'], completer=FilesCompleter(), help='Optional existing .csproj to inspect as XML only. No MSBuild/import evaluation or test discovery.')
+        c.argument('test_project', options_list=['--test-project'], completer=FilesCompleter(), help='Optional existing .csproj to inspect as XML only; otherwise inspect the default test create project when present. No MSBuild/import evaluation or test discovery.')
         c.argument('report_path', options_list=['--report-path'], completer=FilesCompleter(), help='Optional .json report. Relative paths use the selected local project; absolute paths are unchanged. Parent must exist. Default stdout only; no directories are created.')
         c.argument('force', options_list=['--force'], action='store_true', help='Replace an existing regular report only. Requires --report-path; cannot authorize SDK restore or execution.')
         c.argument('strict', options_list=['--strict'], action='store_true', help='Exit 4 for blocked execution gates after successful planning. Default exit 0 means plan generated, not tests passed; SDK execution stays blocked.')
 
     with self.argument_context('logicapp test results show') as c:
-        c.argument('result_file', options_list=['--result-file'], required=True, completer=FilesCompleter(), help='Saved foundation preflight report only, not native SDK/TRX results. Embedded paths are never followed.')
+        c.argument('result_file', options_list=['--result-file'], required=True, completer=FilesCompleter(), help='Saved foundation preflight or sanitized test run JSON report. Raw SDK/TRX files are not accepted. Embedded paths are never followed.')
         c.argument('workflow_file', options_list=['--workflow-file'], completer=FilesCompleter(), help='Optional explicit local workflow.json for byte identity comparison. No automatic report-path traversal or rerun.')
 
     with self.argument_context('logicapp project create') as c:
@@ -47,7 +66,7 @@ def load_arguments(self, _):
         c.argument('path', arg_type=path_type, help='Local project directory.')
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('logic_app_name', options_list=['--logic-app-name'], help='Deployed Logic App Standard site name.')
-        c.argument('port', arg_type=port_type, default=7071, help='Local runtime port.')
+        c.argument('port', arg_type=port_type, default=None, help='Local runtime port. Defaults to 7071 for local contexts.')
         c.argument('use', options_list=['--use'], action='store_true', help='Make context active.')
 
     with self.argument_context('logicapp context use') as c:

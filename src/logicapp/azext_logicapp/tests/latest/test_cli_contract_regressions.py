@@ -81,6 +81,52 @@ class CliContractRegressions(unittest.TestCase):
         return ["logicapp", "test", "plan", "--path", str(self.project),
                 "--workflow", "Orders", *extra]
 
+    def test_context_create_omitted_port_is_a_plain_default_and_explicit_ports_stay_validated(self):
+        storage = mock.patch.object(_context, "store_path", return_value=str(self.root / "contexts.json"))
+        storage.start()
+        self.addCleanup(storage.stop)
+        created, _ = self.invoke(["logicapp", "context", "create", "--name", "default-port",
+                                  "--path", str(self.project), "--use"])
+        self.assertEqual(7071, created["target"]["port"])
+        self.assertIs(type(created["target"]["port"]), int)
+        explicit, _ = self.invoke(["logicapp", "context", "create", "--name", "explicit-port",
+                                   "--path", str(self.project), "--port", "7079"])
+        self.assertEqual(7079, explicit["target"]["port"])
+        cloud, _ = self.invoke(["logicapp", "context", "create", "--name", "cloud",
+                                "--resource-group", "rg", "--logic-app-name", "app"])
+        self.assertIsNone(cloud["target"]["port"])
+        before = _context.load_store()
+        for value in ("0", "65536"):
+            with self.subTest(port=value):
+                self.invoke(["logicapp", "context", "create", "--name", "invalid-port",
+                             "--path", str(self.project), "--port", value], expected=1)
+        self.assertEqual(before, _context.load_store())
+        self.assertFalse((self.project / "Tests").exists())
+
+    def test_sdk_create_uses_context_paths_and_plan_remains_read_only(self):
+        context = {"name": "development", "target": {"kind": "local", "path": str(self.project), "port": 7071}}
+        with mock.patch.object(custom, "get_context", return_value=(context, {})):
+            created, _ = self.invoke(["logicapp", "test", "create", "--workflow", "Orders"])
+            self.assertEqual("requiresAuthoring", created["scaffoldState"])
+            self.assertTrue((self.project / "Tests" / "Orders" / "Workflow.Tests.csproj").is_file())
+            plan, _ = self.invoke(["logicapp", "test", "plan", "--workflow", "Orders"])
+            self.assertEqual("1.0.3", plan["dependencies"]["declaredSdkVersion"])
+            self.assertEqual("notExecuted", plan["executionState"])
+            self.invoke(["logicapp", "test", "create", "--workflow", "Orders"], expected=1)
+
+    def test_sdk_run_missing_permissions_formats_json_query_and_table_without_execution(self):
+        arguments = ["logicapp", "test", "run", "--path", str(self.project), "--workflow", "Orders"]
+        report, _ = self.invoke(arguments, expected=4)
+        self.assertEqual("logicapp-sdk-test", report["reportType"])
+        self.assertEqual("blocked", report["outcome"])
+        self.assertFalse((self.project / "Tests").exists())
+        value, _ = self.invoke(arguments, expected=4, query="executionState")
+        self.assertEqual("notExecuted", value)
+        _, table = self.invoke(arguments, expected=4, output="table")
+        self.assertIn("blocked", table)
+        self.invoke(arguments + ["--accept-sdk-terms"], expected=4)
+        self.invoke(arguments + ["--trust-project"], expected=4)
+
     def test_foundation_json_query_table_and_all_diagnostic_exit_categories(self):
         report, _ = self.invoke(self.plan("--report-path", str(self.report_file)))
         self.assertEqual("notExecuted", report["executionState"])

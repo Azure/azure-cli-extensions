@@ -13,7 +13,7 @@ import zipfile
 # pylint: disable=import-error,no-name-in-module
 from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueError, MutuallyExclusiveArgumentError, ResourceNotFoundError, ValidationError
 
-from ._constants import WORKFLOW_KINDS
+from ._constants import NATIVE_TEST_PROJECT_FILE, NATIVE_TEST_STATE_DIRECTORY, WORKFLOW_KINDS
 
 
 HOST_JSON = {
@@ -360,6 +360,16 @@ def _walk_package(root, output_path, manifest_path):
     manifest_abs = os.path.abspath(manifest_path)
     ignore_patterns = _read_ignore_file(root)
     for directory, dirnames, filenames in os.walk(root):
+        names = {name.lower() for name in dirnames + filenames}
+        if NATIVE_TEST_PROJECT_FILE.lower() in names or NATIVE_TEST_STATE_DIRECTORY in names:
+            if directory == root or names.intersection(("host.json", "workflow.json")):
+                raise ValidationError(
+                    "Native test sources or state share deployable project/workflow content. "
+                    "Move the test project into a dedicated test directory before packaging.")
+            excluded.append({"path": os.path.relpath(directory, root).replace(os.sep, "/"),
+                             "reason": "native-test-project"})
+            dirnames[:] = []
+            continue
         dirnames[:] = sorted([name for name in dirnames if not _exclude_dir(name, directory, root, excluded)])
         for filename in sorted(filenames):
             full = os.path.abspath(os.path.join(directory, filename))
@@ -427,6 +437,8 @@ def _exclude_file(filename, full, output_abs, manifest_abs):
         return "secret"
     if filename in METADATA_FILES:
         return "metadata"
+    if filename.lower().endswith(".trx"):
+        return "native-test-results"
     if filename.endswith(EXCLUDED_SUFFIXES):
         return "log" if filename.endswith(".log") else "cache"
     return None

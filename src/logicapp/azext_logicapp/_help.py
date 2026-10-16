@@ -7,12 +7,63 @@ from knack.help_files import helps
 
 helps['logicapp test'] = """
 type: group
-short-summary: Inspect local workflow testing prerequisites without executing tests.
+short-summary: Scaffold, inspect and explicitly run local native SDK test projects.
 long-summary: >
-  SDK-ready foundation only. No restore, build, discovery, generation, SDK load
-  or business test execution. SDK adoption and qualification remain gated.
-  Local files only. Planning can use a named or active local project context;
-  no runtime, Azure resource target or login is used.
+  create writes source-only native MSTest scaffolding; plan remains read-only.
+  run requires explicit SDK terms and project-trust acknowledgements, with
+  restore separately opt-in. Native test code and build/restore targets can
+  execute arbitrary code and contact services. No sandbox or network isolation
+  is provided. Named/active local contexts supply project defaults, never a
+  cloud runtime target or login.
+"""
+
+helps['logicapp test create'] = """
+type: command
+short-summary: Scaffold a native SDK test project without restoring packages or running code.
+long-summary: >
+  Writes a new Tests/WORKFLOW directory with a net8.0 MSTest project, exact
+  SDK 1.0.3/engine 1.165.50/MSTest 4.0.2 references, .NET 8 selection,
+  reviewed-source NuGet configuration and an empty trigger fixture.
+  Existing directories are refused. Relative --output-path uses the selected
+  local project. No SDK binaries, credentials or project settings are copied.
+  The starter is ignored and guarded as inconclusive until its author reviews
+  fixtures, mocks external operations and writes real business assertions.
+examples:
+  - name: Scaffold tests for a workflow in the active local project.
+    text: az logicapp test create --workflow Orders
+  - name: Scaffold in a new project-relative directory without restoring packages.
+    text: az logicapp test create --path .\\App --workflow Orders --output-path .\\Tests\\Orders
+"""
+
+helps['logicapp test run'] = """
+type: command
+short-summary: Explicitly build and run reviewed native SDK/MSTest tests with a deadline.
+long-summary: >
+  Requires --accept-sdk-terms and --trust-project every time. Review
+  https://www.nuget.org/packages/Microsoft.Azure.Workflows.WebJobs.Tests.Extension/1.0.3/License
+  including use, redistribution, data collection and update restrictions.
+  CLI telemetry opt-out does not establish that SDK telemetry is disabled.
+  Uses a .NET 8 SDK, a reviewed explicit NuGet configuration and project-private
+  home/cache/config directories. No global tools or dependencies are installed.
+  Restore is allowed only with --restore; an existing lockfile uses locked mode.
+  Both build and test otherwise use --no-restore. Imports/targets/test code can
+  still perform arbitrary operations: these controls are not a security sandbox.
+  Default project is Tests/WORKFLOW/Workflow.Tests.csproj under the selected
+  local project. Explicit --test-project and --nuget-config inputs use shell CWD.
+  Relative report destinations use the selected local project. Existing reports
+  are refused. Raw native stdout/stderr is discarded, and sensitive raw TRX stays
+  in the test project's .logicapp-test-state/runs/INVOCATION_ID/native.trx.
+  Only bounded, consistent completed TRX counts can produce nativeTestsPassed.
+  Empty/entirely skipped suites exit 7, deadline expiry 8, cleanup pending 9.
+  Other exits: 1 native test failure, 2 runner/dependency error, 3 local input,
+  4 missing acknowledgement, 5 observed input drift, 6 publication, 130 interruption.
+  Counts do not attest that arbitrary test code called the SDK or covered the
+  selected workflow. Mocking is not denied-egress execution or connector certification.
+examples:
+  - name: Restore and run an authored, reviewed synthetic test project after reviewing SDK terms.
+    text: az logicapp test run --path .\\App --workflow Orders --accept-sdk-terms --trust-project --restore
+  - name: Run a previously restored project and save a new sanitized report.
+    text: az logicapp test run --workflow Orders --accept-sdk-terms --trust-project --report-path .\\Reports\\native.json
 """
 
 helps['logicapp test plan'] = """
@@ -20,7 +71,8 @@ type: command
 short-summary: Produce a bounded, versioned local preflight report; never run tests.
 long-summary: >
   Inspects Standard workflow bytes, limited top-level structure and literal
-  configuration declarations. Optional test project is XML metadata only.
+  configuration declarations. Explicit test project, or the default test create
+  project when present, is XML metadata only.
   Outputs notExecuted markers even for valid authoring. Exit 0 means successful
   planning, never tests passed. --strict exits 4 for blocked execution gates.
   Other exits: 1 authoring, 3 input, 5 changed inputs, 6 publication error.
@@ -48,19 +100,23 @@ examples:
 
 helps['logicapp test results'] = """
 type: group
-short-summary: Inspect saved foundation preflight reports, not native SDK results.
+short-summary: Inspect saved preflight or sanitized native test reports.
 """
 
 helps['logicapp test results show'] = """
 type: command
-short-summary: Inspect a saved preflight report; no tests executed and no embedded paths followed.
+short-summary: Inspect a saved JSON test report without rerunning tests or following embedded paths.
 long-summary: >
   Accepts closed version 1.0 and 2.0 foundation preflight documents with
   notExecuted markers, preserving the recorded exit policy and source result.
   Validation is not a signature or provenance
   attestation. Exit 0 means inspection succeeded, never testsPassed; the source
   outcome and exit remain in inspection. Optional --workflow-file compares
-  exact bytes and exits 5 on drift. Native SDK, TRX and legacy results are unsupported.
+  exact bytes and exits 5 on drift. Also accepts closed original execution
+  reports from test run (logicapp-sdk-test schema 1.0). Native counts/outcomes are
+  historical, retained under sourceOutcome/sourceExitCode, not new execution.
+  Raw SDK/TRX files, unexpected fields and unknown producers are refused.
+  Accepted JSON remains unauthenticated: schema validation is not proof of authorship.
 examples:
   - name: Inspect a saved preflight report (no tests executed) and check the current definition identity.
     text: az logicapp test results show --result-file .\\App\\Reports\\plan.json --workflow-file .\\App\\Orders\\workflow.json
@@ -608,6 +664,16 @@ examples:
 helps['logicapp deployment package'] = """
 type: command
 short-summary: Create a deterministic deployment package for a Logic Apps Standard project.
+long-summary: >
+  Excludes directories containing the native scaffold Workflow.Tests.csproj or
+  .logicapp-test-state, including custom in-project test locations, and raw TRX
+  files. Test sources, fixtures, private caches and build outputs under those
+  directories are not deployed. A test project/state sharing the deployment
+  root or a workflow definition directory is refused, not silently omitted.
+  Keep tests in dedicated directories. Ordinary runtime binaries remain eligible.
+  Root .funcignore controls additional authored exclusions; .gitignore is not
+  deployment policy. Arbitrary test code can write elsewhere, so inspect the
+  manifest and exclude other private fixtures/artifacts explicitly.
 examples:
   - name: Package a project.
     text: az logicapp deployment package --path .\\orders --output-path .\\orders.zip

@@ -108,6 +108,7 @@ class WheelContractTests(unittest.TestCase):
         with zipfile.ZipFile(self.wheel) as archive:
             unwanted = [
                 name for name in archive.namelist()
-                if "/tests/" in name or "/__pycache__/" in name or name.endswith((".pyc", ".pyo"))
+                if "/tests/" in name or "/__pycache__/" in name or
+                name.endswith((".pyc", ".pyo", ".dll", ".exe", ".pdb", ".nupkg", ".trx"))
             ]
         self.assertEqual([], unwanted)

@@ -187,6 +187,28 @@ class FoundationTests(unittest.TestCase):
                     edit(invalid)
                     self.assertFalse(protocol.validate_report(invalid))
 
+    def test_prior_producer_error_catalogs_and_context_guidance_remain_inspectable(self):
+        for version in ("0.1.17", "0.1.18", "0.1.19", "0.1.20", "0.1.21", "0.1.22", "0.1.23", "0.1.24"):
+            earlier = self.plan()
+            earlier["provenance"]["cliVersion"] = version
+            if version in protocol._V1_PRODUCERS:
+                earlier["schemaVersion"] = "1.0"
+                del earlier["exitPolicy"]
+            earlier["findings"].append(protocol.finding("report.invalid", "report", producer_version=version))
+            protocol.finalize(earlier)
+            with self.subTest(version=version):
+                self.assertTrue(protocol.validate_report(earlier))
+                inspected = testing.results_report(self.save(earlier))
+                self.assertEqual(0, inspected["exitCode"])
+                self.assertEqual(3, inspected["inspection"]["sourceExitCode"])
+                self.assertEqual(earlier["findings"], inspected["findings"])
+                self.assert_gated(inspected)
+        context_error = testing.plan_report(str(self.project), "")
+        context_error["provenance"]["cliVersion"] = "0.1.24"
+        self.assertTrue(protocol.validate_report(context_error))
+        self.assertIn("local context", next(row["recommendation"] for row in context_error["findings"]
+                                           if row["rule"] == "input.options"))
+
     def test_stateless_is_preserved_not_qualified(self):
         self.write("Orders", _workflow.workflow_json("Stateless"), workflow=True)
         report = self.plan()
@@ -225,7 +247,7 @@ class FoundationTests(unittest.TestCase):
                 invalid = copy.deepcopy(earlier)
                 invalid["summary"]["executed"] = 1
                 self.assertFalse(protocol.validate_report(invalid))
-        for version in ("0.1.22", "0.1.23"):
+        for version in ("0.1.22", "0.1.23", "0.1.24", "0.1.25", "0.1.26"):
             for strict in (False, True):
                 earlier = self.plan(strict=strict)
                 earlier["provenance"]["cliVersion"] = version
@@ -236,7 +258,7 @@ class FoundationTests(unittest.TestCase):
                     self.assertEqual(4 if strict else 0, inspected["inspection"]["sourceExitCode"])
                     self.assert_gated(inspected)
         invalid = self.plan()
-        invalid["provenance"]["cliVersion"] = "0.1.25"
+        invalid["provenance"]["cliVersion"] = "99.99.99"
         self.assertFalse(protocol.validate_report(invalid))
         invalid = copy.deepcopy(source)
         invalid["provenance"]["cliVersion"] = "0.1.24"
@@ -278,6 +300,32 @@ class FoundationTests(unittest.TestCase):
                     invalid = copy.deepcopy(report)
                     changed = next(item for item in invalid["findings"] if item["rule"] == "input.options")
                     changed[field] = current[field] if legacy else old
+                    self.assertFalse(protocol.validate_report(invalid))
+
+    def test_public_preview_preserves_exact_historical_and_sdk_report_error_catalogs(self):
+        source = self.plan()
+        for schema, legacy in (("1.0", True), ("1.0", False), ("2.0", True), ("2.0", False)):
+            report = copy.deepcopy(source)
+            report["schemaVersion"] = schema
+            if schema == "1.0":
+                del report["exitPolicy"]
+            row = protocol.finding("report.invalid", "report",
+                                   producer_version="1.0.0b1" if legacy else None)
+            report["findings"].append(row)
+            protocol.finalize(report)
+            with self.subTest(schema=schema, legacy=legacy):
+                if schema == "1.0" and not legacy:
+                    self.assertFalse(protocol.validate_report(report))
+                    continue
+                self.assertTrue(protocol.validate_report(report))
+                inspected = testing.results_report(self.save(report))
+                self.assertEqual(report["findings"], inspected["findings"])
+                self.assertEqual(3, inspected["inspection"]["sourceExitCode"])
+                self.assert_gated(inspected)
+                for field in ("message", "recommendation"):
+                    invalid = copy.deepcopy(report)
+                    invalid["findings"][-1][field] = protocol.finding(
+                        "report.invalid", "report", producer_version=None if legacy else "1.0.0b1")[field]
                     self.assertFalse(protocol.validate_report(invalid))
 
     def test_absent_empty_and_invalid_project_never_create_files(self):

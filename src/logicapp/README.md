@@ -27,9 +27,9 @@ WOW64 can also report `AMD64`; an architecture marker is not reliable.
 Non-Windows installations retain `psutil>=5.9.0`. This dependency choice does
 not qualify every Python/platform combination or change runtime ownership guards.
 
-The complete extension contributes 57 leaves, preserving core `az logicapp`
+The complete extension contributes 59 leaves, preserving core `az logicapp`
 app management, app settings and ZIP deployment. Rohitha authored the original
-extension; subsequent staging work adds 19 leaves and safety repairs. See the
+extension; subsequent staging work adds 21 leaves and safety repairs. See the
 [contribution provenance and qualification boundaries](docs/contribution.md).
 Declared Python support is not a claim that every platform/version or live
 Azure scenario has been exercised.
@@ -61,6 +61,39 @@ dependency/runtime commands are explicit operations, not part of validation
 or the testing foundation. Never put secret values in `--parameter` or
 `--app-setting`; local connection secrets are read from standard input.
 
+## Create, plan and run local workflow tests
+
+`test create` scaffolds native SDK/MSTest source. The separate `test run`
+explicitly builds/runs an authored test project, with restore separately opt-in:
+
+```powershell
+az logicapp test create --path .\App --workflow Orders
+# Review trigger.json, mock external operations and author business assertions.
+# Remove the Ignore attribute and inconclusive guard only after that review.
+az logicapp test plan --path .\App --workflow Orders
+az logicapp test run --path .\App --workflow Orders --accept-sdk-terms --trust-project --restore
+az logicapp test run --path .\App --workflow Orders --accept-sdk-terms --trust-project --report-path .\Reports\native.json
+az logicapp test results show --result-file .\App\Reports\native.json
+```
+
+The starter is **not a passing business test**: it is ignored/inconclusive until
+authored. `create` refuses existing output directories and never restores or
+runs code. `run` requires a .NET 8 SDK and per-invocation SDK-terms/project-trust
+acknowledgements; `--restore` is a separate opt-in. The CLI includes no SDK
+binaries or redistribution permission. Native code, build targets and imports
+can execute arbitrary operations and contact services: **this is not a sandbox**.
+Private caches and mocked actions do not establish denied egress or coverage.
+Native counts do not attest SDK invocation or useful workflow assertions.
+
+The qualified dependency contract is SDK 1.0.3, engine 1.165.50, MSTest 4.0.2
+and net8.0. Empty/entirely skipped suites are not passes. Sanitized reports
+contain bounded native counts; raw local TRX can contain sensitive values and
+is never exported by `results show`. Deployment packaging excludes dedicated
+native test/state directories and raw TRX, and refuses runtime/test colocation;
+inspect the manifest because arbitrary test code can write elsewhere.
+See the [native SDK workflow and its known output-cast limitation](docs/workflow-testing-foundation.md#native-sdk-workflow-since-0125).
+Existing read-only planning remains separate.
+
 ## Inspect workflow testing readiness (without running tests)
 
 ```powershell
@@ -81,15 +114,15 @@ Neither means tests passed: both preserve immutable SDK gates, `notExecuted`
 markers and zero executed business tests. Other diagnostic errors remain nonzero.
 New reports use closed schema 2.0 with an explicit exit policy; supported older
 schema-1 reports retain their original outcomes. Default stdout only; optional reports require an existing directory,
-and overwrites require `--force`. `results show` accepts only closed foundation
-preflight reports, not native SDK/TRX output; exit `0` means inspected, not tests
+and overwrites require `--force`. `results show` accepts closed foundation
+preflight or sanitized native execution JSON, not raw SDK/TRX output; exit `0` means inspected, not tests
 passed. Planning now defaults to the named/active local project's path, then the
 current directory. Explicit `--path` overrides that path and bypasses an implicit
 active context; an explicitly named cloud context is refused. Relative report
 destinations use the selected project and absolute destinations remain unchanged.
 No implicit report or output directory is created. Optional test-project and
 results-inspection input paths remain relative to the shell's current directory.
-No cloud target, install, generation, host or SDK run is involved.
+No cloud target, install, generation, host or SDK run is involved in planning.
 See [testing foundation contracts](docs/workflow-testing-foundation.md)
 for schema, exit codes, sensitive input limits and deferred adoption approval.
 
@@ -106,6 +139,8 @@ Stores and active selection follow `AZURE_CONFIG_DIR`; custom profiles never
 inherit the default profile's active target. Bare local runtime lifecycle
 commands honor saved ports. File-authoring commands reject explicit cloud
 contexts instead of falling through to another local project.
+Local context creation defaults to port 7071 when `--port` is omitted. Explicit
+ports and stored values retain strict integer/range validation.
 
 ## Create managed connections with distinct names
 

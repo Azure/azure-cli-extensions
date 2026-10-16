@@ -1,6 +1,210 @@
 # Workflow testing foundation (introduced in 0.1.17)
 
-This increment implements **local preflight and report inspection**, not a
+## Native SDK workflow (since 0.1.25)
+
+`test create -> test plan -> test run -> test results show` now supports native
+C#/MSTest projects using the **Microsoft Logic Apps Tests SDK**, not a CLI WDL
+simulator. Planning remains strictly read-only and preserves the older
+foundation protocol below; its blocked SDK fields do not become execution
+permission. `run` has a separate versioned execution record and explicit
+per-invocation approvals.
+
+```powershell
+az logicapp test create --context development --workflow Orders
+az logicapp test plan --context development --workflow Orders
+# Author and review the generated C# tests and trigger fixture before enabling them.
+az logicapp test run --context development --workflow Orders --accept-sdk-terms --trust-project --restore
+az logicapp test run --context development --workflow Orders --accept-sdk-terms --trust-project --report-path .\Reports\native.json
+az logicapp test results show --result-file .\App\Reports\native.json --workflow-file .\App\Orders\workflow.json
+```
+
+All three project commands use explicit `--path`, otherwise a named/active local
+context, otherwise CWD. Named cloud contexts remain refused even with a path.
+Relative `--output-path` and `--report-path` use the selected project; explicit
+`--test-project`, `--nuget-config` and results-inspection inputs use shell CWD.
+Windows drive-relative outputs are refused.
+
+### Source-only scaffolding
+
+The default new directory is `Tests/<workflow>` under the local project.
+`create` refuses existing directories rather than adopting, merging or
+overwriting them. It writes `Workflow.Tests.csproj`, `WorkflowTests.cs`,
+`trigger.json`, `global.json`, `NuGet.Config` and `.gitignore`; no SDK binary,
+credential, connection, setting or parameter values are copied. Multiple
+triggers require explicit `--trigger`. The project links/copies the **current
+selected workflow** at build time, rather than treating a stale generated
+definition as the test subject.
+
+The starter is ignored and begins with an inconclusive guard, before the SDK
+call. Fill in synthetic trigger data, mock external operations using
+`ActionMock`, and author meaningful business assertions before removing both
+guards. A successful workflow status alone is not business coverage. Tests can
+assert native action outputs, for example
+`Assert.AreEqual(3, result.Actions["Calculate"].Outputs.Value<int>());` for an
+authored integer Compose scenario. The CLI never infers expected business
+values or silently modifies assertions to obtain a pass. Ordinary C#/MSTest
+authoring remains available; no new JSON scenario/assertion language is required.
+
+`plan` discovers the default scaffold's `.csproj` when present. It inspects XML
+only, including exact bracketed package versions. This is not executable test
+discovery, import evaluation or approval to restore.
+
+### Context defaults and report compatibility (0.1.26)
+
+Version 0.1.26 also repairs omitted `context create --port` handling at the CLI
+boundary without relaxing stored-context validation. Supported 0.1.25 native
+and preflight JSON remains inspectable with its original finding catalog and
+historical counts; saved approval flags never authorize a new native invocation.
+
+### Deployment boundary
+
+`deployment package` omits an entire dedicated directory containing
+`Workflow.Tests.csproj` or `.logicapp-test-state`, including custom in-project
+test locations and existing projects after a native CLI run. Thus fixtures,
+source, restored SDK packages, raw results and test `bin`/`obj` output under that
+boundary do not enter the deployment ZIP. Raw `.trx` files elsewhere are also
+excluded, case-insensitively. Ordinary runtime assemblies are not blanket-excluded.
+
+If test sources/state share the deployment root or a directory with `host.json`
+or `workflow.json`, packaging refuses rather than silently remove runtime
+content. Move tests to a dedicated directory. The CLI does not edit the root
+`.funcignore`, and generated `.gitignore` is not deployment policy. Arbitrary
+trusted test/build code can write outside these known boundaries: inspect the
+package manifest and use `.funcignore` or external directories for other private
+fixtures/artifacts. This is not universal sensitive-data detection.
+
+### Explicit execution and dependencies
+
+Review the [SDK 1.0.3 license](https://www.nuget.org/packages/Microsoft.Azure.Workflows.WebJobs.Tests.Extension/1.0.3/License),
+including internal-use restrictions, redistribution/commercial-use restrictions,
+data collection and updates. The CLI's MIT license does not license the SDK.
+Obtain publisher/legal clarification where needed. `--accept-sdk-terms` records
+the caller's acknowledgement for **this invocation**, not approval inferred
+from a saved report, context, previous run or `--force`. No SDK redistribution
+or installation into the Azure CLI Python environment is performed.
+
+`--trust-project` separately acknowledges executable restore/build targets,
+imports and test code. The CLI suppresses implicit ancestor Directory.Build
+props/targets, but does not validate the entire build graph or sandbox explicit
+imports, SDK/package targets, custom tasks or test code. Mocking is not a
+network firewall. No denied-egress, credential isolation from the operating
+system, connector certification or live-Azure qualification is claimed.
+
+The qualified package combination is SDK **1.0.3**, engine **1.165.50** and
+MSTest **4.0.2**, targeting **net8.0**. Scaffolding pins exact NuGet versions,
+selects SDK **8.0.426** with latest-patch roll-forward, and creates a source
+configuration that clears inherited feeds and selects official NuGet.
+Execution requires a selected .NET 8 SDK; the target framework alone does not
+select that SDK in an existing project. .NET 8 support ends **2026-11-10**.
+Future toolchain/engine/runner combinations require separate qualification.
+Matching a lockfile is not a dependency-security audit or binary attestation.
+
+`--restore` explicitly allows restore using a reviewed `--nuget-config`,
+otherwise the `NuGet.Config` beside the test project. Existing lockfiles use
+locked mode; a new restore creates `packages.lock.json` for review. Commit that
+lockfile, not package binaries. Without `--restore`, both build and test use
+`--no-restore`; missing/unqualified dependency evidence fails rather than
+silently downloading. An existing native MSTest project can skip `create` via
+`--test-project`, with its own reviewed .NET selection/configuration and the
+same locked-version contract.
+
+Home, NuGet packages/HTTP cache, Azure configuration and temporary directories
+are project-private under `.logicapp-test-state`. Credential/plugin/startup-hook
+environment variables and inherited user feed configuration are not passed
+through. Native environment variables use an essential-platform allowlist;
+proxy/credential environment configuration is not inherited. Explicit
+configuration may still contain secrets and is executable/trusted input.
+CLI telemetry opt-out **does not establish that SDK telemetry is disabled**.
+No global tool, package, context or configuration changes are requested.
+
+Build/test are serialized for cooperating CLI invocations by the existing
+advisory file-lock mechanism beside the selected `.csproj`. `--timeout` bounds
+the combined native toolchain/restore/build/test work (default 300 seconds,
+1-3600); identity-checked cleanup can take additional time. The runner reuses
+the existing launched-process/descendant identity safeguards. It records
+observed owned descendants, never stops processes by name, and retains
+`process-<step>.json` with an explicit cleanup-pending result when safe cleanup
+cannot complete. A later invocation refuses new native work while a prior
+process receipt remains in that test project's run state, even if its contents
+are malformed. Receipt contents never authorize automatic signalling or
+deletion; inspect/reconcile retained ownership evidence before retrying.
+Historical run directories and raw TRX without process receipts do not block
+new work. This is not process containment: a deliberately detached or
+short-lived, unobserved descendant can escape observation. Use a dedicated
+container/VM for stronger isolation.
+
+### Native results and exit codes
+
+Native stdout/stderr is discarded, not raw-echoed or exported in JSON.
+For restore/build failures, inspect the reviewed project/configuration with
+native tooling in an appropriately isolated environment for detailed diagnosis.
+The raw TRX is retained locally at
+`<test-directory>/.logicapp-test-state/runs/<invocationId>/native.trx`.
+It can contain fixtures, outputs, assertion messages, stack traces and paths:
+review it as sensitive before sharing. Generated `.gitignore` excludes native
+state and build outputs; existing projects must protect their own artifacts.
+
+The CLI accepts only bounded, DTD-free, completed MSTest TRX with consistent
+per-test outcomes/counters. Missing, oversized, aborted, contradictory or
+unsupported nested results cannot become a partial pass. Entirely skipped
+scaffolds and zero discovery are non-passing even when `dotnet test` exits 0.
+Passing native test counts do **not** prove that arbitrary C# called the SDK,
+executed the selected workflow or asserted useful behavior. Reports always
+retain `workflowExecution: notAttested`, `businessCoverage: notAttested` and
+`externalIsolation: notProvided`.
+
+| Exit | Native execution meaning |
+| --- | --- |
+| 0 | `nativeTestsPassed`, with at least one executed/passed native test, or successful report inspection. Inspect skipped counts and coverage too. |
+| 1 | Native test failures, including assertion failures or exceptions. Not a business root-cause diagnosis. |
+| 2 | Toolchain, dependency, restore, build, runner or native-results error. |
+| 3 | Invalid/unsafe/missing local input. |
+| 4 | Missing terms or project-trust acknowledgement; no native execution. |
+| 5 | Observed selected-input drift, or explicit workflow identity mismatch during inspection. |
+| 6 | Explicit report publication failure; inspect the destination before retrying. |
+| 7 | Zero executed tests, including an entirely skipped scaffold. |
+| 8 | Native invocation deadline expired; no complete verdict. |
+| 9 | Safe tracked-process cleanup could not complete; ownership receipt retained. |
+| 130 | Interrupted invocation; no complete verdict. |
+
+Original `test run` JSON uses closed `reportType: logicapp-sdk-test`,
+`schemaVersion: "1.0"`, with fixed provenance/catalog, permission flags,
+selected workflow/project hashes, selected-input stability, native step exits,
+counts and explicit coverage limits. Source/configuration bytes are not
+exported. Bounded test-tree inputs are compared before/after execution; build
+outputs/native state are excluded, and the lockfile is compared separately
+after restore. This detects observed drift, not all effective build inputs,
+external imports, change-then-revert races or concurrent binary replacement.
+
+Optional sanitized `--report-path` is stdout-only by default, relative to the
+selected project, with an existing parent and no clobbering of existing reports
+or input aliases. `results show` accepts original closed execution JSON, not
+raw TRX. It preserves source outcome/exit and native counts as **historical**
+evidence under `phase: inspection`, never reruns, and follows no embedded
+artifact path. Schema/provenance checks are not signatures; JSON is unauthenticated
+data and cannot authorize later execution. Inspection output is not a new
+execution report.
+
+### Qualification and known native SDK limitation
+
+Private synthetic Windows x64 qualification exercised real SDK execution for
+Stateful and Stateless workflows, distinct trigger/mocked HTTP values and
+meaningful action-output assertions. Mocked HTTP actions did not connect to an
+owned loopback listener. Deliberately incorrect assertions produced genuine
+native failures, and zero/ignored native tests were not treated as passes.
+This is not a complete OS/architecture/connector or live-workflow matrix.
+
+SDK **1.0.3** with engine **1.165.50** also reproduced an
+`InvalidCastException` when mapping a valid nonempty typed top-level workflow
+output into SDK result definitions. The failing synthetic definition and native
+evidence were retained. The CLI does **not** remove outputs, rewrite workflow
+semantics, patch SDK binaries or manufacture a pass around that failure.
+Affected authored tests fail through the native runner; action-output assertions
+were separately qualified. Publisher fixes require new qualification.
+
+## Read-only foundation contract
+
+The original foundation increment implements **local preflight and report inspection**, not a
 workflow test runner. It provides deterministic, noninteractive tools for agents
 to inspect authored inputs and identify the next restricted action. A valid
 definition, declared package or successful report inspection is never a business
@@ -33,18 +237,17 @@ CLI argument and context resolution errors are reported by Azure CLI before a
 preflight document is available; the report's diagnostic exit policy applies
 only after local project selection succeeds.
 
-The context-creation example deliberately supplies `--port`. Native CLI 2.91.0
-x86 qualification reproduced an existing omitted-port defect: Knack supplies a
-wrapped default integer that the current context validator refuses. This planning
-follow-up does not fix that separately tracked defect; an explicit integer port
-works without relaxing the validator.
+Local `context create` now defaults to port 7071 when `--port` is omitted.
+The CLI boundary normalizes that omitted value without relaxing the strict
+stored-context validator or accepting boolean, floating-point or string ports.
 
 Select an existing local Standard project and one workflow directory; an explicit
 Stateful/Stateless kind is required. These are project-file defaults, not
 cloud/local-runtime execution targets or login requirements. Inherited Azure CLI
 output/query/subscription flags do not turn this command into a cloud operation.
-There is no `test run`,
-`prepare`, `generate`, SDK acceptance flag or policy file that enables execution.
+The read-only plan itself has no `prepare`/`generate` or SDK acceptance flag.
+The separate native `test run` workflow above requires its own approvals and
+does not reinterpret a successful plan as permission or execution evidence.
 
 ## Bounded read-only inspection
 
@@ -55,7 +258,8 @@ configuration files needed for recognized literal references. Local-context
 selection additionally reads the selected CLI profile's context store when
 needed. Optional `--test-project` keeps its existing input-file semantics:
 relative paths are resolved from the shell's current directory, not discovered
-or inferred from the selected project. No recursive
+or inferred from the selected project. Since 0.1.25, omitting it also permits one
+bounded read of the known default scaffold project when present. No recursive
 inventory, home/tool/package/credential search, remote schema or NuGet query,
 subprocess, executable test discovery, assembly import, host launch or network
 probe occurs. Missing files are findings, not generated defaults.
@@ -172,9 +376,9 @@ preflight outcome is not the subsequent publication/cleanup outcome on stdout.
 Use an agent-owned trusted output directory. Reports are sanitized, but source
 identities and workflow identifiers may still be sensitive; review before sharing.
 
-## `results show` is not a native SDK results parser
+## Foundation report inspection is not raw native SDK/TRX parsing
 
-Only **saved supported schema-1 and schema-2 foundation preflight reports** are accepted. Native SDK output,
+This foundation branch accepts **saved supported schema-1 and schema-2 foundation preflight reports**. Raw native SDK output,
 TRX, legacy/invented reports, execute-phase reports, unknown versions/fields,
 duplicate keys, nonfinite numbers, inconsistent counters/hashes/gates and
 arbitrary finding text are rejected without echoing their contents. Both schemas are closed:
@@ -185,16 +389,19 @@ producer provenance from the explicitly supported **0.1.17-0.1.21** releases
 and the earlier public **1.0.0b1** preview
 and the fixed rule catalog. A package-version bump alone does not invalidate
 these reports; unknown producer versions still require explicit qualification
-and validator support. Schema 2.0 accepts the fixed **0.1.22**, **0.1.23**, **0.1.24** and
+and validator support. Schema 2.0 accepts the fixed **0.1.22**, **0.1.23**, **0.1.24**,
+**0.1.25**, **0.1.26** and
 current public **1.0.0b1** producers and requires
 the explicit `planning`/`strict` policy with its matching outcome and exit.
 Schema 1.0 does not accept that new field or a rewritten `planned`/exit-0 result;
 old clients likewise reject schema 2.0 rather than misreading its new semantics.
-The changed `input.options` guidance uses the selected producer's exact catalog.
+The changed `input.options` and `report.invalid` guidance uses the selected
+producer's exact catalog. Explicit historical producer lists freeze these
+catalogs independently of later version changes.
 Historical schema-1 public **1.0.0b1** retains its old guidance. Because the
 unpublished public preview version remains **1.0.0b1** across this follow-up,
-schema-2 reports from that producer accept exactly its old or new guidance
-variant; arbitrary text and mixed message/recommendation variants are rejected.
+schema-2 reports from that producer accept exactly its old or new whole-row
+guidance variants; arbitrary text and mixed message/recommendation rows are rejected.
 Later producers do not inherit the legacy variant merely from a version bump.
 Supported older reports retain their recorded
 provenance, not a claim of current-input freshness or executed tests.
@@ -217,13 +424,14 @@ reports `matches`, `changed`, `unavailable` or `notChecked`. A match is definiti
 identity only, not test/source/configuration currency or a native verdict.
 No auto-rerun or fixture/golden/assertion mutation occurs.
 
-## SDK adoption remains a separate approval
+## Foundation records never grant SDK adoption approval
 
-All current reports retain `sdkAdoption: unresolved`, `sdkRestore: blocked`,
+All foundation reports retain `sdkAdoption: unresolved`, `sdkRestore: blocked`,
 `sdkExecution: blocked`, platform qualification/network isolation `unknown`.
 No declared Boolean, metadata, `--force`, successful local regression or report
-inspection can clear them. This implementation did not restore, load, execute,
-bundle, generate or redistribute the test SDK.
+inspection can clear them. The read-only foundation never restores, loads or
+executes the SDK. The separate native workflow above requires its own explicit
+invocation approvals; SDK binaries are not bundled or redistributed.
 
 The [SDK documentation](https://learn.microsoft.com/en-us/azure/logic-apps/testing-framework/automated-test-sdk)
 and [1.0.3 package license](https://www.nuget.org/packages/Microsoft.Azure.Workflows.WebJobs.Tests.Extension/1.0.3/License)
@@ -232,9 +440,7 @@ clarification. The generator's MIT source license is not the SDK binary license.
 External restore does not settle those terms. Mocking is not sandboxing:
 MSBuild/test/custom code may execute arbitrary code or contact external services.
 
-**Proposed next increment, not authorized here:** obtain adoption clarification
-and separately approve a pinned native SDK/engine/toolchain/runner qualification
-with synthetic fixtures and verified network/data/side-effect restrictions.
-Only a subsequently implemented, verified native evidence adapter can report
-real test verdicts/TRX/action evidence. No later phase, SDK runner, local-runtime
-integration test, full logging framework or phase-2 completion is claimed.
+The native workflow above implements a separately approved pinned
+SDK/engine/toolchain/runner increment. It does not grant approval through
+foundation records, claim denied-egress execution or certify connectors,
+live-runtime integration, arbitrary business coverage or complete phase-2 scope.

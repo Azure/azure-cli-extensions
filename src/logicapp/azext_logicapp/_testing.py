@@ -319,7 +319,10 @@ def _test_project(report, data):
                 if element.tag.rsplit("}", 1)[-1] == "PackageReference" and (
                         element.get("Include") == protocol.SDK_PACKAGE):
                     if set(element.attrib) == {"Include", "Version"} and not list(element):
-                        versions.append(element.get("Version"))
+                        version = element.get("Version")
+                        if re.fullmatch(r"\[[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}\]", version or ""):
+                            version = version[1:-1]
+                        versions.append(version)
                     else:
                         dynamic = True
     deps = report["dependencies"]
@@ -434,7 +437,18 @@ def plan_report(path, workflow, test_project=None, report_path=None, force=False
                 except InputError as ex:
                     _add(report, ex.rule, "testProject")
         else:
-            _add(report, "testProject.absent", "testProject")
+            from ._test_scaffold import default_project
+            generated = default_project(root, workflow)
+            if os.path.lexists(generated):
+                protected.add(os.path.normcase(generated))
+                data = _input(report, snapshots, "testProject", generated, json_input=False)
+                if data is not UNAVAILABLE:
+                    try:
+                        _test_project(report, data)
+                    except InputError as ex:
+                        _add(report, ex.rule, "testProject")
+            else:
+                _add(report, "testProject.absent", "testProject")
     except InputError as ex:
         _add(report, ex.rule)
     except OSError:
@@ -457,6 +471,13 @@ def results_report(result_file, workflow_file=None):
     try:
         data = _read(result_file)
         candidate = _json(data)
+        if isinstance(candidate, dict) and candidate.get("reportType") == "logicapp-sdk-test":
+            from . import _sdk_testing
+            if not _sdk_testing.validate_report(candidate):
+                raise InputError("report.invalid")
+            if _read(result_file) != data:
+                raise InputError("input.changed")
+            return _sdk_testing.results_report(candidate, workflow_file)
         if not protocol.validate_report(candidate):
             raise InputError("report.invalid")
         if _read(result_file) != data:

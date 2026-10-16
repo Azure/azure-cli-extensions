@@ -6,14 +6,14 @@ Release History
 1.0.0b1
 +++++++
 
-* Contribute the complete 57-command Logic Apps Standard preview to the official
+* Contribute the complete 59-command Logic Apps Standard preview to the official
   extension repository, retaining core app, settings and ZIP deployment commands.
 * Relocate developer and contract guides under the extension and generate GA help
   controls with the same stock CLI in isolated configuration/extension directories.
 * Adopt the upstream preview version scheme and declare Python 3.10 or newer and
   Azure CLI 2.67.0 or newer. Platform and live-cloud qualification remain separate.
 * Preserve Rohitha's original extension and subsequent staging improvements;
-  workflow testing remains a read-only foundation with no SDK/business-test execution.
+  retain the read-only testing foundation alongside explicit native testing.
 * Incorporate reviewed improvements through the historical 0.1.23 baseline,
   retaining the existing public preview version and historical report producers.
 * Add genuine one-action run resubmission with completed-source, literal runtime
@@ -43,6 +43,18 @@ Release History
   explicit paths. Anchor relative report destinations to that project without
   implicit writes or SDK execution. Preserve exact historical report catalogs,
   including both schema-2 guidance variants of the unchanged public 1.0.0b1.
+* Add source-only native SDK/MSTest scaffolding and explicit test execution with
+  per-invocation SDK terms/project trust and separately opt-in restore. Preserve
+  the ignored/inconclusive starter, identity-checked cleanup, retained-receipt
+  retry hold, sensitive-artifact limits and explicit lack of sandbox/coverage
+  attestation. No SDK binaries are redistributed.
+* Inspect closed sanitized native reports without rerunning tests. Preserve
+  historical 0.1.25/0.1.26 native/preflight producers and exact public historical
+  finding catalogs, independent of later package versions.
+* Exclude dedicated native test/state directories and raw TRX from deployment
+  packages, refusing colocation with runtime content rather than omitting it.
+* Normalize omitted context-create ports at the real CLI boundary to 7071,
+  without weakening explicit-port or stored-context validation.
 
 0.1.19
 ++++++
