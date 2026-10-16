@@ -1295,6 +1295,7 @@ def aks_create(
     nrg_lockdown_restriction_level=None,
     enable_defender=False,
     defender_config=None,
+    enable_disk_driver=False,
     disable_disk_driver=False,
     disable_file_driver=False,
     enable_blob_driver=None,
@@ -1486,6 +1487,8 @@ def aks_create(
     enable_on_demand_monitor=False,
     # prepared image specification
     prepared_image_specification_id=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1554,6 +1557,9 @@ def aks_update(
     enable_force_upgrade=False,
     disable_force_upgrade=False,
     upgrade_override_until=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
+    disable_upgrade_gate=False,
     cluster_autoscaler_profile=None,
     sku=None,
     tier=None,
@@ -1930,11 +1936,12 @@ def aks_get_credentials(
             path, kubeconfig, overwrite_existing, context_name)
         # Check if kubeconfig requires kubelogin with devicecode and convert it
         if uses_kubelogin_devicecode(kubeconfig):
-            if which("kubelogin"):
+            kubelogin_path = which("kubelogin")
+            if kubelogin_path:
                 try:
                     # Run kubelogin convert-kubeconfig -l azurecli
                     subprocess.run(
-                        ["kubelogin", "convert-kubeconfig", "-l", "azurecli"],
+                        [kubelogin_path, "convert-kubeconfig", "-l", "azurecli"],
                         cwd=os.path.dirname(path),
                         check=True,
                     )
@@ -2325,6 +2332,7 @@ def aks_agentpool_add(
     gpu_driver=None,
     driver_type=None,
     gpu_mig_strategy=None,
+    gpu_mig_profiles=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
     enable_secure_boot=False,
@@ -2341,6 +2349,9 @@ def aks_agentpool_add(
     secondary_network_interfaces=None,
     # prepared image specification
     prepared_image_specification_id=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
+    disable_upgrade_gate=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2403,6 +2414,7 @@ def aks_agentpool_update(
     allowed_host_ports=None,
     asg_ids=None,
     enable_managed_dranet=False,
+    node_public_ip_prefix_ids=None,
     enable_artifact_streaming=False,
     disable_artifact_streaming=False,
     enable_managed_gpu=None,
@@ -2425,10 +2437,14 @@ def aks_agentpool_update(
     zones=None,
     gpu_driver=None,
     gpu_mig_strategy=None,
+    gpu_mig_profiles=None,
     # crg
     crg_id=None,
     # prepared image specification
     prepared_image_specification_id=None,
+    # upgrade gate
+    enable_upgrade_gate=False,
+    disable_upgrade_gate=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2482,10 +2498,9 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
         instance.count = new_node_count  # pylint: disable=no-member
 
     # By default scale via the PUT agent pool API (begin_create_or_update).
-    # When --use-patch-api is set, scale a VMSS node pool via the preview PATCH agent
+    # When --use-patch-api is set, scale the node pool via the preview PATCH agent
     # pool API, which scales to the target count without a full reconciliation.
-    # VirtualMachines node pools are not supported yet and keep using the PUT API.
-    if use_patch_api and instance.type_properties_type == CONST_VIRTUAL_MACHINE_SCALE_SETS:
+    if use_patch_api:
         return _aks_agentpool_scale_patch(
             cmd,
             client,
@@ -2515,10 +2530,11 @@ def _aks_agentpool_scale_patch(cmd,
                                instance,
                                headers=None,
                                no_wait=False):
-    """Scale a VMSS agent pool via the dedicated PATCH agent pool API.
+    """Scale an agent pool via the dedicated PATCH agent pool API.
 
-    Sends only the already-updated target count on ``instance`` so the pool scales
-    without triggering a full agent pool reconciliation.
+    Sends only the already-updated target count (VMSS) or manual scale profiles
+    (VirtualMachines) on ``instance`` so the pool scales without triggering a full
+    agent pool reconciliation.
     """
     AgentPoolUpdate = cmd.get_models(
         "AgentPoolUpdate",
@@ -2531,7 +2547,35 @@ def _aks_agentpool_scale_patch(cmd,
         operation_group="agent_pools",
     )
 
-    parameters = AgentPoolUpdate(properties=AgentPoolUpdateProperties(count=instance.count))
+    if instance.type_properties_type == CONST_VIRTUAL_MACHINES:
+        AgentPoolUpdateVirtualMachinesProfile = cmd.get_models(
+            "AgentPoolUpdateVirtualMachinesProfile",
+            resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+            operation_group="agent_pools",
+        )
+        AgentPoolUpdateScaleProfile = cmd.get_models(
+            "AgentPoolUpdateScaleProfile",
+            resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+            operation_group="agent_pools",
+        )
+        AgentPoolUpdateManualScaleProfile = cmd.get_models(
+            "AgentPoolUpdateManualScaleProfile",
+            resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+            operation_group="agent_pools",
+        )
+        manual = [
+            AgentPoolUpdateManualScaleProfile(size=m.size, count=m.count)
+            for m in instance.virtual_machines_profile.scale.manual
+        ]
+        properties = AgentPoolUpdateProperties(
+            virtual_machines_profile=AgentPoolUpdateVirtualMachinesProfile(
+                scale=AgentPoolUpdateScaleProfile(manual=manual)
+            )
+        )
+    else:
+        properties = AgentPoolUpdateProperties(count=instance.count)
+
+    parameters = AgentPoolUpdate(properties=properties)
     return sdk_no_wait(
         no_wait,
         client.begin_update,
@@ -3081,6 +3125,7 @@ def aks_agentpool_manual_scale_add(cmd,
                                    nodepool_name,
                                    vm_sizes,
                                    node_count,
+                                   use_patch_api=False,
                                    no_wait=False):
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
@@ -3096,6 +3141,18 @@ def aks_agentpool_manual_scale_add(cmd,
     new_manual_scale_profile = ManualScaleProfile(size=sizes[0], count=int(node_count))
     instance.virtual_machines_profile.scale.manual.append(new_manual_scale_profile)
 
+    # When --use-patch-api is set, add the manual scale profile via the preview
+    # PATCH agent pool API instead of the default PUT API.
+    if use_patch_api:
+        return _aks_agentpool_scale_patch(
+            cmd,
+            client,
+            resource_group_name,
+            cluster_name,
+            nodepool_name,
+            instance,
+            no_wait=no_wait,
+        )
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
@@ -3106,7 +3163,7 @@ def aks_agentpool_manual_scale_add(cmd,
     )
 
 
-def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
+def aks_agentpool_manual_scale_update(cmd,
                                       client,
                                       resource_group_name,
                                       cluster_name,
@@ -3114,6 +3171,7 @@ def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
                                       current_vm_sizes,
                                       vm_sizes=None,
                                       node_count=None,
+                                      use_patch_api=False,
                                       no_wait=False):
     if vm_sizes is None and node_count is None:
         raise RequiredArgumentMissingError("specify --vm-sizes or --node-count or both.")
@@ -3144,6 +3202,18 @@ def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
             f"Manual with size {current_vm_sizes[0]} doesn't exist in node pool {nodepool_name}"
         )
 
+    # When --use-patch-api is set, update the manual scale profiles via the preview
+    # PATCH agent pool API instead of the default PUT API.
+    if use_patch_api:
+        return _aks_agentpool_scale_patch(
+            cmd,
+            client,
+            resource_group_name,
+            cluster_name,
+            nodepool_name,
+            instance,
+            no_wait=no_wait,
+        )
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
@@ -3154,12 +3224,13 @@ def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
     )
 
 
-def aks_agentpool_manual_scale_delete(cmd,    # pylint: disable=unused-argument
+def aks_agentpool_manual_scale_delete(cmd,
                                       client,
                                       resource_group_name,
                                       cluster_name,
                                       nodepool_name,
                                       current_vm_sizes,
+                                      use_patch_api=False,
                                       no_wait=False):
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
@@ -3180,6 +3251,18 @@ def aks_agentpool_manual_scale_delete(cmd,    # pylint: disable=unused-argument
             f"Manual with size {current_vm_sizes[0]} doesn't exist in node pool {nodepool_name}"
         )
 
+    # When --use-patch-api is set, delete the manual scale profile via the preview
+    # PATCH agent pool API instead of the default PUT API.
+    if use_patch_api:
+        return _aks_agentpool_scale_patch(
+            cmd,
+            client,
+            resource_group_name,
+            cluster_name,
+            nodepool_name,
+            instance,
+            no_wait=no_wait,
+        )
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,

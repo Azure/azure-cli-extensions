@@ -815,19 +815,19 @@ class TestValidateNodepoolName(unittest.TestCase):
     def test_invalid_nodepool_name_too_long(self):
         namespace = SimpleNamespace(
             **{
-                "nodepool_name": "tooLongNodepoolName",
+                "nodepool_name": "a" * 40,
             }
         )
-        with self.assertRaises(InvalidArgumentValueError):
+        with self.assertRaisesRegex(InvalidArgumentValueError, "at most 39 characters"):
             validators.validate_nodepool_name(namespace)
 
     def test_invalid_agent_pool_name_too_long(self):
         namespace = SimpleNamespace(
             **{
-                "agent_pool_name": "tooLongNodepoolName",
+                "agent_pool_name": "a" * 40,
             }
         )
-        with self.assertRaises(InvalidArgumentValueError):
+        with self.assertRaisesRegex(InvalidArgumentValueError, "at most 39 characters"):
             validators.validate_agent_pool_name(namespace)
 
     def test_invalid_nodepool_name_not_alnum(self):
@@ -863,6 +863,24 @@ class TestValidateNodepoolName(unittest.TestCase):
             }
         )
         validators.validate_agent_pool_name(namespace)
+
+    def test_valid_nodepool_name_length_boundaries(self):
+        for length in (12, 13, 39):
+            with self.subTest(length=length):
+                namespace = SimpleNamespace(nodepool_name="a" * length)
+                validators.validate_nodepool_name(namespace)
+
+    def test_valid_agent_pool_name_length_boundaries(self):
+        for length in (12, 13, 39):
+            with self.subTest(length=length):
+                namespace = SimpleNamespace(agent_pool_name="a" * length)
+                validators.validate_agent_pool_name(namespace)
+
+    def test_valid_empty_nodepool_name(self):
+        validators.validate_nodepool_name(SimpleNamespace(nodepool_name=""))
+
+    def test_valid_empty_agent_pool_name(self):
+        validators.validate_agent_pool_name(SimpleNamespace(agent_pool_name=""))
 
 
 class TestValidateVMSetType(unittest.TestCase):
@@ -3013,6 +3031,25 @@ class TestValidateOsSku(unittest.TestCase):
 
         self.assertIn("Windows2022", node_os_skus_update)
         self.assertIn("Windows2025", node_os_skus_update)
+
+
+class TestValidateUpgradeGateDisableAndEnableParameters(unittest.TestCase):
+    def test_neither_flag(self):
+        namespace = SimpleNamespace(enable_upgrade_gate=False, disable_upgrade_gate=False)
+        validators.validate_upgrade_gate_disable_and_enable_parameters(namespace)
+
+    def test_single_flag(self):
+        validators.validate_upgrade_gate_disable_and_enable_parameters(
+            SimpleNamespace(enable_upgrade_gate=True, disable_upgrade_gate=False)
+        )
+        validators.validate_upgrade_gate_disable_and_enable_parameters(
+            SimpleNamespace(enable_upgrade_gate=False, disable_upgrade_gate=True)
+        )
+
+    def test_both_flags(self):
+        namespace = SimpleNamespace(enable_upgrade_gate=True, disable_upgrade_gate=True)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            validators.validate_upgrade_gate_disable_and_enable_parameters(namespace)
 
 
 if __name__ == "__main__":

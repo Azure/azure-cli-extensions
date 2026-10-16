@@ -72,7 +72,8 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
 
     mc = client.get(resource_group_name, name)
 
-    if not which('kubectl'):
+    kubectl_path = which('kubectl')
+    if not kubectl_path:
         raise CLIError('Can not find kubectl executable in PATH')
 
     storage_account_id = None
@@ -166,32 +167,32 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
             print()
             print("Cleaning up aks-periscope resources if existing")
 
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
+            subprocess.call([kubectl_path, "--kubeconfig", temp_kubeconfig_path, "delete",
                              "serviceaccount,configmap,daemonset,secret",
                              "--all", "-n", CONST_PERISCOPE_NAMESPACE, "--ignore-not-found"],
                             stderr=subprocess.STDOUT)
 
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
+            subprocess.call([kubectl_path, "--kubeconfig", temp_kubeconfig_path, "delete",
                              "ClusterRoleBinding",
                              "aks-periscope-role-binding", "--ignore-not-found"],
                             stderr=subprocess.STDOUT)
 
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
+            subprocess.call([kubectl_path, "--kubeconfig", temp_kubeconfig_path, "delete",
                              "ClusterRoleBinding",
                              "aks-periscope-role-binding-view", "--ignore-not-found"],
                             stderr=subprocess.STDOUT)
 
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
+            subprocess.call([kubectl_path, "--kubeconfig", temp_kubeconfig_path, "delete",
                              "ClusterRole",
                              "aks-periscope-role", "--ignore-not-found"],
                             stderr=subprocess.STDOUT)
 
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
+            subprocess.call([kubectl_path, "--kubeconfig", temp_kubeconfig_path, "delete",
                              "--all",
                              "apd", "-n", CONST_PERISCOPE_NAMESPACE, "--ignore-not-found"],
                             stderr=subprocess.DEVNULL)
 
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
+            subprocess.call([kubectl_path, "--kubeconfig", temp_kubeconfig_path, "delete",
                              "CustomResourceDefinition",
                              "diagnostics.aks-periscope.azure.github.com", "--ignore-not-found"],
                             stderr=subprocess.STDOUT)
@@ -199,7 +200,7 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
             print()
             print("Deploying aks-periscope")
 
-            subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "apply", "-k",
+            subprocess.check_output([kubectl_path, "--kubeconfig", temp_kubeconfig_path, "apply", "-k",
                                      kustomize_folder, "-n", CONST_PERISCOPE_NAMESPACE], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
             raise CLIError(err.output) from err
@@ -249,7 +250,8 @@ def _get_temp_kubeconfig_path(cmd, client, resource_group_name: str, name: str, 
 
     if has_aad_profile:
         # The current credentials require interactive login. We need to use kubelogin to update the kubeconfig credential.
-        if not which('kubelogin'):
+        kubelogin_path = which('kubelogin')
+        if not kubelogin_path:
             # No kubelogin found...but we can install it if the user wants.
             if not prompt_y_n('Can not find kubelogin executable in PATH. Install now?', default="y"):
                 # The user doesn't want us to install kubelogin automatically, so we cannot continue.
@@ -257,10 +259,13 @@ def _get_temp_kubeconfig_path(cmd, client, resource_group_name: str, name: str, 
 
             # Install kubelogin
             kubelogin_install_location = _get_default_install_location('kubelogin')
-            k8s_install_kubelogin(cmd, 'latest', kubelogin_install_location)
+            if not kubelogin_install_location:
+                raise CLIError('Can not determine kubelogin install location. Use az aks install-cli to install.')
+            kubelogin_path = os.path.abspath(kubelogin_install_location)
+            k8s_install_kubelogin(cmd, 'latest', kubelogin_path)
 
         # kubelogin is installed. Run it to populate user credentials that don't require interactive login.
-        subprocess.check_output(["kubelogin", "convert-kubeconfig", "--kubeconfig", temp_kubeconfig_path, "--login", "azurecli"], stderr=subprocess.STDOUT)
+        subprocess.check_output([kubelogin_path, "convert-kubeconfig", "--kubeconfig", temp_kubeconfig_path, "--login", "azurecli"], stderr=subprocess.STDOUT)
 
     return temp_kubeconfig_path
 
@@ -388,11 +393,12 @@ def _is_windows_hpc_supported(agent_pools):
 
 
 def _display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-many-statements
-    if not which('kubectl'):
+    kubectl_path = which('kubectl')
+    if not kubectl_path:
         raise CLIError('Can not find kubectl executable in PATH')
 
     nodes = subprocess.check_output(
-        ["kubectl", "--kubeconfig", temp_kubeconfig_path,
+        [kubectl_path, "--kubeconfig", temp_kubeconfig_path,
             "get", "node", "--no-headers"],
         universal_newlines=True)
     logger.debug(nodes)
@@ -422,7 +428,7 @@ def _display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-m
     for retry in range(0, max_retry):
         if not apds_created:
             apd = subprocess.check_output(
-                ["kubectl", "--kubeconfig", temp_kubeconfig_path, "get",
+                [kubectl_path, "--kubeconfig", temp_kubeconfig_path, "get",
                     "apd", "-n", CONST_PERISCOPE_NAMESPACE, "--no-headers"],
                 universal_newlines=True
             )
@@ -443,14 +449,14 @@ def _display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-m
                 apdName = "aks-periscope-diagnostic-" + node_name
                 try:
                     network_config = subprocess.check_output(
-                        ["kubectl", "--kubeconfig", temp_kubeconfig_path,
+                        [kubectl_path, "--kubeconfig", temp_kubeconfig_path,
                          "get", "apd", apdName, "-n",
                          CONST_PERISCOPE_NAMESPACE, "-o=jsonpath={.spec.networkconfig}"],
                         universal_newlines=True)
                     logger.debug('Dns status for node %s is %s',
                                  node_name, network_config)
                     network_status = subprocess.check_output(
-                        ["kubectl", "--kubeconfig", temp_kubeconfig_path,
+                        [kubectl_path, "--kubeconfig", temp_kubeconfig_path,
                          "get", "apd", apdName, "-n",
                          CONST_PERISCOPE_NAMESPACE, "-o=jsonpath={.spec.networkoutbound}"],
                         universal_newlines=True)
