@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ForceFailoverAllowDataLoss(AAZCommand):
     """Trigger a forced failover with potential data loss for the parent scheduler
+
+    :example: Force a scheduler failover, allowing potential data loss
+        az durabletask scheduler failover-instance force-failover-allow-data-loss --resource-group myResourceGroup --scheduler-name myScheduler
     """
 
     _aaz_info = {

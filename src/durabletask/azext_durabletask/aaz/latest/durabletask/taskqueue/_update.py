@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Task Queue
+
+    :example: Update a task queue throughput to 200 actions per second
+        az durabletask taskqueue update --resource-group myResourceGroup --scheduler-name myScheduler --taskhub-name myTaskHub --name myTaskQueue --actions-per-second 200
     """
 
     _aaz_info = {

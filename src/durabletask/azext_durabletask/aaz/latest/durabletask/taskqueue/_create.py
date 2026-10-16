@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Task Queue
+
+    :example: Create a task queue with a throughput of 100 actions per second
+        az durabletask taskqueue create --resource-group myResourceGroup --scheduler-name myScheduler --taskhub-name myTaskHub --name myTaskQueue --actions-per-second 100
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Failover Instance
+
+    :example: Create a failover instance with a partner scheduler
+        az durabletask scheduler failover-instance create --resource-group myResourceGroup --scheduler-name myScheduler --partner-scheduler-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myPartnerResourceGroup/providers/Microsoft.DurableTask/schedulers/myPartnerScheduler
     """
 
     _aaz_info = {

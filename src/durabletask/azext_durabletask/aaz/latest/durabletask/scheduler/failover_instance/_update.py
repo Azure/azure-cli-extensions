@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Failover Instance
+
+    :example: Update the partner scheduler for a failover instance
+        az durabletask scheduler failover-instance update --resource-group myResourceGroup --scheduler-name myScheduler --partner-scheduler-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myPartnerResourceGroup/providers/Microsoft.DurableTask/schedulers/myNewPartnerScheduler
     """
 
     _aaz_info = {

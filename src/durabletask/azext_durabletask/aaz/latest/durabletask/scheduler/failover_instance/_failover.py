@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Failover(AAZCommand):
     """Trigger a graceful failover for the parent scheduler
+
+    :example: Trigger a graceful failover for a scheduler
+        az durabletask scheduler failover-instance failover --resource-group myResourceGroup --scheduler-name myScheduler
     """
 
     _aaz_info = {
