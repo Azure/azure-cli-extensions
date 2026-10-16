@@ -8,8 +8,33 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-# from azure.cli.core.commands import CliCommandType
+from azure.cli.core.commands import CliCommandType
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    # Load custom commands that provide more intuitive interfaces
+    from azure.cli.core.commands import CliCommandType
+    
+    custom_commands = CliCommandType(
+        operations_tmpl='azext_data_transfer.custom#{}'
+    )
+    
+    # Add custom command groups for better UX
+    with self.command_group('data-transfer pipeline', custom_commands) as g:
+        g.custom_command('disable', 'pipeline_disable')
+        g.custom_command('enable', 'pipeline_enable')
+    
+    with self.command_group('data-transfer pipeline connection', custom_commands) as g:
+        g.custom_command('disable', 'pipeline_connection_disable')
+        g.custom_command('enable', 'pipeline_connection_enable')
+        
+    with self.command_group('data-transfer pipeline flowtype', custom_commands) as g:
+        g.custom_command('disable', 'pipeline_flowtype_disable')
+        g.custom_command('enable', 'pipeline_flowtype_enable')
+    
+    # Hide the execute-action command by deprecating it with hide=True
+    with self.command_group('data-transfer pipeline') as g:
+        if 'data-transfer pipeline execute-action' in self.command_table:
+            # Mark the command as hidden - no redirect message needed
+            cmd = self.command_table['data-transfer pipeline execute-action']
+            cmd.deprecate_info = g.deprecate(hide=True)
