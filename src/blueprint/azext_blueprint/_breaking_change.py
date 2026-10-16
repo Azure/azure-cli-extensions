@@ -7,7 +7,7 @@
 from azure.cli.core.breaking_change import register_command_group_deprecate, register_other_breaking_change
 
 
-register_command_group_deprecate('az blueprint')
+register_command_group_deprecate('az blueprint', target_version='July 2026')
 
 message = """Azure Blueprints is retiring on 31 January 2027, with phased restrictions starting 31 July 2026.
 After retirement, the service API stops responding and these commands will stop functioning; they will be removed from the Azure CLI in a later release.
