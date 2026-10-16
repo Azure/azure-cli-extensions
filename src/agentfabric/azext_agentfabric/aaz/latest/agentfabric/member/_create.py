@@ -97,12 +97,17 @@ class Create(AAZCommand):
         workload.agent_fabric_sandbox = AAZObjectArg(
             options=["agent-fabric-sandbox"],
         )
-        workload.member_guid = AAZStrArg(
+        workload.member_guid = AAZUuidArg(
             options=["member-guid"],
-            help="The unique identifier (GUID) assigned to the member when it is created. For most workload types this is assigned by the resource provider and is read-only. Starting in API version `2026-10-07-preview`, ACI workloads instead supply this value at creation: the ACI resource provider generates the GUID for the sandbox and this field is immutable afterward.",
+            help="The unique identifier (GUID) assigned to the member when it is created. For most workload types this is assigned by the resource provider and is read-only. ACI workloads instead supply this value at creation: the ACI resource provider generates the GUID for the sandbox and this field is immutable afterward.",
         )
 
         aci = cls._args_schema.workload.aci
+        aci.agent_identity = AAZObjectArg(
+            options=["agent-identity"],
+            help="The Entra agent identity associated with the workload.",
+        )
+        cls._build_args_agent_identity_create(aci.agent_identity)
         aci.resource_id = AAZResourceIdArg(
             options=["resource-id"],
             help="The Azure Resource Manager resource ID of the Azure Container Instances (ACI) resource backing this member's sandbox. Starting in API version `2026-10-07-preview`, this identifies the parent SandboxGroup -- the enrollment boundary associated with the fabric through a ClusterAssociation -- rather than the individual container group.",
@@ -198,6 +203,7 @@ class Create(AAZCommand):
             options=["agent-identity"],
             help="The Entra agent identity associated with the workload.",
         )
+        cls._build_args_agent_identity_create(agent_fabric_sandbox.agent_identity)
         agent_fabric_sandbox.domain = AAZStrArg(
             options=["domain"],
             help="The resolvable DNS name assigned to the workload.",
@@ -215,18 +221,6 @@ class Create(AAZCommand):
         agent_fabric_sandbox.resources = AAZObjectArg(
             options=["resources"],
             help="The compute resources allocated to the workload.",
-            required=True,
-        )
-
-        agent_identity = cls._args_schema.workload.agent_fabric_sandbox.agent_identity
-        agent_identity.agent_id = AAZStrArg(
-            options=["agent-id"],
-            help="The Entra agent ID representing the workload's identity.",
-            required=True,
-        )
-        agent_identity.tenant_id = AAZStrArg(
-            options=["tenant-id"],
-            help="The Azure tenant ID that owns the agent identity.",
             required=True,
         )
 
@@ -315,6 +309,38 @@ class Create(AAZCommand):
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
         return cls._args_schema
+
+    _args_agent_identity_create = None
+
+    @classmethod
+    def _build_args_agent_identity_create(cls, _schema):
+        if cls._args_agent_identity_create is not None:
+            _schema.agent_id = cls._args_agent_identity_create.agent_id
+            _schema.blueprint_id = cls._args_agent_identity_create.blueprint_id
+            _schema.tenant_id = cls._args_agent_identity_create.tenant_id
+            return
+
+        cls._args_agent_identity_create = AAZObjectArg()
+
+        agent_identity_create = cls._args_agent_identity_create
+        agent_identity_create.agent_id = AAZStrArg(
+            options=["agent-id"],
+            help="The Entra agent ID representing the workload's identity.",
+            required=True,
+        )
+        agent_identity_create.blueprint_id = AAZStrArg(
+            options=["blueprint-id"],
+            help="The Entra agent blueprint ID that this agent identity was instantiated from. The blueprint describes the agent's declared capabilities and is used to scope the policies applied to the workload.",
+        )
+        agent_identity_create.tenant_id = AAZStrArg(
+            options=["tenant-id"],
+            help="The Azure tenant ID that owns the agent identity.",
+            required=True,
+        )
+
+        _schema.agent_id = cls._args_agent_identity_create.agent_id
+        _schema.blueprint_id = cls._args_agent_identity_create.blueprint_id
+        _schema.tenant_id = cls._args_agent_identity_create.tenant_id
 
     def _execute_operations(self):
         self.pre_operations()
@@ -447,6 +473,7 @@ class Create(AAZCommand):
 
             disc_aci = _builder.get(".properties.workload{type:ACI}")
             if disc_aci is not None:
+                _CreateHelper._build_schema_agent_identity_create(disc_aci.set_prop("agentIdentity", AAZObjectType, ".aci.agent_identity"))
                 disc_aci.set_prop("resourceId", AAZStrType, ".aci.resource_id", typ_kwargs={"flags": {"required": True}})
 
             disc_aks = _builder.get(".properties.workload{type:AKS}")
@@ -476,16 +503,11 @@ class Create(AAZCommand):
 
             disc_agent_fabric_sandbox = _builder.get(".properties.workload{type:AgentFabricSandbox}")
             if disc_agent_fabric_sandbox is not None:
-                disc_agent_fabric_sandbox.set_prop("agentIdentity", AAZObjectType, ".agent_fabric_sandbox.agent_identity")
+                _CreateHelper._build_schema_agent_identity_create(disc_agent_fabric_sandbox.set_prop("agentIdentity", AAZObjectType, ".agent_fabric_sandbox.agent_identity"))
                 disc_agent_fabric_sandbox.set_prop("domain", AAZStrType, ".agent_fabric_sandbox.domain", typ_kwargs={"flags": {"required": True}})
                 disc_agent_fabric_sandbox.set_prop("endpoints", AAZListType, ".agent_fabric_sandbox.endpoints")
                 disc_agent_fabric_sandbox.set_prop("image", AAZObjectType, ".agent_fabric_sandbox.image", typ_kwargs={"flags": {"required": True}})
                 disc_agent_fabric_sandbox.set_prop("resources", AAZObjectType, ".agent_fabric_sandbox.resources", typ_kwargs={"flags": {"required": True}})
-
-            agent_identity = _builder.get(".properties.workload{type:AgentFabricSandbox}.agentIdentity")
-            if agent_identity is not None:
-                agent_identity.set_prop("agentId", AAZStrType, ".agent_id", typ_kwargs={"flags": {"required": True}})
-                agent_identity.set_prop("tenantId", AAZStrType, ".tenant_id", typ_kwargs={"flags": {"required": True}})
 
             endpoints = _builder.get(".properties.workload{type:AgentFabricSandbox}.endpoints")
             if endpoints is not None:
@@ -578,6 +600,10 @@ class Create(AAZCommand):
             )
 
             disc_aci = cls._schema_on_200_201.properties.workload.discriminate_by("type", "ACI")
+            disc_aci.agent_identity = AAZObjectType(
+                serialized_name="agentIdentity",
+            )
+            _CreateHelper._build_schema_agent_identity_read(disc_aci.agent_identity)
             disc_aci.resource_id = AAZStrType(
                 serialized_name="resourceId",
                 flags={"required": True},
@@ -635,6 +661,7 @@ class Create(AAZCommand):
             disc_agent_fabric_sandbox.agent_identity = AAZObjectType(
                 serialized_name="agentIdentity",
             )
+            _CreateHelper._build_schema_agent_identity_read(disc_agent_fabric_sandbox.agent_identity)
             disc_agent_fabric_sandbox.domain = AAZStrType(
                 flags={"required": True},
             )
@@ -643,16 +670,6 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
             disc_agent_fabric_sandbox.resources = AAZObjectType(
-                flags={"required": True},
-            )
-
-            agent_identity = cls._schema_on_200_201.properties.workload.discriminate_by("type", "AgentFabricSandbox").agent_identity
-            agent_identity.agent_id = AAZStrType(
-                serialized_name="agentId",
-                flags={"required": True},
-            )
-            agent_identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
                 flags={"required": True},
             )
 
@@ -721,6 +738,43 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
+
+    @classmethod
+    def _build_schema_agent_identity_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("agentId", AAZStrType, ".agent_id", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("blueprintId", AAZStrType, ".blueprint_id")
+        _builder.set_prop("tenantId", AAZStrType, ".tenant_id", typ_kwargs={"flags": {"required": True}})
+
+    _schema_agent_identity_read = None
+
+    @classmethod
+    def _build_schema_agent_identity_read(cls, _schema):
+        if cls._schema_agent_identity_read is not None:
+            _schema.agent_id = cls._schema_agent_identity_read.agent_id
+            _schema.blueprint_id = cls._schema_agent_identity_read.blueprint_id
+            _schema.tenant_id = cls._schema_agent_identity_read.tenant_id
+            return
+
+        cls._schema_agent_identity_read = _schema_agent_identity_read = AAZObjectType()
+
+        agent_identity_read = _schema_agent_identity_read
+        agent_identity_read.agent_id = AAZStrType(
+            serialized_name="agentId",
+            flags={"required": True},
+        )
+        agent_identity_read.blueprint_id = AAZStrType(
+            serialized_name="blueprintId",
+        )
+        agent_identity_read.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+            flags={"required": True},
+        )
+
+        _schema.agent_id = cls._schema_agent_identity_read.agent_id
+        _schema.blueprint_id = cls._schema_agent_identity_read.blueprint_id
+        _schema.tenant_id = cls._schema_agent_identity_read.tenant_id
 
 
 __all__ = ["Create"]

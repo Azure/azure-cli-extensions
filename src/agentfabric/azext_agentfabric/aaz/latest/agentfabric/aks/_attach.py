@@ -78,7 +78,7 @@ class Attach(AAZCommand):
         _args_schema.cluster_resource_id = AAZResourceIdArg(
             options=["--cluster-resource-id"],
             arg_group="Properties",
-            help="The AKS managed cluster, or (starting in API version `2026-10-07-preview`) ACI SandboxGroup, to enroll. The resource must be in the same subscription as the AgentFabric; a different resource group is allowed. Set at creation and immutable thereafter; to enroll a different resource, delete and recreate the association. AF rejects the request if the resource is already associated with another fabric.",
+            help="The AKS managed cluster or ACI SandboxGroup to enroll. The resource must be in the same subscription as the AgentFabric; a different resource group is allowed. Set at creation and immutable thereafter; to enroll a different resource, delete and recreate the association. AF rejects the request if the resource is already associated with another fabric.",
             required=True,
         )
         _args_schema.sku = AAZStrArg(

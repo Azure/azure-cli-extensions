@@ -5,9 +5,10 @@ child members, and independent Policy Group peer resources. It uses the
 `Microsoft.NetworkSecurity` resource provider API version
 `2026-10-07-preview`.
 
-The commands are generated from the public contract on `RPSaaSDev` at commit
-`01be2263f53dd57906029e65115a9e475624be74` in
-[Azure/azure-rest-api-specs-pr](https://github.com/Azure/azure-rest-api-specs-pr/tree/01be2263f53dd57906029e65115a9e475624be74/specification/networksecurity/resource-manager/Microsoft.NetworkSecurity/agentFabric/preview/2026-10-07-preview).
+The commands are generated from the public contract merged into `RPSaaSMaster`
+by [Azure/azure-rest-api-specs-pr#30665](https://github.com/Azure/azure-rest-api-specs-pr/pull/30665)
+at commit `a52c4fc4ac8cd197d38a1072704853f485cafb6c`:
+[2026-10-07-preview/agentFabric.json](https://github.com/Azure/azure-rest-api-specs-pr/blob/a52c4fc4ac8cd197d38a1072704853f485cafb6c/specification/networksecurity/resource-manager/Microsoft.NetworkSecurity/agentFabric/preview/2026-10-07-preview/agentFabric.json).
 This pins the API contract, not the version deployed in an Azure region.
 
 ## Resource hierarchy
@@ -67,7 +68,9 @@ Workloads support `ACI`, `AKS`, and `AgentFabricSandbox` variants. AKS workloads
 include the association ID, AKS resource ID, and an existing Kubernetes resource
 reference; the CLI does not create that Kubernetes resource. Endpoint mappings
 use `name`, `service-port`, `protocol`, and `target-port`, replacing the earlier
-single `port` field. Member PATCH supports tags and `fqdn`, not workload changes.
+single `port` field. ACI and Agent Fabric Sandbox workloads can include an Entra
+agent identity with required tenant and agent IDs plus an optional blueprint ID.
+Member PATCH supports tags and `fqdn`, not workload changes.
 
 ```bash
 az agentfabric member create \

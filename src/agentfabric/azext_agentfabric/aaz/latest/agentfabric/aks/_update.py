@@ -85,7 +85,7 @@ class Update(AAZCommand):
             enum={"Premium": "Premium", "Standard": "Standard"},
         )
         _args_schema.workload_cluster_gateway_ip = AAZStrArg(
-            options=["--gateway-ip", "--workload-cluster-gateway-ip"],
+            options=["-i", "--gateway-ip", "--workload-cluster-gateway-ip"],
             arg_group="Properties",
             help="The IPv4 or IPv6 address of the workload cluster gateway used for internal Agent Fabric routing. The resource provider validates the value.",
         )

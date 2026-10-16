@@ -544,7 +544,8 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
         sandbox = dict(arguments, workload={"agent_fabric_sandbox": {
             "image": {"uri": "example.com/agent:latest"},
             "resources": {"cpu": "1", "memory": "1Gi"},
-            "domain": "example.com", "endpoints": [endpoint],
+            "domain": "example.com",
+            "endpoints": [endpoint],
         }})
         operation = self._operation(Create, "MembersCreateOrUpdate", sandbox)
         workload = operation.content["properties"]["workload"]
@@ -560,3 +561,81 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
         workload = operation.content["properties"]["workload"]
         self.assertEqual(workload["type"], "ACI")
         self.assertEqual(workload["memberGuid"], "11111111-1111-1111-1111-111111111111")
+
+    def test_member_agent_identity_payloads(self):
+        from azext_agentfabric.aaz.latest.agentfabric.member import (
+            Create, List, Show, Update, Wait,
+        )
+        expected_identity = {
+            "tenantId": "22222222-2222-2222-2222-222222222222",
+            "agentId": "33333333-3333-3333-3333-333333333333",
+            "blueprintId": "44444444-4444-4444-4444-444444444444",
+        }
+        arguments = {
+            "fabric_name": "fabric",
+            "member_name": "member",
+            "resource_group": "rg",
+            "location": "eastus",
+            "fqdn": "member.example.com",
+        }
+
+        with self.subTest(workload_type="AgentFabricSandbox"):
+            sandbox = dict(arguments, workload={"agent_fabric_sandbox": {
+                "image": {"uri": "example.com/agent:latest"},
+                "resources": {"cpu": "1", "memory": "1Gi"},
+                "domain": "example.com",
+                "agent_identity": {
+                    "tenant_id": expected_identity["tenantId"],
+                    "agent_id": expected_identity["agentId"],
+                    "blueprint_id": expected_identity["blueprintId"],
+                },
+            }})
+            operation = self._operation(Create, "MembersCreateOrUpdate", sandbox)
+            self.assertEqual(
+                operation.content["properties"]["workload"]["agentIdentity"],
+                expected_identity,
+            )
+
+        with self.subTest(workload_type="ACI"):
+            aci = dict(arguments, workload={"aci": {
+                "resource_id": (
+                    "/subscriptions/sub/resourceGroups/rg/providers/"
+                    "Microsoft.ContainerInstance/sandboxGroups/sandbox"
+                ),
+                "agent_identity": {
+                    "tenant_id": expected_identity["tenantId"],
+                    "agent_id": expected_identity["agentId"],
+                    "blueprint_id": expected_identity["blueprintId"],
+                },
+            }})
+            operation = self._operation(Create, "MembersCreateOrUpdate", aci)
+            workload = operation.content["properties"]["workload"]
+            self.assertEqual(workload["type"], "ACI")
+            self.assertEqual(workload["agentIdentity"], expected_identity)
+
+        response_schemas = {
+            "create": Create.MembersCreateOrUpdate._build_schema_on_200_201(),
+            "show": Show.MembersGet._build_schema_on_200(),
+            "list": List.MembersListByParent._build_schema_on_200().value.Element,
+            "update": Update.MembersUpdate._build_schema_on_200(),
+            "wait": Wait.MembersGet._build_schema_on_200(),
+        }
+        for name, response_schema in response_schemas.items():
+            with self.subTest(response=name, workload_type="ACI"):
+                workload = response_schema.properties.workload
+                identity = workload.get_discriminator(
+                    {"type": "ACI"}
+                ).agent_identity
+                self.assertEqual(
+                    set(identity._fields),
+                    {"agent_id", "blueprint_id", "tenant_id"},
+                )
+            with self.subTest(response=name, workload_type="AgentFabricSandbox"):
+                workload = response_schema.properties.workload
+                identity = workload.get_discriminator(
+                    {"type": "AgentFabricSandbox"}
+                ).agent_identity
+                self.assertEqual(
+                    set(identity._fields),
+                    {"agent_id", "blueprint_id", "tenant_id"},
+                )

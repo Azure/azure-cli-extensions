@@ -214,6 +214,10 @@ class List(AAZCommand):
             )
 
             disc_aci = cls._schema_on_200.value.Element.properties.workload.discriminate_by("type", "ACI")
+            disc_aci.agent_identity = AAZObjectType(
+                serialized_name="agentIdentity",
+            )
+            _ListHelper._build_schema_agent_identity_read(disc_aci.agent_identity)
             disc_aci.resource_id = AAZStrType(
                 serialized_name="resourceId",
                 flags={"required": True},
@@ -271,6 +275,7 @@ class List(AAZCommand):
             disc_agent_fabric_sandbox.agent_identity = AAZObjectType(
                 serialized_name="agentIdentity",
             )
+            _ListHelper._build_schema_agent_identity_read(disc_agent_fabric_sandbox.agent_identity)
             disc_agent_fabric_sandbox.domain = AAZStrType(
                 flags={"required": True},
             )
@@ -279,16 +284,6 @@ class List(AAZCommand):
                 flags={"required": True},
             )
             disc_agent_fabric_sandbox.resources = AAZObjectType(
-                flags={"required": True},
-            )
-
-            agent_identity = cls._schema_on_200.value.Element.properties.workload.discriminate_by("type", "AgentFabricSandbox").agent_identity
-            agent_identity.agent_id = AAZStrType(
-                serialized_name="agentId",
-                flags={"required": True},
-            )
-            agent_identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
                 flags={"required": True},
             )
 
@@ -357,6 +352,35 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_agent_identity_read = None
+
+    @classmethod
+    def _build_schema_agent_identity_read(cls, _schema):
+        if cls._schema_agent_identity_read is not None:
+            _schema.agent_id = cls._schema_agent_identity_read.agent_id
+            _schema.blueprint_id = cls._schema_agent_identity_read.blueprint_id
+            _schema.tenant_id = cls._schema_agent_identity_read.tenant_id
+            return
+
+        cls._schema_agent_identity_read = _schema_agent_identity_read = AAZObjectType()
+
+        agent_identity_read = _schema_agent_identity_read
+        agent_identity_read.agent_id = AAZStrType(
+            serialized_name="agentId",
+            flags={"required": True},
+        )
+        agent_identity_read.blueprint_id = AAZStrType(
+            serialized_name="blueprintId",
+        )
+        agent_identity_read.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+            flags={"required": True},
+        )
+
+        _schema.agent_id = cls._schema_agent_identity_read.agent_id
+        _schema.blueprint_id = cls._schema_agent_identity_read.blueprint_id
+        _schema.tenant_id = cls._schema_agent_identity_read.tenant_id
 
 
 __all__ = ["List"]
