@@ -32,3 +32,30 @@ helps["aldo observability-configuration show"] = """
     short-summary: Show the active ALDO observability configuration.
     long-summary: Retrieves the read-only observability configuration singleton for the current subscription.
 """
+
+helps["aldo system-configuration"] = """
+    type: group
+    short-summary: Manage ALDO system configuration.
+"""
+
+helps["aldo system-configuration show"] = """
+    type: command
+    short-summary: Show the active ALDO system configuration.
+    long-summary: Retrieves the system configuration singleton. The current subscription must be the Operator subscription.
+    examples:
+      - name: Show the active system configuration.
+        text: az aldo system-configuration show
+"""
+
+helps["aldo system-configuration create"] = """
+    type: command
+    short-summary: Create or fully replace the active ALDO system configuration.
+    long-summary: >-
+        Sends a PUT request for the default singleton. This replaces the configuration rather than merging changes;
+        omitted writable fields are not preserved. Supply all writable values you want to retain.
+        The current subscription must be the Operator subscription.
+    examples:
+      - name: Replace the system configuration with a DNS forwarder and connection intent.
+        text: >-
+            az aldo system-configuration create --dns-forwarder-ip-address 192.0.2.53 --connection-intent Connected
+"""
