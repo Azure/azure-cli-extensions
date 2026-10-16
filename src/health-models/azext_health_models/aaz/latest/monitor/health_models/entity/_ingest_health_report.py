@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models entity ingest-health-report",
-    is_preview=True,
 )
 class IngestHealthReport(AAZCommand):
     """Ingest a health report for a specific signal on an entity (the entity must already exist)
@@ -23,9 +22,9 @@ class IngestHealthReport(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-05-01-preview",
+        "version": "2026-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}/ingesthealthreport", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}/ingesthealthreport", "2026-11-01"],
         ]
     }
 
@@ -98,7 +97,7 @@ class IngestHealthReport(AAZCommand):
             arg_group="Body",
             help="Health state to report for the signal",
             required=True,
-            enum={"Degraded": "Degraded", "Deleted": "Deleted", "Healthy": "Healthy", "Unhealthy": "Unhealthy", "Unknown": "Unknown"},
+            enum={"Degraded": "Degraded", "Healthy": "Healthy", "Unhealthy": "Unhealthy", "Unknown": "Unknown"},
         )
         _args_schema.signal_name = AAZStrArg(
             options=["--signal-name"],
@@ -134,7 +133,6 @@ class IngestHealthReport(AAZCommand):
     @classmethod
     def _build_args_threshold_rule_v2_create(cls, _schema):
         if cls._args_threshold_rule_v2_create is not None:
-            _schema.look_back_window = cls._args_threshold_rule_v2_create.look_back_window
             _schema.operator = cls._args_threshold_rule_v2_create.operator
             _schema.sensitivity = cls._args_threshold_rule_v2_create.sensitivity
             _schema.threshold = cls._args_threshold_rule_v2_create.threshold
@@ -143,11 +141,6 @@ class IngestHealthReport(AAZCommand):
         cls._args_threshold_rule_v2_create = AAZObjectArg()
 
         threshold_rule_v2_create = cls._args_threshold_rule_v2_create
-        threshold_rule_v2_create.look_back_window = AAZStrArg(
-            options=["look-back-window"],
-            help="ISO 8601 duration for the historical look-back window used by dynamic threshold computation. Only applicable when operator is Dynamic.",
-            enum={"PT15M": "PT15M", "PT1H": "PT1H", "PT30M": "PT30M", "PT5M": "PT5M"},
-        )
         threshold_rule_v2_create.operator = AAZStrArg(
             options=["operator"],
             help="Operator how to compare the signal value with the threshold",
@@ -164,7 +157,6 @@ class IngestHealthReport(AAZCommand):
             help="Threshold value",
         )
 
-        _schema.look_back_window = cls._args_threshold_rule_v2_create.look_back_window
         _schema.operator = cls._args_threshold_rule_v2_create.operator
         _schema.sensitivity = cls._args_threshold_rule_v2_create.sensitivity
         _schema.threshold = cls._args_threshold_rule_v2_create.threshold
@@ -234,7 +226,7 @@ class IngestHealthReport(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-11-01",
                     required=True,
                 ),
             }
@@ -281,7 +273,6 @@ class _IngestHealthReportHelper:
     def _build_schema_threshold_rule_v2_create(cls, _builder):
         if _builder is None:
             return
-        _builder.set_prop("lookBackWindow", AAZStrType, ".look_back_window")
         _builder.set_prop("operator", AAZStrType, ".operator", typ_kwargs={"flags": {"required": True}})
         _builder.set_prop("sensitivity", AAZStrType, ".sensitivity")
         _builder.set_prop("threshold", AAZFloatType, ".threshold")
