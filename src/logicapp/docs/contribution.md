@@ -124,6 +124,41 @@ Old style/linter jobs compared unrelated main-branch files, including the index.
 Those upstream CI diff-scope failures were not worked around by editing the
 index or unrelated pipeline configuration.
 
+## CI fixture portability follow-up
+
+Public Azure Pipelines build 361672 exercised the synchronized code. Its Python
+3.10, 3.12 and 3.14 jobs exposed a mocked-Windows unit fixture that still queried
+the real native exit snapshot on Linux. The fixture now derives that snapshot
+from its synthetic process map, including unknown and recycled birth identities.
+A four-case regression checks that the fixture never calls native Windows APIs.
+The native-call negative control reproduced all eight failing cases before the
+repair; all 20 fixture methods passed afterward without a native call.
+Production code, cleanup guards, package dependencies and preview version are
+unchanged.
+
+Current-CLI source and exact-installed full suites and the minimum-CLI source
+full suite each passed 854 tests and 2,336 subtests. The official serial
+`azdev test logicapp --series --discover --no-exitfirst --pytest-args -q`
+runner passed 854 tests; `azdev style logicapp` and `azdev linter logicapp`
+also passed. All 30 production Python/metadata files still match the previously
+qualified wheel and both isolated installations.
+
+The minimum-CLI exact-installed full follow-up is not qualified as green.
+Separate runs encountered a native Windows cleanup sharing violation and a
+context-store replacement access failure. An earlier minimum source run also
+returned an unknown state from a one-second loopback probe. These failures were
+retained, not hidden with retries or relaxed production guards. The minimum
+source full rerun passed; the exact-installed lifecycle, affected context-store
+and loopback controls passed together with 88 tests and 372 subtests. These
+results do not establish native filesystem or timing stability.
+
+The same public build's Python 3.11 and 3.13 jobs stopped earlier in an unrelated
+Storage Sync recording/API-version mismatch. Its style/linter diff also included
+unrelated main-branch index and Storage Sync changes that are absent from this
+PR's file list. Neither those files nor pipeline diff selection were modified.
+The Linux/Python matrix and latest-head public review still require successful
+upstream evidence.
+
 Latest-head public AI review, current upstream CI/maintainer approval, supported
 Python compatibility and effective CODEOWNERS eligibility remain independent
 gates. Historical cached-runtime evidence does not close them. The contribution

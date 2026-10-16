@@ -339,6 +339,8 @@ class WindowsDescendantIdentityTests(IsolatedRuntimeTest):
         self.patch(_local, "process_create_time_utc", side_effect=lambda pid: self.live.get(pid))
         self.patch(_local, "_is_running", side_effect=lambda pid: pid in self.live)
         self.patch(_local.psutil, "pid_exists", side_effect=lambda pid: pid in self.live)
+        self.native_snapshot = self.patch(
+            _local, "_windows_process_snapshot", side_effect=lambda pid: (self.live.get(pid), False))
         self.patch(_local.psutil, "Process", return_value=mock.Mock(children=mock.Mock(return_value=[])))
         self.patch(_local, "probe_azurite", return_value=None)
         self.real_snapshot = _local._process_tree_snapshot
@@ -359,6 +361,24 @@ class WindowsDescendantIdentityTests(IsolatedRuntimeTest):
         self.live.pop(pid)
         if pid == self.PARENT and self.on_parent_stop:
             self.on_parent_stop()
+
+    def test_mocked_exit_probe_tracks_fixture_state_without_native_process_access(self):
+        with mock.patch("ctypes.WinDLL", create=True,
+                        side_effect=AssertionError("Mocked process fixture reached native Windows APIs")):
+            for present, created in ((True, self.CREATED), (True, self.REPLACEMENT),
+                                     (True, None), (False, None)):
+                with self.subTest(present=present, created=created):
+                    if present:
+                        self.live[self.CHILD] = created
+                    else:
+                        self.live.pop(self.CHILD)
+                    self.native_snapshot.reset_mock()
+                    self.assertEqual(present, _local._process_may_exist(self.CHILD))
+                    if present:
+                        self.native_snapshot.assert_called_once_with(self.CHILD)
+                    else:
+                        self.native_snapshot.assert_not_called()
+                    self.assertEqual((created, False), _local._windows_process_snapshot(self.CHILD))
 
     def test_verified_original_descendants_are_stopped_deepest_first_not_siblings(self):
         _local._terminate(self.PARENT)
