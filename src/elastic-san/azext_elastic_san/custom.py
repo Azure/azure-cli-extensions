@@ -64,6 +64,13 @@ class VolumeGroupCreate(_VolumeGroupCreate):
                            "group as datastores for Azure VMware Solution (AVS), as this feature is not supported for "
                            "AVS yet and the datastore creation will fail. "
                            "Learn more: https://go.microsoft.com/fwlink/?LinkId=2294733&id=Microsoft_Azure_ElasticSan")
+        if has_value(args.encryption_in_transit) and args.encryption_in_transit:
+            logger.warning("WARNING: Encryption in Transit is ENABLED for this Volume Group. "
+                           "All volumes in this Volume Group accept ONLY encrypted iSCSI connections. "
+                           "Plaintext connections will be rejected. Additionally, only a valid stunnel connect script "
+                           "can be used to establish connection to volumes. "
+                           "This flag is supported only for Windows and Linux clients. "
+                           "Do not enable this option if volumes are intended for use with Azure VMware Solution.")
 
 
 class VolumeGroupUpdate(_VolumeGroupUpdate):
@@ -113,6 +120,13 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
                            "group as datastores for Azure VMware Solution (AVS), as this feature is not supported for "
                            "AVS yet and the datastore creation will fail. "
                            "Learn more: https://go.microsoft.com/fwlink/?LinkId=2294733&id=Microsoft_Azure_ElasticSan")
+        if has_value(args.encryption_in_transit) and args.encryption_in_transit:
+            logger.warning("WARNING: Encryption in Transit is ENABLED for this Volume Group. "
+                           "All volumes in this Volume Group accept ONLY encrypted iSCSI connections. "
+                           "Plaintext connections will be rejected. Additionally, only a valid stunnel connect script "
+                           "can be used to establish connection to volumes. "
+                           "This flag is supported only for Windows and Linux clients. "
+                           "Do not enable this option if volumes are intended for use with Azure VMware Solution.")
 
     def pre_instance_update(self, instance):
         from azure.cli.core.aaz import has_value

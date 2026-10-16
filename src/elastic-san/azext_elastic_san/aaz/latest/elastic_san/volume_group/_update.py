@@ -34,9 +34,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2026-04-01-preview"],
         ]
     }
 
@@ -122,6 +122,12 @@ class Update(AAZCommand):
             help="Type of encryption",
             nullable=True,
             enum={"EncryptionAtRestWithCustomerManagedKey": "EncryptionAtRestWithCustomerManagedKey", "EncryptionAtRestWithPlatformKey": "EncryptionAtRestWithPlatformKey"},
+        )
+        _args_schema.encryption_in_transit = AAZBoolArg(
+            options=["--encryption-in-transit"],
+            arg_group="Properties",
+            help="A boolean indicating whether or not Encryption in Transit is enabled, supported only for ISCSI protocol.",
+            nullable=True,
         )
         _args_schema.encryption_properties = AAZObjectArg(
             options=["--encryption-properties"],
@@ -292,7 +298,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -395,7 +401,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -468,6 +474,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("encryption", AAZStrType, ".encryption")
+                properties.set_prop("encryptionInTransit", AAZBoolType, ".encryption_in_transit")
                 properties.set_prop("encryptionProperties", AAZObjectType, ".encryption_properties")
                 properties.set_prop("enforceDataIntegrityCheckForIscsi", AAZBoolType, ".enforce_data_integrity_check_for_iscsi")
                 properties.set_prop("networkAcls", AAZObjectType, ".network_acls")
@@ -624,7 +631,13 @@ class _UpdateHelper:
         )
 
         properties = _schema_volume_group_read.properties
+        properties.delete_retention_policy = AAZObjectType(
+            serialized_name="deleteRetentionPolicy",
+        )
         properties.encryption = AAZStrType()
+        properties.encryption_in_transit = AAZBoolType(
+            serialized_name="encryptionInTransit",
+        )
         properties.encryption_properties = AAZObjectType(
             serialized_name="encryptionProperties",
         )
@@ -644,6 +657,14 @@ class _UpdateHelper:
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
+        )
+
+        delete_retention_policy = _schema_volume_group_read.properties.delete_retention_policy
+        delete_retention_policy.policy_state = AAZStrType(
+            serialized_name="policyState",
+        )
+        delete_retention_policy.retention_period_days = AAZIntType(
+            serialized_name="retentionPeriodDays",
         )
 
         encryption_properties = _schema_volume_group_read.properties.encryption_properties
