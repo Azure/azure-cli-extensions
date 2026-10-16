@@ -320,7 +320,7 @@ def test_get_image_platforms_unknown_platform_excluded(mock_fetch):
 # ── Unit tests for oras_attach ─────────────────────────────────────────────
 
 
-@patch("azext_confcom.command.fragment_attach.subprocess.run")
+@patch("azext_confcom.command.fragment_attach.oras_proxy.call_oras_cli")
 @patch(
     "azext_confcom.command.fragment_attach.oras_proxy.get_image_platforms",
     return_value=["linux/amd64", "linux/arm64"],
@@ -338,7 +338,7 @@ def test_oras_attach_multiarch_error(mock_platforms, mock_run):
     mock_run.assert_not_called()
 
 
-@patch("azext_confcom.command.fragment_attach.subprocess.run")
+@patch("azext_confcom.command.fragment_attach.oras_proxy.call_oras_cli")
 @patch(
     "azext_confcom.command.fragment_attach.oras_proxy.get_image_platforms",
     return_value=[],
@@ -354,7 +354,7 @@ def test_oras_attach_detection_failure_error(mock_platforms, mock_run):
     mock_run.assert_not_called()
 
 
-@patch("azext_confcom.command.fragment_attach.subprocess.run")
+@patch("azext_confcom.command.fragment_attach.oras_proxy.call_oras_cli")
 def test_oras_attach_explicit_platform(mock_run):
     """When platform is explicitly supplied, oras attach is called with --platform."""
     from azext_confcom.command.fragment_attach import oras_attach
@@ -374,7 +374,7 @@ def test_oras_attach_explicit_platform(mock_run):
     assert "application/cose-x509+rego" in " ".join(cmd)
 
 
-@patch("azext_confcom.command.fragment_attach.subprocess.run")
+@patch("azext_confcom.command.fragment_attach.oras_proxy.call_oras_cli")
 @patch(
     "azext_confcom.command.fragment_attach.oras_proxy.get_image_platforms",
     return_value=["linux/amd64"],

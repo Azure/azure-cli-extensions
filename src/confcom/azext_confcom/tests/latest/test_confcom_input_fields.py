@@ -307,5 +307,159 @@ class AllowedLogProvidersInput(unittest.TestCase):
         self.assertIn("provider-b", boilerplate)
 
 
+class InfrastructureFragment(unittest.TestCase):
+    # The default infrastructure fragment feed depends on the target platform.
+    # Linux containers use the CLCOW fragment. Windows containers emit no default
+    # fragment unless --prerelease-policy-api is set, in which case they use the
+    # CWCOW fragment (and Windows VN2 uses its own CWCOW VN2 fragment).
+    def test_linux_emits_clcow_fragment(self):
+        policy = _load_policy(LINUX_IMAGE, "linux/amd64")
+        self.assertEqual(
+            policy.get_fragments()[0]["feed"],
+            "mcr.microsoft.com/aci/aci-cc-infra-fragment",
+        )
+
+    def test_windows_emits_no_default_fragment(self):
+        policy = _load_policy(WINDOWS_IMAGE, "windows/amd64")
+        self.assertEqual(policy.get_fragments(), [])
+
+    def test_windows_emits_cwcow_fragment(self):
+        policy = _load_policy(
+            WINDOWS_IMAGE, "windows/amd64", prerelease_policy_api=True
+        )
+        self.assertEqual(
+            policy.get_fragments()[0]["feed"],
+            "mcr.microsoft.com/aci/aci-cwcow-infra-fragment",
+        )
+
+    def test_default_fragment_feeds_per_platform(self):
+        self.assertEqual(
+            config.get_default_rego_fragments("linux/amd64")[0]["feed"],
+            "mcr.microsoft.com/aci/aci-cc-infra-fragment",
+        )
+        self.assertEqual(
+            config.get_default_rego_fragments("linux/amd64", is_vn2=True)[0]["feed"],
+            "mcr.microsoft.com/aci/aci-cc-infra-fragment",
+        )
+        # By default Windows emits no infrastructure fragment; VN2 relies on the
+        # mount-host image-attached fragment and non-VN2 has none.
+        self.assertEqual(
+            config.get_default_rego_fragments("windows/amd64"),
+            [],
+        )
+        self.assertEqual(
+            config.get_default_rego_fragments("windows/amd64", is_vn2=True)[0]["feed"],
+            "mcr.microsoft.com/aci/virtual-node-2-mount-host-windows-2025",
+        )
+        # With --prerelease-policy-api the Windows infrastructure fragments are emitted.
+        self.assertEqual(
+            config.get_default_rego_fragments(
+                "windows/amd64", prerelease_policy_api=True
+            )[0]["feed"],
+            "mcr.microsoft.com/aci/aci-cwcow-infra-fragment",
+        )
+        self.assertEqual(
+            config.get_default_rego_fragments(
+                "windows/amd64", is_vn2=True, prerelease_policy_api=True
+            )[0]["feed"],
+            "mcr.microsoft.com/aci/aci-cwcow-vn2-infra-fragment",
+        )
+
+
+class UserInput(unittest.TestCase):
+    # Windows containers run as a named account rather than a numeric UID, so the
+    # account name must flow into the policy user pattern. It is honored only from
+    # authored --input policies (securityContext.windowsOptions.runAsUserName); the
+    # --virtual-node-yaml path (from_input=False) drops it because ACI does not carry
+    # the Windows account name. Linux keeps its integer-only behavior.
+    def _extract_user(self, platform, security_context, from_input=False):
+        from azext_confcom.container import extract_user
+        return extract_user({
+            "platform": platform,
+            config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: security_context,
+        }, from_input=from_input)
+
+    def _idname(self, user):
+        return user[config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_USER_IDNAME]
+
+    def test_windows_run_as_username_from_windows_options(self):
+        user = self._extract_user(
+            "windows/amd64",
+            {
+                config.ACI_FIELD_CONTAINERS_WINDOWS_OPTIONS: {
+                    config.ACI_FIELD_CONTAINERS_RUN_AS_USERNAME: "ContainerAdministrator",
+                }
+            },
+            from_input=True,
+        )
+        self.assertEqual(
+            self._idname(user),
+            {
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_PATTERN: "ContainerAdministrator",
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_STRATEGY: "name",
+            },
+        )
+
+    def test_windows_run_as_username_ignored_for_virtual_node_yaml(self):
+        # The --virtual-node-yaml path must not plumb the Windows account name: ACI
+        # drops it there, so honoring it would mismatch the runtime user. Falls back
+        # to the empty user.
+        user = self._extract_user(
+            "windows/amd64",
+            {
+                config.ACI_FIELD_CONTAINERS_WINDOWS_OPTIONS: {
+                    config.ACI_FIELD_CONTAINERS_RUN_AS_USERNAME: "ContainerAdministrator",
+                }
+            },
+            from_input=False,
+        )
+        self.assertEqual(
+            self._idname(user),
+            {
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_PATTERN: "",
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_STRATEGY: "any",
+            },
+        )
+
+    def test_windows_string_run_as_user_rejected(self):
+        # ACI securityContext.runAsUser is numeric only, so a string is rejected on
+        # Windows too; the named account comes from windowsOptions.runAsUserName.
+        with self.assertRaises(SystemExit):
+            self._extract_user(
+                "windows/amd64",
+                {config.ACI_FIELD_CONTAINERS_RUN_AS_USER: "ContainerAdministrator"},
+            )
+
+    def test_windows_defaults_to_empty_user_when_unset(self):
+        user = self._extract_user("windows/amd64", {})
+        self.assertEqual(
+            self._idname(user),
+            {
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_PATTERN: "",
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_STRATEGY: "any",
+            },
+        )
+
+    def test_linux_numeric_run_as_user_unchanged(self):
+        user = self._extract_user(
+            "linux/amd64",
+            {config.ACI_FIELD_CONTAINERS_RUN_AS_USER: 1000},
+        )
+        self.assertEqual(
+            self._idname(user),
+            {
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_PATTERN: "1000",
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_STRATEGY: "id",
+            },
+        )
+
+    def test_linux_string_run_as_user_still_rejected(self):
+        with self.assertRaises(SystemExit):
+            self._extract_user(
+                "linux/amd64",
+                {config.ACI_FIELD_CONTAINERS_RUN_AS_USER: "ContainerAdministrator"},
+            )
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -77,9 +77,12 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         allow_registry_changes_dropping: Optional[bool] = None,
         mapped_directories: Optional[list] = None,
         prerelease_policy_api: bool = False,
+        from_input: bool = False,
     ) -> None:
         self._rootfs_proxy = None
         self._platform = None
+        self._is_vn2 = is_vn2
+        self._from_input = from_input
         self._policy_str = None
         self._policy_str_pp = None
         self._disable_stdio = disable_stdio
@@ -194,7 +197,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 )
 
             if not is_sidecar(c[config.POLICY_FIELD_CONTAINERS_ID]):
-                container_image = UserContainerImage.from_json(c, is_vn2=is_vn2)
+                container_image = UserContainerImage.from_json(c, is_vn2=is_vn2, from_input=from_input)
             else:
                 container_image = ContainerImage.from_json(c)
             container_image.parse_all_parameters_and_variables(self.all_params, self.all_vars)
@@ -525,7 +528,11 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
     def compare_fragments(self) -> Dict[str, Any]:
         """Utility method: see if the fragments in the policy are the defaults"""
         diff = deepdiff.DeepDiff(
-            self._existing_fragments, config.DEFAULT_REGO_FRAGMENTS, ignore_order=True
+            self._existing_fragments,
+            config.get_default_rego_fragments(
+                self._platform, self._is_vn2, self._prerelease_policy_api
+            ),
+            ignore_order=True,
         )
         return readable_diff(diff)
 
@@ -568,6 +575,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
     # pylint: disable=R0914, R0915, R0912
     def populate_policy_content_for_all_images(
         self, individual_image=False, tar_mapping=None, faster_hashing=False,
+        debug_skip_windows_version_check=False,
     ) -> None:
         # suppress warning which will break the progress bar
         warnings.filterwarnings(
@@ -741,6 +749,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                     platform=self._platform,
                     tar_location=tar_location if tar else "",
                     faster_hashing=faster_hashing,
+                    debug_skip_windows_version_check=debug_skip_windows_version_check,
                 )
                 image.set_layers(layer_info.get("layers", []))
                 # Set mounted_cim for Windows containers
@@ -985,10 +994,14 @@ def load_policy_from_arm_template_str(
             existing_containers, fragments = ([], [])
 
         rego_fragments = (
-            copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS)
+            copy.deepcopy(
+                config.get_default_rego_fragments(
+                    platform, prerelease_policy_api=prerelease_policy_api
+                )
+            )
             if not group_exclude_default_fragments else []
         )
-        if infrastructure_svn:
+        if infrastructure_svn and rego_fragments:
             # assumes the first DEFAULT_REGO_FRAGMENT is always the
             # infrastructure fragment
             rego_fragments[0][
@@ -1387,10 +1400,16 @@ def load_policy_from_json(
 
     # Add default fragments if necessary
     if not exclude_default_fragments:
-        rego_fragments.extend(copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS))
+        rego_fragments.extend(
+            copy.deepcopy(
+                config.get_default_rego_fragments(
+                    platform, prerelease_policy_api=prerelease_policy_api
+                )
+            )
+        )
 
     # changes the svn of the infrastructure fragment provided by ACI
-    if infrastructure_svn:
+    if infrastructure_svn and rego_fragments:
         # assumes the first DEFAULT_REGO_FRAGMENT is always the
         # infrastructure fragment
         rego_fragments[0][
@@ -1406,6 +1425,7 @@ def load_policy_from_json(
         rego_fragments=rego_fragments,
         debug_mode=debug_mode,
         is_vn2=scenario.lower() == config.VN2,
+        from_input=True,
         allowed_log_providers=allowed_log_providers,
         allow_log_provider_dropping=allow_log_provider_dropping,
         allow_host_network=allow_host_network,
@@ -1524,7 +1544,11 @@ def load_policy_from_virtual_node_yaml_str(
         # e.g. lifecycle and probes are not supported in initContainers
         init_containers = case_insensitive_dict_get(spec, config.ACI_FIELD_TEMPLATE_INIT_CONTAINERS) or []
 
-        rego_fragments = copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS) if not exclude_default_fragments else []
+        rego_fragments = copy.deepcopy(
+            config.get_default_rego_fragments(
+                platform, is_vn2=True, prerelease_policy_api=prerelease_policy_api
+            )
+        ) if not exclude_default_fragments else []
         if infrastructure_svn:
             # assumes the first DEFAULT_REGO_FRAGMENT is always the
             # infrastructure fragment
