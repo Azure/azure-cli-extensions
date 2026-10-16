@@ -48,7 +48,6 @@ def build_list_by_fleet_request(
     fleet_name: str,
     subscription_id: str,
     *,
-    filter: Optional[str] = None,
     top: Optional[int] = None,
     skip_token: Optional[str] = None,
     **kwargs: Any
@@ -56,13 +55,13 @@ def build_list_by_fleet_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/gates",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/autoUpgradeProfiles",
     )
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
@@ -78,8 +77,6 @@ def build_list_by_fleet_request(
 
     # Construct parameters
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-    if filter is not None:
-        _params["$filter"] = _SERIALIZER.query("filter", filter, "str")
     if top is not None:
         _params["$top"] = _SERIALIZER.query("top", top, "int")
     if skip_token is not None:
@@ -92,18 +89,18 @@ def build_list_by_fleet_request(
 
 
 def build_get_request(
-    resource_group_name: str, fleet_name: str, gate_name: str, subscription_id: str, **kwargs: Any
+    resource_group_name: str, fleet_name: str, auto_upgrade_profile_name: str, subscription_id: str, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/gates/{gateName}",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/autoUpgradeProfiles/{autoUpgradeProfileName}",
     )
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
@@ -113,13 +110,13 @@ def build_get_request(
         "fleetName": _SERIALIZER.url(
             "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
         ),
-        "gateName": _SERIALIZER.url(
-            "gate_name",
-            gate_name,
+        "autoUpgradeProfileName": _SERIALIZER.url(
+            "auto_upgrade_profile_name",
+            auto_upgrade_profile_name,
             "str",
-            max_length=36,
-            min_length=36,
-            pattern=r"^[0-9a-f]{8}[-][0-9a-f]{4}[-][0-9a-f]{4}[-][0-9a-f]{4}[-][0-9a-f]{12}$",
+            max_length=50,
+            min_length=1,
+            pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
         ),
     }
 
@@ -134,10 +131,10 @@ def build_get_request(
     return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_update_request(
+def build_create_or_update_request(
     resource_group_name: str,
     fleet_name: str,
-    gate_name: str,
+    auto_upgrade_profile_name: str,
     subscription_id: str,
     *,
     if_match: Optional[str] = None,
@@ -147,14 +144,14 @@ def build_update_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/gates/{gateName}",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/autoUpgradeProfiles/{autoUpgradeProfileName}",
     )
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
@@ -164,13 +161,13 @@ def build_update_request(
         "fleetName": _SERIALIZER.url(
             "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
         ),
-        "gateName": _SERIALIZER.url(
-            "gate_name",
-            gate_name,
+        "autoUpgradeProfileName": _SERIALIZER.url(
+            "auto_upgrade_profile_name",
+            auto_upgrade_profile_name,
             "str",
-            max_length=36,
-            min_length=36,
-            pattern=r"^[0-9a-f]{8}[-][0-9a-f]{4}[-][0-9a-f]{4}[-][0-9a-f]{4}[-][0-9a-f]{12}$",
+            max_length=50,
+            min_length=1,
+            pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
         ),
     }
 
@@ -188,17 +185,68 @@ def build_update_request(
         _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(method="PATCH", url=_url, params=_params, headers=_headers, **kwargs)
+    return HttpRequest(method="PUT", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-class GatesOperations:
+def build_delete_request(
+    resource_group_name: str,
+    fleet_name: str,
+    auto_upgrade_profile_name: str,
+    subscription_id: str,
+    *,
+    if_match: Optional[str] = None,
+    **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/autoUpgradeProfiles/{autoUpgradeProfileName}",
+    )
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "fleetName": _SERIALIZER.url(
+            "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+        ),
+        "autoUpgradeProfileName": _SERIALIZER.url(
+            "auto_upgrade_profile_name",
+            auto_upgrade_profile_name,
+            "str",
+            max_length=50,
+            min_length=1,
+            pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    if if_match is not None:
+        _headers["If-Match"] = _SERIALIZER.header("if_match", if_match, "str")
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="DELETE", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+class AutoUpgradeProfilesOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
         :class:`~azure.mgmt.containerservicefleet.ContainerServiceFleetMgmtClient`'s
-        :attr:`gates` attribute.
+        :attr:`auto_upgrade_profiles` attribute.
     """
 
     models = _models
@@ -217,34 +265,32 @@ class GatesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        filter: Optional[str] = None,
         top: Optional[int] = None,
         skip_token: Optional[str] = None,
         **kwargs: Any
-    ) -> ItemPaged["_models.Gate"]:
-        """List Gate resources by Fleet.
+    ) -> ItemPaged["_models.AutoUpgradeProfile"]:
+        """List AutoUpgradeProfile resources by Fleet.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param filter: Filter the result list using the given expression. Default value is None.
-        :type filter: str
         :param top: The number of result items to return. Default value is None.
         :type top: int
         :param skip_token: The page-continuation token to use with a paged version of this API. Default
          value is None.
         :type skip_token: str
-        :return: An iterator like instance of either Gate or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.containerservicefleet.models.Gate]
+        :return: An iterator like instance of either AutoUpgradeProfile or the result of cls(response)
+        :rtype:
+         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.GateListResult] = kwargs.pop("cls", None)
+        cls: ClsType[_models.AutoUpgradeProfileListResult] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -261,7 +307,6 @@ class GatesOperations:
                     resource_group_name=resource_group_name,
                     fleet_name=fleet_name,
                     subscription_id=self._config.subscription_id,
-                    filter=filter,
                     top=top,
                     skip_token=skip_token,
                     api_version=api_version,
@@ -288,7 +333,7 @@ class GatesOperations:
             return _request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("GateListResult", pipeline_response)
+            deserialized = self._deserialize("AutoUpgradeProfileListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
@@ -316,18 +361,20 @@ class GatesOperations:
         return ItemPaged(get_next, extract_data)
 
     @distributed_trace
-    def get(self, resource_group_name: str, fleet_name: str, gate_name: str, **kwargs: Any) -> _models.Gate:
-        """Get a Gate.
+    def get(
+        self, resource_group_name: str, fleet_name: str, auto_upgrade_profile_name: str, **kwargs: Any
+    ) -> _models.AutoUpgradeProfile:
+        """Get a AutoUpgradeProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param gate_name: The name of the Gate resource, a GUID. Required.
-        :type gate_name: str
-        :return: Gate or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservicefleet.models.Gate
+        :param auto_upgrade_profile_name: The name of the AutoUpgradeProfile resource. Required.
+        :type auto_upgrade_profile_name: str
+        :return: AutoUpgradeProfile or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -342,12 +389,12 @@ class GatesOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.Gate] = kwargs.pop("cls", None)
+        cls: ClsType[_models.AutoUpgradeProfile] = kwargs.pop("cls", None)
 
         _request = build_get_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            gate_name=gate_name,
+            auto_upgrade_profile_name=auto_upgrade_profile_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             headers=_headers,
@@ -370,19 +417,19 @@ class GatesOperations:
             )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("Gate", pipeline_response.http_response)
+        deserialized = self._deserialize("AutoUpgradeProfile", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
 
-    def _update_initial(
+    def _create_or_update_initial(
         self,
         resource_group_name: str,
         fleet_name: str,
-        gate_name: str,
-        properties: Union[_models.GatePatch, IO[bytes]],
+        auto_upgrade_profile_name: str,
+        resource: Union[_models.AutoUpgradeProfile, IO[bytes]],
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         **kwargs: Any
@@ -405,15 +452,15 @@ class GatesOperations:
         content_type = content_type or "application/json"
         _json = None
         _content = None
-        if isinstance(properties, (IOBase, bytes)):
-            _content = properties
+        if isinstance(resource, (IOBase, bytes)):
+            _content = resource
         else:
-            _json = self._serialize.body(properties, "GatePatch")
+            _json = self._serialize.body(resource, "AutoUpgradeProfile")
 
-        _request = build_update_request(
+        _request = build_create_or_update_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            gate_name=gate_name,
+            auto_upgrade_profile_name=auto_upgrade_profile_name,
             subscription_id=self._config.subscription_id,
             if_match=if_match,
             if_none_match=if_none_match,
@@ -434,7 +481,242 @@ class GatesOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202]:
+        if response.status_code not in [200, 201]:
+            try:
+                response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 201:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @overload
+    def begin_create_or_update(
+        self,
+        resource_group_name: str,
+        fleet_name: str,
+        auto_upgrade_profile_name: str,
+        resource: _models.AutoUpgradeProfile,
+        if_match: Optional[str] = None,
+        if_none_match: Optional[str] = None,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> LROPoller[_models.AutoUpgradeProfile]:
+        """Create a AutoUpgradeProfile.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param fleet_name: The name of the Fleet resource. Required.
+        :type fleet_name: str
+        :param auto_upgrade_profile_name: The name of the AutoUpgradeProfile resource. Required.
+        :type auto_upgrade_profile_name: str
+        :param resource: Resource create parameters. Required.
+        :type resource: ~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile
+        :param if_match: The request should only proceed if an entity matches this string. Default
+         value is None.
+        :type if_match: str
+        :param if_none_match: The request should only proceed if no entity matches this string. Default
+         value is None.
+        :type if_none_match: str
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of LROPoller that returns either AutoUpgradeProfile or the result of
+         cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    def begin_create_or_update(
+        self,
+        resource_group_name: str,
+        fleet_name: str,
+        auto_upgrade_profile_name: str,
+        resource: IO[bytes],
+        if_match: Optional[str] = None,
+        if_none_match: Optional[str] = None,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> LROPoller[_models.AutoUpgradeProfile]:
+        """Create a AutoUpgradeProfile.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param fleet_name: The name of the Fleet resource. Required.
+        :type fleet_name: str
+        :param auto_upgrade_profile_name: The name of the AutoUpgradeProfile resource. Required.
+        :type auto_upgrade_profile_name: str
+        :param resource: Resource create parameters. Required.
+        :type resource: IO[bytes]
+        :param if_match: The request should only proceed if an entity matches this string. Default
+         value is None.
+        :type if_match: str
+        :param if_none_match: The request should only proceed if no entity matches this string. Default
+         value is None.
+        :type if_none_match: str
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of LROPoller that returns either AutoUpgradeProfile or the result of
+         cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace
+    def begin_create_or_update(
+        self,
+        resource_group_name: str,
+        fleet_name: str,
+        auto_upgrade_profile_name: str,
+        resource: Union[_models.AutoUpgradeProfile, IO[bytes]],
+        if_match: Optional[str] = None,
+        if_none_match: Optional[str] = None,
+        **kwargs: Any
+    ) -> LROPoller[_models.AutoUpgradeProfile]:
+        """Create a AutoUpgradeProfile.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param fleet_name: The name of the Fleet resource. Required.
+        :type fleet_name: str
+        :param auto_upgrade_profile_name: The name of the AutoUpgradeProfile resource. Required.
+        :type auto_upgrade_profile_name: str
+        :param resource: Resource create parameters. Is either a AutoUpgradeProfile type or a IO[bytes]
+         type. Required.
+        :type resource: ~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile or IO[bytes]
+        :param if_match: The request should only proceed if an entity matches this string. Default
+         value is None.
+        :type if_match: str
+        :param if_none_match: The request should only proceed if no entity matches this string. Default
+         value is None.
+        :type if_none_match: str
+        :return: An instance of LROPoller that returns either AutoUpgradeProfile or the result of
+         cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.AutoUpgradeProfile]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.AutoUpgradeProfile] = kwargs.pop("cls", None)
+        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = self._create_or_update_initial(
+                resource_group_name=resource_group_name,
+                fleet_name=fleet_name,
+                auto_upgrade_profile_name=auto_upgrade_profile_name,
+                resource=resource,
+                if_match=if_match,
+                if_none_match=if_none_match,
+                api_version=api_version,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("AutoUpgradeProfile", pipeline_response.http_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})  # type: ignore
+            return deserialized
+
+        if polling is True:
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(PollingMethod, NoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return LROPoller[_models.AutoUpgradeProfile].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return LROPoller[_models.AutoUpgradeProfile](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
+
+    def _delete_initial(
+        self,
+        resource_group_name: str,
+        fleet_name: str,
+        auto_upgrade_profile_name: str,
+        if_match: Optional[str] = None,
+        **kwargs: Any
+    ) -> Iterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[Iterator[bytes]] = kwargs.pop("cls", None)
+
+        _request = build_delete_request(
+            resource_group_name=resource_group_name,
+            fleet_name=fleet_name,
+            auto_upgrade_profile_name=auto_upgrade_profile_name,
+            subscription_id=self._config.subscription_id,
+            if_match=if_match,
+            api_version=api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202, 204]:
             try:
                 response.read()  # Load the body in memory and close the socket
             except (StreamConsumedError, StreamClosedError):
@@ -458,134 +740,46 @@ class GatesOperations:
 
         return deserialized  # type: ignore
 
-    @overload
-    def begin_update(
-        self,
-        resource_group_name: str,
-        fleet_name: str,
-        gate_name: str,
-        properties: _models.GatePatch,
-        if_match: Optional[str] = None,
-        if_none_match: Optional[str] = None,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> LROPoller[_models.Gate]:
-        """Update a Gate.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param fleet_name: The name of the Fleet resource. Required.
-        :type fleet_name: str
-        :param gate_name: The name of the Gate resource, a GUID. Required.
-        :type gate_name: str
-        :param properties: The resource properties to be updated. Required.
-        :type properties: ~azure.mgmt.containerservicefleet.models.GatePatch
-        :param if_match: The request should only proceed if an entity matches this string. Default
-         value is None.
-        :type if_match: str
-        :param if_none_match: The request should only proceed if no entity matches this string. Default
-         value is None.
-        :type if_none_match: str
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of LROPoller that returns either Gate or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.Gate]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @overload
-    def begin_update(
-        self,
-        resource_group_name: str,
-        fleet_name: str,
-        gate_name: str,
-        properties: IO[bytes],
-        if_match: Optional[str] = None,
-        if_none_match: Optional[str] = None,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> LROPoller[_models.Gate]:
-        """Update a Gate.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param fleet_name: The name of the Fleet resource. Required.
-        :type fleet_name: str
-        :param gate_name: The name of the Gate resource, a GUID. Required.
-        :type gate_name: str
-        :param properties: The resource properties to be updated. Required.
-        :type properties: IO[bytes]
-        :param if_match: The request should only proceed if an entity matches this string. Default
-         value is None.
-        :type if_match: str
-        :param if_none_match: The request should only proceed if no entity matches this string. Default
-         value is None.
-        :type if_none_match: str
-        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of LROPoller that returns either Gate or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.Gate]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
     @distributed_trace
-    def begin_update(
+    def begin_delete(
         self,
         resource_group_name: str,
         fleet_name: str,
-        gate_name: str,
-        properties: Union[_models.GatePatch, IO[bytes]],
+        auto_upgrade_profile_name: str,
         if_match: Optional[str] = None,
-        if_none_match: Optional[str] = None,
         **kwargs: Any
-    ) -> LROPoller[_models.Gate]:
-        """Update a Gate.
+    ) -> LROPoller[None]:
+        """Delete a AutoUpgradeProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param gate_name: The name of the Gate resource, a GUID. Required.
-        :type gate_name: str
-        :param properties: The resource properties to be updated. Is either a GatePatch type or a
-         IO[bytes] type. Required.
-        :type properties: ~azure.mgmt.containerservicefleet.models.GatePatch or IO[bytes]
+        :param auto_upgrade_profile_name: The name of the AutoUpgradeProfile resource. Required.
+        :type auto_upgrade_profile_name: str
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
-        :param if_none_match: The request should only proceed if no entity matches this string. Default
-         value is None.
-        :type if_none_match: str
-        :return: An instance of LROPoller that returns either Gate or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.Gate]
+        :return: An instance of LROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.Gate] = kwargs.pop("cls", None)
+        cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = self._update_initial(
+            raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
                 fleet_name=fleet_name,
-                gate_name=gate_name,
-                properties=properties,
+                auto_upgrade_profile_name=auto_upgrade_profile_name,
                 if_match=if_match,
-                if_none_match=if_none_match,
                 api_version=api_version,
-                content_type=content_type,
                 cls=lambda x, y, z: x,
                 headers=_headers,
                 params=_params,
@@ -594,11 +788,9 @@ class GatesOperations:
             raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("Gate", pipeline_response.http_response)
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, deserialized, {})  # type: ignore
-            return deserialized
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: PollingMethod = cast(
@@ -609,12 +801,10 @@ class GatesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return LROPoller[_models.Gate].from_continuation_token(
+            return LROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return LROPoller[_models.Gate](
-            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
-        )
+        return LROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
