@@ -1,30 +1,28 @@
 [
   {
     "name": "per-agent-monthly",
-    "counterKey": [
-      {
-        "type": "agent"
-      }
-    ],
-    "unit": "usd",
+    "counterKey": {
+      "type": "Agent"
+    },
+    "unit": "Usd",
     "amount": 200,
-    "period": "month",
+    "period": "Month",
     "recurring": true,
     "match": {
-      "foundry-caller-agent-id": [
-        "agent-123"
+      "agentResourceIds": [
+        "/subscriptions/00000000-0000-0000-0000-000000000000/accounts/my-account-name/project/my-project-name/agent/my-agent_name"
       ]
     },
     "thresholds": [
       {
-        "type": "percentage",
+        "type": "Percentage",
         "value": 80,
-        "action": "alert"
+        "action": "Alert"
       },
       {
-        "type": "absolute",
-        "value": 0,
-        "action": "audit"
+        "type": "Percentage",
+        "value": 90,
+        "action": "Block"
       }
     ]
   }
