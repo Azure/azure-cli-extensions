@@ -227,8 +227,8 @@ def load_arguments(self, _):
             validator=validate_faster_hashing,
         )
         c.argument(
-            "debug_skip_windows_version_check",
-            options_list=("--debug-skip-windows-version-check"),
+            "skip_win_ver_check",
+            options_list=("--skip-win-ver-check"),
             required=False,
             action="store_true",
             help="Skip the host Windows version check in dmverity-vhd when hashing Windows images. Only affects windows/amd64 and is intended for debugging on hosts that do not produce deterministic layer hashes.",
@@ -438,8 +438,8 @@ def load_arguments(self, _):
             help="Emit only the signed fragment bytes",
         )
         c.argument(
-            "debug_skip_windows_version_check",
-            options_list=("--debug-skip-windows-version-check"),
+            "skip_win_ver_check",
+            options_list=("--skip-win-ver-check"),
             required=False,
             action="store_true",
             help="Skip the host Windows version check in dmverity-vhd when hashing Windows images. Only affects windows/amd64 and is intended for debugging on hosts that do not produce deterministic layer hashes.",

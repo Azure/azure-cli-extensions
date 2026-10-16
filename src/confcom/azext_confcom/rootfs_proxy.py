@@ -114,7 +114,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
         platform: str = "linux/amd64",
         tar_location: str = "",
         faster_hashing=False,
-        debug_skip_windows_version_check=False,
+        skip_win_ver_check=False,
     ) -> Dict[str, List[str]]:
         image_name = f"{image}:{tag}"
         # populate layer info
@@ -140,7 +140,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
         # The host Windows version check only guards the deterministic registry-hive
         # merge on the Windows CIM path, so only pass this global debug flag for
         # Windows. It must precede the "roothash" subcommand since it is a global flag.
-        if debug_skip_windows_version_check and platform.startswith("windows"):
+        if skip_win_ver_check and platform.startswith("windows"):
             arg_list += ["--debug-skip-version-check"]
 
         # add the image to the end of the parameter list

@@ -6,6 +6,7 @@
 import importlib
 import json
 import unittest
+import unittest.mock
 from unittest.mock import patch
 
 import azext_confcom.config as config
@@ -459,6 +460,152 @@ class UserInput(unittest.TestCase):
                 "linux/amd64",
                 {config.ACI_FIELD_CONTAINERS_RUN_AS_USER: "ContainerAdministrator"},
             )
+
+    def test_linux_ignores_windows_options_run_as_username(self):
+        user = self._extract_user(
+            "linux/amd64",
+            {
+                config.ACI_FIELD_CONTAINERS_WINDOWS_OPTIONS: {
+                    config.ACI_FIELD_CONTAINERS_RUN_AS_USERNAME: "ContainerAdministrator",
+                }
+            },
+            from_input=True,
+        )
+        self.assertEqual(
+            self._idname(user),
+            {
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_PATTERN: "",
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_STRATEGY: "any",
+            },
+        )
+
+
+class Vn2JsonInfrastructureFragment(unittest.TestCase):
+    # "scenario": "vn2" in --input JSON must select the VN2 default fragments.
+    def _feeds(self, platform, prerelease_policy_api=False):
+        policy = _load_policy(
+            WINDOWS_IMAGE if platform.startswith("windows") else LINUX_IMAGE,
+            platform,
+            top_level={config.ACI_FIELD_SCENARIO: config.VN2},
+            prerelease_policy_api=prerelease_policy_api,
+        )
+        return [fragment["feed"] for fragment in policy.get_fragments()]
+
+    def test_windows_vn2_emits_mount_host_fragment(self):
+        self.assertEqual(
+            self._feeds("windows/amd64"),
+            ["mcr.microsoft.com/aci/virtual-node-2-mount-host-windows-2025"],
+        )
+
+    def test_windows_vn2_prerelease_emits_vn2_infra_fragment(self):
+        self.assertEqual(
+            self._feeds("windows/amd64", prerelease_policy_api=True),
+            ["mcr.microsoft.com/aci/aci-cwcow-vn2-infra-fragment"],
+        )
+
+    def test_linux_vn2_unchanged(self):
+        self.assertEqual(
+            self._feeds("linux/amd64"),
+            ["mcr.microsoft.com/aci/aci-cc-infra-fragment"],
+        )
+
+
+class ImageLoaderInfrastructureFragment(unittest.TestCase):
+    # --image goes through load_policy_from_image_name, which must use the
+    # platform-specific default fragments rather than the static Linux default.
+    def _load(self, platform, prerelease_policy_api=False):
+        security_policy = importlib.import_module("azext_confcom.security_policy")
+        with patch.object(security_policy, "validate_image_platform"):
+            return security_policy.load_policy_from_image_name(
+                WINDOWS_IMAGE if platform.startswith("windows") else LINUX_IMAGE,
+                platform=platform,
+                prerelease_policy_api=prerelease_policy_api,
+            )
+
+    def test_linux_emits_clcow_fragment(self):
+        self.assertEqual(
+            self._load("linux/amd64").get_fragments()[0]["feed"],
+            "mcr.microsoft.com/aci/aci-cc-infra-fragment",
+        )
+
+    def test_windows_emits_no_default_fragment(self):
+        self.assertEqual(self._load("windows/amd64").get_fragments(), [])
+
+    def test_windows_prerelease_emits_cwcow_fragment(self):
+        self.assertEqual(
+            self._load("windows/amd64", prerelease_policy_api=True).get_fragments()[0]["feed"],
+            "mcr.microsoft.com/aci/aci-cwcow-infra-fragment",
+        )
+
+
+class FragmentFrameworkVersion(unittest.TestCase):
+    # The generated fragment must declare the same framework version as the policy
+    # boilerplate: Windows always uses the latest, Linux only with the prerelease flag.
+    def _fragment(self, image, platform, prerelease_policy_api=False):
+        security_policy = importlib.import_module("azext_confcom.security_policy")
+        policy = _load_policy(image, platform, prerelease_policy_api=prerelease_policy_api)
+        return policy.generate_fragment("ns", 1, security_policy.OutputType.RAW)
+
+    def test_linux_default_framework_version(self):
+        self.assertIn('framework_version := "0.2.3"', self._fragment(LINUX_IMAGE, "linux/amd64"))
+
+    def test_linux_prerelease_framework_version(self):
+        self.assertIn(
+            'framework_version := "0.5.0"',
+            self._fragment(LINUX_IMAGE, "linux/amd64", prerelease_policy_api=True),
+        )
+
+    def test_windows_framework_version(self):
+        self.assertIn('framework_version := "0.5.0"', self._fragment(WINDOWS_IMAGE, "windows/amd64"))
+
+    def test_windows_prerelease_framework_version(self):
+        self.assertIn(
+            'framework_version := "0.5.0"',
+            self._fragment(WINDOWS_IMAGE, "windows/amd64", prerelease_policy_api=True),
+        )
+
+
+class OrasFragmentReferences(unittest.TestCase):
+    # A colon in the registry host (port) is not a tag separator.
+    def _completed(self):
+        completed = unittest.mock.MagicMock()
+        completed.returncode = 0
+        completed.stdout = b"Downloaded frag.cose"
+        return completed
+
+    def test_pull_registry_port_without_tag_is_invalid(self):
+        from azext_confcom import oras_proxy
+        with patch.object(oras_proxy, "call_oras_cli") as mock_oras:
+            with self.assertRaises(SystemExit):
+                oras_proxy.pull("registry.example.com:5000/frag")
+        mock_oras.assert_not_called()
+
+    def test_pull_registry_port_with_tag(self):
+        from azext_confcom import oras_proxy
+        with patch.object(oras_proxy, "call_oras_cli", return_value=self._completed()) as mock_oras:
+            oras_proxy.pull("registry.example.com:5000/frag:v1")
+        self.assertEqual(mock_oras.call_args[0][0][2], "registry.example.com:5000/frag:v1")
+
+    def test_standalone_skips_registry_port_feed_without_tag(self):
+        from azext_confcom import oras_proxy
+        imports = [{"feed": "registry.example.com:5000/frag", "issuer": "iss", "minimum_svn": "1"}]
+        with patch.object(oras_proxy, "pull") as mock_pull:
+            oras_proxy.pull_all_standalone_fragments(imports)
+        mock_pull.assert_not_called()
+
+    def test_generate_imports_forwards_platform(self):
+        from azext_confcom import oras_proxy
+        with patch.object(oras_proxy, "discover", return_value=(True, [])) as mock_discover:
+            oras_proxy.generate_imports_from_image_name("img:1", "1", platform="windows/amd64")
+        self.assertEqual(mock_discover.call_args.kwargs["platform"], "windows/amd64")
+
+    def test_generate_imports_default_platform(self):
+        from azext_confcom import oras_proxy
+        with patch.object(oras_proxy, "discover", return_value=(True, [])) as mock_discover:
+            oras_proxy.generate_imports_from_image_name("img:1", "1")
+        self.assertEqual(
+            mock_discover.call_args.kwargs["platform"], oras_proxy.FRAGMENT_DISCOVERY_PLATFORM
+        )
 
 
 if __name__ == "__main__":

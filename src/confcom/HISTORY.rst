@@ -7,7 +7,7 @@ Release History
 +++++
 * Update bundled integrity-vhd tooling to v2.4 to fix the Windows version check
 * Add ``--platform`` and ``--prerelease-policy-api`` to ``acifragmentgen``
-* Add ``--debug-skip-windows-version-check`` to ``acipolicygen`` and ``acifragmentgen`` to skip the Windows version check in dmverity-vhd when hashing Windows images for debugging purposes
+* Add ``--skip-win-ver-check`` to ``acipolicygen`` and ``acifragmentgen`` to skip the Windows version check in dmverity-vhd when hashing Windows images for debugging purposes
 * Emit the Windows VN2 mount-host image-attached fragment by default, and emit the Windows infrastructure fragment when ``--prerelease-policy-api`` is provided
 * Honor ``securityContext.windowsOptions.runAsUserName`` for Windows containers only when authored via ``--input`` (used for infra sidecars); ignore it for ARM templates and virtual-node YAML
 * Emit Windows bind mounts with ``ro``/``rw`` options and an empty mount type instead of the Linux ``rbind``/``rshared`` and ``bind`` form, which the Windows enforcer rejected as an invalid mount list

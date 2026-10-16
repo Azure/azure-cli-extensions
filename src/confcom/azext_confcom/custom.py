@@ -95,7 +95,7 @@ def acipolicygen_confcom(
     enable_stdio: Optional[bool] = None,
     print_existing_policy: bool = False,
     faster_hashing: bool = False,
-    debug_skip_windows_version_check: bool = False,
+    skip_win_ver_check: bool = False,
     omit_id: bool = False,
     include_fragments: bool = False,
     fragments_json: str = None,
@@ -261,7 +261,7 @@ def acipolicygen_confcom(
     for count, policy in enumerate(container_group_policies):
         policy.populate_policy_content_for_all_images(
             individual_image=bool(image_name), tar_mapping=tar_mapping, faster_hashing=faster_hashing,
-            debug_skip_windows_version_check=debug_skip_windows_version_check,
+            skip_win_ver_check=skip_win_ver_check,
         )
 
         if validate_sidecar:
@@ -327,7 +327,7 @@ def acifragmentgen_confcom(
     no_print: bool = False,
     fragments_json: str = "",
     out_signed_fragment: bool = False,
-    debug_skip_windows_version_check: bool = False,
+    skip_win_ver_check: bool = False,
     platform: str = "linux/amd64",
     prerelease_policy_api: bool = False,
 ):
@@ -353,7 +353,9 @@ def acifragmentgen_confcom(
                 os_util.clean_up_temp_folder(fragment_path)
 
         elif image_name:
-            import_statements = oras_proxy.generate_imports_from_image_name(image_name, minimum_svn=minimum_svn)
+            import_statements = oras_proxy.generate_imports_from_image_name(
+                image_name, minimum_svn=minimum_svn, platform=platform
+            )
 
         fragments_file_contents = {}
         fragments_list = []
@@ -430,7 +432,7 @@ def acifragmentgen_confcom(
     policy.set_fragment_contents(fragment_policy_list)
     policy.populate_policy_content_for_all_images(
         individual_image=bool(image_name), tar_mapping=tar_mapping,
-        debug_skip_windows_version_check=debug_skip_windows_version_check,
+        skip_win_ver_check=skip_win_ver_check,
     )
 
     # make sure we have images to generate a fragment
