@@ -19,12 +19,15 @@ class Update(AAZCommand):
 
     :example: AFDOrigins_Create
         az afd origin update --resource-group RG --profile-name profile1 --origin-group-name origingroup1 --origin-name origin1 --enabled-state Enabled --host-name host1.blob.core.windows.net --http-port 80 --https-port 443 --origin-host-header host1.foo.com
+
+    :example: Configure custom certificate subject validation
+        az afd origin update --resource-group MyResourceGroup --profile-name MyProfile --origin-group-name MyOriginGroup --origin-name MyOrigin --certificate-name-check-validation-mode CustomCertificateSubject --custom-certificate-subjects origin.contoso.com
     """
 
     _aaz_info = {
-        "version": "2026-04-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins/{}", "2026-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -77,6 +80,23 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.certificate_name_check_validation_mode = AAZStrArg(
+            options=["--cert-name-check-mode", "--certificate-name-check-validation-mode"],
+            arg_group="Properties",
+            help="The validation mode for certificate name check. Only applicable when enforceCertificateNameCheck is true.",
+            nullable=True,
+            enum={"CustomCertificateSubject": "CustomCertificateSubject", "IncomingHostHeader": "IncomingHostHeader", "OriginHostname": "OriginHostname"},
+        )
+        _args_schema.custom_certificate_subjects = AAZListArg(
+            options=["--cert-subjects", "--custom-certificate-subjects"],
+            arg_group="Properties",
+            help="The list of custom certificate subjects to validate against. Only applicable when certificateNameCheckValidationMode is 'CustomCertificateSubject'. Must contain 1 or 2 entries.",
+            nullable=True,
+            fmt=AAZListArgFormat(
+                max_length=2,
+                min_length=1,
+            ),
+        )
         _args_schema.enabled_state = AAZStrArg(
             options=["--enabled-state"],
             arg_group="Properties",
@@ -147,6 +167,11 @@ class Update(AAZCommand):
                 maximum=1000,
                 minimum=1,
             ),
+        )
+
+        custom_certificate_subjects = cls._args_schema.custom_certificate_subjects
+        custom_certificate_subjects.Element = AAZStrArg(
+            nullable=True,
         )
 
         shared_private_link_resource = cls._args_schema.shared_private_link_resource
@@ -286,7 +311,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -393,7 +418,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -455,6 +480,8 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("certificateNameCheckValidationMode", AAZStrType, ".certificate_name_check_validation_mode")
+                properties.set_prop("customCertificateSubjects", AAZListType, ".custom_certificate_subjects")
                 properties.set_prop("enabledState", AAZStrType, ".enabled_state")
                 properties.set_prop("enforceCertificateNameCheck", AAZBoolType, ".enforce_certificate_name_check")
                 properties.set_prop("hostName", AAZStrType, ".host_name")
@@ -464,6 +491,10 @@ class Update(AAZCommand):
                 properties.set_prop("priority", AAZIntType, ".priority")
                 properties.set_prop("sharedPrivateLinkResource", AAZObjectType, ".shared_private_link_resource")
                 properties.set_prop("weight", AAZIntType, ".weight")
+
+            custom_certificate_subjects = _builder.get(".properties.customCertificateSubjects")
+            if custom_certificate_subjects is not None:
+                custom_certificate_subjects.set_elements(AAZStrType, ".")
 
             shared_private_link_resource = _builder.get(".properties.sharedPrivateLinkResource")
             if shared_private_link_resource is not None:
@@ -530,6 +561,12 @@ class _UpdateHelper:
             serialized_name="azureOrigin",
         )
         cls._build_schema_resource_reference_read(properties.azure_origin)
+        properties.certificate_name_check_validation_mode = AAZStrType(
+            serialized_name="certificateNameCheckValidationMode",
+        )
+        properties.custom_certificate_subjects = AAZListType(
+            serialized_name="customCertificateSubjects",
+        )
         properties.deployment_status = AAZStrType(
             serialized_name="deploymentStatus",
             flags={"read_only": True},
@@ -565,6 +602,9 @@ class _UpdateHelper:
             serialized_name="sharedPrivateLinkResource",
         )
         properties.weight = AAZIntType()
+
+        custom_certificate_subjects = _schema_afd_origin_read.properties.custom_certificate_subjects
+        custom_certificate_subjects.Element = AAZStrType()
 
         shared_private_link_resource = _schema_afd_origin_read.properties.shared_private_link_resource
         shared_private_link_resource.group_id = AAZStrType(
