@@ -422,6 +422,7 @@
 </div>
 
 <script nonce="__CSP_NONCE__">
+__SCHEMA_VALIDATOR__
 // ---- Data injected by `az migrate runbook parameter configure` -------------
 // The CLI substitutes the runbook's real inputs.json (schema + stepInputs +
 // envelope ids) and spec.json (entity list per step) at generation time.
@@ -479,7 +480,45 @@ const ORIGINAL = JSON.parse(JSON.stringify(DOC.stepInputs));
 
 // ---- helpers --------------------------------------------------------------
 const stepType = sid => sid.replace(/-\d+$/, '');
-const rulesFor = sid => DOC.schema[stepType(sid)] || {};
+const SCHEMA_KEYS = new Set(Object.keys(RunbookSchema.metaSchema.properties));
+const PREPARED_SCHEMAS = new Map(), ISSUE_CACHE = new Map();
+let metaValidator;
+function preparedSchema(sid) {
+  const type = stepType(sid);
+  if (PREPARED_SCHEMAS.has(type)) return PREPARED_SCHEMAS.get(type);
+  const raw = DOC.schema[type] || {};
+  const entries = Object.entries(raw);
+  const fieldEntries = entries.filter(([k, v]) => !SCHEMA_KEYS.has(k) ||
+    (v && typeof v === 'object' && (typeof v.type === 'string' || Array.isArray(v.type)) &&
+      (typeof v.scope === 'string' || typeof v.isEditable === 'boolean' || typeof v.required === 'boolean')));
+  const fields = Object.fromEntries(fieldEntries);
+  const clauses = entries.filter(([k]) => !Object.prototype.hasOwnProperty.call(fields, k));
+  const result = { fields, validator: null, error: null };
+  if (clauses.length) {
+    try {
+      const schema = JSON.parse(JSON.stringify(Object.fromEntries(clauses)));
+      if (schema.$schema && !/^https?:\/\/json-schema\.org\/draft-07\/schema#?$/.test(schema.$schema))
+        throw new Error('Only JSON Schema Draft-07 is supported.');
+      // Reject the SDK's unsupported $ref/sibling-$id combination rather than misresolve it.
+      metaValidator = metaValidator || new RunbookSchema.Validator({
+        ...RunbookSchema.metaSchema, allOf: [{ not: { type: 'object', required: ['$ref', '$id'] } }]
+      }, '7', false);
+      const checked = metaValidator.validate(schema);
+      if (checked.errors.some(e => e.keyword === 'not'))
+        throw new Error('The browser validator does not support $ref with a sibling $id. Remove the ignored sibling $id.');
+      if (!checked.valid) throw new Error(checked.errors.map(e => `${e.instanceLocation}: ${e.error}`).join('; '));
+      schema.properties = { ...Object.fromEntries(fieldEntries.map(([k]) => [k, {}])), ...schema.properties };
+      result.validator = new RunbookSchema.Validator(schema, '7', false);
+      result.validator.addSchema(RunbookSchema.metaSchema);
+      result.schema = schema;
+    } catch (e) {
+      result.error = `Invalid or unsupported Draft-07 schema: ${e.message}`;
+    }
+  }
+  PREPARED_SCHEMAS.set(type, result);
+  return result;
+}
+const rulesFor = sid => preparedSchema(sid).fields;
 const stepFields = sid => Object.keys(rulesFor(sid));
 // A step is entity-level if any input is entity-scoped; then EVERY input is
 // overridable per entity (no mixed steps). Otherwise all inputs are appliance-level.
@@ -558,7 +597,7 @@ function effective(sid, eid, f) { return hasOverride(sid, eid, f) ? woFor(sid, e
 function overrideCount(sid, f) { return entitiesFor(sid).filter(e => hasOverride(sid, e.id, f)).length; }
 const overrideLabel = (c, n) => `Overridden for ${c} out of ${n} workload${n === 1 ? '' : 's'}`;
 function entityOverrideCount(sid, eid) { return entityFields(sid).filter(f => hasOverride(sid, eid, f)).length; }
-function entityErrors(sid, eid) { return entityFields(sid).filter(f => fieldError(rulesFor(sid)[f], effective(sid, eid, f))).length; }
+function entityErrors(sid, eid) { return new Set(stepIssues(sid).filter(i => i.eid === eid).map(i => i.f || i.msg)).size; }
 function fmt(v) { return v == null ? '(empty)' : (typeof v === 'object' ? JSON.stringify(v) : String(v)); }
 // Raw JSON is unreadable in a one-line hint, and inputs.json seeds arrays with
 // an all-null placeholder row, so describe the shape instead.
@@ -582,13 +621,50 @@ function summarise(v, rule) {
   }
   return short(fmt(v), 90);
 }
-function stepErrors(sid) {
-  let n = 0; const data = DOC.stepInputs[sid], rules = rulesFor(sid);
-  applianceFields(sid).forEach(f => { if (fieldError(rules[f], data[f])) n++; });
-  // A pending entity field counts once for the step, not once per entity.
-  entityFields(sid).forEach(f => { if (entitiesFor(sid).some(e => fieldError(rules[f], effective(sid, e.id, f)))) n++; });
-  return n;
+function schemaIssues(sid, eid) {
+  const prepared = preparedSchema(sid);
+  if (prepared.error) return [{ f: null, msg: prepared.error }];
+  if (!prepared.validator) return [];
+  const data = { ...DOC.stepInputs[sid] };
+  delete data.workloadOverrides;
+  if (eid !== null) Object.entries(woFor(sid, eid) || {}).forEach(([f, v]) => { if (!isEmpty(v)) data[f] = v; });
+  try {
+    // Validate JSON properties only, never inherited Object.prototype names.
+    const instance = JSON.parse(JSON.stringify(data), (_, v) =>
+      v && typeof v === 'object' && !Array.isArray(v) ? Object.assign(Object.create(null), v) : v);
+    const result = prepared.validator.validate(instance);
+    return result.errors.map(e => {
+      const path = e.instanceLocation.slice(2).split('/').map(p => p.replace(/~1/g, '/').replace(/~0/g, '~'));
+      let f = path[0] || null;
+      if (!f && e.keyword === 'required') {
+        const required = e.keywordLocation.slice(2).split('/').reduce((s, k) => s && s[k.replace(/~1/g, '/').replace(/~0/g, '~')], prepared.schema);
+        if (Array.isArray(required)) f = required.find(k => !has(data, k)) || null;
+      }
+      return { f: has(prepared.fields, f) ? f : null, msg: `${e.instanceLocation}: ${e.error}` };
+    });
+  } catch (e) {
+    return [{ f: null, msg: `Could not validate Draft-07 schema: ${e.message}` }];
+  }
 }
+function stepIssues(sid) {
+  const stamp = JSON.stringify(DOC.stepInputs[sid]);
+  const cached = ISSUE_CACHE.get(sid);
+  if (cached && cached.stamp === stamp) return cached.issues;
+  const issues = [], rules = rulesFor(sid), data = DOC.stepInputs[sid];
+  const add = (f, msg, e, condition = false) => {
+    if (msg) issues.push({ sid, f, eid: e.id, name: e.name, msg, condition });
+  };
+  const base = { id: null, name: null };
+  applianceFields(sid).forEach(f => add(f, fieldError(rules[f], data[f]), base));
+  const entities = entitiesFor(sid);
+  entityFields(sid).forEach(f => entities.forEach(e => add(f, fieldError(rules[f], effective(sid, e.id, f)), e)));
+  const contexts = stepIsEntity(sid) && entities.length ? entities : [base];
+  contexts.forEach(e => schemaIssues(sid, e.id).forEach(i => add(i.f, i.msg, e, true)));
+  ISSUE_CACHE.set(sid, { stamp, issues });
+  return issues;
+}
+function stepErrors(sid) { return new Set(stepIssues(sid).map(i => i.f || i.msg)).size; }
+function uploadBlocked() { return allIssues().some(i => i.condition); }
 const eqv = (a, b) => JSON.stringify(a === undefined ? null : a) === JSON.stringify(b === undefined ? null : b);
 function dirtyTop(sid, f) { return !eqv(DOC.stepInputs[sid][f], (ORIGINAL[sid] || {})[f]); }
 function dirtyOverride(sid, eid, f) {
@@ -656,7 +732,7 @@ function renderTabs() {
   nav.setAttribute('aria-orientation', 'vertical');
   nav.innerHTML = Object.keys(DOC.stepInputs).map((sid, i) => {
     const n = stepErrors(sid), on = sid === current;
-    const badge = n > 0 && stepFields(sid).length
+    const badge = n > 0
       ? `<span class="badge err" title="${n} input(s) still needed">${n}</span>` : '';
     return `<div class="steptab ${on ? 'on' : ''}" role="tab" tabindex="${on ? 0 : -1}"
       id="steptab-${i}" aria-controls="form" aria-selected="${on}" data-sid="${esc(sid)}" title="${esc(sid)}">
@@ -884,7 +960,8 @@ function renderForm() {
   const es = entitiesFor(sid), all = stepFields(sid);
   let html = `<h2 class="step-h">${esc(stepLabel(sid))}</h2>
     <p class="step-sub">Step id <code>${esc(sid)}</code> &middot; ${
-      es.length ? `${es.length} ${es.length === 1 ? 'workload' : 'workloads'}` : 'no per-workload inputs'}</p>`;
+      es.length ? `${es.length} ${es.length === 1 ? 'workload' : 'workloads'}` : 'no per-workload inputs'}</p>
+    <div class="err" id="stepConditions" role="status"></div>`;
   if (!all.length) {
     host.innerHTML = html + `<p class="step-sub">This step has no configurable inputs.</p>`;
     renderOverrides(); refreshValidation(); return;
@@ -948,7 +1025,7 @@ function renderOverrides() {
   const inhF = vis.filter(f => !hasOverride(sid, cur.id, f));
   // An inherited value can still be invalid for this workload, so surface that
   // on the collapsed section rather than hiding it.
-  const inhBad = inhF.filter(f => fieldError(rules[f], effective(sid, cur.id, f))).length;
+  const inhBad = inhF.filter(f => stepIssues(sid).some(i => i.eid === cur.id && i.f === f)).length;
   const sections = !vis.length
     ? `<div class="ov-empty">No inputs match &ldquo;${esc(fieldFilter)}&rdquo;.</div>`
     : `<details class="adv" data-sec="ov" open>
@@ -1105,14 +1182,14 @@ function mark(path, err) {
   const e = document.querySelector(`[data-err="${path}"]`); if (e) e.textContent = err || '';
 }
 function refreshValidation() {
-  const sid = current, rules = rulesFor(sid), data = DOC.stepInputs[sid];
-  applianceFields(sid).forEach(f => mark(`A|${sid}|${f}`, fieldError(rules[f], data[f])));
+  const sid = current, issues = stepIssues(sid);
+  const errorFor = (f, eid) => issues.filter(i => i.f === f && i.eid === eid).map(i => i.msg).join('; ');
+  applianceFields(sid).forEach(f => mark(`A|${sid}|${f}`, errorFor(f, null)));
   entityFields(sid).forEach(f => {
-    const r = rules[f];
-    const inheritingBad = entitiesFor(sid).some(e => !hasOverride(sid, e.id, f)) && !!fieldError(r, data[f]);
-    mark(`D|${sid}|${f}`, inheritingBad ? fieldError(r, data[f]) : null);
+    const inherited = issues.filter(i => i.f === f && (i.eid === null || !hasOverride(sid, i.eid, f)));
+    mark(`D|${sid}|${f}`, inherited.map(i => i.msg).join('; '));
     // right pane shows the selected entity's inputs
-    const ov = hasOverride(sid, selEntity, f), err = fieldError(r, effective(sid, selEntity, f));
+    const ov = hasOverride(sid, selEntity, f), err = errorFor(f, selEntity);
     mark(`O|${sid}|${selEntity}|${f}`, ov ? err : null);
     const inh = document.querySelector(`[data-inh="${sid}|${selEntity}|${f}"]`);
     if (inh) {
@@ -1121,6 +1198,9 @@ function refreshValidation() {
       inh.style.color = 'var(--err)';
     }
   });
+  const summary = document.getElementById('stepConditions');
+  if (summary) summary.textContent = issues.filter(i => !i.f)
+    .map(i => `${i.name ? i.name + ': ' : ''}${i.msg}`).join('\n');
   updateRowState();
   sync();
 }
@@ -1138,8 +1218,11 @@ function sync() {
     filePath = `"<path you saved>/${saved.name || PARAM_FILE}"`;
     hint = 'Replace <path you saved> with the folder you saved to \u2014 your browser doesn\u2019t reveal it.';
   }
-  document.getElementById('cmd').textContent =
-    `az migrate runbook parameter upload -g ${m.resourceGroup} -p ${m.project} -n ${m.runbook} --file ${filePath}`;
+  const blocked = uploadBlocked();
+  document.getElementById('cmd').textContent = blocked
+    ? 'Fix schema validation errors before uploading.'
+    : `az migrate runbook parameter upload -g ${m.resourceGroup} -p ${m.project} -n ${m.runbook} --file ${filePath}`;
+  document.getElementById('copyBtn').disabled = blocked;
   const hintEl = document.getElementById('cmdHint');
   if (hintEl) hintEl.textContent = hint;
   const pending = Object.keys(DOC.stepInputs).filter(s => stepErrors(s) > 0).length;
@@ -1164,19 +1247,7 @@ function renderAll() { renderTabs(); renderForm(); }
 
 // ---- outstanding inputs, across every step --------------------------------
 function allIssues() {
-  const out = [];
-  Object.keys(DOC.stepInputs).forEach(sid => {
-    const rules = rulesFor(sid), data = DOC.stepInputs[sid];
-    applianceFields(sid).forEach(f => {
-      const msg = fieldError(rules[f], data[f]);
-      if (msg) out.push({ sid, f, eid: null, name: null, msg });
-    });
-    entityFields(sid).forEach(f => entitiesFor(sid).forEach(e => {
-      const msg = fieldError(rules[f], effective(sid, e.id, f));
-      if (msg) out.push({ sid, f, eid: e.id, name: e.name, msg });
-    }));
-  });
-  return out;
+  return Object.keys(DOC.stepInputs).flatMap(stepIssues);
 }
 function showIssues() {
   const list = allIssues();
@@ -1185,7 +1256,7 @@ function showIssues() {
     : 'Every input required by the schema is set.';
   document.getElementById('issueList').innerHTML = list.map((it, i) =>
     `<button type="button" class="issue" data-i="${i}">
-      <b>${esc(it.f)}</b> &mdash; ${esc(it.msg)}
+      <b>${esc(it.f || 'Step conditions')}</b> &mdash; ${esc(it.msg)}
       <div class="where">${esc(stepLabel(it.sid))}${it.name ? ' \u203A ' + esc(it.name) : ''}</div>
     </button>`).join('');
   document.querySelectorAll('#issueList .issue').forEach(b => b.addEventListener('click', () => {
@@ -1296,6 +1367,11 @@ function openPop(id) {
 // refers to; opened on demand and again right after a save.
 function showFile(savedMsg, warnSave) {
   sync();
+  const blocked = uploadBlocked();
+  if (savedMsg && blocked) {
+    savedMsg += ' Saved as a draft; fix schema validation errors before uploading.';
+    warnSave = true;
+  }
   const note = document.getElementById('savedNote');
   note.hidden = !savedMsg;
   note.classList.toggle('pop__ok', !warnSave);
@@ -1307,7 +1383,8 @@ function showFile(savedMsg, warnSave) {
   warn.hidden = !list.length;
   if (list.length) warn.textContent =
     `\u26A0 ${list.length} input${list.length === 1 ? '' : 's'} across ${steps} step${steps === 1 ? '' : 's'} ` +
-    `${list.length === 1 ? 'is' : 'are'} still missing or invalid. Uploading this file sends a partial update.`;
+    `${list.length === 1 ? 'is' : 'are'} still missing or invalid. ` +
+    (blocked ? 'Fix schema validation errors before uploading.' : 'Uploading this file sends a partial update.');
   openPop('jsonPop');
 }
 function closePop() {
@@ -1365,8 +1442,10 @@ function copyToClipboard(btn, text) {
     copyFeedback(btn, false);
   }
 }
-document.getElementById('copyBtn').addEventListener('click', e =>
-  copyToClipboard(e.currentTarget, document.getElementById('cmd').textContent));
+document.getElementById('copyBtn').addEventListener('click', e => {
+  if (uploadBlocked()) { showIssues(); return; }
+  copyToClipboard(e.currentTarget, document.getElementById('cmd').textContent);
+});
 // Edits only reach the CLI through a saved file, so guard against losing them.
 // hasEdits is measured against the download; isDirty against the last save.
 function hasEdits() { return JSON.stringify(DOC.stepInputs) !== JSON.stringify(ORIGINAL); }
