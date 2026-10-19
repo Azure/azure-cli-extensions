@@ -28,6 +28,7 @@ from azure.cli.core import get_default_cli
 
 def run_az_cli(args):
     cli = get_default_cli()
+    # stdout is the SSH transport; formatted CLI output must stay off that channel.
     cli.invoke(args, out_file=io.StringIO())
     if not cli.result:
         raise Exception("az cli failed")  # pylint: disable=broad-exception-raised
@@ -126,4 +127,5 @@ class SshConnector:  # pylint: disable=too-few-public-methods
                 await run_streams(pool)
 
 
-SshConnector().connect_ssh()
+if __name__ == "__main__":
+    SshConnector().connect_ssh()
