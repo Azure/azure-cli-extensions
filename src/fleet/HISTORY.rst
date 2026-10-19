@@ -3,6 +3,10 @@
 Release History
 ===============
 
+Pending
+++++++
+* Use the resolved ``kubelogin`` executable path when converting fleet kubeconfigs.
+
 0.1.0
 ++++++
 * Initial release.
