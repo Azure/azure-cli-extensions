@@ -11,6 +11,5 @@ from ._scheduler import (  # noqa: F401 # pylint: disable=unused-import
     AssignIdentity,
     RemoveIdentity,
     attach_scheduler,
-    restart_scheduler,
 )
 from ._retention_policy import CreatePolicy  # noqa: F401 # pylint: disable=unused-import

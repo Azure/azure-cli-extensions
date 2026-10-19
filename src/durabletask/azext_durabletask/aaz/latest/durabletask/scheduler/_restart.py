@@ -45,7 +45,7 @@ class Restart(AAZCommand):
             required=True,
         )
         _args_schema.scheduler_name = AAZStrArg(
-            options=["--scheduler-name"],
+            options=["-n", "--name", "--scheduler-name"],
             help="The name of the Scheduler",
             required=True,
             id_part="name",

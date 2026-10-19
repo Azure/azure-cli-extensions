@@ -67,6 +67,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The key source for the transparent data encryption",
             enum={"CustomerManaged": "CustomerManaged", "MicrosoftManaged": "MicrosoftManaged"},
+            default="CustomerManaged",
         )
         _args_schema.key_vault_key_uri = AAZStrArg(
             options=["--key-vault-key-uri"],
