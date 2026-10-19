@@ -736,8 +736,8 @@ def validate_prefix_patterns(from_prefix_pattern, to_prefix_pattern):
             )
 
         for compareindex in range(index + 1, len(from_prefix_pattern)):
-            if (from_prefix_pattern[index] <= from_prefix_pattern[compareindex] and to_prefix_pattern[index] >= from_prefix_pattern[compareindex]) or \
-                    (from_prefix_pattern[index] >= from_prefix_pattern[compareindex] and from_prefix_pattern[index] <= to_prefix_pattern[compareindex]):
+            if (from_prefix_pattern[index] <= from_prefix_pattern[compareindex] <= to_prefix_pattern[index]) or \
+                    (from_prefix_pattern[compareindex] <= from_prefix_pattern[index] <= to_prefix_pattern[compareindex]):
                 raise InvalidArgumentValueError(
                     "overlapping ranges are not allowed."
                 )

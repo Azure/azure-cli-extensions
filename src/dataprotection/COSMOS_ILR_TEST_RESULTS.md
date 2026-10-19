@@ -41,6 +41,11 @@ Cosmos full initialization. An identity-omitted request retains the existing
 permission helper's flag/SAMI selection; that helper does **not** insert identity
 details into the request or establish the service's default identity.
 
+Upstream style CI also required equivalent chained-comparison spelling in the
+existing Blob prefix overlap check. Its acceptance/error behavior was compared
+with untouched upstream for **225 range combinations**, all identical. No Blob
+selector or range policy was changed.
+
 ## Executed results
 
 | Layer | Result | Evidence boundary |
