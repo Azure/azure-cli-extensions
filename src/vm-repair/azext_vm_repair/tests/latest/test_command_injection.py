@@ -13,7 +13,6 @@
 import json
 import os
 import shlex
-import subprocess
 import sys
 import unittest
 from unittest import mock
@@ -26,9 +25,9 @@ from azext_vm_repair.custom import reset_nic, restore
 from azext_vm_repair.exceptions import AzCommandError
 from azext_vm_repair.repair_utils import (
     _call_az_command,
-    _quote_cmd_arg,
     _validate_tags_for_command,
-    _validate_token_for_cmd_exe,
+    _validate_command_token,
+    _validate_command_values,
 )
 
 
@@ -44,86 +43,16 @@ class _FakeProcess:
         return self._stdout, self._stderr
 
 
-# cmd.exe metacharacters that can change command parsing / cause command injection.
-CMD_METACHARACTERS = ['&', '|', '<', '>', '^', '(', ')', '&&', '||']
-
-
-@pytest.mark.parametrize('meta', CMD_METACHARACTERS)
-def test_quote_cmd_arg_wraps_metacharacters_in_quotes(meta):
-    value = 'env=ok{meta}calc'.format(meta=meta)
-    quoted = _quote_cmd_arg(value)
-    # The whole token must be wrapped in double quotes so cmd.exe treats the
-    # metacharacter as literal text rather than a shell operator.
-    assert quoted == '"env=ok{meta}calc"'.format(meta=meta)
-    assert quoted.startswith('"')
-    assert quoted.endswith('"')
-
-
-def test_quote_cmd_arg_escapes_embedded_quote():
-    # An embedded double quote is escaped per the CommandLineToArgvW convention.
-    assert _quote_cmd_arg('a"b') == '"a\\"b"'
-
-
-def test_quote_cmd_arg_doubles_trailing_backslashes():
-    # Trailing backslashes are doubled so they cannot escape the closing quote.
-    assert _quote_cmd_arg('path\\') == '"path\\\\"'
-
-
-def test_quote_cmd_arg_preserves_normal_path():
-    assert _quote_cmd_arg('C:\\Users\\Public\\file.txt') == '"C:\\Users\\Public\\file.txt"'
-
-
-def test_quote_cmd_arg_empty_string():
-    # An empty argument must still be emitted as an explicit empty quoted token.
-    assert _quote_cmd_arg('') == '""'
-
-
-def test_quote_cmd_arg_space_only():
-    assert _quote_cmd_arg(' ') == '" "'
-
-
-def test_quote_cmd_arg_value_with_spaces():
-    assert _quote_cmd_arg('hello world') == '"hello world"'
-
-
-def test_quote_cmd_arg_single_trailing_backslash_is_doubled():
-    # One trailing backslash is doubled so it cannot escape the closing quote.
-    assert _quote_cmd_arg('a\\') == '"a' + '\\' * 2 + '"'
-
-
-def test_quote_cmd_arg_multiple_trailing_backslashes_are_doubled():
-    # Two trailing backslashes become four.
-    assert _quote_cmd_arg('a\\\\') == '"a' + '\\' * 4 + '"'
-
-
-def test_quote_cmd_arg_backslash_before_quote():
-    # A backslash that precedes a quote: 2*n+1 backslashes, then the escaped quote.
-    assert _quote_cmd_arg('a\\"b') == '"a' + '\\' * 3 + '"' + 'b"'
-
-
-def test_quote_cmd_arg_internal_backslash_not_doubled():
-    # A backslash that does not precede a quote stays single.
-    assert _quote_cmd_arg('a\\b') == '"a\\b"'
-
-
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
-def test_call_az_command_windows_quotes_each_token(mock_popen):
+def test_call_az_command_windows_passes_argument_list(mock_popen):
     mock_popen.return_value = _FakeProcess(returncode=0, stdout='ok')
     payload = 'az vm create --tags env=ok&echo pwned>file.txt&rem'
     with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'):
         _call_az_command(payload)
 
-    # On Windows the command must be passed as a single string launched through
-    # 'cmd /s /c "..."'. The '/s' plus the single outer pair of quotes guarantees cmd.exe
-    # strips exactly the outer quotes and parses the remainder with every per-token quote
-    # balanced, so the last argument's closing quote is never removed.
-    command_line = mock_popen.call_args[0][0]
-    assert isinstance(command_line, str)
-    assert command_line.startswith('cmd /s /c "')
-    assert command_line.endswith('"')
-    # The metacharacter-laden tokens must each be wrapped in double quotes.
-    assert '"env=ok&echo"' in command_line
-    assert '"pwned>file.txt&rem"' in command_line
+    command_args = mock_popen.call_args[0][0]
+    assert command_args == [sys.executable, '-m', 'azure.cli', *shlex.split(payload)[1:]]
+    assert mock_popen.call_args.kwargs['shell'] is False
 
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
@@ -144,7 +73,7 @@ def test_call_az_command_posix_passes_argument_list(mock_popen):
 def test_malicious_tag_is_neutralized_end_to_end(mock_popen):
     # Reproduces the submitted exploit payload through the same two-stage pipeline used
     # by custom.create(): the tag is quoted with shlex.quote when the command string is
-    # built, then re-tokenized and cmd-quoted inside _call_az_command on Windows.
+    # built, then re-tokenized inside _call_az_command.
     mock_popen.return_value = _FakeProcess(returncode=0, stdout='ok')
     malicious_value = 'ok&echo P2ADDR>C:/Users/Public/RCE_PROOF.txt&rem'
     tag_token = shlex.quote('env={value}'.format(value=malicious_value))
@@ -153,11 +82,8 @@ def test_malicious_tag_is_neutralized_end_to_end(mock_popen):
     with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'):
         _call_az_command(command)
 
-    command_line = mock_popen.call_args[0][0]
-    assert isinstance(command_line, str)
-    # The entire tag, including '&' and '>', must survive as a single quoted token so
-    # cmd.exe never sees an unquoted command separator or redirection operator.
-    assert '"env={value}"'.format(value=malicious_value) in command_line
+    command_args = mock_popen.call_args[0][0]
+    assert command_args[-1] == 'env=' + malicious_value
 
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
@@ -167,8 +93,7 @@ def test_call_az_command_rejects_non_az_command(mock_popen):
     mock_popen.assert_not_called()
 
 
-# Strings that must survive a real cmd.exe parse as a single literal argument without
-# triggering command execution. Includes cmd.exe metacharacters and POSIX-shell payloads.
+# Values must reach a real child process literally through the production helper.
 ROUNDTRIP_PAYLOADS = [
     'safe',
     'a&b',
@@ -185,56 +110,68 @@ ROUNDTRIP_PAYLOADS = [
     'a;b',
     '$(whoami)',
     '`whoami`',
+    '',
+    'C:\\path with spaces\\',
+    '%VM_REPAIR_EXPANSION_TEST%',
+    '!VM_REPAIR_EXPANSION_TEST!',
+    'https://account.blob.core.windows.net/vhds/os%20disk%25copy.vhd?sig=test%2Bvalue&sp=r',
+    'https%3A%2F%2Fexample.com%2Ftest',
+    'unicode-\u00e9',
 ]
 
 
-@pytest.mark.skipif(os.name != 'nt', reason='cmd.exe quoting is Windows-specific')
+@pytest.fixture
+def argv_receiver(tmp_path, monkeypatch):
+    package = tmp_path / 'azure' / 'cli'
+    package.mkdir(parents=True)
+    (package.parent / '__init__.py').write_text('', encoding='utf-8')
+    (package / '__init__.py').write_text('', encoding='utf-8')
+    (package / '__main__.py').write_text(
+        'import json, sys\nprint(json.dumps(sys.argv[1:]))\n', encoding='utf-8')
+    monkeypatch.setenv('PYTHONPATH', str(tmp_path))
+    monkeypatch.setenv('VM_REPAIR_EXPANSION_TEST', 'must-not-expand')
+
+
+@pytest.mark.skipif(os.name != 'nt', reason='interpreter-based launch is Windows-specific')
 @pytest.mark.parametrize('payload', ROUNDTRIP_PAYLOADS)
-def test_quote_cmd_arg_roundtrip_through_real_cmd(payload):
-    # Strongest guard: build the SAME 'cmd /s /c "..."' string the production Windows path
-    # builds and execute it through a real cmd.exe, using a tiny python program as the
-    # target that echoes argv[1]. If any metacharacter were interpreted by cmd.exe, the
-    # payload would not be returned verbatim (or an injected command would run), so an
-    # exact-match stdout proves the value is passed literally and safely.
-    target = 'import sys; sys.stdout.write(sys.argv[1])'
-    tokens = [sys.executable, '-c', target, payload]
-    command_line = 'cmd /s /c "' + ' '.join(_quote_cmd_arg(t) for t in tokens) + '"'
-    completed = subprocess.run(command_line, capture_output=True, text=True)
-    assert completed.stdout == payload
-    assert completed.returncode == 0
+def test_argument_roundtrip_through_real_process(payload, argv_receiver):
+    command = 'az vm update --set ' + shlex.quote('storageProfile.osDisk.vhd.uri=' + payload)
+    _validate_command_values(command, field_name='storageProfile.osDisk.vhd.uri')
+    output = _call_az_command(command)
+    assert json.loads(output) == ['vm', 'update', '--set', 'storageProfile.osDisk.vhd.uri=' + payload]
 
 
-@pytest.mark.skipif(os.name != 'nt', reason='cmd.exe quoting is Windows-specific')
-def test_no_command_injection_through_real_cmd(tmp_path):
-    # End-to-end injection probe: the payload tries to write a marker file via '&echo'.
-    # If cmd.exe interpreted the '&', the marker would be created. The production
-    # construction must keep it inside quotes so the marker is never written.
+@pytest.mark.skipif(os.name != 'nt', reason='interpreter-based launch is Windows-specific')
+def test_no_command_injection_through_real_process(tmp_path, argv_receiver):
     marker = tmp_path / 'INJECTED.txt'
-    payload = 'safe&echo boom>"{marker}"&rem'.format(marker=marker)
-    target = 'import sys; sys.stdout.write(sys.argv[1])'
-    tokens = [sys.executable, '-c', target, payload]
-    command_line = 'cmd /s /c "' + ' '.join(_quote_cmd_arg(t) for t in tokens) + '"'
-    completed = subprocess.run(command_line, capture_output=True, text=True)
+    payload = 'safe&echo boom>{marker}&rem'.format(marker=marker)
+    output = _call_az_command('az vm create --tags ' + shlex.quote('env=' + payload))
     assert not marker.exists(), 'command injection occurred: marker file was created'
-    assert completed.stdout == payload
-    assert completed.returncode == 0
+    assert json.loads(output)[-1] == 'env=' + payload
+
+
+@pytest.mark.skipif(os.name != 'nt', reason='interpreter-based launch is Windows-specific')
+def test_expansion_like_tags_reach_process_literally(argv_receiver):
+    tags = {'owner%VM_REPAIR_EXPANSION_TEST%': 'R&D !VM_REPAIR_EXPANSION_TEST! 100%'}
+    _validate_tags_for_command(tags)
+    command = 'az vm create --tags ' + ' '.join(
+        shlex.quote('{}={}'.format(key, value)) for key, value in tags.items())
+
+    assert json.loads(_call_az_command(command)) == [
+        'vm', 'create', '--tags',
+        'owner%VM_REPAIR_EXPANSION_TEST%=R&D !VM_REPAIR_EXPANSION_TEST! 100%',
+    ]
 
 
 # ---------------------------------------------------------------------------
 # Tag validation (_validate_tags_for_command)
 #
-# Tag keys/values reach the command string from an untrusted source (a source VM
-# tag copied via --copy-tags). Characters that cannot be safely carried through a
-# Windows 'cmd /c' line must be rejected at the boundary. '%' and '!' are especially
-# important: cmd.exe expands them as environment / delayed-expansion variables even
-# inside double quotes, and '%' cannot be reliably escaped. See MSRC 115198.
+# Preserve quote/control-character checks while allowing literal '%' and '!'.
 # ---------------------------------------------------------------------------
 
 # Characters that must be rejected in either a tag key or a tag value.
 UNSAFE_TAG_CHARS = [
-    '"',        # breaks the shlex / cmd.exe quoting
-    '%',        # cmd.exe environment-variable expansion (e.g. %USERNAME%)
-    '!',        # cmd.exe delayed expansion when 'cmd /v:on' is enabled
+    '"',
     '\n',       # control character
     '\r',       # control character
     '\x00',     # NUL
@@ -258,15 +195,6 @@ def test_validate_tags_rejects_unsafe_key(bad_char):
         _validate_tags_for_command({'key{bad}'.format(bad=bad_char): 'value'})
 
 
-def test_validate_tags_rejects_percent_expansion_payload():
-    # The concrete information-leak vector: %USERNAME% would be expanded by cmd.exe to the
-    # operator's local username even inside double quotes, so it must be rejected.
-    with pytest.raises(InvalidArgumentValueError):
-        _validate_tags_for_command({'owner': 'env=%USERNAME%'})
-
-
-# Shell metacharacters that are NOT expanded/interpreted once wrapped in double quotes by
-# _quote_cmd_arg. These must be preserved (passed through literally), not rejected.
 ALLOWED_TAG_VALUES = [
     'plain',
     'owner=R&D',
@@ -280,14 +208,14 @@ ALLOWED_TAG_VALUES = [
     '$(whoami)',
     '`whoami`',
     'space separated value',
+    '%USERNAME%',
+    '!USERNAME!',
+    '100%',
 ]
 
 
 @pytest.mark.parametrize('good_value', ALLOWED_TAG_VALUES)
 def test_validate_tags_allows_safe_values(good_value):
-    # Must not raise: these characters survive as literal text through the two-stage
-    # shlex.quote + _quote_cmd_arg pipeline, so rejecting them would be an unnecessary
-    # regression in functionality.
     _validate_tags_for_command({'tag': good_value})
 
 
@@ -298,10 +226,10 @@ def test_validate_tags_empty_dict_is_allowed():
 
 def test_validate_tags_error_message_names_offending_tag():
     with pytest.raises(InvalidArgumentValueError) as exc_info:
-        _validate_tags_for_command({'owner': 'bad%value'})
+        _validate_tags_for_command({'owner': 'bad"value'})
     message = str(exc_info.value)
     assert 'owner' in message
-    assert 'bad%value' in message
+    assert 'bad"value' in message
 
 
 # ---------------------------------------------------------------------------
@@ -313,17 +241,8 @@ def test_validate_tags_error_message_names_offending_tag():
 # interpolated into custom.py's restore():
 #   az vm update --set storageProfile.osDisk.vhd.uri="{uri}"
 #
-# Root cause 1: a backslash-quote in the value survives _quote_cmd_arg's re-quoting,
-# but cmd.exe's outer 'cmd /s /c "..."' parser doesn't honor backslash-escaped
-# quotes, so it closes the quoted region early and runs whatever follows as live
-# cmd.exe syntax.
-# Root cause 2 (found on review): cmd.exe also expands '%VAR%'/'!VAR!' while
-# parsing, which can synthesize a '"' at runtime from a value with none, e.g.
-# '%CMDCMDLINE:~10,1%' (offset 10 = length of the constant 'cmd /s /c "' prefix).
-#
-# Fix: _validate_token_for_cmd_exe rejects '"', '%', '!', and control chars on
-# every token in _call_az_command's Windows branch - covers all call sites, not
-# just osDisk.vhd.uri.
+# The shell-free launcher prevents environment expansion and shell execution.
+# Existing quote/control-character rejection remains in place.
 # ---------------------------------------------------------------------------
 
 # Malicious osDisk.vhd.uri: backslash-quote closes cmd.exe's quoted region early.
@@ -336,18 +255,22 @@ EXPANSION_DISK_URI = r'X%CMDCMDLINE:~10,1% & calc.exe & rem'
 RESTORE_COMMAND_TEMPLATE = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"'
 
 
-@pytest.mark.parametrize('malicious_disk_uri', [MALICIOUS_DISK_URI, EXPANSION_DISK_URI])
-def test_malicious_osdisk_uri_token_is_rejected(malicious_disk_uri):
-    """
-    Covers both the literal-quote and expansion-based exploits. Token must be
-    extracted via shlex.split (same as _call_az_command), not raw string
-    splitting, or the expansion case would accidentally retest quote-rejection.
-    """
-    command = RESTORE_COMMAND_TEMPLATE.format(g='rg', n='vm', uri=malicious_disk_uri)
+def test_quoted_osdisk_uri_token_is_rejected():
+    command = RESTORE_COMMAND_TEMPLATE.format(g='rg', n='vm', uri=MALICIOUS_DISK_URI)
     malicious_token = shlex.split(command)[-1]
 
     with pytest.raises(InvalidArgumentValueError):
-        _validate_token_for_cmd_exe(malicious_token)
+        _validate_command_token(malicious_token)
+
+
+@pytest.mark.skipif(os.name != 'nt', reason='interpreter-based launch is Windows-specific')
+def test_expansion_osdisk_uri_is_literal(tmp_path, argv_receiver):
+    marker = tmp_path / 'EXPANSION_INJECTED.txt'
+    uri = EXPANSION_DISK_URI.replace('calc.exe', 'echo PWNED>{}'.format(marker))
+    command = 'az vm update --set ' + shlex.quote('storageProfile.osDisk.vhd.uri=' + uri)
+    _validate_command_values(command)
+    assert json.loads(_call_az_command(command))[-1] == 'storageProfile.osDisk.vhd.uri=' + uri
+    assert not marker.exists()
 
 
 def test_rejection_error_does_not_leak_the_raw_token():
@@ -355,19 +278,18 @@ def test_rejection_error_does_not_leak_the_raw_token():
     secret_token = 'repair-******" & calc.exe & rem'
 
     with pytest.raises(InvalidArgumentValueError) as exc_info:
-        _validate_token_for_cmd_exe(secret_token)
+        _validate_command_token(secret_token)
 
     assert secret_token not in str(exc_info.value)
 
 
-@pytest.mark.parametrize('malicious_disk_uri', [MALICIOUS_DISK_URI, EXPANSION_DISK_URI])
-@pytest.mark.skipif(os.name != 'nt', reason='cmd.exe quoting is Windows-specific')
-def test_osdisk_uri_injection_is_blocked_end_to_end(tmp_path, monkeypatch, malicious_disk_uri):
-    """End-to-end through the real _call_az_command: must raise before cmd.exe runs, no marker file."""
+@pytest.mark.skipif(os.name != 'nt', reason='Windows value validation')
+def test_osdisk_uri_injection_is_blocked_end_to_end(tmp_path, monkeypatch):
+    """A literal quote is still rejected before launching a process."""
     monkeypatch.chdir(tmp_path)
     marker = tmp_path / 'test_osdisk_uri_injection.txt'
     command = RESTORE_COMMAND_TEMPLATE.format(
-        g='rg', n='vm', uri=malicious_disk_uri.replace('calc.exe', 'echo PWNED>{} & rem'.format(marker.name)))
+        g='rg', n='vm', uri=MALICIOUS_DISK_URI.replace('calc.exe', 'echo PWNED>{} & rem'.format(marker.name)))
 
     with pytest.raises((InvalidArgumentValueError, AzCommandError)) as exc_info:
         _call_az_command(command)
@@ -379,10 +301,8 @@ def test_osdisk_uri_injection_is_blocked_end_to_end(tmp_path, monkeypatch, malic
 
 def test_unsafe_secure_param_is_rejected_without_leaking_it(monkeypatch):
     """
-    Regression for a masking-order bug: _call_az_command used to validate the
-    secure_params-MASKED command string, while the real command used the
-    unmasked tokens built before masking. An unsafe secret (e.g. a password with
-    '%') validated as the harmless placeholder and still reached cmd.exe.
+    Validate original tokens, not the masked display string, so a secret
+    containing a rejected control character cannot bypass validation.
     """
     from azext_vm_repair import repair_utils
 
@@ -392,13 +312,30 @@ def test_unsafe_secure_param_is_rejected_without_leaking_it(monkeypatch):
     monkeypatch.setattr(repair_utils.os, 'name', 'nt')
     monkeypatch.setattr(repair_utils.subprocess, 'Popen', _fail_if_called)
 
-    unsafe_password = 'hunter2%CMDCMDLINE:~10,1% & calc.exe & rem'
+    unsafe_password = 'hunter2\x00'
     command = 'az vm repair create -g rg -n vm --repair-password "{pwd}"'.format(pwd=unsafe_password)
 
     with pytest.raises(InvalidArgumentValueError) as exc_info:
         _call_az_command(command, secure_params=[unsafe_password])
 
     assert 'hunter2' not in str(exc_info.value)
+
+
+@mock.patch('azext_vm_repair.repair_utils.logger')
+@mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
+def test_expansion_like_secret_is_passed_unmasked_but_not_logged(mock_popen, mock_logger):
+    secret = 'unit-test-%VM_REPAIR_EXPANSION_TEST%-!value!'
+    mock_popen.return_value = _FakeProcess(returncode=1, stderr='failed using ' + secret)
+    command = 'az vm create --admin-password ' + shlex.quote(secret)
+
+    with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'):
+        with pytest.raises(AzCommandError) as raised:
+            _call_az_command(command, secure_params=[secret])
+
+    assert mock_popen.call_args[0][0][-1] == secret
+    assert secret not in str(mock_logger.debug.call_args_list)
+    assert secret not in str(raised.value)
+    assert '********' in str(raised.value)
 
 
 def test_osdisk_uri_injection_is_blocked_before_any_process_is_spawned(monkeypatch):
@@ -428,9 +365,7 @@ def test_osdisk_uri_injection_is_blocked_before_any_process_is_spawned(monkeypat
 
 RESTORE_REPAIR_VM_ID = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/repair-rg/providers/Microsoft.Compute/virtualMachines/repair-vm'
 
-# Contains no literal double quote, but '%' alone is enough to be rejected by the unified
-# cmd.exe guard (see repair_utils._is_unsafe_cmd_exe_value).
-UNSAFE_ATTACH_VALUE = 'evil%CMDCMDLINE:~10,1% & calc.exe & rem'
+UNSAFE_ATTACH_VALUE = 'invalid\x00value'
 
 
 class FakeCommandHelper:
@@ -500,11 +435,11 @@ class UnmanagedDiskAttachValidationTest(unittest.TestCase):
             return self._repair_vm()
         return self._source_vm()
 
-    def _restore(self):
+    def _restore(self, invoke=None):
         with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
                 mock.patch('azext_vm_repair.custom.get_vm_by_aaz', side_effect=self._get_vm_by_aaz_side_effect), \
                 mock.patch('azext_vm_repair.custom._uses_managed_disk', return_value=False), \
-                mock.patch('azext_vm_repair.custom._call_az_command') as mock_az, \
+                mock.patch('azext_vm_repair.custom._call_az_command', side_effect=invoke) as mock_az, \
                 mock.patch('azext_vm_repair.custom._clean_up_resources') as mock_clean_up:
             result = restore(mock.MagicMock(), 'source-vm', 'source-rg', disk_name='fixed-disk', repair_vm_id=RESTORE_REPAIR_VM_ID)
         return result, mock_az, mock_clean_up
@@ -515,6 +450,22 @@ class UnmanagedDiskAttachValidationTest(unittest.TestCase):
         self.assertEqual(result['status'], 'ERROR')
         mock_az.assert_not_called()
         mock_clean_up.assert_not_called()
+
+    def test_percent_encoded_uri_is_preserved_through_restore(self):
+        uri = 'https://acct.blob.core.windows.net/vhds/os%20disk%25copy.vhd?sig=test%2Bvalue&sp=r'
+        repair_vm = {'storageProfile': {'dataDisks': [{'name': 'fixed-disk', 'vhd': {'uri': uri}}]}}
+        with mock.patch.object(self, '_repair_vm', return_value=repair_vm), \
+                mock.patch('azext_vm_repair.repair_utils.subprocess.Popen',
+                           return_value=_FakeProcess()) as mock_popen:
+            result, mock_az, _ = self._restore(invoke=_call_az_command)
+
+        self.assertEqual(result['status'], 'SUCCESS')
+        self.assertEqual(mock_az.call_count, 2)
+        self.assertIn('detach', mock_popen.call_args_list[0][0][0])
+        self.assertEqual(mock_popen.call_args_list[1][0][0], [
+            sys.executable, '-m', 'azure.cli', 'vm', 'update',
+            '-g', 'source-rg', '-n', 'source-vm', '--set', 'storageProfile.osDisk.vhd.uri=' + uri,
+        ])
 
 
 # ---------------------------------------------------------------------------
@@ -547,7 +498,7 @@ def test_quote_injection_uri_is_rejected():
     token = shlex.split(command)[-1]
 
     with pytest.raises(InvalidArgumentValueError):
-        _validate_token_for_cmd_exe(token)
+        _validate_command_token(token)
 
 
 @mock.patch('azext_vm_repair.custom.command_helper', FakeCommandHelper)
@@ -580,15 +531,15 @@ class UnmanagedDiskQuoteInjectionTest(unittest.TestCase):
 
 def test_rejection_error_names_the_field_when_provided():
     with pytest.raises(InvalidArgumentValueError) as exc_info:
-        _validate_token_for_cmd_exe('bad%value', field_name='storageProfile.osDisk.vhd.uri')
+        _validate_command_token('bad"value', field_name='storageProfile.osDisk.vhd.uri')
 
     assert 'storageProfile.osDisk.vhd.uri' in str(exc_info.value)
-    assert 'bad%value' not in str(exc_info.value)
+    assert 'bad"value' not in str(exc_info.value)
 
 
 def test_rejection_error_has_no_field_name_by_default():
     with pytest.raises(InvalidArgumentValueError) as exc_info:
-        _validate_token_for_cmd_exe('bad%value')
+        _validate_command_token('bad"value')
 
     assert 'from' not in str(exc_info.value)
 
@@ -599,7 +550,7 @@ def test_rejection_error_has_no_field_name_by_default():
 # the NIC was already swapped, with no way back.
 # ---------------------------------------------------------------------------
 
-UNSAFE_ASG_NAME = 'asg%CMDCMDLINE:~10,1%'
+UNSAFE_ASG_NAME = 'asg\x00'
 
 
 @mock.patch('azext_vm_repair.custom.command_helper', FakeCommandHelper)

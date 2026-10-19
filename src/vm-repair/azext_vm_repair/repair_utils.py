@@ -5,6 +5,7 @@
 # pylint: disable=line-too-long, deprecated-method, global-statement
 # from logging import Logger  # , log
 import subprocess
+import sys
 import shlex
 import os
 import re
@@ -66,80 +67,41 @@ def _is_gen2(vm):
     return 1
 
 
-def _quote_cmd_arg(arg):
-    """
-    Quote a single argument for safe use on a Windows 'cmd /c' command line.
-
-    The argument is always wrapped in double quotes so that cmd.exe treats shell
-    metacharacters such as & | < > ( ) ^ as literal text instead of operators.
-    Embedded double quotes and any backslashes that precede them are escaped using
-    the Windows CommandLineToArgvW convention so the receiving program parses the
-    original value. This prevents command injection from untrusted values (for
-    example source VM tags) that are interpolated into the command string.
-    See MSRC 115198 / VULN-185362.
-    """
-    result = '"'
-    backslash_count = 0
-    for char in arg:
-        if char == '\\':
-            backslash_count += 1
-        elif char == '"':
-            # Double the backslashes that precede the quote, then escape the quote.
-            result += '\\' * (backslash_count * 2 + 1)
-            result += '"'
-            backslash_count = 0
-        else:
-            result += '\\' * backslash_count
-            result += char
-            backslash_count = 0
-    # Double any trailing backslashes so they do not escape the closing quote.
-    result += '\\' * (backslash_count * 2)
-    result += '"'
-    return result
-
-
-# '"', '%', '!', and control characters are never safe in a cmd.exe token: quotes can't be
-# escaped on a 'cmd /c' line, and '%'/'!' trigger cmd.exe variable expansion that can
-# synthesize a quote at runtime even from a value with none.
-def _is_unsafe_cmd_exe_value(value):
+def _is_unsafe_command_value(value):
     return (
         '"' in value
-        or '%' in value
-        or '!' in value
         or any(ord(ch) < 32 or ord(ch) == 127 for ch in value)
     )
 
 
-def _validate_token_for_cmd_exe(token, field_name=None):
+def _validate_command_token(token, field_name=None):
     """
-    Reject a command-line token that is unsafe on Windows (see _is_unsafe_cmd_exe_value).
-    The token itself is never included in the error, since it may carry a secret; an
-    optional field_name names the source property instead, for an actionable message.
+    Preserve the existing quote/control-character restriction on Windows command values.
+    Omit the token from errors because it may carry a secret.
     """
-    if _is_unsafe_cmd_exe_value(token):
+    if _is_unsafe_command_value(token):
         where = f' (from {field_name})' if field_name else ''
         raise InvalidArgumentValueError(
-            f'A value being passed to a nested az command{where} contains a double quote, '
-            'percent sign, exclamation mark, or control character, which cannot be safely '
-            'used on Windows. The value has been omitted because it may be sensitive. '
+            f'A value being passed to a nested az command{where} contains a double quote '
+            'or control character, which is not supported by this command on Windows. '
+            'The value has been omitted because it may be sensitive. '
             'Remove or rename the offending value on the affected resource and retry.')
 
 
 def _validate_tags_for_command(merged_tags):
     """
-    Reject tag keys/values unsafe to interpolate into the 'az' command string (see
-    _is_unsafe_cmd_exe_value). Raises InvalidArgumentValueError on the first offender.
+    Preserve the existing quote/control-character restriction on tag keys and values.
     """
     for tag_key, tag_value in merged_tags.items():
         for tag_field in (str(tag_key), str(tag_value)):
-            if _is_unsafe_cmd_exe_value(tag_field):
+            if _is_unsafe_command_value(tag_field):
                 raise InvalidArgumentValueError(
-                    f'Tag keys and values must not contain double quotes, percent signs, '
-                    f'exclamation marks, or control characters. Offending tag: {tag_key}={tag_value}'
+                    f'Tag keys and values must not contain double quotes or control characters. '
+                    f'Offending tag: {tag_key}={tag_value}'
                 )
 
 
-def _validate_command_for_cmd_exe(command_string, field_name=None):
+def _validate_command_values(command_string, field_name=None):
     """
     Pre-flight-check command_string (tokenized the same way _call_az_command will) without
     running anything, on Windows only. Lets a caller validate a later, hard-to-reverse step
@@ -148,7 +110,7 @@ def _validate_command_for_cmd_exe(command_string, field_name=None):
     if os.name != 'nt':
         return
     for token in shlex.split(command_string)[1:]:
-        _validate_token_for_cmd_exe(token, field_name=field_name)
+        _validate_command_token(token, field_name=field_name)
 
 
 def _call_az_command(command_string, run_async=False, secure_params=None):
@@ -171,36 +133,18 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
                 command_string = command_string.replace(param, '********')
     logger.debug("Calling: %s", command_string)
 
-    # On Windows, 'az' resolves to a batch file, so the call must go through cmd.exe.
-    # Handing subprocess a token list isn't safe: list2cmdline only quotes tokens with
-    # whitespace, so a metacharacter like '&' in an untrusted value (e.g. a tag) would
-    # reach cmd.exe unquoted and be parsed as a command separator. Build the command line
-    # explicitly instead, quoting every argument so metacharacters stay literal.
-    #
-    # 'az' itself must stay unquoted so '%~dp0' in az.cmd still expands to the launcher
-    # directory (quoting it breaks the bundled python.exe lookup). It's validated to be
-    # exactly 'az' above, so it carries no untrusted input.
-    #
-    # The whole line is wrapped in one outer quoted pair and run via 'cmd /s /c "..."':
-    # '/s' makes cmd.exe strip only those outer quotes instead of the first/last quote on
-    # the line, keeping every per-token quote balanced. See MSRC 115198 / VULN-185362.
-    #
-    # Every token is rejected outright if unsafe (quote/%/!/control char) - see
-    # _validate_token_for_cmd_exe and ICM-558. Validation runs against 'tokenized_command'
-    # (built before secure_params masking), not a re-split 'command_string': re-validating
-    # the masked copy would let an unsafe secret (e.g. a password with '%') pass as the
-    # harmless placeholder while the real, unmasked token still reached cmd.exe below.
+    # Bypass az.cmd on Windows so cmd.exe cannot expand '%'/'!' or interpret shell
+    # metacharacters. Use the running CLI's interpreter rather than Python from PATH.
     windows_os_name = 'nt'
     if os.name == windows_os_name:
         for token in tokenized_command[1:]:
-            _validate_token_for_cmd_exe(token)
-        quoted_arguments = ' '.join(_quote_cmd_arg(token) for token in tokenized_command[1:])
-        quoted_command = ' '.join(part for part in (tokenized_command[0], quoted_arguments) if part)
-        command_to_run = 'cmd /s /c "' + quoted_command + '"'
+            _validate_command_token(token)
+        command_to_run = [sys.executable, '-m', 'azure.cli', *tokenized_command[1:]]
     else:
         command_to_run = tokenized_command
 
-    process = subprocess.Popen(command_to_run, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    process = subprocess.Popen(command_to_run, shell=False, stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE, universal_newlines=True)
 
     # Wait for process to terminate and fetch stdout and stderror
     if not run_async:

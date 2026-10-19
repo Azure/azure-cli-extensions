@@ -3,24 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# Regression tests for nested 'az' invocation from the vm-repair extension.
-#
-# Two defects are covered:
-#
-# 1. Command construction. The Windows path wraps the call in 'cmd /s /c "..."'. Quoting the
-#    'az' token itself makes cmd.exe treat it as a literal path instead of a PATH search, so
-#    '%~dp0' inside az.cmd stops resolving to the launcher directory. az.cmd then cannot find
-#    its bundled python.exe, prints 'Failed to load python executable.' to stdout and exits 1,
-#    which broke every nested az call (create / run / restore) on Windows MSI installs.
-#
-# 2. Error surfacing. The failure above writes its diagnostic to stdout and leaves stderr
-#    empty, and AzCommandError was raised with that empty stderr. Users saw a blank error and
-#    telemetry recorded an empty error_message, making the failure undiagnosable.
+# Regression tests for shell-free nested Azure CLI invocation and error reporting.
 
 import json
 import os
-import shutil
-import subprocess
+import sys
 from unittest import mock
 
 import pytest
@@ -52,54 +39,29 @@ def _windows_command_line(mock_popen, command):
 # ---------------------------------------------------------------------------
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
-def test_windows_executable_token_is_not_quoted(mock_popen):
-    # Core regression: 'az' must reach cmd.exe unquoted so the PATH search finds az.cmd and
-    # '%~dp0' resolves to the launcher directory.
+def test_windows_uses_current_cli_interpreter_without_shell(mock_popen):
     mock_popen.return_value = _FakeProcess(returncode=0, stdout='ok')
     command_line = _windows_command_line(mock_popen, 'az vm show -g rg -n vm')
 
-    assert command_line.startswith('cmd /s /c "az ')
-    assert '"az"' not in command_line
+    assert command_line == [sys.executable, '-m', 'azure.cli', 'vm', 'show', '-g', 'rg', '-n', 'vm']
+    assert mock_popen.call_args.kwargs['shell'] is False
 
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
-def test_windows_arguments_remain_quoted(mock_popen):
-    # The injection protection must be preserved: every argument stays individually quoted.
-    mock_popen.return_value = _FakeProcess(returncode=0, stdout='ok')
-    command_line = _windows_command_line(mock_popen, 'az vm show -g rg -n vm')
-
-    for argument in ('vm', 'show', '-g', 'rg', '-n'):
-        assert '"{0}"'.format(argument) in command_line
-
-
-@mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
-def test_windows_command_line_stays_balanced_for_cmd_s(mock_popen):
-    # 'cmd /s /c' strips exactly the first and last quote, so the line must start and end
-    # with one, leaving every per-argument quote balanced.
-    mock_popen.return_value = _FakeProcess(returncode=0, stdout='ok')
-    command_line = _windows_command_line(mock_popen, 'az vm show -g rg -n vm')
-
-    assert command_line.startswith('cmd /s /c "')
-    assert command_line.endswith('"')
-    assert command_line.count('"') % 2 == 0
-
-
-@mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
-def test_windows_command_without_arguments_has_no_trailing_space(mock_popen):
+def test_windows_command_without_arguments(mock_popen):
     mock_popen.return_value = _FakeProcess(returncode=0, stdout='ok')
     command_line = _windows_command_line(mock_popen, 'az')
 
-    assert command_line == 'cmd /s /c "az"'
+    assert command_line == [sys.executable, '-m', 'azure.cli']
 
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
 def test_windows_metacharacters_in_arguments_are_still_neutralized(mock_popen):
-    # Leaving 'az' unquoted must not weaken MSRC 115198 hardening for untrusted values.
     mock_popen.return_value = _FakeProcess(returncode=0, stdout='ok')
     command_line = _windows_command_line(
         mock_popen, 'az vm create --tags "env=ok&echo pwned>file.txt&rem"')
 
-    assert '"env=ok&echo pwned>file.txt&rem"' in command_line
+    assert command_line[-1] == 'env=ok&echo pwned>file.txt&rem'
 
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
@@ -185,44 +147,23 @@ def test_non_az_command_is_still_rejected(mock_popen):
 # 3. Real execution proofs (Windows only)
 # ---------------------------------------------------------------------------
 
-@pytest.mark.skipif(os.name != 'nt', reason='cmd.exe launcher behavior is Windows-specific')
-def test_real_cmd_resolves_unquoted_program_but_not_quoted_program(tmp_path):
-    # Demonstrates the mechanism against a real cmd.exe using a batch file that mirrors how
-    # az.cmd locates its interpreter through '%~dp0'. Quoting the program name breaks that
-    # resolution; leaving it unquoted keeps it working.
-    batch_file = tmp_path / 'fakeaz.cmd'
-    batch_file.write_bytes(
-        b'@echo off\r\n'
-        b'IF EXIST "%~dp0\\marker.txt" (echo RESOLVED) ELSE (echo NOT_RESOLVED)\r\n')
-    (tmp_path / 'marker.txt').write_text('present', encoding='utf-8')
-
-    environment = dict(os.environ)
-    environment['PATH'] = str(tmp_path) + os.pathsep + environment.get('PATH', '')
-
-    unquoted = subprocess.run('cmd /s /c "fakeaz"', capture_output=True, text=True,
-                              env=environment, cwd=os.path.expanduser('~'))
-    assert 'RESOLVED' in unquoted.stdout
-
-    quoted = subprocess.run('cmd /s /c ""fakeaz""', capture_output=True, text=True,
-                            env=environment, cwd=os.path.expanduser('~'))
-    assert 'NOT_RESOLVED' in quoted.stdout, 'quoting the program name must break %~dp0 resolution'
-
-
-@pytest.mark.skipif(os.name != 'nt' or shutil.which('az') is None,
-                    reason='requires the Azure CLI on PATH on Windows')
+@pytest.mark.skipif(os.name != 'nt', reason='interpreter-based launch is Windows-specific')
 def test_real_nested_az_call_succeeds():
-    # End-to-end proof through the production code path: a real nested az call must succeed
-    # and return parsable JSON. This fails on the unpatched code with an empty AzCommandError.
     output = _call_az_command('az version -o json')
 
     assert json.loads(output).get('azure-cli')
 
 
-@pytest.mark.skipif(os.name != 'nt' or shutil.which('az') is None,
-                    reason='requires the Azure CLI on PATH on Windows')
+@pytest.mark.skipif(os.name != 'nt', reason='interpreter-based launch is Windows-specific')
 def test_real_failing_az_call_reports_a_message():
     # A genuinely failing az command must produce a non-empty, actionable error.
     with pytest.raises(AzCommandError) as raised:
-        _call_az_command('az vm show -g {0} -n {0}'.format('vmrepair-nonexistent-rg-000'))
+        _call_az_command('az version --vm-repair-invalid-option')
 
     assert str(raised.value).strip()
+
+
+@mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
+def test_async_command_does_not_wait(mock_popen):
+    assert _call_az_command('az version', run_async=True) is None
+    mock_popen.return_value.communicate.assert_not_called()

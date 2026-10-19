@@ -23,7 +23,7 @@ from .command_helper_class import command_helper
 from .repair_utils import (
     _uses_managed_disk,
     _call_az_command,
-    _validate_command_for_cmd_exe,
+    _validate_command_values,
     _clean_up_resources,
     _fetch_compatible_sku,
     _fetch_source_disk_controller_type,
@@ -242,16 +242,14 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
         # Validate tag keys and values before they are placed into the command string.
         # Tag values can originate from the source VM (via --copy-tags) and are therefore
-        # untrusted. _validate_tags_for_command rejects double quotes, control characters and
-        # the cmd.exe expansion characters '%' and '!' (which cannot be safely escaped on a
-        # 'cmd /c' command line); every other character, including shell metacharacters such
-        # as & | < >, is preserved and passed through literally. See MSRC 115198 / VULN-185362.
+        # untrusted. Preserve the double-quote/control-character restriction; '%' and '!'
+        # are passed literally now that nested commands no longer use cmd.exe.
         _validate_tags_for_command(merged_tags)
 
         # Convert to CLI string for passing to az cli later.
         # Each key=value token is quoted with shlex.quote so values containing spaces or
         # shell metacharacters survive re-tokenization in _call_az_command as a single
-        # argument. Combined with the Windows cmd.exe quoting in _call_az_command, this
+        # argument. Combined with shell-free execution in _call_az_command, this
         # prevents command injection through attacker-controlled source VM tags.
         # See MSRC 115198 / VULN-185362.
         tag_string = ' '.join(shlex.quote(f'{tag_key}={tag_value}') for tag_key, tag_value in merged_tags.items())
@@ -646,7 +644,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
                 # Validate before detaching, so a rejected attach command can't strand the
                 # disk detached from the repair VM.
-                _validate_command_for_cmd_exe(attach_fixed_command, field_name='source disk ID')
+                _validate_command_values(attach_fixed_command, field_name='source disk ID')
 
                 # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
                 logger.info('Detaching repaired data disk from repair VM...')
@@ -685,7 +683,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
                 # Validate before detaching, so a rejected attach command can't strand the
                 # disk detached from the repair VM.
-                _validate_command_for_cmd_exe(attach_unmanaged_command, field_name='storageProfile.osDisk.vhd.uri')
+                _validate_command_values(attach_unmanaged_command, field_name='storageProfile.osDisk.vhd.uri')
 
                 # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
                 logger.info('Detaching repaired data disk from repair VM...')
@@ -1046,7 +1044,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             else:
                 revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
                     .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address)
-        _validate_command_for_cmd_exe(
+        _validate_command_values(
             revert_ip_command, field_name='network interface configuration (IP address or application security group name)')
 
         # 3) Update private IP address to another in subnet. This will invoke and wait for a VM restart.
