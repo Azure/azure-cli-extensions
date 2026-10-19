@@ -8139,32 +8139,30 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         return mc
 
     def update_kms_pmk_cmk(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update security profile KubernetesResourceObjectEncryptionProfile and AzureKeyVaultKms for
-        the ManagedCluster object.
-
-        This duplicates part of the base class implementation on purpose: infrastructure encryption
-        (PMK) is not yet available in released azure-cli core, so the preview extension must keep
-        handling it here. The Azure Key Vault KMS (CMK) branches are kept aligned with the base
-        implementation so that both code paths produce the same result.
+        """Update security profile KubernetesResourceObjectEncryptionProfile for the ManagedCluster object.
 
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
 
         kms_infrastructure_encryption = self.context.get_kms_infrastructure_encryption()
-        if kms_infrastructure_encryption:
-            if mc.security_profile is None:
-                mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
 
-            # Set or update the kubernetes resource object encryption profile
-            if mc.security_profile.kubernetes_resource_object_encryption_profile is None:
-                mc.security_profile.kubernetes_resource_object_encryption_profile = (
-                    self.models.KubernetesResourceObjectEncryptionProfile()  # pylint: disable=no-member
-                )
+        # no infrastructure encryption related changes
+        if not kms_infrastructure_encryption or kms_infrastructure_encryption == "Disabled":
+            return mc
 
-            # Set infrastructure encryption
-            # pylint: disable=line-too-long
-            mc.security_profile.kubernetes_resource_object_encryption_profile.infrastructure_encryption = kms_infrastructure_encryption
+        if mc.security_profile is None:
+            mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
+
+        # Set or update the kubernetes resource object encryption profile
+        if mc.security_profile.kubernetes_resource_object_encryption_profile is None:
+            mc.security_profile.kubernetes_resource_object_encryption_profile = (
+                self.models.KubernetesResourceObjectEncryptionProfile()  # pylint: disable=no-member
+            )
+
+        # Set infrastructure encryption
+        # pylint: disable=line-too-long
+        mc.security_profile.kubernetes_resource_object_encryption_profile.infrastructure_encryption = kms_infrastructure_encryption
 
         if self.context.get_enable_azure_keyvault_kms():
             key_id = self.context.get_azure_keyvault_kms_key_id()
@@ -8178,10 +8176,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     key_vault_resource_id=self.context.get_azure_keyvault_kms_key_vault_resource_id(),
                 )
 
-        if self.context.get_disable_azure_keyvault_kms():
-            # nothing to disable if the cluster has never had Azure Key Vault KMS configured
-            if mc.security_profile is not None and mc.security_profile.azure_key_vault_kms is not None:
-                mc.security_profile.azure_key_vault_kms.enabled = False
+        cmk_disabled_on_existing_cluster = False
+        if mc.security_profile is not None and mc.security_profile.azure_key_vault_kms is not None and mc.security_profile.azure_key_vault_kms.enabled is False:
+            cmk_disabled_on_existing_cluster = True
+        if self.context.get_disable_azure_keyvault_kms() or cmk_disabled_on_existing_cluster:
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            # set enabled to False
+            mc.security_profile.azure_key_vault_kms.enabled = False
 
         return mc
 
