@@ -318,7 +318,7 @@ def load_arguments(self, _):
                    options_list=['--resource-modifier-reference', '--resource-modifier'],
                    help='Key value mapping for resource modifier reference')
         c.argument('resource_identifiers', type=str, nargs='+',
-                    help='Source volume identifiers for AzureElasticSAN, or 1 to 50 case-sensitive database or '
+                   help='Source volume identifiers for AzureElasticSAN, or 1 to 50 case-sensitive database or '
                         'database/container names for AzureCosmosDB. Quote each Cosmos selector; names are not expanded.')
         c.argument('resource_name_overrides', type=validate_file_or_dict,
                    options_list=['--resource-name-overrides', '--name-overrides'],
