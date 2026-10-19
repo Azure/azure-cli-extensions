@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Restart(AAZCommand):
     """Restart a Scheduler
+
+    :example: Restart a scheduler
+        az durabletask scheduler restart --resource-group myResourceGroup --scheduler-name myScheduler
     """
 
     _aaz_info = {
