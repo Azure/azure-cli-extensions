@@ -6,6 +6,7 @@
 """Stateful execution controls with bounded, non-retried mutations."""
 
 from collections import OrderedDict
+from copy import deepcopy
 import re
 import time
 from urllib.parse import unquote, urlsplit
@@ -363,16 +364,30 @@ def resubmit_run_action(client, workflow, run_id, action, yes=False):
         return _failure(result, ex, submitted)
 
 
-def _selected_history(transport, workflow, trigger, history_name, deadline):
+def _history_snapshot(payload):
+    props = _properties(payload)
+    snapshot = _stable_execution_snapshot(props)
+    snapshot.update({name: _field(props, name) for name in (
+        "fired", "state", "changedTime", "workflowVersion", "version", "etag", "scheduledTime", "waitEndTime")})
+    snapshot["identity"] = {name: _field(payload, name) for name in ("id", "name", "type", "etag")}
+    run = _field(props, "run")
+    snapshot["run"] = None if run is None else {
+        name: _field(_object(run), name) for name in ("id", "name", "version")}
+    for name in ("inputsLink", "outputsLink"):
+        link = _field(props, name)
+        snapshot[name] = None if link is None else {
+            field: _field(_object(link), field) for field in ("contentHash", "contentVersion", "contentSize")}
+    return deepcopy(snapshot)
+
+
+def _selected_history(transport, client, workflow, trigger, history_name, deadline):
     selected_trigger = _read(transport, workflow_trigger_path(workflow, trigger), deadline)
-    if _field(selected_trigger, "name") != trigger:
-        raise ExecutionError("invalidResponse", "Execution endpoint returned a different or unidentified trigger.")
+    _selected_identity(selected_trigger, trigger, workflow_trigger_path(workflow, trigger), client)
     history = _read(transport, trigger_history_path(workflow, trigger, history_name), deadline)
-    if _field(history, "name") != history_name:
-        raise ExecutionError("invalidResponse", "Execution endpoint returned a different or unidentified history.")
+    _selected_identity(history, history_name, trigger_history_path(workflow, trigger, history_name), client)
     if _field(_properties(history), "fired") is not True:
         raise ExecutionError("historyNotFired", "Selected retained history did not fire. No resubmit was attempted.")
-    return selected_trigger, history
+    return _history_snapshot(selected_trigger), _history_snapshot(history)
 
 
 def resubmit_trigger_history(client, workflow, trigger, history_name, yes=False):
@@ -385,7 +400,7 @@ def resubmit_trigger_history(client, workflow, trigger, history_name, yes=False)
     try:
         _stateful(transport, workflow, deadline)
         result["workflowKind"] = "Stateful"
-        before = _selected_history(transport, workflow, trigger, history_name, deadline)
+        before = _selected_history(transport, client, workflow, trigger, history_name, deadline)
         user_confirmation(
             "Resubmit trigger '{}' history '{}' in workflow '{}' at '{}' as a NEW execution? "
             "This can duplicate external side effects. It is not resume, recovery or exactly-once delivery, "
@@ -393,7 +408,7 @@ def resubmit_trigger_history(client, workflow, trigger, history_name, yes=False)
                 trigger, history_name, workflow, client.site_resource_id), yes)
         deadline = time.monotonic() + _PREFLIGHT_TIMEOUT
         _stateful(transport, workflow, deadline)
-        after = _selected_history(transport, workflow, trigger, history_name, deadline)
+        after = _selected_history(transport, client, workflow, trigger, history_name, deadline)
         if not all(json_equal(previous, current) for previous, current in zip(before, after)):
             raise ExecutionError("changed", "The selected trigger/history changed during confirmation. No resubmit was attempted.")
         result["action"] = "resubmitAttempted"

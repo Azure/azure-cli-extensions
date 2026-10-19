@@ -731,6 +731,67 @@ class RunExecutionTests(_ExecutionTestCase):
         self.assertEqual("changed", result["error"]["kind"])
         self.assertEqual(0, self.fixture.posts)
 
+    def test_history_signed_links_rotate_without_invalidating_stable_evidence(self):
+        self.fixture.trigger_override = {
+            "name": "manual", "id": "/workflows/hello/triggers/manual",
+            "properties": {"workflowVersion": "v1", "status": "Enabled",
+                           "inputsLink": {"uri": "https://example.invalid/old"}}}
+        self.fixture.history_override = self.fixture.history()
+
+        def rotate(*_args):
+            self.fixture.trigger_override["properties"]["inputsLink"]["uri"] = "https://example.invalid/new"
+            self.fixture.history_override["properties"]["outputsLink"]["uri"] = "https://example.invalid/new"
+
+        self.confirm.side_effect = rotate
+        result = self.resubmit()
+        self.assertEqual("accepted", result["outcome"])
+        self.assertEqual(1, self.fixture.posts)
+        self.assert_private(result)
+
+    def test_history_stable_identity_execution_and_revision_changes_refuse_mutation(self):
+        for target, field, before, after in (
+                ("trigger", "status", "Enabled", "Disabled"),
+                ("trigger", "state", "Enabled", "Disabled"),
+                ("trigger", "changedTime", "2026-10-01", "2026-10-02"),
+                ("trigger", "workflowVersion", "v1", "v2"),
+                ("history", "status", "Succeeded", "Failed"),
+                ("history", "etag", '"one"', '"two"'),
+                ("history", "workflowVersion", "v1", "v2"),
+                ("history", "run", {"id": "run1"}, {"id": "run2"}),
+                ("history", "fired", True, False)):
+            self.fixture.trigger_override = {"name": "manual", "properties": {}}
+            self.fixture.history_override = self.fixture.history()
+            selected = self.fixture.trigger_override if target == "trigger" else self.fixture.history_override
+            selected["properties"][field] = before
+            self.confirm.side_effect = lambda *_args: selected["properties"].update({field: after})
+            with self.subTest(target=target, field=field):
+                result = self.resubmit()
+                self.assertEqual(1, result["exitCode"])
+                self.assertEqual("historyNotFired" if field == "fired" else "changed", result["error"]["kind"])
+                self.assertEqual(0, self.fixture.posts)
+        for target in ("trigger", "history"):
+            self.fixture.trigger_override = {"name": "manual", "properties": {}}
+            self.fixture.history_override = self.fixture.history()
+            selected = self.fixture.trigger_override if target == "trigger" else self.fixture.history_override
+            self.confirm.side_effect = lambda *_args: selected.update(id="/workflows/other/triggers/manual")
+            with self.subTest(target=target):
+                result = self.resubmit()
+                self.assertEqual(1, result["exitCode"])
+                self.assertEqual(0, self.fixture.posts)
+
+    def test_history_content_hash_snapshot_is_not_aliased_to_the_read_response(self):
+        self.fixture.history_override = self.fixture.history()
+        self.fixture.history_override["properties"]["outputsLink"]["contentHash"] = {
+            "algorithm": "sha256", "value": "original"}
+
+        def change(*_args):
+            self.fixture.history_override["properties"]["outputsLink"]["contentHash"]["value"] = "changed"
+
+        self.confirm.side_effect = change
+        result = self.resubmit()
+        self.assertEqual("changed", result["error"]["kind"])
+        self.assertEqual(0, self.fixture.posts)
+
     def test_resubmit_malformed_ambiguous_and_mismatching_histories_fail_before_post(self):
         cases = [{}, {"name": "other", "properties": {"fired": True}},
                  {"name": "different-history", "properties": []},

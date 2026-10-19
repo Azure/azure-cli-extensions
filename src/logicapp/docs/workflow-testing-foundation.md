@@ -58,20 +58,32 @@ historical counts; saved approval flags never authorize a new native invocation.
 
 ### Deployment boundary
 
-`deployment package` omits an entire dedicated directory containing
-`Workflow.Tests.csproj` or `.logicapp-test-state`, including custom in-project
-test locations and existing projects after a native CLI run. Thus fixtures,
+`deployment package` omits an entire dedicated directory with declared native
+test intent: an unconditional literal `IsTestProject=true` or a direct SDK
+package reference in a `.csproj`. Renamed and existing test projects are
+recognized without running MSBuild. A marker named `Workflow.Tests.csproj` or
+`.logicapp-test-state` alone is insufficient; conflicting declarations or
+mixed production/test projects are refused. Thus fixtures,
 source, restored SDK packages, raw results and test `bin`/`obj` output under that
 boundary do not enter the deployment ZIP. Raw `.trx` files elsewhere are also
 excluded, case-insensitively. Ordinary runtime assemblies are not blanket-excluded.
 
-If test sources/state share the deployment root or a directory with `host.json`
-or `workflow.json`, packaging refuses rather than silently remove runtime
+If test sources/state share the deployment root, contain `host.json` or
+`workflow.json`, or contain runtime `.dll`/`.exe` files outside the dedicated
+test artifact directories (`bin`, `obj`, `fixtures`, `TestResults` and
+`.logicapp-test-state`), packaging refuses rather than silently remove runtime
 content. Move tests to a dedicated directory. The CLI does not edit the root
 `.funcignore`, and generated `.gitignore` is not deployment policy. Arbitrary
 trusted test/build code can write outside these known boundaries: inspect the
 package manifest and use `.funcignore` or external directories for other private
 fixtures/artifacts. This is not universal sensitive-data detection.
+
+Only an absent `.funcignore` means no user exclusions. An existing unreadable,
+non-file or invalid UTF-8 ignore file stops packaging before output is written.
+`local.settings.json` is always excluded case-insensitively, including nested
+copies, independent of content-pattern secret scanning. ZIP and manifest paths
+must identify distinct files; normalized paths and existing filesystem aliases
+are checked before either destination is overwritten, even with `--force`.
 
 ### Explicit execution and dependencies
 

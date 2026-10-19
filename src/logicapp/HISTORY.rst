@@ -55,6 +55,15 @@ Release History
   packages, refusing colocation with runtime content rather than omitting it.
 * Normalize omitted context-create ports at the real CLI boundary to 7071,
   without weakening explicit-port or stored-context validation.
+* Escape OAuth callback details as HTML text and bound accepted-client reads
+  by an absolute deadline as well as listener shutdown, including incomplete
+  and trickled requests.
+* Fail closed on invalid deployment exclusions, ambiguous test/runtime
+  directories and aliased ZIP/manifest outputs. Exclude case-equivalent local
+  settings while preserving ordinary runtime assemblies.
+* Exclude positively identified triggers from action discovery. Recheck retained
+  trigger histories using stable identity/execution/revision evidence without
+  treating regenerated signed links as changes or relaxing fired-history checks.
 
 0.1.19
 ++++++

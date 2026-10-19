@@ -205,14 +205,17 @@ def _operation_matches_kind(item, kind):
     capabilities = props.get("capabilities")
     if isinstance(capabilities, list):
         candidates.extend(capabilities)
+    is_trigger = bool(props.get("isNotification") or props.get("isWebhook")) or any(
+        "trigger" in str(candidate or "").lower() for candidate in candidates)
+    if is_trigger:
+        return kind == "trigger"
     for candidate in candidates:
         text = str(candidate or "").lower()
         if kind in text or (kind == "action" and "trigger" not in text and "operation" in text):
             return True
-    is_trigger = bool(props.get("isNotification") or props.get("isWebhook"))
     if kind == "trigger":
-        return is_trigger
-    return not is_trigger
+        return False
+    return True
 
 
 def _quote_segment(value):

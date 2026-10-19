@@ -349,3 +349,46 @@ is not proven disabled by CLI opt-out. The known typed top-level-output cast
 failure is documented rather than hidden by changing workflow semantics.
 Human safety review, live/connector/platform qualification, SDK terms and
 effective CODEOWNERS eligibility remain independent requirements.
+
+## Official review repairs after the SDK port
+
+The eight findings from official review 5573475117 were reproduced and repaired
+separately from the historical 0.1.26 input. These repairs do not change that
+historical source, the preview version, dependency markers, service registration,
+GA ownership or closed historical report catalogs.
+
+Callback details are HTML-escaped without changing their protocol values.
+Accepted loopback requests have an absolute read deadline, and shutdown closes
+the current client. Real idle, incomplete and continuously trickled requests,
+normal GET/POST bodies and whole-flow timeout cleanup are covered without a live
+provider or browser. Known trigger evidence takes precedence over generic
+action metadata. Trigger-history rechecks retain stable identity, fired status,
+execution/revision metadata and content hashes, but ignore rotated signed URLs.
+
+Deployment refuses unreadable/invalid existing `.funcignore` files and aliased
+ZIP/manifest destinations before writing. Case-equivalent local settings are
+always secret files. Test-directory pruning requires declared test intent;
+ambiguous state/project markers and runtime/test colocation fail explicitly.
+Renamed test projects and restored/generated test artifacts remain excluded
+without blanket-excluding ordinary production DLLs.
+
+| Review-repair qualification | Result |
+| --- | --- |
+| `azdev test logicapp --series --discover --no-exitfirst --pytest-args -q` | 909 source tests passed, two unsupported Windows symlink cases skipped. |
+| Exact-installed minimum CLI 2.67.0 / Python 3.12.7 x64 full suite | 909 passed, two symlink cases skipped, 2,503 subtests passed; production origins enforced. |
+| Exact-installed current CLI 2.91.0 / Python 3.14.7 x86 and x64 review/replay regressions | Each passed 109 tests / 324 subtests, with the same two symlink skips. Real NTFS hardlink/junction and loopback deadline cases ran. These are focused final-wheel runs, not full current-architecture suites. |
+| Actual installed deployment CLI processes | 21 cases across the three environments passed: ordinary runtime assemblies, mixed-case settings, invalid exclusions, state/project colocation refusal, existing hardlink-output preservation and query/table behavior. |
+| `azdev style logicapp`, `azdev linter logicapp` | Passed; no broad exclusions or weakened guards. |
+| Final source/wheel/three fresh private installations | All 32 production files match; no SDK/cache/native binary payloads. The unchanged dependency markers resolved publisher wheels. |
+
+Final wheel SHA256:
+`7ee39fbc41925e55dd9505f7ce66c54f6a4eb149d43d3040612edbdad1f811be`.
+Full suites ran serially. Temporary test import bootstraps were removed.
+A preliminary current-x64 installed full run reproduced the unchanged native
+Azurite-shim teardown `WinError 5` (906 passed, one failed, two skipped).
+That result is retained, not presented as green or replaced by full-run retries.
+A fresh exact-path inspection found no fixture process before only that completed
+fixture directory was removed; no process was signalled or ownership guard changed.
+The final full source/minimum-installed passes do not establish universal Windows
+filesystem stability, a full current-architecture matrix, live OAuth/SDK coverage
+or completed latest-head public CI/AI review.

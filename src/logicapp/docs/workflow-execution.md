@@ -157,6 +157,10 @@ buffer filling, and the 1-MiB payload limit and EOF/decode deadline checks remai
 Missing/expired or unfired history, invalid identifiers/metadata, or a changed
 trigger/history fails before POST. Selected trigger/history snapshots and
 Stateful kind are checked again after confirmation; content URLs are not followed.
+Rechecks compare stable identity, execution and revision evidence, including
+fired status and available content hashes/versions, not regenerated signed
+content-link URLs. A rotated URL alone does not invalidate retained history;
+changed identity, status or revision evidence still prevents submission.
 Reports identify `operation: triggerHistoryResubmit`, `triggerName` and
 `triggerHistoryId`; `runId` is null because no source run was selected.
 

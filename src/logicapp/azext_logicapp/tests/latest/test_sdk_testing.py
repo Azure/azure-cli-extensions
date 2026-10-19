@@ -216,8 +216,13 @@ class SdkTestingTests(unittest.TestCase):
             marker = directory / marker_name
             if marker_name.lower() == scaffold.STATE_DIRECTORY:
                 marker.mkdir()
+                (directory / "Existing.Native.csproj").write_text(
+                    "<Project><PropertyGroup><IsTestProject>true</IsTestProject></PropertyGroup></Project>",
+                    encoding="utf-8")
             else:
-                marker.write_text("<Project />", encoding="utf-8")
+                marker.write_text(
+                    "<Project><PropertyGroup><IsTestProject>true</IsTestProject></PropertyGroup></Project>",
+                    encoding="utf-8")
             (directory / "fixture.json").write_text(PRIVATE, encoding="utf-8")
         archive = self.root / "case-equivalent.zip"
         result = _workflow.deterministic_package(str(self.app), str(archive))

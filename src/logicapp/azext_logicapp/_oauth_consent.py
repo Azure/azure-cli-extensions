@@ -39,15 +39,19 @@ implementation:
   ``authenticatedUser``.
 """
 
+from html import escape
+import io
 import json
 import socket
 import threading
+import time
 from urllib.parse import urlparse, parse_qs
 
 from azure.cli.core.azclierror import CLIInternalError, ValidationError
 
 DEFAULT_CONSENT_TIMEOUT = 300
 CALLBACK_PATH = "/callback"
+_REQUEST_READ_TIMEOUT = 1
 
 _SUCCESS_HTML = (
     "<!doctype html><html><head><meta charset=utf-8><title>Connection authorized</title></head>"
@@ -150,7 +154,29 @@ class ConsentListener:
 
         listener = self
 
+        class _RequestStream(io.RawIOBase):
+            def __init__(self, connection, stopping):
+                super().__init__()
+                self.connection = connection
+                self.stopping = stopping
+                self.deadline = time.monotonic() + _REQUEST_READ_TIMEOUT
+
+            def readable(self):
+                return True
+
+            def readinto(self, buffer):
+                remaining = self.deadline - time.monotonic()
+                if self.stopping.is_set() or remaining <= 0:
+                    raise TimeoutError("Consent request read deadline expired.")
+                self.connection.settimeout(remaining)
+                return self.connection.recv_into(buffer)
+
         class _Handler(BaseHTTPRequestHandler):
+            def setup(self):
+                super().setup()
+                self.rfile.close()
+                self.rfile = io.BufferedReader(_RequestStream(self.connection, self.server.stopping))
+
             # The default handler logs every request to stderr, which would
             # interleave with command output.
             def log_message(self, format, *args):  # pylint: disable=redefined-builtin
@@ -164,22 +190,61 @@ class ConsentListener:
                     return
                 query = {k: v[0] for k, v in parse_qs(parsed.query).items() if v}
                 outcome, detail = interpret_callback(query)
-                listener._complete(outcome, detail)  # pylint: disable=protected-access
                 if outcome == "error":
                     heading, body = "Authorization failed", detail or "The consent request was denied."
                 else:
                     heading, body = "Connection authorized", "The CLI is finishing setup."
-                payload = _SUCCESS_HTML.format(heading=heading, detail=body).encode("utf-8")
-                self.send_response(200)
-                self.send_header("Content-Type", "text/html; charset=utf-8")
-                self.send_header("Content-Length", str(len(payload)))
-                self.end_headers()
-                self.wfile.write(payload)
+                payload = _SUCCESS_HTML.format(heading=escape(heading), detail=escape(body)).encode("utf-8")
+                try:
+                    self.send_response(200)
+                    self.send_header("Content-Type", "text/html; charset=utf-8")
+                    self.send_header("Content-Length", str(len(payload)))
+                    self.end_headers()
+                    self.wfile.write(payload)
+                except (BrokenPipeError, ConnectionResetError, TimeoutError):
+                    pass  # A disconnected browser does not invalidate a received callback.
+                finally:
+                    listener._complete(outcome, detail)  # pylint: disable=protected-access
 
             do_POST = do_GET  # noqa: N815 - some providers POST the result back
 
-        self._server = HTTPServer(("127.0.0.1", self.port), _Handler)
-        self._thread = threading.Thread(target=self._server.serve_forever, daemon=True)
+        class _Server(HTTPServer):
+            def __init__(self, *args):
+                self._connection_lock = threading.Lock()
+                self._connection = None
+                self.stopping = threading.Event()
+                super().__init__(*args)
+
+            def get_request(self):
+                connection, address = super().get_request()
+                with self._connection_lock:
+                    if self.stopping.is_set():
+                        connection.close()
+                        raise OSError("Consent listener is stopping.")
+                    connection.settimeout(_REQUEST_READ_TIMEOUT)
+                    self._connection = connection
+                return connection, address
+
+            def close_request(self, request):
+                with self._connection_lock:
+                    if self._connection is request:
+                        self._connection = None
+                    super().close_request(request)
+
+            def shutdown(self):
+                self.stopping.set()
+                with self._connection_lock:
+                    if self._connection is not None:
+                        try:
+                            self._connection.shutdown(socket.SHUT_RDWR)
+                        except OSError:
+                            pass  # The client may already have closed the socket.
+                        self._connection.close()
+                super().shutdown()
+
+        self._server = _Server(("127.0.0.1", self.port), _Handler)
+        self._thread = threading.Thread(
+            target=self._server.serve_forever, kwargs={"poll_interval": 0.05}, daemon=True)
         self._thread.start()
         return self
 
@@ -198,7 +263,9 @@ class ConsentListener:
         if self._server is not None:
             self._server.shutdown()
             self._server.server_close()
+            self._thread.join()
             self._server = None
+            self._thread = None
 
 
 def open_browser(url):

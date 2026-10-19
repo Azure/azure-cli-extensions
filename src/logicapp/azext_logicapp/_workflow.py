@@ -311,6 +311,7 @@ def deterministic_package(root, output_path, manifest_path=None, force=False):
         raise ResourceNotFoundError("Logic Apps project not found at '{}'.".format(root))
     output_path = os.path.abspath(output_path)
     manifest_path = os.path.abspath(manifest_path or (output_path + ".manifest.json"))
+    _distinct_package_outputs(output_path, manifest_path)
     if not force:
         for target in (output_path, manifest_path):
             if os.path.exists(target):
@@ -353,19 +354,75 @@ def deterministic_package(root, output_path, manifest_path=None, force=False):
     }
 
 
+def _distinct_package_outputs(output_path, manifest_path):
+    try:
+        same = os.path.normcase(os.path.realpath(output_path)) == os.path.normcase(os.path.realpath(manifest_path))
+        if not same and os.path.lexists(output_path) and os.path.lexists(manifest_path):
+            same = os.path.samefile(output_path, manifest_path)
+    except OSError as ex:
+        raise FileOperationError("Could not verify distinct package and manifest destinations.") from ex
+    if same:
+        raise ValidationError("Package and manifest destinations must be distinct files.")
+
+
+def _native_test_project(path):
+    from . import _testing  # Reuse bounded, non-evaluating XML inspection.
+    try:
+        document = _testing._test_project_xml(_testing._read(path))  # pylint: disable=protected-access
+    except _testing.InputError as ex:
+        raise ValidationError(
+            "Could not establish a dedicated native test directory from project metadata.") from ex
+    declarations, sdk_reference = [], False
+    for group in document:
+        for element in group:
+            tag = element.tag.rsplit("}", 1)[-1]
+            if group.tag.rsplit("}", 1)[-1] == "PropertyGroup" and tag == "IsTestProject":
+                declarations.append(not group.attrib and not element.attrib and not list(element) and
+                                    (element.text or "").strip().lower() == "true")
+            if (group.tag.rsplit("}", 1)[-1] == "ItemGroup" and tag == "PackageReference" and
+                    not group.attrib and "Condition" not in element.attrib and
+                    (element.get("Include") or "").lower() == _testing.protocol.SDK_PACKAGE.lower()):
+                sdk_reference = True
+    intent = sdk_reference or any(declarations)
+    if intent and not all(declarations):
+        raise ValidationError("Conflicting native test metadata requires a dedicated, unambiguous test directory.")
+    return intent
+
+
+def _dedicated_test_directory(directory, root, dirnames, filenames):
+    names = {name.lower() for name in dirnames + filenames}
+    marked = NATIVE_TEST_PROJECT_FILE.lower() in names or NATIVE_TEST_STATE_DIRECTORY in names
+    projects = [name for name in filenames if name.lower().endswith(".csproj")]
+    test_projects = [name for name in projects if _native_test_project(os.path.join(directory, name))]
+    if not marked and not test_projects:
+        return False
+    if (directory == root or names.intersection(("host.json", "workflow.json")) or not test_projects or
+            len(test_projects) != len(projects) or
+            NATIVE_TEST_STATE_DIRECTORY in {name.lower() for name in filenames}):
+        raise ValidationError(
+            "Native test sources or state require a dedicated test directory, separate from runtime content.")
+    artifact_dirs = {"bin", "obj", "fixtures", "testresults", NATIVE_TEST_STATE_DIRECTORY}
+    for _current, children, files in os.walk(directory, onerror=_package_walk_error):
+        children[:] = [name for name in children if name.lower() not in artifact_dirs]
+        if any(name.lower() in ("host.json", "workflow.json") or
+               name.lower().endswith((".dll", ".exe")) for name in files):
+            raise ValidationError(
+                "Ambiguous runtime content in a native test directory. Move it into a dedicated test directory.")
+    return True
+
+
+def _package_walk_error(error):
+    raise FileOperationError("Could not inspect package input directories.") from error
+
+
 def _walk_package(root, output_path, manifest_path):
     included = []
     excluded = []
     output_abs = os.path.abspath(output_path)
     manifest_abs = os.path.abspath(manifest_path)
     ignore_patterns = _read_ignore_file(root)
-    for directory, dirnames, filenames in os.walk(root):
-        names = {name.lower() for name in dirnames + filenames}
-        if NATIVE_TEST_PROJECT_FILE.lower() in names or NATIVE_TEST_STATE_DIRECTORY in names:
-            if directory == root or names.intersection(("host.json", "workflow.json")):
-                raise ValidationError(
-                    "Native test sources or state share deployable project/workflow content. "
-                    "Move the test project into a dedicated test directory before packaging.")
+    for directory, dirnames, filenames in os.walk(root, onerror=_package_walk_error):
+        if _dedicated_test_directory(directory, root, dirnames, filenames):
             excluded.append({"path": os.path.relpath(directory, root).replace(os.sep, "/"),
                              "reason": "native-test-project"})
             dirnames[:] = []
@@ -392,13 +449,15 @@ def _read_ignore_file(root):
     project, because every unrecognized file was packaged as class "other".
     """
     path = os.path.join(root, IGNORE_FILE)
-    if not os.path.isfile(path):
-        return []
     try:
         with open(path, "r", encoding="utf-8") as handle:
             lines = handle.read().splitlines()
-    except OSError:
-        return []
+    except FileNotFoundError as ex:
+        if not os.path.lexists(path):
+            return []
+        raise FileOperationError("Could not read existing .funcignore exclusions.") from ex
+    except (OSError, UnicodeError) as ex:
+        raise FileOperationError("Could not read existing .funcignore exclusions.") from ex
     patterns = []
     for line in lines:
         entry = line.strip()
@@ -433,7 +492,7 @@ def _exclude_dir(name, directory, root, excluded):
 def _exclude_file(filename, full, output_abs, manifest_abs):
     if os.path.abspath(full) in (output_abs, manifest_abs):
         return "package-output"
-    if filename in EXCLUDED_FILES:
+    if filename.lower() in EXCLUDED_FILES:
         return "secret"
     if filename in METADATA_FILES:
         return "metadata"
