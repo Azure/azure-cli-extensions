@@ -5,7 +5,7 @@ Release History
 
 1.14.0
 ++++++
-* Added Azure Cosmos DB for NoSQL database/container item-level recovery through ``initialize-restoreconfig --resource-identifiers`` and ``restore initialize-for-item-recovery --restore-configuration``. Supports 1-50 case-sensitive selectors from VaultStore into an existing empty alternate account. Reuses existing identity, permission and restore transport handling; full-account recovery remains available without a selection configuration.
+* ``az dataprotection backup-instance initialize-restoreconfig`` and ``az dataprotection backup-instance restore initialize-for-item-recovery``: Added item-level restore support for AzureCosmosDB databases and containers.
 
 1.13.0
 ++++++

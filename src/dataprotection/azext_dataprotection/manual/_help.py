@@ -177,9 +177,6 @@ helps['dataprotection backup-policy tag remove'] = """
 helps['dataprotection backup-instance restore initialize-for-data-recovery'] = """
     type: command
     short-summary: Initialize restore request object to recover all backed up data in a backup vault.
-    long-summary: |
-      AzureCosmosDB full-account recovery remains available without --restore-configuration.
-      For database/container selection, use initialize-for-item-recovery instead; a Cosmos selection configuration is rejected here.
     examples:
       - name: initialize restore request for azure disk backup instance
         text: az dataprotection backup-instance restore initialize-for-data-recovery --datasource-type AzureDisk --restore-location centraluseuap --source-datastore OperationalStore --target-resource-id {restore_disk_id} --recovery-point-id b7e6f082-b310-11eb-8f55-9cfce85d4fae
@@ -196,9 +193,6 @@ helps['dataprotection backup-instance restore initialize-for-data-recovery-as-fi
 helps['dataprotection backup-instance restore initialize-for-item-recovery'] = """
     type: command
     short-summary: Initialize restore request object to recover specified items of backed up data in a backup vault.
-    long-summary: |
-      For AzureCosmosDB, use a VaultStore recovery point, the configuration from initialize-restoreconfig,
-      and the ARM ID of an existing empty alternate NoSQL account. Database/container renaming is not supported.
     examples:
       - name: Initialize restore request for azure blob backup instance
         text: az dataprotection backup-instance restore initialize-for-item-recovery --datasource-type AzureBlob --restore-location centraluseuap --source-datastore OperationalStore --backup-instance-id {backup_instance_id}  --point-in-time 2021-05-26T15:00:00 --container-list container1 container2
@@ -213,8 +207,8 @@ helps['dataprotection backup-instance restore initialize-for-item-recovery'] = "
             --vaulted-blob-prefix-pattern '{"containers":[{"name":"container1","prefixmatch":["a","b"],"renameto":"container1renamed"},{"name":"container2","renameto":"container2renamed"}]}'
       - name: Initialize item-level restore request for an AzureElasticSAN volume group
         text: az dataprotection backup-instance restore initialize-for-item-recovery --datasource-type AzureElasticSAN --restore-location centraluseuap --source-datastore OperationalStore --recovery-point-id {recovery_point_id} --target-resource-id {target_volume_group_id} --restore-configuration {restore_configuration}
-      - name: Initialize Cosmos database/container recovery locally using the vault system-assigned identity
-        text: az dataprotection backup-instance restore initialize-for-item-recovery --datasource-type AzureCosmosDB --restore-location {target_region} --source-datastore VaultStore --recovery-point-id {recovery_point_id} --target-resource-id {empty_target_account_arm_id} --restore-configuration @cosmos-config.json --mi-system-assigned true --output json
+      - name: Initialize item-level restore request for an AzureCosmosDB account
+        text: az dataprotection backup-instance restore initialize-for-item-recovery --datasource-type AzureCosmosDB --restore-location {restore_location} --source-datastore VaultStore --recovery-point-id {recovery_point_id} --target-resource-id {target_cosmosdb_account_id} --restore-configuration {restore_configuration} --mi-system-assigned true
 """
 
 helps['dataprotection resource-guard list-protected-operations'] = """
@@ -247,16 +241,13 @@ helps['dataprotection backup-instance initialize-backupconfig'] = """
 helps['dataprotection backup-instance initialize-restoreconfig'] = """
     type: command
     short-summary: Initialize JSON request body for initializing and configuring restore of an AzureKubernetesService, AzureElasticSAN or AzureCosmosDB resource. The generated JSON is meant for use with other CLI commands, and may not work as an input for non-CLI scenarios without modification.
-    long-summary: |
-      For AzureCosmosDB, select 1 to 50 case-sensitive database or database/container names from the recovery point.
-      Names and order are preserved. Duplicate or overlapping selections and name overrides are not supported.
     examples:
       - name: Initialize restore configuration
         text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureKubernetesService
       - name: Initialize restore configuration for AzureElasticSAN
         text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureElasticSAN --resource-identifiers source-vol1 source-vol2 --resource-name-overrides '{"source-vol1":"restored-vol1","source-vol2":"restored-vol2"}'
-      - name: Select two Cosmos containers and all backed-up containers in another database
-        text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureCosmosDB --resource-identifiers 'db1/col1' 'db1/col2' 'db2' --output json
+      - name: Initialize restore configuration for AzureCosmosDB
+        text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureCosmosDB --resource-identifiers db1/container1 db2
 """
 
 helps['dataprotection backup-instance validate-for-backup'] = """

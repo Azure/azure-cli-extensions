@@ -1014,23 +1014,6 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
                                                             restore_hook_references=None, staging_resource_group_id=None,
                                                             staging_storage_account_id=None, resource_modifier_reference=None,
                                                             resource_identifiers=None, resource_name_overrides=None):
-    if datasource_type == "AzureCosmosDB":
-        if any(value is not None for value in (
-                excluded_resource_types, included_resource_types, excluded_namespaces, included_namespaces,
-                label_selectors, persistent_volume_restore_mode, include_cluster_scope_resources, namespace_mappings,
-                conflict_policy, restore_hook_references, staging_resource_group_id, staging_storage_account_id,
-                resource_modifier_reference, resource_name_overrides)):
-            raise InvalidArgumentValueError(
-                'AzureCosmosDB restore configuration supports only --resource-identifiers.')
-        helper.validate_cosmosdb_resource_identifiers(resource_identifiers)
-        return {
-            "object_type": "GenericRestoreDatasourceCriteria",
-            "resource_selectors": {
-                "object_type": "ResourceListSelectionCriteria",
-                "resource_identifiers": resource_identifiers
-            }
-        }
-
     if datasource_type == "AzureElasticSAN":
         if not resource_identifiers:
             raise RequiredArgumentMissingError('--resource-identifiers is required for AzureElasticSAN restore configuration. '
@@ -1071,9 +1054,20 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
             "resource_selectors": resource_selectors
         }
 
+    if datasource_type == "AzureCosmosDB":
+        if not resource_identifiers:
+            raise RequiredArgumentMissingError('--resource-identifiers is required for AzureCosmosDB restore configuration. '
+                                               'Provide the list of database or database/container names to restore.')
+        return {
+            "object_type": "GenericRestoreDatasourceCriteria",
+            "resource_selectors": {
+                "object_type": "ResourceListSelectionCriteria",
+                "resource_identifiers": resource_identifiers
+            }
+        }
+
     if datasource_type != "AzureKubernetesService":
-        raise InvalidArgumentValueError(
-            "Restore configuration is supported for AzureKubernetesService, AzureElasticSAN and AzureCosmosDB.")
+        raise InvalidArgumentValueError("This command is currently not supported for datasource types other than AzureKubernetesService")
 
     if staging_resource_group_id is None and staging_storage_account_id is None:
         object_type = "KubernetesClusterRestoreCriteria"
@@ -1116,10 +1110,6 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
     restore_request = {}
     restore_mode = None
     manifest = helper.load_manifest(datasource_type)
-
-    if datasource_type == "AzureCosmosDB" and restore_configuration is not None:
-        raise InvalidArgumentValueError(
-            'Use initialize-for-item-recovery with --restore-configuration for Cosmos DB selection.')
 
     # Setting up restore request according to Recovery-Point/Point-in-time style of restore
     restore_request, restore_mode = helper.validate_and_set_restore_mode_in_restore_request(recovery_point_id, point_in_time, restore_request)
@@ -1228,16 +1218,6 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
     restore_request = {}
     restore_mode = None
     manifest = helper.load_manifest(datasource_type)
-
-    if datasource_type == "AzureCosmosDB":
-        if backup_instance_id is not None or not target_resource_id:
-            raise InvalidArgumentValueError(
-                'AzureCosmosDB item recovery requires --target-resource-id for an empty alternate NoSQL account.')
-        target = parse_resource_id(target_resource_id) if is_valid_resource_id(target_resource_id) else {}
-        if (target.get('namespace', '').lower() != 'microsoft.documentdb' or
-                target.get('type', '').lower() != 'databaseaccounts' or target.get('children') or
-                any(char in target_resource_id for char in '\\?#')):
-            raise InvalidArgumentValueError('--target-resource-id must be a Cosmos DB account ARM ID.')
 
     # Workload should allow for item level recovery
     if manifest is not None and not manifest["itemLevelRecoveryEnabled"]:

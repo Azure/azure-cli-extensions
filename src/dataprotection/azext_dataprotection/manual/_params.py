@@ -318,8 +318,9 @@ def load_arguments(self, _):
                    options_list=['--resource-modifier-reference', '--resource-modifier'],
                    help='Key value mapping for resource modifier reference')
         c.argument('resource_identifiers', type=str, nargs='+',
-                   help='Source volume identifiers for AzureElasticSAN, or 1 to 50 case-sensitive database or '
-                        'database/container names for AzureCosmosDB. Quote each Cosmos selector; names are not expanded.')
+                   help='List of source volume identifiers (volume names or ARM IDs) to restore. '
+                        'Use this parameter for DatasourceType AzureElasticSAN. '
+                        'For DatasourceType AzureCosmosDB, provide the database or database/container names to restore.')
         c.argument('resource_name_overrides', type=validate_file_or_dict,
                    options_list=['--resource-name-overrides', '--name-overrides'],
                    help='Map of source volume names to target volume names to restore into. Keys must match selected '
@@ -338,7 +339,7 @@ def load_arguments(self, _):
         c.argument('secret_store_uri', type=str, help="Specify the secret store uri to use for authentication")
         c.argument('rehydration_priority', arg_type=get_enum_type(get_rehydration_priority_values()), help="Specify the rehydration priority for rehydrate restore.")
         c.argument('rehydration_duration', type=int, help="Specify the rehydration duration for rehydrate restore.")
-        c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService or AzureElasticSAN. For AzureCosmosDB full-account recovery, omit this parameter; use initialize-for-item-recovery for selection.")
+        c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService or AzureElasticSAN.")
         c.argument('use_system_assigned_identity', options_list=['--mi-system-assigned', '--use-system-identity', '--use-system-assigned-identity'], arg_type=get_three_state_flag(), help="Use system assigned identity")
         c.argument('user_assigned_identity_arm_url', options_list=['--mi-user-assigned', '--user-assigned-identity-arm-url', '--uami'], type=str, help="ARM ID of the User Assigned Managed Identity")
 
@@ -358,7 +359,7 @@ def load_arguments(self, _):
         c.argument('user_assigned_identity_arm_url', options_list=['--mi-user-assigned', '--user-assigned-identity-arm-url', '--uami'], type=str, help="ARM ID of the User Assigned Managed Identity")
 
     with self.argument_context('dataprotection backup-instance restore initialize-for-item-recovery') as c:
-        c.argument('target_resource_id', type=str, help="Specify the resource ID to which data will be restored. For AzureCosmosDB, use the ARM ID of an existing empty alternate NoSQL account.")
+        c.argument('target_resource_id', type=str, help="specify the resource ID to which the data will be restored.")
         c.argument('restore_location', type=str, help="specify the restore location.")
         c.argument('recovery_point_id', type=str, help="specify the recovery point ID which will be used for restoring the data.")
         c.argument('point_in_time', type=datetime_type, help="specify the point in time which will be used for restoring the data in UTC (yyyy-mm-ddTHH:MM:SS).")
@@ -368,7 +369,7 @@ def load_arguments(self, _):
         c.argument('container_list', type=str, nargs='+', help="specify the list of containers to restore.")
         c.argument('from_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for start range.")
         c.argument('to_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for end range.")
-        c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration from initialize-restoreconfig for AzureKubernetesService, AzureElasticSAN or AzureCosmosDB.")
+        c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService, AzureElasticSAN or AzureCosmosDB.")
         c.argument('vaulted_blob_prefix_pattern', options_list=['--vaulted-blob-prefix-pattern', '--vaulted-blob-prefix'],
                    type=validate_file_or_dict, help="Specify the prefix pattern for vaulted blobs.")
         c.argument('use_system_assigned_identity', options_list=['--mi-system-assigned', '--use-system-identity', '--use-system-assigned-identity'], arg_type=get_three_state_flag(), help="Use system assigned identity")
