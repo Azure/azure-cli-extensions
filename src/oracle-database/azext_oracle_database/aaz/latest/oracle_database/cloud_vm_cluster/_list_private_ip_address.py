@@ -22,16 +22,17 @@ class ListPrivateIpAddress(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-01",
+        "version": "2026-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}/listprivateipaddresses", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}/listprivateipaddresses", "2026-07-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -96,8 +97,9 @@ class ListPrivateIpAddress(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
     class CloudVmClustersListPrivateIpAddresses(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -147,7 +149,7 @@ class ListPrivateIpAddress(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-07-01-preview",
                     required=True,
                 ),
             }
@@ -192,12 +194,20 @@ class ListPrivateIpAddress(AAZCommand):
             if cls._schema_on_200 is not None:
                 return cls._schema_on_200
 
-            cls._schema_on_200 = AAZListType()
+            cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.Element = AAZObjectType()
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
-            _element = cls._schema_on_200.Element
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
             _element.display_name = AAZStrType(
                 serialized_name="displayName",
                 flags={"required": True},
