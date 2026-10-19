@@ -5,8 +5,7 @@ Release History
 
 1.14.0
 ++++++
-* Added Azure Cosmos DB for NoSQL database/container item-level recovery using the existing ``initialize-restoreconfig --resource-identifiers`` and ``restore initialize-for-item-recovery --restore-configuration`` commands. Supports 1–50 ordered, case-sensitive literal selectors from a VaultStore recovery point into an existing empty alternate account, without rename. Valid full-account request shapes without configuration are preserved; silently ignored Cosmos configuration and invalid explicit identity selections (including false without a UAMI) are now rejected. No new public arguments or API version change.
-* Cosmos-only input and restore-permission compatibility: validate selectors, configuration, account target and explicit identity selections locally; retain UAMI-alone selection, reject false without UAMI and true with UAMI. ``update-msi-permissions --operation Restore`` accepts CLI client/wire schema aliases, automatically uses the request-selected UAMI, and compares explicit ``--uami`` and vault attachments case-insensitively without falling back to another identity. Declined confirmation makes no writes. Other workloads retain their existing behavior.
+* Added Azure Cosmos DB for NoSQL database/container item-level recovery through ``initialize-restoreconfig --resource-identifiers`` and ``restore initialize-for-item-recovery --restore-configuration``. Supports 1-50 case-sensitive selectors from VaultStore into an existing empty alternate account. Reuses existing identity, permission and restore transport handling; full-account recovery remains available without a selection configuration.
 
 1.13.0
 ++++++

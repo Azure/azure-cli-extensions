@@ -11,6 +11,7 @@
 import uuid
 import re
 import json
+import unicodedata
 from importlib import import_module
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from azure.cli.core.azclierror import (
@@ -560,6 +561,42 @@ def _process_vaulted_blob_pattern(vaulted_blob_prefix_pattern):
     return restore_criteria_list
 
 
+def validate_cosmosdb_resource_identifiers(resource_identifiers):
+    if resource_identifiers is None:
+        raise RequiredArgumentMissingError('--resource-identifiers is required for AzureCosmosDB restore.')
+    if not isinstance(resource_identifiers, list) or not 1 <= len(resource_identifiers) <= 50:
+        raise InvalidArgumentValueError('Specify 1 to 50 Cosmos DB database or database/container identifiers.')
+
+    seen = set()
+    for identifier in resource_identifiers:
+        if not isinstance(identifier, str):
+            raise InvalidArgumentValueError('Each Cosmos DB resource identifier must be a string.')
+        parts = identifier.split('/')
+        if (len(parts) > 2 or any(not part.strip() for part in parts) or
+                any(char in '\\?#' or unicodedata.category(char) == 'Cc' for char in identifier)):
+            raise InvalidArgumentValueError('Use database or database/container names without empty segments, '
+                                            'backslashes, ?, # or control characters.')
+        if identifier in seen:
+            raise InvalidArgumentValueError('Cosmos DB resource identifiers must not contain duplicates.')
+        seen.add(identifier)
+    if any('/' in identifier and identifier.split('/')[0] in seen for identifier in resource_identifiers):
+        raise InvalidArgumentValueError('Select a Cosmos DB database or its containers, not both.')
+
+
+def validate_cosmosdb_restore_configuration(restore_configuration):
+    if restore_configuration is None:
+        raise RequiredArgumentMissingError('Provide --restore-configuration from initialize-restoreconfig.')
+    if (not isinstance(restore_configuration, dict) or
+            set(restore_configuration) != {'object_type', 'resource_selectors'} or
+            restore_configuration.get('object_type') != 'GenericRestoreDatasourceCriteria'):
+        raise InvalidArgumentValueError('Use the Cosmos DB configuration returned by initialize-restoreconfig.')
+    selectors = restore_configuration['resource_selectors']
+    if (not isinstance(selectors, dict) or set(selectors) != {'object_type', 'resource_identifiers'} or
+            selectors.get('object_type') != 'ResourceListSelectionCriteria'):
+        raise InvalidArgumentValueError('Cosmos DB restore requires resource-list selectors without name overrides.')
+    validate_cosmosdb_resource_identifiers(selectors['resource_identifiers'])
+
+
 def get_resource_criteria_list(datasource_type, restore_configuration, container_list,
                                from_prefix_pattern, to_prefix_pattern, recovery_point_id,
                                vaulted_blob_prefix_pattern):
@@ -567,11 +604,12 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
     # AKS directly uses the restore configuration. Currently, the "else" just covers Blobs.
     restore_criteria_list = []
     if datasource_type == "AzureCosmosDB":
-        from . import cosmosdb
-        cosmosdb.reject_unsupported_options(
-            container_list=container_list, from_prefix_pattern=from_prefix_pattern,
-            to_prefix_pattern=to_prefix_pattern, vaulted_blob_prefix_pattern=vaulted_blob_prefix_pattern)
-        return [cosmosdb.validate_restore_configuration(restore_configuration)]
+        if any(value is not None for value in (
+                container_list, from_prefix_pattern, to_prefix_pattern, vaulted_blob_prefix_pattern)):
+            raise InvalidArgumentValueError('Use --restore-configuration, not Blob container or prefix arguments, '
+                                            'for AzureCosmosDB restore.')
+        validate_cosmosdb_restore_configuration(restore_configuration)
+        return [restore_configuration]
 
     if datasource_type == "AzureKubernetesService":
         if restore_configuration is not None:

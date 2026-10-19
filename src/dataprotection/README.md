@@ -82,179 +82,68 @@ az dataprotection backup-instance restore trigger -g sarath-rg --vault-name sara
 
 #### Azure Cosmos DB for NoSQL database/container recovery ####
 
-Item-level recovery selects databases and containers from a completed, committed
-`VaultStore` recovery point; it does not select individual documents or perform
-Cosmos-native point-in-time recovery. The target must be a pre-existing,
-compatible, **completely empty NoSQL account**, distinct from the source, in the
-same region for this workflow. Use its account ARM ID, not a database/container
-ID, endpoint or backup instance ID. `FailIfExists` does not authorize overwrite
-or deletion. CRR/CSR, original-location restore, rename and restore-as-files are
-not part of this workflow.
+Select 1-50 case-sensitive `database` or `database/container` names from a
+completed VaultStore recovery point. Names and order are preserved; duplicates,
+database/child overlaps and renaming are not supported. This restores databases
+and containers, not individual documents or a Cosmos-native point in time.
 
-Prerequisites: an already protected source account, its backup instance and a
-completed VaultStore recovery point, an empty target account, and a usable vault
-managed identity. The protected source requires continuous backup; that setting
-is separate from vault retention. This guide creates no accounts, policies or
-backup instances and changes no retention settings. All placeholders below are
-synthetic; replace them with approved resources. These examples are usage
-instructions, not a claim of live CLI acceptance or completed restore testing.
-
-**Selection contract:** supply 1–50 quoted, literal `database` or
-`database/container` names. A database selects its backed-up containers at the
-chosen recovery point, not today's source inventory. Mixed selections retain
-their exact order, spelling, case, spaces and Unicode. `DB1` and `db1` are
-different. No trimming, case folding, URL decoding, sorting, comma/brace splitting
-or wildcard expansion occurs; `*`, commas and braces are literal name characters.
-Exact duplicates and a database selected together with its containers are
-rejected. Empty/blank segments, more than one `/`, backslashes, `?`, `#` and
-control characters are invalid. No rename, AKS filters/staging or Blob
-container-list/prefix/range options are supported. Local syntax acceptance does
-not establish that a name exists in the recovery point.
-
-##### 1. Construct configuration and request locally (no authentication) #####
-
-The following Bash examples use explicit system-assigned identity (SAMI)
-throughout. Both initialization commands only construct and validate local JSON;
-they do not log in, enumerate inventory, check target emptiness in Azure, grant
-roles or submit a restore. Use `--output json` and save files as UTF-8. On Windows
-PowerShell 5.1, use `| Set-Content -Encoding utf8 cosmos-config.json` (and likewise
-for the request) instead of `>`, which writes UTF-16; adapt line continuations
-to the shell.
+Use an existing, completely empty compatible NoSQL target account in the same
+region, distinct from the source. Configuration and request initialization are
+local-only; Azure validation checks service prerequisites.
 
 ```bash
+# 1) Select containers and/or whole databases from the recovery point
 az dataprotection backup-instance initialize-restoreconfig \
     --datasource-type AzureCosmosDB \
     --resource-identifiers 'db1/col1' 'db1/col2' 'db2' \
     --output json > cosmos-config.json
 
+# 2) Build the request using the empty target account ARM ID
 az dataprotection backup-instance restore initialize-for-item-recovery \
     --datasource-type AzureCosmosDB \
     --source-datastore VaultStore \
-    --restore-location '<target-region>' \
-    --recovery-point-id '<recovery-point-name>' \
-    --target-resource-id '/subscriptions/00000000-0000-0000-0000-000000000001/resourceGroups/restore-rg/providers/Microsoft.DocumentDB/databaseAccounts/empty-target' \
+    --restore-location {location} \
+    --recovery-point-id {recovery_point_id} \
+    --target-resource-id {empty_target_account_id} \
     --restore-configuration @cosmos-config.json \
     --mi-system-assigned true \
     --output json > cosmos-request.json
-```
 
-The configuration is one `GenericRestoreDatasourceCriteria` object with one
-`ResourceListSelectionCriteria` containing the whole ordered list. Initialization
-revalidates edited configuration and places it in the request's criteria array.
-Keep the resulting **raw request** as input to both native validation and
-trigger commands; do not add a `restoreRequestObject` wrapper yourself.
-
-**UAMI alternative:** instead of the SAMI initialization above, use the same
-command with `--uami '<attached-uami-arm-id>'` in place of
-`--mi-system-assigned true`. A UAMI alone implies system-assigned `false`; explicit
-`--mi-system-assigned false --uami '<attached-uami-arm-id>'` is also valid. Cosmos
-rejects explicit `false` without a UAMI, `true` with a UAMI, and invalid UAMI ARM
-IDs. Omitting both identity arguments leaves identity details unset; no service
-default is implied. Use an identity already attached to the vault, not a source
-account identity or an arbitrary unattached UAMI.
-
-##### 2. Prepare permissions (authenticated cloud access and possible RBAC writes) #####
-
-Authenticate to the intended tenant/subscription before continuing. The caller
-needs permission to read the vault, inspect role assignments and grant the
-required target role. Review the target ID and selected identity before accepting
-the prompt. This command can grant `Cosmos DB Operator` to the selected vault
-identity on the target account; `Resource` keeps the assignment scope narrow.
-Declining confirmation makes no writes. `--yes` skips confirmation and is
-intentionally omitted here; this is not a dry-run command.
-
-```bash
+# 3) Grant missing target permissions to the vault identity (prompts for approval)
 az dataprotection backup-instance update-msi-permissions \
-    --subscription '<vault-subscription-id>' \
-    --resource-group '<vault-resource-group>' \
-    --vault-name '<vault-name>' \
+    --resource-group {vault_rg} \
+    --vault-name {vault_name} \
     --datasource-type AzureCosmosDB \
     --operation Restore \
     --permissions-scope Resource \
     --restore-request-object @cosmos-request.json
-```
 
-For Cosmos Restore, permission preparation accepts CLI client `snake_case` and
-wire `camelCase` schema aliases, but rejects conflicting aliases for the same
-field. It automatically selects the UAMI specified in the request, so the command
-above also applies to the UAMI alternative. If you additionally pass `--uami`, it
-must match the request-selected identity case-insensitively. Vault attachment ARM
-IDs are also matched case-insensitively; missing/ambiguous attachments or missing
-principal IDs are rejected, with no fallback to SAMI or the first attached UAMI.
-These compatibility rules are Cosmos-scoped. Executing-user Cosmos SQL data-plane
-permissions for verification are separate from vault management-plane roles;
-do not grant Owner or weaken keys/firewalls to work around failures.
-
-When request identity details are omitted, the helper retains legacy permission-side
-selection (`--uami`, or SAMI when omitted), but does not insert that selection into the
-restore request or establish the service's identity default. Use an explicit request
-identity for a verified match between permission preparation and restore. An edited
-request identity must explicitly contain a valid Boolean `useSystemAssignedIdentity`;
-request member nulls are not equivalent to omitting initializer flags.
-
-##### 3. Validate in Azure (does not restore data) #####
-
-```bash
+# 4) Validate, then submit the raw request once
 az dataprotection backup-instance validate-for-restore \
-    --subscription '<vault-subscription-id>' \
-    --resource-group '<vault-resource-group>' \
-    --vault-name '<vault-name>' \
-    --backup-instance-name '<source-backup-instance-name>' \
+    --resource-group {vault_rg} \
+    --vault-name {vault_name} \
+    --backup-instance-name {backup_instance_name} \
     --restore-request-object @cosmos-request.json
-```
 
-This submits a cloud validation operation, not a restore or a completion check.
-Resolve any reported errors before triggering; a successful validation is not
-proof that restored data exists or that a future restore will complete.
-
-##### 4. Submit once, then inspect the specific returned job #####
-
-Triggering writes to Azure and starts a restore that can incur charges. Confirm
-the approved scope and that the target is still completely empty, then submit
-**once** and retain the entire response:
-
-```bash
 az dataprotection backup-instance restore trigger \
-    --subscription '<vault-subscription-id>' \
-    --resource-group '<vault-resource-group>' \
-    --vault-name '<vault-name>' \
-    --backup-instance-name '<source-backup-instance-name>' \
-    --restore-request-object @cosmos-request.json \
-    --output json > cosmos-trigger-response.json
+    --resource-group {vault_rg} \
+    --vault-name {vault_name} \
+    --backup-instance-name {backup_instance_name} \
+    --restore-request-object @cosmos-request.json
 
 az dataprotection job show \
-    --subscription '<vault-subscription-id>' \
-    --resource-group '<vault-resource-group>' \
-    --vault-name '<vault-name>' \
-    --job-id '<job-id-returned-by-trigger>'
+    --resource-group {vault_rg} --vault-name {vault_name} --job-id {returned_job_id}
 ```
 
-Use the trigger response's returned **job ID**, not an ActivityID, correlation ID
-or validation operation ID. If a job ARM ID is returned, use its final job-name
-segment for `--job-id`. Inspect that specific job until terminal, matching vault,
-backup instance, restore operation and recovery point where exposed. Submission
-or `InProgress` is not completion. If the trigger response is lost or times out,
-**do not blindly retry**: first reconcile the submission using native
-`az dataprotection job list` in that vault and the backup instance, operation,
-submission time and recovery point where exposed. Identify the specific job or
-resolve the uncertain submission before considering another trigger.
+For UAMI, replace `--mi-system-assigned true` with `--uami {attached_uami_id}`
+on initialization and pass the **same** `--uami` to permission preparation, as
+for other workloads. Use the initializer's snake_case JSON with the permission
+command; no manual wire-format conversion is needed. Save files as UTF-8.
 
-After successful job completion, independently verify the exact restored
-database/container inventory against the selected recovery point, document IDs,
-partition keys, full document content and counts for selected containers, and
-absence of every excluded database/container (including unselected siblings).
-For a database selector, verify all of that database's containers backed up at
-the recovery point, not just those currently present on the source. Counts alone
-are insufficient: use expected content captured for that recovery point, not
-post-backup source churn. Validation success and job success do not replace these
-data and exclusion checks.
-
-**Full-account request shape is preserved:** use
-`az dataprotection backup-instance restore initialize-for-data-recovery` with
-`--datasource-type AzureCosmosDB`, the VaultStore recovery point, target account
-and intended identity, and **omit `--restore-configuration`**. A Cosmos selection
-configuration is rejected by that full initializer rather than silently ignored.
-No new public arguments or API version change are needed for item-level recovery.
+Validation does not restore data. Wait for the returned restore job to complete,
+then verify selected data and excluded containers/databases. Do not blindly
+resubmit if the trigger response is lost. For full-account recovery, use
+`initialize-for-data-recovery` without `--restore-configuration`.
 
 #### Azure Elastic SAN (preview) configure and restore scripts ####
 ##### Configure backup for Elastic SAN volumes #####

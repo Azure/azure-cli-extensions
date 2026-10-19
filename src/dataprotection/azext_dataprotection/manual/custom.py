@@ -29,7 +29,7 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
-from azext_dataprotection.manual import backupcenter_helper, cosmosdb, helpers as helper
+from azext_dataprotection.manual import backupcenter_helper, helpers as helper
 from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Show as BackupVaultGet
 
 logger = get_logger(__name__)
@@ -426,11 +426,6 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
     if operation == "Restore" and restore_request_object is None:
         raise RequiredArgumentMissingError("--restore-request-object needs to be given when --operation is given as Restore")
 
-    cosmos_restore = datasource_type == 'AzureCosmosDB' and operation == 'Restore'
-    if cosmos_restore:
-        restore_request_object, user_assigned_identity_arm_url = cosmosdb.prepare_restore_permissions(
-            restore_request_object, user_assigned_identity_arm_url)
-
     if datasource_type == 'AzureDatabaseForPostgreSQL':
         if not keyvault_id:
             raise RequiredArgumentMissingError("--keyvault-id needs to be given when --datasource-type is AzureDatabaseForPostgreSQL")
@@ -450,10 +445,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
         "resource_group": resource_group_name,
         "vault_name": vault_name
     })
-    if cosmos_restore:
-        vault_principal_id = cosmosdb.get_vault_identity(backup_vault, user_assigned_identity_arm_url)
-    else:
-        vault_principal_id = helper.get_vault_identity(backup_vault, user_assigned_identity_arm_url)
+    vault_principal_id = helper.get_vault_identity(backup_vault, user_assigned_identity_arm_url)
 
     role_assignments_arr = []
 
@@ -1023,15 +1015,21 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
                                                             staging_storage_account_id=None, resource_modifier_reference=None,
                                                             resource_identifiers=None, resource_name_overrides=None):
     if datasource_type == "AzureCosmosDB":
-        cosmosdb.reject_unsupported_options(
-            excluded_resource_types=excluded_resource_types, included_resource_types=included_resource_types,
-            excluded_namespaces=excluded_namespaces, included_namespaces=included_namespaces,
-            label_selectors=label_selectors, persistent_volume_restore_mode=persistent_volume_restore_mode,
-            include_cluster_scope_resources=include_cluster_scope_resources, namespace_mappings=namespace_mappings,
-            conflict_policy=conflict_policy, restore_hook_references=restore_hook_references,
-            staging_resource_group_id=staging_resource_group_id, staging_storage_account_id=staging_storage_account_id,
-            resource_modifier_reference=resource_modifier_reference, resource_name_overrides=resource_name_overrides)
-        return cosmosdb.get_restore_configuration(resource_identifiers)
+        if any(value is not None for value in (
+                excluded_resource_types, included_resource_types, excluded_namespaces, included_namespaces,
+                label_selectors, persistent_volume_restore_mode, include_cluster_scope_resources, namespace_mappings,
+                conflict_policy, restore_hook_references, staging_resource_group_id, staging_storage_account_id,
+                resource_modifier_reference, resource_name_overrides)):
+            raise InvalidArgumentValueError(
+                'AzureCosmosDB restore configuration supports only --resource-identifiers.')
+        helper.validate_cosmosdb_resource_identifiers(resource_identifiers)
+        return {
+            "object_type": "GenericRestoreDatasourceCriteria",
+            "resource_selectors": {
+                "object_type": "ResourceListSelectionCriteria",
+                "resource_identifiers": resource_identifiers
+            }
+        }
 
     if datasource_type == "AzureElasticSAN":
         if not resource_identifiers:
@@ -1119,13 +1117,9 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
     restore_mode = None
     manifest = helper.load_manifest(datasource_type)
 
-    if datasource_type == "AzureCosmosDB":
-        if restore_configuration is not None:
-            raise InvalidArgumentValueError(
-                'Use initialize-for-item-recovery with --restore-configuration for Cosmos DB selection. '
-                'Omit the configuration for full-account recovery.')
-        cosmos_identity = cosmosdb.get_restore_identity_details(
-            use_system_assigned_identity, user_assigned_identity_arm_url)
+    if datasource_type == "AzureCosmosDB" and restore_configuration is not None:
+        raise InvalidArgumentValueError(
+            'Use initialize-for-item-recovery with --restore-configuration for Cosmos DB selection.')
 
     # Setting up restore request according to Recovery-Point/Point-in-time style of restore
     restore_request, restore_mode = helper.validate_and_set_restore_mode_in_restore_request(recovery_point_id, point_in_time, restore_request)
@@ -1159,11 +1153,8 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
         restore_request["restore_target_info"]["restore_criteria"] = helper.get_resource_criteria_list(datasource_type, restore_configuration,
                                                                                                        None, None, None, None, None)
 
-    # Cosmos validates explicit false/UAMI selections without changing other workloads' defaults.
-    if datasource_type == "AzureCosmosDB":
-        if cosmos_identity is not None:
-            restore_request["identity_details"] = cosmos_identity
-    elif use_system_assigned_identity is not None or user_assigned_identity_arm_url is not None:
+    # UAMI for a restore request object
+    if use_system_assigned_identity is not None or user_assigned_identity_arm_url is not None:
         if user_assigned_identity_arm_url is None and not use_system_assigned_identity:
             # so the UAMI was not passed and either system identity is not passed, or it is false. The former is not
             # possible as that scenario is eliminated by the first check. So UAMI not passed, but system assigned is
@@ -1239,10 +1230,14 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
     manifest = helper.load_manifest(datasource_type)
 
     if datasource_type == "AzureCosmosDB":
-        # Reject original-location/BI inputs before the shared resolver can make a cloud lookup.
-        cosmosdb.validate_restore_target(target_resource_id, backup_instance_id)
-        cosmos_identity = cosmosdb.get_restore_identity_details(
-            use_system_assigned_identity, user_assigned_identity_arm_url)
+        if backup_instance_id is not None or not target_resource_id:
+            raise InvalidArgumentValueError(
+                'AzureCosmosDB item recovery requires --target-resource-id for an empty alternate NoSQL account.')
+        target = parse_resource_id(target_resource_id) if is_valid_resource_id(target_resource_id) else {}
+        if (target.get('namespace', '').lower() != 'microsoft.documentdb' or
+                target.get('type', '').lower() != 'databaseaccounts' or target.get('children') or
+                any(char in target_resource_id for char in '\\?#')):
+            raise InvalidArgumentValueError('--target-resource-id must be a Cosmos DB account ARM ID.')
 
     # Workload should allow for item level recovery
     if manifest is not None and not manifest["itemLevelRecoveryEnabled"]:
@@ -1268,11 +1263,8 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
     if manifest["isProxyResource"] or manifest["enableDataSourceSetInfo"]:
         restore_request["restore_target_info"]["datasource_set_info"] = helper.get_datasourceset_info(datasource_type, datasource_id, restore_location)
 
-    # Keep Cosmos identity validation local and preserve existing behavior for other workloads.
-    if datasource_type == "AzureCosmosDB":
-        if cosmos_identity is not None:
-            restore_request["identity_details"] = cosmos_identity
-    elif use_system_assigned_identity is not None or user_assigned_identity_arm_url is not None:
+    # UAMI for a restore request object
+    if use_system_assigned_identity is not None or user_assigned_identity_arm_url is not None:
         if user_assigned_identity_arm_url is None and not use_system_assigned_identity:
             # so the UAMI was not passed and either system identity is not passed, or it is false. The former is not
             # possible as that scenario is eliminated by the first check. So UAMI not passed, but system assigned is
