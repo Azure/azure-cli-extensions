@@ -78,6 +78,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         mapped_directories: Optional[list] = None,
         prerelease_policy_api: bool = False,
         from_input: bool = False,
+        platform: str = "linux/amd64",
     ) -> None:
         self._rootfs_proxy = None
         self._platform = None
@@ -205,7 +206,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         # Default platform if no containers were present to set it
         if self._platform is None:
-            self._platform = "linux/amd64"
+            self._platform = platform
 
         self._images = container_results
 
@@ -882,6 +883,28 @@ def validate_image_platform(image_name: str, platform: str, tar_mapping=None) ->
         )
 
 
+def _set_infrastructure_svn(rego_fragments, infrastructure_svn) -> None:
+    """Update infrastructure imports in rego_fragments in place."""
+    if not infrastructure_svn:
+        return
+
+    infrastructure_fragments = (
+        config.DEFAULT_REGO_FRAGMENTS
+        + config.DEFAULT_REGO_FRAGMENTS_WINDOWS
+        + config.DEFAULT_REGO_FRAGMENTS_WINDOWS_VIRTUAL_NODE
+    )
+    infrastructure_identities = {
+        (fragment["issuer"], fragment["feed"]) for fragment in infrastructure_fragments
+    }
+    found = False
+    for fragment in rego_fragments:
+        if (fragment["issuer"], fragment["feed"]) in infrastructure_identities:
+            fragment[config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN] = infrastructure_svn
+            found = True
+    if not found:
+        logger.warning("--infrastructure-svn has no effect because no infrastructure fragment is included.")
+
+
 # pylint: disable=R0914,
 def load_policy_from_arm_template_str(
     template_data: str,
@@ -1010,16 +1033,11 @@ def load_policy_from_arm_template_str(
             )
             if not group_exclude_default_fragments else []
         )
-        if infrastructure_svn and rego_fragments:
-            # assumes the first DEFAULT_REGO_FRAGMENT is always the
-            # infrastructure fragment
-            rego_fragments[0][
-                config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN
-            ] = infrastructure_svn
         if rego_imports:
             # error check the rego imports for invalid data types
             processed_imports = process_fragment_imports(rego_imports)
             rego_fragments.extend(processed_imports)
+        _set_infrastructure_svn(rego_fragments, infrastructure_svn)
 
         volumes = (
             case_insensitive_dict_get(
@@ -1422,13 +1440,7 @@ def load_policy_from_json(
             )
         )
 
-    # changes the svn of the infrastructure fragment provided by ACI
-    if infrastructure_svn and rego_fragments:
-        # assumes the first DEFAULT_REGO_FRAGMENT is always the
-        # infrastructure fragment
-        rego_fragments[0][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN
-        ] = infrastructure_svn
+    _set_infrastructure_svn(rego_fragments, infrastructure_svn)
 
     return AciPolicy(
         {
@@ -1563,16 +1575,11 @@ def load_policy_from_virtual_node_yaml_str(
                 platform, is_vn2=True, prerelease_policy_api=prerelease_policy_api
             )
         ) if not exclude_default_fragments else []
-        if infrastructure_svn:
-            # assumes the first DEFAULT_REGO_FRAGMENT is always the
-            # infrastructure fragment
-            rego_fragments[0][
-                config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN
-            ] = infrastructure_svn
         if rego_imports:
             # error check the rego imports for invalid data types
             processed_imports = process_fragment_imports(rego_imports)
             rego_fragments.extend(processed_imports)
+        _set_infrastructure_svn(rego_fragments, infrastructure_svn)
 
         for container in containers + init_containers:
             # image and name

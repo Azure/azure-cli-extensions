@@ -538,6 +538,132 @@ class ImageLoaderInfrastructureFragment(unittest.TestCase):
         )
 
 
+class InfrastructureSvn(unittest.TestCase):
+    def _load(self, input_format, platform, is_vn2=False, prerelease=False,
+              exclude_defaults=False, include_custom=True):
+        security_policy = importlib.import_module("azext_confcom.security_policy")
+        image = WINDOWS_IMAGE if platform.startswith("windows") else LINUX_IMAGE
+        custom_import = {
+            "issuer": "custom-issuer", "feed": "custom-feed", "minimum_svn": "3", "includes": ["containers"],
+        }
+        imports = [custom_import] if include_custom else []
+        container = {"name": "test-container", "properties": {"image": image}}
+        options = {
+            "platform": platform,
+            "prerelease_policy_api": prerelease,
+            "infrastructure_svn": "99",
+            "exclude_default_fragments": exclude_defaults,
+        }
+        with patch.object(security_policy, "validate_image_platform"):
+            if input_format == "json":
+                return security_policy.load_policy_from_json(
+                    json.dumps({
+                        "version": "1.0",
+                        "scenario": "vn2" if is_vn2 else "",
+                        "containers": [container],
+                        "fragments": imports,
+                    }),
+                    **options,
+                )
+            if input_format == "yaml":
+                return security_policy.load_policy_from_virtual_node_yaml_str(
+                    json.dumps({
+                        "apiVersion": "v1",
+                        "kind": "Pod",
+                        "metadata": {"name": "test-pod"},
+                        "spec": {"containers": [{"name": "test-container", "image": image}]},
+                    }),
+                    rego_imports=imports,
+                    **options,
+                )[0]
+            return security_policy.load_policy_from_arm_template_str(
+                json.dumps({
+                    "resources": [{
+                        "type": "Microsoft.ContainerInstance/containerGroups",
+                        "name": "test-group",
+                        "properties": {"containers": [container]},
+                    }],
+                }),
+                "",
+                rego_imports=imports,
+                **options,
+            )[0]
+
+    def test_windows_vn2_preserves_mount_host_svn_and_warns(self):
+        security_policy = importlib.import_module("azext_confcom.security_policy")
+        for input_format in ("json", "yaml"):
+            for include_custom in (False, True):
+                with self.subTest(input_format=input_format, include_custom=include_custom), \
+                     patch.object(security_policy.logger, "warning") as warning:
+                    fragments = self._load(
+                        input_format, "windows/amd64", is_vn2=True, include_custom=include_custom,
+                    ).get_fragments()
+                    mount_host = next(item for item in fragments if "mount-host" in item["feed"])
+                    self.assertEqual(mount_host["minimum_svn"], "1")
+                    if include_custom:
+                        self.assertEqual(
+                            next(item for item in fragments if item["feed"] == "custom-feed")["minimum_svn"], "3",
+                        )
+                    warning.assert_called_once()
+                    self.assertIn("--infrastructure-svn", warning.call_args[0][0])
+
+    def test_windows_vn2_prerelease_updates_infrastructure_svn(self):
+        for input_format in ("json", "yaml"):
+            with self.subTest(input_format=input_format):
+                fragments = self._load(input_format, "windows/amd64", is_vn2=True, prerelease=True).get_fragments()
+                infrastructure = next(
+                    item for item in fragments if item["feed"] == "mcr.microsoft.com/aci/aci-cwcow-vn2-infra-fragment"
+                )
+                self.assertEqual(infrastructure["minimum_svn"], "99")
+                self.assertEqual(next(item for item in fragments if item["feed"] == "custom-feed")["minimum_svn"], "3")
+        self.assertEqual(config.DEFAULT_REGO_FRAGMENTS_WINDOWS_VIRTUAL_NODE[0]["minimum_svn"], "1")
+
+    def test_windows_without_infrastructure_warns_and_preserves_custom_import(self):
+        security_policy = importlib.import_module("azext_confcom.security_policy")
+        for input_format in ("json", "arm"):
+            for include_custom in (False, True):
+                with self.subTest(input_format=input_format, include_custom=include_custom), \
+                     patch.object(security_policy.logger, "warning") as warning:
+                    fragments = self._load(
+                        input_format, "windows/amd64", include_custom=include_custom,
+                    ).get_fragments()
+                    self.assertEqual(len(fragments), int(include_custom))
+                    if include_custom:
+                        self.assertEqual(fragments[0]["minimum_svn"], "3")
+                    warning.assert_called_once()
+
+    def test_windows_prerelease_updates_infrastructure_svn(self):
+        for input_format in ("json", "arm"):
+            with self.subTest(input_format=input_format):
+                fragments = self._load(input_format, "windows/amd64", prerelease=True).get_fragments()
+                infrastructure = next(
+                    item for item in fragments if item["feed"] == "mcr.microsoft.com/aci/aci-cwcow-infra-fragment"
+                )
+                self.assertEqual(infrastructure["minimum_svn"], "99")
+                self.assertEqual(next(item for item in fragments if item["feed"] == "custom-feed")["minimum_svn"], "3")
+        self.assertEqual(config.DEFAULT_REGO_FRAGMENTS_WINDOWS[0]["minimum_svn"], "1")
+
+    def test_linux_updates_infrastructure_svn_not_custom_import(self):
+        for input_format in ("json", "yaml", "arm"):
+            with self.subTest(input_format=input_format):
+                fragments = self._load(input_format, "linux/amd64").get_fragments()
+                infrastructure = next(
+                    item for item in fragments if item["feed"] == "mcr.microsoft.com/aci/aci-cc-infra-fragment"
+                )
+                self.assertEqual(infrastructure["minimum_svn"], "99")
+                self.assertEqual(next(item for item in fragments if item["feed"] == "custom-feed")["minimum_svn"], "3")
+        self.assertEqual(config.DEFAULT_REGO_FRAGMENTS[0]["minimum_svn"], "4")
+
+    def test_excluded_defaults_warn_and_preserve_custom_import(self):
+        security_policy = importlib.import_module("azext_confcom.security_policy")
+        for input_format in ("json", "yaml", "arm"):
+            with self.subTest(input_format=input_format), patch.object(security_policy.logger, "warning") as warning:
+                fragments = self._load(input_format, "windows/amd64", exclude_defaults=True).get_fragments()
+                self.assertEqual(len(fragments), 1)
+                self.assertEqual(fragments[0]["minimum_svn"], "3")
+                warning.assert_called_once()
+
+
 class FragmentFrameworkVersion(unittest.TestCase):
     # The generated fragment must declare the same framework version as the policy
     # boilerplate: Windows always uses the latest, Linux only with the prerelease flag.

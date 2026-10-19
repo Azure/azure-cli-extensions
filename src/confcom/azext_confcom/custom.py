@@ -15,7 +15,7 @@ from azext_confcom.config import (
     ACI_FIELD_CONTAINERS, ACI_FIELD_SCENARIO, ACI_FIELD_VERSION,
     DEFAULT_REGO_FRAGMENTS, KUBE_PROXY_REGO_FRAGMENT,
     POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS,
-    REGO_IMPORT_FILE_STRUCTURE, VN2)
+    REGO_IMPORT_FILE_STRUCTURE, VN2, get_default_rego_fragments)
 from azext_confcom.cose_proxy import CoseSignToolProxy
 from azext_confcom.errors import eprint
 from azext_confcom.fragment_util import get_all_fragment_contents
@@ -228,6 +228,10 @@ def acipolicygen_confcom(
             disable_stdio=disable_stdio,
             container_definitions=container_definitions,
             prerelease_policy_api=prerelease_policy_api,
+            platform=platform,
+            rego_fragments=copy.deepcopy(
+                get_default_rego_fragments(platform, prerelease_policy_api=prerelease_policy_api)
+            ),
         )
 
     exit_code = 0
@@ -416,6 +420,10 @@ def acifragmentgen_confcom(
             disable_stdio=disable_stdio,
             container_definitions=container_definitions,
             prerelease_policy_api=prerelease_policy_api,
+            platform=platform,
+            rego_fragments=copy.deepcopy(
+                get_default_rego_fragments(platform, prerelease_policy_api=prerelease_policy_api)
+            ),
         )
     else:
         eprint("Either --image-name, --input, or --container-definitions must be provided", exit_code=2)
