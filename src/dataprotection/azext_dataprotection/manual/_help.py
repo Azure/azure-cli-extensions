@@ -58,6 +58,11 @@ helps['dataprotection backup-instance list-from-resourcegraph'] = """
 helps['dataprotection backup-instance update-msi-permissions'] = """
     type: command
     short-summary: Assign the required permissions needed to successfully enable backup for the datasource.
+    long-summary: |
+      For AzureCosmosDB Restore, accepts CLI client snake_case or wire camelCase schema aliases; conflicting aliases are rejected.
+      The UAMI selected in the request is used automatically. An explicit --uami must match that selection case-insensitively.
+      The selected identity must be attached to the vault with a usable principal; no fallback to another identity occurs.
+      This command can create role assignments. Declining confirmation makes no writes; --yes skips confirmation.
     examples:
       - name: Assign the required permissions needed to successfully enable backup for the datasource.
         text: az dataprotection backup-instance update-msi-permissions --backup-instance backup_inst.json --resource-group samarth_resource_group --vault-name samarthbackupvault --datasource-type AzureDisk --operation Backup --permissions-scope ResourceGroup
@@ -67,6 +72,8 @@ helps['dataprotection backup-instance update-msi-permissions'] = """
         text: az dataprotection backup-instance update-msi-permissions --backup-instance esan_backup_inst.json --resource-group sampleRG --vault-name samplevault --datasource-type AzureElasticSAN --operation Backup --permissions-scope Resource
       - name: Assign the required permissions needed to successfully enable restore for an AzureElasticSAN datasource.
         text: az dataprotection backup-instance update-msi-permissions --datasource-type AzureElasticSAN --operation Restore --permissions-scope Resource --resource-group sampleRG --vault-name samplevault --restore-request-object esan_restore_request.json --snapshot-resource-group-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/esanSnapshotRg
+      - name: Prepare Cosmos restore permissions for the identity selected in the request (prompts before writes)
+        text: az dataprotection backup-instance update-msi-permissions --datasource-type AzureCosmosDB --operation Restore --permissions-scope Resource --resource-group sampleRG --vault-name samplevault --restore-request-object @cosmos-request.json
 """
 
 helps['dataprotection backup-policy get-default-policy-template'] = """
@@ -177,6 +184,9 @@ helps['dataprotection backup-policy tag remove'] = """
 helps['dataprotection backup-instance restore initialize-for-data-recovery'] = """
     type: command
     short-summary: Initialize restore request object to recover all backed up data in a backup vault.
+    long-summary: |
+      AzureCosmosDB full-account recovery remains available without --restore-configuration.
+      For database/container selection, use initialize-for-item-recovery instead; a Cosmos selection configuration is rejected here.
     examples:
       - name: initialize restore request for azure disk backup instance
         text: az dataprotection backup-instance restore initialize-for-data-recovery --datasource-type AzureDisk --restore-location centraluseuap --source-datastore OperationalStore --target-resource-id {restore_disk_id} --recovery-point-id b7e6f082-b310-11eb-8f55-9cfce85d4fae
@@ -193,6 +203,14 @@ helps['dataprotection backup-instance restore initialize-for-data-recovery-as-fi
 helps['dataprotection backup-instance restore initialize-for-item-recovery'] = """
     type: command
     short-summary: Initialize restore request object to recover specified items of backed up data in a backup vault.
+    long-summary: |
+      For AzureCosmosDB, builds a local request without authentication or cloud calls. Requires a VaultStore recovery point,
+      a configuration from initialize-restoreconfig and the account ARM ID of an existing, completely empty alternate NoSQL account.
+      No database/container target IDs, original-location restore, rename or Blob container/prefix/range arguments are supported.
+      Select SAMI with --mi-system-assigned true, or an attached UAMI with --uami alone (implies false).
+      Explicit false without --uami and true with --uami are invalid for Cosmos. Omitting both leaves identity details unset,
+      without implying a service default. Initialization does not validate cloud readiness or submit a restore.
+      Save JSON as UTF-8. On Windows PowerShell 5.1, use Set-Content -Encoding utf8 instead of >, which writes UTF-16.
     examples:
       - name: Initialize restore request for azure blob backup instance
         text: az dataprotection backup-instance restore initialize-for-item-recovery --datasource-type AzureBlob --restore-location centraluseuap --source-datastore OperationalStore --backup-instance-id {backup_instance_id}  --point-in-time 2021-05-26T15:00:00 --container-list container1 container2
@@ -207,6 +225,8 @@ helps['dataprotection backup-instance restore initialize-for-item-recovery'] = "
             --vaulted-blob-prefix-pattern '{"containers":[{"name":"container1","prefixmatch":["a","b"],"renameto":"container1renamed"},{"name":"container2","renameto":"container2renamed"}]}'
       - name: Initialize item-level restore request for an AzureElasticSAN volume group
         text: az dataprotection backup-instance restore initialize-for-item-recovery --datasource-type AzureElasticSAN --restore-location centraluseuap --source-datastore OperationalStore --recovery-point-id {recovery_point_id} --target-resource-id {target_volume_group_id} --restore-configuration {restore_configuration}
+      - name: Initialize Cosmos database/container recovery locally using the vault system-assigned identity
+        text: az dataprotection backup-instance restore initialize-for-item-recovery --datasource-type AzureCosmosDB --restore-location {target_region} --source-datastore VaultStore --recovery-point-id {recovery_point_id} --target-resource-id {empty_target_account_arm_id} --restore-configuration @cosmos-config.json --mi-system-assigned true --output json
 """
 
 helps['dataprotection resource-guard list-protected-operations'] = """
@@ -238,12 +258,21 @@ helps['dataprotection backup-instance initialize-backupconfig'] = """
 
 helps['dataprotection backup-instance initialize-restoreconfig'] = """
     type: command
-    short-summary: Initialize JSON request body for initializing and configuring restore of an AzureKubernetesService or AzureElasticSAN resource. The generated JSON is meant for use with other CLI commands, and may not work as an input for non-CLI scenarios without modification.
+    short-summary: Initialize JSON request body for initializing and configuring restore of an AzureKubernetesService, AzureElasticSAN or AzureCosmosDB resource. The generated JSON is meant for use with other CLI commands, and may not work as an input for non-CLI scenarios without modification.
+    long-summary: |
+      Cosmos configuration is local-only: no authentication, inventory lookup or role assignment. Supply 1 to 50 quoted literal
+      database or database/container selectors in recovery-point spelling. Order and case are preserved; no trimming, decoding,
+      comma splitting or wildcard expansion occurs. Exact duplicates and a database selected together with its containers are rejected.
+      Cosmos does not support rename, AKS filters/staging or Blob container/prefix/range arguments. Names are resolved against the recovery point,
+      not today's source inventory. Syntax acceptance is not service validation. Save JSON as UTF-8; on Windows PowerShell 5.1,
+      use Set-Content -Encoding utf8 instead of > (UTF-16).
     examples:
       - name: Initialize restore configuration
         text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureKubernetesService
       - name: Initialize restore configuration for AzureElasticSAN
         text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureElasticSAN --resource-identifiers source-vol1 source-vol2 --resource-name-overrides '{"source-vol1":"restored-vol1","source-vol2":"restored-vol2"}'
+      - name: Select two Cosmos containers and all backed-up containers in another database
+        text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureCosmosDB --resource-identifiers 'db1/col1' 'db1/col2' 'db2' --output json
 """
 
 helps['dataprotection backup-instance validate-for-backup'] = """

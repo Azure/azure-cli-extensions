@@ -566,6 +566,13 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
     # We set the restore criteria depending on the datasource type and on the prefix pattern/container list as provided
     # AKS directly uses the restore configuration. Currently, the "else" just covers Blobs.
     restore_criteria_list = []
+    if datasource_type == "AzureCosmosDB":
+        from . import cosmosdb
+        cosmosdb.reject_unsupported_options(
+            container_list=container_list, from_prefix_pattern=from_prefix_pattern,
+            to_prefix_pattern=to_prefix_pattern, vaulted_blob_prefix_pattern=vaulted_blob_prefix_pattern)
+        return [cosmosdb.validate_restore_configuration(restore_configuration)]
+
     if datasource_type == "AzureKubernetesService":
         if restore_configuration is not None:
             restore_criteria = restore_configuration
