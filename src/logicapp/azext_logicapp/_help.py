@@ -684,6 +684,12 @@ helps['logicapp deployment package'] = """
 type: command
 short-summary: Create a deterministic deployment package for a Logic Apps Standard project.
 long-summary: >
+  SDK-based codeful projects that reference both Microsoft.Azure.Workflows.Sdk
+  and Microsoft.Azure.Functions.Worker.Sdk are auto-detected and published for
+  Release/net8.0 into lib/codeful. Use --project when more than one eligible
+  project exists, and --dotnet to select the dotnet executable. Traditional
+  Microsoft.NET.Sdk.Functions and WebJobs extension projects retain the existing
+  file-packaging path.
   Excludes directories containing the native scaffold Workflow.Tests.csproj or
   .logicapp-test-state, including custom in-project test locations, and raw TRX
   files. Test sources, fixtures, private caches and build outputs under those
@@ -696,6 +702,8 @@ long-summary: >
 examples:
   - name: Package a project.
     text: az logicapp deployment package --path .\\orders --output-path .\\orders.zip
+  - name: Package a selected SDK-based codeful project.
+    text: az logicapp deployment package --path .\\orders --project .\\orders.csproj --output-path .\\orders.zip
 """
 
 helps['logicapp dependency check'] = """
