@@ -198,7 +198,12 @@ The AKS lifecycle provisions an Entra-enabled cluster; managed identity alone
 does not satisfy its authentication prerequisite. It cleans up the association,
 AKS, and Fabric before group teardown.
 
-The egress trust bundle collection scenario remains explicitly skipped:
+The egress trust bundle collection scenario is marked `@live_only()`:
 LIST returned HTTP 404 `ResourceReadFailed`, while singleton show succeeded.
+It is skipped only during ordinary offline playback, not unconditionally.
+Run `azdev test test_agentfabric_egress_trust_bundle_list --live` to exercise
+the endpoint after a rollout. The live test asserts success and will still
+fail if the service returns that error. Once a successful live recording is
+available, remove the marker and include it in normal playback coverage.
 
 Failed-run recordings are not committed as successful playback fixtures.

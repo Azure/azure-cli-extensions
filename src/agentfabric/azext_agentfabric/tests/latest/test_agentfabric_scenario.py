@@ -8,7 +8,7 @@ import re
 import unittest
 from contextlib import ExitStack
 
-from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
+from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import RecordingProcessor
 
 
@@ -209,9 +209,10 @@ class AgentfabricResourceScenario(ScenarioTest):
         with ExitStack() as cleanup:
             self._exercise_aks_lifecycle(cleanup)
 
-    @unittest.skip("Public Central US EUAP collection GET fails with ResourceReadFailed.")
+    @live_only()
     @ResourceGroupPreparer(name_prefix="clitestafetblist", location=LOCATION)
     def test_agentfabric_egress_trust_bundle_list(self, resource_group):
+        # No successful recording yet: public collection GET returned 404 ResourceReadFailed.
         self.kwargs.update({
             "fabric": self.create_random_name(prefix="cliafetb", length=24),
             "location": LOCATION,
