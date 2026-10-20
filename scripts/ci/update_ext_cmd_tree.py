@@ -68,9 +68,6 @@ def merge(data, key, value):
 def update_cmd_tree(ext_name):
     print(f"Processing {ext_name}")
     if ext_name == 'ml':
-        get_package_version("azure-storage-blob")
-        upgrade_package("azure-storage-blob")
-        get_package_version("azure-storage-blob")
         get_package_version("rpds")
         upgrade_package("rpds")
         get_package_version("rpds")
