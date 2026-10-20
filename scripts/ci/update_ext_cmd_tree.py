@@ -3,12 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import argparse
 import filecmp
 import json
 import os
-import sys
 import subprocess
-
+import sys
 from azure.cli.core import get_default_cli
 from azure.cli.core._session import Session
 from azure.cli.core.commands import _load_extension_command_loader
@@ -68,9 +68,6 @@ def merge(data, key, value):
 def update_cmd_tree(ext_name):
     print(f"Processing {ext_name}")
     if ext_name == 'ml':
-        get_package_version("azure-storage-blob")
-        upgrade_package("azure-storage-blob")
-        get_package_version("azure-storage-blob")
         get_package_version("rpds")
         upgrade_package("rpds")
         get_package_version("rpds")
@@ -86,7 +83,7 @@ def update_cmd_tree(ext_name):
     az_cli.invocation = invoker
 
     sys.path.append(ext_dir)
-    extension_command_table, _ = _load_extension_command_loader(invoker.commands_loader, None, ext_mod)
+    extension_command_table, *_ = _load_extension_command_loader(invoker.commands_loader, None, ext_mod)
 
     EXT_CMD_TREE_TO_UPLOAD = Session(encoding='utf-8')
     EXT_CMD_TREE_TO_UPLOAD.load(os.path.expanduser(os.path.join('~', '.azure', file_name)))
@@ -142,8 +139,21 @@ def upload_cmd_tree():
         raise Exception("Failed to update extensionCommandTree.json in the storage account")
 
 
-if __name__ == '__main__':
-    for ext in sys.argv[1:]:
+def main(argv=None):
+    parser = argparse.ArgumentParser(description='Build and optionally publish the extension command tree.')
+    parser.add_argument('--build-only', action='store_true',
+                        help='Generate the local command tree without uploading it.')
+    parser.add_argument('extensions', nargs='+')
+    args = parser.parse_args(argv)
+    for ext in args.extensions:
         update_cmd_tree(ext)
         print()
-    upload_cmd_tree()
+    if args.build_only:
+        print("Build-only: command tree saved to {}".format(
+            os.path.expanduser(os.path.join('~', '.azure', file_name))))
+    else:
+        upload_cmd_tree()
+
+
+if __name__ == '__main__':
+    main()
