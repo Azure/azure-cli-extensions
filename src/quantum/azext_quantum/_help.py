@@ -380,8 +380,7 @@ helps['quantum workspace create'] = """
                 az quantum offerings list -l MyLocation -o table
       - name: Create a new Azure Quantum workspace with a specific storage account.
         text: |-
-            az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-                --storage-account MyStorageAccountName
+            az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation -a MyStorageAccountName
       - name: Create a V2 workspace with managed storage and quota allocations for provider targets.
         text: |-
             az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\

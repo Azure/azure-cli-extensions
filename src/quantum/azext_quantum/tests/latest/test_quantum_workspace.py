@@ -188,7 +188,7 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
                 f'az quantum workspace create --auto-accept --skip-autoadd '
                 f'-g {test_resource_group} -w {test_workspace} '
                 f'-l {test_location} -r "{test_provider_sku_list}" -o json',
-                checks=[self.check('properties.provisioningState', 'Succeeded')]
+                checks=[self.check('name', test_workspace)]
             )
 
             workspace = _wait_for_workspace_provisioned(
@@ -197,6 +197,8 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
                 test_workspace,
                 attempts=MANAGED_STORAGE_PROVISIONING_ATTEMPTS,
             )
+
+            self.assertEqual(workspace['properties']['provisioningState'], 'Succeeded')
 
             self.assertIn(
                 workspace['properties'].get('workspaceKind'),
@@ -247,6 +249,9 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
                 self, test_resource_group, test_workspace_temp
             )
             self.assertEqual(workspace['properties']['workspaceKind'], 'V2')
+            actual_storage = workspace['properties']['storageAccount'].rstrip('/').rsplit('/', 1)[-1]
+            expected_storage = test_storage_account.rstrip('/').rsplit('/', 1)[-1]
+            self.assertEqual(actual_storage.lower(), expected_storage.lower())
             quotas = self.cmd(
                 f'az quantum workspace quotas -g {test_resource_group} -w {test_workspace_temp} -o json'
             ).get_output_in_json()
@@ -269,39 +274,34 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
                 self.check("properties.provisioningState", "Deleting")
             ])
             workspaces_to_cleanup.remove(test_workspace_temp)
+        finally:
+            cleanup_commands = [
+                ('temporary workspace',
+                 f'az quantum workspace delete -g {test_resource_group} -w {workspace_name}')
+                for workspace_name in reversed(workspaces_to_cleanup)
+            ]
+            cleanup_commands.append(('workspace defaults', 'az quantum workspace clear'))
+            run_cleanup_commands(self, cleanup_commands)
 
-            # Create a V2 workspace with service-managed storage
-            test_workspace_temp = self.create_random_name(
-                prefix='e2e-test-w',
-                length=18,
-            )
-            workspaces_to_cleanup.append(test_workspace_temp)
-            self.cmd(
-                f'az quantum workspace create --workspace-kind V2 --auto-accept '
-                f'-g {test_resource_group} -w {test_workspace_temp} '
-                f'-l {test_location} -r "{test_provider_sku_list}" --quota {create_quota} -o json',
-                checks=[self.check('properties.provisioningState', 'Succeeded')]
-            )
-            workspace = _wait_for_workspace_provisioned(
-                self,
-                test_resource_group,
-                test_workspace_temp,
-                attempts=MANAGED_STORAGE_PROVISIONING_ATTEMPTS,
-            )
-            self.assertEqual(
-                workspace['properties']['workspaceKind'],
-                'V2',
-            )
+    def test_workspace_v2_create_destroy_without_storage_account(self):
+        test_location = get_test_workspace_location()
+        test_resource_group = get_test_resource_group()
+        provider_id, target_id = self._get_v2_provider_and_target(test_location)
+        test_provider_sku_list = f'{provider_id}/default'
+        create_quota = f'provider-id={provider_id} target-id={target_id} standard-minutes-lifetime=1'
+        test_workspace_temp = self.create_random_name(prefix='e2e-test-w', length=18)
+        workspaces_to_cleanup = [test_workspace_temp]
+        try:
+            self.cmd(f'az quantum workspace create --auto-accept --workspace-kind V2 -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -r "{test_provider_sku_list}" --quota {create_quota} -o json', checks=[
+                self.check("name", test_workspace_temp)
+            ])
+            workspace = _wait_for_workspace_provisioned(self, test_resource_group, test_workspace_temp, attempts=MANAGED_STORAGE_PROVISIONING_ATTEMPTS)
+            self.assertEqual(workspace['properties']['provisioningState'], 'Succeeded')
+            self.assertEqual(workspace['properties']['workspaceKind'], 'V2')
             self._assert_managed_storage(workspace)
-
-            quotas = self.cmd(
-                f'az quantum workspace quotas -g {test_resource_group} -w {test_workspace_temp} -o json'
-            ).get_output_in_json()
-            self._assert_workspace_quota_limit(
-                quotas, provider_id, target_id, 1
-            )
+            quotas = self.cmd(f'az quantum workspace quotas -g {test_resource_group} -w {test_workspace_temp} -o json').get_output_in_json()
+            self._assert_workspace_quota_limit(quotas, provider_id, target_id, 1)
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
-                self.check("name", test_workspace_temp),
                 self.check("properties.provisioningState", "Deleting")
             ])
             workspaces_to_cleanup.remove(test_workspace_temp)
@@ -637,7 +637,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                 self.check("properties.provisioningState", "Accepted")  # Accepted because --skip-role-assignment returns without waiting.
             ])
 
-            time.sleep(10)  # Wait for the workspace to be provisioned
+            _wait_for_workspace_provisioned(self, test_resource_group, test_workspace_temp, attempts=MANAGED_STORAGE_PROVISIONING_ATTEMPTS)  # Wait for the workspace to be provisioned
 
             # set
             try:
@@ -859,7 +859,7 @@ class QuantumWorkspaceOperationsTest(unittest.TestCase):
         client.begin_create_or_update.assert_called_once()
         create_args = client.begin_create_or_update.call_args
         self.assertEqual(create_args.args[:2], ('resource-group', 'workspace'))
-        self.assertNotIn('polling', create_args.kwargs)
+        self.assertIs(create_args.kwargs['polling'], True)
 
         workspace = create_args.args[2]
         self.assertIsNone(workspace.properties.storage_account)

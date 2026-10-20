@@ -435,22 +435,24 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
     if workspace_kind_value == WorkspaceKind.V2.value:
         skip_autoadd = True
 
-    # Use direct API creation when storage is service-managed or role assignment is explicitly skipped.
-    if skip_role_assignment or not storage_account:
-        _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
+    _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
+    if workspace_kind_value == WorkspaceKind.V2.value:
         _apply_target_quotas(quantum_workspace.properties.providers, quota)
         _validate_target_quota_bounds(cmd, info, quantum_workspace, quota, include_usage=False)
-        quantum_workspace.properties.api_key_enabled = workspace_kind_value != WorkspaceKind.V2.value
+        quantum_workspace.properties.workspace_kind = WorkspaceKind.V2
+        quantum_workspace.properties.api_key_enabled = False
+    else:
+        quantum_workspace.properties.api_key_enabled = True
         if workspace_kind:
             quantum_workspace.properties.workspace_kind = workspace_kind
-        if not storage_account:
-            poller = client.begin_create_or_update(
-                info.resource_group, info.name, quantum_workspace
-            )
-        else:
-            poller = client.begin_create_or_update(
-                info.resource_group, info.name, quantum_workspace, polling=False
-            )
+
+    if skip_role_assignment or not storage_account:
+        poller = client.begin_create_or_update(
+            info.resource_group,
+            info.name,
+            quantum_workspace,
+            polling=not storage_account,
+        )
         return poller.result()
 
     # ARM-template-based code to create an Azure Quantum workspace and make it a "Contributor" to the storage account
@@ -459,9 +461,6 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
     with open(template_path, 'r', encoding='utf8') as template_file_fd:
         template = json.load(template_file_fd)
 
-    _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
-    _apply_target_quotas(quantum_workspace.properties.providers, quota)
-    _validate_target_quota_bounds(cmd, info, quantum_workspace, quota, include_usage=False)
     validated_providers = []
     for provider in quantum_workspace.properties.providers:
         provider_data = {"providerId": provider.provider_id, "providerSku": provider.provider_sku}
