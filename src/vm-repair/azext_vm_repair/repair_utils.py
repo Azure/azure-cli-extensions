@@ -134,12 +134,12 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     logger.debug("Calling: %s", command_string)
 
     # Bypass az.cmd on Windows so cmd.exe cannot expand '%'/'!' or interpret shell
-    # metacharacters. Use the running CLI's interpreter rather than Python from PATH.
+    # metacharacters. Isolate the running CLI's interpreter from untrusted import paths.
     windows_os_name = 'nt'
     if os.name == windows_os_name:
         for token in tokenized_command[1:]:
             _validate_command_token(token)
-        command_to_run = [sys.executable, '-m', 'azure.cli', *tokenized_command[1:]]
+        command_to_run = [sys.executable, '-I', '-m', 'azure.cli', *tokenized_command[1:]]
     else:
         command_to_run = tokenized_command
 

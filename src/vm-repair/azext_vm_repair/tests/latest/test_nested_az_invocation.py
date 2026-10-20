@@ -43,7 +43,7 @@ def test_windows_uses_current_cli_interpreter_without_shell(mock_popen):
     mock_popen.return_value = _FakeProcess(returncode=0, stdout='ok')
     command_line = _windows_command_line(mock_popen, 'az vm show -g rg -n vm')
 
-    assert command_line == [sys.executable, '-m', 'azure.cli', 'vm', 'show', '-g', 'rg', '-n', 'vm']
+    assert command_line == [sys.executable, '-I', '-m', 'azure.cli', 'vm', 'show', '-g', 'rg', '-n', 'vm']
     assert mock_popen.call_args.kwargs['shell'] is False
 
 
@@ -52,7 +52,7 @@ def test_windows_command_without_arguments(mock_popen):
     mock_popen.return_value = _FakeProcess(returncode=0, stdout='ok')
     command_line = _windows_command_line(mock_popen, 'az')
 
-    assert command_line == [sys.executable, '-m', 'azure.cli']
+    assert command_line == [sys.executable, '-I', '-m', 'azure.cli']
 
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
@@ -147,20 +147,47 @@ def test_non_az_command_is_still_rejected(mock_popen):
 # 3. Real execution proofs (Windows only)
 # ---------------------------------------------------------------------------
 
+@pytest.fixture(params=['clean', 'cwd', 'pythonpath'])
+def nested_cli_environment(request, tmp_path, monkeypatch):
+    marker = tmp_path / 'shadow-cli-ran.txt'
+    working_directory = tmp_path / 'working directory'
+    working_directory.mkdir()
+    monkeypatch.delenv('PYTHONPATH', raising=False)
+    if request.param != 'clean':
+        shadow_root = tmp_path / 'untrusted packages'
+        package = shadow_root / 'azure' / 'cli'
+        package.mkdir(parents=True)
+        (package.parent / '__init__.py').write_text('', encoding='utf-8')
+        (package / '__init__.py').write_text('', encoding='utf-8')
+        (package / '__main__.py').write_text(
+            'from pathlib import Path\n'
+            'Path({!r}).write_text("shadow CLI executed", encoding="utf-8")\n'
+            'print(\'{{"shadow-cli": true}}\')\n'.format(str(marker)),
+            encoding='utf-8')
+        if request.param == 'cwd':
+            working_directory = shadow_root
+        else:
+            monkeypatch.setenv('PYTHONPATH', str(shadow_root))
+    monkeypatch.chdir(working_directory)
+    return marker
+
+
 @pytest.mark.skipif(os.name != 'nt', reason='interpreter-based launch is Windows-specific')
-def test_real_nested_az_call_succeeds():
+def test_real_nested_az_call_succeeds(nested_cli_environment):
     output = _call_az_command('az version -o json')
 
+    assert not nested_cli_environment.exists(), 'An untrusted package replaced Azure CLI'
     assert json.loads(output).get('azure-cli')
 
 
 @pytest.mark.skipif(os.name != 'nt', reason='interpreter-based launch is Windows-specific')
-def test_real_failing_az_call_reports_a_message():
+def test_real_failing_az_call_reports_a_message(nested_cli_environment):
     # A genuinely failing az command must produce a non-empty, actionable error.
     with pytest.raises(AzCommandError) as raised:
         _call_az_command('az version --vm-repair-invalid-option')
 
     assert str(raised.value).strip()
+    assert not nested_cli_environment.exists(), 'An untrusted package replaced Azure CLI'
 
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')

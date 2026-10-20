@@ -13,6 +13,7 @@
 import json
 import os
 import shlex
+import subprocess
 import sys
 import unittest
 from unittest import mock
@@ -51,7 +52,7 @@ def test_call_az_command_windows_passes_argument_list(mock_popen):
         _call_az_command(payload)
 
     command_args = mock_popen.call_args[0][0]
-    assert command_args == [sys.executable, '-m', 'azure.cli', *shlex.split(payload)[1:]]
+    assert command_args == [sys.executable, '-I', '-m', 'azure.cli', *shlex.split(payload)[1:]]
     assert mock_popen.call_args.kwargs['shell'] is False
 
 
@@ -122,13 +123,19 @@ ROUNDTRIP_PAYLOADS = [
 
 @pytest.fixture
 def argv_receiver(tmp_path, monkeypatch):
-    package = tmp_path / 'azure' / 'cli'
-    package.mkdir(parents=True)
-    (package.parent / '__init__.py').write_text('', encoding='utf-8')
-    (package / '__init__.py').write_text('', encoding='utf-8')
-    (package / '__main__.py').write_text(
+    """Check production argv, then use a real isolated process to receive its values."""
+    receiver = tmp_path / 'argv receiver.py'
+    receiver.write_text(
         'import json, sys\nprint(json.dumps(sys.argv[1:]))\n', encoding='utf-8')
-    monkeypatch.setenv('PYTHONPATH', str(tmp_path))
+    real_popen = subprocess.Popen
+
+    def receive_command(command_args, **kwargs):
+        assert command_args[:4] == [sys.executable, '-I', '-m', 'azure.cli']
+        assert kwargs['shell'] is False
+        return real_popen(
+            [sys.executable, '-I', str(receiver), *command_args[4:]], **kwargs)
+
+    monkeypatch.setattr('azext_vm_repair.repair_utils.subprocess.Popen', receive_command)
     monkeypatch.setenv('VM_REPAIR_EXPANSION_TEST', 'must-not-expand')
 
 
@@ -463,7 +470,7 @@ class UnmanagedDiskAttachValidationTest(unittest.TestCase):
         self.assertEqual(mock_az.call_count, 2)
         self.assertIn('detach', mock_popen.call_args_list[0][0][0])
         self.assertEqual(mock_popen.call_args_list[1][0][0], [
-            sys.executable, '-m', 'azure.cli', 'vm', 'update',
+            sys.executable, '-I', '-m', 'azure.cli', 'vm', 'update',
             '-g', 'source-rg', '-n', 'source-vm', '--set', 'storageProfile.osDisk.vhd.uri=' + uri,
         ])
 
