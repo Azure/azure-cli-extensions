@@ -420,6 +420,8 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
     """
     Create a new Azure Quantum workspace.
     """
+    if skip_role_assignment and not storage_account:
+        raise InvalidArgumentValueError("'--skip-role-assignment' requires '--storage-account'. Role assignments for managed storage are configured automatically.")
     client = cf_workspaces(cmd.cli_ctx)
     if not workspace_name:
         raise RequiredArgumentMissingError("An explicit workspace name is required for this command.")
@@ -451,7 +453,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account=N
             info.resource_group,
             info.name,
             quantum_workspace,
-            polling=not storage_account,
+            polling=False,
         )
         return poller.result()
 

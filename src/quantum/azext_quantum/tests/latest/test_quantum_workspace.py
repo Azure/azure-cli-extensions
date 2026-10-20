@@ -31,7 +31,7 @@ from ...vendored_sdks.azure_quantum_python._client.operations._operations import
 )
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-MANAGED_STORAGE_PROVISIONING_ATTEMPTS = 60
+WORKSPACE_PROVISIONING_ATTEMPTS = 60
 
 
 def _not_found_pager():
@@ -79,7 +79,7 @@ def _get_workspace_quota_row(quotas, provider_id, target_id, dimension):
 
 
 def _wait_for_workspace_provisioned(test_case, resource_group, workspace_name,
-                                    attempts=6, delay=11):
+                                    attempts=WORKSPACE_PROVISIONING_ATTEMPTS, delay=11):
     last_state = None
     for attempt in range(attempts):
         workspace = test_case.cmd(
@@ -98,6 +98,18 @@ def _wait_for_workspace_provisioned(test_case, resource_group, workspace_name,
         f"Workspace '{workspace_name}' did not finish provisioning after {attempts} attempts "
         f"(last state: '{last_state}')."
     )
+
+
+def _assert_user_storage(test_case, workspace, expected_storage):
+    properties = workspace['properties']
+    actual_storage = properties.get('storageAccount')
+    test_case.assertTrue(actual_storage, 'Workspace is not linked to user-provided storage account.')
+    test_case.assertFalse(properties.get('managedStorageAccount'), 'Workspace unexpectedly uses managed storage.')
+    actual_storage = actual_storage.rstrip('/').lower()
+    expected_storage = expected_storage.rstrip('/').lower()
+    if not expected_storage.startswith('/'):
+        actual_storage = actual_storage.rsplit('/', 1)[-1]
+    test_case.assertEqual(actual_storage, expected_storage, 'Workspace is linked to the wrong storage account.')
 
 
 # Classes patterned after classes in azext_quantum.vendored_sdks.azure_mgmt_quantum.models._models_py3.py
@@ -166,7 +178,7 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
         self.assertTrue(properties.get('managedStorageAccount'))
         self.assertFalse(properties.get('storageAccount'))
 
-    def test_workspace_v1_create_destroy_without_storage_account(self):
+    def test_workspace_v1_create_destroy_with_managed_storage(self):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
         test_provider_sku_list = get_test_workspace_provider_sku_list()
@@ -195,7 +207,7 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
                 self,
                 test_resource_group,
                 test_workspace,
-                attempts=MANAGED_STORAGE_PROVISIONING_ATTEMPTS,
+                attempts=WORKSPACE_PROVISIONING_ATTEMPTS,
             )
 
             self.assertEqual(workspace['properties']['provisioningState'], 'Succeeded')
@@ -228,7 +240,7 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
             )
             run_cleanup_commands(self, cleanup_commands)
 
-    def test_workspace_v2_create_destroy(self):
+    def test_workspace_v2_create_destroy_with_user_storage(self):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
         test_storage_account = get_test_workspace_storage()
@@ -239,7 +251,6 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
         workspaces_to_cleanup = []
 
         try:
-            # Create V2 workspace via ARM template path with a target quota allocation
             test_workspace_temp = self.create_random_name(prefix='e2e-test-w', length=18)
             workspaces_to_cleanup.append(test_workspace_temp)
             self.cmd(f'az quantum workspace create --workspace-kind V2 --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r "{test_provider_sku_list}" --quota {create_quota} -o json', checks=[
@@ -249,9 +260,7 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
                 self, test_resource_group, test_workspace_temp
             )
             self.assertEqual(workspace['properties']['workspaceKind'], 'V2')
-            actual_storage = workspace['properties']['storageAccount'].rstrip('/').rsplit('/', 1)[-1]
-            expected_storage = test_storage_account.rstrip('/').rsplit('/', 1)[-1]
-            self.assertEqual(actual_storage.lower(), expected_storage.lower())
+            _assert_user_storage(self, workspace, test_storage_account)
             quotas = self.cmd(
                 f'az quantum workspace quotas -g {test_resource_group} -w {test_workspace_temp} -o json'
             ).get_output_in_json()
@@ -283,7 +292,7 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
             cleanup_commands.append(('workspace defaults', 'az quantum workspace clear'))
             run_cleanup_commands(self, cleanup_commands)
 
-    def test_workspace_v2_create_destroy_without_storage_account(self):
+    def test_workspace_v2_create_destroy_with_managed_storage(self):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
         provider_id, target_id = self._get_v2_provider_and_target(test_location)
@@ -295,7 +304,7 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
             self.cmd(f'az quantum workspace create --auto-accept --workspace-kind V2 -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -r "{test_provider_sku_list}" --quota {create_quota} -o json', checks=[
                 self.check("name", test_workspace_temp)
             ])
-            workspace = _wait_for_workspace_provisioned(self, test_resource_group, test_workspace_temp, attempts=MANAGED_STORAGE_PROVISIONING_ATTEMPTS)
+            workspace = _wait_for_workspace_provisioned(self, test_resource_group, test_workspace_temp, attempts=WORKSPACE_PROVISIONING_ATTEMPTS)
             self.assertEqual(workspace['properties']['provisioningState'], 'Succeeded')
             self.assertEqual(workspace['properties']['workspaceKind'], 'V2')
             self._assert_managed_storage(workspace)
@@ -606,7 +615,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         self.cmd('az quantum workspace clear')
 
     @live_only()
-    def test_workspace_create_destroy(self):
+    def test_workspace_v1_create_destroy_with_user_storage(self):
         # initialize values
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
@@ -634,10 +643,11 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             workspaces_to_cleanup.append(test_workspace_temp)
             self.cmd(f'az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[
                 self.check("name", test_workspace_temp),
-                self.check("properties.provisioningState", "Accepted")  # Accepted because --skip-role-assignment returns without waiting.
             ])
 
-            _wait_for_workspace_provisioned(self, test_resource_group, test_workspace_temp, attempts=MANAGED_STORAGE_PROVISIONING_ATTEMPTS)  # Wait for the workspace to be provisioned
+            workspace = _wait_for_workspace_provisioned(self, test_resource_group, test_workspace_temp)
+            _assert_user_storage(self, workspace, test_storage_account)
+            self.assertIn(workspace['properties'].get('workspaceKind'), (None, 'V1'))
 
             # set
             try:
@@ -665,10 +675,11 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             # Create workspace with "--skip-role-assignment" and "--skip-autoadd" parameters
             test_workspace_temp = self.create_random_name(prefix='e2e-test-w', length=18)
             workspaces_to_cleanup.append(test_workspace_temp)
-            self.cmd(f'az quantum workspace create --skip-autoadd --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[
-                self.check("name", test_workspace_temp),
-                self.check("properties.provisioningState", "Accepted")  # Accepted because --skip-role-assignment returns without waiting.
-            ])
+            self.cmd(f'az quantum workspace create --skip-autoadd --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[self.check("name", test_workspace_temp)])
+
+            workspace = _wait_for_workspace_provisioned(self, test_resource_group, test_workspace_temp)
+            _assert_user_storage(self, workspace, test_storage_account)
+            self.assertIn(workspace['properties'].get('workspaceKind'), (None, 'V1'))
 
             # delete
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
@@ -684,6 +695,10 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                 self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
             ])
 
+            workspace = _wait_for_workspace_provisioned(self, test_resource_group, test_workspace_temp)
+            _assert_user_storage(self, workspace, test_storage_account)
+            self.assertIn(workspace['properties'].get('workspaceKind'), (None, 'V1'))
+
             # delete
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
                 self.check("name", test_workspace_temp),
@@ -697,6 +712,10 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             self.cmd(f'az quantum workspace create --auto-accept --skip-autoadd -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
                 self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
             ])
+
+            workspace = _wait_for_workspace_provisioned(self, test_resource_group, test_workspace_temp)
+            _assert_user_storage(self, workspace, test_storage_account)
+            self.assertIn(workspace['properties'].get('workspaceKind'), (None, 'V1'))
 
             # delete
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
@@ -712,6 +731,10 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                 self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),
             ])
 
+            workspace = _wait_for_workspace_provisioned(self, test_resource_group, test_workspace_temp)
+            _assert_user_storage(self, workspace, test_storage_account_grs)
+            self.assertIn(workspace['properties'].get('workspaceKind'), (None, 'V1'))
+
             # delete
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
                 self.check("name", test_workspace_temp),
@@ -726,6 +749,10 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                 self.check("name", (DEPLOYMENT_NAME_PREFIX + test_workspace_temp)[:64]),
             ])
 
+            workspace = _wait_for_workspace_provisioned(self, test_resource_group, test_workspace_temp)
+            _assert_user_storage(self, workspace, test_storage_account_grs)
+            self.assertIn(workspace['properties'].get('workspaceKind'), (None, 'V1'))
+
             # delete
             self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
                 self.check("name", test_workspace_temp),
@@ -734,7 +761,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             workspaces_to_cleanup.remove(test_workspace_temp)
             test_completed = True
         else:
-            self.skipTest(f"Skipping test_workspace_create_destroy: One or more providers in '{test_provider_sku_list}' not found in AZURE_QUANTUM_CAPABILITIES")
+            self.skipTest(f"Skipping test_workspace_v1_create_destroy_with_user_storage: One or more providers in '{test_provider_sku_list}' not found in AZURE_QUANTUM_CAPABILITIES")
 
     @live_only()
     def test_workspace_keys(self):
@@ -822,6 +849,15 @@ class QuantumWorkspaceOperationsTest(unittest.TestCase):
         message = check_version(None, None, test_old_date)
         self.assertIsNone(message)
 
+    def test_skip_role_assignment_requires_user_storage(self):
+        from ...operations import workspace as workspace_ops
+        cmd = SimpleNamespace(cli_ctx=object())
+        with patch.object(workspace_ops, 'cf_workspaces') as client_factory, patch.object(workspace_ops, '_add_quantum_providers') as add_providers:
+            with self.assertRaisesRegex(InvalidArgumentValueError, 'requires.*--storage-account'):
+                create(cmd, resource_group_name='group', workspace_name='workspace', location='eastus', storage_account=None, skip_role_assignment=True)
+            client_factory.assert_not_called()
+            add_providers.assert_not_called()
+
     def test_create_without_storage_account_uses_sdk_path(self):
         from ...operations import workspace as workspace_ops
 
@@ -859,7 +895,7 @@ class QuantumWorkspaceOperationsTest(unittest.TestCase):
         client.begin_create_or_update.assert_called_once()
         create_args = client.begin_create_or_update.call_args
         self.assertEqual(create_args.args[:2], ('resource-group', 'workspace'))
-        self.assertIs(create_args.kwargs['polling'], True)
+        self.assertIs(create_args.kwargs['polling'], False)
 
         workspace = create_args.args[2]
         self.assertIsNone(workspace.properties.storage_account)
