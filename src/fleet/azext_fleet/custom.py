@@ -13,6 +13,7 @@ from knack.log import get_logger
 from knack.util import CLIError
 
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import sdk_no_wait, get_file_json, shell_safe_json_parse
 from azure.cli.core import get_default_cli
 from azure.mgmt.core.tools import parse_resource_id
@@ -32,7 +33,7 @@ from azext_fleet.constants import SUPPORTED_GATE_TYPE_FILTERS
 from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
 from azext_fleet.constants import FLEET_1P_APP_ID
 from azext_fleet.constants import POLLING_INTERVAL_SECS
-from azext_fleet.vendored_sdks.v2026_06_02_preview.models import (
+from azext_fleet.vendored_sdks.v2026_11_02_preview.models import (
     PropagationPolicy,
     PropagationPolicyPatch,
     PlacementProfile,
@@ -1433,5 +1434,217 @@ def _apply_cluster_mesh_what_if(cmd, resource_group_name, fleet_name, name):
             entry["ErrorMessage"] = error_message
 
         results.append(entry)
+
+    return results
+
+
+def _parse_allowed_subjects_from_file(cmd, allowed_subjects_from_file):
+    """Load the --allowed-subjects-from-file payload into a list of AllowedSubject models.
+
+    The file holds a JSON array matching the AllowedSubject REST shape, in which 'matchLabels' is
+    an array of "key=value" strings rather than a map:
+        [
+          {
+            "namespaceSelector": {"matchLabels": ["kubernetes.io/metadata.name=team-a"]},
+            "serviceAccountSelector": {"matchLabels": ["app=payments"]}
+          }
+        ]
+    """
+    if allowed_subjects_from_file is None:
+        return None
+
+    allowed_subject_model = cmd.get_models(
+        "AllowedSubject",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="identity_binding_profiles"
+    )
+
+    allowed_subjects = get_file_json(allowed_subjects_from_file)
+
+    if not isinstance(allowed_subjects, list):
+        raise InvalidArgumentValueError(
+            "--allowed-subjects-from-file must contain a JSON array of subject objects."
+        )
+
+    result = []
+    for index, subject in enumerate(allowed_subjects):
+        if not isinstance(subject, dict):
+            raise InvalidArgumentValueError(
+                f"allowed subject at index {index} must be a JSON object."
+            )
+        if not subject.get("namespaceSelector"):
+            raise InvalidArgumentValueError(
+                f"allowed subject at index {index} is missing the required 'namespaceSelector'."
+            )
+        # from_dict, not the constructor: these models are keyword-only and reject a positional
+        # mapping.
+        result.append(allowed_subject_model.from_dict(subject))
+
+    return result
+
+
+def create_identity_binding_profile(cmd,
+                                    client,
+                                    resource_group_name,
+                                    fleet_name,
+                                    name,
+                                    member_selector=None,
+                                    managed_identity_resource_id=None,
+                                    allowed_subjects_from_file=None,
+                                    no_wait=False):
+    identity_binding_profile_model = cmd.get_models(
+        "IdentityBindingProfile",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="identity_binding_profiles"
+    )
+    identity_binding_profile_properties_model = cmd.get_models(
+        "IdentityBindingProfileProperties",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="identity_binding_profiles"
+    )
+    member_selector_model = cmd.get_models(
+        "MemberSelector",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="identity_binding_profiles"
+    )
+    identity_binding_properties_model = cmd.get_models(
+        "IdentityBindingProperties",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="identity_binding_profiles"
+    )
+    managed_identity_model = cmd.get_models(
+        "IdentityBindingManagedIdentityProfile",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="identity_binding_profiles"
+    )
+
+    selector = None
+    if member_selector is not None:
+        selector = member_selector_model(by_label=member_selector)
+
+    identity_binding_properties = identity_binding_properties_model(
+        managed_identity=managed_identity_model(resource_id=managed_identity_resource_id),
+        allowed_subjects=_parse_allowed_subjects_from_file(cmd, allowed_subjects_from_file)
+    )
+
+    properties = identity_binding_profile_properties_model(
+        member_selector=selector,
+        identity_binding_properties=identity_binding_properties
+    )
+    profile = identity_binding_profile_model(properties=properties)
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        fleet_name,
+        name,
+        profile
+    )
+
+
+def show_identity_binding_profile(cmd,  # pylint: disable=unused-argument
+                                  client,
+                                  resource_group_name,
+                                  fleet_name,
+                                  name):
+    return client.get(resource_group_name, fleet_name, name)
+
+
+def list_identity_binding_profiles(cmd,  # pylint: disable=unused-argument
+                                   client,
+                                   resource_group_name,
+                                   fleet_name):
+    return client.list_by_fleet(resource_group_name, fleet_name)
+
+
+def delete_identity_binding_profile(cmd,  # pylint: disable=unused-argument
+                                    client,
+                                    resource_group_name,
+                                    fleet_name,
+                                    name,
+                                    no_wait=False):
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)
+
+
+def apply_identity_binding_profile(cmd,
+                                   client,
+                                   resource_group_name,
+                                   fleet_name,
+                                   name,
+                                   what_if=False,
+                                   no_wait=False):
+    if what_if:
+        return _apply_identity_binding_what_if(cmd, resource_group_name, fleet_name, name)
+
+    return sdk_no_wait(no_wait, client.begin_apply, resource_group_name, fleet_name, name)
+
+
+def list_identity_binding_profile_members(cmd,
+                                          client,  # pylint: disable=unused-argument
+                                          resource_group_name,
+                                          fleet_name,
+                                          name,
+                                          selector=False):
+    """List fleet members for an identity binding profile.
+
+    Modes:
+      --name ibp-1              members the profile is currently applied to
+                                  (server-side: $filter=identityBindingProfile eq ibp-1)
+      --name ibp-1 --selector   members matching the profile's label selector
+                                  (server-side: $filter=identityBindingProfile.Selector eq ibp-1)
+    """
+    members_client = cf_fleet_members(cmd.cli_ctx)
+    if selector:
+        filter_expr = f"identityBindingProfile.Selector eq {name}"
+    else:
+        filter_expr = f"identityBindingProfile eq {name}"
+    return members_client.list_by_fleet(resource_group_name, fleet_name, filter=filter_expr)
+
+
+def _apply_identity_binding_what_if(cmd, resource_group_name, fleet_name, name):
+    """Simulate apply by comparing currently-applied members vs selector-matched members.
+
+    A member may carry several identity binding profiles at once, so unlike the clustermesh
+    equivalent there is no conflict action for a member matched by another profile.
+    """
+    members_client = cf_fleet_members(cmd.cli_ctx)
+
+    current_filter = f"identityBindingProfile eq {name}"
+    current_members = {
+        m.name: m for m in members_client.list_by_fleet(
+            resource_group_name, fleet_name, filter=current_filter
+        )
+    }
+
+    selector_filter = f"identityBindingProfile.Selector eq {name}"
+    desired_members = {
+        m.name: m for m in members_client.list_by_fleet(
+            resource_group_name, fleet_name, filter=selector_filter
+        )
+    }
+
+    results = []
+    all_names = set(current_members.keys()) | set(desired_members.keys())
+
+    for member_name in sorted(all_names):
+        in_current = member_name in current_members
+        in_desired = member_name in desired_members
+
+        member = desired_members.get(member_name) or current_members.get(member_name)
+
+        if in_desired and not in_current:
+            action = "Add"
+        elif in_current and not in_desired:
+            action = "Remove"
+        else:
+            action = "-"
+
+        results.append({
+            "Action": action,
+            "ClusterResourceId": member.cluster_resource_id,
+            "ETag": member.e_tag,
+            "Name": member.name,
+        })
 
     return results

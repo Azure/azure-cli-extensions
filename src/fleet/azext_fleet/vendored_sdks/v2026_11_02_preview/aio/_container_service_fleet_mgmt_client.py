@@ -29,6 +29,7 @@ from .operations import (
     FleetUpdateStrategiesOperations,
     FleetsOperations,
     GatesOperations,
+    IdentityBindingProfilesOperations,
     Operations,
     UpdateRunsOperations,
 )
@@ -56,6 +57,9 @@ class ContainerServiceFleetMgmtClient:  # pylint: disable=too-many-instance-attr
      azure.mgmt.containerservicefleet.aio.operations.ClusterMeshProfilesOperations
     :ivar gates: GatesOperations operations
     :vartype gates: azure.mgmt.containerservicefleet.aio.operations.GatesOperations
+    :ivar identity_binding_profiles: IdentityBindingProfilesOperations operations
+    :vartype identity_binding_profiles:
+     azure.mgmt.containerservicefleet.aio.operations.IdentityBindingProfilesOperations
     :ivar fleet_managed_namespaces: FleetManagedNamespacesOperations operations
     :vartype fleet_managed_namespaces:
      azure.mgmt.containerservicefleet.aio.operations.FleetManagedNamespacesOperations
@@ -75,7 +79,7 @@ class ContainerServiceFleetMgmtClient:  # pylint: disable=too-many-instance-attr
     :keyword cloud_setting: The cloud setting for which to get the ARM endpoint. Default value is
      None.
     :paramtype cloud_setting: ~azure.core.AzureClouds
-    :keyword api_version: Api Version. Default value is "2026-06-02-preview". Note that overriding
+    :keyword api_version: Api Version. Default value is "2026-11-02-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -142,6 +146,9 @@ class ContainerServiceFleetMgmtClient:  # pylint: disable=too-many-instance-attr
             self._client, self._config, self._serialize, self._deserialize
         )
         self.gates = GatesOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.identity_binding_profiles = IdentityBindingProfilesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.fleet_managed_namespaces = FleetManagedNamespacesOperations(
             self._client, self._config, self._serialize, self._deserialize
         )

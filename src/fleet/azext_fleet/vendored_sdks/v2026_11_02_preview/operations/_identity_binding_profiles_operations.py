@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long,useless-suppression
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -7,11 +8,10 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, AsyncIterator, Callable, IO, Optional, TypeVar, Union, cast, overload
+from typing import Any, Callable, IO, Iterator, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
-from azure.core import AsyncPipelineClient
-from azure.core.async_paging import AsyncItemPaged, AsyncList
+from azure.core import PipelineClient
 from azure.core.exceptions import (
     ClientAuthenticationError,
     HttpResponseError,
@@ -22,48 +22,279 @@ from azure.core.exceptions import (
     StreamConsumedError,
     map_error,
 )
+from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
-from azure.core.polling import AsyncLROPoller, AsyncNoPolling, AsyncPollingMethod
-from azure.core.rest import AsyncHttpResponse, HttpRequest
+from azure.core.polling import LROPoller, NoPolling, PollingMethod
+from azure.core.rest import HttpRequest, HttpResponse
 from azure.core.tracing.decorator import distributed_trace
-from azure.core.tracing.decorator_async import distributed_trace_async
 from azure.core.utils import case_insensitive_dict
 from azure.mgmt.core.exceptions import ARMErrorFormat
-from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
+from azure.mgmt.core.polling.arm_polling import ARMPolling
 
-from ... import models as _models
-from ..._utils.serialization import Deserializer, Serializer
-from ...operations._fleets_operations import (
-    build_create_or_update_request,
-    build_delete_request,
-    build_get_request,
-    build_list_by_resource_group_request,
-    build_list_by_subscription_request,
-    build_list_credentials_request,
-    build_update_request,
-)
+from .. import models as _models
 from .._configuration import ContainerServiceFleetMgmtClientConfiguration
+from .._utils.serialization import Deserializer, Serializer
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, dict[str, Any]], Any]]
 List = list
 
+_SERIALIZER = Serializer()
+_SERIALIZER.client_side_validation = False
 
-class FleetsOperations:
+
+def build_list_by_fleet_request(
+    resource_group_name: str, fleet_name: str, subscription_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/identityBindingProfiles",
+    )
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "fleetName": _SERIALIZER.url(
+            "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_get_request(
+    resource_group_name: str, fleet_name: str, identity_binding_profile_name: str, subscription_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/identityBindingProfiles/{identityBindingProfileName}",
+    )
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "fleetName": _SERIALIZER.url(
+            "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+        ),
+        "identityBindingProfileName": _SERIALIZER.url(
+            "identity_binding_profile_name",
+            identity_binding_profile_name,
+            "str",
+            max_length=63,
+            min_length=1,
+            pattern=r"^[a-z][a-z0-9]{0,63}$",
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_create_or_update_request(
+    resource_group_name: str,
+    fleet_name: str,
+    identity_binding_profile_name: str,
+    subscription_id: str,
+    *,
+    if_match: Optional[str] = None,
+    if_none_match: Optional[str] = None,
+    **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
+    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/identityBindingProfiles/{identityBindingProfileName}",
+    )
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "fleetName": _SERIALIZER.url(
+            "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+        ),
+        "identityBindingProfileName": _SERIALIZER.url(
+            "identity_binding_profile_name",
+            identity_binding_profile_name,
+            "str",
+            max_length=63,
+            min_length=1,
+            pattern=r"^[a-z][a-z0-9]{0,63}$",
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    if if_match is not None:
+        _headers["If-Match"] = _SERIALIZER.header("if_match", if_match, "str")
+    if if_none_match is not None:
+        _headers["If-None-Match"] = _SERIALIZER.header("if_none_match", if_none_match, "str")
+    if content_type is not None:
+        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="PUT", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_delete_request(
+    resource_group_name: str,
+    fleet_name: str,
+    identity_binding_profile_name: str,
+    subscription_id: str,
+    *,
+    if_match: Optional[str] = None,
+    **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/identityBindingProfiles/{identityBindingProfileName}",
+    )
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "fleetName": _SERIALIZER.url(
+            "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+        ),
+        "identityBindingProfileName": _SERIALIZER.url(
+            "identity_binding_profile_name",
+            identity_binding_profile_name,
+            "str",
+            max_length=63,
+            min_length=1,
+            pattern=r"^[a-z][a-z0-9]{0,63}$",
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    if if_match is not None:
+        _headers["If-Match"] = _SERIALIZER.header("if_match", if_match, "str")
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="DELETE", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_apply_request(
+    resource_group_name: str,
+    fleet_name: str,
+    identity_binding_profile_name: str,
+    subscription_id: str,
+    *,
+    if_match: Optional[str] = None,
+    **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/identityBindingProfiles/{identityBindingProfileName}/apply",
+    )
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "fleetName": _SERIALIZER.url(
+            "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+        ),
+        "identityBindingProfileName": _SERIALIZER.url(
+            "identity_binding_profile_name",
+            identity_binding_profile_name,
+            "str",
+            max_length=63,
+            min_length=1,
+            pattern=r"^[a-z][a-z0-9]{0,63}$",
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    if if_match is not None:
+        _headers["If-Match"] = _SERIALIZER.header("if_match", if_match, "str")
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+class IdentityBindingProfilesOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.mgmt.containerservicefleet.aio.ContainerServiceFleetMgmtClient`'s
-        :attr:`fleets` attribute.
+        :class:`~azure.mgmt.containerservicefleet.ContainerServiceFleetMgmtClient`'s
+        :attr:`identity_binding_profiles` attribute.
     """
 
     models = _models
 
     def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
-        self._client: AsyncPipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
+        self._client: PipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
         self._config: ContainerServiceFleetMgmtClientConfiguration = (
             input_args.pop(0) if input_args else kwargs.pop("config")
         )
@@ -71,185 +302,110 @@ class FleetsOperations:
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list_by_subscription(
-        self, top: Optional[int] = None, skip_token: Optional[str] = None, **kwargs: Any
-    ) -> AsyncItemPaged["_models.Fleet"]:
-        """Lists fleets in the specified subscription.
-
-        :param top: The number of result items to return. Default value is None.
-        :type top: int
-        :param skip_token: The page-continuation token to use with a paged version of this API. Default
-         value is None.
-        :type skip_token: str
-        :return: An iterator like instance of either Fleet or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.models.Fleet]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.FleetListResult] = kwargs.pop("cls", None)
-
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        def prepare_request(next_link=None):
-            if not next_link:
-
-                _request = build_list_by_subscription_request(
-                    subscription_id=self._config.subscription_id,
-                    top=top,
-                    skip_token=skip_token,
-                    api_version=api_version,
-                    headers=_headers,
-                    params=_params,
-                )
-                _request.url = self._client.format_url(_request.url)
-
-            else:
-                # make call to next link with the client's api-version
-                _parsed_next_link = urllib.parse.urlparse(next_link)
-                _next_request_params = case_insensitive_dict(
-                    {
-                        key: [urllib.parse.quote(v) for v in value]
-                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
-                    }
-                )
-                _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
-                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
-                )
-                _request.url = self._client.format_url(_request.url)
-                _request.method = "GET"
-            return _request
-
-        async def extract_data(pipeline_response):
-            deserialized = self._deserialize("FleetListResult", pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.next_link or None, AsyncList(list_of_elem)
-
-        async def get_next(next_link=None):
-            _request = prepare_request(next_link)
-
-            _stream = False
-            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
-            )
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(
-                    _models.ErrorResponse,
-                    pipeline_response,
-                )
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-        return AsyncItemPaged(get_next, extract_data)
-
-    @distributed_trace
-    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> AsyncItemPaged["_models.Fleet"]:
-        """Lists fleets in the specified subscription and resource group.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :return: An iterator like instance of either Fleet or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.models.Fleet]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.FleetListResult] = kwargs.pop("cls", None)
-
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        def prepare_request(next_link=None):
-            if not next_link:
-
-                _request = build_list_by_resource_group_request(
-                    resource_group_name=resource_group_name,
-                    subscription_id=self._config.subscription_id,
-                    api_version=api_version,
-                    headers=_headers,
-                    params=_params,
-                )
-                _request.url = self._client.format_url(_request.url)
-
-            else:
-                # make call to next link with the client's api-version
-                _parsed_next_link = urllib.parse.urlparse(next_link)
-                _next_request_params = case_insensitive_dict(
-                    {
-                        key: [urllib.parse.quote(v) for v in value]
-                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
-                    }
-                )
-                _next_request_params["api-version"] = self._config.api_version
-                _request = HttpRequest(
-                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
-                )
-                _request.url = self._client.format_url(_request.url)
-                _request.method = "GET"
-            return _request
-
-        async def extract_data(pipeline_response):
-            deserialized = self._deserialize("FleetListResult", pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)  # type: ignore
-            return deserialized.next_link or None, AsyncList(list_of_elem)
-
-        async def get_next(next_link=None):
-            _request = prepare_request(next_link)
-
-            _stream = False
-            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                _request, stream=_stream, **kwargs
-            )
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(
-                    _models.ErrorResponse,
-                    pipeline_response,
-                )
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-        return AsyncItemPaged(get_next, extract_data)
-
-    @distributed_trace_async
-    async def get(self, resource_group_name: str, fleet_name: str, **kwargs: Any) -> _models.Fleet:
-        """Gets a Fleet.
+    def list_by_fleet(
+        self, resource_group_name: str, fleet_name: str, **kwargs: Any
+    ) -> ItemPaged["_models.IdentityBindingProfile"]:
+        """List IdentityBindingProfile resources by Fleet.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :return: Fleet or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservicefleet.models.Fleet
+        :return: An iterator like instance of either IdentityBindingProfile or the result of
+         cls(response)
+        :rtype:
+         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservicefleet.models.IdentityBindingProfile]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[_models.IdentityBindingProfileListResult] = kwargs.pop("cls", None)
+
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        def prepare_request(next_link=None):
+            if not next_link:
+
+                _request = build_list_by_fleet_request(
+                    resource_group_name=resource_group_name,
+                    fleet_name=fleet_name,
+                    subscription_id=self._config.subscription_id,
+                    api_version=api_version,
+                    headers=_headers,
+                    params=_params,
+                )
+                _request.url = self._client.format_url(_request.url)
+
+            else:
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                _request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
+                _request.url = self._client.format_url(_request.url)
+                _request.method = "GET"
+            return _request
+
+        def extract_data(pipeline_response):
+            deserialized = self._deserialize("IdentityBindingProfileListResult", pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)  # type: ignore
+            return deserialized.next_link or None, iter(list_of_elem)
+
+        def get_next(next_link=None):
+            _request = prepare_request(next_link)
+
+            _stream = False
+            pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+                _request, stream=_stream, **kwargs
+            )
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(
+                    _models.ErrorResponse,
+                    pipeline_response,
+                )
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return ItemPaged(get_next, extract_data)
+
+    @distributed_trace
+    def get(
+        self, resource_group_name: str, fleet_name: str, identity_binding_profile_name: str, **kwargs: Any
+    ) -> _models.IdentityBindingProfile:
+        """Get a IdentityBindingProfile.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param fleet_name: The name of the Fleet resource. Required.
+        :type fleet_name: str
+        :param identity_binding_profile_name: The name of the IdentityBindingProfile resource.
+         Required.
+        :type identity_binding_profile_name: str
+        :return: IdentityBindingProfile or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservicefleet.models.IdentityBindingProfile
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -264,11 +420,12 @@ class FleetsOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.Fleet] = kwargs.pop("cls", None)
+        cls: ClsType[_models.IdentityBindingProfile] = kwargs.pop("cls", None)
 
         _request = build_get_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
+            identity_binding_profile_name=identity_binding_profile_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             headers=_headers,
@@ -277,7 +434,7 @@ class FleetsOperations:
         _request.url = self._client.format_url(_request.url)
 
         _stream = False
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
@@ -291,22 +448,23 @@ class FleetsOperations:
             )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("Fleet", pipeline_response.http_response)
+        deserialized = self._deserialize("IdentityBindingProfile", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
 
-    async def _create_or_update_initial(
+    def _create_or_update_initial(
         self,
         resource_group_name: str,
         fleet_name: str,
-        resource: Union[_models.Fleet, IO[bytes]],
+        identity_binding_profile_name: str,
+        resource: Union[_models.IdentityBindingProfile, IO[bytes]],
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         **kwargs: Any
-    ) -> AsyncIterator[bytes]:
+    ) -> Iterator[bytes]:
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -320,7 +478,7 @@ class FleetsOperations:
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+        cls: ClsType[Iterator[bytes]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -328,11 +486,12 @@ class FleetsOperations:
         if isinstance(resource, (IOBase, bytes)):
             _content = resource
         else:
-            _json = self._serialize.body(resource, "Fleet")
+            _json = self._serialize.body(resource, "IdentityBindingProfile")
 
         _request = build_create_or_update_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
+            identity_binding_profile_name=identity_binding_profile_name,
             subscription_id=self._config.subscription_id,
             if_match=if_match,
             if_none_match=if_none_match,
@@ -347,7 +506,7 @@ class FleetsOperations:
 
         _decompress = kwargs.pop("decompress", True)
         _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
@@ -355,7 +514,7 @@ class FleetsOperations:
 
         if response.status_code not in [200, 201]:
             try:
-                await response.read()  # Load the body in memory and close the socket
+                response.read()  # Load the body in memory and close the socket
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
@@ -377,26 +536,30 @@ class FleetsOperations:
         return deserialized  # type: ignore
 
     @overload
-    async def begin_create_or_update(
+    def begin_create_or_update(
         self,
         resource_group_name: str,
         fleet_name: str,
-        resource: _models.Fleet,
+        identity_binding_profile_name: str,
+        resource: _models.IdentityBindingProfile,
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.Fleet]:
-        """Creates or updates a Fleet.
+    ) -> LROPoller[_models.IdentityBindingProfile]:
+        """Create a IdentityBindingProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
+        :param identity_binding_profile_name: The name of the IdentityBindingProfile resource.
+         Required.
+        :type identity_binding_profile_name: str
         :param resource: Resource create parameters. Required.
-        :type resource: ~azure.mgmt.containerservicefleet.models.Fleet
+        :type resource: ~azure.mgmt.containerservicefleet.models.IdentityBindingProfile
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -406,30 +569,36 @@ class FleetsOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either Fleet or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.Fleet]
+        :return: An instance of LROPoller that returns either IdentityBindingProfile or the result of
+         cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.IdentityBindingProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
     @overload
-    async def begin_create_or_update(
+    def begin_create_or_update(
         self,
         resource_group_name: str,
         fleet_name: str,
+        identity_binding_profile_name: str,
         resource: IO[bytes],
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.Fleet]:
-        """Creates or updates a Fleet.
+    ) -> LROPoller[_models.IdentityBindingProfile]:
+        """Create a IdentityBindingProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
+        :param identity_binding_profile_name: The name of the IdentityBindingProfile resource.
+         Required.
+        :type identity_binding_profile_name: str
         :param resource: Resource create parameters. Required.
         :type resource: IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
@@ -441,39 +610,47 @@ class FleetsOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either Fleet or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.Fleet]
+        :return: An instance of LROPoller that returns either IdentityBindingProfile or the result of
+         cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.IdentityBindingProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
-    @distributed_trace_async
-    async def begin_create_or_update(
+    @distributed_trace
+    def begin_create_or_update(
         self,
         resource_group_name: str,
         fleet_name: str,
-        resource: Union[_models.Fleet, IO[bytes]],
+        identity_binding_profile_name: str,
+        resource: Union[_models.IdentityBindingProfile, IO[bytes]],
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.Fleet]:
-        """Creates or updates a Fleet.
+    ) -> LROPoller[_models.IdentityBindingProfile]:
+        """Create a IdentityBindingProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param resource: Resource create parameters. Is either a Fleet type or a IO[bytes] type.
+        :param identity_binding_profile_name: The name of the IdentityBindingProfile resource.
          Required.
-        :type resource: ~azure.mgmt.containerservicefleet.models.Fleet or IO[bytes]
+        :type identity_binding_profile_name: str
+        :param resource: Resource create parameters. Is either a IdentityBindingProfile type or a
+         IO[bytes] type. Required.
+        :type resource: ~azure.mgmt.containerservicefleet.models.IdentityBindingProfile or IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
         :param if_none_match: The request should only proceed if no entity matches this string. Default
          value is None.
         :type if_none_match: str
-        :return: An instance of AsyncLROPoller that returns either Fleet or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.Fleet]
+        :return: An instance of LROPoller that returns either IdentityBindingProfile or the result of
+         cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.IdentityBindingProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -481,14 +658,15 @@ class FleetsOperations:
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.Fleet] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        cls: ClsType[_models.IdentityBindingProfile] = kwargs.pop("cls", None)
+        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._create_or_update_initial(
+            raw_result = self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 fleet_name=fleet_name,
+                identity_binding_profile_name=identity_binding_profile_name,
                 resource=resource,
                 if_match=if_match,
                 if_none_match=if_none_match,
@@ -499,254 +677,42 @@ class FleetsOperations:
                 params=_params,
                 **kwargs
             )
-            await raw_result.http_response.read()  # type: ignore
+            raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("Fleet", pipeline_response.http_response)
+            deserialized = self._deserialize("IdentityBindingProfile", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod,
-                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "original-uri"}, **kwargs)
             )
         elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+            polling_method = cast(PollingMethod, NoPolling())
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[_models.Fleet].from_continuation_token(
+            return LROPoller[_models.IdentityBindingProfile].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[_models.Fleet](
+        return LROPoller[_models.IdentityBindingProfile](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
-    async def _update_initial(
+    def _delete_initial(
         self,
         resource_group_name: str,
         fleet_name: str,
-        properties: Union[_models.FleetPatch, IO[bytes]],
+        identity_binding_profile_name: str,
         if_match: Optional[str] = None,
         **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        content_type = content_type or "application/json"
-        _json = None
-        _content = None
-        if isinstance(properties, (IOBase, bytes)):
-            _content = properties
-        else:
-            _json = self._serialize.body(properties, "FleetPatch")
-
-        _request = build_update_request(
-            resource_group_name=resource_group_name,
-            fleet_name=fleet_name,
-            subscription_id=self._config.subscription_id,
-            if_match=if_match,
-            api_version=api_version,
-            content_type=content_type,
-            json=_json,
-            content=_content,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _decompress = kwargs.pop("decompress", True)
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
-
-        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @overload
-    async def begin_update(
-        self,
-        resource_group_name: str,
-        fleet_name: str,
-        properties: _models.FleetPatch,
-        if_match: Optional[str] = None,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.Fleet]:
-        """Update a Fleet.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param fleet_name: The name of the Fleet resource. Required.
-        :type fleet_name: str
-        :param properties: The resource properties to be updated. Required.
-        :type properties: ~azure.mgmt.containerservicefleet.models.FleetPatch
-        :param if_match: The request should only proceed if an entity matches this string. Default
-         value is None.
-        :type if_match: str
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either Fleet or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.Fleet]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @overload
-    async def begin_update(
-        self,
-        resource_group_name: str,
-        fleet_name: str,
-        properties: IO[bytes],
-        if_match: Optional[str] = None,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.Fleet]:
-        """Update a Fleet.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param fleet_name: The name of the Fleet resource. Required.
-        :type fleet_name: str
-        :param properties: The resource properties to be updated. Required.
-        :type properties: IO[bytes]
-        :param if_match: The request should only proceed if an entity matches this string. Default
-         value is None.
-        :type if_match: str
-        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either Fleet or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.Fleet]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @distributed_trace_async
-    async def begin_update(
-        self,
-        resource_group_name: str,
-        fleet_name: str,
-        properties: Union[_models.FleetPatch, IO[bytes]],
-        if_match: Optional[str] = None,
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.Fleet]:
-        """Update a Fleet.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param fleet_name: The name of the Fleet resource. Required.
-        :type fleet_name: str
-        :param properties: The resource properties to be updated. Is either a FleetPatch type or a
-         IO[bytes] type. Required.
-        :type properties: ~azure.mgmt.containerservicefleet.models.FleetPatch or IO[bytes]
-        :param if_match: The request should only proceed if an entity matches this string. Default
-         value is None.
-        :type if_match: str
-        :return: An instance of AsyncLROPoller that returns either Fleet or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.models.Fleet]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.Fleet] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._update_initial(
-                resource_group_name=resource_group_name,
-                fleet_name=fleet_name,
-                properties=properties,
-                if_match=if_match,
-                api_version=api_version,
-                content_type=content_type,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("Fleet", pipeline_response.http_response)
-            if cls:
-                return cls(pipeline_response, deserialized, {})  # type: ignore
-            return deserialized
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod,
-                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "original-uri"}, **kwargs),
-            )
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[_models.Fleet].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[_models.Fleet](
-            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
-        )
-
-    async def _delete_initial(
-        self, resource_group_name: str, fleet_name: str, if_match: Optional[str] = None, **kwargs: Any
-    ) -> AsyncIterator[bytes]:
+    ) -> Iterator[bytes]:
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -759,11 +725,12 @@ class FleetsOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+        cls: ClsType[Iterator[bytes]] = kwargs.pop("cls", None)
 
         _request = build_delete_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
+            identity_binding_profile_name=identity_binding_profile_name,
             subscription_id=self._config.subscription_id,
             if_match=if_match,
             api_version=api_version,
@@ -774,15 +741,15 @@ class FleetsOperations:
 
         _decompress = kwargs.pop("decompress", True)
         _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
+        if response.status_code not in [202, 204]:
             try:
-                await response.read()  # Load the body in memory and close the socket
+                response.read()  # Load the body in memory and close the socket
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
@@ -804,22 +771,30 @@ class FleetsOperations:
 
         return deserialized  # type: ignore
 
-    @distributed_trace_async
-    async def begin_delete(
-        self, resource_group_name: str, fleet_name: str, if_match: Optional[str] = None, **kwargs: Any
-    ) -> AsyncLROPoller[None]:
-        """Delete a Fleet.
+    @distributed_trace
+    def begin_delete(
+        self,
+        resource_group_name: str,
+        fleet_name: str,
+        identity_binding_profile_name: str,
+        if_match: Optional[str] = None,
+        **kwargs: Any
+    ) -> LROPoller[None]:
+        """Delete a IdentityBindingProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
+        :param identity_binding_profile_name: The name of the IdentityBindingProfile resource.
+         Required.
+        :type identity_binding_profile_name: str
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
-        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :return: An instance of LROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
@@ -827,13 +802,14 @@ class FleetsOperations:
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         cls: ClsType[None] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_initial(
+            raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
                 fleet_name=fleet_name,
+                identity_binding_profile_name=identity_binding_profile_name,
                 if_match=if_match,
                 api_version=api_version,
                 cls=lambda x, y, z: x,
@@ -841,7 +817,7 @@ class FleetsOperations:
                 params=_params,
                 **kwargs
             )
-            await raw_result.http_response.read()  # type: ignore
+            raw_result.http_response.read()  # type: ignore
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
@@ -849,37 +825,30 @@ class FleetsOperations:
                 return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
             )
         elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+            polling_method = cast(PollingMethod, NoPolling())
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller[None].from_continuation_token(
+            return LROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+        return LROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    @distributed_trace_async
-    async def list_credentials(
-        self, resource_group_name: str, fleet_name: str, **kwargs: Any
-    ) -> _models.FleetCredentialResults:
-        """Lists the user credentials of a Fleet.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param fleet_name: The name of the Fleet resource. Required.
-        :type fleet_name: str
-        :return: FleetCredentialResults or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservicefleet.models.FleetCredentialResults
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
+    def _apply_initial(
+        self,
+        resource_group_name: str,
+        fleet_name: str,
+        identity_binding_profile_name: str,
+        if_match: Optional[str] = None,
+        **kwargs: Any
+    ) -> Iterator[bytes]:
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -892,26 +861,33 @@ class FleetsOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.FleetCredentialResults] = kwargs.pop("cls", None)
+        cls: ClsType[Iterator[bytes]] = kwargs.pop("cls", None)
 
-        _request = build_list_credentials_request(
+        _request = build_apply_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
+            identity_binding_profile_name=identity_binding_profile_name,
             subscription_id=self._config.subscription_id,
+            if_match=if_match,
             api_version=api_version,
             headers=_headers,
             params=_params,
         )
         _request.url = self._client.format_url(_request.url)
 
-        _stream = False
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
             _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 202]:
+            try:
+                response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(
                 _models.ErrorResponse,
@@ -919,9 +895,91 @@ class FleetsOperations:
             )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("FleetCredentialResults", pipeline_response.http_response)
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
 
         return deserialized  # type: ignore
+
+    @distributed_trace
+    def begin_apply(
+        self,
+        resource_group_name: str,
+        fleet_name: str,
+        identity_binding_profile_name: str,
+        if_match: Optional[str] = None,
+        **kwargs: Any
+    ) -> LROPoller[_models.IdentityBindingProfile]:
+        """Applies the identity binding profile to the selected fleet members, creating, updating or
+        deleting the corresponding managedClusters/identityBindings resources.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param fleet_name: The name of the Fleet resource. Required.
+        :type fleet_name: str
+        :param identity_binding_profile_name: The name of the IdentityBindingProfile resource.
+         Required.
+        :type identity_binding_profile_name: str
+        :param if_match: The request should only proceed if an entity matches this string. Default
+         value is None.
+        :type if_match: str
+        :return: An instance of LROPoller that returns either IdentityBindingProfile or the result of
+         cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.IdentityBindingProfile]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[_models.IdentityBindingProfile] = kwargs.pop("cls", None)
+        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = self._apply_initial(
+                resource_group_name=resource_group_name,
+                fleet_name=fleet_name,
+                identity_binding_profile_name=identity_binding_profile_name,
+                if_match=if_match,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("IdentityBindingProfile", pipeline_response.http_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})  # type: ignore
+            return deserialized
+
+        if polling is True:
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(PollingMethod, NoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return LROPoller[_models.IdentityBindingProfile].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return LROPoller[_models.IdentityBindingProfile](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
