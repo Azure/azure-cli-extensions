@@ -25384,9 +25384,9 @@ spec:
             "ManagedBastion",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.bastionProfile.enabled", True),
-                self.check("networkProfile.bastionProfile.sku", "Standard"),
-                self.check("networkProfile.bastionProfile.scaleUnits", 2),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.enabled", True),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.sku", "Standard"),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.scaleUnits", 2),
             ],
         )
 
@@ -25400,9 +25400,9 @@ spec:
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.bastionProfile.enabled", True),
-                self.check("networkProfile.bastionProfile.sku", "Premium"),
-                self.check("networkProfile.bastionProfile.scaleUnits", 4),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.enabled", True),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.sku", "Premium"),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.scaleUnits", 4),
             ],
         )
 
@@ -25415,7 +25415,7 @@ spec:
             disable_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.bastionProfile.enabled", False),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.enabled", False),
             ],
         )
 
@@ -25478,10 +25478,10 @@ spec:
             "ManagedBastion",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.bastionProfile.enabled", True),
-                self.check("networkProfile.bastionProfile.sku", "Standard"),
-                self.check("networkProfile.bastionProfile.scaleUnits", 2),
-                self.check("networkProfile.bastionProfile.publicIpAddressId", pip_id)
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.enabled", True),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.sku", "Standard"),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.scaleUnits", 2),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.publicIpAddressId", pip_id)
             ],
         )
 
@@ -25494,7 +25494,7 @@ spec:
             disable_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.bastionProfile.enabled", False),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.enabled", False),
             ],
         )
 
