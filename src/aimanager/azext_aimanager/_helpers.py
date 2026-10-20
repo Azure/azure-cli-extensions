@@ -44,6 +44,7 @@ def get_custom_headers(custom_headers=None):
                 headers[parts[0]] = parts[1]
     return headers
 
+
 def which(binary):
     """Resolve an explicit executable path or search absolute directories in PATH."""
     is_windows = platform.system() == 'Windows'
@@ -118,6 +119,7 @@ def convert_kubelogin_devicecode(path, kubeconfig):
         logger.warning("Failed to convert kubeconfig with kubelogin: %s", str(ex))
     except Exception as ex:  # pylint: disable=broad-except
         logger.warning("Error running kubelogin: %s", str(ex))
+
 
 def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name):
     """Merge an unencrypted kubeconfig into the file at the specified path, or print it to
