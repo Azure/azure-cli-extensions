@@ -8,7 +8,11 @@ import hashlib
 import json
 import os
 import re
+import shutil
+import subprocess
+import tempfile
 import zipfile
+import xml.etree.ElementTree as ET
 
 # pylint: disable=import-error,no-name-in-module
 from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueError, MutuallyExclusiveArgumentError, ResourceNotFoundError, ValidationError
@@ -303,9 +307,24 @@ METADATA_FILES = {".gitignore", ".gitattributes", ".hgignore", ".dockerignore", 
 EXCLUDED_SUFFIXES = (".pyc", ".pyo", ".log")
 IGNORE_FILE = ".funcignore"
 NORMALIZED_ZIP_DT = (1980, 1, 1, 0, 0, 0)
+CODEFUL_REQUIRED_REFERENCES = {
+    "microsoft.azure.workflows.sdk",
+    "microsoft.azure.functions.worker.sdk"
+}
+LEGACY_CODEFUL_REFERENCES = {
+    "microsoft.net.sdk.functions",
+    "microsoft.azure.workflows.webjobs.extension"
+}
+CODEFUL_EXCLUDED_DIRS = {"bin", "obj", ".vs", "testresults"}
+CODEFUL_SOURCE_SUFFIXES = (
+    ".cs", ".csx", ".csproj", ".props", ".sln", ".suo", ".targets", ".user"
+)
+CODEFUL_SOURCE_FILES = {"global.json", "launchsettings.json", "nuget.config"}
+CODEFUL_BUILD_SUFFIXES = (".deps.json", ".dll", ".exe", ".pdb", ".runtimeconfig.json")
+MAX_PROJECT_FILE_BYTES = 1024 * 1024
 
 
-def deterministic_package(root, output_path, manifest_path=None, force=False):
+def deterministic_package(root, output_path, manifest_path=None, force=False, project=None, dotnet="dotnet"):
     root = abs_path(root)
     if not os.path.isfile(os.path.join(root, "host.json")):
         raise ResourceNotFoundError("Logic Apps project not found at '{}'.".format(root))
@@ -316,7 +335,19 @@ def deterministic_package(root, output_path, manifest_path=None, force=False):
         for target in (output_path, manifest_path):
             if os.path.exists(target):
                 raise ValidationError("Output exists and requires --force: {}".format(target))
+    codeful_project = _resolve_codeful_project(root, project)
+    if codeful_project:
+        with tempfile.TemporaryDirectory(prefix="az-logicapp-package-") as staging:
+            excluded = _stage_codeful_project(
+                root, staging, codeful_project, dotnet, output_path, manifest_path)
+            return _write_package(staging, output_path, manifest_path, excluded)
+    return _write_package(root, output_path, manifest_path)
+
+
+def _write_package(root, output_path, manifest_path, excluded_seed=None):
     included, excluded = _walk_package(root, output_path, manifest_path)
+    if excluded_seed:
+        excluded = sorted(excluded + excluded_seed, key=lambda item: item["path"])
     for item in included:
         _scan_secret(os.path.join(root, item["path"]), item["path"])
     try:
@@ -352,6 +383,201 @@ def deterministic_package(root, output_path, manifest_path=None, force=False):
         "included": included,
         "excluded": excluded
     }
+
+
+def _project_references(path):
+    try:
+        with open(path, "rb") as handle:
+            content = handle.read(MAX_PROJECT_FILE_BYTES + 1)
+    except OSError as ex:
+        raise ValidationError("Could not read .NET project metadata: {}".format(path)) from ex
+    if len(content) > MAX_PROJECT_FILE_BYTES:
+        raise ValidationError(".NET project metadata exceeds the 1 MiB inspection limit: {}".format(path))
+    if b"<!DOCTYPE" in content.upper():
+        raise ValidationError(".NET project metadata must not contain a document type declaration.")
+    try:
+        document = ET.fromstring(content)
+    except ET.ParseError as ex:
+        raise ValidationError("Could not parse .NET project metadata: {}".format(path)) from ex
+    references = set()
+    project_sdk = document.get("Sdk")
+    if project_sdk:
+        references.update(item.split("/", 1)[0].lower() for item in project_sdk.split(";") if item)
+    for element in document.iter():
+        tag = element.tag.rsplit("}", 1)[-1]
+        if tag == "Sdk" and element.get("Name"):
+            references.add(element.get("Name").lower())
+        if tag not in ("PackageReference", "ProjectReference"):
+            continue
+        value = element.get("Include") or element.get("Update")
+        if not value:
+            continue
+        name = os.path.basename(value.replace("\\", "/"))
+        if tag == "ProjectReference":
+            name = os.path.splitext(name)[0]
+        references.add(name.lower())
+    return references
+
+
+def _resolve_codeful_project(root, project):
+    if project:
+        candidate = os.path.abspath(os.path.join(root, os.path.expanduser(project)))
+        try:
+            if os.path.commonpath((root, candidate)) != root:
+                raise ValidationError("--project must be within the Logic Apps project root.")
+        except ValueError as ex:
+            raise ValidationError("--project must be within the Logic Apps project root.") from ex
+        if not os.path.isfile(candidate) or not candidate.lower().endswith(".csproj"):
+            raise ResourceNotFoundError(".NET project not found: {}".format(candidate))
+        references = _project_references(candidate)
+        if CODEFUL_REQUIRED_REFERENCES.issubset(references) and references.intersection(LEGACY_CODEFUL_REFERENCES):
+            raise ValidationError(
+                "The selected project mixes isolated-worker and traditional in-process/WebJobs references.")
+        if not CODEFUL_REQUIRED_REFERENCES.issubset(references):
+            if references.intersection(LEGACY_CODEFUL_REFERENCES):
+                raise ValidationError(
+                    "The selected project uses the traditional in-process/WebJobs model; "
+                    "omit --project to retain the existing packaging path.")
+            raise ValidationError(
+                "The selected project must reference Microsoft.Azure.Workflows.Sdk and "
+                "Microsoft.Azure.Functions.Worker.Sdk.")
+        return candidate
+
+    candidates = []
+    for directory, dirnames, filenames in os.walk(root, onerror=_package_walk_error):
+        dirnames[:] = sorted(name for name in dirnames
+                             if name.lower() not in CODEFUL_EXCLUDED_DIRS and name not in EXCLUDED_DIRS)
+        for filename in sorted(filenames):
+            if not filename.lower().endswith(".csproj"):
+                continue
+            candidate = os.path.join(directory, filename)
+            references = _project_references(candidate)
+            if CODEFUL_REQUIRED_REFERENCES.issubset(references):
+                if references.intersection(LEGACY_CODEFUL_REFERENCES):
+                    raise ValidationError(
+                        "A project mixes isolated-worker and traditional in-process/WebJobs references: "
+                        "{}".format(candidate))
+                candidates.append(candidate)
+    if len(candidates) > 1:
+        raise ValidationError("Multiple SDK-based projects found; select one with --project.")
+    return candidates[0] if candidates else None
+
+
+def _stage_codeful_project(root, staging, project, dotnet, output_path, manifest_path):
+    excluded = _copy_codeful_assets(root, staging, output_path, manifest_path)
+    publish_dir = os.path.join(staging, "lib", "codeful")
+    os.makedirs(publish_dir, exist_ok=True)
+    command = [
+        dotnet, "publish", project,
+        "--configuration", "Release",
+        "--framework", "net8.0",
+        "--output", publish_dir,
+        "-p:LogicAppFolderToPublish="
+    ]
+    try:
+        completed = subprocess.run(command, cwd=root, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                   text=True, check=False)  # pylint: disable=subprocess-run-check
+    except OSError as ex:
+        raise FileOperationError("Could not start dotnet publish using '{}'.".format(dotnet)) from ex
+    if completed.returncode:
+        raise ValidationError("dotnet publish failed with exit code {}.".format(completed.returncode))
+    _normalize_and_validate_worker(staging, publish_dir)
+    return excluded
+
+
+def _copy_codeful_assets(root, staging, output_path, manifest_path):
+    excluded = []
+    ignore_patterns = _read_ignore_file(root)
+    for directory, dirnames, filenames in os.walk(root, onerror=_package_walk_error):
+        if _dedicated_test_directory(directory, root, dirnames, filenames):
+            excluded.append({
+                "path": os.path.relpath(directory, root).replace(os.sep, "/"),
+                "reason": "native-test-project"
+            })
+            dirnames[:] = []
+            continue
+        relative_dir = os.path.relpath(directory, root).replace(os.sep, "/")
+        kept_dirs = []
+        for name in sorted(dirnames):
+            full = os.path.join(directory, name)
+            rel = name if relative_dir == "." else relative_dir + "/" + name
+            lowered = name.lower()
+            stale_codeful = rel.lower() == "lib/codeful"
+            if os.path.islink(full):
+                raise ValidationError("Symbolic links are not supported in package input: {}".format(rel))
+            if name in EXCLUDED_DIRS or lowered in CODEFUL_EXCLUDED_DIRS or stale_codeful:
+                reason = "stale-codeful-output" if stale_codeful else "build-output"
+                excluded.append({"path": rel, "reason": reason})
+                continue
+            kept_dirs.append(name)
+        dirnames[:] = kept_dirs
+        for filename in sorted(filenames):
+            source = os.path.join(directory, filename)
+            rel = filename if relative_dir == "." else relative_dir + "/" + filename
+            if os.path.islink(source):
+                raise ValidationError("Symbolic links are not supported in package input: {}".format(rel))
+            reason = _exclude_file(
+                filename, source, os.path.abspath(output_path), os.path.abspath(manifest_path))
+            if not reason and _matches_ignore(rel, ignore_patterns):
+                reason = "ignoreFile"
+            if not reason and (filename.lower().endswith(CODEFUL_SOURCE_SUFFIXES) or
+                               filename.lower() in CODEFUL_SOURCE_FILES):
+                reason = "codeful-source"
+            if not reason and filename.lower().endswith(CODEFUL_BUILD_SUFFIXES):
+                reason = "build-output"
+            if reason:
+                excluded.append({"path": rel, "reason": reason})
+                continue
+            destination = os.path.join(staging, rel.replace("/", os.sep))
+            os.makedirs(os.path.dirname(destination), exist_ok=True)
+            try:
+                shutil.copyfile(source, destination)
+            except OSError as ex:
+                raise FileOperationError("Could not stage package input: {}".format(rel)) from ex
+    return sorted(excluded, key=lambda item: item["path"])
+
+
+def _normalize_and_validate_worker(staging, publish_dir):
+    host_path = os.path.join(staging, "host.json")
+    worker_path = os.path.join(publish_dir, "worker.config.json")
+    if not os.path.isfile(host_path):
+        raise ValidationError("Codeful package is missing host.json.")
+    if not os.path.isfile(worker_path):
+        raise ValidationError("dotnet publish did not produce lib/codeful/worker.config.json.")
+    try:
+        with open(host_path, "r", encoding="utf-8") as handle:
+            host = json.load(handle)
+        with open(worker_path, "r", encoding="utf-8") as handle:
+            worker = json.load(handle)
+    except (OSError, UnicodeError, ValueError) as ex:
+        raise ValidationError("Codeful package contains invalid host.json or worker.config.json.") from ex
+    if not isinstance(host, dict) or not isinstance(worker, dict):
+        raise ValidationError("Codeful package host.json and worker.config.json must contain JSON objects.")
+    description = worker.get("description")
+    if not isinstance(description, dict):
+        raise ValidationError("worker.config.json is missing its description object.")
+    if description.get("language") == "dotnet-isolated":
+        description["language"] = "dotnet"
+    if description.get("language") != "dotnet":
+        raise ValidationError("worker.config.json must describe the dotnet worker language.")
+    assembly = description.get("defaultWorkerPath")
+    if not isinstance(assembly, str) or not assembly.strip() or not assembly.lower().endswith(".dll"):
+        raise ValidationError("worker.config.json is missing a valid description.defaultWorkerPath assembly.")
+    assembly_path = os.path.abspath(os.path.join(
+        publish_dir, assembly.replace("\\", os.sep).replace("/", os.sep)))
+    try:
+        if os.path.commonpath((publish_dir, assembly_path)) != publish_dir:
+            raise ValidationError("worker.config.json references an assembly outside lib/codeful.")
+    except ValueError as ex:
+        raise ValidationError("worker.config.json references an assembly outside lib/codeful.") from ex
+    if not os.path.isfile(assembly_path):
+        raise ValidationError("worker.config.json references a missing worker assembly: {}".format(assembly))
+    try:
+        with open(worker_path, "w", encoding="utf-8", newline="\n") as handle:
+            json.dump(worker, handle, indent=2, sort_keys=True)
+            handle.write("\n")
+    except OSError as ex:
+        raise FileOperationError("Could not normalize worker.config.json.") from ex
 
 
 def _distinct_package_outputs(output_path, manifest_path):
@@ -427,10 +653,17 @@ def _walk_package(root, output_path, manifest_path):
                              "reason": "native-test-project"})
             dirnames[:] = []
             continue
+        for name in dirnames:
+            full = os.path.join(directory, name)
+            if os.path.islink(full):
+                rel = os.path.relpath(full, root).replace(os.sep, "/")
+                raise ValidationError("Symbolic links are not supported in package input: {}".format(rel))
         dirnames[:] = sorted([name for name in dirnames if not _exclude_dir(name, directory, root, excluded)])
         for filename in sorted(filenames):
             full = os.path.abspath(os.path.join(directory, filename))
             rel = os.path.relpath(full, root).replace(os.sep, "/")
+            if os.path.islink(full):
+                raise ValidationError("Symbolic links are not supported in package input: {}".format(rel))
             reason = _exclude_file(filename, full, output_abs, manifest_abs)
             if not reason and _matches_ignore(rel, ignore_patterns):
                 reason = "ignoreFile"
@@ -461,23 +694,41 @@ def _read_ignore_file(root):
     patterns = []
     for line in lines:
         entry = line.strip()
-        if entry and not entry.startswith("#"):
-            patterns.append(entry.rstrip("/"))
+        if not entry or entry.startswith("#"):
+            continue
+        if entry.startswith("\\") and len(entry) > 1 and entry[1] in ("#", "!"):
+            entry = entry[1:]
+        negated = entry.startswith("!")
+        if negated:
+            entry = entry[1:]
+        if not entry:
+            continue
+        directory_only = entry.endswith("/")
+        anchored = entry.startswith("/")
+        entry = entry.strip("/")
+        if entry:
+            patterns.append((entry, negated, directory_only, anchored))
     return patterns
 
 
 def _matches_ignore(rel, patterns):
     if not patterns:
         return False
-    candidates = [rel, os.path.basename(rel)]
-    for pattern in patterns:
-        for candidate in candidates:
-            if fnmatch.fnmatch(candidate, pattern):
-                return True
-        # A bare directory name in the ignore file covers everything beneath it.
-        if rel.startswith(pattern.rstrip("*").rstrip("/") + "/"):
-            return True
-    return False
+    ignored = False
+    normalized = rel.replace("\\", "/").lstrip("/")
+    components = normalized.split("/")
+    for pattern, negated, directory_only, anchored in patterns:
+        has_slash = "/" in pattern
+        if anchored or has_slash:
+            matched = fnmatch.fnmatchcase(normalized, pattern)
+            matched = matched or normalized.startswith(pattern + "/")
+        else:
+            matched = any(fnmatch.fnmatchcase(component, pattern) for component in components)
+            if directory_only:
+                matched = any(component == pattern for component in components[:-1])
+        if matched:
+            ignored = not negated
+    return ignored
 
 
 def _exclude_dir(name, directory, root, excluded):

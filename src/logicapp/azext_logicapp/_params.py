@@ -214,6 +214,8 @@ def load_arguments(self, _):
 
     with self.argument_context('logicapp deployment package') as c:
         c.argument('path', arg_type=path_type, help='Project root.')
+        c.argument('project', options_list=['--project'], completer=FilesCompleter(), help='SDK-based .csproj to publish. Auto-detected when unique.')
+        c.argument('dotnet', options_list=['--dotnet'], help='dotnet executable used for SDK-based projects.', default='dotnet')
         c.argument('output_path', options_list=['--output-path'], required=True, completer=FilesCompleter(), help='Destination zip path.')
         c.argument('manifest', options_list=['--manifest'], completer=FilesCompleter(), help='Manifest path.')
         c.argument('force', options_list=['--force'], action='store_true', help='Overwrite archive and manifest.')
