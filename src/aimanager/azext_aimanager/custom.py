@@ -15,6 +15,7 @@ from knack.util import CLIError
 
 from azext_aimanager._client_factory import CUSTOM_MGMT_AIMANAGER
 from azext_aimanager._helpers import (
+    convert_kubelogin_devicecode,
     get_custom_headers,
     parse_key_value_list,
     print_or_merge_credentials,
@@ -188,6 +189,7 @@ def _write_kubeconfig(credential_results, path, overwrite_existing, context_name
     try:
         kubeconfig = credential_results.kubeconfigs[0].value.decode(encoding='UTF-8')
         print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
+        convert_kubelogin_devicecode(path, kubeconfig)
     except (IndexError, ValueError) as exc:
         raise CLIError(
             "Failed to extract the kubeconfig from the service response. "
