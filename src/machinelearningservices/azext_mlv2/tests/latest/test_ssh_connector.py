@@ -8,7 +8,7 @@ import io
 import json
 import sys
 from pathlib import Path
-from types import SimpleNamespace
+from types import ModuleType, SimpleNamespace
 from unittest.mock import Mock
 
 import pytest
@@ -17,7 +17,15 @@ from knack.util import CommandResultItem
 
 
 @pytest.fixture
-def connector():
+def connector(monkeypatch):
+    # These CLI-output tests do not use the optional WebSocket transport.
+    websockets = ModuleType("websockets")
+    websockets.client = ModuleType("websockets.client")
+    websockets.client.connect = Mock(side_effect=AssertionError("Unexpected WebSocket connection"))
+    websockets.exceptions = ModuleType("websockets.exceptions")
+    for module in (websockets, websockets.client, websockets.exceptions):
+        monkeypatch.setitem(sys.modules, module.__name__, module)
+
     # Load the ProxyCommand script without importing the extension's command table.
     path = Path(__file__).resolve().parents[2] / "manual" / "custom" / "_ssh_connector.py"
     spec = importlib.util.spec_from_file_location("_ssh_connector", path)
