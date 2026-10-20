@@ -15,15 +15,9 @@ from azure.cli.core.aaz import *
     "agentfabric member create",
 )
 class Create(AAZCommand):
-    """Create an ACI, AKS, or sandbox member under an Agent Fabric.
+    """Create an Agent Fabric sandbox member under an Agent Fabric.
 
-    Members are children of an Agent Fabric and require the parent Fabric name. Member workloads can describe ACI, AKS, or Agent Fabric sandbox resources.
-
-    :example: Create an ACI SandboxGroup member
-        az agentfabric member create --resource-group rgnetworksecurity --fabric-name testAIFabric --member-name testAciMember --location eastus --workload "{member-guid:11111111-2222-3333-4444-555555555555,aci:{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgaci/providers/Microsoft.ContainerInstance/sandboxGroups/testSandboxGroup}}"
-
-    :example: Create an AKS member
-        az agentfabric member create --resource-group rgnetworksecurity --fabric-name testAIFabric --member-name checkoutApi --location eastus --workload "{aks:{cluster-association-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgnetworksecurity/providers/Microsoft.NetworkSecurity/agentFabrics/testAIFabric/clusterAssociations/testAssociation,cluster-resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgaks/providers/Microsoft.ContainerService/managedClusters/testAksCluster,workload:{api-version:apps/v1,kind:Deployment,namespace:payments,name:checkout-api},endpoints:[{name:https,service-port:443,protocol:TCP,target-port:8443}]}}"
+    Members are children of an Agent Fabric and require the parent Fabric name. Member creation supports Agent Fabric sandbox workloads.
 
     :example: Create an Agent Fabric sandbox member
         az agentfabric member create --resource-group rgnetworksecurity --fabric-name testAIFabric --member-name sandboxMember --location eastus --workload "{agent-fabric-sandbox:{image:{uri:'contoso.azurecr.io/agents/sandbox:1.0.0',pull-policy:IfNotPresent},resources:{cpu:2,memory:4Gi,disk:20Gi},endpoints:[{name:http,service-port:80,protocol:TCP,target-port:8080}],domain:sandbox-member.testaifabric.contoso.com}}"
@@ -88,114 +82,8 @@ class Create(AAZCommand):
         )
 
         workload = cls._args_schema.workload
-        workload.aci = AAZObjectArg(
-            options=["aci"],
-        )
-        workload.aks = AAZObjectArg(
-            options=["aks"],
-        )
         workload.agent_fabric_sandbox = AAZObjectArg(
             options=["agent-fabric-sandbox"],
-        )
-        workload.member_guid = AAZUuidArg(
-            options=["member-guid"],
-            help="The unique identifier (GUID) assigned to the member when it is created. For most workload types this is assigned by the resource provider and is read-only. ACI workloads instead supply this value at creation: the ACI resource provider generates the GUID for the sandbox and this field is immutable afterward.",
-        )
-
-        aci = cls._args_schema.workload.aci
-        aci.agent_identity = AAZObjectArg(
-            options=["agent-identity"],
-            help="The Entra agent identity associated with the workload.",
-        )
-        cls._build_args_agent_identity_create(aci.agent_identity)
-        aci.resource_id = AAZResourceIdArg(
-            options=["resource-id"],
-            help="The Azure Resource Manager resource ID of the Azure Container Instances (ACI) resource backing this member's sandbox. Starting in API version `2026-10-07-preview`, this identifies the parent SandboxGroup -- the enrollment boundary associated with the fabric through a ClusterAssociation -- rather than the individual container group.",
-            required=True,
-        )
-
-        aks = cls._args_schema.workload.aks
-        aks.cluster_association_id = AAZResourceIdArg(
-            options=["cluster-association-id"],
-            help="The Azure Resource Manager resource ID of the cluster association through which this member's workload is enrolled.",
-            required=True,
-        )
-        aks.cluster_resource_id = AAZResourceIdArg(
-            options=["cluster-resource-id"],
-            help="The Azure Resource Manager resource ID of the managed cluster that hosts the workload.",
-            required=True,
-        )
-        aks.endpoints = AAZListArg(
-            options=["endpoints"],
-            help="The network endpoints exposed by the workload.",
-        )
-        aks.workload = AAZObjectArg(
-            options=["workload"],
-            help="The Kubernetes workload enrolled as this member. Reported when the workload is discovered in the enrolled cluster; member identity derives from the fabric and member name alone.",
-            required=True,
-        )
-
-        endpoints = cls._args_schema.workload.aks.endpoints
-        endpoints.Element = AAZObjectArg()
-
-        _element = cls._args_schema.workload.aks.endpoints.Element
-        _element.name = AAZStrArg(
-            options=["name"],
-            help="The name of the port mapping.",
-            required=True,
-        )
-        _element.protocol = AAZStrArg(
-            options=["protocol"],
-            help="The network protocol used by the endpoint.",
-            required=True,
-        )
-        _element.service_port = AAZIntArg(
-            options=["service-port"],
-            help="The port exposed by the service.",
-            required=True,
-            fmt=AAZIntArgFormat(
-                maximum=65535,
-                minimum=1,
-            ),
-        )
-        _element.target_port = AAZIntArg(
-            options=["target-port"],
-            help="The port on the workload targeted by the service.",
-            required=True,
-            fmt=AAZIntArgFormat(
-                maximum=65535,
-                minimum=1,
-            ),
-        )
-
-        workload = cls._args_schema.workload.aks.workload
-        workload.api_version = AAZStrArg(
-            options=["api-version"],
-            help="The API group and version of the workload, for example `apps/v1`.",
-            required=True,
-        )
-        workload.kind = AAZStrArg(
-            options=["kind"],
-            help="The kind of the workload, for example `Deployment`.",
-            required=True,
-        )
-        workload.name = AAZStrArg(
-            options=["name"],
-            help="The name of the workload.",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
-                max_length=253,
-            ),
-        )
-        workload.namespace = AAZStrArg(
-            options=["namespace"],
-            help="The namespace the workload runs in.",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
-                max_length=63,
-            ),
         )
 
         agent_fabric_sandbox = cls._args_schema.workload.agent_fabric_sandbox
@@ -463,43 +351,8 @@ class Create(AAZCommand):
 
             workload = _builder.get(".properties.workload")
             if workload is not None:
-                workload.set_prop("memberGuid", AAZStrType, ".member_guid")
-                workload.set_const("type", "ACI", AAZStrType, ".aci", typ_kwargs={"flags": {"required": True}})
-                workload.set_const("type", "AKS", AAZStrType, ".aks", typ_kwargs={"flags": {"required": True}})
                 workload.set_const("type", "AgentFabricSandbox", AAZStrType, ".agent_fabric_sandbox", typ_kwargs={"flags": {"required": True}})
-                workload.discriminate_by("type", "ACI")
-                workload.discriminate_by("type", "AKS")
                 workload.discriminate_by("type", "AgentFabricSandbox")
-
-            disc_aci = _builder.get(".properties.workload{type:ACI}")
-            if disc_aci is not None:
-                _CreateHelper._build_schema_agent_identity_create(disc_aci.set_prop("agentIdentity", AAZObjectType, ".aci.agent_identity"))
-                disc_aci.set_prop("resourceId", AAZStrType, ".aci.resource_id", typ_kwargs={"flags": {"required": True}})
-
-            disc_aks = _builder.get(".properties.workload{type:AKS}")
-            if disc_aks is not None:
-                disc_aks.set_prop("clusterAssociationId", AAZStrType, ".aks.cluster_association_id", typ_kwargs={"flags": {"required": True}})
-                disc_aks.set_prop("clusterResourceId", AAZStrType, ".aks.cluster_resource_id", typ_kwargs={"flags": {"required": True}})
-                disc_aks.set_prop("endpoints", AAZListType, ".aks.endpoints")
-                disc_aks.set_prop("workload", AAZObjectType, ".aks.workload", typ_kwargs={"flags": {"required": True}})
-
-            endpoints = _builder.get(".properties.workload{type:AKS}.endpoints")
-            if endpoints is not None:
-                endpoints.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.workload{type:AKS}.endpoints[]")
-            if _elements is not None:
-                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("protocol", AAZStrType, ".protocol", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("servicePort", AAZIntType, ".service_port", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("targetPort", AAZIntType, ".target_port", typ_kwargs={"flags": {"required": True}})
-
-            workload = _builder.get(".properties.workload{type:AKS}.workload")
-            if workload is not None:
-                workload.set_prop("apiVersion", AAZStrType, ".api_version", typ_kwargs={"flags": {"required": True}})
-                workload.set_prop("kind", AAZStrType, ".kind", typ_kwargs={"flags": {"required": True}})
-                workload.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
-                workload.set_prop("namespace", AAZStrType, ".namespace", typ_kwargs={"flags": {"required": True}})
 
             disc_agent_fabric_sandbox = _builder.get(".properties.workload{type:AgentFabricSandbox}")
             if disc_agent_fabric_sandbox is not None:
@@ -597,64 +450,6 @@ class Create(AAZCommand):
             workload.workload_id = AAZStrType(
                 serialized_name="workloadId",
                 flags={"read_only": True},
-            )
-
-            disc_aci = cls._schema_on_200_201.properties.workload.discriminate_by("type", "ACI")
-            disc_aci.agent_identity = AAZObjectType(
-                serialized_name="agentIdentity",
-            )
-            _CreateHelper._build_schema_agent_identity_read(disc_aci.agent_identity)
-            disc_aci.resource_id = AAZStrType(
-                serialized_name="resourceId",
-                flags={"required": True},
-            )
-
-            disc_aks = cls._schema_on_200_201.properties.workload.discriminate_by("type", "AKS")
-            disc_aks.cluster_association_id = AAZStrType(
-                serialized_name="clusterAssociationId",
-                flags={"required": True},
-            )
-            disc_aks.cluster_resource_id = AAZStrType(
-                serialized_name="clusterResourceId",
-                flags={"required": True},
-            )
-            disc_aks.endpoints = AAZListType()
-            disc_aks.workload = AAZObjectType(
-                flags={"required": True},
-            )
-
-            endpoints = cls._schema_on_200_201.properties.workload.discriminate_by("type", "AKS").endpoints
-            endpoints.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.workload.discriminate_by("type", "AKS").endpoints.Element
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-            _element.protocol = AAZStrType(
-                flags={"required": True},
-            )
-            _element.service_port = AAZIntType(
-                serialized_name="servicePort",
-                flags={"required": True},
-            )
-            _element.target_port = AAZIntType(
-                serialized_name="targetPort",
-                flags={"required": True},
-            )
-
-            workload = cls._schema_on_200_201.properties.workload.discriminate_by("type", "AKS").workload
-            workload.api_version = AAZStrType(
-                serialized_name="apiVersion",
-                flags={"required": True},
-            )
-            workload.kind = AAZStrType(
-                flags={"required": True},
-            )
-            workload.name = AAZStrType(
-                flags={"required": True},
-            )
-            workload.namespace = AAZStrType(
-                flags={"required": True},
             )
 
             disc_agent_fabric_sandbox = cls._schema_on_200_201.properties.workload.discriminate_by("type", "AgentFabricSandbox")

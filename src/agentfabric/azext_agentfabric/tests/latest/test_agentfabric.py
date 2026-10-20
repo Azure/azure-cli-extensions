@@ -12,7 +12,7 @@ from unittest.mock import MagicMock
 
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.aaz._command import AAZCommandCtx
-from azext_agentfabric.custom import AksAttach, AksUpdate, MemberCreate
+from azext_agentfabric.custom import AksAttach, AksUpdate
 
 
 COMMANDS = (
@@ -23,8 +23,8 @@ COMMANDS = (
     ("agentfabric delete", "azext_agentfabric.aaz.latest.agentfabric._delete", "Delete"),
     (
         "agentfabric member create",
-        "azext_agentfabric.custom",
-        "MemberCreate",
+        "azext_agentfabric.aaz.latest.agentfabric.member._create",
+        "Create",
     ),
     (
         "agentfabric member show",
@@ -521,15 +521,17 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
         self.assertTrue(List.AZ_SUPPORT_PAGINATION)
 
     def test_member_create_only_registers_sandbox_workloads(self):
-        schema = MemberCreate._build_arguments_schema()
-        self.assertFalse(schema.workload.aci._registered)
-        self.assertFalse(schema.workload.aks._registered)
-        self.assertFalse(schema.workload.member_guid._registered)
-        self.assertTrue(schema.workload.agent_fabric_sandbox._registered)
-        self.assertNotIn("ACI", MemberCreate.__doc__.split(":example:", maxsplit=1)[1])
-        self.assertNotIn("AKS", MemberCreate.__doc__.split(":example:", maxsplit=1)[1])
+        from azext_agentfabric.aaz.latest.agentfabric.member import Create
+        schema = Create._build_arguments_schema()
+        self.assertFalse(hasattr(schema.workload, "aci"))
+        self.assertFalse(hasattr(schema.workload, "aks"))
+        self.assertFalse(hasattr(schema.workload, "member_guid"))
+        self.assertTrue(hasattr(schema.workload, "agent_fabric_sandbox"))
+        self.assertNotIn("ACI", Create.__doc__)
+        self.assertNotIn("AKS", Create.__doc__)
 
     def test_member_sandbox_endpoint_payload(self):
+        from azext_agentfabric.aaz.latest.agentfabric.member import Create
         endpoint = {
             "name": "http", "protocol": "TCP", "service_port": 80, "target_port": 8080,
         }
@@ -543,7 +545,7 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
             "domain": "example.com",
             "endpoints": [endpoint],
         }})
-        operation = self._operation(MemberCreate, "MembersCreateOrUpdate", sandbox)
+        operation = self._operation(Create, "MembersCreateOrUpdate", sandbox)
         workload = operation.content["properties"]["workload"]
         self.assertEqual(workload["type"], "AgentFabricSandbox")
         self.assertNotIn("port", workload["endpoints"][0])
@@ -551,7 +553,7 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
 
     def test_member_agent_identity_payloads(self):
         from azext_agentfabric.aaz.latest.agentfabric.member import (
-            List, Show, Update, Wait,
+            Create, List, Show, Update, Wait,
         )
         expected_identity = {
             "tenantId": "22222222-2222-2222-2222-222222222222",
@@ -577,14 +579,14 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
                     "blueprint_id": expected_identity["blueprintId"],
                 },
             }})
-            operation = self._operation(MemberCreate, "MembersCreateOrUpdate", sandbox)
+            operation = self._operation(Create, "MembersCreateOrUpdate", sandbox)
             self.assertEqual(
                 operation.content["properties"]["workload"]["agentIdentity"],
                 expected_identity,
             )
 
         create_workload = (
-            MemberCreate.MembersCreateOrUpdate._build_schema_on_200_201()
+            Create.MembersCreateOrUpdate._build_schema_on_200_201()
             .properties.workload.get_discriminator({"type": "AgentFabricSandbox"})
         )
         self.assertEqual(

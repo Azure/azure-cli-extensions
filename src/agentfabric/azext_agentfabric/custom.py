@@ -11,36 +11,9 @@
 from knack.log import get_logger
 from azure.cli.core.aaz import register_command
 from .aaz.latest.agentfabric.aks import Attach as _AksAttach, Show as _AksShow, Update as _AksUpdate
-from .aaz.latest.agentfabric.member import Create as _MemberCreate
 
 
 logger = get_logger(__name__)
-
-
-@register_command("agentfabric member create")
-class MemberCreate(_MemberCreate):
-    """Create an Agent Fabric sandbox member under an Agent Fabric.
-
-    Member creation through this preview extension is limited to
-    AgentFabricSandbox workloads. Existing ACI and AKS members remain readable
-    through show, list, update, and wait commands.
-
-    :example: Create an Agent Fabric sandbox member
-        az agentfabric member create --resource-group rgnetworksecurity
-        --fabric-name testAIFabric --member-name sandboxMember --location eastus
-        --workload "{agent-fabric-sandbox:{image:{uri:'contoso.azurecr.io/agents/sandbox:1.0.0',
-        pull-policy:IfNotPresent},resources:{cpu:2,memory:4Gi,disk:20Gi},
-        endpoints:[{name:http,service-port:80,protocol:TCP,target-port:8080}],
-        domain:sandbox-member.testaifabric.contoso.com}}"
-    """
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        schema = super()._build_arguments_schema(*args, **kwargs)
-        schema.workload.aci._registered = False  # pylint: disable=protected-access
-        schema.workload.aks._registered = False  # pylint: disable=protected-access
-        schema.workload.member_guid._registered = False  # pylint: disable=protected-access
-        return schema
 
 
 @register_command("agentfabric aks attach")
