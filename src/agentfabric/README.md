@@ -65,9 +65,8 @@ Members are children of an Agent Fabric, so member commands require the parent
 Fabric name through `--fabric-name`.
 
 Member creation through this preview extension supports only the
-`AgentFabricSandbox` workload. Existing `ACI` and `AKS` members remain readable
-through show, list, update, and wait commands, but this extension does not
-create them. Endpoint mappings use `name`, `service-port`, `protocol`, and
+`AgentFabricSandbox` workload. Member commands do not model ACI or AKS member
+workloads. Endpoint mappings use `name`, `service-port`, `protocol`, and
 `target-port`, replacing the earlier single `port` field. Agent Fabric Sandbox
 workloads can include an Entra agent identity with required tenant and agent IDs
 plus an optional blueprint ID. Member PATCH supports tags and `fqdn`, not

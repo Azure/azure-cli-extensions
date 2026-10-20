@@ -601,21 +601,6 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
             "wait": Wait.MembersGet._build_schema_on_200(),
         }
         for name, response_schema in read_response_schemas.items():
-            with self.subTest(response=name, workload_type="ACI"):
-                workload = response_schema.properties.workload
-                identity = workload.get_discriminator(
-                    {"type": "ACI"}
-                ).agent_identity
-                self.assertEqual(
-                    set(identity._fields),
-                    {"agent_id", "blueprint_id", "tenant_id"},
-                )
-            with self.subTest(response=name, workload_type="AKS"):
-                workload = response_schema.properties.workload.get_discriminator(
-                    {"type": "AKS"}
-                )
-                self.assertTrue(hasattr(workload, "cluster_association_id"))
-                self.assertTrue(hasattr(workload, "cluster_resource_id"))
             with self.subTest(response=name, workload_type="AgentFabricSandbox"):
                 workload = response_schema.properties.workload
                 identity = workload.get_discriminator(

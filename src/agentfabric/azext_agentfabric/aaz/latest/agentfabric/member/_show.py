@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Show an Agent Fabric member.
 
-    Members are children of an Agent Fabric and require the parent Fabric name. Member workloads can describe ACI, AKS, or Agent Fabric sandbox resources.
+    Members are children of an Agent Fabric and require the parent Fabric name. This command shows an Agent Fabric sandbox member.
 
     :example: Show an Agent Fabric member
         az agentfabric member show --resource-group rgnetworksecurity --fabric-name testAIFabric --member-name checkoutApi
@@ -212,64 +212,6 @@ class Show(AAZCommand):
             workload.workload_id = AAZStrType(
                 serialized_name="workloadId",
                 flags={"read_only": True},
-            )
-
-            disc_aci = cls._schema_on_200.properties.workload.discriminate_by("type", "ACI")
-            disc_aci.agent_identity = AAZObjectType(
-                serialized_name="agentIdentity",
-            )
-            _ShowHelper._build_schema_agent_identity_read(disc_aci.agent_identity)
-            disc_aci.resource_id = AAZStrType(
-                serialized_name="resourceId",
-                flags={"required": True},
-            )
-
-            disc_aks = cls._schema_on_200.properties.workload.discriminate_by("type", "AKS")
-            disc_aks.cluster_association_id = AAZStrType(
-                serialized_name="clusterAssociationId",
-                flags={"required": True},
-            )
-            disc_aks.cluster_resource_id = AAZStrType(
-                serialized_name="clusterResourceId",
-                flags={"required": True},
-            )
-            disc_aks.endpoints = AAZListType()
-            disc_aks.workload = AAZObjectType(
-                flags={"required": True},
-            )
-
-            endpoints = cls._schema_on_200.properties.workload.discriminate_by("type", "AKS").endpoints
-            endpoints.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.workload.discriminate_by("type", "AKS").endpoints.Element
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-            _element.protocol = AAZStrType(
-                flags={"required": True},
-            )
-            _element.service_port = AAZIntType(
-                serialized_name="servicePort",
-                flags={"required": True},
-            )
-            _element.target_port = AAZIntType(
-                serialized_name="targetPort",
-                flags={"required": True},
-            )
-
-            workload = cls._schema_on_200.properties.workload.discriminate_by("type", "AKS").workload
-            workload.api_version = AAZStrType(
-                serialized_name="apiVersion",
-                flags={"required": True},
-            )
-            workload.kind = AAZStrType(
-                flags={"required": True},
-            )
-            workload.name = AAZStrType(
-                flags={"required": True},
-            )
-            workload.namespace = AAZStrType(
-                flags={"required": True},
             )
 
             disc_agent_fabric_sandbox = cls._schema_on_200.properties.workload.discriminate_by("type", "AgentFabricSandbox")

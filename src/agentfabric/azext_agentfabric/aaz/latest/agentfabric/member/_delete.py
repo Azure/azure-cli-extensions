@@ -18,7 +18,7 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete an Agent Fabric member.
 
-    Members are children of an Agent Fabric and require the parent Fabric name. Member workloads can describe ACI, AKS, or Agent Fabric sandbox resources.
+    Members are children of an Agent Fabric and require the parent Fabric name. This command deletes an Agent Fabric sandbox member.
 
     :example: Delete an Agent Fabric member
         az agentfabric member delete --resource-group rgnetworksecurity --fabric-name testAIFabric --member-name checkoutApi
