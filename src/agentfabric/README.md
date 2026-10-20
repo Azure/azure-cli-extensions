@@ -96,6 +96,13 @@ identifies the enrollment child, independently of the target cluster name.
 they do not resolve the target cluster ID. The target resource ID is immutable.
 The latest wire contract also allows ACI SandboxGroup target IDs.
 
+AKS targets must use managed Microsoft Entra ID authentication. Create the
+cluster with `az aks create --enable-managed-identity --enable-aad`, or enable
+Entra authentication on an existing cluster with
+`az aks update --resource-group myAksResourceGroup --name myCluster --enable-aad`.
+Managed identity alone is insufficient: a non-Entra kubeconfig can cause
+attach to fail with `ClusterConnectionInformationUnavailable`.
+
 ```bash
 az agentfabric aks attach \
   --resource-group myResourceGroup \
@@ -180,19 +187,18 @@ azdev test agentfabric
 `AZURE_TEST_AGENTFABRIC_LOCATION` selects the service region (default:
 `centraluseuap`). The committed live recordings cover Fabric, Member, and
 Policy Group CRUD/wait, resource-group and subscription lists, and the egress
-trust bundle singleton read. The member lifecycle tests the API's optional
+trust bundle singleton read. They also cover AKS attach/show/list/update/detach
+and wait, including a Standard-to-Premium upgrade, using an Entra-enabled
+cluster. This is 21 of 22 API commands, plus all four wait commands.
+The member lifecycle tests the API's optional
 workload case; workload variant serialization is additionally unit-tested.
 Signed operation-status URL values are scrubbed from recordings.
 
-Two scenarios remain explicitly skipped because of public service failures
-observed during recording:
+The AKS lifecycle provisions an Entra-enabled cluster; managed identity alone
+does not satisfy its authentication prerequisite. It cleans up the association,
+AKS, and Fabric before group teardown.
 
-- AKS enrollment: a newly provisioned, one-node AKS cluster reached
-  `Succeeded`, but attach returned `ClusterConnectionInformationUnavailable`.
-  Successful attach/show/list/update/detach coverage requires this connection
-  lookup to work. The unrecorded scenario provisions its own cluster and
-  cleans up members, associations, AKS, and Fabric before group teardown.
-- Egress trust bundle collection: LIST returned HTTP 404 `ResourceReadFailed`,
-  while singleton show succeeded.
+The egress trust bundle collection scenario remains explicitly skipped:
+LIST returned HTTP 404 `ResourceReadFailed`, while singleton show succeeded.
 
 Failed-run recordings are not committed as successful playback fixtures.

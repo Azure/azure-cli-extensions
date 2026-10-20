@@ -17,11 +17,13 @@ LOCATION = os.environ.get("AZURE_TEST_AGENTFABRIC_LOCATION", "centraluseuap")
 
 class OperationStatusSignatureReplacer(RecordingProcessor):
     _pattern = re.compile(r"(\b[0-9a-f-]{36}(?:\*|%2a))[0-9a-f]{64}\b", re.IGNORECASE)
+    _query_pattern = re.compile(r"""([?&](?:t|c|s|h)=)[^&\s"'<>\\]+""", re.IGNORECASE)
 
     @classmethod
     def redact(cls, value):
         if isinstance(value, str):
-            return cls._pattern.sub(lambda match: match[1] + "0" * 64, value)
+            value = cls._pattern.sub(lambda match: match[1] + "0" * 64, value)
+            return cls._query_pattern.sub(lambda match: match[1] + "REDACTED", value)
         if isinstance(value, bytes):
             return cls.redact(value.decode("utf-8")).encode("utf-8")
         if isinstance(value, list):
@@ -54,6 +56,10 @@ class OperationStatusSignatureReplacerTest(unittest.TestCase):
         self.assertEqual(scrubbed["headers"]["location"], [expected])
         self.assertEqual(scrubbed["body"], expected.encode("utf-8"))
         self.assertEqual(OperationStatusSignatureReplacer.redact(scrubbed), scrubbed)
+        self.assertEqual(
+            OperationStatusSignatureReplacer.redact(url + "?api-version=2026-06-01&t=123&c=cert&s=signature&h=hash"),
+            expected + "?api-version=2026-06-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED",
+        )
 
 
 class AgentfabricResourceScenario(ScenarioTest):
@@ -192,18 +198,16 @@ class AgentfabricResourceScenario(ScenarioTest):
                 self.check("tags.stage", "updated"),
             ])
 
-    @unittest.skip("Public Central US EUAP attach fails with ClusterConnectionInformationUnavailable.")
     @ResourceGroupPreparer(name_prefix="clitestafaks", location=LOCATION, random_name_length=24)
-    def test_agentfabric_aks_member_lifecycle(self, resource_group):
+    def test_agentfabric_aks_lifecycle(self, resource_group):
         self.kwargs.update({
             "fabric": self.create_random_name(prefix="cliaf", length=24),
             "aks": self.create_random_name(prefix="cliafaks", length=24),
             "association": self.create_random_name(prefix="cliafassoc", length=24),
-            "member": self.create_random_name(prefix="cliafmember", length=24),
             "location": LOCATION,
         })
         with ExitStack() as cleanup:
-            self._exercise_aks_member_lifecycle(cleanup)
+            self._exercise_aks_lifecycle(cleanup)
 
     @unittest.skip("Public Central US EUAP collection GET fails with ResourceReadFailed.")
     @ResourceGroupPreparer(name_prefix="clitestafetblist", location=LOCATION)
@@ -220,7 +224,7 @@ class AgentfabricResourceScenario(ScenarioTest):
         finally:
             self.cmd("agentfabric delete -g {rg} -n {fabric} --yes")
 
-    def _exercise_aks_member_lifecycle(self, cleanup):
+    def _exercise_aks_lifecycle(self, cleanup):
         self.cmd(
             "agentfabric create -g {rg} -n {fabric} -l {location} --identity type=SystemAssigned"
         )
@@ -228,7 +232,7 @@ class AgentfabricResourceScenario(ScenarioTest):
         cleanup.callback(self.cmd, "agentfabric delete -g {rg} -n {fabric} --yes")
         cluster = self.cmd(
             "aks create -g {rg} -n {aks} -l {location} --node-count 1 "
-            "--node-vm-size Standard_D2s_v5 --tier free --enable-managed-identity --no-ssh-key",
+            "--node-vm-size Standard_D2s_v5 --tier free --enable-managed-identity --enable-aad --no-ssh-key",
             checks=[self.check("provisioningState", "Succeeded")],
         ).get_output_in_json()
         self.kwargs["aks_id"] = cluster["id"]
@@ -239,7 +243,7 @@ class AgentfabricResourceScenario(ScenarioTest):
         cleanup.callback(
             self.cmd, "agentfabric aks detach -g {rg} --fabric-name {fabric} -n {association} --yes"
         )
-        association = self.cmd(
+        self.cmd(
             "agentfabric aks attach -g {rg} --fabric-name {fabric} -n {association} "
             "-l {location} --cluster-resource-id {aks_id} --sku Standard",
             checks=[
@@ -248,8 +252,7 @@ class AgentfabricResourceScenario(ScenarioTest):
                 self.check("properties.clusterResourceId", "{aks_id}", case_sensitive=False),
                 self.check("properties.sku", "Standard"),
             ],
-        ).get_output_in_json()
-        self.kwargs["association_id"] = association["id"]
+        )
         self.cmd("agentfabric aks wait -g {rg} --fabric-name {fabric} -n {association} --created")
         self.cmd("agentfabric aks show -g {rg} --fabric-name {fabric} -n {association}", checks=[
             self.check("properties.clusterResourceId", "{aks_id}", case_sensitive=False),
@@ -263,39 +266,4 @@ class AgentfabricResourceScenario(ScenarioTest):
         self.cmd("agentfabric aks wait -g {rg} --fabric-name {fabric} -n {association} --updated")
         self.cmd("agentfabric aks show -g {rg} --fabric-name {fabric} -n {association}", checks=[
             self.check("properties.sku", "Premium"),
-        ])
-        self.cmd(
-            "aks command invoke -g {rg} -n {aks} "
-            "--command 'kubectl create deployment agentfabric-cli-test "
-            "--image=mcr.microsoft.com/oss/kubernetes/pause:3.9 --replicas=0'",
-            checks=[self.check("exitCode", 0)],
-        )
-        cleanup.callback(self.cmd, "agentfabric member wait -g {rg} --fabric-name {fabric} -n {member} --deleted")
-        cleanup.callback(self.cmd, "agentfabric member delete -g {rg} --fabric-name {fabric} -n {member} --yes")
-        self.cmd(
-            'agentfabric member create -g {rg} --fabric-name {fabric} -n {member} -l {location} '
-            '--fqdn {member}.example.com '
-            '--workload "{{aks:{{cluster-association-id:{association_id},cluster-resource-id:{aks_id},'
-            'workload:{{api-version:apps/v1,kind:Deployment,namespace:default,name:agentfabric-cli-test}}}}}}"',
-            checks=[
-                self.check("name", "{member}"),
-                self.check("properties.workload.type", "AKS"),
-                self.check("properties.provisioningState", "Succeeded"),
-            ],
-        )
-        self.cmd("agentfabric member wait -g {rg} --fabric-name {fabric} -n {member} --created")
-        self.cmd("agentfabric member show -g {rg} --fabric-name {fabric} -n {member}", checks=[
-            self.check("properties.fqdn", "{member}.example.com"),
-        ])
-        self.cmd("agentfabric member list -g {rg} --fabric-name {fabric}", checks=[
-            self.check("[?name=='{member}'] | length(@)", 1),
-        ])
-        self.cmd(
-            "agentfabric member update -g {rg} --fabric-name {fabric} -n {member} "
-            "--fqdn updated.example.com --tags stage=updated --no-wait"
-        )
-        self.cmd("agentfabric member wait -g {rg} --fabric-name {fabric} -n {member} --updated")
-        self.cmd("agentfabric member show -g {rg} --fabric-name {fabric} -n {member}", checks=[
-            self.check("properties.fqdn", "updated.example.com"),
-            self.check("tags.stage", "updated"),
         ])

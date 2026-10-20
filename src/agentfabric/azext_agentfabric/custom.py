@@ -10,10 +10,27 @@
 
 from knack.log import get_logger
 from azure.cli.core.aaz import register_command
-from .aaz.latest.agentfabric.aks import Show as _AksShow, Update as _AksUpdate
+from .aaz.latest.agentfabric.aks import Attach as _AksAttach, Show as _AksShow, Update as _AksUpdate
 
 
 logger = get_logger(__name__)
+
+
+@register_command("agentfabric aks attach")
+class AksAttach(_AksAttach):
+    """Attach a compute resource to an Agent Fabric.
+
+    AKS targets require managed Microsoft Entra ID authentication. Create the
+    cluster with `az aks create --enable-aad`, or enable it on an existing
+    cluster with `az aks update --enable-aad`, before attaching. Managed
+    identity alone does not enable Microsoft Entra ID authentication.
+    The association name is independent of the target resource name.
+
+    :example: Attach a Microsoft Entra ID-enabled AKS cluster
+        az agentfabric aks attach -g myResourceGroup --fabric-name myFabric -n myEnrollment
+        --location centraluseuap --cluster-resource-id <aks-resource-id>
+        --sku Standard
+    """
 
 
 @register_command("agentfabric aks update")

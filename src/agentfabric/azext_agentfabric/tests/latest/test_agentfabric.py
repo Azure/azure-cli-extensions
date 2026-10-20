@@ -12,7 +12,7 @@ from unittest.mock import MagicMock
 
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.aaz._command import AAZCommandCtx
-from azext_agentfabric.custom import AksUpdate
+from azext_agentfabric.custom import AksAttach, AksUpdate
 
 
 COMMANDS = (
@@ -48,8 +48,8 @@ COMMANDS = (
     ),
     (
         "agentfabric aks attach",
-        "azext_agentfabric.aaz.latest.agentfabric.aks._attach",
-        "Attach",
+        "azext_agentfabric.custom",
+        "AksAttach",
     ),
     (
         "agentfabric aks show",
@@ -274,6 +274,10 @@ class AgentfabricScenario(ScenarioTest):
 
 
 class AgentfabricGeneratedCommandTest(unittest.TestCase):
+
+    def test_attach_help_documents_entra_prerequisite(self):
+        self.assertIn("--enable-aad", AksAttach.__doc__)
+        self.assertIn("Managed identity alone does not enable", " ".join(AksAttach.__doc__.split()))
 
     def _operation(self, command_class, operation_name, arguments):
         ctx = AAZCommandCtx(MagicMock(), command_class._build_arguments_schema(), arguments)
