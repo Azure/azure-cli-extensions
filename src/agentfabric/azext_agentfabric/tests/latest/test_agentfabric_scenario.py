@@ -7,7 +7,10 @@ import os
 import re
 import unittest
 from contextlib import ExitStack
+from unittest.mock import patch
 
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.profiles import ResourceType
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import RecordingProcessor
 
@@ -60,6 +63,19 @@ class OperationStatusSignatureReplacerTest(unittest.TestCase):
             OperationStatusSignatureReplacer.redact(url + "?api-version=2026-06-01&t=123&c=cert&s=signature&h=hash"),
             expected + "?api-version=2026-06-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED",
         )
+
+
+class AksPrerequisiteClientTest(unittest.TestCase):
+
+    def test_prerequisite_api_version_is_pinned(self):
+        cli_ctx = object()
+        with patch(__name__ + ".get_mgmt_service_client") as factory:
+            client = AgentfabricResourceScenario._aks_prerequisite_client(cli_ctx, "test-subscription")
+        factory.assert_called_once_with(
+            cli_ctx, ResourceType.MGMT_CONTAINERSERVICE,
+            subscription_id="test-subscription", api_version="2026-06-01"
+        )
+        self.assertIs(client, factory.return_value)
 
 
 class AgentfabricResourceScenario(ScenarioTest):
@@ -206,7 +222,11 @@ class AgentfabricResourceScenario(ScenarioTest):
             "association": self.create_random_name(prefix="cliafassoc", length=24),
             "location": LOCATION,
         })
-        with ExitStack() as cleanup:
+        # Pin prerequisite requests to the real recording, independent of core CLI defaults.
+        with patch(
+            "azure.cli.command_modules.acs._client_factory.get_container_service_client",
+            self._aks_prerequisite_client,
+        ), ExitStack() as cleanup:
             self._exercise_aks_lifecycle(cleanup)
 
     @live_only()
@@ -224,6 +244,13 @@ class AgentfabricResourceScenario(ScenarioTest):
             ])
         finally:
             self.cmd("agentfabric delete -g {rg} -n {fabric} --yes")
+
+    @staticmethod
+    def _aks_prerequisite_client(cli_ctx, subscription_id=None):
+        return get_mgmt_service_client(
+            cli_ctx, ResourceType.MGMT_CONTAINERSERVICE,
+            subscription_id=subscription_id, api_version="2026-06-01"
+        )
 
     def _exercise_aks_lifecycle(self, cleanup):
         self.cmd(

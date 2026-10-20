@@ -196,7 +196,11 @@ Signed operation-status URL values are scrubbed from recordings.
 
 The AKS lifecycle provisions an Entra-enabled cluster; managed identity alone
 does not satisfy its authentication prerequisite. It cleans up the association,
-AKS, and Fabric before group teardown.
+AKS, and Fabric before group teardown. Its AKS prerequisite client is pinned
+to the recorded `2026-06-01` Container Service API so changes to the core CLI's
+default AKS API version do not invalidate playback. Agent Fabric requests
+continue to use `2026-10-07-preview`; request matching and recorded responses
+are unchanged.
 
 The egress trust bundle collection scenario is marked `@live_only()`:
 LIST returned HTTP 404 `ResourceReadFailed`, while singleton show succeeded.
