@@ -108,9 +108,6 @@ class AgentfabricResourceScenario(ScenarioTest):
             self.cmd("agentfabric list -g {rg}", checks=[
                 self.check("[?name=='{fabric}'] | length(@)", 1),
             ])
-            self.cmd("agentfabric list", checks=[
-                self.check("[?name=='{fabric}'] | length(@)", 1),
-            ])
             self.cmd("agentfabric update -g {rg} -n {fabric} --tags stage=updated --no-wait")
             self.cmd("agentfabric wait -g {rg} -n {fabric} --updated")
             self.cmd("agentfabric show -g {rg} -n {fabric}", checks=[
@@ -142,9 +139,6 @@ class AgentfabricResourceScenario(ScenarioTest):
                 self.check("properties.displayName", "CLI scenario policy group"),
             ])
             self.cmd("agentfabric policy-group list -g {rg}", checks=[
-                self.check("[?name=='{policy}'] | length(@)", 1),
-            ])
-            self.cmd("agentfabric policy-group list", checks=[
                 self.check("[?name=='{policy}'] | length(@)", 1),
             ])
             self.cmd("agentfabric policy-group update -g {rg} -n {policy} --tags stage=updated --no-wait")
