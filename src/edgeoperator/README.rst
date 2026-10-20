@@ -16,6 +16,6 @@ Use ``az aldo system-configuration show`` to retrieve the active system configur
 Use ``az aldo system-configuration create`` to create or fully replace the configuration with
 ``--dns-forwarder-ip``, ``--connection-intent``, ``--stamp-id``, and ``--device-resource-id``.
 This command uses PUT, not PATCH: omitted writable fields are not preserved. Supply all writable
-values you want to retain. Both commands require the Operator subscription.
+values on every PUT; the service requires all four. Both commands require the Operator subscription.
 
 The commands use the public `Microsoft.EdgeOperator SystemConfiguration REST API specification <https://github.com/Azure/azure-rest-api-specs/tree/main/specification/edgeoperator/resource-manager/Microsoft.EdgeOperator/SystemConfiguration>`_.

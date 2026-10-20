@@ -52,10 +52,13 @@ helps["aldo system-configuration create"] = """
     short-summary: Create or fully replace the active ALDO system configuration.
     long-summary: >-
         Sends a PUT request for the default singleton. This replaces the configuration rather than merging changes;
-        omitted writable fields are not preserved. Supply all writable values you want to retain.
+        omitted writable fields are not preserved.
+        The service requires --dns-forwarder-ip, --connection-intent, --stamp-id, and --device-resource-id on every PUT.
         The current subscription must be the Operator subscription.
     examples:
-      - name: Replace the system configuration with a DNS forwarder and connection intent.
+      - name: Replace the system configuration with all four required writable values.
         text: >-
             az aldo system-configuration create --dns-forwarder-ip 192.0.2.53 --connection-intent Connected
+            --stamp-id 11111111-1111-1111-1111-111111111111
+            --device-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-aldo/providers/Microsoft.Edge/disconnectedOperations/example-device
 """
