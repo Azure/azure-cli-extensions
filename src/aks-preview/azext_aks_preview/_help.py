@@ -305,7 +305,7 @@ helps['aks create'] = f"""
             operating system, addons, and managed containerized components
             (https://aka.ms/aks/components/docs). See Enable cluster-wide FIPS
             (https://aka.ms/aks/fips) for more details.
-            Requires Kubernetes version 1.34 or later and the
+            Requires Kubernetes version 1.35 or later and the
             Microsoft.ContainerService/EnableFIPSPreview feature to be registered
             on the subscription. All node pools must be FIPS-enabled; this command
             enables FIPS on the default node pool during cluster creation. Some
@@ -1381,7 +1381,7 @@ helps['aks update'] = """
             operating system, addons, and managed containerized components
             (https://aka.ms/aks/components/docs). See Enable cluster-wide FIPS
             (https://aka.ms/aks/fips) for more details.
-            Requires Kubernetes version 1.34 or later and the
+            Requires Kubernetes version 1.35 or later and the
             Microsoft.ContainerService/EnableFIPSPreview feature to be registered
             on the subscription. Existing node pools must already be FIPS-enabled
             before enabling this cluster-level setting, and future node pools must
