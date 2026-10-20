@@ -164,3 +164,35 @@ Policy Group ARM IDs end with `/policyGroups/{name}`.
 Long-running create, attach, update, detach, and delete operations support
 `--no-wait`. Use the corresponding `wait` command to wait for provisioning to
 reach a target state.
+
+## Scenario tests
+
+`tests/latest/test_agentfabric_scenario.py` contains replayable lifecycle tests
+using disposable resource groups, randomized names, and explicit child-first
+cleanup. Record against a subscription where the public
+`Microsoft.NetworkSecurity` preview is enabled:
+
+```bash
+azdev test agentfabric --discover --live
+azdev test agentfabric
+```
+
+`AZURE_TEST_AGENTFABRIC_LOCATION` selects the service region (default:
+`centraluseuap`). The committed live recordings cover Fabric, Member, and
+Policy Group CRUD/wait, resource-group and subscription lists, and the egress
+trust bundle singleton read. The member lifecycle tests the API's optional
+workload case; workload variant serialization is additionally unit-tested.
+Signed operation-status URL values are scrubbed from recordings.
+
+Two scenarios remain explicitly skipped because of public service failures
+observed during recording:
+
+- AKS enrollment: a newly provisioned, one-node AKS cluster reached
+  `Succeeded`, but attach returned `ClusterConnectionInformationUnavailable`.
+  Successful attach/show/list/update/detach coverage requires this connection
+  lookup to work. The unrecorded scenario provisions its own cluster and
+  cleans up members, associations, AKS, and Fabric before group teardown.
+- Egress trust bundle collection: LIST returned HTTP 404 `ResourceReadFailed`,
+  while singleton show succeeded.
+
+Failed-run recordings are not committed as successful playback fixtures.
