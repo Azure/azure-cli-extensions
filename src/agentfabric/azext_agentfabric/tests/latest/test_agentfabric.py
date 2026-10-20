@@ -12,7 +12,7 @@ from unittest.mock import MagicMock
 
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.aaz._command import AAZCommandCtx
-from azext_agentfabric.custom import AksAttach, AksUpdate
+from azext_agentfabric.custom import AksAttach, AksUpdate, MemberCreate
 
 
 COMMANDS = (
@@ -23,8 +23,8 @@ COMMANDS = (
     ("agentfabric delete", "azext_agentfabric.aaz.latest.agentfabric._delete", "Delete"),
     (
         "agentfabric member create",
-        "azext_agentfabric.aaz.latest.agentfabric.member._create",
-        "Create",
+        "azext_agentfabric.custom",
+        "MemberCreate",
     ),
     (
         "agentfabric member show",
@@ -520,55 +520,38 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
         })
         self.assertTrue(List.AZ_SUPPORT_PAGINATION)
 
-    def test_member_aks_and_sandbox_endpoint_payloads(self):
-        from azext_agentfabric.aaz.latest.agentfabric.member import Create
+    def test_member_create_only_registers_sandbox_workloads(self):
+        schema = MemberCreate._build_arguments_schema()
+        self.assertFalse(schema.workload.aci._registered)
+        self.assertFalse(schema.workload.aks._registered)
+        self.assertFalse(schema.workload.member_guid._registered)
+        self.assertTrue(schema.workload.agent_fabric_sandbox._registered)
+        self.assertNotIn("ACI", MemberCreate.__doc__.split(":example:", maxsplit=1)[1])
+        self.assertNotIn("AKS", MemberCreate.__doc__.split(":example:", maxsplit=1)[1])
+
+    def test_member_sandbox_endpoint_payload(self):
         endpoint = {
             "name": "http", "protocol": "TCP", "service_port": 80, "target_port": 8080,
         }
         arguments = {
             "fabric_name": "fabric", "member_name": "member",
             "resource_group": "rg", "location": "eastus", "fqdn": "member.example.com",
-            "workload": {"aks": {
-                "cluster_association_id": "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.NetworkSecurity/agentFabrics/fabric/clusterAssociations/association",
-                "cluster_resource_id": "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ContainerService/managedClusters/aks",
-                "workload": {
-                    "api_version": "apps/v1", "kind": "Deployment",
-                    "namespace": "agents", "name": "agent",
-                },
-                "endpoints": [endpoint],
-            }},
         }
-        operation = self._operation(Create, "MembersCreateOrUpdate", arguments)
-        workload = operation.content["properties"]["workload"]
-        self.assertEqual(workload["type"], "AKS")
-        self.assertEqual(workload["workload"]["apiVersion"], "apps/v1")
-        self.assertEqual(workload["endpoints"], [{
-            "name": "http", "protocol": "TCP", "servicePort": 80, "targetPort": 8080,
-        }])
         sandbox = dict(arguments, workload={"agent_fabric_sandbox": {
             "image": {"uri": "example.com/agent:latest"},
             "resources": {"cpu": "1", "memory": "1Gi"},
             "domain": "example.com",
             "endpoints": [endpoint],
         }})
-        operation = self._operation(Create, "MembersCreateOrUpdate", sandbox)
+        operation = self._operation(MemberCreate, "MembersCreateOrUpdate", sandbox)
         workload = operation.content["properties"]["workload"]
+        self.assertEqual(workload["type"], "AgentFabricSandbox")
         self.assertNotIn("port", workload["endpoints"][0])
         self.assertEqual(workload["endpoints"][0]["targetPort"], 8080)
-        aci = dict(arguments, workload={
-            "member_guid": "11111111-1111-1111-1111-111111111111",
-            "aci": {
-                "resource_id": "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ContainerInstance/sandboxGroups/sandbox",
-            },
-        })
-        operation = self._operation(Create, "MembersCreateOrUpdate", aci)
-        workload = operation.content["properties"]["workload"]
-        self.assertEqual(workload["type"], "ACI")
-        self.assertEqual(workload["memberGuid"], "11111111-1111-1111-1111-111111111111")
 
     def test_member_agent_identity_payloads(self):
         from azext_agentfabric.aaz.latest.agentfabric.member import (
-            Create, List, Show, Update, Wait,
+            List, Show, Update, Wait,
         )
         expected_identity = {
             "tenantId": "22222222-2222-2222-2222-222222222222",
@@ -594,37 +577,28 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
                     "blueprint_id": expected_identity["blueprintId"],
                 },
             }})
-            operation = self._operation(Create, "MembersCreateOrUpdate", sandbox)
+            operation = self._operation(MemberCreate, "MembersCreateOrUpdate", sandbox)
             self.assertEqual(
                 operation.content["properties"]["workload"]["agentIdentity"],
                 expected_identity,
             )
 
-        with self.subTest(workload_type="ACI"):
-            aci = dict(arguments, workload={"aci": {
-                "resource_id": (
-                    "/subscriptions/sub/resourceGroups/rg/providers/"
-                    "Microsoft.ContainerInstance/sandboxGroups/sandbox"
-                ),
-                "agent_identity": {
-                    "tenant_id": expected_identity["tenantId"],
-                    "agent_id": expected_identity["agentId"],
-                    "blueprint_id": expected_identity["blueprintId"],
-                },
-            }})
-            operation = self._operation(Create, "MembersCreateOrUpdate", aci)
-            workload = operation.content["properties"]["workload"]
-            self.assertEqual(workload["type"], "ACI")
-            self.assertEqual(workload["agentIdentity"], expected_identity)
+        create_workload = (
+            MemberCreate.MembersCreateOrUpdate._build_schema_on_200_201()
+            .properties.workload.get_discriminator({"type": "AgentFabricSandbox"})
+        )
+        self.assertEqual(
+            set(create_workload.agent_identity._fields),
+            {"agent_id", "blueprint_id", "tenant_id"},
+        )
 
-        response_schemas = {
-            "create": Create.MembersCreateOrUpdate._build_schema_on_200_201(),
+        read_response_schemas = {
             "show": Show.MembersGet._build_schema_on_200(),
             "list": List.MembersListByParent._build_schema_on_200().value.Element,
             "update": Update.MembersUpdate._build_schema_on_200(),
             "wait": Wait.MembersGet._build_schema_on_200(),
         }
-        for name, response_schema in response_schemas.items():
+        for name, response_schema in read_response_schemas.items():
             with self.subTest(response=name, workload_type="ACI"):
                 workload = response_schema.properties.workload
                 identity = workload.get_discriminator(
@@ -634,6 +608,12 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
                     set(identity._fields),
                     {"agent_id", "blueprint_id", "tenant_id"},
                 )
+            with self.subTest(response=name, workload_type="AKS"):
+                workload = response_schema.properties.workload.get_discriminator(
+                    {"type": "AKS"}
+                )
+                self.assertTrue(hasattr(workload, "cluster_association_id"))
+                self.assertTrue(hasattr(workload, "cluster_resource_id"))
             with self.subTest(response=name, workload_type="AgentFabricSandbox"):
                 workload = response_schema.properties.workload
                 identity = workload.get_discriminator(

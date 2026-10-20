@@ -64,13 +64,14 @@ az agentfabric list --resource-group myResourceGroup
 Members are children of an Agent Fabric, so member commands require the parent
 Fabric name through `--fabric-name`.
 
-Workloads support `ACI`, `AKS`, and `AgentFabricSandbox` variants. AKS workloads
-include the association ID, AKS resource ID, and an existing Kubernetes resource
-reference; the CLI does not create that Kubernetes resource. Endpoint mappings
-use `name`, `service-port`, `protocol`, and `target-port`, replacing the earlier
-single `port` field. ACI and Agent Fabric Sandbox workloads can include an Entra
-agent identity with required tenant and agent IDs plus an optional blueprint ID.
-Member PATCH supports tags and `fqdn`, not workload changes.
+Member creation through this preview extension supports only the
+`AgentFabricSandbox` workload. Existing `ACI` and `AKS` members remain readable
+through show, list, update, and wait commands, but this extension does not
+create them. Endpoint mappings use `name`, `service-port`, `protocol`, and
+`target-port`, replacing the earlier single `port` field. Agent Fabric Sandbox
+workloads can include an Entra agent identity with required tenant and agent IDs
+plus an optional blueprint ID. Member PATCH supports tags and `fqdn`, not
+workload changes.
 
 ```bash
 az agentfabric member create \
@@ -78,7 +79,7 @@ az agentfabric member create \
   --fabric-name myFabric \
   --member-name myMember \
   --location eastus \
-  --workload "{aci:{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ContainerInstance/containerGroups/myContainerGroup}}"
+  --workload "{agent-fabric-sandbox:{image:{uri:'contoso.azurecr.io/agents/sandbox:1.0.0',pull-policy:IfNotPresent},resources:{cpu:2,memory:4Gi,disk:20Gi},domain:my-member.my-fabric.contoso.com}}"
 
 az agentfabric member show \
   --resource-group myResourceGroup \
