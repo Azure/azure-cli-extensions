@@ -1181,6 +1181,23 @@ def test_get_chart_path_validates_helmchart_override(monkeypatch, tmp_path):
     assert chart_path == str(override_path)
 
 
+def test_get_chart_path_accepts_helmchart_archive_file(monkeypatch, tmp_path):
+    override_path = tmp_path / "override-chart.tgz"
+    override_path.touch()
+    monkeypatch.setenv("HELMCHART", str(override_path))
+    monkeypatch.setattr(utils_module, "pull_helm_chart", MagicMock())
+    monkeypatch.setattr(utils_module.os.path, "expanduser", lambda _path: str(tmp_path))
+
+    chart_path = utils_module.get_chart_path(
+        "mcr.microsoft.com/chart:1.0.0",
+        None,
+        None,
+        "/usr/bin/helm",
+    )
+
+    assert chart_path == str(override_path)
+
+
 def test_add_helm_repo_reports_standardized_error(monkeypatch):
     process = MagicMock(returncode=1)
     process.communicate.return_value = (b"", b"repo failed")
@@ -1733,6 +1750,27 @@ class TestCheckClusterDNS:
         result, diag = self._run(log)
         assert result == "Failed"
         assert diag[0].startswith("[AZK8S0304]")
+
+    def test_single_generic_timeout_warns_and_is_not_applicable(self, monkeypatch):
+        warning = MagicMock()
+        monkeypatch.setattr(utils_module.logger, "warning", warning)
+
+        result, diag = self._run("DNS Result: query timed out")
+
+        assert result == consts.Diagnostic_Check_Not_Applicable
+        assert diag == []
+        warning.assert_called_once_with(
+            "The DNS diagnostic timed out once. Continuing onboarding because "
+            "the timeout may be transient."
+        )
+
+    def test_repeated_generic_timeouts_fail(self):
+        log = "DNS Result: query timed out\nRetry: query timed out"
+
+        result, diag = self._run(log)
+
+        assert result == consts.Diagnostic_Check_Failed
+        assert diag[0].startswith("[AZK8S0302]")
 
     def test_passed(self):
         log = (

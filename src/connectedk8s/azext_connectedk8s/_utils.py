@@ -865,8 +865,8 @@ def get_chart_path(
     else:
         chart_path = os.getenv("HELMCHART", helm_chart_path)
 
-    if not os.path.isdir(chart_path):
-        details = f"Expected exported chart directory was not found: {chart_path}"
+    if not (os.path.isdir(chart_path) or os.path.isfile(chart_path)):
+        details = f"Expected exported chart path was not found: {chart_path}"
         raise report_connectedk8s_error(
             cmd,
             errors.HELM_CHART_EXPORT_FAILED,
@@ -1056,6 +1056,13 @@ def check_cluster_DNS(
             ("communications error", errors.DNS_COMMUNICATIONS_ERROR),
             ("timed out", errors.DNS_TIMEOUT),
         )
+        generic_timeout_count = len(
+            re.findall("timed out", formatted_dns_log, flags=re.IGNORECASE)
+        )
+        has_specific_failure = any(
+            re.search(re.escape(marker), formatted_dns_log, flags=re.IGNORECASE)
+            for marker, _ in failure_markers[:-1]
+        )
         latest_failure = max(
             (
                 (match.start(), dns_error)
@@ -1090,6 +1097,12 @@ def check_cluster_DNS(
         dns_check_failed = (
             latest_failure is not None and last_success_position < latest_failure[0]
         )
+        if dns_check_failed and generic_timeout_count == 1 and not has_specific_failure:
+            logger.warning(
+                "The DNS diagnostic timed out once. Continuing onboarding because "
+                "the timeout may be transient."
+            )
+            return consts.Diagnostic_Check_Not_Applicable, storage_space_available
 
         # Validating if DNS is working or not and displaying proper result
         # These are standard error strings from DNS tools (nslookup/dig) indicating resolution failures

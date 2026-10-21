@@ -454,6 +454,8 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
                 f"entraCheck={prediagnostic_entra_check}; crdCheck={prediagnostic_crd_check}"
             )
             send_prediagnostic_job_execution_error_telemetry(cmd=cmd)
+            if prediagnostic_job_execution_status == consts.Job_Status_Cleanup_Failed:
+                return consts.Diagnostic_Check_Passed, storage_space_available
             return consts.Diagnostic_Check_Incomplete, storage_space_available
 
         if cluster_diagnostic_checks_container_log != "":

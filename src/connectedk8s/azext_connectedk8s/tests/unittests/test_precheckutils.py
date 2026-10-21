@@ -803,6 +803,24 @@ def _run_completed_prediagnostic_output(
     return result
 
 
+def test_cleanup_failure_without_logs_continues_onboarding(monkeypatch):
+    send_job_error = MagicMock()
+    monkeypatch.setattr(
+        precheckutils,
+        "send_prediagnostic_job_execution_error_telemetry",
+        send_job_error,
+    )
+
+    result = _run_completed_prediagnostic_output(
+        monkeypatch,
+        None,
+        job_status=consts.Job_Status_Cleanup_Failed,
+    )
+
+    assert result == consts.Diagnostic_Check_Passed
+    send_job_error.assert_called_once()
+
+
 def test_completed_job_parses_healthy_1_36_1_output(monkeypatch):
     result = _run_completed_prediagnostic_output(
         monkeypatch, CONFORMANCE_PREDIAGNOSTIC_OUTPUT
