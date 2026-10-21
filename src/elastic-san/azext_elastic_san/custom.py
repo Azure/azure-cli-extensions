@@ -12,6 +12,7 @@
 from knack.log import get_logger
 from azure.cli.core.aaz import AAZGenericInstanceUpdateOperation
 from .aaz.latest.elastic_san.volume_group import Create as _VolumeGroupCreate
+from .aaz.latest.elastic_san.volume_group import List as _VolumeGroupList
 from .aaz.latest.elastic_san.volume_group import Show as _VolumeGroupShow
 from .aaz.latest.elastic_san.volume_group import Update as _VolumeGroupUpdate
 from .aaz.latest.elastic_san import Create as _ElasticSanCreate
@@ -24,6 +25,13 @@ from .aaz.latest.elastic_san.volume import Update as _VolumeUpdate
 from .aaz.latest.elastic_san.volume import Wait as _VolumeWait
 
 logger = get_logger(__name__)
+
+
+def _add_short_option(args_schema, field_name, option):
+    arg = args_schema._fields[field_name]
+    if option not in arg._options:
+        arg._options.insert(0, option)
+        arg._help["name"] = " ".join(arg._options)
 
 
 class _InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
@@ -147,6 +155,12 @@ class VolumeShow(_VolumeShow):
 
 
 class VolumeList(_VolumeList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _add_short_option(args_schema, "x_ms_access_soft_deleted_resources", "-a")
+        return args_schema
+
     def _output(self, *args, **kwargs):
         return _add_legacy_managed_by_output(super()._output(*args, **kwargs))
 
@@ -161,6 +175,7 @@ class VolumeGroupCreate(_VolumeGroupCreate):
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZStrArg, AAZResourceIdArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _add_short_option(args_schema, "delete_retention_policy", "-d")
         args_schema.identity.user_assigned_identity_id = AAZStrArg(
             options=["user-assigned-identity"],
             help="The ARM resource identifier of the User Assigned identity that will be used with this volume group. ",
@@ -203,6 +218,14 @@ class VolumeGroupCreate(_VolumeGroupCreate):
                            "group as datastores for Azure VMware Solution (AVS), as this feature is not supported for "
                            "AVS yet and the datastore creation will fail. "
                            "Learn more: https://go.microsoft.com/fwlink/?LinkId=2294733&id=Microsoft_Azure_ElasticSan")
+
+
+class VolumeGroupList(_VolumeGroupList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _add_short_option(args_schema, "x_ms_access_soft_deleted_resources", "-a")
+        return args_schema
 
 
 class VolumeGroupUpdate(_VolumeGroupUpdate):
@@ -248,6 +271,7 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZObjectArg, AAZResourceIdArgFormat, AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _add_short_option(args_schema, "delete_retention_policy", "-d")
         if "identity" in args_schema._fields:
             return args_schema
         args_schema.identity = AAZObjectArg(

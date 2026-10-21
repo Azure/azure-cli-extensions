@@ -8,7 +8,10 @@ from azext_elastic_san.custom import (
     ElasticSanCreate,
     ElasticSanUpdate,
     VolumeCreate,
+    VolumeGroupCreate,
+    VolumeGroupList,
     VolumeGroupUpdate,
+    VolumeList,
     VolumeUpdate,
     _add_legacy_managed_by_output,
     _normalize_managed_by_argument,
@@ -240,6 +243,17 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
                 self.assertTrue(hasattr(args_schema, "generic_update_set"))
                 self.assertTrue(hasattr(args_schema, "generic_update_remove"))
                 self.assertTrue(hasattr(args_schema, "generic_update_force_string"))
+
+    def test_long_options_have_short_aliases(self):
+        for command in (VolumeList, VolumeGroupList):
+            with self.subTest(command=command.__name__):
+                arg = command._build_arguments_schema()._fields["x_ms_access_soft_deleted_resources"]
+                self.assertIn("-a", arg._options)
+
+        for command in (VolumeGroupCreate, VolumeGroupUpdate):
+            with self.subTest(command=command.__name__):
+                arg = command._build_arguments_schema()._fields["delete_retention_policy"]
+                self.assertIn("-d", arg._options)
 
     def test_legacy_sku_and_zones_use_full_put_body(self):
         args_schema = ElasticSanUpdate._build_arguments_schema()
