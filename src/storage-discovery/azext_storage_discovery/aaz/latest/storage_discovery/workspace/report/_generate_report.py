@@ -12,23 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "storage-discovery storage-discovery-workspace report show",
+    "storage-discovery workspace report generate-report",
+    is_preview=True,
 )
-class Show(AAZCommand):
-    """Get a ReportResource
+class GenerateReport(AAZCommand):
+    """A long-running resource action.
+
+    :example: Generate the StorageDiscoveryWorkspace data query
+        az storage-discovery workspace report generate-report --resource-group sample-rg --storage-discovery-workspace-name Sample-Storage-Workspace --discovery-resource-name reportTest2 --queries "[Q2FwYWNpdHlIb3VybHkgfCBzdW1tYXJpemUgc3VtKHRvdGFsT2JqZWN0U2l6ZUJ5dGVzKSBieSB0aW1lUGVyaW9k,Q2FwYWNpdHlIb3VybHkgfCBzdW1tYXJpemUgc3VtKHRvdGFsT2JqZWN0U2l6ZUJ5dGVzKSBieSzzzzzzzzzzzz]"
     """
 
     _aaz_info = {
         "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagediscovery/storagediscoveryworkspaces/{}/reports/{}", "2026-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagediscovery/storagediscoveryworkspaces/{}/reports/{}/generatereport", "2026-10-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -42,7 +47,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.discovery_resource_name = AAZStrArg(
-            options=["-n", "--name", "--discovery-resource-name"],
+            options=["--discovery-resource-name"],
             help="The name of the ReportResource",
             required=True,
             id_part="child_name_1",
@@ -64,11 +69,24 @@ class Show(AAZCommand):
                 min_length=4,
             ),
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.queries = AAZListArg(
+            options=["--queries"],
+            arg_group="Body",
+            help="The queries to execute against Storage Discovery data. Format: Base64-encoded JSON object with structure: {\"queries\":[{\"name\":\"queryName\",\"query\":\"KQL query\"}]} For query syntax and available tables, see: https://aka.ms/storageDiscoveryQuery",
+            required=True,
+        )
+
+        queries = cls._args_schema.queries
+        queries.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ReportGet(ctx=self.ctx)()
+        yield self.ReportGenerateReport(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -83,27 +101,43 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReportGet(AAZHttpOperation):
+    class ReportGenerateReport(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageDiscovery/storageDiscoveryWorkspaces/{storageDiscoveryWorkspaceName}/reports/{discoveryResourceName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageDiscovery/storageDiscoveryWorkspaces/{storageDiscoveryWorkspaceName}/reports/{discoveryResourceName}/generateReport",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -145,10 +179,28 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("queries", AAZListType, ".queries", typ_kwargs={"flags": {"required": True}})
+
+            queries = _builder.get(".queries")
+            if queries is not None:
+                queries.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -168,52 +220,42 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
+            _schema_on_200.results = AAZListType(
+                flags={"required": True},
             )
 
-            properties = cls._schema_on_200.properties
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
+            results = cls._schema_on_200.results
+            results.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.results.Element
+            _element.columns = AAZListType()
+            _element.error_code = AAZStrType(
+                serialized_name="errorCode",
+            )
+            _element.rows = AAZListType()
+
+            columns = cls._schema_on_200.results.Element.columns
+            columns.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.results.Element.columns.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
             )
 
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            rows = cls._schema_on_200.results.Element.rows
+            rows.Element = AAZListType()
+
+            _element = cls._schema_on_200.results.Element.rows.Element
+            _element.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _GenerateReportHelper:
+    """Helper class for GenerateReport"""
 
 
-__all__ = ["Show"]
+__all__ = ["GenerateReport"]

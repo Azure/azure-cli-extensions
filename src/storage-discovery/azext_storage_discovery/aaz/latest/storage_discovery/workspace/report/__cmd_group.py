@@ -8,4 +8,17 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "storage-discovery workspace report",
+    is_preview=True,
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage Storage Discovery Workspace Report
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

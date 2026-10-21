@@ -12,10 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "storage-discovery storage-discovery-workspace report list",
+    "storage-discovery workspace report list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List ReportResource resources by subscription ID
+
+    :example: List ReportResource resources by subscription ID
+        az storage-discovery workspace report list --storage-discovery-workspace-name Sample-Storage-Workspace
     """
 
     _aaz_info = {

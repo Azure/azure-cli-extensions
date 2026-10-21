@@ -12,16 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "storage-discovery storage-discovery-workspace report generate-report",
+    "storage-discovery workspace query",
+    is_preview=True,
 )
-class GenerateReport(AAZCommand):
+class Query(AAZCommand):
     """A long-running resource action.
     """
 
     _aaz_info = {
         "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagediscovery/storagediscoveryworkspaces/{}/reports/{}/generatereport", "2026-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagediscovery/storagediscoveryworkspaces/{}/report", "2026-10-01-preview"],
         ]
     }
 
@@ -42,15 +43,6 @@ class GenerateReport(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.discovery_resource_name = AAZStrArg(
-            options=["--discovery-resource-name"],
-            help="The name of the ReportResource",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
-            ),
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -82,7 +74,7 @@ class GenerateReport(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ReportGenerateReport(ctx=self.ctx)()
+        yield self.StorageDiscoveryWorkspacesReport(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -97,7 +89,7 @@ class GenerateReport(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReportGenerateReport(AAZHttpOperation):
+    class StorageDiscoveryWorkspacesReport(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -127,7 +119,7 @@ class GenerateReport(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageDiscovery/storageDiscoveryWorkspaces/{storageDiscoveryWorkspaceName}/reports/{discoveryResourceName}/generateReport",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageDiscovery/storageDiscoveryWorkspaces/{storageDiscoveryWorkspaceName}/report",
                 **self.url_parameters
             )
 
@@ -142,10 +134,6 @@ class GenerateReport(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "discoveryResourceName", self.ctx.args.discovery_resource_name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
@@ -250,8 +238,8 @@ class GenerateReport(AAZCommand):
             return cls._schema_on_200
 
 
-class _GenerateReportHelper:
-    """Helper class for GenerateReport"""
+class _QueryHelper:
+    """Helper class for Query"""
 
 
-__all__ = ["GenerateReport"]
+__all__ = ["Query"]
