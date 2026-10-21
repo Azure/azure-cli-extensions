@@ -3,12 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import argparse
 import filecmp
 import json
 import os
-import subprocess
 import sys
+import subprocess
+
 from azure.cli.core import get_default_cli
 from azure.cli.core._session import Session
 from azure.cli.core.commands import _load_extension_command_loader
@@ -139,21 +139,8 @@ def upload_cmd_tree():
         raise Exception("Failed to update extensionCommandTree.json in the storage account")
 
 
-def main(argv=None):
-    parser = argparse.ArgumentParser(description='Build and optionally publish the extension command tree.')
-    parser.add_argument('--build-only', action='store_true',
-                        help='Generate the local command tree without uploading it.')
-    parser.add_argument('extensions', nargs='+')
-    args = parser.parse_args(argv)
-    for ext in args.extensions:
+if __name__ == '__main__':
+    for ext in sys.argv[1:]:
         update_cmd_tree(ext)
         print()
-    if args.build_only:
-        print("Build-only: command tree saved to {}".format(
-            os.path.expanduser(os.path.join('~', '.azure', file_name))))
-    else:
-        upload_cmd_tree()
-
-
-if __name__ == '__main__':
-    main()
+    upload_cmd_tree()
