@@ -7,8 +7,11 @@ Release History
 * `az elastic-san`: Support the 2026-05-01-preview API version and Elastic SAN V2 capacity and performance settings.
 * `az elastic-san volume`: Support managed-by resource IDs and permanent deletion of soft-deleted volumes.
 * `az elastic-san volume-group`: Support PATCH updates, delete retention, encryption in transit, and QoS reservations.
-* `az elastic-san volume snapshot update`: Add snapshot update support.
-* BREAKING CHANGE: `az elastic-san update` no longer accepts `--sku` or `--availability-zones`. Use `az elastic-san create --sku` and/or `--availability-zones` instead.
+* `az elastic-san update` and `az elastic-san volume-group update`: Preserve `--add`, `--set`, `--remove`, and `--force-string` support using GET-modify-PATCH.
+* `az elastic-san update`: Preserve `--sku` and `--availability-zones` compatibility using GET-modify-PUT when either option is supplied.
+* `az elastic-san volume-group update`: Preserve legacy `--identity` syntax, including `--identity {type:None}` to remove managed identities.
+* `az elastic-san volume`: Accept the legacy single-resource `--managed-by` object and expose `managedByResourceId` as a compatibility output alias. The alias returns only the first resource ID when `managedBy` contains multiple IDs.
+* BREAKING CHANGE: `az elastic-san volume`: The `managedBy` output changes from an object with `resourceId` to an array of objects with `resourceIds`. Existing queries using `managedBy.resourceId` must use `managedByResourceId` for the first resource ID or query the new array for all IDs.
 
 1.3.2
 ++++++

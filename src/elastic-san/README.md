@@ -6,6 +6,8 @@ This is an extension to Azure CLI to manage ElasticSan resources.
 ## Elastic San
 ### Create an Elastic SAN.
 `az elastic-san create -n {san_name} -g {rg} --tags "{key1810:aaaa}" -l southcentralusstg --base-size-tib 23 --extended-capacity-size-tib 14 --sku "{name:Premium_LRS,tier:Premium}"`
+For V1 (including when `--version` is omitted), omitted base and extended capacities default to 20 and 0 TiB. V2 does not inject these V1 capacity defaults; provision it using `--sku "{name:ElasticSAN_LRS}" --version V2 --total-iops ... --total-mbps ... --total-size-tib ...`.
+The separate `test_elastic_san_v2_scenarios` integration test covers V2 create, show, list, update, and delete in `eastus2euap`. Record it with `azdev test --live --discover test_elastic_san_v2_scenarios`, then verify playback with `azdev test --discover test_elastic_san_v2_scenarios`. A successful live recording requires V2 access on the target subscription and region; this test does not skip service feature-gate errors.
 ### Delete an Elastic SAN.
 `az elastic-san delete -g {rg} -n {san_name}`
 ### Get a list of Elastic SANs in a subscription.
@@ -16,6 +18,8 @@ This is an extension to Azure CLI to manage ElasticSan resources.
 `az elastic-san show -g {rg} -n {san_name}`
 ### Update an Elastic SAN.
 `az elastic-san update -n {san_name} -g {rg} --tags "{key1710:bbbb}" --base-size-tib 25 --extended-capacity-size-tib 15`
+`--sku` and `--availability-zones` are also accepted for compatibility. When either is supplied, the command reads the existing resource and uses the API's PUT (create-or-replace) operation because these fields are not part of the PATCH update contract.
+SAN and volume-group updates support `--add`, `--set`, `--remove`, and `--force-string`. Custom code reads the resource, applies explicit options followed by generic updates, and sends writable PATCH fields (or PUT for the legacy SAN options above). This compatibility flow reuses the generated show operations and survives regeneration of the PATCH commands.
 
 ## Volume Group
 ### Create a Volume Group.
@@ -42,6 +46,8 @@ This is an extension to Azure CLI to manage ElasticSan resources.
 `az elastic-san volume update -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 3`
 
 ## Snapshot case
+Snapshots support create, show, list, delete, and wait. Snapshot update/PATCH is not supported.
+
 ### Create an ElasticSAN
 `az elastic-san create -n "san_name" -g "rg" --tags '{key1810:aaaa}' -l eastus2euap --base-size-tib 23 --extended-capacity-size-tib 14 --sku '{name:Premium_LRS,tier:Premium}'`
 ### Create Vnet        
@@ -85,6 +91,7 @@ This is an extension to Azure CLI to manage ElasticSan resources.
 `az elastic-san volume-group update -e "san_name" -n "vg_name" -g "rg" --encryption EncryptionAtRestWithCustomerManagedKey --encryption-properties '{key-vault-properties:{key-name:"key_name",key-vault-uri:"vault_uri"}}'`
 
 ## Customer Managed Key User Assigned Identity scenario
+The integration scenario reconfigures identities through platform-managed encryption: switch to platform-managed keys, clear the old identity, then assign the new identity and re-enable customer-managed encryption. It does not test uninterrupted CMK identity rotation. The identity-clear and reassignment sequence requires live validation against the target service.
 #### Create an ElasticSAN
 `az elastic-san create -n "san_name" -g "rg" --tags '{key1810:aaaa}' -l eastus2euap --base-size-tib 23 --extended-capacity-size-tib 14 --sku '{name:Premium_LRS,tier:Premium}'`
 ### 1. Create a user assigned identity and grant it the access to the key vault

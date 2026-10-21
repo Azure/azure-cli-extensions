@@ -1,0 +1,56 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap", "properties": {"sku": {"name": "ElasticSAN_LRS"},
+      "totalIops": 100000, "totalMBps": 1000, "totalSizeTiB": 25, "version": "V2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '155'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g -l --sku --version --total-iops --total-mbps --total-size-tib
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.v2.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2026-05-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"SubscriptionNotRegisteredWithFeatureFlag","message":"Microsoft.ElasticSan/ElasticSanPlusAccess
+        feature is not available in this region"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '155'
+      content-type:
+      - application/json
+      date:
+      - Wed, 21 Oct 2026 06:33:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: DE77C437D50F4B328433151B43E8A67B Ref B: SN4AA2022301025 Ref C: 2026-10-21T06:33:46Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

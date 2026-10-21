@@ -152,7 +152,7 @@ class Create(AAZCommand):
         _args_schema.total_size_tib = AAZIntArg(
             options=["--total-size-tib"],
             arg_group="Properties",
-            help="Total size of the Elastic San appliance in TB. Settable only for ElasticSanVersion V2, where it is required; read-only for V1.",
+            help="Total size of the Elastic San appliance in TiB. Settable only for ElasticSanVersion V2, where it is required; read-only for V1.",
         )
         _args_schema.version = AAZStrArg(
             options=["--version"],

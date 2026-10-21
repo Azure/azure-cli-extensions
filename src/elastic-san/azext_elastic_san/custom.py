@@ -10,11 +10,150 @@
 # pylint: disable=protected-access
 
 from knack.log import get_logger
+from azure.cli.core.aaz import AAZGenericInstanceUpdateOperation
 from .aaz.latest.elastic_san.volume_group import Create as _VolumeGroupCreate
+from .aaz.latest.elastic_san.volume_group import Show as _VolumeGroupShow
 from .aaz.latest.elastic_san.volume_group import Update as _VolumeGroupUpdate
 from .aaz.latest.elastic_san import Create as _ElasticSanCreate
+from .aaz.latest.elastic_san import Update as _ElasticSanUpdate
+from .aaz.latest.elastic_san import Show as _ElasticSanShow
+from .aaz.latest.elastic_san.volume import Create as _VolumeCreate
+from .aaz.latest.elastic_san.volume import List as _VolumeList
+from .aaz.latest.elastic_san.volume import Show as _VolumeShow
+from .aaz.latest.elastic_san.volume import Update as _VolumeUpdate
+from .aaz.latest.elastic_san.volume import Wait as _VolumeWait
 
 logger = get_logger(__name__)
+
+
+class _InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
+    def __call__(self, *args, **kwargs):
+        self._update_instance_by_generic(self.ctx.vars.instance, self.ctx.generic_update_args)
+
+
+def _merge_update_payload(instance, payload):
+    from azure.cli.core.aaz import AAZObjectType
+
+    for key, value in payload.items():
+        field = instance[key]
+        if isinstance(value, dict) and isinstance(field._schema, AAZObjectType) and key != "identity":
+            if field == None:  # pylint: disable=singleton-comparison
+                instance[key] = {}
+            _merge_update_payload(instance[key], value)
+        else:
+            instance[key] = value
+
+
+def _configure_managed_by_argument(args_schema):
+    from azure.cli.core.aaz import AAZAnyTypeArg
+    from azure.cli.core.aaz._field_value import AAZAnyValue
+
+    class ManagedByAnyValue(AAZAnyValue):
+        def __getitem__(self, key):
+            return ManagedByAnyValue(self._schema, self._data[key])
+
+    class ManagedByAnyArg(AAZAnyTypeArg):
+        _ValueCls = ManagedByAnyValue
+
+    args_schema._fields["managed_by"] = ManagedByAnyArg(
+        options=["--managed-by"],
+        arg_group="Properties",
+        help="Managed-by information. Accepts the current array format or the legacy single-resource object.",
+    )
+
+
+def _normalize_managed_by_argument(args):
+    from azure.cli.core.aaz import has_value
+    from azure.cli.core.azclierror import InvalidArgumentValueError
+
+    if not has_value(args.managed_by):
+        return
+
+    managed_by = args.managed_by.to_serialized_data()
+    if isinstance(managed_by, dict):
+        resource_id = next(
+            (managed_by[key] for key in ("resource_id", "resourceId", "resource-id") if key in managed_by),
+            None,
+        )
+        if resource_id is not None:
+            managed_by = [{"resource_ids": [resource_id]}]
+        else:
+            managed_by = [managed_by]
+    elif not isinstance(managed_by, list):
+        raise InvalidArgumentValueError(
+            "--managed-by must be an object in the legacy format or a list in the current format."
+        )
+
+    args.managed_by = managed_by
+
+
+def _add_legacy_managed_by_output(result):
+    if isinstance(result, tuple):
+        return (_add_legacy_managed_by_output(result[0]), *result[1:])
+    if isinstance(result, list):
+        return [_add_legacy_managed_by_output(item) for item in result]
+    if not isinstance(result, dict):
+        return result
+
+    managed_by = result.get("managedBy")
+    if isinstance(managed_by, list):
+        # The old field, ManagedByResourceId, only supported one resource ID, therefore only the first resource ID is returned to remain backwards compatible.
+        resource_ids = [
+            resource_id
+            for managed_by_item in managed_by
+            if isinstance(managed_by_item, dict)
+            for resource_id in managed_by_item.get("resourceIds", [])
+            if resource_id
+        ]
+        if resource_ids:
+            result["managedByResourceId"] = resource_ids[0]
+
+    for value in result.values():
+        _add_legacy_managed_by_output(value)
+    return result
+
+
+class VolumeCreate(_VolumeCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _configure_managed_by_argument(args_schema)
+        return args_schema
+
+    def pre_operations(self):
+        _normalize_managed_by_argument(self.ctx.args)
+
+    def _output(self, *args, **kwargs):
+        return _add_legacy_managed_by_output(super()._output(*args, **kwargs))
+
+
+class VolumeUpdate(_VolumeUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _configure_managed_by_argument(args_schema)
+        return args_schema
+
+    def pre_operations(self):
+        _normalize_managed_by_argument(self.ctx.args)
+
+    def _output(self, *args, **kwargs):
+        return _add_legacy_managed_by_output(super()._output(*args, **kwargs))
+
+
+class VolumeShow(_VolumeShow):
+    def _output(self, *args, **kwargs):
+        return _add_legacy_managed_by_output(super()._output(*args, **kwargs))
+
+
+class VolumeList(_VolumeList):
+    def _output(self, *args, **kwargs):
+        return _add_legacy_managed_by_output(super()._output(*args, **kwargs))
+
+
+class VolumeWait(_VolumeWait):
+    def _output(self, *args, **kwargs):
+        return _add_legacy_managed_by_output(super()._output(*args, **kwargs))
 
 
 class VolumeGroupCreate(_VolumeGroupCreate):
@@ -42,7 +181,7 @@ class VolumeGroupCreate(_VolumeGroupCreate):
             args.identity["user_assigned_identities"] = {
                 uai_id: {}}
             del args.identity.user_assigned_identity_id
-        if has_value(args.EnforceDataIntegrityCheckForIscsi) and args.EnforceDataIntegrityCheckForIscsi:
+        if has_value(args.enforce_data_integrity_check_for_iscsi) and args.enforce_data_integrity_check_for_iscsi:
             logger.warning("CRC protection feature is not supported for Azure VMware solution (AVS) yet. "
                            "Do not enable this flag if you plan to use the volumes within this volume group as "
                            "datastores for AVS, as the datastore creation will fail. For Azure Virtual Machines, "
@@ -67,10 +206,50 @@ class VolumeGroupCreate(_VolumeGroupCreate):
 
 
 class VolumeGroupUpdate(_VolumeGroupUpdate):
+    AZ_SUPPORT_GENERIC_UPDATE = True
+    VolumeGroupsGet = _VolumeGroupShow.VolumeGroupsGet
+    InstanceUpdateByGeneric = _InstanceUpdateByGeneric
+
+    def _execute_operations(self):
+        from azure.cli.core.aaz import has_value
+
+        self.pre_operations()
+        self.VolumeGroupsGet(ctx=self.ctx)()
+        payload = _VolumeGroupUpdate.VolumeGroupsUpdate(ctx=self.ctx).content
+        if str(self.ctx.args.mi_system_assigned).lower() == "false":
+            if has_value(self.ctx.args.user_assigned_identity):
+                identities = {resource_id: {} for resource_id
+                              in self.ctx.args.user_assigned_identity.to_serialized_data()}
+            elif has_value(self.ctx.vars.instance.identity):
+                identities = self.ctx.vars.instance.identity.to_serialized_data().get(
+                    "userAssignedIdentities", {}
+                )
+            else:
+                identities = {}
+            # The generated string argument treats "False" as truthy when serializing identity.
+            payload["identity"] = {
+                "type": "UserAssigned" if identities else "None",
+                "userAssignedIdentities": identities,
+            }
+        _merge_update_payload(self.ctx.vars.instance, payload)
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        yield self.VolumeGroupsUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    class VolumeGroupsUpdate(_VolumeGroupUpdate.VolumeGroupsUpdate):
+        @property
+        def content(self):
+            body = self.serialize_content(self.ctx.vars.instance)
+            for key in ("encryptionInTransit", "qualityOfService"):
+                body.get("properties", {}).pop(key, None)
+            return body
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZObjectArg, AAZResourceIdArgFormat, AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
+        if "identity" in args_schema._fields:
+            return args_schema
         args_schema.identity = AAZObjectArg(
             options=["--identity"],
             arg_group="Identity",
@@ -104,10 +283,11 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
 
             identity_type = args.identity.type
             if identity_type == "None":
-                raise InvalidArgumentValueError(
-                    "The legacy --identity type None is not supported by PATCH update. "
-                    "Use 'az elastic-san volume-group identity remove' instead."
-                )
+                # The legacy value removes every identity; the PATCH contract represents
+                # that as no system-assigned identity and an empty user-assigned list.
+                args.mi_system_assigned = "False"
+                args.user_assigned_identity = []
+                return
 
             user_assigned_ids = []
             if has_value(args.identity.user_assigned_identity_id):
@@ -121,7 +301,7 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
             args.mi_system_assigned = "True" if identity_type == "SystemAssigned" else None
             args.user_assigned_identity = user_assigned_ids
 
-        if has_value(args.EnforceDataIntegrityCheckForIscsi) and args.EnforceDataIntegrityCheckForIscsi:
+        if has_value(args.enforce_data_integrity_check_for_iscsi) and args.enforce_data_integrity_check_for_iscsi:
             logger.warning("CRC protection feature is not supported for Azure VMware solution (AVS) yet. "
                            "Do not enable this flag if you plan to use the volumes within this volume group as "
                            "datastores for AVS, as the datastore creation will fail. For Azure Virtual Machines, "
@@ -145,10 +325,116 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
                            "Learn more: https://go.microsoft.com/fwlink/?LinkId=2294733&id=Microsoft_Azure_ElasticSan")
 
 
+class ElasticSanUpdate(_ElasticSanUpdate):
+    AZ_SUPPORT_GENERIC_UPDATE = True
+    ElasticSansGet = _ElasticSanShow.ElasticSansGet
+    InstanceUpdateByGeneric = _InstanceUpdateByGeneric
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZArgEnum, AAZListArg, AAZObjectArg, AAZStrArg
+
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        if "availability_zones" not in args_schema._fields:
+            args_schema.availability_zones = AAZListArg(
+                options=["--availability-zones"],
+                arg_group="Properties",
+                help="Logical zone for Elastic San resource; example: [\"1\"].",
+            )
+            args_schema.availability_zones.Element = AAZStrArg()
+        if "sku" not in args_schema._fields:
+            args_schema.sku = AAZObjectArg(
+                options=["--sku"],
+                arg_group="Properties",
+                help="Resource SKU.",
+            )
+            args_schema.sku.name = AAZStrArg(
+                options=["name"],
+                help="The SKU name.",
+                required=True,
+            )
+            args_schema.sku.tier = AAZStrArg(
+                options=["tier"],
+                help="The SKU tier.",
+            )
+        args_schema.sku.name.enum = AAZArgEnum({
+            "ElasticSAN_LRS": "ElasticSAN_LRS",
+            "Premium_LRS": "Premium_LRS",
+            "Premium_ZRS": "Premium_ZRS",
+        })
+        return args_schema
+
+    def _execute_operations(self):
+        from azure.cli.core.aaz import has_value
+
+        args = self.ctx.args
+        self.pre_operations()
+        self.ElasticSansGet(ctx=self.ctx)()
+        payload = _ElasticSanUpdate.ElasticSansUpdate(ctx=self.ctx).content
+        _merge_update_payload(self.ctx.vars.instance, payload)
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        if has_value(args.sku) or has_value(args.availability_zones):
+            yield self.ElasticSanReplace(ctx=self.ctx)()
+        else:
+            yield self.ElasticSansUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    class ElasticSansUpdate(_ElasticSanUpdate.ElasticSansUpdate):
+        @property
+        def content(self):
+            body = self.serialize_content(self.ctx.vars.instance)
+            # These resource fields are accepted by PUT, but not by the PATCH contract.
+            for key in ("availabilityZones", "sku", "version"):
+                body.get("properties", {}).pop(key, None)
+            return {key: value for key, value in body.items() if key in ("properties", "tags")}
+
+    class ElasticSanReplace(_ElasticSanUpdate.ElasticSansUpdate):
+        @property
+        def method(self):
+            return "PUT"
+
+        @property
+        def content(self):
+            from azure.cli.core.aaz import has_value
+
+            instance = self.ctx.vars.instance
+            if has_value(self.ctx.args.sku):
+                instance.properties.sku = self.ctx.args.sku
+            if has_value(self.ctx.args.availability_zones):
+                instance.properties.availability_zones = self.ctx.args.availability_zones
+            return self.serialize_content(instance)
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200, 201, 202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            return self.on_error(session.http_response)
+
+
 class ElasticSanCreate(_ElasticSanCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.base_size_tib._required = False
         args_schema.extended_capacity_size_tib._required = False
+        args_schema.base_size_tib._default = None
+        args_schema.extended_capacity_size_tib._default = None
         return args_schema
+
+    def pre_operations(self):
+        from azure.cli.core.aaz import has_value
+
+        args = self.ctx.args
+        if args.version != "V2":
+            if not has_value(args.base_size_tib):
+                args.base_size_tib = 20
+            if not has_value(args.extended_capacity_size_tib):
+                args.extended_capacity_size_tib = 0
