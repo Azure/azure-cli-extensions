@@ -25,7 +25,12 @@ def update_managed_bastion_profile(
     instance = client.get(resource_group_name, name, headers=aks_custom_headers)
 
     NetworkProfile = cmd.get_models(
-        "NetworkProfile",
+        "ContainerServiceNetworkProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
+    ClusterAPIConnectivityProfile = cmd.get_models(
+        "ClusterAPIConnectivityProfile",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="managed_clusters",
     )
@@ -39,7 +44,11 @@ def update_managed_bastion_profile(
     if network_profile is None:
         network_profile = NetworkProfile()
 
-    bastion_profile = network_profile.bastion_profile
+    connectivity_profile = network_profile.cluster_api_connectivity_profile
+    if connectivity_profile is None:
+        connectivity_profile = ClusterAPIConnectivityProfile()
+
+    bastion_profile = connectivity_profile.bastion
     if bastion_profile is None:
         bastion_profile = BastionProfile()
 
@@ -56,7 +65,8 @@ def update_managed_bastion_profile(
     if bastion_scale_units is not None:
         bastion_profile.scale_units = bastion_scale_units
 
-    network_profile.bastion_profile = bastion_profile
+    connectivity_profile.bastion = bastion_profile
+    network_profile.cluster_api_connectivity_profile = connectivity_profile
     instance.network_profile = network_profile
 
     result = sdk_no_wait(

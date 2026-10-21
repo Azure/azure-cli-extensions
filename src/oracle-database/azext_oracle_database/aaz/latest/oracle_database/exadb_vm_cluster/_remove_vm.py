@@ -22,9 +22,9 @@ class RemoveVm(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/exadbvmclusters/{}/removevms", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/exadbvmclusters/{}/removevms", "2026-06-01"],
         ]
     }
 
@@ -72,7 +72,7 @@ class RemoveVm(AAZCommand):
         db_nodes.Element = AAZObjectArg()
 
         _element = cls._args_schema.db_nodes.Element
-        _element.db_node_id = AAZStrArg(
+        _element.db_node_id = AAZResourceIdArg(
             options=["db-node-id"],
             help="Exascale DbNode Azure Resource ID",
             required=True,
@@ -160,7 +160,7 @@ class RemoveVm(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -224,7 +224,9 @@ class RemoveVm(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -352,7 +354,7 @@ class RemoveVm(AAZCommand):
                 serialized_name="snapshotFileSystemStorage",
                 flags={"read_only": True},
             )
-            _RemoveVmHelper._build_schema_exadbvmclusterstoragedetails_read(properties.snapshot_file_system_storage)
+            _RemoveVmHelper._build_schema_exadb_vm_cluster_storage_details_read(properties.snapshot_file_system_storage)
             properties.ssh_public_keys = AAZListType(
                 serialized_name="sshPublicKeys",
                 flags={"required": True},
@@ -379,7 +381,7 @@ class RemoveVm(AAZCommand):
                 serialized_name="totalFileSystemStorage",
                 flags={"read_only": True},
             )
-            _RemoveVmHelper._build_schema_exadbvmclusterstoragedetails_read(properties.total_file_system_storage)
+            _RemoveVmHelper._build_schema_exadb_vm_cluster_storage_details_read(properties.total_file_system_storage)
             properties.vip_ids = AAZListType(
                 serialized_name="vipIds",
                 flags={"read_only": True},
@@ -388,7 +390,6 @@ class RemoveVm(AAZCommand):
                 serialized_name="vmFileSystemStorage",
                 flags={"required": True},
             )
-            _RemoveVmHelper._build_schema_exadbvmclusterstoragedetails_read(properties.vm_file_system_storage)
             properties.vnet_id = AAZStrType(
                 serialized_name="vnetId",
                 flags={"required": True},
@@ -461,6 +462,12 @@ class RemoveVm(AAZCommand):
             vip_ids = cls._schema_on_200.properties.vip_ids
             vip_ids.Element = AAZStrType()
 
+            vm_file_system_storage = cls._schema_on_200.properties.vm_file_system_storage
+            vm_file_system_storage.total_size_in_gbs = AAZIntType(
+                serialized_name="totalSizeInGbs",
+                flags={"required": True},
+            )
+
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
@@ -493,23 +500,25 @@ class RemoveVm(AAZCommand):
 class _RemoveVmHelper:
     """Helper class for RemoveVm"""
 
-    _schema_exadbvmclusterstoragedetails_read = None
+    _schema_exadb_vm_cluster_storage_details_read = None
 
     @classmethod
-    def _build_schema_exadbvmclusterstoragedetails_read(cls, _schema):
-        if cls._schema_exadbvmclusterstoragedetails_read is not None:
-            _schema.total_size_in_gbs = cls._schema_exadbvmclusterstoragedetails_read.total_size_in_gbs
+    def _build_schema_exadb_vm_cluster_storage_details_read(cls, _schema):
+        if cls._schema_exadb_vm_cluster_storage_details_read is not None:
+            _schema.total_size_in_gbs = cls._schema_exadb_vm_cluster_storage_details_read.total_size_in_gbs
             return
 
-        cls._schema_exadbvmclusterstoragedetails_read = _schema_exadbvmclusterstoragedetails_read = AAZObjectType()
+        cls._schema_exadb_vm_cluster_storage_details_read = _schema_exadb_vm_cluster_storage_details_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
-        exadbvmclusterstoragedetails_read = _schema_exadbvmclusterstoragedetails_read
-        exadbvmclusterstoragedetails_read.total_size_in_gbs = AAZIntType(
+        exadb_vm_cluster_storage_details_read = _schema_exadb_vm_cluster_storage_details_read
+        exadb_vm_cluster_storage_details_read.total_size_in_gbs = AAZIntType(
             serialized_name="totalSizeInGbs",
             flags={"required": True},
         )
 
-        _schema.total_size_in_gbs = cls._schema_exadbvmclusterstoragedetails_read.total_size_in_gbs
+        _schema.total_size_in_gbs = cls._schema_exadb_vm_cluster_storage_details_read.total_size_in_gbs
 
 
 __all__ = ["RemoveVm"]

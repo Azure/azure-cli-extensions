@@ -12,11 +12,46 @@
 #   --log-file="cost-control-http-debug.log" --log-file-level=DEBUG
 
 import os
+import tempfile
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
+from knack.log import get_logger
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
+RECORDING_SUBSCRIPTION_ID = '00000000-0000-0000-0000-000000000000'
+logger = get_logger(__name__)
 
 class FoundryCostControlScenario(ScenarioTest):
+
+    def _prepare_rules_file_for_live_test(self, source_path, subscription_id):
+        """Create a temporary rules file containing the live subscription ID.
+
+        The checked-in rules files intentionally contain the zero subscription ID used by
+        Azure CLI recordings. Playback must use those files unchanged because the replay
+        profile only knows that sanitized subscription. Live tests, however, should send
+        resource IDs for the active subscription, so they use a temporary substituted copy.
+        """
+        with open(source_path, encoding='utf-8') as source_file:
+            rules = source_file.read()
+
+        if RECORDING_SUBSCRIPTION_ID not in rules:
+            raise ValueError(
+                "The rules fixture must contain the recording subscription ID: {}".format(
+                    source_path
+                )
+            )
+
+        with tempfile.NamedTemporaryFile(
+                mode='w',
+                suffix='.json',
+                encoding='utf-8',
+                delete=False) as live_rules_file:
+            live_rules = rules.replace(RECORDING_SUBSCRIPTION_ID, subscription_id)
+            live_rules_file.write(live_rules)
+
+        self.addCleanup(os.remove, live_rules_file.name)
+        logger.info("Live rules file: %s", live_rules_file.name)
+        logger.info("Live rules file content:\n%s", live_rules)
+        return live_rules_file.name
 
     # This decorator automatically creates and cleans up a resource group for the test.
     @ResourceGroupPreparer(
@@ -29,6 +64,18 @@ class FoundryCostControlScenario(ScenarioTest):
         #==================================================================================
         #                 Define test params
         #==================================================================================
+
+        rules_file_1 = os.path.join(TEST_DIR, 'cost-control-rules-1.json')
+        rules_file_2 = os.path.join(TEST_DIR, 'cost-control-rules-2.json')
+
+        if self.is_live:
+            subscription_id = self.get_subscription_id()
+            rules_file_1 = self._prepare_rules_file_for_live_test(
+                rules_file_1, subscription_id
+            )
+            rules_file_2 = self._prepare_rules_file_for_live_test(
+                rules_file_2, subscription_id
+            )
 
         self.kwargs.update({
             'account_name': self.create_random_name('test-account-', 23),
@@ -50,8 +97,8 @@ class FoundryCostControlScenario(ScenarioTest):
             ),
             'location': 'westus2',
             'resource_group': resource_group,
-            'rules_file_1': os.path.join(TEST_DIR, 'cost-control-rules-1.json'),
-            'rules_file_2': os.path.join(TEST_DIR, 'cost-control-rules-2.json'),
+            'rules_file_1': rules_file_1,
+            'rules_file_2': rules_file_2,
         })
 
         #==================================================================================
