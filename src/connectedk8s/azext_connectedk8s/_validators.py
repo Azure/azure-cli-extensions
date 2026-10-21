@@ -16,6 +16,56 @@ if TYPE_CHECKING:
     from knack.commands import CLICommand
 
 
+def parse_proxy_bypass_keywords(proxy_bypass: str | None) -> list[str]:
+    # Every consumer has to split the flag value the same way, otherwise validation and
+    # the code acting on the keywords can disagree about what the user asked for.
+    if not proxy_bypass:
+        return []
+    return [keyword.strip() for keyword in proxy_bypass.split(",") if keyword.strip()]
+
+
+def has_proxy_bypass_keyword(proxy_bypass: str | None, keyword: str) -> bool:
+    # Matching is case-insensitive, so a keyword counts however the user typed it.
+    return any(
+        entry.lower() == keyword.lower()
+        for entry in parse_proxy_bypass_keywords(proxy_bypass)
+    )
+
+
+def validate_proxy_bypass(namespace: Namespace) -> None:
+    # get_enum_type rejects comma-separated lists, so each keyword is checked here.
+    # --clear-proxy-bypass is update-only, so both flags are read defensively.
+    added = getattr(namespace, "add_proxy_bypass", None)
+    cleared = getattr(namespace, "clear_proxy_bypass", None)
+    for flag, value in (
+        ("--add-proxy-bypass", added),
+        ("--clear-proxy-bypass", cleared),
+    ):
+        invalid = [
+            keyword
+            for keyword in parse_proxy_bypass_keywords(value)
+            if keyword.lower() not in consts.Proxy_Bypass_Allowed_Keywords
+        ]
+        if invalid:
+            err_msg = (
+                f"Invalid value for {flag}: {', '.join(invalid)}. "
+                f"Allowed values are {consts.Proxy_Bypass_Allowed_Values}."
+            )
+            raise ArgumentUsageError(err_msg)
+
+    conflicting = [
+        keyword
+        for keyword in parse_proxy_bypass_keywords(added)
+        if has_proxy_bypass_keyword(cleared, keyword)
+    ]
+    if conflicting:
+        err_msg = (
+            f"Cannot specify {', '.join(conflicting)} on both --add-proxy-bypass and "
+            "--clear-proxy-bypass."
+        )
+        raise ArgumentUsageError(err_msg)
+
+
 def validate_private_link_properties(namespace: Namespace) -> None:
     if not namespace.enable_private_link and namespace.private_link_scope_resource_id:
         err_msg = (

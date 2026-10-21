@@ -109,14 +109,10 @@ class Create(AAZCommand):
                 exclusive_minimum=True,
             ),
         )
-        _element.counter_key = AAZListArg(
+        _element.counter_key = AAZObjectArg(
             options=["counter-key"],
             help="The built-in dimension used to partition consumption. The initial preview supports exactly one dimension.",
             required=True,
-            fmt=AAZListArgFormat(
-                max_length=1,
-                min_length=1,
-            ),
         )
         _element.match = AAZObjectArg(
             options=["match"],
@@ -134,7 +130,7 @@ class Create(AAZCommand):
         _element.period = AAZStrArg(
             options=["period"],
             help="The calendar-aligned UTC renewal period. This property is required for recurring rules and omitted for non-recurring rules.",
-            enum={"day": "day", "hour": "hour", "minute": "minute", "month": "month", "week": "week", "year": "year"},
+            enum={"Day": "Day", "Hour": "Hour", "Minute": "Minute", "Month": "Month", "Week": "Week", "Year": "Year"},
         )
         _element.recurring = AAZBoolArg(
             options=["recurring"],
@@ -153,85 +149,74 @@ class Create(AAZCommand):
             options=["unit"],
             help="The unit used for the cost control amount and absolute thresholds.",
             required=True,
-            enum={"usd": "usd"},
+            enum={"Usd": "Usd"},
         )
 
         counter_key = cls._args_schema.rules.Element.counter_key
-        counter_key.Element = AAZObjectArg()
-
-        _element = cls._args_schema.rules.Element.counter_key.Element
-        _element.attribute = AAZStrArg(
-            options=["attribute"],
-            help="The request attribute used by a custom dimension. This property is required for custom dimensions and must be omitted for built-in dimensions.",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z][a-zA-Z0-9_.-]{0,127}$",
-                max_length=128,
-            ),
-        )
-        _element.type = AAZStrArg(
+        counter_key.type = AAZStrArg(
             options=["type"],
             help="The kind of request dimension.",
             required=True,
-            enum={"account": "account", "agent": "agent", "custom": "custom", "identity": "identity", "project": "project", "session": "session"},
+            enum={"Account": "Account", "Agent": "Agent", "Custom": "Custom", "Identity": "Identity", "Project": "Project", "Session": "Session"},
         )
 
         match = cls._args_schema.rules.Element.match
-        match.foundry_caller_agent_id = AAZListArg(
-            options=["foundry-caller-agent-id"],
-            help="The stable Foundry agent IDs to match.",
+        match.agent_resource_ids = AAZListArg(
+            options=["agent-resource-ids"],
+            help="Agent resource IDs use /subscriptions/{subscription_guid}/accounts/{account-name}/project/{project-name}/agent/{agent_name}.",
             fmt=AAZListArgFormat(
                 max_length=20,
                 min_length=1,
             ),
         )
-        match.foundry_caller_identity_oid = AAZListArg(
-            options=["foundry-caller-identity-oid"],
+        match.identity_object_ids = AAZListArg(
+            options=["identity-object-ids"],
             help="The authenticated principal object IDs to match.",
             fmt=AAZListArgFormat(
                 max_length=20,
                 min_length=1,
             ),
         )
-        match.foundry_caller_session_id = AAZListArg(
-            options=["foundry-caller-session-id"],
-            help="The Foundry session IDs to match.",
-            fmt=AAZListArgFormat(
-                max_length=20,
-                min_length=1,
-            ),
-        )
-        match.foundry_project_id = AAZListArg(
-            options=["foundry-project-id"],
+        match.project_ids = AAZListArg(
+            options=["project-ids"],
             help="The Foundry project resource IDs to match.",
             fmt=AAZListArgFormat(
                 max_length=20,
                 min_length=1,
             ),
         )
+        match.session_ids = AAZListArg(
+            options=["session-ids"],
+            help="The Foundry session IDs to match.",
+            fmt=AAZListArgFormat(
+                max_length=20,
+                min_length=1,
+            ),
+        )
 
-        foundry_caller_agent_id = cls._args_schema.rules.Element.match.foundry_caller_agent_id
-        foundry_caller_agent_id.Element = AAZStrArg(
+        agent_resource_ids = cls._args_schema.rules.Element.match.agent_resource_ids
+        agent_resource_ids.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        foundry_caller_identity_oid = cls._args_schema.rules.Element.match.foundry_caller_identity_oid
-        foundry_caller_identity_oid.Element = AAZStrArg(
+        identity_object_ids = cls._args_schema.rules.Element.match.identity_object_ids
+        identity_object_ids.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
         )
 
-        foundry_caller_session_id = cls._args_schema.rules.Element.match.foundry_caller_session_id
-        foundry_caller_session_id.Element = AAZStrArg(
-            fmt=AAZStrArgFormat(
-                min_length=1,
+        project_ids = cls._args_schema.rules.Element.match.project_ids
+        project_ids.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{}/resourceGroups/{}/providers/Microsoft.CognitiveServices/accounts/projects/{}",
             ),
         )
 
-        foundry_project_id = cls._args_schema.rules.Element.match.foundry_project_id
-        foundry_project_id.Element = AAZStrArg(
+        session_ids = cls._args_schema.rules.Element.match.session_ids
+        session_ids.Element = AAZStrArg(
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
@@ -244,14 +229,15 @@ class Create(AAZCommand):
         _element.action = AAZStrArg(
             options=["action"],
             help="The action taken when the threshold is reached. The default is audit.",
+            required=True,
             default="audit",
-            enum={"alert": "alert", "audit": "audit", "block": "block"},
+            enum={"Alert": "Alert", "Audit": "Audit", "Block": "Block"},
         )
         _element.type = AAZStrArg(
             options=["type"],
             help="How the threshold value is interpreted.",
             required=True,
-            enum={"absolute": "absolute", "percentage": "percentage"},
+            enum={"Absolute": "Absolute", "Percentage": "Percentage"},
         )
         _element.value = AAZFloatArg(
             options=["value"],
@@ -377,7 +363,7 @@ class Create(AAZCommand):
             _elements = _builder.get(".properties.rules[]")
             if _elements is not None:
                 _elements.set_prop("amount", AAZFloatType, ".amount", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("counterKey", AAZListType, ".counter_key", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("counterKey", AAZObjectType, ".counter_key", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("match", AAZObjectType, ".match")
                 _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("period", AAZStrType, ".period")
@@ -387,34 +373,30 @@ class Create(AAZCommand):
 
             counter_key = _builder.get(".properties.rules[].counterKey")
             if counter_key is not None:
-                counter_key.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.rules[].counterKey[]")
-            if _elements is not None:
-                _elements.set_prop("attribute", AAZStrType, ".attribute")
-                _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+                counter_key.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
             match = _builder.get(".properties.rules[].match")
             if match is not None:
-                foundry_caller_agent_id = match.set_prop(
-                    "foundry.caller.agent.id", AAZListType, ".foundry_caller_agent_id")
-                if foundry_caller_agent_id is not None:
-                    foundry_caller_agent_id.set_elements(AAZStrType, ".")
+                match.set_prop("agentResourceIds", AAZListType, ".agent_resource_ids")
+                match.set_prop("identityObjectIds", AAZListType, ".identity_object_ids")
+                match.set_prop("projectIds", AAZListType, ".project_ids")
+                match.set_prop("sessionIds", AAZListType, ".session_ids")
 
-                foundry_caller_identity_oid = match.set_prop(
-                    "foundry.caller.identity.oid", AAZListType, ".foundry_caller_identity_oid")
-                if foundry_caller_identity_oid is not None:
-                    foundry_caller_identity_oid.set_elements(AAZStrType, ".")
+            agent_resource_ids = _builder.get(".properties.rules[].match.agentResourceIds")
+            if agent_resource_ids is not None:
+                agent_resource_ids.set_elements(AAZStrType, ".")
 
-                foundry_caller_session_id = match.set_prop(
-                    "foundry.caller.session.id", AAZListType, ".foundry_caller_session_id")
-                if foundry_caller_session_id is not None:
-                    foundry_caller_session_id.set_elements(AAZStrType, ".")
+            identity_object_ids = _builder.get(".properties.rules[].match.identityObjectIds")
+            if identity_object_ids is not None:
+                identity_object_ids.set_elements(AAZStrType, ".")
 
-                foundry_project_id = match.set_prop(
-                    "foundry.project.id", AAZListType, ".foundry_project_id")
-                if foundry_project_id is not None:
-                    foundry_project_id.set_elements(AAZStrType, ".")
+            project_ids = _builder.get(".properties.rules[].match.projectIds")
+            if project_ids is not None:
+                project_ids.set_elements(AAZStrType, ".")
+
+            session_ids = _builder.get(".properties.rules[].match.sessionIds")
+            if session_ids is not None:
+                session_ids.set_elements(AAZStrType, ".")
 
             thresholds = _builder.get(".properties.rules[].thresholds")
             if thresholds is not None:
@@ -422,7 +404,7 @@ class Create(AAZCommand):
 
             _elements = _builder.get(".properties.rules[].thresholds[]")
             if _elements is not None:
-                _elements.set_prop("action", AAZStrType, ".action")
+                _elements.set_prop("action", AAZStrType, ".action", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("value", AAZFloatType, ".value", typ_kwargs={"flags": {"required": True}})
 
@@ -479,7 +461,7 @@ class Create(AAZCommand):
             _element.amount = AAZFloatType(
                 flags={"required": True},
             )
-            _element.counter_key = AAZListType(
+            _element.counter_key = AAZObjectType(
                 serialized_name="counterKey",
                 flags={"required": True},
             )
@@ -497,37 +479,46 @@ class Create(AAZCommand):
             )
 
             counter_key = cls._schema_on_200_201.properties.rules.Element.counter_key
-            counter_key.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.rules.Element.counter_key.Element
-            _element.attribute = AAZStrType()
-            _element.type = AAZStrType(
+            counter_key.attribute = AAZStrType(
+                flags={"read_only": True},
+            )
+            counter_key.type = AAZStrType(
                 flags={"required": True},
             )
 
             match = cls._schema_on_200_201.properties.rules.Element.match
-            match["foundry.caller.agent.id"] = AAZListType()
-            match["foundry.caller.identity.oid"] = AAZListType()
-            match["foundry.caller.session.id"] = AAZListType()
-            match["foundry.project.id"] = AAZListType()
+            match.agent_resource_ids = AAZListType(
+                serialized_name="agentResourceIds",
+            )
+            match.identity_object_ids = AAZListType(
+                serialized_name="identityObjectIds",
+            )
+            match.project_ids = AAZListType(
+                serialized_name="projectIds",
+            )
+            match.session_ids = AAZListType(
+                serialized_name="sessionIds",
+            )
 
-            foundry_caller_agent_id = match["foundry.caller.agent.id"]
-            foundry_caller_agent_id.Element = AAZStrType()
+            agent_resource_ids = cls._schema_on_200_201.properties.rules.Element.match.agent_resource_ids
+            agent_resource_ids.Element = AAZStrType()
 
-            foundry_caller_identity_oid = match["foundry.caller.identity.oid"]
-            foundry_caller_identity_oid.Element = AAZStrType()
+            identity_object_ids = cls._schema_on_200_201.properties.rules.Element.match.identity_object_ids
+            identity_object_ids.Element = AAZStrType()
 
-            foundry_caller_session_id = match["foundry.caller.session.id"]
-            foundry_caller_session_id.Element = AAZStrType()
+            project_ids = cls._schema_on_200_201.properties.rules.Element.match.project_ids
+            project_ids.Element = AAZStrType()
 
-            foundry_project_id = match["foundry.project.id"]
-            foundry_project_id.Element = AAZStrType()
+            session_ids = cls._schema_on_200_201.properties.rules.Element.match.session_ids
+            session_ids.Element = AAZStrType()
 
             thresholds = cls._schema_on_200_201.properties.rules.Element.thresholds
             thresholds.Element = AAZObjectType()
 
             _element = cls._schema_on_200_201.properties.rules.Element.thresholds.Element
-            _element.action = AAZStrType()
+            _element.action = AAZStrType(
+                flags={"required": True},
+            )
             _element.type = AAZStrType(
                 flags={"required": True},
             )
