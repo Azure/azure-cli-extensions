@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "edge-action list",
 )
 class List(AAZCommand):
-    """List EdgeAction resources by subscription ID
+    """List EdgeAction resources by resource group
 
-    :example: ListEdgeActions_bySubscription
-        az edge-action list
+    :example: ListEdgeActions_byResourceGroup
+        az edge-action list --resource-group testrg
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/edgeactions", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/edgeactions", "2026-10-01"],
         ]
     }
 
@@ -112,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
