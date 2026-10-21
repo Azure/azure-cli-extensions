@@ -17,6 +17,7 @@ from azext_aimanager._client_factory import CUSTOM_MGMT_AIMANAGER
 from azext_aimanager._helpers import (
     get_custom_headers,
     parse_key_value_list,
+    convert_kubelogin_devicecode,
     print_or_merge_credentials,
 )
 from azext_aimanager._roleassignments import assign_caller_roles, warn_roles_skipped_no_wait
@@ -188,6 +189,7 @@ def _write_kubeconfig(credential_results, path, overwrite_existing, context_name
     try:
         kubeconfig = credential_results.kubeconfigs[0].value.decode(encoding='UTF-8')
         print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
+        convert_kubelogin_devicecode(path, kubeconfig)
     except (IndexError, ValueError) as exc:
         raise CLIError(
             "Failed to extract the kubeconfig from the service response. "
@@ -523,9 +525,10 @@ def create_modeldeployment(cmd, client, resource_group_name, ai_manager_name, na
         cmd, model_resource_id, vm_size, model_source_resource_id, performance_mode,
         scale, parse_key_value_list(overrides) if overrides is not None else None)
     headers = get_custom_headers(custom_headers)
-    return sdk_no_wait(
+    poller = sdk_no_wait(
         no_wait, client.begin_create_or_update, resource_group_name, ai_manager_name,
         namespace_name, model_deployment_name, deployment, headers=headers)
+    return _annotate_model_id_on_completion(cmd, poller, no_wait)
 
 
 # pylint: disable=unused-argument
@@ -558,10 +561,21 @@ def update_modeldeployment(cmd, client, resource_group_name, ai_manager_name, na
     headers = get_custom_headers(custom_headers)
     etag = existing.e_tag
     match_condition = MatchConditions.IfNotModified if etag is not None else None
-    return sdk_no_wait(
+    poller = sdk_no_wait(
         no_wait, client.begin_create_or_update, resource_group_name, ai_manager_name,
         namespace_name, model_deployment_name, deployment, headers=headers,
         etag=etag, match_condition=match_condition)
+    return _annotate_model_id_on_completion(cmd, poller, no_wait)
+
+
+def _annotate_model_id_on_completion(cmd, poller, no_wait):
+    """Wait for a create/update to finish and annotate the result with ``modelId``, so the
+    ``-o table`` ModelId column is populated as it is for ``show``. With --no-wait the poller
+    is returned unchanged."""
+    if no_wait:
+        return poller
+    result = LongRunningOperation(cmd.cli_ctx)(poller)  # blocks until Succeeded; raises on failure
+    return _annotate_model_ids(cmd, [result])[0]
 
 
 def show_modeldeployment(cmd, client, resource_group_name, ai_manager_name, namespace_name,

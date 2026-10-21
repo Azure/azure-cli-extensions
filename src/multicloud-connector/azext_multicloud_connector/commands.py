@@ -12,7 +12,9 @@
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group("arc-multicloud") as g:
+        from .custom import CustomizedGenerateGcpTemplate
         g.custom_command("generate-aws-template", "customized_generate_aws_template", supports_no_wait=True)
+        self.command_table["arc-multicloud generate-gcp-template"] = CustomizedGenerateGcpTemplate(loader=self)
 
     with self.command_group("arc-multicloud public-cloud-connector"):
         from .custom import (

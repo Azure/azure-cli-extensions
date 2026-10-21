@@ -6,6 +6,7 @@
 
 import errno
 import os
+import shutil
 import subprocess
 
 import yaml
@@ -60,12 +61,12 @@ def get_aks_credentials(
     try:
         # Check if kubeconfig requires kubelogin with devicecode and convert it
         if _uses_kubelogin_devicecode(kubeconfig):
-            import shutil
-            if shutil.which("kubelogin"):
+            kubelogin_path = shutil.which("kubelogin")
+            if kubelogin_path:
                 try:
                     # Run kubelogin convert-kubeconfig -l azurecli
                     subprocess.run(
-                        ["kubelogin", "convert-kubeconfig", "-l", "azurecli", "--kubeconfig", kubeconfig_path],
+                        [kubelogin_path, "convert-kubeconfig", "-l", "azurecli", "--kubeconfig", kubeconfig_path],
                         check=True,
                     )
                     logger.info("Converted kubeconfig to use Azure CLI authentication.")

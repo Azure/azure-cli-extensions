@@ -3,6 +3,25 @@
 Release History
 ===============
 
+2.0.1b3
++++++++
+* ``az aimanager get-credentials`` and ``az aimanager namespace get-credentials``: If the
+  kubeconfig uses kubelogin device code authentication, convert it to Azure CLI authentication
+  with ``kubelogin convert-kubeconfig -l azurecli`` when kubelogin is installed, matching
+  ``az aks get-credentials``.
+  
+2.0.1b2
++++++++
+* ``az aimanager create/update``, ``az aimanager namespace create/update`` and ``az aimanager
+  namespace modeldeployment create/update``: ``-o table`` output now uses the same columns as
+  ``show``/``list``, including ``ProvisioningState`` (and ``ModelId`` for model deployments).
+* ``az aimanager namespace modeldeployment create/update``: Without ``--no-wait``, the returned
+  resource now includes the top-level ``modelId`` field, matching ``show``.
+* ``az aimanager modelsource create/update/show/list``: Add ``-o table`` output with ``Name``,
+  ``ProvisioningState``, ``SourceType`` and ``Description`` columns.
+* ``az aimanager model show``: Add ``-o table`` output with the same ``Name``, ``ModelId`` and
+  ``Description`` columns as ``az aimanager model list``.
+
 2.0.1b1
 +++++++
 * ``az aimanager create``, ``az aimanager namespace create``, ``az aimanager modelsource

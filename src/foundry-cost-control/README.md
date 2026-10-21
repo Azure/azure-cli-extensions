@@ -36,30 +36,28 @@ First, save the following rule definition as `cost-control-rules.json`:
 [
   {
     "name": "per-agent-monthly",
-    "counterKey": [
-      {
-        "type": "agent"
-      }
-    ],
-    "unit": "usd",
+    "counterKey": {
+      "type": "Agent"
+    },
+    "unit": "Usd",
     "amount": 200,
-    "period": "month",
+    "period": "Month",
     "recurring": true,
     "match": {
-      "foundryCallerAgentId": [
-        "agent-123"
+      "agentResourceIds": [
+        "/subscriptions/e460f5d7-8e5c-4987-b15d-6cd8b7970ede/accounts/my-account-name/project/my-project-name/agent/my-agent_name"
       ]
     },
     "thresholds": [
       {
-        "type": "percentage",
+        "type": "Percentage",
         "value": 80,
-        "action": "alert"
+        "action": "Alert"
       },
       {
-        "type": "absolute",
-        "value": 0,
-        "action": "audit"
+        "type": "Percentage",
+        "value": 90,
+        "action": "Block"
       }
     ]
   }

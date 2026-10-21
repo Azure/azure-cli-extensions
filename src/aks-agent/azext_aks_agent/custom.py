@@ -403,7 +403,7 @@ def _aks_agent_status(agent_manager: AKSAgentManager):
         for dep in deployments:
             ready_replicas = dep.get("ready_replicas", 0)
             replicas = dep.get("replicas", 0)
-            status_color = SUCCESS_COLOR if ready_replicas == replicas and replicas > 0 else WARNING_COLOR
+            status_color = SUCCESS_COLOR if 0 < replicas == ready_replicas else WARNING_COLOR
             console.print(f"  • {dep['name']}: {ready_replicas}/{replicas} ready", style=status_color)
 
     # Display pod status

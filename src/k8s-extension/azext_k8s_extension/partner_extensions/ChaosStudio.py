@@ -81,11 +81,13 @@ class _ArmClient:
             )
             if allow_not_found and status_code == 404:
                 return None
-            raise AzureResponseError(
+            wrapped = AzureResponseError(
                 "Failed to {} {} '{}': {}".format(
                     method, description, resource_id, error
                 )
-            ) from error
+            )
+            wrapped.status_code = status_code
+            raise wrapped from error
 
         if method == "DELETE":
             return None
@@ -120,9 +122,18 @@ class ChaosStudio(DefaultExtension):
         "workspaceManagedIdentity.objectId",
         "workloadIdentity.enabled", "workloadIdentity.clientId", "workloadIdentity.tenantId",
         "IsWorkloadIdentityEnabled", "IdentityClientId", "IdentityTenantId",
+        "chaosDaemon.enabled",
     )
+    DAEMON_ENABLED_KEY = "chaosDaemon.enabled"
+    SAFEGUARDS_API_VERSION = "2025-05-02-preview"
+    SAFEGUARDS_LEVELS = ("Warn", "Enforce")
+    SAFEGUARDS_READ_ACTION = "Microsoft.ContainerService/deploymentSafeguards/read"
 
-    ROLE_NAME = "Chaos Studio Kubernetes Operator"
+    # Custom role names and IDs are unique per Microsoft Entra tenant, so the
+    # role the CLI creates carries the subscription ID in both. Roles created by
+    # earlier versions (fixed name and ID) are still recognized and reused.
+    LEGACY_ROLE_NAME = "Chaos Studio Kubernetes Operator"
+    ROLE_NAME_FORMAT = "Chaos Studio Kubernetes Operator ({})"
     ROLE_DESCRIPTION = (
         "Allows a Chaos Studio workspace managed identity to operate through "
         "the chaos-subscriber ServiceAccount on AKS."
@@ -579,12 +590,16 @@ class ChaosStudio(DefaultExtension):
             cluster_name,
             cluster_id,
         )
-        role_definition = arm.get(
-            self._select_role_id(resource_ids, existing_role_id, arm.subscription_id),
-            self.AUTHORIZATION_API_VERSION,
-            "Chaos Studio Kubernetes Operator role definition",
-            allow_not_found=existing_role_id is None,
-        )
+        if existing_role_id is not None:
+            role_definition = arm.get(
+                self._select_role_id(resource_ids, existing_role_id, arm.subscription_id),
+                self.AUTHORIZATION_API_VERSION,
+                "Chaos Studio Kubernetes Operator role definition",
+            )
+        else:
+            role_definition = self._resolve_owned_role_definition(
+                arm, resource_ids, arm.subscription_id
+            )
         role_assignment = arm.get(
             resource_ids["role_assignment"],
             self.AUTHORIZATION_API_VERSION,
@@ -602,6 +617,9 @@ class ChaosStudio(DefaultExtension):
                 resource_ids["role_definition"],
                 workspace_principal_id,
             )
+        # Read Safeguards before any authorization write so a failed read
+        # leaves nothing behind.
+        daemon_enabled = self._daemon_enabled(arm, cluster_id, release_namespace)
 
         if role_definition is None:
             arm.put(
@@ -625,7 +643,74 @@ class ChaosStudio(DefaultExtension):
             "workspaceManagedIdentity.objectId": workspace_principal_id,
             "subscriber.workspaceId": workspace_id,
             "subscriber.clusterResourceId": cluster_id,
+            self.DAEMON_ENABLED_KEY: daemon_enabled,
         }
+
+    @classmethod
+    def _daemon_enabled(cls, arm, cluster_id, release_namespace):
+        """Skip the daemon when Deployment Safeguards would block it.
+
+        Evaluated on every install and update so the setting recovers once
+        the namespace is excluded or Safeguards is no longer enforcing.
+        """
+        safeguards_id = (
+            "{}/providers/Microsoft.ContainerService/deploymentSafeguards/default"
+        ).format(cluster_id)
+        try:
+            safeguards = arm.get(
+                safeguards_id,
+                cls.SAFEGUARDS_API_VERSION,
+                "AKS Deployment Safeguards configuration",
+                allow_not_found=True,
+            )
+        except AzureResponseError as error:
+            if getattr(error, "status_code", None) != 403:
+                raise
+            raise AzureResponseError(
+                "Can't read AKS Deployment Safeguards '{}'. Installing or updating "
+                "Microsoft.ChaosStudio needs '{}' on the cluster to decide whether "
+                "the Chaos daemon can run. Grant that permission (it's included in "
+                "Reader), then retry.".format(safeguards_id, cls.SAFEGUARDS_READ_ACTION)
+            ) from error
+        if safeguards is None:
+            return "true"
+        properties = safeguards.get("properties") if isinstance(safeguards, dict) else None
+        level = properties.get("level") if isinstance(properties, dict) else None
+        if level not in cls.SAFEGUARDS_LEVELS:
+            raise AzureResponseError(
+                "Deployment Safeguards returned an unrecognized level {!r} for '{}'; "
+                "cannot determine whether the Chaos daemon can run.".format(
+                    level, safeguards_id
+                )
+            )
+        if level == "Warn":
+            return "true"
+        for field in ("excludedNamespaces", "systemExcludedNamespaces"):
+            excluded = properties.get(field)
+            if excluded is None:
+                continue
+            if not isinstance(excluded, list) or not all(
+                isinstance(item, str) for item in excluded
+            ):
+                raise AzureResponseError(
+                    "Deployment Safeguards returned a malformed {} for '{}'.".format(
+                        field, safeguards_id
+                    )
+                )
+            if release_namespace in excluded:
+                return "true"
+        logger.warning(
+            "Deployment Safeguards prevents the Chaos daemon in release namespace "
+            "'%s', so it will not be installed. PodNetworkLatency and PodNetworkLoss "
+            "won't be available; PodDelete, PodCpuHog and PodMemoryHog still work. "
+            "To enable network faults, exclude '%s' in your Deployment Safeguards "
+            "configuration (this removes Safeguards protection from that namespace, "
+            "so it's your decision), then run 'az k8s-extension update' for this "
+            "extension.",
+            release_namespace,
+            release_namespace,
+        )
+        return "false"
 
     @classmethod
     def _reconcile_workspace_connection(
@@ -842,7 +927,15 @@ class ChaosStudio(DefaultExtension):
             cluster_name,
             cluster_id,
         )
-        self._select_role_id(resource_ids, existing_role_id, arm.subscription_id)
+        if existing_role_id is not None:
+            owned_role_ids = [
+                self._select_role_id(resource_ids, existing_role_id, arm.subscription_id)
+            ]
+        else:
+            owned_role_ids = [
+                resource_ids["role_definition"],
+                resource_ids["legacy_role_definition"],
+            ]
         role_assignment = arm.get(
             resource_ids["role_assignment"],
             self.AUTHORIZATION_API_VERSION,
@@ -853,9 +946,11 @@ class ChaosStudio(DefaultExtension):
         if role_assignment is not None:
             properties = role_assignment.get("properties") or {}
             if (
-                self._same_resource_id(
-                    properties.get("roleDefinitionId"),
-                    resource_ids["role_definition"],
+                any(
+                    self._same_resource_id(
+                        properties.get("roleDefinitionId"), role_id
+                    )
+                    for role_id in owned_role_ids
                 )
                 and properties.get("description")
                 == self.ROLE_ASSIGNMENT_DESCRIPTION
@@ -1008,13 +1103,51 @@ class ChaosStudio(DefaultExtension):
         return resource_ids["role_definition"]
 
     @classmethod
+    def _resolve_owned_role_definition(cls, arm, resource_ids, subscription_id):
+        """Return the CLI-owned role for this subscription, or None to create one.
+
+        A legacy role (fixed ID) is reused only when it is scoped to exactly this
+        subscription; otherwise it belongs to another subscription in the tenant
+        and the per-subscription role is used instead.
+        """
+        legacy = arm.get(
+            resource_ids["legacy_role_definition"],
+            cls.AUTHORIZATION_API_VERSION,
+            "Chaos Studio Kubernetes Operator role definition",
+            allow_not_found=True,
+        )
+        if legacy is not None and (legacy.get("properties") or {}).get(
+            "assignableScopes"
+        ) == ["/subscriptions/{}".format(subscription_id)]:
+            resource_ids["role_definition"] = resource_ids["legacy_role_definition"]
+            return legacy
+        return arm.get(
+            resource_ids["role_definition"],
+            cls.AUTHORIZATION_API_VERSION,
+            "Chaos Studio Kubernetes Operator role definition",
+            allow_not_found=True,
+        )
+
+    @classmethod
+    def _role_name(cls, subscription_id):
+        return cls.ROLE_NAME_FORMAT.format(subscription_id.lower())
+
+    @classmethod
+    def _role_definition_guid(cls, subscription_id):
+        return str(
+            uuid.uuid5(
+                uuid.UUID(cls.ROLE_DEFINITION_GUID), subscription_id.lower()
+            )
+        )
+
+    @classmethod
     def _validate_role_definition(cls, role_definition, subscription_id, explicit=False):
+        # The role is identified by the ID it was read from, not its name.
         properties = role_definition.get("properties") or {}
         permissions = properties.get("permissions") or []
         expected_scope = "/subscriptions/{}".format(subscription_id)
         compatible = (
-            properties.get("roleName") == cls.ROLE_NAME
-            and (explicit or properties.get("description") == cls.ROLE_DESCRIPTION)
+            (explicit or properties.get("description") == cls.ROLE_DESCRIPTION)
             and properties.get("type") == "CustomRole"
             and properties.get("assignableScopes") == [expected_scope]
             and len(permissions) == 1
@@ -1034,7 +1167,7 @@ class ChaosStudio(DefaultExtension):
             raise InvalidArgumentValueError(
                 "The existing '{}' role definition is incompatible. Remove "
                 "or repair it before retrying; it was not overwritten.".format(
-                    cls.ROLE_NAME
+                    properties.get("roleName") or cls.LEGACY_ROLE_NAME
                 )
             )
 
@@ -1061,7 +1194,7 @@ class ChaosStudio(DefaultExtension):
     def _role_definition_body(cls, subscription_id):
         return {
             "properties": {
-                "roleName": cls.ROLE_NAME,
+                "roleName": cls._role_name(subscription_id),
                 "description": cls.ROLE_DESCRIPTION,
                 "type": "CustomRole",
                 "permissions": [
@@ -1114,10 +1247,10 @@ class ChaosStudio(DefaultExtension):
         cluster_name,
         cluster_id,
     ):
-        role_definition_id = (
+        role_definition_format = (
             "/subscriptions/{}/providers/Microsoft.Authorization/"
             "roleDefinitions/{}"
-        ).format(subscription_id, cls.ROLE_DEFINITION_GUID)
+        )
         role_assignment_guid = str(
             uuid.uuid5(
                 uuid.UUID(cls.ROLE_DEFINITION_GUID),
@@ -1125,7 +1258,12 @@ class ChaosStudio(DefaultExtension):
             )
         )
         return {
-            "role_definition": role_definition_id,
+            "role_definition": role_definition_format.format(
+                subscription_id, cls._role_definition_guid(subscription_id)
+            ),
+            "legacy_role_definition": role_definition_format.format(
+                subscription_id, cls.ROLE_DEFINITION_GUID
+            ),
             "role_assignment": (
                 "{}/providers/Microsoft.Authorization/roleAssignments/{}"
             ).format(cluster_id, role_assignment_guid),

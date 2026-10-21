@@ -7,6 +7,7 @@ import os
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
+from .recording_processors import RedisEnterpriseKeyReplacer
 
 from .. import (
     try_manual,
@@ -155,6 +156,7 @@ class RedisEnterpriseTestConnectionScenarioTest(ScenarioTest):
 
     def __init__(self, *args, **kwargs):
         super(RedisEnterpriseTestConnectionScenarioTest, self).__init__(*args, **kwargs)
+        self.recording_processors.append(RedisEnterpriseKeyReplacer())
 
         self.kwargs.update({
             'cluster': self.create_random_name(prefix='clitest-tc-', length=21)
@@ -168,5 +170,4 @@ class RedisEnterpriseTestConnectionScenarioTest(ScenarioTest):
         call_test_connection_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()
-
 
