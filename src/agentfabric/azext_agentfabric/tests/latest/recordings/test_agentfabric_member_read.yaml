@@ -1,0 +1,152 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric member wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --created
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafmember000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/members/cliafmember000003?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafmember000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/members/cliafmember000003","name":"cliafmember000003","type":"microsoft.networksecurity/agentfabrics/members","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-19T23:59:50.9470261Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-19T23:59:50.9470261Z"},"properties":{"fqdn":"cliafmember000003.example.com","workload":null,"spiffeId":"spiffe://microsoft.agentfabric/ns/7e3e6c5a-1ccc-410f-9bbd-4dd05984bd49/sa/cliafmember000003","provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '735'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 00:00:37 GMT
+      etag:
+      - '"0600f63b-0000-3400-0000-6ad6aefd0000"'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 6959759E03514307A7FF9EF4B4D81074 Ref B: SN4AA2022303023 Ref C: 2026-10-20T00:00:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric member show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafmember000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/members/cliafmember000003?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafmember000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/members/cliafmember000003","name":"cliafmember000003","type":"microsoft.networksecurity/agentfabrics/members","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-19T23:59:50.9470261Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-19T23:59:50.9470261Z"},"properties":{"fqdn":"cliafmember000003.example.com","workload":null,"spiffeId":"spiffe://microsoft.agentfabric/ns/7e3e6c5a-1ccc-410f-9bbd-4dd05984bd49/sa/cliafmember000003","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '735'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 00:00:39 GMT
+      etag:
+      - '"0600f63b-0000-3400-0000-6ad6aefd0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 25EB347DEC8144A4A2F4827A227EECE5 Ref B: SN4AA2022302009 Ref C: 2026-10-20T00:00:39Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric member list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafmember000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/members?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafmember000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/members/cliafmember000003","name":"cliafmember000003","type":"microsoft.networksecurity/agentfabrics/members","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-19T23:59:50.9470261Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-19T23:59:50.9470261Z"},"properties":{"fqdn":"cliafmember000003.example.com","spiffeId":"spiffe://microsoft.agentfabric/ns/7e3e6c5a-1ccc-410f-9bbd-4dd05984bd49/sa/cliafmember000003","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '731'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 00:00:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - aa5f7b26-7774-45c8-9a8c-aeb0ff05eec6
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 57CD13FFCBC649A1967F6E5F87477DDE Ref B: SN4AA2022304049 Ref C: 2026-10-20T00:00:42Z'
+    status:
+      code: 200
+      message: OK
+version: 1
