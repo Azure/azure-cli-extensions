@@ -17,7 +17,7 @@ helps['service-group'] = """
         subscriptions and other service groups into an organizational hierarchy and centrally
         manage access control, policies, alerting and reporting for those resources.
 
-        NOTE: This command group is in preview and under development.
+        NOTE: This extension remains in preview and uses stable API version 2026-08-01.
 """
 
 helps['service-group create'] = """
