@@ -22,6 +22,7 @@ import pytest
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
+from azext_vm_repair._validators import validate_vm_password
 from azext_vm_repair.custom import reset_nic, restore
 from azext_vm_repair.exceptions import AzCommandError
 from azext_vm_repair.repair_utils import (
@@ -306,6 +307,35 @@ def test_osdisk_uri_injection_is_blocked_end_to_end(tmp_path, monkeypatch):
     assert not marker.exists(), 'Reproduced: command injection via osDisk.vhd.uri.'
 
 
+@pytest.mark.parametrize('unsafe_password', [
+    'Aa1!demo""Password',
+    'ValidPass123\t--size Standard_B2s',
+    'ValidPass123\n--size Standard_B2s',
+    'ValidPass123"',
+], ids=['balanced-quotes', 'tab', 'newline', 'unbalanced-quote'])
+@mock.patch('azext_vm_repair.repair_utils.logger')
+@mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
+def test_unquoted_password_is_rejected_before_tokenization(mock_popen, mock_logger, unsafe_password):
+    validate_vm_password(unsafe_password, is_linux=False)
+    command = (
+        'az vm create -g repair-rg -n repair-vm '
+        '--image Windows --admin-username repairuser '
+        f'--admin-password {unsafe_password} --public-ip-address "" --tags env=test '
+        '--size Standard_D2s_v3'
+    )
+    mock_popen.return_value = _FakeProcess()
+
+    with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
+            mock.patch('azext_vm_repair.repair_utils.shlex.split', wraps=shlex.split) as mock_split:
+        with pytest.raises(InvalidArgumentValueError) as exc_info:
+            _call_az_command(command, secure_params=[unsafe_password, 'repairuser'])
+
+    mock_split.assert_not_called()
+    mock_popen.assert_not_called()
+    mock_logger.debug.assert_not_called()
+    assert unsafe_password not in str(exc_info.value)
+
+
 def test_unsafe_secure_param_is_rejected_without_leaking_it(monkeypatch):
     """
     Validate original tokens, not the masked display string, so a secret
@@ -337,7 +367,7 @@ def test_expansion_like_secret_is_passed_unmasked_but_not_logged(mock_popen, moc
 
     with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'):
         with pytest.raises(AzCommandError) as raised:
-            _call_az_command(command, secure_params=[secret])
+            _call_az_command(command, secure_params=[None, '', secret])
 
     assert mock_popen.call_args[0][0][-1] == secret
     assert secret not in str(mock_logger.debug.call_args_list)

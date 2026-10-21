@@ -120,6 +120,12 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     Raises AzCommandError if command fails.
     """
 
+    # Check originals before shlex can consume quotes or control characters.
+    if os.name == 'nt' and secure_params:
+        for param in secure_params:
+            if param:
+                _validate_command_token(param)
+
     tokenized_command = shlex.split(command_string)
 
     # If command does not start with 'az' then raise exception
