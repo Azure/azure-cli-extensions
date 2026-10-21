@@ -5,6 +5,7 @@
 
 from azure.cli.core.azclierror import InvalidArgumentValueError, MutuallyExclusiveArgumentError
 
+from azext_aks_preview._client_factory import cf_managed_clusters
 from azext_aks_preview.azuremanagedlustre._consts import (
     CONST_AMLFS_ARM64_UNSUPPORTED_OS_SKUS,
     CONST_AMLFS_UNSUPPORTED_OS_SKUS,
@@ -39,31 +40,52 @@ def _get_vm_sku_architectures(cli_ctx, location):
     return architectures
 
 
-def _resolves_to_azure_linux_3(os_sku, kubernetes_version):
-    if os_sku != "azurelinux" or not kubernetes_version:
-        return False
+def _resolve_os_sku(os_sku, kubernetes_version):
     version_parts = str(kubernetes_version).lstrip("v").split(".")
     try:
-        return (int(version_parts[0]), int(version_parts[1].split("-")[0])) >= (1, 32)
-    except (IndexError, ValueError):
-        return False
+        version = (int(version_parts[0]), int(version_parts[1].split("-")[0]))
+    except (IndexError, ValueError) as ex:
+        raise InvalidArgumentValueError(
+            f"Cannot resolve OS SKU '{os_sku}' for Kubernetes version '{kubernetes_version}'. "
+            "Specify a valid --kubernetes-version."
+        ) from ex
+    if os_sku == "azurelinux":
+        return "azurelinux3" if version >= (1, 32) else "azurelinux"
+    if version >= (1, 35):
+        return "ubuntu2404"
+    return "ubuntu2204" if version >= (1, 25) else "ubuntu2004"
+
+
+def _get_default_kubernetes_version(cmd, location):
+    versions = cf_managed_clusters(cmd.cli_ctx).list_kubernetes_versions(location)
+    defaults = [version.version for version in versions.values_property or [] if version.is_default]
+    if len(defaults) != 1 or not defaults[0]:
+        raise InvalidArgumentValueError(
+            "Cannot determine the default Kubernetes version for Azure Managed Lustre node compatibility. "
+            "Specify --kubernetes-version."
+        )
+    return defaults[0]
 
 
 def validate_azure_managed_lustre_node_compatibility(cmd, cluster):
     pools = cluster.agent_pool_profiles or []
     architecture_sensitive_pools = []
+    default_kubernetes_version = None
 
     for pool in pools:
-        os_sku = (pool.os_sku or "").lower()
+        os_sku = (pool.os_sku or "Ubuntu").lower()
+        if os_sku in ("ubuntu", "azurelinux"):
+            kubernetes_version = (
+                getattr(pool, "orchestrator_version", None) or getattr(cluster, "kubernetes_version", None)
+            )
+            if not kubernetes_version:
+                if default_kubernetes_version is None:
+                    default_kubernetes_version = _get_default_kubernetes_version(cmd, cluster.location)
+                kubernetes_version = default_kubernetes_version
+            os_sku = _resolve_os_sku(os_sku, kubernetes_version)
         if os_sku in CONST_AMLFS_UNSUPPORTED_OS_SKUS:
             continue
-        kubernetes_version = (
-            getattr(pool, "orchestrator_version", None) or getattr(cluster, "kubernetes_version", None)
-        )
-        if (
-            os_sku in CONST_AMLFS_ARM64_UNSUPPORTED_OS_SKUS or
-            _resolves_to_azure_linux_3(os_sku, kubernetes_version)
-        ):
+        if os_sku in CONST_AMLFS_ARM64_UNSUPPORTED_OS_SKUS:
             architecture_sensitive_pools.append(pool)
             continue
         return

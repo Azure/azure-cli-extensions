@@ -42,6 +42,7 @@ from azext_aks_preview.tests.latest.mocks import MockCLI, MockCmd
 HELPERS = "azext_aks_preview.azuremanagedlustre._helpers"
 OPS = "azext_aks_preview.azuremanagedlustre.aml_ops"
 DECORATOR = "azext_aks_preview.managed_cluster_decorator"
+VALIDATORS = "azext_aks_preview.azuremanagedlustre._validators"
 
 
 class AzureManagedLustreHelpersTestCase(unittest.TestCase):
@@ -187,6 +188,140 @@ class AzureManagedLustreValidatorsTestCase(unittest.TestCase):
             with self.assertRaisesRegex(InvalidArgumentValueError, "architecture couldn't be determined"):
                 validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
 
+    def test_os_aliases_resolve_before_architecture_validation(self):
+        cases = [
+            ("Ubuntu", "1.34.0", None, "arm64", True),
+            ("uBuNtU", "1.34", None, "arm64", True),
+            (None, "1.34.0", None, "arm64", True),
+            ("Ubuntu", "1.34.0", None, "x64", False),
+            (None, "1.34.0", None, "x64", False),
+            ("Ubuntu", "1.35.0", None, "arm64", False),
+            (None, "1.35.0", None, "arm64", False),
+            ("Ubuntu", "1.24.9", None, "arm64", False),
+            ("Ubuntu", "1.35.0", "1.34.9", "arm64", True),
+            ("AzureLinux", "1.31.9", "1.32.0", "arm64", True),
+            ("azurelinux", "1.32", None, "arm64", True),
+            ("AzureLinux", "v1.32.0-preview.1", None, "arm64", True),
+        ]
+        for os_sku, cluster_version, pool_version, architecture, should_raise in cases:
+            with self.subTest(os_sku=os_sku, cluster_version=cluster_version,
+                              pool_version=pool_version, architecture=architecture):
+                cluster = SimpleNamespace(
+                    location="eastus", kubernetes_version=cluster_version,
+                    agent_pool_profiles=[SimpleNamespace(
+                        os_sku=os_sku, orchestrator_version=pool_version, vm_size="Standard_D2ps_v5",
+                    )],
+                )
+                with patch(VALIDATORS + ".cf_managed_clusters") as client, patch(
+                    VALIDATORS + "._get_vm_sku_architectures",
+                    return_value={"standard_d2ps_v5": architecture},
+                ):
+                    if should_raise:
+                        with self.assertRaisesRegex(InvalidArgumentValueError, "ARM64"):
+                            validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+                    else:
+                        validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+                client.assert_not_called()
+
+    def test_os_aliases_use_regional_default_when_version_is_omitted(self):
+        for os_sku, default_version, architecture, should_raise in [
+            ("AzureLinux", "1.32", "arm64", True),
+            ("AzureLinux", "1.32", "x64", False),
+            ("AzureLinux", "1.31", "arm64", False),
+            ("Ubuntu", "1.34", "arm64", True),
+            (None, "1.34", "arm64", True),
+            (None, "1.35", "arm64", False),
+        ]:
+            with self.subTest(os_sku=os_sku, default_version=default_version, architecture=architecture):
+                cmd = Mock()
+                cluster = SimpleNamespace(
+                    location="eastus",
+                    agent_pool_profiles=[SimpleNamespace(os_sku=os_sku, vm_size="Standard_D2ps_v5")],
+                )
+                with patch(VALIDATORS + ".cf_managed_clusters") as client, patch(
+                    VALIDATORS + "._get_vm_sku_architectures",
+                    return_value={"standard_d2ps_v5": architecture},
+                ):
+                    client.return_value.list_kubernetes_versions.return_value = SimpleNamespace(values_property=[
+                        SimpleNamespace(version="1.36", is_default=False),
+                        SimpleNamespace(version=default_version, is_default=True),
+                    ])
+                    if should_raise:
+                        with self.assertRaisesRegex(InvalidArgumentValueError, "ARM64"):
+                            validate_azure_managed_lustre_node_compatibility(cmd, cluster)
+                    else:
+                        validate_azure_managed_lustre_node_compatibility(cmd, cluster)
+                    client.assert_called_once_with(cmd.cli_ctx)
+                    client.return_value.list_kubernetes_versions.assert_called_once_with("eastus")
+                self.assertFalse(hasattr(cluster, "kubernetes_version"))
+
+    def test_unresolved_alias_version_is_not_treated_as_compatible(self):
+        cluster = SimpleNamespace(
+            location="eastus",
+            agent_pool_profiles=[SimpleNamespace(os_sku="AzureLinux", vm_size="Standard_D2ps_v5")],
+        )
+        for versions in [
+            None, [], [SimpleNamespace(version="1.34", is_default=False)],
+            [SimpleNamespace(version=None, is_default=True)],
+            [SimpleNamespace(version=version, is_default=True) for version in ["1.34", "1.35"]],
+        ]:
+            with self.subTest(versions=versions), patch(VALIDATORS + ".cf_managed_clusters") as client:
+                client.return_value.list_kubernetes_versions.return_value = SimpleNamespace(values_property=versions)
+                with self.assertRaisesRegex(InvalidArgumentValueError, "--kubernetes-version"):
+                    validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+
+    def test_default_version_lookup_error_is_propagated(self):
+        cluster = SimpleNamespace(
+            location="eastus",
+            agent_pool_profiles=[SimpleNamespace(os_sku="AzureLinux", vm_size="Standard_D2ps_v5")],
+        )
+        with patch(VALIDATORS + ".cf_managed_clusters") as client:
+            client.return_value.list_kubernetes_versions.side_effect = HttpResponseError("Forbidden")
+            with self.assertRaisesRegex(HttpResponseError, "Forbidden"):
+                validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+
+    def test_default_version_is_looked_up_once_for_multiple_alias_pools(self):
+        cluster = SimpleNamespace(
+            location="eastus",
+            agent_pool_profiles=[
+                SimpleNamespace(os_sku=os_sku, vm_size="Standard_D2ps_v5")
+                for os_sku in ["AzureLinux", None]
+            ],
+        )
+        with patch(VALIDATORS + ".cf_managed_clusters") as client, patch(
+            VALIDATORS + "._get_vm_sku_architectures", return_value={"standard_d2ps_v5": "arm64"},
+        ):
+            client.return_value.list_kubernetes_versions.return_value = SimpleNamespace(values_property=[
+                SimpleNamespace(version="1.34", is_default=True),
+            ])
+            with self.assertRaisesRegex(InvalidArgumentValueError, "ARM64"):
+                validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+            client.return_value.list_kubernetes_versions.assert_called_once_with("eastus")
+
+    def test_compatible_pool_is_sufficient_after_resolving_aliases(self):
+        for os_sku in ["Ubuntu", None, "AzureLinux"]:
+            with self.subTest(os_sku=os_sku):
+                cluster = SimpleNamespace(
+                    location="eastus", kubernetes_version="1.34",
+                    agent_pool_profiles=[
+                        SimpleNamespace(os_sku=os_sku, vm_size="Standard_D2ps_v5"),
+                        SimpleNamespace(os_sku="Ubuntu2404", vm_size="Standard_D2ps_v5"),
+                    ],
+                )
+                with patch(VALIDATORS + ".cf_managed_clusters") as client:
+                    validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+                client.assert_not_called()
+
+    def test_invalid_alias_version_is_not_treated_as_compatible(self):
+        for version in ["invalid", "1", "1.x"]:
+            with self.subTest(version=version):
+                cluster = SimpleNamespace(
+                    location="eastus", kubernetes_version=version,
+                    agent_pool_profiles=[SimpleNamespace(os_sku="AzureLinux", vm_size="Standard_D2ps_v5")],
+                )
+                with self.assertRaisesRegex(InvalidArgumentValueError, "Kubernetes version"):
+                    validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+
 
 class AzureManagedLustreOperationsTestCase(unittest.TestCase):
     def setUp(self):
@@ -330,6 +465,43 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
                    side_effect=UnknownError("Install k8s-extension")):
             with self.assertRaisesRegex(UnknownError, "Install k8s-extension"):
                 decorator.set_up_azure_managed_lustre(decorator.context.mc)
+        self.client.begin_create_or_update.assert_not_called()
+
+    def test_create_rejects_unsupported_aliases_before_cluster_request(self):
+        for os_sku, version in [
+            ("Ubuntu", "1.34.0"), (None, "1.34.0"), ("AzureLinux", None), (None, None),
+        ]:
+            with self.subTest(os_sku=os_sku, version=version):
+                decorator = self.make_decorator(True, enable_azure_managed_lustre=True)
+                mc = decorator.context.mc
+                mc.kubernetes_version = version
+                mc.agent_pool_profiles[0].os_sku = os_sku
+                mc.agent_pool_profiles[0].vm_size = "Standard_D2ps_v5"
+                with patch(VALIDATORS + ".cf_managed_clusters") as client, patch(
+                    VALIDATORS + "._get_vm_sku_architectures", return_value={"standard_d2ps_v5": "arm64"},
+                ), patch(DECORATOR + ".get_azure_managed_lustre_extension_client") as dependency:
+                    client.return_value.list_kubernetes_versions.return_value = SimpleNamespace(values_property=[
+                        SimpleNamespace(version="1.34", is_default=True),
+                    ])
+                    with self.assertRaisesRegex(InvalidArgumentValueError, "ARM64"):
+                        decorator.set_up_azure_managed_lustre(mc)
+                dependency.assert_not_called()
+                self.client.begin_create_or_update.assert_not_called()
+                self.assertFalse(decorator.context.get_intermediate(
+                    "enable_azure_managed_lustre", default_value=False,
+                ))
+
+    def test_update_rejects_ubuntu_alias_on_arm64(self):
+        decorator = self.make_decorator(False, enable_azure_managed_lustre=True)
+        mc = decorator.context.mc
+        mc.kubernetes_version = "1.34.0"
+        mc.agent_pool_profiles[0].os_sku = "Ubuntu"
+        mc.agent_pool_profiles[0].vm_size = "Standard_D2ps_v5"
+        with patch(DECORATOR + ".get_installed_azure_managed_lustre_extension", return_value=None), patch(
+            VALIDATORS + "._get_vm_sku_architectures", return_value={"standard_d2ps_v5": "arm64"},
+        ):
+            with self.assertRaisesRegex(InvalidArgumentValueError, "ARM64"):
+                decorator.update_azure_managed_lustre(mc)
         self.client.begin_create_or_update.assert_not_called()
 
     def test_omitted_flags_do_not_load_extension_or_request_postprocessing(self):

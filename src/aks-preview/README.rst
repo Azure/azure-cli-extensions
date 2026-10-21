@@ -30,8 +30,13 @@ For an existing AKS cluster, enable or disable the extension with::
 Enabling installs ``microsoft.azuremanagedlustre`` as ``azurelustre`` with cluster scope
 on the ``stable`` release train without pinning a version, with automatic minor-version
 upgrades disabled.
-Flatcar, Ubuntu 26.04, and Azure Linux 3 on ARM64 node pools are not supported
-by the extension. The cluster must have at least one compatible node pool.
+Flatcar and Ubuntu 26.04 node pools are not supported by the extension.
+Ubuntu 22.04 and Azure Linux 3 node pools are not supported on ARM64.
+The cluster must have at least one compatible node pool.
+Compatibility validation resolves the ``Ubuntu`` and ``AzureLinux`` aliases, including
+the default ``Ubuntu`` OS SKU when ``--os-sku`` is omitted, using the pool or cluster
+Kubernetes version. If no version is specified, validation queries the regional AKS
+default version. If that default cannot be determined, specify ``--kubernetes-version``.
 Enabling an existing installation leaves its configuration unchanged.
 As with Azure Container Storage, these operations wait for cluster provisioning before
 installing or uninstalling the extension, even when ``--no-wait`` is specified.
