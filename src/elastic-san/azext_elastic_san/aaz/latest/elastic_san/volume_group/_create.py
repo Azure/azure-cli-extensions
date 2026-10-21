@@ -28,9 +28,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2026-04-01-preview"],
         ]
     }
 
@@ -109,6 +109,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Type of encryption",
             enum={"EncryptionAtRestWithCustomerManagedKey": "EncryptionAtRestWithCustomerManagedKey", "EncryptionAtRestWithPlatformKey": "EncryptionAtRestWithPlatformKey"},
+        )
+        _args_schema.encryption_in_transit = AAZBoolArg(
+            options=["--encryption-in-transit"],
+            arg_group="Properties",
+            help="A boolean indicating whether or not Encryption in Transit is enabled, supported only for ISCSI protocol.",
         )
         _args_schema.encryption_properties = AAZObjectArg(
             options=["--encryption-properties"],
@@ -270,7 +275,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -310,6 +315,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("encryption", AAZStrType, ".encryption")
+                properties.set_prop("encryptionInTransit", AAZBoolType, ".encryption_in_transit")
                 properties.set_prop("encryptionProperties", AAZObjectType, ".encryption_properties")
                 properties.set_prop("enforceDataIntegrityCheckForIscsi", AAZBoolType, ".enforce_data_integrity_check_for_iscsi")
                 properties.set_prop("networkAcls", AAZObjectType, ".network_acls")
@@ -412,7 +418,13 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.delete_retention_policy = AAZObjectType(
+                serialized_name="deleteRetentionPolicy",
+            )
             properties.encryption = AAZStrType()
+            properties.encryption_in_transit = AAZBoolType(
+                serialized_name="encryptionInTransit",
+            )
             properties.encryption_properties = AAZObjectType(
                 serialized_name="encryptionProperties",
             )
@@ -432,6 +444,14 @@ class Create(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            delete_retention_policy = cls._schema_on_200_201.properties.delete_retention_policy
+            delete_retention_policy.policy_state = AAZStrType(
+                serialized_name="policyState",
+            )
+            delete_retention_policy.retention_period_days = AAZIntType(
+                serialized_name="retentionPeriodDays",
             )
 
             encryption_properties = cls._schema_on_200_201.properties.encryption_properties
