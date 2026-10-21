@@ -77,35 +77,41 @@ class ElasticSanScenario(ScenarioTest):
         })
         self.cmd('az elastic-san create -n {san_name} -g {rg} -l eastus2euap '
                  '--sku {{name:ElasticSAN_LRS}} --version V2 '
-                 '--total-iops 100000 --total-mbps 1000 --total-size-tib 25',
+                 '--total-iops 100000 --total-mbps 2000 --total-size-tib 25 '
+                 '--auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 30 '
+                 '--increase-capacity-unit-by-tib 4 --unused-size-tib 14',
                  checks=[JMESPathCheck('name', self.kwargs['san_name']),
                          JMESPathCheck('location', 'eastus2euap'),
                          JMESPathCheck('sku.name', 'ElasticSAN_LRS'),
                          JMESPathCheck('version', 'V2'),
                          JMESPathCheck('totalIops', 100000),
-                         JMESPathCheck('totalMBps', 1000),
-                         JMESPathCheck('totalSizeTiB', 25)])
+                         JMESPathCheck('totalMBps', 2000),
+                         JMESPathCheck('totalSizeTiB', 25),
+                         JMESPathCheck('autoScaleProperties.scaleUpProperties.autoScalePolicyEnforcement', 'Enabled'),
+                         JMESPathCheck('autoScaleProperties.scaleUpProperties.capacityUnitScaleUpLimitTiB', 30),
+                         JMESPathCheck('autoScaleProperties.scaleUpProperties.increaseCapacityUnitByTiB', 4),
+                         JMESPathCheck('autoScaleProperties.scaleUpProperties.unusedSizeTiB', 14)])
         self.cmd('az elastic-san show -n {san_name} -g {rg}',
                  checks=[JMESPathCheck('version', 'V2'),
                          JMESPathCheck('sku.name', 'ElasticSAN_LRS'),
                          JMESPathCheck('totalIops', 100000),
-                         JMESPathCheck('totalMBps', 1000),
+                         JMESPathCheck('totalMBps', 2000),
                          JMESPathCheck('totalSizeTiB', 25)])
         self.cmd('az elastic-san list -g {rg}',
                  checks=[JMESPathCheck('length(@)', 1),
                          JMESPathCheck('[0].name', self.kwargs['san_name']),
                          JMESPathCheck('[0].version', 'V2')])
         self.cmd('az elastic-san update -n {san_name} -g {rg} '
-                 '--total-iops 110000 --total-mbps 1100 --total-size-tib 26',
+                 '--total-iops 110000 --total-mbps 2200 --total-size-tib 26',
                  checks=[JMESPathCheck('version', 'V2'),
                          JMESPathCheck('sku.name', 'ElasticSAN_LRS'),
                          JMESPathCheck('totalIops', 110000),
-                         JMESPathCheck('totalMBps', 1100),
+                         JMESPathCheck('totalMBps', 2200),
                          JMESPathCheck('totalSizeTiB', 26)])
         self.cmd('az elastic-san show -n {san_name} -g {rg}',
                  checks=[JMESPathCheck('version', 'V2'),
                          JMESPathCheck('totalIops', 110000),
-                         JMESPathCheck('totalMBps', 1100),
+                         JMESPathCheck('totalMBps', 2200),
                          JMESPathCheck('totalSizeTiB', 26)])
         self.cmd('az elastic-san delete -n {san_name} -g {rg} -y')
 

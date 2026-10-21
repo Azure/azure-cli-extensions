@@ -35,6 +35,10 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
             "total_iops": 100000,
             "total_mbps": 1000,
             "total_size_tib": 25,
+            "auto_scale_policy_enforcement": "Enabled",
+            "capacity_unit_scale_up_limit_tib": 30,
+            "increase_capacity_unit_by_tib": 4,
+            "unused_size_tib": 14,
         })
         self.assertEqual(body, {
             "location": "eastus2euap",
@@ -44,6 +48,14 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
                 "totalIops": 100000,
                 "totalMBps": 1000,
                 "totalSizeTiB": 25,
+                "autoScaleProperties": {
+                    "scaleUpProperties": {
+                        "autoScalePolicyEnforcement": "Enabled",
+                        "capacityUnitScaleUpLimitTiB": 30,
+                        "increaseCapacityUnitByTiB": 4,
+                        "unusedSizeTiB": 14,
+                    },
+                },
             },
         })
 

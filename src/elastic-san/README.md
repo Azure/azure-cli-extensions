@@ -6,7 +6,7 @@ This is an extension to Azure CLI to manage ElasticSan resources.
 ## Elastic San
 ### Create an Elastic SAN.
 `az elastic-san create -n {san_name} -g {rg} --tags "{key1810:aaaa}" -l southcentralusstg --base-size-tib 23 --extended-capacity-size-tib 14 --sku "{name:Premium_LRS,tier:Premium}"`
-For V1 (including when `--version` is omitted), omitted base and extended capacities default to 20 and 0 TiB. V2 does not inject these V1 capacity defaults; provision it using `--sku "{name:ElasticSAN_LRS}" --version V2 --total-iops ... --total-mbps ... --total-size-tib ...`.
+For V1 (including when `--version` is omitted), omitted base and extended capacities default to 20 and 0 TiB. V2 does not inject these V1 capacity defaults; provision it using `--sku "{name:ElasticSAN_LRS}" --version V2 --total-iops ... --total-mbps ... --total-size-tib ...` and supply autoscale settings (`--auto-scale-policy-enforcement`, `--capacity-unit-scale-up-limit-tib`, `--increase-capacity-unit-by-tib`, and `--unused-size-tib`).
 The separate `test_elastic_san_v2_scenarios` integration test covers V2 create, show, list, update, and delete in `eastus2euap`. Record it with `azdev test --live --discover test_elastic_san_v2_scenarios`, then verify playback with `azdev test --discover test_elastic_san_v2_scenarios`. A successful live recording requires V2 access on the target subscription and region; this test does not skip service feature-gate errors.
 ### Delete an Elastic SAN.
 `az elastic-san delete -g {rg} -n {san_name}`
