@@ -19,7 +19,6 @@ class Wait(AAZWaitCommand):
     """
 
     _aaz_info = {
-        "version": "2026-08-01",
         "resources": [
             ["mgmt-plane", "/providers/microsoft.management/servicegroups/{}", "2026-08-01"],
         ]
@@ -41,12 +40,12 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.service_group_name = AAZStrArg(
+        _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
             help="ServiceGroup Name.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern=r"^[a-zA-Z0-9\-_().]{1,90}$",
+                pattern="^[a-zA-Z0-9\\-_().]{1,90}$",
             ),
         )
         return cls._args_schema
@@ -98,7 +97,7 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "serviceGroupName", self.ctx.args.service_group_name,
+                    "serviceGroupName", self.ctx.args.name,
                     required=True,
                 ),
             }

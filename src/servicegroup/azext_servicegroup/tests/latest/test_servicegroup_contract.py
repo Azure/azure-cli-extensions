@@ -13,7 +13,6 @@ from azure.cli.core.aaz import AAZFloatType
 
 def test_servicegroup_commands_use_stable_api_version():
     for command in [Create, Delete, Show, Update, Wait]:
-        assert command._aaz_info["version"] == "2026-08-01"
         assert command._aaz_info["resources"] == [
             [
                 "mgmt-plane",
@@ -21,6 +20,8 @@ def test_servicegroup_commands_use_stable_api_version():
                 "2026-08-01",
             ]
         ]
+    for command in [Create, Delete, Show, Update]:
+        assert command._aaz_info["version"] == "2026-08-01"
 
 
 def test_servicegroup_criticality_range():
