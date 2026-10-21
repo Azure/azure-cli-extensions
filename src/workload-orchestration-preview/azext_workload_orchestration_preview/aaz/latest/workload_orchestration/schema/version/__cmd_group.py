@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "workload-orchestration schema version",
+    "workload-orchestration-preview schema version",
 )
 class __CMDGroup(AAZCommandGroup):
-    """workload-orchestration schema version helps to manage Schemas
+    """workload-orchestration-preview schema version helps to manage Schemas
     """
     pass
 

@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete the Azure resource linked to a MongoDB Atlas organization
+    """Delete a OrganizationResource
 
-    :example: Organizations_Delete
-        az mongo-db atlas organization delete --subscription "abcd1234-5678-90ab-cdef-12345678abcd" --resource-group "MyResourceGroup" -name "MyOrganizationResourceName"
+    :example: Organizations_Delete_MaximumSet
+        az mongo-db atlas organization delete \\ --subscription {subscription} \\ --resource-group {resource_group} \\ --name MongoDBCLITestOrg2 \\ --yes
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2026-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/mongodb.atlas/organizations/{}", "2026-03-01-preview"],
         ]
     }
 
@@ -58,7 +58,6 @@ class Delete(AAZCommand):
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the Azure resource group in which MongoDB Atlas resource is created",
             required=True,
         )
         return cls._args_schema
@@ -149,7 +148,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-03-01-preview",
                     required=True,
                 ),
             }

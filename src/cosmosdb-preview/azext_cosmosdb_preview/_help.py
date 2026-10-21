@@ -569,6 +569,10 @@ examples:
     text: az cosmosdb update --capabilities EnableGremlin --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup
   - name: Update an Azure Cosmos DB database account to enable materialized views.
     text: az cosmosdb update --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup --enable-materialized-views true
+  - name: Enable soft deletion on the account with a 1440 minutes (24 hours) retention period.
+    text: az cosmosdb update --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup --soft-delete-config '{"softDeletionEnabled":true,"softDeleteRetentionPeriodInMinutes":1440,"minMinutesBeforePermanentDeletionAllowed":60}'
+  - name: Configure soft deletion on the account from a JSON file.
+    text: az cosmosdb update --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup --soft-delete-config @soft-delete-config.json
 """
 
 # restore account
@@ -1713,7 +1717,7 @@ examples:
     text: |
       az cosmosdb fleet create \\
         --resource-group MyResourceGroup \\
-        --fleet-name MyFleet \\
+        --fleet-name myfleet \\
         --location westus
 """
 
@@ -1740,27 +1744,46 @@ short-summary: Manage Cosmos DB Fleetspace resources.
 helps['cosmosdb fleetspace create'] = """
 type: command
 short-summary: Create a new Fleetspace under a Cosmos DB Fleet.
+long-summary: |
+  Creates a NoSQL fleetspace. serviceTier and nonempty dataRegions are required creation settings.
+  Omit throughputPoolConfiguration, or set it to null or {}, for non-pooled creation.
+  Pooling requires both positive integer throughput bounds with maxThroughput >= minThroughput.
+  Additional throughput constraints and supported tiers and regions are service-configured.
 examples:
   - name: Create a fleetspace
     text: |
       az cosmosdb fleetspace create \\
         --resource-group MyResourceGroup \\
-        --fleet-name MyFleet \\
-        --fleetspace-name MyFleetspace \\
+        --fleet-name myfleet \\
+        --fleetspace-name myspace \\
         --body @fleetspace.json
+  - name: Create a non-pooled fleetspace
+    text: |
+      az cosmosdb fleetspace create \\
+        --resource-group MyResourceGroup \\
+        --fleet-name myfleet \\
+        --fleetspace-name myspace \\
+        --body '{"properties":{"serviceTier":"GeneralPurpose","dataRegions":["West US 2"]}}'
 """
 
 helps['cosmosdb fleetspace update'] = """
 type: command
 short-summary: Update an existing Cosmos DB Fleetspace.
+long-summary: |
+  Both positive integer minThroughput and maxThroughput are required in throughputPoolConfiguration,
+  with maxThroughput >= minThroughput. Additional constraints are service-configured.
+  Partial updates and omitted, null or empty configurations are not supported by this CLI.
+  serviceTier and dataRegions are creation settings; supplied update values cannot change them.
+  Do not omit configuration in a raw service request to preserve pooling: omission can disable pooling.
+  Fleetspaces use the NoSQL API; this command does not change the API kind.
 examples:
   - name: Update fleetspace throughput settings
     text: |
       az cosmosdb fleetspace update \\
         --resource-group MyResourceGroup \\
-        --fleet-name MyFleet \\
-        --fleetspace-name MyFleetspace \\
-        --body @fleetspace.json
+        --fleet-name myfleet \\
+        --fleetspace-name myspace \\
+        --body '{"properties":{"throughputPoolConfiguration":{"minThroughput":100000,"maxThroughput":300000}}}'
 """
 
 helps['cosmosdb fleetspace list'] = """
@@ -1786,14 +1809,18 @@ short-summary: Manage database accounts within a Cosmos DB Fleetspace.
 helps['cosmosdb fleetspace account create'] = """
 type: command
 short-summary: Register an existing Cosmos DB database account to a Fleetspace.
+long-summary: |
+  The attachment name must match the database account name in resourceId, ignoring case; aliases are not supported.
+  resourceId must identify a Microsoft.DocumentDB/databaseAccounts resource, not a child resource.
+  armLocation is mandatory and nonblank; the service derives the authoritative location from the account.
 examples:
   - name: Register a database account to a fleetspace
     text: |
       az cosmosdb fleetspace account create \\
         --resource-group MyResourceGroup \\
-        --fleet-name MyFleet \\
-        --fleetspace-name MyFleetspace \\
-        --fleetspace-account-name MyAccount \\
+        --fleet-name myfleet \\
+        --fleetspace-name myspace \\
+        --fleetspace-account-name myaccount \\
         --body @fleetspaceAccount.json
 """
 
@@ -1843,4 +1870,144 @@ short-summary: List all Fleet Analytics resources under a Fleet.
 helps['cosmosdb fleet analytics delete'] = """
 type: command
 short-summary: Delete a Fleet Analytics resource from a Fleet.
+"""
+
+helps['cosmosdb softdeleted-account'] = """
+type: group
+short-summary: Manage soft-deleted Azure Cosmos DB accounts.
+"""
+
+helps['cosmosdb softdeleted-account list'] = """
+type: command
+short-summary: List soft-deleted Azure Cosmos DB accounts.
+examples:
+  - name: List soft-deleted Azure Cosmos DB accounts in a specific location.
+    text: |
+      az cosmosdb softdeleted-account list --location westus
+"""
+
+helps['cosmosdb softdeleted-account show'] = """
+type: command
+short-summary: Show details of a soft-deleted Azure Cosmos DB account.
+examples:
+  - name: Show details of a soft-deleted Azure Cosmos DB account.
+    text: |
+      az cosmosdb softdeleted-account show --location westus --name MyAccount --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb softdeleted-account delete'] = """
+type: command
+short-summary: Permanently delete a soft-deleted Azure Cosmos DB account.
+examples:
+  - name: Permanently delete a soft-deleted Azure Cosmos DB account.
+    text: |
+      az cosmosdb softdeleted-account delete --location westus --name MyAccount --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb softdeleted-account recover'] = """
+type: command
+short-summary: Recover a soft-deleted Azure Cosmos DB account.
+examples:
+  - name: Recover a soft-deleted Azure Cosmos DB account.
+    text: |
+      az cosmosdb softdeleted-account recover --location westus --name MyAccount --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb sql softdeleted-database'] = """
+type: group
+short-summary: Manage soft-deleted databases for Azure Cosmos DB SQL API.
+"""
+
+helps['cosmosdb sql softdeleted-database list'] = """
+type: command
+short-summary: List all soft-deleted databases for an Azure Cosmos DB account.
+examples:
+  - name: List all soft-deleted databases for an Azure Cosmos DB account.
+    text: |
+      az cosmosdb sql softdeleted-database list --location westus --account-name MyAccount --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb sql softdeleted-database show'] = """
+type: command
+short-summary: Show details of a soft-deleted database.
+examples:
+  - name: Show details of a soft-deleted database.
+    text: |
+      az cosmosdb sql softdeleted-database show --location westus --account-name MyAccount --name MyDatabase --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb sql softdeleted-database delete'] = """
+type: command
+short-summary: Permanently delete a soft-deleted database.
+examples:
+  - name: Permanently delete a soft-deleted database.
+    text: |
+      az cosmosdb sql softdeleted-database delete --location westus --account-name MyAccount --name MyDatabase --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb sql softdeleted-database recover'] = """
+type: command
+short-summary: Recover a soft-deleted database.
+examples:
+  - name: Recover a soft-deleted database.
+    text: |
+      az cosmosdb sql softdeleted-database recover --location westus --account-name MyAccount --name MyDatabase --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb sql softdeleted-container'] = """
+type: group
+short-summary: Manage soft-deleted containers for Azure Cosmos DB SQL API.
+"""
+
+helps['cosmosdb sql softdeleted-container list'] = """
+type: command
+short-summary: List all soft-deleted containers in a database.
+examples:
+  - name: List all soft-deleted containers in a database.
+    text: |
+      az cosmosdb sql softdeleted-container list --location westus --account-name MyAccount --database-name MyDatabase --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb sql softdeleted-container show'] = """
+type: command
+short-summary: Show details of a soft-deleted container.
+examples:
+  - name: Show details of a soft-deleted container.
+    text: |
+      az cosmosdb sql softdeleted-container show --location westus --account-name MyAccount --database-name MyDatabase --name MyContainer --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb sql softdeleted-container delete'] = """
+type: command
+short-summary: Permanently delete a soft-deleted container.
+examples:
+  - name: Permanently delete a soft-deleted container.
+    text: |
+      az cosmosdb sql softdeleted-container delete --location westus --account-name MyAccount --database-name MyDatabase --name MyContainer --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb sql softdeleted-container recover'] = """
+type: command
+short-summary: Recover a soft-deleted container.
+examples:
+  - name: Recover a soft-deleted container.
+    text: |
+      az cosmosdb sql softdeleted-container recover --location westus --account-name MyAccount --database-name MyDatabase --name MyContainer --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb keys regenerate'] = """
+type: command
+short-summary: Regenerate an access key for a Azure Cosmos DB database account.
+parameters:
+  - name: --key-kind
+    short-summary: The access key to regenerate.
+  - name: --skip-safe-rotation
+    short-summary: Skip the account keys last usage check that blocks key regeneration when the key was recently used.
+examples:
+  - name: Regenerate an access key for a Azure Cosmos DB database account.
+    text: |
+      az cosmosdb keys regenerate --resource-group MyResourceGroup --name MyAccount --key-kind primary
+  - name: Regenerate an access key, skipping the account keys last usage check.
+    text: |
+      az cosmosdb keys regenerate --resource-group MyResourceGroup --name MyAccount --key-kind primary --skip-safe-rotation true
 """

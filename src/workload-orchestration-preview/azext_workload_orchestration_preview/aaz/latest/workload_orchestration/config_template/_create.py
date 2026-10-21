@@ -13,12 +13,12 @@ from azure.cli.core.azclierror import ValidationError
 import yaml
 
 @register_command(
-    "workload-orchestration config-template create",
+    "workload-orchestration-preview config-template create",
 )
 class Create(AAZCommand):
     """Create a Config Template Resource
     :example: Create a Config Template 
-        az workload-orchestration config-template create -g rg1 -n ct1 --description "test" --location eastus --version 1.0.0 --config-template-file config.yaml
+        az workload-orchestration-preview config-template create -g rg1 -n ct1 --description "test" --location eastus --version 1.0.0 --config-template-file config.yaml
     """
 
     _aaz_info = {

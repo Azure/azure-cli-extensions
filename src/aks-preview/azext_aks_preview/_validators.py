@@ -16,6 +16,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+    CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
@@ -40,6 +41,23 @@ logger = get_logger(__name__)
 
 def validate_ssh_key(namespace):
     if hasattr(namespace, 'no_ssh_key') and namespace.no_ssh_key:
+        return
+    # Automatic SKU clusters use a fully managed system node pool that rejects any SSH key
+    # configuration. Skip reading/generating an SSH key so users don't need --no-ssh-key.
+    if getattr(namespace, 'sku', None) is not None and \
+            namespace.sku.lower() == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+        # ssh_key_value defaults to "~/.ssh/id_rsa.pub" (expanded to an absolute path by
+        # the arg's file_type); only treat a non-default value as an explicit user request.
+        default_ssh_key_value = os.path.expanduser(os.path.join("~", ".ssh", "id_rsa.pub"))
+        explicit_ssh_key = (
+            namespace.ssh_key_value and
+            os.path.expanduser(namespace.ssh_key_value) != default_ssh_key_value
+        )
+        if namespace.generate_ssh_keys or explicit_ssh_key:
+            raise MutuallyExclusiveArgumentError(
+                'SSH key configuration is not supported for the Automatic SKU. '
+                'Do not specify "--ssh-key-value" or "--generate-ssh-keys" when using "--sku automatic".'
+            )
         return
     string_or_file = (namespace.ssh_key_value or
                       os.path.join(os.path.expanduser('~'), '.ssh', 'id_rsa.pub'))
@@ -201,21 +219,21 @@ def validate_resource_quota(namespace):
 
 
 def _validate_nodepool_name(nodepool_name):
-    """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
+    """Validates a nodepool name to be at most 39 characters, alphanumeric only."""
     if nodepool_name != "":
-        if len(nodepool_name) > 12:
-            raise InvalidArgumentValueError('--nodepool-name can contain at most 12 characters')
+        if len(nodepool_name) > 39:
+            raise InvalidArgumentValueError('--nodepool-name can contain at most 39 characters')
         if not nodepool_name.isalnum():
             raise InvalidArgumentValueError('--nodepool-name should contain only alphanumeric characters')
 
 
 def validate_nodepool_name(namespace):
-    """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
+    """Validates a nodepool name to be at most 39 characters, alphanumeric only."""
     _validate_nodepool_name(namespace.nodepool_name)
 
 
 def validate_agent_pool_name(namespace):
-    """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
+    """Validates a nodepool name to be at most 39 characters, alphanumeric only."""
     _validate_nodepool_name(namespace.agent_pool_name)
 
 
@@ -226,9 +244,11 @@ def validate_vm_set_type(namespace):
             return
         if namespace.vm_set_type.lower() != "availabilityset" and \
             namespace.vm_set_type.lower() != "virtualmachines" and \
-                namespace.vm_set_type.lower() != "virtualmachinescalesets":
+            namespace.vm_set_type.lower() != "virtualmachinescalesets" and \
+                namespace.vm_set_type.lower() != "flexnodes":
             raise CLIError(
-                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview)")
+                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet, "
+                "VirtualMachines(Preview), or FlexNodes(Preview)")
 
 
 def validate_load_balancer_sku(namespace):
@@ -356,6 +376,14 @@ def validate_apiserver_subnet_id(namespace):
     _validate_subnet_id(namespace.apiserver_subnet_id, "--apiserver-subnet-id")
 
 
+def validate_system_node_subnet_id(namespace):
+    _validate_subnet_id(namespace.system_node_subnet_id, "--system-node-subnet-id")
+
+
+def validate_node_subnet_id(namespace):
+    _validate_subnet_id(namespace.node_subnet_id, "--node-subnet-id")
+
+
 def _validate_subnet_id(subnet_id, name):
     if subnet_id is None or subnet_id == '':
         return
@@ -418,6 +446,14 @@ def validate_node_public_ip_prefix_ids(ns):
                 raise InvalidArgumentValueError(
                     f"'{prefix_id}' is not a valid Azure resource ID for --node-public-ip-prefix-ids."
                 )
+
+
+def validate_bastion_public_ip_id(namespace):
+    if namespace.bastion_public_ip is None or namespace.bastion_public_ip == '':
+        return
+    if not is_valid_resource_id(namespace.bastion_public_ip):
+        raise InvalidArgumentValueError(
+            "--bastion-public-ip is not a valid Azure resource ID.")
 
 
 def validate_nodepool_labels(namespace):
@@ -725,6 +761,13 @@ def validate_crg_id(namespace):
                 "--crg-id is not a valid Azure resource ID.")
 
 
+def validate_capacity_reservation_group(namespace):
+    if namespace.capacity_reservation_group:
+        if not is_valid_resource_id(namespace.capacity_reservation_group):
+            raise InvalidArgumentValueError(
+                "--capacity-reservation-group is not a valid Azure resource ID.")
+
+
 def validate_azure_keyvault_kms_key_id(namespace):
     key_id = namespace.azure_keyvault_kms_key_id
     if key_id:
@@ -813,6 +856,13 @@ def validate_force_upgrade_disable_and_enable_parameters(namespace):
     if namespace.disable_force_upgrade and namespace.enable_force_upgrade:
         raise MutuallyExclusiveArgumentError(
             'Providing both --disable-force-upgrade and --enable-force-upgrade flags is invalid'
+        )
+
+
+def validate_upgrade_gate_disable_and_enable_parameters(namespace):
+    if namespace.disable_upgrade_gate and namespace.enable_upgrade_gate:
+        raise MutuallyExclusiveArgumentError(
+            'Providing both --disable-upgrade-gate and --enable-upgrade-gate flags is invalid'
         )
 
 
@@ -941,6 +991,21 @@ def validate_start_time(namespace):
         raise InvalidArgumentValueError('--start-time must be in format "HH:mm". For example, "09:30" and "17:00".')
 
 
+def validate_duration_hours(namespace):
+    """Validates --duration for aks maintenancewindow / maintenanceconfiguration commands.
+
+    The RP enforces 4-24 hours; fail locally with a clear argparse error
+    instead of letting the user discover the constraint via an opaque
+    server-side 400.
+    """
+    if namespace.duration_hours is None:
+        return
+    if not isinstance(namespace.duration_hours, int) or namespace.duration_hours < 4 or namespace.duration_hours > 24:
+        raise InvalidArgumentValueError(
+            f'--duration must be an integer between 4 and 24 hours (inclusive). Got: {namespace.duration_hours}.'
+        )
+
+
 def validate_os_sku(namespace):
     os_sku = namespace.os_sku
     if os_sku in [CONST_OS_SKU_MARINER, CONST_OS_SKU_CBLMARINER]:
@@ -1062,23 +1127,30 @@ def validate_location_resource_group_cluster_parameters(namespace):
 
 
 def validate_opentelemetry_ports(namespace):
-    """Validate that OpenTelemetry metrics and logs ports don't conflict."""
-    metrics_port = getattr(namespace, 'opentelemetry_metrics_port', None)
-    logs_port = getattr(namespace, 'opentelemetry_logs_port', None)
-
-    # Check if both ports are specified and are the same
-    if metrics_port is not None and logs_port is not None and metrics_port == logs_port:
-        raise ArgumentUsageError(
-            "OpenTelemetry metrics port and logs port cannot be the same. "
-            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
-        )
+    """Validate that the OpenTelemetry HTTP and gRPC ports are in range and all distinct."""
+    ports = [
+        ("--opentelemetry-metrics-port-http", getattr(namespace, 'opentelemetry_metrics_port', None)),
+        ("--opentelemetry-metrics-port-grpc", getattr(namespace, 'opentelemetry_metrics_port_grpc', None)),
+        ("--opentelemetry-logs-traces-port-http", getattr(namespace, 'opentelemetry_logs_port', None)),
+        ("--opentelemetry-logs-traces-port-grpc", getattr(namespace, 'opentelemetry_logs_traces_port_grpc', None)),
+    ]
 
     # Validate port ranges
-    for port, port_name in [(metrics_port, 'metrics'), (logs_port, 'logs')]:
+    for flag, port in ports:
         if port is not None and not (1 <= port <= 65535):
             raise ArgumentUsageError(
-                f"OpenTelemetry {port_name} port must be between 1 and 65535, got {port}."
+                f"OpenTelemetry port {flag} must be between 1 and 65535, got {port}."
             )
+
+    # All specified OpenTelemetry ports (HTTP and gRPC, metrics and logs/traces) must be distinct
+    specified = [(flag, port) for flag, port in ports if port is not None]
+    for i in range(len(specified)):
+        for j in range(i + 1, len(specified)):
+            if specified[i][1] == specified[j][1]:
+                raise ArgumentUsageError(
+                    "OpenTelemetry ports must all be different. "
+                    f"{specified[i][0]} and {specified[j][0]} cannot both be set to {specified[i][1]}."
+                )
 
 
 def validate_opentelemetry_metrics_dependencies(namespace):
@@ -1131,7 +1203,7 @@ def validate_opentelemetry_logs_dependencies(namespace):
     # Check mutual exclusion
     if enable_otlp_logs and disable_otlp_logs:
         raise MutuallyExclusiveArgumentError(
-            "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+            "Cannot specify both --enable-opentelemetry-logs-traces and --disable-opentelemetry-logs-traces at the same time."
         )
 
     # Check if trying to enable OTLP logs without Azure Monitor
@@ -1156,16 +1228,48 @@ def validate_opentelemetry_logs_dependencies_for_update(namespace):
     # Check mutual exclusion
     if enable_otlp_logs and disable_otlp_logs:
         raise MutuallyExclusiveArgumentError(
-            "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+            "Cannot specify both --enable-opentelemetry-logs-traces and --disable-opentelemetry-logs-traces at the same time."
         )
     # For update operations, validation is deferred to the decorator where we have access
     # to the cluster's Azure Monitor profile
+
+
+def validate_opentelemetry_ports_not_disabled(namespace):
+    """Reject OpenTelemetry port flags that target a receiver being disabled.
+
+    The decorator's port getters enforce this too, but only after cleanup of the
+    Azure Monitor collection resources has already run. Validating here fails the
+    command before any destructive work happens.
+    """
+    metrics_disables = (
+        ("--disable-azure-monitor-metrics", "disable_azure_monitor_metrics"),
+        ("--disable-opentelemetry-metrics", "disable_opentelemetry_metrics"),
+    )
+    logs_traces_disables = (
+        ("--disable-azure-monitor-logs", "disable_azure_monitor_logs"),
+        ("--disable-opentelemetry-logs-traces", "disable_opentelemetry_logs"),
+    )
+    ports = (
+        ("--opentelemetry-metrics-port-http", "opentelemetry_metrics_port", metrics_disables),
+        ("--opentelemetry-metrics-port-grpc", "opentelemetry_metrics_port_grpc", metrics_disables),
+        ("--opentelemetry-logs-traces-port-http", "opentelemetry_logs_port", logs_traces_disables),
+        ("--opentelemetry-logs-traces-port-grpc", "opentelemetry_logs_traces_port_grpc", logs_traces_disables),
+    )
+    for port_flag, port_attr, disables in ports:
+        if getattr(namespace, port_attr, None) is None:
+            continue
+        for disable_flag, disable_attr in disables:
+            if getattr(namespace, disable_attr, False):
+                raise InvalidArgumentValueError(
+                    f"{port_flag} cannot be specified when {disable_flag} is used."
+                )
 
 
 def validate_azure_monitor_and_opentelemetry_for_create(namespace):
     """Main validator for Azure Monitor and OpenTelemetry configurations for create operations."""
     # Run all OpenTelemetry-related validations
     validate_opentelemetry_ports(namespace)
+    validate_opentelemetry_ports_not_disabled(namespace)
     validate_opentelemetry_metrics_dependencies(namespace)
     validate_opentelemetry_logs_dependencies(namespace)
 
@@ -1174,8 +1278,27 @@ def validate_azure_monitor_and_opentelemetry_for_update(namespace):
     """Main validator for Azure Monitor and OpenTelemetry configurations for update operations."""
     # Run all OpenTelemetry-related validations
     validate_opentelemetry_ports(namespace)
+    validate_opentelemetry_ports_not_disabled(namespace)
     validate_opentelemetry_metrics_dependencies_for_update(namespace)
     validate_opentelemetry_logs_dependencies_for_update(namespace)
+
+
+def _reject_msi_auth_flag_with_azure_monitor_logs(namespace, explicit_values):
+    """Reject --enable-msi-auth-for-monitoring alongside --enable-azure-monitor-logs.
+
+    Onboarding through the Azure Monitor profile is managed identity only, so the auth flag has no
+    meaning there. ``explicit_values`` differs by command because the flag's default does: it is
+    ``True`` on create, where only an explicit ``false`` is distinguishable from the default, and
+    ``None`` on update, where any value is explicit.
+    """
+    if not getattr(namespace, "enable_azure_monitor_logs", False):
+        return
+    if getattr(namespace, "enable_msi_auth_for_monitoring", None) in explicit_values:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify both '--enable-azure-monitor-logs' and "
+            "'--enable-msi-auth-for-monitoring'. '--enable-azure-monitor-logs' onboards through "
+            "the Azure Monitor profile, which always uses managed identity authentication."
+        )
 
 
 def validate_azure_monitor_logs_and_enable_addons(namespace):
@@ -1187,6 +1310,8 @@ def validate_azure_monitor_logs_and_enable_addons(namespace):
                     "Cannot specify both '--enable-azure-monitor-logs' and '--enable-addons monitoring'. "
                     "Use either '--enable-azure-monitor-logs' or '--enable-addons monitoring'."
                 )
+    # On create the flag defaults to True, so only an explicit false is detectable here.
+    _reject_msi_auth_flag_with_azure_monitor_logs(namespace, (False,))
 
 
 def validate_azure_monitor_logs_enable_disable(namespace):
@@ -1197,6 +1322,61 @@ def validate_azure_monitor_logs_enable_disable(namespace):
             "Cannot specify both '--enable-azure-monitor-logs' and '--disable-azure-monitor-logs'. "
             "Use either '--enable-azure-monitor-logs' or '--disable-azure-monitor-logs'."
         )
+    # On update the flag defaults to None, so any value is an explicit use.
+    _reject_msi_auth_flag_with_azure_monitor_logs(namespace, (True, False))
+
+
+def _specified_container_insights_setting_flags(namespace):
+    """Return the AMP containerInsights tuning flags explicitly present on the command line."""
+    flags = []
+    if getattr(namespace, 'syslog_port', None) is not None:
+        flags.append("--syslog-port")
+    if getattr(namespace, 'enable_prometheus_metrics_scraping', False):
+        flags.append("--enable-prometheus-metrics-scraping")
+    if getattr(namespace, 'disable_prometheus_metrics_scraping', False):
+        flags.append("--disable-prometheus-metrics-scraping")
+    return flags
+
+
+def _validate_container_insights_settings_common(namespace):
+    """Validations for the containerInsights tuning flags that do not depend on cluster state."""
+    if (getattr(namespace, 'enable_prometheus_metrics_scraping', False) and
+            getattr(namespace, 'disable_prometheus_metrics_scraping', False)):
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify both --enable-prometheus-metrics-scraping and "
+            "--disable-prometheus-metrics-scraping at the same time."
+        )
+
+    syslog_port = getattr(namespace, 'syslog_port', None)
+    if syslog_port is not None and not 1 <= syslog_port <= 65535:
+        raise InvalidArgumentValueError(
+            f"--syslog-port must be a valid TCP port between 1 and 65535, got {syslog_port}."
+        )
+
+    flags = _specified_container_insights_setting_flags(namespace)
+    if flags and getattr(namespace, 'disable_azure_monitor_logs', False):
+        raise ArgumentUsageError(
+            f"{', '.join(flags)} cannot be specified with --disable-azure-monitor-logs."
+        )
+
+
+def validate_container_insights_settings_for_create(namespace):
+    """Validate the containerInsights tuning flags for create operations."""
+    _validate_container_insights_settings_common(namespace)
+
+    flags = _specified_container_insights_setting_flags(namespace)
+    if flags and not getattr(namespace, 'enable_azure_monitor_logs', False):
+        raise ArgumentUsageError(
+            f"{', '.join(flags)} requires Azure Monitor logs to be enabled. "
+            "Please add --enable-azure-monitor-logs to your command."
+        )
+
+
+def validate_container_insights_settings_for_update(namespace):
+    """Validate the containerInsights tuning flags for update operations."""
+    _validate_container_insights_settings_common(namespace)
+    # Whether Azure Monitor logs is already enabled on the cluster is only visible once the
+    # ManagedCluster has been fetched, so that dependency check is deferred to the decorator.
 
 
 def validate_nat_gateway_managed_outbound_ipv6_count(namespace):
@@ -1210,26 +1390,74 @@ def validate_nat_gateway_managed_outbound_ipv6_count(namespace):
             )
 
 
-def validate_nat_gateway_v2_params(namespace):
-    """Validate that V2-only NAT gateway params require managedNATGatewayV2.
+def _reject_legacy_managed_nat_gateway_v2(namespace):
+    """Reject the retired ``managedNATGatewayV2`` outbound type value.
 
-    On update, --outbound-type may not be specified if the cluster is already V2.
-    Only reject when --outbound-type is explicitly set to a non-V2 value.
+    This extension targets the GA-aligned api-version, where NAT Gateway V2 is expressed as
+    ``--outbound-type managedNATGateway --outbound-type-sku StandardV2`` and the legacy
+    ``managedNATGatewayV2`` string is rejected by the server. Fail fast locally with an actionable
+    message instead of surfacing the RP's 400.
     """
+    if getattr(namespace, 'outbound_type', None) == 'managedNATGatewayV2':
+        raise InvalidArgumentValueError(
+            "--outbound-type managedNATGatewayV2 is no longer supported. "
+            "Use --outbound-type managedNATGateway --outbound-type-sku StandardV2 instead."
+        )
+
+
+def validate_nat_gateway_v2_params(namespace):
+    """Validate V2-only NAT gateway params on create.
+
+    V2-only params (managed IPv6 count, BYO outbound IPs / IP prefixes) drive building a NAT gateway
+    profile and require the managed NAT gateway outbound type with the StandardV2 SKU
+    (``--outbound-type managedNATGateway --outbound-type-sku StandardV2``); the Standard (V1) SKU
+    cannot carry them. On create --outbound-type must be set explicitly to managedNATGateway;
+    omitting it defaults the cluster to loadBalancer and produces an incompatible request.
+    """
+    _reject_legacy_managed_nat_gateway_v2(namespace)
     v2_params = [
         getattr(namespace, 'nat_gateway_managed_outbound_ipv6_count', None),
         getattr(namespace, 'nat_gateway_outbound_ip_ids', None),
         getattr(namespace, 'nat_gateway_outbound_ip_prefix_ids', None),
     ]
-    if any(p is not None for p in v2_params):
-        outbound_type = getattr(namespace, 'outbound_type', None)
-        if outbound_type is not None and outbound_type != 'managedNATGatewayV2':
-            raise InvalidArgumentValueError(
-                "--nat-gateway-managed-outbound-ipv6-count, "
-                "--nat-gateway-outbound-ips, and "
-                "--nat-gateway-outbound-ip-prefixes are only "
-                "valid with --outbound-type managedNATGatewayV2."
-            )
+    if not any(p is not None for p in v2_params):
+        return
+    outbound_type = getattr(namespace, 'outbound_type', None)
+    sku = getattr(namespace, 'nat_gateway_sku', None)
+    if outbound_type != 'managedNATGateway' or sku == 'Standard':
+        raise InvalidArgumentValueError(
+            "--nat-gateway-managed-outbound-ipv6-count, "
+            "--nat-gateway-outbound-ips, and "
+            "--nat-gateway-outbound-ip-prefixes are only valid with "
+            "--outbound-type managedNATGateway and --outbound-type-sku StandardV2; "
+            "specify --outbound-type managedNATGateway explicitly."
+        )
+
+
+def validate_nat_gateway_v2_params_for_update(namespace):
+    """Validate V2-only NAT gateway params on update.
+
+    Unlike create, --outbound-type may be omitted when the cluster is already managed NAT gateway;
+    only an explicit non-managed-NAT-gateway outbound type or the Standard SKU is rejected here. The
+    update decorator additionally verifies the cluster's existing outbound type.
+    """
+    _reject_legacy_managed_nat_gateway_v2(namespace)
+    v2_params = [
+        getattr(namespace, 'nat_gateway_managed_outbound_ipv6_count', None),
+        getattr(namespace, 'nat_gateway_outbound_ip_ids', None),
+        getattr(namespace, 'nat_gateway_outbound_ip_prefix_ids', None),
+    ]
+    if not any(p is not None for p in v2_params):
+        return
+    outbound_type = getattr(namespace, 'outbound_type', None)
+    sku = getattr(namespace, 'nat_gateway_sku', None)
+    if (outbound_type is not None and outbound_type != 'managedNATGateway') or sku == 'Standard':
+        raise InvalidArgumentValueError(
+            "--nat-gateway-managed-outbound-ipv6-count, "
+            "--nat-gateway-outbound-ips, and "
+            "--nat-gateway-outbound-ip-prefixes are only valid with "
+            "--outbound-type managedNATGateway and --outbound-type-sku StandardV2."
+        )
 
 
 def validate_prepared_image_specification_id(namespace):
@@ -1247,3 +1475,61 @@ def validate_prepared_image_specification_id(namespace):
                 "--prepared-image-specification-id must be a resource ID of type "
                 "Microsoft.ContainerService/preparedImageSpecifications/versions."
             )
+
+
+def validate_outbound_type_sku(namespace):
+    """Validate --outbound-type-sku on create (managed NAT gateway SKU).
+
+    The SKU only applies to the managed NAT gateway outbound type and, on create, drives building a
+    NAT gateway profile. --outbound-type must therefore be set explicitly to managedNATGateway;
+    omitting it defaults the cluster to loadBalancer and produces an incompatible request. Region
+    availability and downgrade (StandardV2 -> Standard) rules are enforced server-side by the RP.
+    """
+    sku = getattr(namespace, 'nat_gateway_sku', None)
+    if sku is None:
+        return
+    outbound_type = getattr(namespace, 'outbound_type', None)
+    if outbound_type != 'managedNATGateway':
+        raise InvalidArgumentValueError(
+            "--outbound-type-sku is only valid with --outbound-type managedNATGateway; "
+            "specify --outbound-type managedNATGateway explicitly."
+        )
+
+
+def validate_outbound_type_sku_for_update(namespace):
+    """Validate --outbound-type-sku on update (managed NAT gateway SKU).
+
+    Unlike create, --outbound-type may be omitted when the cluster is already managed NAT gateway;
+    only an explicit non-managed-NAT-gateway outbound type is rejected.
+    """
+    sku = getattr(namespace, 'nat_gateway_sku', None)
+    if sku is None:
+        return
+    outbound_type = getattr(namespace, 'outbound_type', None)
+    if outbound_type is not None and outbound_type != 'managedNATGateway':
+        raise InvalidArgumentValueError(
+            "--outbound-type-sku is only valid with --outbound-type managedNATGateway."
+        )
+
+
+def validate_action_group_id(namespace):
+    """Validate that --action-group-id refers to a Microsoft.Insights/actionGroups resource.
+
+    An unset or empty value is allowed: the RP accepts an empty actionGroupId, and the CLI
+    always sends the key so the required-property contract is satisfied.
+    """
+    action_group_id = getattr(namespace, "action_group_id", None)
+    if not action_group_id:
+        return
+    if not is_valid_resource_id(action_group_id):
+        raise InvalidArgumentValueError(
+            f"--action-group-id is not a valid Azure resource ID: {action_group_id}"
+        )
+    parsed = parse_resource_id(action_group_id)
+    provider_namespace = (parsed.get("namespace") or "").lower()
+    resource_type = (parsed.get("type") or "").lower()
+    if provider_namespace != "microsoft.insights" or resource_type != "actiongroups":
+        raise InvalidArgumentValueError(
+            "--action-group-id must reference a Microsoft.Insights/actionGroups resource, "
+            f"got: {action_group_id}"
+        )

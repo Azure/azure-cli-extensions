@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets", "2026-04-01-preview"],
         ]
     }
 
@@ -126,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -188,6 +188,9 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.batch_mode = AAZBoolType(
+                serialized_name="batchMode",
+            )
             properties.deployment_status = AAZStrType(
                 serialized_name="deploymentStatus",
                 flags={"read_only": True},
@@ -200,6 +203,785 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.rules = AAZListType()
+
+            rules = cls._schema_on_200.value.Element.properties.rules
+            rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.rules.Element
+            _element.actions = AAZListType()
+            _element.conditions = AAZListType()
+            _element.match_processing_behavior = AAZStrType(
+                serialized_name="matchProcessingBehavior",
+            )
+            _element.order = AAZIntType()
+            _element.rule_name = AAZStrType(
+                serialized_name="ruleName",
+                flags={"required": True},
+            )
+            _element.rule_set_name = AAZStrType(
+                serialized_name="ruleSetName",
+                flags={"read_only": True},
+            )
+
+            actions = cls._schema_on_200.value.Element.properties.rules.Element.actions
+            actions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+
+            disc_afd_url_signing = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "AfdUrlSigning")
+            disc_afd_url_signing.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "AfdUrlSigning").parameters
+            parameters.algorithm = AAZStrType()
+            parameters.key_group_reference = AAZObjectType(
+                serialized_name="keyGroupReference",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_resource_reference_read(parameters.key_group_reference)
+            parameters.parameter_name_override = AAZListType(
+                serialized_name="parameterNameOverride",
+            )
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            parameter_name_override = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "AfdUrlSigning").parameters.parameter_name_override
+            parameter_name_override.Element = AAZObjectType()
+            _ListHelper._build_schema_url_signing_param_identifier_read(parameter_name_override.Element)
+
+            disc_cache_expiration = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "CacheExpiration")
+            disc_cache_expiration.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "CacheExpiration").parameters
+            parameters.cache_behavior = AAZStrType(
+                serialized_name="cacheBehavior",
+                flags={"required": True},
+            )
+            parameters.cache_duration = AAZStrType(
+                serialized_name="cacheDuration",
+                nullable=True,
+            )
+            parameters.cache_type = AAZStrType(
+                serialized_name="cacheType",
+                flags={"required": True},
+            )
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            disc_cache_key_query_string = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "CacheKeyQueryString")
+            disc_cache_key_query_string.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "CacheKeyQueryString").parameters
+            parameters.query_parameters = AAZStrType(
+                serialized_name="queryParameters",
+                nullable=True,
+            )
+            parameters.query_string_behavior = AAZStrType(
+                serialized_name="queryStringBehavior",
+                flags={"required": True},
+            )
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            disc_edge_action = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "EdgeAction")
+            disc_edge_action.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "EdgeAction").parameters
+            parameters.edge_action_reference = AAZObjectType(
+                serialized_name="edgeActionReference",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_resource_reference_read(parameters.edge_action_reference)
+            parameters.invocation_point = AAZStrType(
+                serialized_name="invocationPoint",
+                flags={"required": True},
+            )
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            disc_modify_request_header = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "ModifyRequestHeader")
+            disc_modify_request_header.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_header_action_parameters_read(disc_modify_request_header.parameters)
+
+            disc_modify_response_header = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "ModifyResponseHeader")
+            disc_modify_response_header.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_header_action_parameters_read(disc_modify_response_header.parameters)
+
+            disc_origin_group_override = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "OriginGroupOverride")
+            disc_origin_group_override.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "OriginGroupOverride").parameters
+            parameters.origin_group = AAZObjectType(
+                serialized_name="originGroup",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_resource_reference_read(parameters.origin_group)
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            disc_route_configuration_override = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "RouteConfigurationOverride")
+            disc_route_configuration_override.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "RouteConfigurationOverride").parameters
+            parameters.cache_configuration = AAZObjectType(
+                serialized_name="cacheConfiguration",
+            )
+            parameters.origin_group_override = AAZObjectType(
+                serialized_name="originGroupOverride",
+            )
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            cache_configuration = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "RouteConfigurationOverride").parameters.cache_configuration
+            cache_configuration.cache_behavior = AAZStrType(
+                serialized_name="cacheBehavior",
+            )
+            cache_configuration.cache_duration = AAZStrType(
+                serialized_name="cacheDuration",
+            )
+            cache_configuration.is_compression_enabled = AAZStrType(
+                serialized_name="isCompressionEnabled",
+            )
+            cache_configuration.query_parameters = AAZStrType(
+                serialized_name="queryParameters",
+            )
+            cache_configuration.query_string_caching_behavior = AAZStrType(
+                serialized_name="queryStringCachingBehavior",
+            )
+
+            origin_group_override = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "RouteConfigurationOverride").parameters.origin_group_override
+            origin_group_override.forwarding_protocol = AAZStrType(
+                serialized_name="forwardingProtocol",
+            )
+            origin_group_override.origin_group = AAZObjectType(
+                serialized_name="originGroup",
+            )
+            _ListHelper._build_schema_resource_reference_read(origin_group_override.origin_group)
+
+            disc_url_redirect = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "UrlRedirect")
+            disc_url_redirect.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "UrlRedirect").parameters
+            parameters.custom_fragment = AAZStrType(
+                serialized_name="customFragment",
+            )
+            parameters.custom_hostname = AAZStrType(
+                serialized_name="customHostname",
+            )
+            parameters.custom_path = AAZStrType(
+                serialized_name="customPath",
+            )
+            parameters.custom_query_string = AAZStrType(
+                serialized_name="customQueryString",
+            )
+            parameters.destination_protocol = AAZStrType(
+                serialized_name="destinationProtocol",
+            )
+            parameters.redirect_type = AAZStrType(
+                serialized_name="redirectType",
+                flags={"required": True},
+            )
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            disc_url_rewrite = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "UrlRewrite")
+            disc_url_rewrite.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "UrlRewrite").parameters
+            parameters.destination = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.preserve_unmatched_path = AAZBoolType(
+                serialized_name="preserveUnmatchedPath",
+            )
+            parameters.source_pattern = AAZStrType(
+                serialized_name="sourcePattern",
+                flags={"required": True},
+            )
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            disc_url_signing = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "UrlSigning")
+            disc_url_signing.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "UrlSigning").parameters
+            parameters.algorithm = AAZStrType()
+            parameters.parameter_name_override = AAZListType(
+                serialized_name="parameterNameOverride",
+            )
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            parameter_name_override = cls._schema_on_200.value.Element.properties.rules.Element.actions.Element.discriminate_by("name", "UrlSigning").parameters.parameter_name_override
+            parameter_name_override.Element = AAZObjectType()
+            _ListHelper._build_schema_url_signing_param_identifier_read(parameter_name_override.Element)
+
+            conditions = cls._schema_on_200.value.Element.properties.rules.Element.conditions
+            conditions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+
+            disc_client_port = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "ClientPort")
+            disc_client_port.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "ClientPort").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "ClientPort").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "ClientPort").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_cookies = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "Cookies")
+            disc_cookies.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "Cookies").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.selector = AAZStrType()
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "Cookies").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "Cookies").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_host_name = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "HostName")
+            disc_host_name.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "HostName").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "HostName").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "HostName").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_http_version = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "HttpVersion")
+            disc_http_version.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "HttpVersion").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "HttpVersion").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "HttpVersion").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_is_device = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "IsDevice")
+            disc_is_device.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "IsDevice").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "IsDevice").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "IsDevice").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_post_args = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "PostArgs")
+            disc_post_args.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "PostArgs").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.selector = AAZStrType()
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "PostArgs").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "PostArgs").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_query_string = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "QueryString")
+            disc_query_string.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "QueryString").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "QueryString").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "QueryString").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_remote_address = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RemoteAddress")
+            disc_remote_address.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RemoteAddress").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RemoteAddress").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RemoteAddress").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_request_body = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestBody")
+            disc_request_body.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestBody").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestBody").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestBody").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_request_header = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestHeader")
+            disc_request_header.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestHeader").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.selector = AAZStrType()
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestHeader").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestHeader").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_request_method = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestMethod")
+            disc_request_method.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestMethod").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestMethod").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestMethod").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_request_scheme = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestScheme")
+            disc_request_scheme.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestScheme").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestScheme").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestScheme").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_request_uri = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestUri")
+            disc_request_uri.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestUri").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestUri").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "RequestUri").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_server_port = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "ServerPort")
+            disc_server_port.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "ServerPort").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "ServerPort").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "ServerPort").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_socket_addr = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "SocketAddr")
+            disc_socket_addr.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "SocketAddr").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "SocketAddr").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "SocketAddr").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_ssl_protocol = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "SslProtocol")
+            disc_ssl_protocol.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "SslProtocol").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "SslProtocol").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "SslProtocol").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_url_file_extension = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "UrlFileExtension")
+            disc_url_file_extension.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "UrlFileExtension").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "UrlFileExtension").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "UrlFileExtension").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_url_file_name = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "UrlFileName")
+            disc_url_file_name.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "UrlFileName").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "UrlFileName").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "UrlFileName").parameters.transforms
+            transforms.Element = AAZStrType()
+
+            disc_url_path = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "UrlPath")
+            disc_url_path.parameters = AAZObjectType(
+                flags={"required": True},
+            )
+
+            parameters = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "UrlPath").parameters
+            parameters.match_values = AAZListType(
+                serialized_name="matchValues",
+            )
+            parameters.negate_condition = AAZBoolType(
+                serialized_name="negateCondition",
+            )
+            parameters.operator = AAZStrType(
+                flags={"required": True},
+            )
+            parameters.transforms = AAZListType()
+            parameters.type_name = AAZStrType(
+                serialized_name="typeName",
+                flags={"required": True},
+            )
+
+            match_values = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "UrlPath").parameters.match_values
+            match_values.Element = AAZStrType()
+
+            transforms = cls._schema_on_200.value.Element.properties.rules.Element.conditions.Element.discriminate_by("name", "UrlPath").parameters.transforms
+            transforms.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -226,6 +1008,78 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_header_action_parameters_read = None
+
+    @classmethod
+    def _build_schema_header_action_parameters_read(cls, _schema):
+        if cls._schema_header_action_parameters_read is not None:
+            _schema.header_action = cls._schema_header_action_parameters_read.header_action
+            _schema.header_name = cls._schema_header_action_parameters_read.header_name
+            _schema.type_name = cls._schema_header_action_parameters_read.type_name
+            _schema.value = cls._schema_header_action_parameters_read.value
+            return
+
+        cls._schema_header_action_parameters_read = _schema_header_action_parameters_read = AAZObjectType()
+
+        header_action_parameters_read = _schema_header_action_parameters_read
+        header_action_parameters_read.header_action = AAZStrType(
+            serialized_name="headerAction",
+            flags={"required": True},
+        )
+        header_action_parameters_read.header_name = AAZStrType(
+            serialized_name="headerName",
+            flags={"required": True},
+        )
+        header_action_parameters_read.type_name = AAZStrType(
+            serialized_name="typeName",
+            flags={"required": True},
+        )
+        header_action_parameters_read.value = AAZStrType()
+
+        _schema.header_action = cls._schema_header_action_parameters_read.header_action
+        _schema.header_name = cls._schema_header_action_parameters_read.header_name
+        _schema.type_name = cls._schema_header_action_parameters_read.type_name
+        _schema.value = cls._schema_header_action_parameters_read.value
+
+    _schema_resource_reference_read = None
+
+    @classmethod
+    def _build_schema_resource_reference_read(cls, _schema):
+        if cls._schema_resource_reference_read is not None:
+            _schema.id = cls._schema_resource_reference_read.id
+            return
+
+        cls._schema_resource_reference_read = _schema_resource_reference_read = AAZObjectType()
+
+        resource_reference_read = _schema_resource_reference_read
+        resource_reference_read.id = AAZStrType()
+
+        _schema.id = cls._schema_resource_reference_read.id
+
+    _schema_url_signing_param_identifier_read = None
+
+    @classmethod
+    def _build_schema_url_signing_param_identifier_read(cls, _schema):
+        if cls._schema_url_signing_param_identifier_read is not None:
+            _schema.param_indicator = cls._schema_url_signing_param_identifier_read.param_indicator
+            _schema.param_name = cls._schema_url_signing_param_identifier_read.param_name
+            return
+
+        cls._schema_url_signing_param_identifier_read = _schema_url_signing_param_identifier_read = AAZObjectType()
+
+        url_signing_param_identifier_read = _schema_url_signing_param_identifier_read
+        url_signing_param_identifier_read.param_indicator = AAZStrType(
+            serialized_name="paramIndicator",
+            flags={"required": True},
+        )
+        url_signing_param_identifier_read.param_name = AAZStrType(
+            serialized_name="paramName",
+            flags={"required": True},
+        )
+
+        _schema.param_indicator = cls._schema_url_signing_param_identifier_read.param_indicator
+        _schema.param_name = cls._schema_url_signing_param_identifier_read.param_name
 
 
 __all__ = ["List"]

@@ -31,8 +31,10 @@ from azext_cosmosdb_preview._validators import (
     validate_mongoMI_role_definition_id,
     validate_mongoMI_role_assignment_id,
     validate_fleetspace_body,
+    validate_fleetspace_create_body,
     validate_fleetspaceAccount_body,
-    validate_fleet_analytics_body)
+    validate_fleet_analytics_body,
+    validate_soft_delete_configuration)
 
 from azext_cosmosdb_preview.actions import (
     CreateGremlinDatabaseRestoreResource,
@@ -55,6 +57,7 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     BackupStorageRedundancy,
     CapacityMode,
     ContinuousTier,
+    KeyKind,
     DefaultPriorityLevel)
 
 from azure.cli.core.util import shell_safe_json_parse
@@ -211,10 +214,20 @@ FLEETSPACE_PROPERTIES_EXAMPLE = """--body "{
 }"
 """
 
+FLEETSPACE_UPDATE_PROPERTIES_EXAMPLE = """--body "{
+    \\"properties\\": {
+        \\"throughputPoolConfiguration\\": {
+            \\"minThroughput\\": 100000,
+            \\"maxThroughput\\": 300000
+        }
+    }
+}"
+"""
+
 FLEETSPACE_ACCOUNT_PROPERTIES_EXAMPLE = """--body "{
     \\"properties\\": {
         \\"globalDatabaseAccountProperties\\": {
-            \\"resourceId\\": \\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.DocumentDB/databaseAccounts/example-account\\",
+            \\"resourceId\\": \\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.DocumentDB/databaseAccounts/myaccount\\",
             \\"armLocation\\": \\"East US\\"
         }
     }
@@ -434,6 +447,10 @@ def load_arguments(self, _):
         c.argument('account_name', arg_type=name_type, help='Name of the Cosmos DB database account', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')
         c.argument('database_id', options_list=['--db-name', '-d'], help='Database Name')
 
+    with self.argument_context('cosmosdb keys regenerate') as c:
+        c.argument('key_kind', arg_type=get_enum_type(KeyKind), help="The access key to regenerate.")
+        c.argument('skip_account_keys_last_usage_check', options_list=['--skip-safe-rotation'], arg_type=get_three_state_flag(), is_preview=True, help="Skip the account keys last usage check that blocks key regeneration when the key was recently used.")
+
     # CosmosDB account create with gremlin and tables to restore
     with self.argument_context('cosmosdb create') as c:
         c.argument('account_name', completer=None)
@@ -447,6 +464,7 @@ def load_arguments(self, _):
         c.argument('gremlin_databases_to_restore', nargs='+', action=CreateGremlinDatabaseRestoreResource, is_preview=True, arg_group='Restore')
         c.argument('tables_to_restore', nargs='+', action=CreateTableRestoreResource, is_preview=True, arg_group='Restore')
         c.argument('enable_partition_merge', arg_type=get_three_state_flag(), is_preview=True, help="Flag to enable partition merge on the account.")
+        c.argument('disable_local_auth', arg_type=get_three_state_flag(), help="Flag to disable local authentication and ensure only MSI and AAD can be used exclusively for authentication.")
 
     for scope in ['cosmosdb create', 'cosmosdb update']:
         with self.argument_context(scope) as c:
@@ -486,6 +504,7 @@ def load_arguments(self, _):
 
     with self.argument_context('cosmosdb update') as c:
         c.argument('key_uri', help="The URI of the key vault", is_preview=True)
+        c.argument('soft_delete_configuration', options_list=['--soft-delete-config'], validator=validate_soft_delete_configuration, completer=FilesCompleter(), help="Soft delete configuration for the account, as a JSON string or a path to a JSON file, e.g. --soft-delete-config @soft-delete-config.json. Supported keys: softDeletionEnabled (bool), softDeleteRetentionPeriodInMinutes (int) and minMinutesBeforePermanentDeletionAllowed (int).", is_preview=True, arg_group='Soft Delete')
 
     with self.argument_context('cosmosdb restore') as c:
         c.argument('target_database_account_name', options_list=['--target-database-account-name', '-n'], help='Name of the new target Cosmos DB database account after the restore')
@@ -500,6 +519,7 @@ def load_arguments(self, _):
         c.argument('public_network_access', options_list=['--public-network-access', '-p'], arg_type=get_enum_type(['ENABLED', 'DISABLED']), help="Sets public network access in server to either Enabled or Disabled.")
         c.argument('source_backup_location', help="This is the location of the source account where backups are located. Provide this value if the source and target are in different locations.", is_preview=True)
         c.argument('disable_ttl', options_list=['--disable-ttl'], arg_type=get_three_state_flag(), help="Enable or disable restoring with ttl disabled.", is_preview=True)
+        c.argument('disable_local_auth', arg_type=get_three_state_flag(), help="Flag to disable local authentication and ensure only MSI and AAD can be used exclusively for authentication.")
 
     # Restorable Database Accounts
     with self.argument_context('cosmosdb restorable-database-account show') as c:
@@ -829,6 +849,78 @@ def load_arguments(self, _):
         c.argument('scope', options_list=['--scope', '-s'], help="Data plane resource path at which this Role Assignment is being granted.")
         c.argument('principal_id', options_list=['--principal-id', '-p'], help="AAD Object ID of the principal to which this Role Assignment is being granted.")
 
+    # Soft-deleted Account
+    with self.argument_context('cosmosdb softdeleted-account list') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the soft-deleted accounts.", required=True)
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'], help="Name of the resource group. If provided, lists only soft-deleted accounts in that resource group.", required=False)
+
+    with self.argument_context('cosmosdb softdeleted-account show') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the soft-deleted account.", required=True)
+        c.argument('account_name', options_list=['--name', '-n'], help="Name of the soft-deleted Cosmos DB account.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb softdeleted-account delete') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the soft-deleted account.", required=True)
+        c.argument('account_name', options_list=['--name', '-n'], help="Name of the soft-deleted Cosmos DB account to purge.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb softdeleted-account recover') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the soft-deleted account.", required=True)
+        c.argument('account_name', options_list=['--name', '-n'], help="Name of the soft-deleted Cosmos DB account to recover.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    # Soft-deleted Database
+    with self.argument_context('cosmosdb sql softdeleted-database list') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb sql softdeleted-database show') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('database_name', options_list=['--name', '-n'], help="Name of the soft-deleted database.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb sql softdeleted-database delete') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('database_name', options_list=['--name', '-n'], help="Name of the soft-deleted database to purge.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb sql softdeleted-database recover') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('database_name', options_list=['--name', '-n'], help="Name of the soft-deleted database to recover.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    # Soft-deleted Collection
+    with self.argument_context('cosmosdb sql softdeleted-container list') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('database_name', options_list=['--database-name', '-d'], help="Name of the database.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb sql softdeleted-container show') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('database_name', options_list=['--database-name', '-d'], help="Name of the database.", required=True)
+        c.argument('container_name', options_list=['--name', '-n'], help="Name of the soft-deleted container.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb sql softdeleted-container delete') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('database_name', options_list=['--database-name', '-d'], help="Name of the database.", required=True)
+        c.argument('container_name', options_list=['--name', '-n'], help="Name of the soft-deleted container to purge.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb sql softdeleted-container recover') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('database_name', options_list=['--database-name', '-d'], help="Name of the database.", required=True)
+        c.argument('container_name', options_list=['--name', '-n'], help="Name of the soft-deleted container to recover.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
     # Cosmos DB Fleet
     with self.argument_context('cosmosdb fleet') as c:
         c.argument('resource_group', options_list=['--resource-group', '-g'], help='Name of the resource group.', required=True)
@@ -854,17 +946,17 @@ def load_arguments(self, _):
         c.argument('fleetspace_name', options_list=['--fleetspace-name', '-n'], help='Name of the Fleetspace resource.', required=True)
 
     with self.argument_context('cosmosdb fleetspace create') as c:
-        c.argument('fleetspace_body', options_list=['--body', '-b'], validator=validate_fleetspace_body, completer=FilesCompleter(), help="Fleetspace body with properties.serviceTier (required), properties.dataRegions (required), and properties.throughputPoolConfiguration (fields: minThroughput, maxThroughput). You can enter it as a string or as a file, e.g., --body @fleetspace.json or " + FLEETSPACE_PROPERTIES_EXAMPLE)
+        c.argument('fleetspace_body', options_list=['--body', '-b'], validator=validate_fleetspace_create_body, completer=FilesCompleter(), help="NoSQL fleetspace JSON body with required properties.serviceTier and nonempty properties.dataRegions. Omit throughputPoolConfiguration, or use null or {}, for non-pooled creation. Pooled creation requires positive integer minThroughput and maxThroughput, with max >= min; additional limits are service-configured. Use inline JSON or --body @fleetspace.json. Example: " + FLEETSPACE_PROPERTIES_EXAMPLE)
 
     with self.argument_context('cosmosdb fleetspace update') as c:
-        c.argument('fleetspace_body', options_list=['--body', '-b'], validator=validate_fleetspace_body, completer=FilesCompleter(), help="Fleetspace body with properties.serviceTier (optional), properties.dataRegions (optional), and properties.throughputPoolConfiguration (fields: minThroughput, maxThroughput). You can enter it as a string or as a file, e.g., --body @fleetspace.json or " + FLEETSPACE_PROPERTIES_EXAMPLE)
+        c.argument('fleetspace_body', options_list=['--body', '-b'], validator=validate_fleetspace_body, completer=FilesCompleter(), help="Fleetspace JSON body requiring properties.throughputPoolConfiguration with both positive integer minThroughput and maxThroughput, with max >= min. Additional limits are service-configured. Partial updates and omitted/null/empty configurations are not supported. serviceTier and dataRegions are creation settings and cannot change existing settings. Use inline JSON or --body @fleetspace.json. Example: " + FLEETSPACE_UPDATE_PROPERTIES_EXAMPLE)
 
     # Cosmos DB Fleetspace account
     with self.argument_context('cosmosdb fleetspace account') as c:
         c.argument('resource_group', options_list=['--resource-group', '-g'], help='Name of the resource group.', required=True)
         c.argument('fleet_name', options_list=['--fleet-name'], help='Name of the Cosmos DB Fleet.', required=True)
         c.argument('fleetspace_name', options_list=['--fleetspace-name'], help='Name of the Fleetspace resource.', required=True)
-        c.argument('fleetspace_account_name', options_list=['--fleetspace-account-name', '-n'], help='Name of the Fleetspace Account resource.', required=True)
+        c.argument('fleetspace_account_name', options_list=['--fleetspace-account-name', '-n'], help='Database account name from resourceId (case-insensitive match), not an association alias.', required=True)
 
     with self.argument_context('cosmosdb fleetspace account create') as c:
-        c.argument('fleetspace_account_body', options_list=['--body', '-b'], validator=validate_fleetspaceAccount_body, completer=FilesCompleter(), help="Fleetspace Account body with properties.globalDatabaseAccountProperties (fields: armLocation, resourceId). You can enter it as a string or as a file, e.g., --body @fleetspaceAccount.json or " + FLEETSPACE_ACCOUNT_PROPERTIES_EXAMPLE)
+        c.argument('fleetspace_account_body', options_list=['--body', '-b'], validator=validate_fleetspaceAccount_body, completer=FilesCompleter(), help="Fleetspace Account JSON body with properties.globalDatabaseAccountProperties: resourceId must identify a Cosmos DB database account; armLocation is required and nonblank, but the service derives the authoritative account location. Use inline JSON or --body @fleetspaceAccount.json. Example: " + FLEETSPACE_ACCOUNT_PROPERTIES_EXAMPLE)

@@ -223,7 +223,7 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
         test.kwargs.update({
             'dataSourceType': 'AzureDataLakeStorage',
             'sourceDataStore': 'VaultStore',
-            'backupInstanceName': 'adlsblobsourcesa-adlsblobsourcesa-14964441-c754-42b8-81f7-f4c552d836d6',
+            'backupInstanceName': 'adlsblobsourcesa-adlsblobsourcesa-04333524-8a6f-4fe7-b231-0dca79191f44',
             'dataSourceName': 'adlsblobsourcesa',
             'dataSourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/dataprotectionpstest-rg/providers/Microsoft.Storage/storageAccounts/adlsblobsourcesa',
             'restoreLocation': 'eastus',

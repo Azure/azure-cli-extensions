@@ -13,17 +13,17 @@ from azure.cli.core.azclierror import CLIInternalError
 from .._config_helper import ConfigurationHelper
 
 @register_command(
-    "workload-orchestration configuration schema show",
+    "workload-orchestration-preview configuration schema show",
     is_preview=False,
 )
 class Show(AAZCommand):
     """Show the schema placeholder for a configuration template or solution template
     :example: Show schema for a Configuration Template
-              az workload-orchestration configuration schema show --template-rg rg1 --template-name template1 --version 1.0.0
+              az workload-orchestration-preview configuration schema show --template-rg rg1 --template-name template1 --version 1.0.0
     :example: Show schema for a Solution Template
-              az workload-orchestration configuration schema show --template-rg rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
+              az workload-orchestration-preview configuration schema show --template-rg rg1 --template-name solutionTemplate1 --version 1.0.0 --solution
     :example: Show schema for a template in different subscription
-              az workload-orchestration configuration schema show --template-subscription sub1 --template-rg rg1 --template-name template1 --version 1.0.0
+              az workload-orchestration-preview configuration schema show --template-subscription sub1 --template-rg rg1 --template-name template1 --version 1.0.0
     """
 
     _aaz_info = {

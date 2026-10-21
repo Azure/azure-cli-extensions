@@ -2,6 +2,30 @@
 
 Release History
 ===============
+
+1.13.0
+++++++
+* ``az dataprotection backup-vault create/update``: Added ``--cost-management-granularity`` (alias ``--cost-granularity``) to configure vault cost management settings. Supported values are ``VaultLevel``, ``ProtectedItemLevel``, and ``ProtectedItemWithParentTag``; vault creation defaults to ``VaultLevel``.
+
+1.12.0
+++++++
+* Added dataprotection support for the AzureElasticSAN (Elastic SAN volume group) workload: new manifest (Microsoft.ElasticSan/elasticSans/volumeGroups), registration in supported datasource types and datasource map. New backup configuration via ``az dataprotection backup-instance initialize-backupconfig --datasource-type AzureElasticSAN --resource-selectors`` (GenericBackupDatasourceParameters) and restore configuration via ``az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureElasticSAN --resource-identifiers/--resource-name-overrides`` (GenericRestoreDatasourceCriteria), with data-recovery and item-recovery restore wiring plus help/examples. The AzureElasticSAN backup-instance operations are pinned to the GA 2026-06-01 DataProtection API, which defines GenericBackupDatasourceParameters/GenericRestoreDatasourceCriteria natively.
+
+1.11.5
+++++++
+* `az dataprotection enable-backup trigger`: Fixed AKS backup vault discovery to scope the lookup to `backupResourceGroupId` instead of the whole subscription, preventing concurrent enable-backup runs from racing over a shared, tag-matched vault. Also wait for a newly created vault's `provisioningState` to reach a terminal state before proceeding.
+
+1.11.4
+++++++
+* `az dataprotection enable-backup trigger`: Specify `ServicePrincipal` when creating role assignments for AKS managed identities.
+
+1.11.3
+++++++++++++++++
+* [Breaking] `az dataprotection backup-policy retention-rule set` validates against duplicate retention-rule names. AzureBlob: OperationalStore retention lifecycles must now use the retention rule name `--name Default_OperationalStore`. Using `--name Default` with an OperationalStore lifecycle for AzureBlobis no longer accepted. 
+1.11.2
+++++++
+* `az dataprotection enable-backup trigger`: Auto-install the `k8s-extension` CLI extension when enabling AKS backup if it is not already installed.
+
 1.11.1
 ++++++
 * Fixed `az dataprotection backup-instance update-msi-permissions --datasource-type AzureCosmosDB --operation Restore` erroring with "Set permissions for restore is currently not supported for given DataSourceType". The command now correctly assigns `Cosmos DB Operator` on the target Cosmos DB account to the backup vault's managed identity. Added live regression test `test_dataprotection_update_msi_permissions_cosmosdb_restore`.
@@ -11,7 +35,7 @@ Release History
 * Added dataprotection support for AzureCosmosDB workload: new manifest (Microsoft.DocumentDB/databaseAccounts), registration in supported datasource types, datasource map, and permission help text. Added end-to-end backup/restore scenario test, unit tests for default policy template, backup-instance initialize, and restore initialize, and an update-msi-permissions live test that grants Reader/Cosmos DB Operator on the data source RG / account.
 
 1.10.0
-++++++
++++++
 * Bumped API version to 2026-03-01 for backup-instance create, update, validate-for-backup, and validate-for-update commands.
 * `az dataprotection backup-instance initialize-backupconfig`: New parameters `--auto-protection` and `--exclusion-prefixes` to enable automatic protection of new blob containers for AzureBlob and AzureDataLakeStorage datasource types, with optional exclusion rules by container name prefix.
 

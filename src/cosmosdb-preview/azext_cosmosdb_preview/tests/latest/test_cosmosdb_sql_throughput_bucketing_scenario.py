@@ -4,12 +4,14 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class Cosmosdb_throughputBucketingTest(ScenarioTest):
 
+    # Runs against a pre-existing account with the feature flag enabled; not recordable in CI, so run live only.
+    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_thoughput_bucketing', location='australiaeast')
     def test_cosmosdb_sql_throughput_bucketing(self, resource_group):
         col = self.create_random_name(prefix='cli', length=15)

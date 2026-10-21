@@ -105,6 +105,29 @@ class TestSubnetId(unittest.TestCase):
         validators._validate_subnet_id("", "something")
 
 
+class TestBastionPublicIpId(unittest.TestCase):
+    def test_accepts_empty_or_valid_resource_id(self):
+        values = [
+            None,
+            "",
+            "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Network/publicIPAddresses/ip",
+        ]
+        for value in values:
+            with self.subTest(value=value):
+                validators.validate_bastion_public_ip_id(
+                    SimpleNamespace(bastion_public_ip=value)
+                )
+
+    def test_rejects_invalid_resource_id(self):
+        with self.assertRaisesRegex(
+            InvalidArgumentValueError,
+            "--bastion-public-ip is not a valid Azure resource ID.",
+        ):
+            validators.validate_bastion_public_ip_id(
+                SimpleNamespace(bastion_public_ip="not-a-resource-id")
+            )
+
+
 class MaxSurgeNamespace:
     def __init__(self, max_surge):
         self.max_surge = max_surge
@@ -792,19 +815,19 @@ class TestValidateNodepoolName(unittest.TestCase):
     def test_invalid_nodepool_name_too_long(self):
         namespace = SimpleNamespace(
             **{
-                "nodepool_name": "tooLongNodepoolName",
+                "nodepool_name": "a" * 40,
             }
         )
-        with self.assertRaises(InvalidArgumentValueError):
+        with self.assertRaisesRegex(InvalidArgumentValueError, "at most 39 characters"):
             validators.validate_nodepool_name(namespace)
 
     def test_invalid_agent_pool_name_too_long(self):
         namespace = SimpleNamespace(
             **{
-                "agent_pool_name": "tooLongNodepoolName",
+                "agent_pool_name": "a" * 40,
             }
         )
-        with self.assertRaises(InvalidArgumentValueError):
+        with self.assertRaisesRegex(InvalidArgumentValueError, "at most 39 characters"):
             validators.validate_agent_pool_name(namespace)
 
     def test_invalid_nodepool_name_not_alnum(self):
@@ -841,6 +864,30 @@ class TestValidateNodepoolName(unittest.TestCase):
         )
         validators.validate_agent_pool_name(namespace)
 
+    def test_valid_nodepool_name_length_boundaries(self):
+        for length in (12, 13, 39):
+            with self.subTest(length=length):
+                namespace = SimpleNamespace(nodepool_name="a" * length)
+                validators.validate_nodepool_name(namespace)
+
+    def test_valid_agent_pool_name_length_boundaries(self):
+        for length in (12, 13, 39):
+            with self.subTest(length=length):
+                namespace = SimpleNamespace(agent_pool_name="a" * length)
+                validators.validate_agent_pool_name(namespace)
+
+    def test_valid_empty_nodepool_name(self):
+        validators.validate_nodepool_name(SimpleNamespace(nodepool_name=""))
+
+    def test_valid_empty_agent_pool_name(self):
+        validators.validate_agent_pool_name(SimpleNamespace(agent_pool_name=""))
+
+
+class TestValidateVMSetType(unittest.TestCase):
+    def test_accepts_flexnodes(self):
+        namespace = SimpleNamespace(vm_set_type="flexnodes")
+
+        validators.validate_vm_set_type(namespace)
 
 class TestValidateAllowedHostPorts(unittest.TestCase):
     def test_invalid_allowed_host_ports(self):
@@ -1972,6 +2019,221 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         self.assertEqual(str(cm.exception), err)
 
 
+class TestValidateEnableDistributedAccelerator(unittest.TestCase):
+    def test_enable_distributed_accelerator(self):
+        acstor_validator.validate_enable_distributed_accelerator_params(
+            acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
+            False, None, None, None, None, None, None, None, None,
+        )
+
+    def test_enable_when_already_installed(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_distributed_accelerator_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
+                True, None, None, None, None, None, None, None, None,
+            )
+        err = (
+            'Cannot enable distributed accelerator as it is already enabled on the cluster.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_combined_with_other_type(self):
+        other_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        storage_types = [acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR, other_type]
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_distributed_accelerator_params(
+                storage_types, False, None, None, None, None, None, None, None, None,
+            )
+        err = (
+            f"'{acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR}' cannot be combined with other storage "
+            f"options ('{other_type}'). Distributed accelerator is enabled independently. "
+            f"Please run --enable-azure-container-storage {acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR} "
+            "on its own."
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_storage_pool_name(self):
+        storage_pool_name = "valid-name"
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_distributed_accelerator_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
+                False, storage_pool_name, None, None, None, None, None, None, None,
+            )
+        err = (
+            '--storage-pool-name cannot be used with '
+            '--enable-azure-container-storage distributedAccelerator. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_nodepool_list(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_distributed_accelerator_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
+                False, None, None, None, None, None, None, "pool1", None,
+            )
+        err = (
+            '--azure-container-storage-nodepools cannot be used with '
+            '--enable-azure-container-storage distributedAccelerator. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_container_storage_version(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_distributed_accelerator_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
+                False, None, None, None, None, None, None, None, "1",
+            )
+        err = (
+            '--container-storage-version cannot be used with '
+            '--enable-azure-container-storage distributedAccelerator. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+
+class TestValidateDisableDistributedAccelerator(unittest.TestCase):
+    def test_disable_distributed_accelerator(self):
+        acstor_validator.validate_disable_distributed_accelerator_params(
+            acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
+            True, None, None, None, None, None, None, None, None,
+        )
+
+    def test_disable_when_not_installed(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_distributed_accelerator_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
+                False, None, None, None, None, None, None, None, None,
+            )
+        err = (
+            'Cannot disable distributed accelerator as it could not be found on the cluster.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_combined_with_other_type(self):
+        other_type = acstor_consts.CONST_ACSTOR_ALL
+        storage_types = [acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR, other_type]
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_distributed_accelerator_params(
+                storage_types, True, None, None, None, None, None, None, None, None,
+            )
+        err = (
+            f"'{acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR}' cannot be combined with other storage "
+            f"options ('{other_type}'). Distributed accelerator is disabled independently. "
+            f"Please run --disable-azure-container-storage {acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR} "
+            "on its own."
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_with_storage_pool_name(self):
+        storage_pool_name = "valid-name"
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_distributed_accelerator_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
+                True, storage_pool_name, None, None, None, None, None, None, None,
+            )
+        err = (
+            '--storage-pool-name cannot be used with '
+            '--disable-azure-container-storage distributedAccelerator. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_with_ephemeral_disk_volume_type(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_distributed_accelerator_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
+                True, None, None, None, None, "EphemeralVolumeOnly", None, None, None,
+            )
+        err = (
+            '--ephemeral-disk-volume-type cannot be used with '
+            '--disable-azure-container-storage distributedAccelerator. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_with_ephemeral_disk_nvme_perf_tier(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_distributed_accelerator_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
+                True, None, None, None, None, None, "Premium", None, None,
+            )
+        err = (
+            '--ephemeral-disk-nvme-perf-tier cannot be used with '
+            '--disable-azure-container-storage distributedAccelerator. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_with_nodepool_list(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_distributed_accelerator_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
+                True, None, None, None, None, None, None, "pool1", None,
+            )
+        err = (
+            '--azure-container-storage-nodepools cannot be used with '
+            '--disable-azure-container-storage distributedAccelerator. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_with_container_storage_version(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_distributed_accelerator_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_DISTRIBUTED_ACCELERATOR,
+                True, None, None, None, None, None, None, None, "1",
+            )
+        err = (
+            '--container-storage-version cannot be used with '
+            '--disable-azure-container-storage distributedAccelerator. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+
+class TestValidateDisableAllDistributedAccelerator(unittest.TestCase):
+    def test_disable_all_no_params(self):
+        acstor_validator.validate_disable_all_distributed_accelerator_params(
+            None, None, None, None, None, None, None, None,
+        )
+
+    def test_disable_all_with_storage_pool_name(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_all_distributed_accelerator_params(
+                "bogus", None, None, None, None, None, None, None,
+            )
+        err = (
+            '--storage-pool-name cannot be used with '
+            '--disable-azure-container-storage on a distributed accelerator cluster. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_all_with_nodepool_list(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_all_distributed_accelerator_params(
+                None, None, None, None, None, None, "pool1", None,
+            )
+        err = (
+            '--azure-container-storage-nodepools cannot be used with '
+            '--disable-azure-container-storage on a distributed accelerator cluster. '
+            'Distributed accelerator does not require or support any storage pool configuration. '
+            'Please remove these parameters and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+
 class GatewayPrefixSizeSpace:
     def __init__(self, gateway_prefix_size=None, mode=None):
         self.gateway_prefix_size = gateway_prefix_size
@@ -2037,9 +2299,12 @@ class TestValidateCustomEndpoints(unittest.TestCase):
 
 
 class OpenTelemetryPortsNamespace:
-    def __init__(self, opentelemetry_metrics_port=None, opentelemetry_logs_port=None):
+    def __init__(self, opentelemetry_metrics_port=None, opentelemetry_logs_port=None,
+                 opentelemetry_metrics_port_grpc=None, opentelemetry_logs_traces_port_grpc=None):
         self.opentelemetry_metrics_port = opentelemetry_metrics_port
         self.opentelemetry_logs_port = opentelemetry_logs_port
+        self.opentelemetry_metrics_port_grpc = opentelemetry_metrics_port_grpc
+        self.opentelemetry_logs_traces_port_grpc = opentelemetry_logs_traces_port_grpc
 
 
 class TestValidateOpenTelemetryPorts(unittest.TestCase):
@@ -2063,14 +2328,52 @@ class TestValidateOpenTelemetryPorts(unittest.TestCase):
         )
         validators.validate_opentelemetry_ports(namespace)
 
-    def test_same_ports_throws_error(self):
+    def test_all_four_distinct_ports_specified(self):
+        namespace = OpenTelemetryPortsNamespace(
+            opentelemetry_metrics_port=8080,
+            opentelemetry_metrics_port_grpc=8081,
+            opentelemetry_logs_port=8082,
+            opentelemetry_logs_traces_port_grpc=8083,
+        )
+        validators.validate_opentelemetry_ports(namespace)
+
+    def test_same_http_ports_throws_error(self):
         namespace = OpenTelemetryPortsNamespace(
             opentelemetry_metrics_port=8080,
             opentelemetry_logs_port=8080
         )
         err = (
-            "OpenTelemetry metrics port and logs port cannot be the same. "
-            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+            "OpenTelemetry ports must all be different. "
+            "--opentelemetry-metrics-port-http and --opentelemetry-logs-traces-port-http "
+            "cannot both be set to 8080."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_same_metrics_http_and_grpc_throws_error(self):
+        namespace = OpenTelemetryPortsNamespace(
+            opentelemetry_metrics_port=8080,
+            opentelemetry_metrics_port_grpc=8080,
+        )
+        err = (
+            "OpenTelemetry ports must all be different. "
+            "--opentelemetry-metrics-port-http and --opentelemetry-metrics-port-grpc "
+            "cannot both be set to 8080."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_same_grpc_ports_throws_error(self):
+        namespace = OpenTelemetryPortsNamespace(
+            opentelemetry_metrics_port_grpc=9090,
+            opentelemetry_logs_traces_port_grpc=9090,
+        )
+        err = (
+            "OpenTelemetry ports must all be different. "
+            "--opentelemetry-metrics-port-grpc and --opentelemetry-logs-traces-port-grpc "
+            "cannot both be set to 9090."
         )
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_opentelemetry_ports(namespace)
@@ -2078,28 +2381,42 @@ class TestValidateOpenTelemetryPorts(unittest.TestCase):
 
     def test_metrics_port_below_range(self):
         namespace = OpenTelemetryPortsNamespace(opentelemetry_metrics_port=0)
-        err = "OpenTelemetry metrics port must be between 1 and 65535, got 0."
+        err = "OpenTelemetry port --opentelemetry-metrics-port-http must be between 1 and 65535, got 0."
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_opentelemetry_ports(namespace)
         self.assertEqual(str(cm.exception), err)
 
     def test_metrics_port_above_range(self):
         namespace = OpenTelemetryPortsNamespace(opentelemetry_metrics_port=65536)
-        err = "OpenTelemetry metrics port must be between 1 and 65535, got 65536."
+        err = "OpenTelemetry port --opentelemetry-metrics-port-http must be between 1 and 65535, got 65536."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_metrics_grpc_port_above_range(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_metrics_port_grpc=70000)
+        err = "OpenTelemetry port --opentelemetry-metrics-port-grpc must be between 1 and 65535, got 70000."
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_opentelemetry_ports(namespace)
         self.assertEqual(str(cm.exception), err)
 
     def test_logs_port_below_range(self):
         namespace = OpenTelemetryPortsNamespace(opentelemetry_logs_port=-1)
-        err = "OpenTelemetry logs port must be between 1 and 65535, got -1."
+        err = "OpenTelemetry port --opentelemetry-logs-traces-port-http must be between 1 and 65535, got -1."
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_opentelemetry_ports(namespace)
         self.assertEqual(str(cm.exception), err)
 
     def test_logs_port_above_range(self):
         namespace = OpenTelemetryPortsNamespace(opentelemetry_logs_port=100000)
-        err = "OpenTelemetry logs port must be between 1 and 65535, got 100000."
+        err = "OpenTelemetry port --opentelemetry-logs-traces-port-http must be between 1 and 65535, got 100000."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_logs_grpc_port_below_range(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_logs_traces_port_grpc=0)
+        err = "OpenTelemetry port --opentelemetry-logs-traces-port-grpc must be between 1 and 65535, got 0."
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_opentelemetry_ports(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -2111,6 +2428,7 @@ class TestValidateOpenTelemetryPorts(unittest.TestCase):
             opentelemetry_logs_port=65535
         )
         validators.validate_opentelemetry_ports(namespace)
+
 
 
 class OpenTelemetryMetricsDependenciesNamespace:
@@ -2220,7 +2538,7 @@ class TestValidateOpenTelemetryLogsDependencies(unittest.TestCase):
             enable_opentelemetry_logs=True,
             disable_opentelemetry_logs=True
         )
-        err = "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        err = "Cannot specify both --enable-opentelemetry-logs-traces and --disable-opentelemetry-logs-traces at the same time."
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             validators.validate_opentelemetry_logs_dependencies(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -2258,7 +2576,7 @@ class TestValidateOpenTelemetryLogsDependenciesForUpdate(unittest.TestCase):
             enable_opentelemetry_logs=True,
             disable_opentelemetry_logs=True
         )
-        err = "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        err = "Cannot specify both --enable-opentelemetry-logs-traces and --disable-opentelemetry-logs-traces at the same time."
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             validators.validate_opentelemetry_logs_dependencies_for_update(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -2269,7 +2587,8 @@ class AzureMonitorAndOpenTelemetryNamespace:
                  enable_opentelemetry_logs=False, disable_opentelemetry_logs=False,
                  enable_azure_monitor_metrics=False, enable_azuremonitormetrics=False,
                  enable_azure_monitor_logs=False,
-                 opentelemetry_metrics_port=None, opentelemetry_logs_port=None):
+                 opentelemetry_metrics_port=None, opentelemetry_logs_port=None,
+                 opentelemetry_metrics_port_grpc=None, opentelemetry_logs_traces_port_grpc=None):
         self.enable_opentelemetry_metrics = enable_opentelemetry_metrics
         self.disable_opentelemetry_metrics = disable_opentelemetry_metrics
         self.enable_opentelemetry_logs = enable_opentelemetry_logs
@@ -2279,6 +2598,8 @@ class AzureMonitorAndOpenTelemetryNamespace:
         self.enable_azure_monitor_logs = enable_azure_monitor_logs
         self.opentelemetry_metrics_port = opentelemetry_metrics_port
         self.opentelemetry_logs_port = opentelemetry_logs_port
+        self.opentelemetry_metrics_port_grpc = opentelemetry_metrics_port_grpc
+        self.opentelemetry_logs_traces_port_grpc = opentelemetry_logs_traces_port_grpc
 
 
 class TestValidateAzureMonitorAndOpenTelemetryForCreate(unittest.TestCase):
@@ -2302,8 +2623,9 @@ class TestValidateAzureMonitorAndOpenTelemetryForCreate(unittest.TestCase):
             opentelemetry_logs_port=8080
         )
         err = (
-            "OpenTelemetry metrics port and logs port cannot be the same. "
-            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+            "OpenTelemetry ports must all be different. "
+            "--opentelemetry-metrics-port-http and --opentelemetry-logs-traces-port-http "
+            "cannot both be set to 8080."
         )
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_azure_monitor_and_opentelemetry_for_create(namespace)
@@ -2352,8 +2674,9 @@ class TestValidateAzureMonitorAndOpenTelemetryForUpdate(unittest.TestCase):
             opentelemetry_logs_port=8080
         )
         err = (
-            "OpenTelemetry metrics port and logs port cannot be the same. "
-            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+            "OpenTelemetry ports must all be different. "
+            "--opentelemetry-metrics-port-http and --opentelemetry-logs-traces-port-http "
+            "cannot both be set to 8080."
         )
         with self.assertRaises(ArgumentUsageError) as cm:
             validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
@@ -2374,7 +2697,7 @@ class TestValidateAzureMonitorAndOpenTelemetryForUpdate(unittest.TestCase):
             enable_opentelemetry_logs=True,
             disable_opentelemetry_logs=True
         )
-        err = "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        err = "Cannot specify both --enable-opentelemetry-logs-traces and --disable-opentelemetry-logs-traces at the same time."
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -2447,6 +2770,76 @@ class TestValidateAzureMonitorLogsEnableDisable(unittest.TestCase):
         namespace.disable_azure_monitor_logs = False
         
         # Should not raise an exception
+        validators.validate_azure_monitor_logs_enable_disable(namespace)
+
+
+class TestRejectMsiAuthFlagWithAzureMonitorLogs(unittest.TestCase):
+    """--enable-msi-auth-for-monitoring is meaningless alongside --enable-azure-monitor-logs.
+
+    Onboarding through the Azure Monitor profile is managed identity only. The flag's default
+    differs by command, so what counts as an explicit use differs too: on create it defaults to
+    True and only an explicit false is detectable, while on update it defaults to None so any
+    value is explicit.
+    """
+
+    ERR = (
+        "Cannot specify both '--enable-azure-monitor-logs' and "
+        "'--enable-msi-auth-for-monitoring'. '--enable-azure-monitor-logs' onboards through "
+        "the Azure Monitor profile, which always uses managed identity authentication."
+    )
+
+    @staticmethod
+    def _create_ns(**kwargs):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.enable_addons = None
+        for key, value in kwargs.items():
+            setattr(namespace, key, value)
+        return namespace
+
+    @staticmethod
+    def _update_ns(**kwargs):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.disable_azure_monitor_logs = False
+        for key, value in kwargs.items():
+            setattr(namespace, key, value)
+        return namespace
+
+    def test_create_rejects_explicit_false(self):
+        namespace = self._create_ns(enable_msi_auth_for_monitoring=False)
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+        self.assertEqual(str(cm.exception), self.ERR)
+
+    def test_create_allows_the_default(self):
+        # True is the create default, so it is indistinguishable from the flag being omitted
+        namespace = self._create_ns(enable_msi_auth_for_monitoring=True)
+        validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+
+    def test_update_rejects_both_explicit_values(self):
+        for value in (True, False):
+            namespace = self._update_ns(enable_msi_auth_for_monitoring=value)
+            with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+                validators.validate_azure_monitor_logs_enable_disable(namespace)
+            self.assertEqual(str(cm.exception), self.ERR)
+
+    def test_update_allows_the_flag_being_omitted(self):
+        namespace = self._update_ns(enable_msi_auth_for_monitoring=None)
+        validators.validate_azure_monitor_logs_enable_disable(namespace)
+
+    def test_flag_is_allowed_without_azure_monitor_logs(self):
+        # --enable-msi-auth-for-monitoring remains valid on its own, for the addon route
+        namespace = self._update_ns(
+            enable_azure_monitor_logs=False, enable_msi_auth_for_monitoring=True
+        )
+        validators.validate_azure_monitor_logs_enable_disable(namespace)
+
+    def test_missing_attribute_is_tolerated(self):
+        # the namespace of a command that does not define the flag at all must not raise
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.disable_azure_monitor_logs = False
         validators.validate_azure_monitor_logs_enable_disable(namespace)
 
 
@@ -2642,6 +3035,263 @@ class TestAzureMonitorLogsParameters(unittest.TestCase):
         
         with self.assertRaises(ArgumentUsageError):
             validators.validate_opentelemetry_logs_dependencies(namespace)
+
+
+class TestValidateSshKey(unittest.TestCase):
+    def test_skip_for_automatic_sku(self):
+        # Default ssh_key_value (expanded like the CLI does) should be treated as
+        # "not explicitly provided" and skipped without error.
+        default_key = os.path.expanduser(os.path.join("~", ".ssh", "id_rsa.pub"))
+        namespace = SimpleNamespace(
+            no_ssh_key=False,
+            generate_ssh_keys=False,
+            ssh_key_value=default_key,
+            sku="automatic",
+        )
+        validators.validate_ssh_key(namespace)
+        self.assertEqual(namespace.ssh_key_value, default_key)
+
+    def test_skip_for_automatic_sku_case_insensitive(self):
+        default_key = os.path.expanduser(os.path.join("~", ".ssh", "id_rsa.pub"))
+        namespace = SimpleNamespace(
+            no_ssh_key=False,
+            generate_ssh_keys=False,
+            ssh_key_value=default_key,
+            sku="Automatic",
+        )
+        validators.validate_ssh_key(namespace)
+        self.assertEqual(namespace.ssh_key_value, default_key)
+
+    def test_automatic_sku_with_generate_ssh_keys_errors(self):
+        namespace = SimpleNamespace(
+            no_ssh_key=False,
+            generate_ssh_keys=True,
+            ssh_key_value="~/.ssh/id_rsa.pub",
+            sku="automatic",
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            validators.validate_ssh_key(namespace)
+
+    def test_automatic_sku_with_explicit_ssh_key_value_errors(self):
+        namespace = SimpleNamespace(
+            no_ssh_key=False,
+            generate_ssh_keys=False,
+            ssh_key_value="ssh-rsa AAAAB3NzaC1yc2Euser@host",
+            sku="automatic",
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            validators.validate_ssh_key(namespace)
+
+    def test_no_ssh_key_still_skips(self):
+        namespace = SimpleNamespace(
+            no_ssh_key=True,
+            generate_ssh_keys=False,
+            ssh_key_value=None,
+            sku="base",
+        )
+        validators.validate_ssh_key(namespace)
+        self.assertIsNone(namespace.ssh_key_value)
+
+
+class TestValidateOsSku(unittest.TestCase):
+    def test_nodepool_update_allows_windows2022_and_windows2025(self):
+        # `az aks nodepool update --os-sku` allows in-place upgrades between
+        # Windows Server 2022 and 2025.
+        from azext_aks_preview._params import node_os_skus_update
+
+        self.assertIn("Windows2022", node_os_skus_update)
+        self.assertIn("Windows2025", node_os_skus_update)
+
+
+class ContainerInsightsSettingsNamespace(SimpleNamespace):
+    """Namespace for the containerInsights tuning flags, with CLI defaults."""
+
+    def __init__(self, **kwargs):
+        defaults = {
+            "syslog_port": None,
+            "enable_prometheus_metrics_scraping": False,
+            "disable_prometheus_metrics_scraping": False,
+            "enable_azure_monitor_logs": False,
+            "disable_azure_monitor_logs": False,
+        }
+        defaults.update(kwargs)
+        super().__init__(**defaults)
+
+
+class TestValidateContainerInsightsSettings(unittest.TestCase):
+    def test_no_flags_is_valid(self):
+        namespace = ContainerInsightsSettingsNamespace()
+        validators.validate_container_insights_settings_for_create(namespace)
+        validators.validate_container_insights_settings_for_update(namespace)
+
+    def test_scraping_flags_are_mutually_exclusive(self):
+        namespace = ContainerInsightsSettingsNamespace(
+            enable_prometheus_metrics_scraping=True,
+            disable_prometheus_metrics_scraping=True,
+            enable_azure_monitor_logs=True,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            validators.validate_container_insights_settings_for_create(namespace)
+
+    def test_syslog_port_out_of_range(self):
+        for bad_port in (0, -1, 65536):
+            namespace = ContainerInsightsSettingsNamespace(
+                syslog_port=bad_port, enable_azure_monitor_logs=True
+            )
+            with self.assertRaises(InvalidArgumentValueError):
+                validators.validate_container_insights_settings_for_create(namespace)
+
+    def test_syslog_port_boundaries_are_valid(self):
+        for port in (1, 28330, 65535):
+            namespace = ContainerInsightsSettingsNamespace(
+                syslog_port=port, enable_azure_monitor_logs=True
+            )
+            validators.validate_container_insights_settings_for_create(namespace)
+
+    def test_create_requires_enable_azure_monitor_logs(self):
+        # Without the AMP profile these flags would be silently dropped, so fail fast.
+        namespace = ContainerInsightsSettingsNamespace(syslog_port=28331)
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_container_insights_settings_for_create(namespace)
+        self.assertIn("--syslog-port", str(cm.exception))
+        self.assertIn("--enable-azure-monitor-logs", str(cm.exception))
+
+    def test_create_lists_every_specified_flag_in_the_error(self):
+        namespace = ContainerInsightsSettingsNamespace(
+            syslog_port=28331, disable_prometheus_metrics_scraping=True
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_container_insights_settings_for_create(namespace)
+        self.assertIn("--syslog-port", str(cm.exception))
+        self.assertIn("--disable-prometheus-metrics-scraping", str(cm.exception))
+
+    def test_update_defers_dependency_check_to_the_decorator(self):
+        # On update the cluster may already have Azure Monitor logs enabled, which the namespace
+        # validator cannot see, so it must not reject the flag on its own.
+        namespace = ContainerInsightsSettingsNamespace(syslog_port=29000)
+        validators.validate_container_insights_settings_for_update(namespace)
+
+    def test_conflicts_with_disable_azure_monitor_logs(self):
+        namespace = ContainerInsightsSettingsNamespace(
+            syslog_port=29000, disable_azure_monitor_logs=True
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_container_insights_settings_for_update(namespace)
+        self.assertIn("--disable-azure-monitor-logs", str(cm.exception))
+
+
+class TestOpenTelemetryPortsNotDisabled(unittest.TestCase):
+    """A port flag naming a receiver that is being disabled must be rejected at validation time.
+
+    The decorator's port getters catch this too, but only after the Azure Monitor collection
+    resources have already been deleted, so the command fails with the cluster half torn down.
+    """
+
+    PORT_DISABLE_COMBOS = [
+        ("opentelemetry_metrics_port", "--opentelemetry-metrics-port-http",
+         "disable_azure_monitor_metrics", "--disable-azure-monitor-metrics"),
+        ("opentelemetry_metrics_port", "--opentelemetry-metrics-port-http",
+         "disable_opentelemetry_metrics", "--disable-opentelemetry-metrics"),
+        ("opentelemetry_metrics_port_grpc", "--opentelemetry-metrics-port-grpc",
+         "disable_azure_monitor_metrics", "--disable-azure-monitor-metrics"),
+        ("opentelemetry_metrics_port_grpc", "--opentelemetry-metrics-port-grpc",
+         "disable_opentelemetry_metrics", "--disable-opentelemetry-metrics"),
+        ("opentelemetry_logs_port", "--opentelemetry-logs-traces-port-http",
+         "disable_azure_monitor_logs", "--disable-azure-monitor-logs"),
+        ("opentelemetry_logs_port", "--opentelemetry-logs-traces-port-http",
+         "disable_opentelemetry_logs", "--disable-opentelemetry-logs-traces"),
+        ("opentelemetry_logs_traces_port_grpc", "--opentelemetry-logs-traces-port-grpc",
+         "disable_azure_monitor_logs", "--disable-azure-monitor-logs"),
+        ("opentelemetry_logs_traces_port_grpc", "--opentelemetry-logs-traces-port-grpc",
+         "disable_opentelemetry_logs", "--disable-opentelemetry-logs-traces"),
+    ]
+
+    @staticmethod
+    def _namespace(**kwargs):
+        defaults = {
+            "opentelemetry_metrics_port": None,
+            "opentelemetry_metrics_port_grpc": None,
+            "opentelemetry_logs_port": None,
+            "opentelemetry_logs_traces_port_grpc": None,
+            "disable_azure_monitor_metrics": False,
+            "disable_azure_monitor_logs": False,
+            "disable_opentelemetry_metrics": False,
+            "disable_opentelemetry_logs": False,
+            "enable_azure_monitor_metrics": False,
+            "enable_azure_monitor_logs": False,
+            "enable_opentelemetry_metrics": False,
+            "enable_opentelemetry_logs": False,
+            "enable_addons": None,
+        }
+        defaults.update(kwargs)
+        return SimpleNamespace(**defaults)
+
+    def test_port_with_matching_disable_rejected(self):
+        for port_attr, port_flag, disable_attr, disable_flag in self.PORT_DISABLE_COMBOS:
+            with self.subTest(port=port_flag, disable=disable_flag):
+                namespace = self._namespace(**{port_attr: 4318, disable_attr: True})
+                with self.assertRaises(InvalidArgumentValueError) as cm:
+                    validators.validate_opentelemetry_ports_not_disabled(namespace)
+                self.assertIn(port_flag, str(cm.exception))
+                self.assertIn(disable_flag, str(cm.exception))
+
+    def test_port_with_unrelated_disable_allowed(self):
+        # Disabling metrics must not reject a logs/traces port, and vice versa.
+        namespace = self._namespace(
+            opentelemetry_logs_port=4318,
+            disable_azure_monitor_metrics=True,
+            disable_opentelemetry_metrics=True,
+        )
+        validators.validate_opentelemetry_ports_not_disabled(namespace)
+
+        namespace = self._namespace(
+            opentelemetry_metrics_port=4318,
+            disable_azure_monitor_logs=True,
+            disable_opentelemetry_logs=True,
+        )
+        validators.validate_opentelemetry_ports_not_disabled(namespace)
+
+    def test_disable_without_ports_allowed(self):
+        namespace = self._namespace(
+            disable_azure_monitor_metrics=True,
+            disable_azure_monitor_logs=True,
+            disable_opentelemetry_metrics=True,
+            disable_opentelemetry_logs=True,
+        )
+        validators.validate_opentelemetry_ports_not_disabled(namespace)
+
+    def test_port_disable_conflict_rejected_by_aggregate_validators(self):
+        # The aggregate validators are the entry points the commands register. The conflict has to
+        # be reachable through them, otherwise it is only caught in the decorator's port getters,
+        # which run after the Azure Monitor collection resources have already been deleted.
+        for aggregate in (
+            validators.validate_azure_monitor_and_opentelemetry_for_create,
+            validators.validate_azure_monitor_and_opentelemetry_for_update,
+        ):
+            for port_attr, port_flag, disable_attr, disable_flag in self.PORT_DISABLE_COMBOS:
+                with self.subTest(aggregate=aggregate.__name__, port=port_flag, disable=disable_flag):
+                    namespace = self._namespace(**{port_attr: 4318, disable_attr: True})
+                    with self.assertRaises(InvalidArgumentValueError):
+                        aggregate(namespace)
+
+
+class TestValidateUpgradeGateDisableAndEnableParameters(unittest.TestCase):
+    def test_neither_flag(self):
+        namespace = SimpleNamespace(enable_upgrade_gate=False, disable_upgrade_gate=False)
+        validators.validate_upgrade_gate_disable_and_enable_parameters(namespace)
+
+    def test_single_flag(self):
+        validators.validate_upgrade_gate_disable_and_enable_parameters(
+            SimpleNamespace(enable_upgrade_gate=True, disable_upgrade_gate=False)
+        )
+        validators.validate_upgrade_gate_disable_and_enable_parameters(
+            SimpleNamespace(enable_upgrade_gate=False, disable_upgrade_gate=True)
+        )
+
+    def test_both_flags(self):
+        namespace = SimpleNamespace(enable_upgrade_gate=True, disable_upgrade_gate=True)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            validators.validate_upgrade_gate_disable_and_enable_parameters(namespace)
 
 
 if __name__ == "__main__":

@@ -162,7 +162,7 @@ def print_step(step_num, total, message, status=""):
 # CLI extension dependency check
 # ---------------------------------------------------------------------------
 
-# az CLI extensions that workload-orchestration calls at runtime via
+# az CLI extensions that workload-orchestration-preview calls at runtime via
 # invoke_cli_command. These MUST be installed before `cluster init` runs,
 # otherwise sub-command invocations fail with opaque "command not recognized"
 # errors. Mirrors the azext_vme.utils.check_and_add_cli_extension pattern.

@@ -1,0 +1,69 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap", "properties": {"capabilities": [{"description":
+      "quality", "name": "Quality"}], "hierarchies": [{"description": "Country", "name":
+      "country"}, {"description": "Region", "name": "region"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workload-orchestration context create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '217'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --name --location --capabilities --hierarchies -o
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.2 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mchichili-rg/providers/Microsoft.Edge/contexts/Mehoopany?api-version=2025-08-01
+  response:
+    body:
+      string: '{"error":{"code":"ContextAlreadyExists","message":"Validation failed:
+        Context /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Mehoopany/providers/Microsoft.Edge/contexts/Mehoopany-Context
+        already exists."}}'
+    headers:
+      api-supported-versions:
+      - 2025-01-01-preview, 2025-06-01, 2025-08-01, 2026-03-01, 2026-05-01-preview,
+        2026-06-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '225'
+      content-type:
+      - application/json
+      date:
+      - Mon, 10 Aug 2026 05:57:49 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 83063ced-508f-4313-97e1-e3ffbcd4980a
+      pragma:
+      - no-cache
+      servertime:
+      - 757 ms
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: A78C6FF046684B9AB25D534821872D48 Ref B: PNQ241100403029 Ref C: 2026-08-10T05:57:45Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

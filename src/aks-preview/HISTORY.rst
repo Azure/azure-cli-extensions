@@ -11,6 +11,177 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create` and `az aks update`: Reject `--enable-azure-monitor-logs` on clusters using service principal authentication, since the Azure Monitor profile onboards with managed identity only.
+* `az aks update`: Reject `--enable-azure-monitor-logs` when Azure Monitor logs is already enabled on the cluster, matching `az aks enable-addons -a monitoring`. Run `--disable-azure-monitor-logs` first to change the configuration.
+* `az aks update`: `--disable-azure-monitor-logs` now removes the data collection rule association and resets the Container Insights settings (syslog port, Prometheus scraping and container network logs) back to their defaults, and asks for confirmation when OpenTelemetry logs and traces are enabled.
+* `az aks update`: Fix `--enable-azure-monitor-logs` not creating the data collection rule and association unless the Log Analytics workspace changed, which left the agent running with no data collection rule attached so no logs were ingested.
+* `az aks update`: Create the data collection rule and association before the cluster update when enabling with `--enable-azure-monitor-logs`, matching `az aks enable-addons -a monitoring`. Provisioning them afterwards meant the agent started before the association existed and then stayed idle for several minutes before restarting once the configuration arrived.
+* `az aks update`: Declining the OpenTelemetry confirmation prompt for `--disable-azure-monitor-metrics` now leaves the cluster unchanged and exits without an error, matching every other confirmation prompt, instead of failing the command.
+* `az aks enable-addons`, `az aks addon enable` and `az aks addon update`: Warn that shared key authentication for the monitoring addon is deprecated when `--enable-msi-auth-for-monitoring false` is passed, and point to `--enable-azure-monitor-logs`. The warning reflects the value you supply, so it stays silent when the flag is omitted on a cluster using service principal authentication.
+* `az aks update`: Fix `--enable-syslog`, `--data-collection-settings` and `--ampls-resource-id` being silently ignored when supplied on their own, as none of them re-provisioned the data collection rule that carries them, so the command reported success while the agent kept using the previous rule.
+* `az aks update`: Reject the OpenTelemetry port flags (`--opentelemetry-metrics-port-http`, `--opentelemetry-metrics-port-grpc`, `--opentelemetry-logs-traces-port-http` and `--opentelemetry-logs-traces-port-grpc`) when the matching receiver is being disabled in the same command, instead of accepting the port and then silently dropping it.
+* `az aks update`: Collect every monitoring disable confirmation before any of them deletes collection resources. Combining `--disable-azure-monitor-logs` with `--disable-azure-monitor-metrics` used to delete the logs data collection rule and association before asking about metrics, so declining that prompt aborted the command with Container Insights still enabled on the cluster but its collection objects already removed.
+* `az aks disable-addons`: Disabling the `monitoring` addon now resets the Container Insights settings (syslog port, Prometheus scraping and container network logs) back to their defaults and turns off OpenTelemetry logs and traces, matching `az aks update --disable-azure-monitor-logs`. The addon settings used to survive the disable and were silently inherited by the next onboarding.
+* `az aks disable-addons`: Ask for confirmation before disabling the `monitoring` addon when OpenTelemetry logs and traces are enabled, since that collection is disabled along with it. Add `--yes` to skip the prompt.
+* `az aks disable-addons`: Fix the monitoring cleanup being skipped when `monitoring` was passed alongside other addons, for example `--addons monitoring,azure-policy`.
+* `az aks update`: Reset the Container Insights settings to their defaults when `--enable-azure-monitor-logs` re-onboards a cluster, so a previous onboarding's syslog port, Prometheus scraping and container network logs settings are no longer inherited.
+* `az aks update`: Preserve the existing data collection rule settings when reconfiguring a cluster that is already onboarded, so that changing one setting no longer drops the others. `--enable-syslog` on its own used to rebuild the rule without the cluster's high log scale mode, custom data collection settings and ingestion data collection endpoint, and `--data-collection-settings` on its own used to drop syslog. Enabling Azure Monitor logs still starts from the documented defaults.
+* `az aks create` and `az aks update`: Reject the OpenTelemetry port flags at argument validation time when the matching receiver is being disabled in the same command. The conflict was previously caught only after the Azure Monitor collection resources had already been removed, so the command failed with the cluster partially torn down.
+* `az aks disable-addons`: Validate every addon name and its installed state before any cleanup runs. Disabling an unknown or not-installed addon alongside `monitoring` used to delete the monitoring data collection rule association first and only then fail, skipping the cluster update and leaving monitoring enabled with nothing to collect into.
+* Fix `--enable-high-log-scale-mode` mutating the shared list of Container Insights streams, so the stream set leaked between data collection rules built in the same command invocation.
+* `az aks create` and `az aks update`: Fix the `--data-collection-settings` size limit being applied to the file path instead of the settings it holds, which let an oversized file through to fail the data collection rule call with `Request Header Fields Too Large`.
+* `az aks update`: Fix `--enable-syslog false` being rejected with `Please specify one or more of "--enable-syslog"` after prompting to reconcile the cluster. Explicitly turning syslog collection off is a real update request, but the falsy value made the command treat it as though no argument had been supplied.
+* `az aks update`: Stop reopening public network access on the ingestion data collection endpoint of a cluster that is linked to an Azure Monitor Private Link Scope. The endpoint is created or updated on every reconfiguration, but `--ampls-resource-id` is only supplied on the command that links the scope, so an unrelated update such as `--enable-syslog` used to flip an existing private endpoint back to public. The existing network configuration is now preserved unless the caller explicitly asks to change it.
+* `az aks update`: Fix `--ampls-resource-id` being rejected with `--ampls-resource-id can only be used with private cluster in MSI mode.` on a cluster that is already private. The private state was only read from the command line, so it was invisible unless `--enable-private-cluster` happened to be supplied again in the same command; it is now read from the cluster as well.
+* `az aks create` and `az aks update`: Reject `--enable-msi-auth-for-monitoring` when it is supplied alongside `--enable-azure-monitor-logs`. Onboarding through the Azure Monitor profile always uses managed identity, so the auth flag has no meaning there and was silently ignored, including when it was explicitly set to `false`.
+* Allow longer node pool names; the service enforces the actual limit.
+* `az aks create`: Add `--enable-upgrade-gate` to enable health-aware upgrade gating for the cluster.
+* `az aks update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the cluster.
+* `az aks nodepool add/update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the node pool.
+* `az aks nodepool scale`: extend `--use-patch-api` to VirtualMachines node pools so they also scale via the dedicated PATCH agent pool API.
+* `az aks nodepool manual-scale add/update/delete`: add `--use-patch-api` to manage the manual scale profiles of a VirtualMachines node pool via the dedicated PATCH agent pool API instead of the default PUT API.
+
+22.0.0b14
++++++++++
+* Bump API version to 2026-08-02-preview.
+* `az aks bastion`: Use the new cluster API connectivity profile while preserving managed Bastion enable, update, disable, and tunnel behavior.
+
+22.0.0b13
++++++++++
+* `az aks kollect`, `az aks kanalyze`, `az aks get-credentials` and `az aks bastion tunnel`: Use resolved executable paths consistently.
+* `az aks bastion tunnel`: Report unsuccessful tunnel process exits instead of returning success.
+* `az aks bastion tunnel`: Identify interactive shells by executable name rather than directory names.
+* `az aks create`: Add `--enable-disk-driver` so the AzureDisk CSI Driver can be enabled explicitly on create. The driver is already on by default, but `storageProfile.diskCSIDriver` was omitted from the create request unless `--disable-disk-driver` was passed, which blocked features that validate `storageProfile.diskCSIDriver.enabled` on the request body. `az aks update` already accepted this flag.
+* `az aks create/update`: `--enable-fips` now requires Kubernetes version 1.35 or later, matching the resource provider's minimum for cluster-level FIPS.
+
+22.0.0b12
++++++++++
+* `az aks nodepool add/update`: Add `--gpu-mig-profiles` to configure an ordered list of NVIDIA MIG partition profiles.
+
+22.0.0b11
++++++++++
+* `az aks nodepool update`: Add `--node-public-ip-prefix-ids` to add or replace the dual-stack node public IP prefixes on an existing node pool. An accepted change rolls the pool so existing nodes are recreated with the new public IPs. Requires the ``NodePublicIPv6PrefixPreview`` feature flag.
+
+22.0.0b10
++++++++++
+* Bump API version to 2026-07-02-preview.
+
+22.0.0b9
++++++++++
+* `az aks create/update`: Add `distributedAccelerator` storage option to `--enable-azure-container-storage` and `--disable-azure-container-storage` to install/uninstall the Azure Container Storage distributed accelerator controller.
+* `az aks nodepool update`: Preserve the existing GPU management mode when `--enable-managed-gpu` is omitted, including when enabling, updating, or disabling the cluster autoscaler.
+* `az aks alert-config add`: Reject an empty `--name` before looking up existing configurations instead of reporting that it already exists.
+* `az aks nodepool scale`: add `--use-patch-api` to optionally scale a VMSS node pool via the new dedicated PATCH agent pool API (scales to the target count without triggering full reconciliation). The default behavior continues to use the PUT agent pool API.
+* Add `az aks operation list` to list historical or active (`--active-only`) operations on a cluster (`--resource-group` and `--name`) or on a node pool (`--nodepool-name`).
+
+22.0.0b8
++++++++++
+* `az aks nodepool add`: Omit `nodeTaints` when `--node-taints` is not specified for FlexNodes pools, and reject explicitly empty values.
+
+22.0.0b7
++++++++++
+* `az aks machine add`: Add preview `--capacity-reservation-group` support to associate a machine with a Capacity Reservation Group.
+* Add `az aks alert-config` commands to manage AKS-managed alert configurations.
+* `az aks create`: Honor `--enable-osdisk-full-caching` for the default agent pool.
+* `az aks kollect` and `az aks kanalyze`: Fix compatibility with the keyword-only credential SDK parameters.
+* `az aks maintenanceconfiguration add` and `az aks maintenanceconfiguration update`: Preserve configuration-file fields with the typespec-generated SDK model.
+* Improve AKS live-test resilience for preview feature gates, transient resource and monitoring-table readiness, retired configurations, and service propagation delays.
+* `az aks create` and `az aks update`: Reject `--outbound-type managedNATGatewayV2` with an actionable error directing to `--outbound-type managedNATGateway --outbound-type-sku StandardV2` (the GA-aligned shape); the legacy value is no longer accepted on the target api-version.
+
+22.0.0b6
++++++++++
+* `az aks nodepool add/update`: Add preview `--enable-managed-dranet` to enable Managed DRANET on a node pool.
+* `az aks nodepool add` and `az aks nodepool update`: Add `--managed-gpu-driver-mode` to select `DRA` or `DevicePlugin` when managed GPU is enabled.
+* Add options `Windows2022` and `Windows2025` to `--os-sku` for `az aks nodepool update`, allowing in-place OS SKU upgrades between these Windows Server versions.
+* `az aks create` and `az aks nodepool add`: `--enable-fips-image` is now required and always enabled when `--os-sku` is `Windows2025`; `--disable-fips-image` cannot be used with `Windows2025`.
+* `az aks create` and `az aks update`: Add `--outbound-type-sku` to select the managed NAT gateway SKU (`Standard` or `StandardV2`) with `--outbound-type managedNATGateway`, the GA shape of NAT Gateway V2. `StandardV2` supports IPv6, user-provided public IPs, and user-provided IP prefixes.
+* `az aks create`, `az aks update`: Add `--enable-node-hardening` to enable cluster-level node hardening and `--disable-node-hardening` (update only) to disable it. Applies hardened defaults for soft eviction thresholds, kube-reserved, and system-reserved on Linux node pools. Requires AFEC registration `Microsoft.ContainerService/CustomNodeConfigPreview`.
+
+22.0.0b5
++++++++++
+* Vendor new SDK and bump API version to `2026-06-02-preview`.
+
+22.0.0b4
++++++++++
+* `az aks nodepool update`: Add preview `--zones`/`-z` support for migrating a regional node pool to automatic zone placement with `--zones auto`. Other availability zone changes are subject to service restrictions. Omitted zones remain unchanged, and the option can be combined with `--node-vm-size`.
+
+22.0.0b3
++++++++++
+* `az aks update`: Relax the bring-your-own VNet subnet validation for converting non-HOBO to HOBO Automatic cluster. `--apiserver-subnet-id` is no longer required, and `--system-node-subnet-id` can be supplied on its own; omitted subnets keep their current networking. `--enable-hosted-system` is still required to request the conversion, and `--node-subnet-id` still requires `--system-node-subnet-id`.
+
+22.0.0b2
+++++++++
+* `az aks update`: Fix load balancer options such as `--load-balancer-backend-pool-type` being silently ignored on clusters whose `outboundType` is not `loadBalancer` (for example `userDefinedRouting` or a NAT gateway). Passing `--outbound-type` to switch away from `loadBalancer` now only drops the load balancer outbound settings instead of the whole load balancer profile, so options requested in the same command are still applied.
+
+22.0.0b1
+++++++++
+* [BREAKING CHANGE]: `az aks bastion`: This command does not connect to Azure Bastion anymore. A new subcommand is introduced for this purpose: `az aks bastion tunnel`. The `az aks bastion` command is now used to manage Azure Bastion resources for AKS clusters.
+* `az aks bastion tunnel`: Connect to Azure Bastion for AKS clusters. All the parameters from old `az aks bastion` are supported.
+* `az aks bastion enable`: Enable managed Azure Bastion for AKS clusters.
+* `az aks bastion disable`: Disable managed Azure Bastion for AKS clusters.
+* `az aks bastion update`: Update managed Azure Bastion for AKS clusters.
+
+21.0.0b17
++++++++++
+* `az aks update`: Add parameters `--enable-hosted-system`, `--system-node-subnet-id` and `--node-subnet-id` to support converting an existing Automatic cluster to a Managed System Pool cluster, optionally with BYO VNet.
+
+21.0.0b16
++++++++++
+* `az aks nodepool add`: Add preview support for creating FlexNodes pools with `--vm-set-type FlexNodes`.
+* `az aks nodepool get-bootstrap-data`: Add preview support for retrieving FlexNodes bootstrap data.
+* `az aks nodepool update`: Add preview support for updating FlexNodes labels, taints, and `maxUnavailable`.
+* `az aks nodepool upgrade`: Add Kubernetes version upgrade support for FlexNodes pools. Node image-only upgrades are not supported.
+* `az aks machine add/update` and `az aks nodepool delete-machines`: Add FlexNode machine lifecycle support.
+
+21.0.0b15
++++++++++
+* `az aks create` and `az aks update`: Add `--opentelemetry-metrics-port-grpc` and `--opentelemetry-logs-traces-port-grpc` (preview) to configure the gRPC ports for OpenTelemetry metrics and logs/traces collection, in addition to the existing HTTP/protobuf ports.
+* `az aks create` and `az aks update`: Rename the OpenTelemetry parameters, keeping the previous names as deprecated aliases: `--opentelemetry-metrics-port` -> `--opentelemetry-metrics-port-http`, `--opentelemetry-logs-port` -> `--opentelemetry-logs-traces-port-http`, `--enable-opentelemetry-logs` -> `--enable-opentelemetry-logs-traces`, `--disable-opentelemetry-logs` -> `--disable-opentelemetry-logs-traces`.
+* `az aks update`: Fix the OpenTelemetry logs and traces parameters (`--enable-opentelemetry-logs-traces`, `--disable-opentelemetry-logs-traces`, `--opentelemetry-logs-traces-port-http`, `--opentelemetry-logs-traces-port-grpc`) incorrectly triggering Azure Monitor Workspace (Prometheus) onboarding. Only Azure Monitor metrics and OpenTelemetry metrics parameters do so now.
+
+21.0.0b14
++++++++++
+* Skip SSH key generation/validation for `az aks create --sku automatic` so `--no-ssh-key` is no longer required for Automatic clusters.
+* `az aks nodepool update`: Avoid applying VirtualMachines autoscaler profile conversions twice with newer Azure CLI versions while preserving compatibility with older CLI versions.
+* Add option `Ubuntu2604` to `--os-sku` for `az aks nodepool add` and `az aks nodepool update`.
+
+21.0.0b13
+++++++++
+* `az aks maintenanceconfiguration add` and `az aks maintenanceconfiguration update`: Add `--maintenance-window-id` (preview) to link a maintenance configuration to a shared MaintenanceWindow resource. When set, the schedule lives in the referenced MaintenanceWindow and inline schedule arguments cannot be used; omit it for no shared resource. `--maintenance-window-id` cannot be combined with `--config-file` (set the `maintenanceWindowId` property in the JSON instead) and cannot be empty. Requires the `Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview` feature to be registered on the subscription.
+
+21.0.0b12
+++++++++
+* Add `--allowed-subjects-from-file` to `az aks identity-binding create` and add a new `az aks identity-binding update` command to manage the `allowedSubjects` list on identity bindings.
+
+21.0.0b11
+++++++++
+* Vendor new SDK and bump API version to `2026-05-02-preview`.
+
+21.0.0b10
++++++++++
+* `az aks create`: Add parameters `--system-node-subnet-id`, `--node-subnet-id` and `--enable-hosted-system` to support BYO VNet for Automatic Managed System Pool clusters.
+
+21.0.0b9
+++++++++
+* Update the minimum required cli core version to `2.85.0` (actually required since `20.0.0b5`).
+
+21.0.0b8
+++++++++
+* `az aks create`: Add `--enable-on-demand-monitor` to enable on-demand monitor for the cluster.
+* `az aks update`: Add `--enable-on-demand-monitor` and `--disable-on-demand-monitor` to manage on-demand monitor for the cluster.
+
+21.0.0b7
+++++++++
+* `az aks create`: Add `--node-disruption-policy` (preview) to set the node disruption policy at cluster creation time. Requires AFEC registration `Microsoft.ContainerService/NodeDisruptionProfile`. This is a cluster-level property that applies to all node pools in the cluster.
+* `az aks bastion`: Fix failure when the bastion host is in a different subscription than the cluster by using the subscription from the bastion resource ID for the internal `az network bastion tunnel` command.
+* `az aks create` and `az aks update`: Add `--enable-backup` (preview) to configure Azure Backup for the AKS cluster in a single command. Supports `--backup-strategy` presets (Week, Month, DisasterRecovery, Custom) and an optional `--backup-configuration` for bring-your-own vault/policy/storage. Requires the `dataprotection` CLI extension.
+* `az aks maintenancewindow`: Add CRUD commands (`create`, `show`, `list`, `update`, `delete`, `wait`) for the new MaintenanceWindow peer ARM resource. Available with API version `2026-04-02-preview`. Requires the `Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview` feature to be registered on the subscription (auto-approval).
+* `az aks update`: Fix misleading error when updating outbound type to `userDefinedRouting` or `userAssignedNATGateway`. For managed VNet clusters (unsupported), a clear error message is now shown instead of asking for `--vnet-subnet-id`. For BYO VNet clusters, the update works correctly without requiring the user to re-specify the subnet.
+* Set `principalType` when creating role assignments to avoid `PrincipalNotFound` failures caused by Microsoft Entra ID replication delay for freshly created identities.
+
+21.0.0b6
+++++++++
+* `az aks create / update`: Add `--enable-control-plane-metrics` and `az aks update`: `--disable-control-plane-metrics` flags to opt clusters into Azure Monitor managed Prometheus control plane metrics (kube-apiserver, etcd, etc.) via the first-class API property `azureMonitorProfile.metrics.controlPlane.enabled` (replaces the AFEC-gated preview).
 
 21.0.0b5
 +++++++
@@ -55,7 +226,7 @@ Pending
 ++++++
 * `az aks nodepool update --crg-id`: Allow updating `--crg-id` to associate an existing Capacity Reservation Group with a nodepool not currently associated with one.
 * Vendor new SDK and bump API version to 2026-03-02-preview.
-* Update the minimum required cli core version to `2.76.0` (actually since `20.0.0b3`).
+* Update the minimum required cli core version to `2.76.0` (actually required since `20.0.0b3`).
 * `az aks upgrade`: Add `--k8s-support-plan` and `--tier` flag support to allow cluster support plan and tier configuration during cluster upgrade.
 
 20.0.0b6
@@ -219,7 +390,7 @@ Pending
 
 19.0.0b6
 +++++++
-* Update the minimum required cli core version to `2.73.0` (actually since `18.0.0b35`).
+* Update the minimum required cli core version to `2.73.0` (actually required since `18.0.0b35`).
 
 19.0.0b5
 +++++++
@@ -784,7 +955,7 @@ Pending
 2.0.0b8
 +++++++
 * Add `az aks check-network outbound` command to check outbound network from nodes.
-* Update the minimum required cli core version to `2.56.0` (actually since `2.0.0b7`).
+* Update the minimum required cli core version to `2.56.0` (actually required since `2.0.0b7`).
 
 2.0.0b7
 +++++++
@@ -1293,7 +1464,7 @@ Pending
 ++++++
 
 * Add `--enable-node-restriction`/`--disable-node-restriction` to enable/disable node restriction feature
-* Update the minimum required cli core version to `2.38.0` (actually since `0.5.92`).
+* Update the minimum required cli core version to `2.38.0` (actually required since `0.5.92`).
 * Add new value `Mariner` for option `--os-sku` in `az aks create` and `az aks nodepool add`.
 
 0.5.94

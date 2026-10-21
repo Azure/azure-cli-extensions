@@ -1,3 +1,30 @@
+## 2026-11-14
+
+### Azure Machine Learning CLI (v2) v 2.45.2
+
+- Update the Azure Machine Learning SDK dependency version for alignment.
+ 
+## 2026-11-01
+
+### Azure Machine Learning CLI (v2) v 2.45.1
+
+- Improve SSH connection argument handling and endpoint validation for jobs and compute instances.
+- Honor repeatable `az ml job connect-ssh --ssh-args` options.
+
+## 2026-09-10
+
+### Azure Machine Learning CLI (v2) v 2.45.0
+
+## 2026-07-16
+
+### Azure Machine Learning CLI (v2) v 2.44.1
+
+-  Fixed datastore create failing with TypeError: Object of type Datastore is not JSON serializable. The datastore operation was migrated to the TypeSpec client while the datastore entity still produced a legacy msrest model; the request body is now serialized to its wire form before being sent, keeping the on-the-wire request unchanged.
+
+## 2026-06-18
+
+### Azure Machine Learning CLI (v2) v 2.44.0
+
 ## 2026-05-06
 
 ### Azure Machine Learning CLI (v2) v 2.43.0

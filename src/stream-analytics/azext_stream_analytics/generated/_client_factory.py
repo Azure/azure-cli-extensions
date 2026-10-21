@@ -20,10 +20,6 @@ def cf_streaming_job(cli_ctx, *_):
     return cf_stream_analytics_cl(cli_ctx).streaming_jobs
 
 
-def cf_input(cli_ctx, *_):
-    return cf_stream_analytics_cl(cli_ctx).inputs
-
-
 def cf_transformation(cli_ctx, *_):
     return cf_stream_analytics_cl(cli_ctx).transformations
 

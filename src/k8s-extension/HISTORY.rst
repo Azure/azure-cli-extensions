@@ -2,6 +2,36 @@
 
 Release History
 ===============
+1.9.4
++++++++++++++++++++
+* Microsoft.ChaosStudio: create the workspace operator role with a per-subscription role ID and name so installs in more than one subscription of a tenant no longer fail with RoleDefinitionWithSameNameExists. Existing roles named 'Chaos Studio Kubernetes Operator' are still reused, and explicit roles may have any name.
+* Microsoft.ChaosStudio: detect AKS Deployment Safeguards at Enforce and set chaosDaemon.enabled=false unless the release namespace is excluded, with a warning about which faults are unavailable. Install and update now need Microsoft.ContainerService/deploymentSafeguards/read on the cluster (included in Reader), and the Safeguards check runs before any role definition or assignment is written.
+
+1.9.3
++++++++++++++++++++
+* Reject unsupported Fleet extension types before sending extension create, update, or discovery requests.
+
+1.9.2
++++++++++++++++++++
+* Microsoft.ChaosStudio: pass --version through to the extension service; default to the latest registered version instead of pinning chart 0.1.6.
+
+1.9.1
++++++++++++++++++++
+* Add Fleet support for Kubernetes extension and cluster-scoped extension type commands.
+
+1.9.0
++++++++++++++++++++
+* Add Microsoft.ChaosStudio partner customization for AKS workspace connectivity and owned prerequisite lifecycle management.
+
+1.8.1
++++++++++++++++++++
+* Add WI validation and new allowed network policy setting for Microsoft.virtualnodes AKS Extension.
+
+1.8.0
++++++++++++++++++++
+* Migrate Extensions api-version to 2025-03-01 and bump extension version to 1.8.0.
+* Add new partner extension for VirtualNodes.
+* Update partner extensions to support autoUpgradeMode option.
 
 1.7.0
 +++++++++++++++++++

@@ -673,7 +673,7 @@ class PostgresFlexHandler(TargetHandler):
                 else:
                     return
             db_info = run_cli_cmd(
-                'az postgres flexible-server db show --server-name "{}" --database-name "{}" -g "{}" --subscription "{}"'.format(
+                'az postgres flexible-server db show --server-name "{}" --name "{}" -g "{}" --subscription "{}"'.format(
                     self.db_server, self.dbname, self.resource_group, self.subscription))
             if db_info is None:
                 e = ResourceNotFoundError(

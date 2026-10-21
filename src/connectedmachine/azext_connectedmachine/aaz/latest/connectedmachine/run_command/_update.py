@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Update operation to create or update a run command.
+    """Update a run command.
 
-    :example: sample command for run-command update
+    :example: Sample command for run-command update
         az connetcedmachine run-command update --resource-group myResourceGroup --name myRunCommand --machine-name myMachine --subscription mySubscription --tags Tag1=Value1
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands/{}", "2026-07-15"],
         ]
     }
 
@@ -54,7 +54,9 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="^[a-zA-Z0-9-_\\.]{1,54}$",
+                max_length=54,
+                min_length=1,
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -66,7 +68,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="[a-zA-Z0-9-_\\.]+",
             ),
         )
 
@@ -80,7 +82,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.error_blob_managed_identity = AAZObjectArg(
-            options=["--error-blob-id", "--error-blob-managed-identity"],
+            options=["--error-blob-id", "--error-blob-identity", "--error-blob-managed-identity"],
             arg_group="Properties",
             help="User-assigned managed identity that has access to errorBlobUri storage blob. Use an empty object in case of system-assigned identity. Make sure managed identity has been given access to blob's container with 'Storage Blob Data Contributor' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged",
             nullable=True,
@@ -93,7 +95,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.output_blob_managed_identity = AAZObjectArg(
-            options=["--output-blob-id", "--output-blob-managed-identity"],
+            options=["--output-blob-id", "--output-blob-identity", "--output-blob-managed-identity"],
             arg_group="Properties",
             help="User-assigned managed identity that has access to outputBlobUri storage blob. Use an empty object in case of system-assigned identity. Make sure managed identity has been given access to blob's container with 'Storage Blob Data Contributor' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged",
             nullable=True,
@@ -102,7 +104,7 @@ class Update(AAZCommand):
         _args_schema.output_blob_uri = AAZStrArg(
             options=["--output-blob-uri"],
             arg_group="Properties",
-            help="Specifies the Azure storage blob where script output stream will be uploaded. Use a SAS URI with read, append, create, write access OR use managed identity to provide the VM access to the blob. Refer outputBlobManagedIdentity parameter. ",
+            help="Specifies the Azure storage blob where script output stream will be uploaded. Use a SAS URI with read, append, create, write access OR use managed identity to provide the VM access to the blob. Refer outputBlobManagedIdentity parameter.",
             nullable=True,
         )
         _args_schema.parameters = AAZListArg(
@@ -117,11 +119,14 @@ class Update(AAZCommand):
             help="The parameters used by the script.",
             nullable=True,
         )
-        _args_schema.run_as_password = AAZStrArg(
+        _args_schema.run_as_password = AAZPasswordArg(
             options=["--run-as-password"],
             arg_group="Properties",
             help="Specifies the user account password on the machine when executing the run command.",
             nullable=True,
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
         )
         _args_schema.run_as_user = AAZStrArg(
             options=["--run-as-user"],
@@ -129,6 +134,34 @@ class Update(AAZCommand):
             help="Specifies the user account on the machine when executing the run command.",
             nullable=True,
         )
+        
+        # Backward-compatible top-level parameters (map to source object)
+        _args_schema.command_id = AAZStrArg(
+            options=["--command-id"],
+            arg_group="Source",
+            help="Specifies the commandId of predefined built-in script.",
+            nullable=True,
+        )
+        _args_schema.script = AAZStrArg(
+            options=["--script"],
+            arg_group="Source",
+            help="Specifies the script content to be executed on the machine.",
+            nullable=True,
+        )
+        _args_schema.script_uri = AAZStrArg(
+            options=["--script-uri"],
+            arg_group="Source",
+            help="Specifies the script download location. It can be either SAS URI of an Azure storage blob with read access or public URI.",
+            nullable=True,
+        )
+        _args_schema.script_uri_managed_identity = AAZObjectArg(
+            options=["--script-uri-id", "--script-uri-managed-identity"],
+            arg_group="Source",
+            help="User-assigned managed identity that has access to scriptUri in case of Azure storage blob. Use an empty object in case of system-assigned identity. Make sure the Azure storage blob exists, and managed identity has been given access to blob's container with 'Storage Blob Data Reader' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged.",
+            nullable=True,
+        )
+        cls._build_args_run_command_managed_identity_update(_args_schema.script_uri_managed_identity)
+        
         _args_schema.source = AAZObjectArg(
             options=["--source"],
             arg_group="Properties",
@@ -259,7 +292,20 @@ class Update(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        pass
+        # Backward compatibility: copy top-level source parameters into source object
+        args = self.ctx.args
+        if has_value(args.command_id) or has_value(args.script) or has_value(args.script_uri) or has_value(args.script_uri_managed_identity):
+            # If top-level parameters are used, copy them to source object
+            if not has_value(args.source):
+                args.source = {}
+            if has_value(args.command_id):
+                args.source.command_id = args.command_id
+            if has_value(args.script):
+                args.source.script = args.script
+            if has_value(args.script_uri):
+                args.source.script_uri = args.script_uri
+            if has_value(args.script_uri_managed_identity):
+                args.source.script_uri_managed_identity = args.script_uri_managed_identity
 
     @register_callback
     def post_operations(self):
@@ -329,7 +375,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -432,7 +478,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }

@@ -9,6 +9,7 @@ from azext_aks_preview._client_factory import (
     cf_agent_pools,
     cf_managed_namespaces,
     cf_maintenance_configurations,
+    cf_maintenance_windows,
     cf_managed_clusters,
     cf_mc_snapshots,
     cf_nodepool_snapshots,
@@ -19,6 +20,7 @@ from azext_aks_preview._client_factory import (
     cf_jwt_authenticators,
     cf_vm_skus,
     cf_prepared_image_specifications,
+    cf_alert_configurations,
 )
 
 from azext_aks_preview._format import (
@@ -32,6 +34,7 @@ from azext_aks_preview._format import (
     aks_machine_list_table_format,
     aks_machine_show_table_format,
     aks_operation_show_table_format,
+    aks_operation_list_table_format,
     aks_list_nodepool_snapshot_table_format,
     aks_list_snapshot_table_format,
     aks_list_table_format,
@@ -53,6 +56,8 @@ from azext_aks_preview._format import (
     aks_jwtauthenticator_list_table_format,
     aks_jwtauthenticator_show_table_format,
     aks_list_vm_skus_table_format,
+    aks_alert_config_list_table_format,
+    aks_alert_config_show_table_format,
 )
 
 from knack.log import get_logger
@@ -136,6 +141,12 @@ def load_command_table(self, _):
         client_factory=cf_maintenance_configurations,
     )
 
+    maintenance_window_sdk = CliCommandType(
+        operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
+        "operations._operations#MaintenanceWindowsOperations.{}",
+        client_factory=cf_maintenance_windows,
+    )
+
     nodepool_snapshot_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
         "operations._operations#SnapshotsOperations.{}",
@@ -164,6 +175,12 @@ def load_command_table(self, _):
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks_pis."
         "operations._operations#PreparedImageSpecificationsOperations.{}",
         client_factory=cf_prepared_image_specifications,
+    )
+
+    alert_configurations_sdk = CliCommandType(
+        operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
+        "operations._operations#AlertConfigurationsOperations.{}",
+        client_factory=cf_alert_configurations,
     )
 
     # AKS managed cluster commands
@@ -212,7 +229,6 @@ def load_command_table(self, _):
         g.custom_command(
             "operation-abort", "aks_operation_abort", supports_no_wait=True
         )
-        g.custom_command("bastion", "aks_bastion")
 
     # AKS maintenance configuration commands
     with self.command_group(
@@ -225,6 +241,22 @@ def load_command_table(self, _):
         g.custom_command("add", "aks_maintenanceconfiguration_add")
         g.custom_command("update", "aks_maintenanceconfiguration_update")
         g.custom_command("delete", "aks_maintenanceconfiguration_delete")
+
+    # AKS maintenance window commands (peer ARM resource, preview API only).
+    # Requires the Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview
+    # feature to be registered on the subscription; the RP enforces this and
+    # surfaces 403 if it isn't.
+    with self.command_group(
+        "aks maintenancewindow",
+        maintenance_window_sdk,
+        client_factory=cf_maintenance_windows,
+    ) as g:
+        g.custom_command("list", "aks_maintenancewindow_list")
+        g.custom_show_command("show", "aks_maintenancewindow_show")
+        g.custom_command("create", "aks_maintenancewindow_create", supports_no_wait=True)
+        g.custom_command("update", "aks_maintenancewindow_update", supports_no_wait=True)
+        g.custom_command("delete", "aks_maintenancewindow_delete", supports_no_wait=True, confirmation=True)
+        g.wait_command("wait")
 
     # AKS loadbalancer commands
     with self.command_group(
@@ -291,6 +323,13 @@ def load_command_table(self, _):
         g.custom_command("delete", "aks_agentpool_delete", supports_no_wait=True)
         g.custom_command("get-upgrades", "aks_agentpool_get_upgrade_profile")
         g.custom_command(
+            "get-bootstrap-data",
+            "aks_agentpool_get_bootstrap_data",
+            sensitive_info=g.sensitive(
+                sensitive_keys=["bootstrapToken", "caCertData"]
+            ),
+        )
+        g.custom_command(
             "get-rollback-versions",
             "aks_agentpool_get_rollback_versions",
             table_transformer=aks_agentpool_rollback_versions_table_format
@@ -341,6 +380,9 @@ def load_command_table(self, _):
         )
         g.custom_command(
             "show-latest", "aks_operation_show_latest", table_transformer=aks_operation_show_table_format
+        )
+        g.custom_command(
+            "list", "aks_operation_list", table_transformer=aks_operation_list_table_format
         )
 
     # AKS draft commands
@@ -584,9 +626,19 @@ def load_command_table(self, _):
         "aks identity-binding", managed_clusters_sdk, client_factory=cf_identity_bindings
     ) as g:
         g.custom_command("create", "aks_identity_binding_create")
+        g.custom_command("update", "aks_identity_binding_update")
         g.custom_command("delete", "aks_identity_binding_delete")
         g.custom_show_command("show", "aks_identity_binding_show")
         g.custom_command("list", "aks_identity_binding_list")
+
+    # AKS bastion
+    with self.command_group(
+        "aks bastion", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_command("enable", "aks_bastion_enable", supports_no_wait=True)
+        g.custom_command("disable", "aks_bastion_disable", supports_no_wait=True)
+        g.custom_command("update", "aks_bastion_update", supports_no_wait=True)
+        g.custom_command("tunnel", "aks_bastion_tunnel")
 
     # AKS jwt authenticator commands
     with self.command_group(
@@ -616,6 +668,36 @@ def load_command_table(self, _):
             "show",
             "aks_jwtauthenticator_show",
             table_transformer=aks_jwtauthenticator_show_table_format
+        )
+
+    # AKS alert configuration commands
+    with self.command_group(
+        "aks alert-config", alert_configurations_sdk, client_factory=cf_alert_configurations,
+    ) as g:
+        g.custom_command(
+            "add",
+            "aks_alert_config_add",
+            supports_no_wait=True
+        )
+        g.custom_command(
+            "update",
+            "aks_alert_config_update",
+            supports_no_wait=True
+        )
+        g.custom_command(
+            "delete",
+            "aks_alert_config_delete",
+            supports_no_wait=True, confirmation=True
+        )
+        g.custom_command(
+            "list",
+            "aks_alert_config_list",
+            table_transformer=aks_alert_config_list_table_format
+        )
+        g.custom_show_command(
+            "show",
+            "aks_alert_config_show",
+            table_transformer=aks_alert_config_show_table_format
         )
 
     # AKS list-vm-skus command

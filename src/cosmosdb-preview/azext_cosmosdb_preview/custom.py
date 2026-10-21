@@ -28,6 +28,7 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ContinuousModeProperties,
     DatabaseAccountCreateUpdateParameters,
     MergeParameters,
+    DatabaseAccountRegenerateKeyParameters,
     RetrieveThroughputParameters,
     RetrieveThroughputPropertiesResource,
     PhysicalPartitionId,
@@ -53,7 +54,7 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ResourceIdentityType,
     ManagedServiceIdentity,
     AnalyticalStorageConfiguration,
-    ManagedServiceIdentityUserAssignedIdentity,
+    ManagedServiceIdentityUserAssignedIdentities,
     CosmosCassandraDataTransferDataSourceSink,
     CosmosSqlDataTransferDataSourceSink,
     CosmosMongoDataTransferDataSourceSink,
@@ -720,7 +721,11 @@ def cli_cosmosdb_mongo_role_definition_create(client,
         privileges=mongo_role_definition_body['Privileges'],
         roles=mongo_role_definition_body['Roles'])
 
-    return client.begin_create_update_mongo_role_definition(mongo_role_definition_body['Id'], resource_group_name, account_name, mongo_role_definition_create_resource)
+    return client.begin_create_update_mongo_role_definition(
+        resource_group_name=resource_group_name,
+        account_name=account_name,
+        mongo_role_definition_id=mongo_role_definition_body['Id'],
+        create_update_mongo_role_definition_parameters=mongo_role_definition_create_resource)
 
 
 def cli_cosmosdb_mongo_role_definition_update(client,
@@ -729,7 +734,10 @@ def cli_cosmosdb_mongo_role_definition_update(client,
                                               mongo_role_definition_body):
     '''Update an existing Azure Cosmos DB Mongo Role Definition'''
     logger.debug('reading Mongo role definition')
-    mongo_role_definition = client.get_mongo_role_definition(mongo_role_definition_body['Id'], resource_group_name, account_name)
+    mongo_role_definition = client.get_mongo_role_definition(
+        resource_group_name=resource_group_name,
+        account_name=account_name,
+        mongo_role_definition_id=mongo_role_definition_body['Id'])
 
     if mongo_role_definition_body['RoleName'] != mongo_role_definition.role_name:
         raise InvalidArgumentValueError('Cannot update Mongo Role Definition Name.')
@@ -741,7 +749,11 @@ def cli_cosmosdb_mongo_role_definition_update(client,
         privileges=mongo_role_definition_body['Privileges'],
         roles=mongo_role_definition_body['Roles'])
 
-    return client.begin_create_update_mongo_role_definition(mongo_role_definition_body['Id'], resource_group_name, account_name, mongo_role_definition_update_resource)
+    return client.begin_create_update_mongo_role_definition(
+        resource_group_name=resource_group_name,
+        account_name=account_name,
+        mongo_role_definition_id=mongo_role_definition_body['Id'],
+        create_update_mongo_role_definition_parameters=mongo_role_definition_update_resource)
 
 
 def cli_cosmosdb_mongo_role_definition_exists(client,
@@ -750,7 +762,10 @@ def cli_cosmosdb_mongo_role_definition_exists(client,
                                               mongo_role_definition_id):
     """Checks if an Azure Cosmos DB Mongo Role Definition exists"""
     try:
-        client.get_mongo_role_definition(mongo_role_definition_id, resource_group_name, account_name)
+        client.get_mongo_role_definition(
+            resource_group_name=resource_group_name,
+            account_name=account_name,
+            mongo_role_definition_id=mongo_role_definition_id)
     except Exception as ex:
         return _handle_exists_exception(ex.response)
 
@@ -770,7 +785,11 @@ def cli_cosmosdb_mongo_user_definition_create(client,
         mechanisms=mongo_user_definition_body['Mechanisms'],
         roles=mongo_user_definition_body['Roles'])
 
-    return client.begin_create_update_mongo_user_definition(mongo_user_definition_body['Id'], resource_group_name, account_name, mongo_user_definition_create_resource)
+    return client.begin_create_update_mongo_user_definition(
+        resource_group_name=resource_group_name,
+        account_name=account_name,
+        mongo_user_definition_id=mongo_user_definition_body['Id'],
+        create_update_mongo_user_definition_parameters=mongo_user_definition_create_resource)
 
 
 def cli_cosmosdb_mongo_user_definition_update(client,
@@ -780,7 +799,10 @@ def cli_cosmosdb_mongo_user_definition_update(client,
     '''Update an existing Azure Cosmos DB Mongo User Definition'''
     logger.debug('reading Mongo user definition')
     try:
-        mongo_user_definition = client.get_mongo_user_definition(mongo_user_definition_body['Id'], resource_group_name, account_name)
+        mongo_user_definition = client.get_mongo_user_definition(
+            resource_group_name=resource_group_name,
+            account_name=account_name,
+            mongo_user_definition_id=mongo_user_definition_body['Id'])
 
         mongo_user_definition_update_resource = MongoUserDefinitionCreateUpdateParameters(
             user_name=mongo_user_definition.user_name,
@@ -790,7 +812,11 @@ def cli_cosmosdb_mongo_user_definition_update(client,
             mechanisms=mongo_user_definition_body['Mechanisms'],
             roles=mongo_user_definition_body['Roles'])
 
-        return client.begin_create_update_mongo_user_definition(mongo_user_definition_body['Id'], resource_group_name, account_name, mongo_user_definition_update_resource)
+        return client.begin_create_update_mongo_user_definition(
+            resource_group_name=resource_group_name,
+            account_name=account_name,
+            mongo_user_definition_id=mongo_user_definition_body['Id'],
+            create_update_mongo_user_definition_parameters=mongo_user_definition_update_resource)
     except Exception as ex:
         return _handle_exists_exception(ex.response)
 
@@ -801,7 +827,10 @@ def cli_cosmosdb_mongo_user_definition_exists(client,
                                               mongo_user_definition_id):
     """Checks if an Azure Cosmos DB Mongo User Definition exists"""
     try:
-        client.get_mongo_user_definition(mongo_user_definition_id, resource_group_name, account_name)
+        client.get_mongo_user_definition(
+            resource_group_name=resource_group_name,
+            account_name=account_name,
+            mongo_user_definition_id=mongo_user_definition_id)
     except Exception as ex:
         return _handle_exists_exception(ex.response)
 
@@ -859,7 +888,8 @@ def cli_cosmosdb_create(cmd,
                         default_priority_level=None,
                         enable_prpp_autoscale=None,
                         enable_partition_merge=None,
-                        capacity_mode=None):
+                        capacity_mode=None,
+                        disable_local_auth=None):
     """Create a new Azure Cosmos DB database account."""
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -918,7 +948,8 @@ def cli_cosmosdb_create(cmd,
                                     default_priority_level=default_priority_level,
                                     enable_prpp_autoscale=enable_prpp_autoscale,
                                     enable_partition_merge=enable_partition_merge,
-                                    capacity_mode=capacity_mode)
+                                    capacity_mode=capacity_mode,
+                                    disable_local_auth=disable_local_auth)
 
 
 # pylint: disable=too-many-branches
@@ -955,7 +986,8 @@ def cli_cosmosdb_update(client,
                         default_priority_level=None,
                         enable_prpp_autoscale=None,
                         enable_partition_merge=None,
-                        capacity_mode=None):
+                        capacity_mode=None,
+                        soft_delete_configuration=None):
     """Update an existing Azure Cosmos DB database account. """
     existing = client.get(resource_group_name, account_name)
 
@@ -1047,7 +1079,8 @@ def cli_cosmosdb_update(client,
         default_priority_level=default_priority_level,
         enable_per_region_per_partition_autoscale=enable_prpp_autoscale,
         enable_partition_merge=enable_partition_merge,
-        capacity_mode=capacity_mode)
+        capacity_mode=capacity_mode,
+        soft_delete_configuration=soft_delete_configuration)
 
     async_docdb_update = client.begin_update(resource_group_name, account_name, params)
     docdb_account = async_docdb_update.result()
@@ -1099,7 +1132,8 @@ def cli_cosmosdb_restore(cmd,
                          tables_to_restore=None,
                          public_network_access=None,
                          source_backup_location=None,
-                         disable_ttl=None):
+                         disable_ttl=None,
+                         disable_local_auth=None):
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
     restorable_database_accounts_list = list(restorable_database_accounts)
@@ -1149,7 +1183,8 @@ def cli_cosmosdb_restore(cmd,
                                     arm_location=target_restorable_account.location,
                                     public_network_access=public_network_access,
                                     source_backup_location=source_backup_location,
-                                    disable_ttl=disable_ttl)
+                                    disable_ttl=disable_ttl,
+                                    disable_local_auth=disable_local_auth)
 
 
 # pylint: disable=too-many-statements
@@ -1200,7 +1235,8 @@ def _create_database_account(client,
                              enable_prpp_autoscale=None,
                              disable_ttl=None,
                              enable_partition_merge=None,
-                             capacity_mode=None):
+                             capacity_mode=None,
+                             disable_local_auth=None):
     consistency_policy = None
     if default_consistency_level is not None:
         consistency_policy = ConsistencyPolicy(default_consistency_level=default_consistency_level,
@@ -1210,6 +1246,21 @@ def _create_database_account(client,
     if not locations:
         locations = []
         locations.append(Location(location_name=arm_location, failover_priority=0, is_zone_redundant=False))
+    else:
+        # CreateLocation parser action (from azure.cli.command_modules.cosmosdb.actions) returns
+        # Location objects from the bundled azure-mgmt-cosmosdb package, which the new vendored
+        # SDK's encoder cannot serialize. Convert them to our vendored Location model.
+        converted_locations = []
+        for loc in locations:
+            if isinstance(loc, Location):
+                converted_locations.append(loc)
+            else:
+                converted_locations.append(Location(
+                    location_name=getattr(loc, 'location_name', None),
+                    failover_priority=getattr(loc, 'failover_priority', 0),
+                    is_zone_redundant=getattr(loc, 'is_zone_redundant', False),
+                ))
+        locations = converted_locations
 
     managed_service_identity = None
     SYSTEM_ID = '[system]'
@@ -1222,7 +1273,7 @@ def _create_database_account(client,
             user_identities = {}
             for x in assign_identity:
                 if x != SYSTEM_ID:
-                    user_identities[x] = ManagedServiceIdentityUserAssignedIdentity()  # pylint: disable=line-too-long
+                    user_identities[x] = ManagedServiceIdentityUserAssignedIdentities()  # pylint: disable=line-too-long
                 else:
                     enable_system = True
             if enable_system:
@@ -1340,13 +1391,26 @@ def _create_database_account(client,
         default_priority_level=default_priority_level,
         enable_per_region_per_partition_autoscale=enable_prpp_autoscale,
         enable_partition_merge=enable_partition_merge,
-        capacity_mode=capacity_mode
+        capacity_mode=capacity_mode,
+        disable_local_auth=disable_local_auth
     )
 
     async_docdb_create = client.begin_create_or_update(resource_group_name, account_name, params)
     docdb_account = async_docdb_create.result()
     docdb_account = client.get(resource_group_name, account_name)  # Workaround
     return docdb_account
+
+
+def cli_cosmosdb_keys_regenerate(client,
+                                 resource_group_name,
+                                 account_name,
+                                 key_kind,
+                                 skip_account_keys_last_usage_check=None):
+    """ Regenerates an access key for a Azure Cosmos DB database account. """
+    key_to_regenerate = DatabaseAccountRegenerateKeyParameters(
+        key_kind=key_kind,
+        skip_account_keys_last_usage_check=skip_account_keys_last_usage_check)
+    return client.begin_regenerate_key(resource_group_name, account_name, key_to_regenerate)
 
 
 def cli_cosmosdb_list(client, resource_group_name=None):
@@ -2033,7 +2097,7 @@ def cli_cosmosdb_sql_container_restore(cmd,
             restorable_containers = restorable_containers_client.list(
                 restorable_database_account.location,
                 restorable_database_account.name,
-                database_rid)
+                restorable_sql_database_rid=database_rid)
 
             latest_container_delete_time, latest_container_create_or_recreate_time = process_restorable_collections(restorable_containers, container_name, database_name)
 
@@ -2224,7 +2288,7 @@ def cli_cosmosdb_mongodb_collection_restore(cmd,
             restorable_collections = restorable_collections_client.list(
                 restorable_database_account.location,
                 restorable_database_account.name,
-                database_rid)
+                restorable_mongodb_database_rid=database_rid)
 
             latest_collection_delete_time, latest_collection_create_or_recreate_time = process_restorable_collections(restorable_collections, collection_name, database_name)
 
@@ -2643,7 +2707,7 @@ def cli_cosmosdb_gremlin_graph_restore(cmd,
             restorable_graphs = restorable_graphs_client.list(
                 restorable_database_account.location,
                 restorable_database_account.name,
-                database_rid)
+                restorable_gremlin_database_rid=database_rid)
 
             latest_graph_delete_time, latest_graph_create_or_recreate_time = process_restorable_collections(restorable_graphs, graph_name, database_name)
 
@@ -3315,10 +3379,13 @@ def cli_cosmosdb_fleetspace_create(client,
     if not data_regions:
         raise CLIError('Missing required field "dataRegions" in properties.')
 
-    throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
-        min_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['minThroughput'],
-        max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput']
-    )
+    pool_properties = fleetspace_body['properties'].get('throughputPoolConfiguration')
+    throughput_pool_config = None
+    if pool_properties:
+        throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
+            min_throughput=pool_properties['minThroughput'],
+            max_throughput=pool_properties['maxThroughput']
+        )
 
     fleetspace_resource = FleetspaceResource(
         fleetspace_api_kind="NoSQL",
@@ -3376,6 +3443,14 @@ def cli_cosmosdb_fleetspace_account_create(client,
 
     """Creates an Azure Cosmos DB Fleetspace Account."""
 
+    from azext_cosmosdb_preview._validators import _parse_fleetspace_account_resource_id
+
+    account_properties = fleetspace_account_body['properties']['globalDatabaseAccountProperties']
+    account_name = _parse_fleetspace_account_resource_id(account_properties['resourceId'])['name']
+    if fleetspace_account_name.lower() != account_name.lower():
+        raise InvalidArgumentValueError(
+            f'--fleetspace-account-name "{fleetspace_account_name}" must match the database account name "{account_name}" in resourceId.')
+
     fleetspaceAccountPropertiesGlobalDatabaseAccountProperties = FleetspaceAccountPropertiesGlobalDatabaseAccountProperties(
         resource_id=fleetspace_account_body['properties']['globalDatabaseAccountProperties']['resourceId'],
         arm_location=fleetspace_account_body['properties']['globalDatabaseAccountProperties']['armLocation'],
@@ -3392,3 +3467,121 @@ def cli_cosmosdb_fleetspace_account_create(client,
         fleetspace_account_name=fleetspace_account_name,
         body=fleetspace_account_body
     )
+
+
+# Soft-deleted Account operations
+def cli_cosmosdb_sql_softdeleted_account_list(client, location, resource_group_name=None):
+    """List soft-deleted Cosmos DB accounts by location, optionally filtered by resource group."""
+    if resource_group_name:
+        result = client.list_by_resource_group_and_location(resource_group_name, location)
+    else:
+        result = client.list_by_location(location)
+    return result.value if hasattr(result, 'value') else result
+
+
+def cli_cosmosdb_sql_softdeleted_account_show(client,
+                                              resource_group,
+                                              location,
+                                              account_name):
+    """Get a soft-deleted Cosmos DB account."""
+    return client.get(resource_group, location, account_name)
+
+
+def cli_cosmosdb_sql_softdeleted_account_delete(client,
+                                                resource_group,
+                                                location,
+                                                account_name):
+    """Purge a soft-deleted Cosmos DB account."""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    return client.begin_purge(resource_group, location, account_name, soft_delete_action_kind=SoftDeleteActionKind.PERMANENT_DELETE_RESOURCE)
+
+
+def cli_cosmosdb_sql_softdeleted_account_recover(client,
+                                                 resource_group,
+                                                 location,
+                                                 account_name):
+    """Recover a soft-deleted Cosmos DB account."""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    return client.begin_restore(resource_group, location, account_name, soft_delete_action_kind=SoftDeleteActionKind.RESTORE_SOFT_DELETED_RESOURCE)
+
+
+# Soft-deleted Database operations
+def cli_cosmosdb_sql_softdeleted_database_list(client,
+                                               resource_group,
+                                               location,
+                                               account_name):
+    """List soft-deleted databases in a Cosmos DB account."""
+    result = client.list(resource_group, location, account_name)
+    return result.value if hasattr(result, 'value') else result
+
+
+def cli_cosmosdb_sql_softdeleted_database_show(client,
+                                               resource_group,
+                                               location,
+                                               account_name,
+                                               database_name):
+    """Get a soft-deleted database."""
+    return client.get(resource_group, location, account_name, database_name)
+
+
+def cli_cosmosdb_sql_softdeleted_database_delete(client,
+                                                 resource_group,
+                                                 location,
+                                                 account_name,
+                                                 database_name):
+    """Purge a soft-deleted database."""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    return client.begin_purge(resource_group, location, account_name, database_name, soft_delete_action_kind=SoftDeleteActionKind.PERMANENT_DELETE_RESOURCE)
+
+
+def cli_cosmosdb_sql_softdeleted_database_recover(client,
+                                                  resource_group,
+                                                  location,
+                                                  account_name,
+                                                  database_name):
+    """Recover a soft-deleted database."""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    return client.begin_restore(resource_group, location, account_name, database_name, soft_delete_action_kind=SoftDeleteActionKind.RESTORE_SOFT_DELETED_RESOURCE)
+
+
+# Soft-deleted Collection operations
+def cli_cosmosdb_sql_softdeleted_container_list(client,
+                                                resource_group,
+                                                location,
+                                                account_name,
+                                                database_name):
+    """List soft-deleted containers in a database."""
+    result = client.list(resource_group, location, account_name, database_name)
+    return result.value if hasattr(result, 'value') else result
+
+
+def cli_cosmosdb_sql_softdeleted_container_show(client,
+                                                resource_group,
+                                                location,
+                                                account_name,
+                                                database_name,
+                                                container_name):
+    """Get a soft-deleted container."""
+    return client.get(resource_group, location, account_name, database_name, container_name)
+
+
+def cli_cosmosdb_sql_softdeleted_container_delete(client,
+                                                  resource_group,
+                                                  location,
+                                                  account_name,
+                                                  database_name,
+                                                  container_name):
+    """Purge a soft-deleted container."""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    return client.begin_purge(resource_group, location, account_name, database_name, container_name, soft_delete_action_kind=SoftDeleteActionKind.PERMANENT_DELETE_RESOURCE)
+
+
+def cli_cosmosdb_sql_softdeleted_container_recover(client,
+                                                   resource_group,
+                                                   location,
+                                                   account_name,
+                                                   database_name,
+                                                   container_name):
+    """Recover a soft-deleted container."""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    return client.begin_restore(resource_group, location, account_name, database_name, container_name, soft_delete_action_kind=SoftDeleteActionKind.RESTORE_SOFT_DELETED_RESOURCE)

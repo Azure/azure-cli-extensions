@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 # @register_command_group(
-#     "workload-orchestration workflow-template version",
+#     "workload-orchestration-preview workflow-template version",
 # )
 class __CMDGroup(AAZCommandGroup):
     """This is for edge Config-Manager

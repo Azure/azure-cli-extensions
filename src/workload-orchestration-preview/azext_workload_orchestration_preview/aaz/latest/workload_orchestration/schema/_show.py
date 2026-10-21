@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration schema show",
+    "workload-orchestration-preview schema show",
 )
 class Show(AAZCommand):
     """Get a Schema Resource
     :example: Show a Schema
-        az workload-orchestration schema show -n mySchema -g myResourceGroup
+        az workload-orchestration-preview schema show -n mySchema -g myResourceGroup
     """
 
     _aaz_info = {

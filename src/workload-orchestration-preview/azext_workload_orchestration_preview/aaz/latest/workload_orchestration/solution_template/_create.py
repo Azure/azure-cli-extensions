@@ -18,12 +18,12 @@ logger = get_logger(__name__)
 
 
 @register_command(
-    "workload-orchestration solution-template create",
+    "workload-orchestration-preview solution-template create",
 )
 class Create(AAZCommand):
     """Create a Solution Template Resource
     :example: Create Solution Template
-        az workload-orchestration solution-template create -n mySolutionTemplate --description "My Solution Template" --capabilities "capability1" --location eastus --resource-group myResourceGroup --config-template-file ./solution_template.yaml --specification @./specification.json --enable-external-validation true
+        az workload-orchestration-preview solution-template create -n mySolutionTemplate --description "My Solution Template" --capabilities "capability1" --location eastus --resource-group myResourceGroup --config-template-file ./solution_template.yaml --specification @./specification.json --enable-external-validation true
     """
 
     _aaz_info = {

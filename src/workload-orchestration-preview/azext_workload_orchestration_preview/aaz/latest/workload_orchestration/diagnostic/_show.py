@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration diagnostic show",
+    "workload-orchestration-preview diagnostic show",
 )
 class Show(AAZCommand):
     """Get details of specified Diagnostic resource.
     :example: Show a Diagnostic         
-        az workload-orchestration diagnostic show -n myDiagnostic -g myResourceGroup
+        az workload-orchestration-preview diagnostic show -n myDiagnostic -g myResourceGroup
     """
 
     _aaz_info = {

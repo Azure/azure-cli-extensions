@@ -16,6 +16,11 @@ from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    missing_field_message,
+    properties_key_mismatch_message,
+)
+from .utils.output_checks import get_value
 
 
 def setup_scenario1(test):
@@ -169,7 +174,8 @@ def step_create_scenario1(test, checks=None):
         "--fabric-controller-id {fabricControllerId} "
         "--tags {tags} "
         "--managed-resource-group-configuration name={mrg_name} "
-        "--analytics-workspace-id {analyticsWorkspaceId} ",
+        "--analytics-workspace-id {analyticsWorkspaceId} "
+        "--rollout-ring {rolloutRing}",
         checks=checks,
     )
 
@@ -281,19 +287,46 @@ def step_delete(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud clustermanager delete --name {name} "
-        "--resource-group {rg} -y",
+        "--resource-group {rg} --yes",
         checks=checks,
     )
 
 
 def step_show(test, checks=None):
     """ClusterManager show operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkcloud clustermanager show --name {name} " "--resource-group {rg}",
-        checks=checks,
+    if checks is not None:
+        test.cmd(
+            "az networkcloud clustermanager show --name {name} "
+            "--resource-group {rg}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
+        "az networkcloud clustermanager show --name {name} " "--resource-group {rg}"
+    ).get_output_in_json()
+    context = "Clustermanager show"
+    assert result.get("name") is not None, missing_field_message(
+        context, "name", result
     )
+    properties = result.get("properties")
+    assert result.get("id"), missing_field_message(context, "id", result)
+    assert properties is not None, missing_field_message(context, "properties", result)
+    assert properties.get("analyticsWorkspaceId") == get_value(
+        test, "analyticsWorkspaceId"
+    ), properties_key_mismatch_message("analyticsWorkspaceId")
+
+    assert properties.get("fabricControllerId") == get_value(
+        test, "fabricControllerId"
+    ), properties_key_mismatch_message("fabricControllerId")
+
+    assert properties.get("vmSize") == get_value(
+        test, "vmSize"
+    ), properties_key_mismatch_message("vmSize")
+
+    assert properties.get("availabilityZones") == get_value(
+        test, "availabilityZones"
+    ), properties_key_mismatch_message("availabilityZones")
 
 
 def step_list_resource_group(test, checks=None):
@@ -315,7 +348,8 @@ def step_update(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud clustermanager update --name {name} "
-        "--tags {tagsUpdate} --resource-group {rg}"
+        "--tags {tagsUpdate} --resource-group {rg} "
+        "--rollout-ring {rolloutRingUpdate}"
     )
 
 
@@ -354,6 +388,10 @@ class ClusterManagerScenarioTest(ScenarioTest):
                 "vmSize": CONFIG.get("CLUSTER_MANAGER", "vm_size"),
                 "availabilityZones": CONFIG.get(
                     "CLUSTER_MANAGER", "availability_zones"
+                ),
+                "rolloutRing": CONFIG.get("CLUSTER_MANAGER", "rollout_ring"),
+                "rolloutRingUpdate": CONFIG.get(
+                    "CLUSTER_MANAGER", "rollout_ring_update"
                 ),
                 "connectionState": CONFIG.get(
                     "CLUSTER_MANAGER", "update_relay_connection_state"

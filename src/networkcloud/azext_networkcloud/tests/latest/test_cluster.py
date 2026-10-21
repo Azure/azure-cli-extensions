@@ -16,6 +16,11 @@ from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    missing_field_message,
+    properties_key_mismatch_message,
+)
+from .utils.output_checks import get_value
 
 
 def setup_scenario1(test):
@@ -207,6 +212,24 @@ def call_scenario7b(test):
     """# Testcase: scenario7 split of cluster update operation for user assigned identity, runtime protection configuration, secret-archive, strategy to work with the new cluster simulator"""
     setup_scenario7(test)
     step_update_secret_archive_settings_scenario2(test, checks=[])
+    step_update_secret_archive_settings_scenario3_open_bao_required_only(
+        test, checks=[]
+    )
+    step_update_secret_archive_settings_scenario3_open_bao_all_params(test, checks=[])
+    step_update_secret_archive_settings_scenario3_hashicorp_required_only(
+        test, checks=[]
+    )
+    step_update_secret_archive_settings_scenario3_hashicorp_all_params(test, checks=[])
+    cleanup_scenario7(test)
+
+
+def call_scenario7c(test):
+    """# Testcase: scenario7 split of cluster update operation for user assigned identity, runtime protection configuration, secret-archive, strategy to work with the new cluster simulator"""
+    setup_scenario7(test)
+    step_update_secret_archive_settings_scenario3_cyberark_required_only(
+        test, checks=[]
+    )
+    step_update_secret_archive_settings_scenario3_cyberark_all_params(test, checks=[])
     cleanup_scenario7(test)
 
 
@@ -276,6 +299,23 @@ def cleanup_scenario11(test):
 def cleanup_scenario12(test):
     """Env cleanup_scenario12"""
     pass
+
+
+def setup_scenario13(test):
+    """Env setup_scenario13"""
+    pass
+
+
+def cleanup_scenario13(test):
+    """Env cleanup_scenario13"""
+    pass
+
+
+def call_scenario13(test):
+    """# Testcase: scenario13 cluster update with nullable properties set to null"""
+    setup_scenario13(test)
+    step_update_nullable_properties(test, checks=[])
+    cleanup_scenario13(test)
 
 
 def call_scenario10(test):
@@ -453,16 +493,81 @@ def step_deploy_sim_scenario2(test, checks=None):
 
 def step_show(test, checks=None):
     """cluster show operation"""
-    if checks is None:
-        checks = []
-    test.cmd("az networkcloud cluster show --name {name} --resource-group {rg}")
+    if checks is not None:
+        test.cmd(
+            "az networkcloud cluster show --name {name} --resource-group {rg}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
+        "az networkcloud cluster show --name {name} --resource-group {rg}"
+    ).get_output_in_json()
+    context = "Cluster show"
+    assert result.get("name") is not None, missing_field_message(
+        context, "name", result
+    )
+    properties = result.get("properties")
+    assert result.get("id"), missing_field_message(context, "id", result)
+    assert properties is not None, missing_field_message(context, "properties", result)
+    assert properties.get("analyticsWorkspaceId") == get_value(
+        test, "analyticsWorkspaceId"
+    ), properties_key_mismatch_message("analyticsWorkspaceId")
+
+    assert properties.get("clusterLocation") == get_value(
+        test, "clusterLocation"
+    ), properties_key_mismatch_message("clusterLocation")
+
+    assert properties.get("clusterType") == get_value(
+        test, "clusterType"
+    ), properties_key_mismatch_message("clusterType")
+
+    assert properties.get("clusterVersion") == get_value(
+        test, "clusterVersion"
+    ), properties_key_mismatch_message("clusterVersion")
+
+    assert properties.get("networkFabricId") == get_value(
+        test, "networkFabricId"
+    ), properties_key_mismatch_message("networkFabricId")
+
+    assert properties.get("networkRackId") == get_value(
+        test, "networkRackId"
+    ), properties_key_mismatch_message("networkRackId")
+
+    assert properties.get("rackSkuId") == get_value(
+        test, "rackSkuId"
+    ), properties_key_mismatch_message("rackSkuId")
+
+    assert properties.get("rackSerialNumber") == get_value(
+        test, "rackSerialNumber"
+    ), properties_key_mismatch_message("rackSerialNumber")
+
+    assert properties.get("rackLocation") == get_value(
+        test, "rackLocation"
+    ), properties_key_mismatch_message("rackLocation")
+
+    assert properties.get("availabilityZone") == get_value(
+        test, "availabilityZone"
+    ), properties_key_mismatch_message("availabilityZone")
+
+    assert properties.get("storageApplianceConfigurationData") == get_value(
+        test, "storageApplianceConfigurationData"
+    ), properties_key_mismatch_message("storageApplianceConfigurationData")
+
+    assert properties.get("bareMetalMachineConfigurationData") == get_value(
+        test, "bareMetalMachineConfigurationData"
+    ), properties_key_mismatch_message("bareMetalMachineConfigurationData")
+
+    assert properties.get("computeRackDefinitions") == get_value(
+        test, "computeRackDefinitions"
+    ), properties_key_mismatch_message("computeRackDefinitions")
 
 
 def step_delete(test, checks=None):
     """cluster delete operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud cluster delete --name {name} --resource-group {rg} -y")
+    test.cmd("az networkcloud cluster delete --name {name} --resource-group {rg} --yes")
 
 
 def step_list_resource_group(test, checks=None):
@@ -564,8 +669,8 @@ def step_update_runtime_protection(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster update --name {name} --resource-group {rg} --runtime-protection enforcement-level={enforcementLevel} --cluster-sp application-id={applicationId} password={password} principal-id={principalId} "
-        "tenant-id={tenantId}"
+        "az networkcloud cluster update --name {name} --resource-group {rg} --runtime-protection enforcement-level={enforcementLevel} "
+        "--cluster-sp application-id={applicationId} password={password} principal-id={principalId} tenant-id={tenantId}"
     )
 
 
@@ -574,7 +679,13 @@ def step_update_secret_archive_settings_scenario1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster update --cluster-name {name} --resource-group {rg} --secret-archive-settings identity-resource-id={miUserAssigned} identity-type={identityType} vault-uri={containerUrl} --cluster-service-principal application-id={applicationId} password={password} principal-id={principalId} "
+        "az networkcloud cluster update --cluster-name {name} --resource-group {rg} "
+        "--secret-archive-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl} "
+        "--cluster-service-principal application-id={applicationId} "
+        "password={password} "
+        "principal-id={principalId} "
         "tenant-id={tenantId}"
     )
 
@@ -584,7 +695,128 @@ def step_update_secret_archive_settings_scenario2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud cluster update --name {name} --resource-group {rg} --sa-settings identity-resource-id={miUserAssigned} identity-type={identityType} vault-uri={containerUrl}"
+        "az networkcloud cluster update --name {name} --resource-group {rg} "
+        "--sa-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl}"
+    )
+
+
+def step_update_secret_archive_settings_scenario3_open_bao_required_only(
+    test, checks=None
+):
+    """cluster update secret-archive-settings operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {name} --resource-group {rg} "
+        "--sa-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl} "
+        "encryption-public-key='somepublickey' "
+        "provider={secretArchiveProviderOpenBao} "
+        "authentication-method={secretArchiveAuthenticationMethod}"
+    )
+
+
+def step_update_secret_archive_settings_scenario3_open_bao_all_params(
+    test, checks=None
+):
+    """cluster update secret-archive-settings operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {name} --resource-group {rg} "
+        "--sa-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl} "
+        "encryption-public-key='somepublickey' "
+        "provider={secretArchiveProviderOpenBao} "
+        "authentication-method={secretArchiveAuthenticationMethod} "
+        "authentication-mount-path={secretArchiveAuthenticationMountPath} "
+        "application-role-id={secretArchiveApplicationRoleId} "
+        "mount-path={secretArchiveOpenBaoMountPath} "
+        "key-value-version={secretArchiveKeyValueVersion} "
+        "namespace={secretArchiveNamespace} "
+        "path-template={secretArchivePathTemplate}"
+    )
+
+
+def step_update_secret_archive_settings_scenario3_hashicorp_required_only(
+    test, checks=None
+):
+    """cluster update secret-archive-settings operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {name} --resource-group {rg} "
+        "--sa-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl} "
+        "encryption-public-key='somepublickey' "
+        "provider={secretArchiveProviderHashiCorp} "
+        "authentication-method={secretArchiveAuthenticationMethod}"
+    )
+
+
+def step_update_secret_archive_settings_scenario3_hashicorp_all_params(
+    test, checks=None
+):
+    """cluster update secret-archive-settings operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {name} --resource-group {rg} "
+        "--sa-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl} "
+        "encryption-public-key='somepublickey' "
+        "provider={secretArchiveProviderHashiCorp} "
+        "authentication-method={secretArchiveAuthenticationMethod} "
+        "authentication-mount-path={secretArchiveAuthenticationMountPath} "
+        "application-role-id={secretArchiveApplicationRoleId} "
+        "mount-path={secretArchiveHashiCorpMountPath} "
+        "key-value-version={secretArchiveKeyValueVersion} "
+        "namespace={secretArchiveNamespace} "
+        "path-template={secretArchivePathTemplate}"
+    )
+
+
+def step_update_secret_archive_settings_scenario3_cyberark_required_only(
+    test, checks=None
+):
+    """cluster update secret-archive-settings operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {name} --resource-group {rg} "
+        "--sa-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl} "
+        "encryption-public-key='somepublickey' "
+        "provider={secretArchiveProviderCyberArk} "
+        "application-id={secretArchiveCyberArkApplicationId} "
+        "safe-name={secretArchiveCyberArkSafeName}"
+    )
+
+
+def step_update_secret_archive_settings_scenario3_cyberark_all_params(
+    test, checks=None
+):
+    """cluster update secret-archive-settings operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {name} --resource-group {rg} "
+        "--sa-settings identity-resource-id={miUserAssigned} "
+        "identity-type={identityType} "
+        "vault-uri={containerUrl} "
+        "encryption-public-key='somepublickey' "
+        "provider={secretArchiveProviderCyberArk} "
+        "application-id={secretArchiveCyberArkApplicationId} "
+        "safe-name={secretArchiveCyberArkSafeName} "
+        "object-name-template={secretArchiveCyberArkObjectNameTemplate} "
+        "folder-name={secretArchiveCyberArkFolderName}"
     )
 
 
@@ -673,6 +905,24 @@ def step_update_rotate_credential_secnario1(test, checks=None):
     test.cmd(
         "az networkcloud cluster rotate-credential --name {nameClusterUpdate} "
         "--resource-group {rg} --credentials {rotateCredential}"
+    )
+
+
+def step_update_nullable_properties(test, checks=None):
+    """cluster update with nullable properties set to null"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {nameClusterUpdate} --resource-group {rgClusterUpdate}"
+        " --analytics-output-settings null"
+        " --cluster-service-principal null"
+        " --command-output-settings null"
+        " --compute-deployment-threshold null"
+        " --runtime-protection null"
+        " --secret-archive-settings null"
+        " --update-strategy null"
+        " --vulnerability-scanning-settings null",
+        checks=checks,
     )
 
 
@@ -775,6 +1025,51 @@ class ClusterScenarioTest(ScenarioTest):
                 "additionalActions": CONFIG.get("CLUSTER", "inspect_actions"),
                 "filterDevices": CONFIG.get("CLUSTER", "filter_devices"),
                 "rotateCredential": CONFIG.get("CLUSTER", "rotate_credential"),
+                "secretArchiveProviderOpenBao": CONFIG.get(
+                    "CLUSTER", "secret_archive_provider_open_bao"
+                ),
+                "secretArchiveProviderHashiCorp": CONFIG.get(
+                    "CLUSTER", "secret_archive_provider_hashi_corp"
+                ),
+                "secretArchiveProviderCyberArk": CONFIG.get(
+                    "CLUSTER", "secret_archive_provider_cyber_ark"
+                ),
+                "secretArchiveAuthenticationMethod": CONFIG.get(
+                    "CLUSTER", "secret_archive_authentication_method"
+                ),
+                "secretArchiveAuthenticationMountPath": CONFIG.get(
+                    "CLUSTER", "secret_archive_authentication_mount_path"
+                ),
+                "secretArchiveApplicationRoleId": CONFIG.get(
+                    "CLUSTER", "secret_archive_application_role_id"
+                ),
+                "secretArchiveOpenBaoMountPath": CONFIG.get(
+                    "CLUSTER", "secret_archive_open_bao_mount_path"
+                ),
+                "secretArchiveHashiCorpMountPath": CONFIG.get(
+                    "CLUSTER", "secret_archive_hashi_corp_mount_path"
+                ),
+                "secretArchiveKeyValueVersion": CONFIG.get(
+                    "CLUSTER", "secret_archive_key_value_version"
+                ),
+                "secretArchiveNamespace": CONFIG.get(
+                    "CLUSTER", "secret_archive_namespace"
+                ),
+                "secretArchivePathTemplate": CONFIG.get(
+                    "CLUSTER", "secret_archive_path_template"
+                ),
+                "secretArchiveCyberArkApplicationId": CONFIG.get(
+                    "CLUSTER", "secret_archive_cyber_ark_application_id"
+                ),
+                "secretArchiveCyberArkSafeName": CONFIG.get(
+                    "CLUSTER", "secret_archive_cyber_ark_safe_name"
+                ),
+                "secretArchiveCyberArkObjectNameTemplate": CONFIG.get(
+                    "CLUSTER", "secret_archive_cyber_ark_object_name_template"
+                ),
+                "secretArchiveCyberArkFolderName": CONFIG.get(
+                    "CLUSTER", "secret_archive_cyber_ark_folder_name"
+                ),
             }
         )
 
@@ -854,6 +1149,10 @@ class ClusterScenarioTest(ScenarioTest):
         """test scenario for Cluster update operation for user assigned identity, runtime protection configuration, secret-archive, strategy"""
         call_scenario7b(self)
 
+    def test_cluster_scenario7c(self):
+        """test scenario for Cluster update operation for user assigned identity, runtime protection configuration, secret-archive, strategy"""
+        call_scenario7c(self)
+
     def test_cluster_scenario8a(self):
         """test scenario for Cluster continue update version operation"""
         call_scenario8a(self)
@@ -888,3 +1187,7 @@ class ClusterScenarioTest(ScenarioTest):
     def test_cluster_scenario12(self):
         """test scenario for Cluster Rotate Credential"""
         call_scenario12(self)
+
+    def test_cluster_scenario13(self):
+        """test scenario for Cluster update with nullable properties set to null"""
+        call_scenario13(self)

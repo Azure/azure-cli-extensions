@@ -12,7 +12,7 @@ from azure.cli.core.commands.parameters import (
 
 def load_arguments(self, _):
     project_name_type = CLIArgumentType(
-        options_list=['--project-name'],
+        options_list=['--project-name', '-p'],
         help='Name of the Azure Migrate project.',
         id_part='name'
     )
@@ -259,7 +259,7 @@ def load_arguments(self, _):
     with self.argument_context('migrate local start-migration') as c:
         c.argument(
             'protected_item_id',
-            options_list=['--protected-item-id', '--id'],
+            options_list=['--target-object-id', '--id'],
             help='The full ARM resource ID of the protected item to migrate. '
                  'This can be obtained from the list or get replication commands.',
             required=True)

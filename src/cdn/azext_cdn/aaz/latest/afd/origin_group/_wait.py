@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2026-04-01-preview"],
         ]
     }
 
@@ -131,7 +131,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -210,6 +210,9 @@ class Wait(AAZWaitCommand):
 
             authentication = cls._schema_on_200.properties.authentication
             authentication.scope = AAZStrType()
+            authentication.token_destination_header = AAZStrType(
+                serialized_name="tokenDestinationHeader",
+            )
             authentication.type = AAZStrType()
             authentication.user_assigned_identity = AAZObjectType(
                 serialized_name="userAssignedIdentity",

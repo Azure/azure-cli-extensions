@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration solution-deployment delete",
+    "workload-orchestration-preview solution-deployment delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete a SolutionDeployment Resource
 
     :example: Delete a Solution Deployment
-        az workload-orchestration solution-deployment delete -g myResourceGroup -n mySolutionDeployment
+        az workload-orchestration-preview solution-deployment delete -g myResourceGroup -n mySolutionDeployment
     """
 
     _aaz_info = {

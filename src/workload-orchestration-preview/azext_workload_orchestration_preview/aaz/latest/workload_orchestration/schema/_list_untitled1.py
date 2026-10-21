@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration schema list-untitled1",
+    "workload-orchestration-preview schema list-untitled1",
 )
 class ListUntitled1(AAZCommand):
     """List by subscription
     :example: List Schemas
-        az workload-orchestration schema list-untitled1
+        az workload-orchestration-preview schema list-untitled1
     """
 
     _aaz_info = {

@@ -2,6 +2,39 @@
 
 Release History
 ===============
+1.11.4
++++++++
+* Standardize error reporting for configuration input, kubectl and cluster access, network connectivity, ARM operations, Helm, pre-onboarding diagnostics, custom locations, and the client proxy.
+* Improve pre-onboarding diagnostic job completion handling and actionable failure guidance.
+* Ignore transient DNS lookup issues when parsing diagnostic results.
+* Add Application Gateway for Containers endpoint configuration and proxy bypass support for Arc services and Container Insights.
+* Restrict Arc proxy bypass when reconnecting an already onboarded cluster.
+* Add ownership tracking for Arc proxy bypass settings.
+* Add a Helm override for the kube-state-metrics image repository.
+* Inject the onboarding Kubernetes secret without Helm and include the ARM resource ID in command and fault telemetry.
+* Improve unhandled-error telemetry coverage.
+* Update the client proxy version to 1.3.035302 and update the CSP version.
+
+1.11.3
++++++++
+* Fix container log parsing issue for environments using Python Kubernetes client 36.0 or higher.
+* Revert clusterdiagnosticchecks image to 1.31.2 to address issues with network diagnostics in proxy scenarios.
+
+1.11.2
++++++++
+* Fix telemetry `Unknown` errors: wrap string exceptions, add missing instrumentation, and catch-all decorator for unhandled exceptions.
+* Propagate correlation ID end-to-end for `az connectedk8s proxy`.
+* [MultiCloudConnector] Allow AgentNotInstalled to Agent conversion in connected clusters.
+* Add debug log for helm binary location.
+* Add diagnosis logic for helm timeouts to improve failure classification.
+* Move kubeadm distribution detection to be evaluated last to prevent incorrect cluster distribution classification.
+* Updated CLIENT_PROXY_VERSION to 1.3.034631.
+* Removed workload identity preview feature flag.
+* Added telemetry for pre-onboarding diagnostic results, including diagnostics execution failures.
+* Add `Arc` to `--proxy-skip-range` default values for Azure Arc private-link endpoints.
+* Fix pre-onboarding diagnostic checks incorrectly grading a NotCompleted job as Passed when partial container output is present.
+* Updated clusterdiagnosticchecks image to 1.36.1.
+
 1.11.1
 +++++++
 * Added ARM64 support for Helm binary installation.

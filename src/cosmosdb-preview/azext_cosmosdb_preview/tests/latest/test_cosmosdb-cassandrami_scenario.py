@@ -123,6 +123,15 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         # Create vnet
         self.cmd('az network vnet create -g {rg} -l eastus2 -n {vnet} --subnet-name {subnet}')
 
+        # Newer network API versions create subnets with default outbound
+        # access disabled. Managed Cassandra nodes require outbound connectivity
+        # to Azure services (Storage, Key Vault, Monitor, Entra ID, ARM, etc.)
+        # to deploy successfully; without it the cluster create fails with
+        # "connection failure. Please validate that subnet has the required
+        # security rules". Explicitly enable default outbound access so the
+        # nodes can reach those services.
+        self.cmd('az network vnet subnet update -g {rg} --vnet-name {vnet} --name {subnet} --default-outbound-access true')
+
         # Discover the vnet id
         vnet_resource = self.cmd('az network vnet show -g {rg} -n {vnet}').get_output_in_json()
         vnet_id = vnet_resource['id']

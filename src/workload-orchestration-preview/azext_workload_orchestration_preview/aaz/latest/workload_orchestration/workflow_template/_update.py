@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration workflow-template update",
+    "workload-orchestration-preview workflow-template update",
 )
 class Update(AAZCommand):
     """Update a Workflow Template Resource

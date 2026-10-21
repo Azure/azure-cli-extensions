@@ -11,6 +11,7 @@ This package provides commands to
 - Update an Azure Cosmos DB database account to enable materialized views
 - Create/Delete a cosmosdb materialized views builder service resource
 - Provision and update database account with Continuous 7 days backup mode
+- Provision and update database account with Continuous 35 days backup mode
 - Retrieve and redistribute throughput at physical partition level.
 - Create a new Azure Cosmos DB database account with burst capacity.
 - Update an Azure Cosmos DB database account to enable/disable burst capacity.
@@ -44,6 +45,16 @@ az cosmosdb create \
     --continuous-tier "Continuous7Days"
 ```
 
+#### Create a new CosmosDB continuous backup Account with 35 days retention ####
+
+```sh
+az cosmosdb create \
+    --resource-group "my-rg" \
+    --name "my-continuous-backup-account" \
+    --backup-policy-type "Continuous"
+    --continuous-tier "Continuous35Days"
+```
+
 #### Convert a periodic backup policy CosmosDB account to continuous backup Account ####
 
 ```sh
@@ -61,6 +72,16 @@ az cosmosdb update \
     --name "my-continuous-backup-account" \
     --backup-policy-type "Continuous" \
     --continuous-tier "Continuous7Days"
+```
+
+#### Convert a periodic backup policy CosmosDB account to continuous backup Account with 35 days retention ####
+
+```sh
+az cosmosdb update \
+    --resource-group "my-rg" \
+    --name "my-continuous-backup-account" \
+    --backup-policy-type "Continuous" \
+    --continuous-tier "Continuous35Days"
 ```
 
 #### List all the CosmosDB accounts that can be restored (live and deleted) ####

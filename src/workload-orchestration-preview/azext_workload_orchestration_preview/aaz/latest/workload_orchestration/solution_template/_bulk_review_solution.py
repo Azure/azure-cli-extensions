@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration solution-template bulk-review",
+    "workload-orchestration-preview solution-template bulk-review",
 )
 class BulkReviewSolution(AAZCommand):
     """Post request for bulk review
     :example: Bulk review solution for multiple targets.
-        az workload-orchestration solution-template bulk-review --resource-group myResourceGroup --solution-template-name myTemplate --solution-template-version 1.0.0 --targets "@targets.json" 
+        az workload-orchestration-preview solution-template bulk-review --resource-group myResourceGroup --solution-template-name myTemplate --solution-template-version 1.0.0 --targets "@targets.json" 
     """
 
     _aaz_info = {

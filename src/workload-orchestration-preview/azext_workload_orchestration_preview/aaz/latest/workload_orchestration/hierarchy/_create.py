@@ -6,7 +6,7 @@
 # pylint: skip-file
 # flake8: noqa
 
-"""AAZ command for `workload-orchestration hierarchy create`.
+"""AAZ command for `workload-orchestration-preview hierarchy create`.
 
 Hand-authored AAZ command class that owns argument parsing (giving us native
 shorthand / @file / JSON / YAML support from AAZShortHandSyntaxParser for
@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration hierarchy create",
+    "workload-orchestration-preview hierarchy create",
 )
 class Create(AAZCommand):
     """Create a hierarchy: Site + Configuration + ConfigurationReference (and ServiceGroup ancestors if type=ServiceGroup).
@@ -26,13 +26,13 @@ class Create(AAZCommand):
     (nested, up to 3 levels) hierarchy types.
 
     :example: Create RG hierarchy from YAML file
-        az workload-orchestration hierarchy create -g my-rg -l eastus2euap --hierarchy-spec hierarchy.yaml
+        az workload-orchestration-preview hierarchy create -g my-rg -l eastus2euap --hierarchy-spec hierarchy.yaml
     :example: Create RG hierarchy with inline shorthand
-        az workload-orchestration hierarchy create -g my-rg -l eastus2euap --hierarchy-spec "{name:Mehoopany,level:factory}"
+        az workload-orchestration-preview hierarchy create -g my-rg -l eastus2euap --hierarchy-spec "{name:Mehoopany,level:factory}"
     :example: Create ServiceGroup hierarchy from JSON file
-        az workload-orchestration hierarchy create -g my-rg -l eastus2euap --hierarchy-spec sg-hierarchy.json
+        az workload-orchestration-preview hierarchy create -g my-rg -l eastus2euap --hierarchy-spec sg-hierarchy.json
     :example: Create ServiceGroup hierarchy with inline shorthand (children as array)
-        az workload-orchestration hierarchy create -g my-rg -l eastus2euap --hierarchy-spec "{type:ServiceGroup,name:India,level:country,children:[{name:Karnataka,level:region,children:[{name:BangaloreSouth,level:factory}]}]}"
+        az workload-orchestration-preview hierarchy create -g my-rg -l eastus2euap --hierarchy-spec "{type:ServiceGroup,name:India,level:country,children:[{name:Karnataka,level:region,children:[{name:BangaloreSouth,level:factory}]}]}"
     """
 
     _aaz_info = {

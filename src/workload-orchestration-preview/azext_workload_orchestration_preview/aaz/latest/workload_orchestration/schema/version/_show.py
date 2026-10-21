@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration schema version show",
+    "workload-orchestration-preview schema version show",
 )
 class Show(AAZCommand):
     """Get a Schema Version Resource

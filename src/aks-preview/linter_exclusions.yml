@@ -129,6 +129,12 @@ aks create:
     enable_azure_monitor_logs:
       rule_exclusions:
         - option_length_too_long
+    enable_prometheus_metrics_scraping:
+      rule_exclusions:
+        - option_length_too_long
+    disable_prometheus_metrics_scraping:
+      rule_exclusions:
+        - option_length_too_long
     enable_opentelemetry_metrics:
       rule_exclusions:
         - option_length_too_long
@@ -138,13 +144,31 @@ aks create:
     opentelemetry_metrics_port:
       rule_exclusions:
         - option_length_too_long
+    opentelemetry_metrics_port_deprecated:
+      rule_exclusions:
+        - option_length_too_long
+    opentelemetry_metrics_port_grpc:
+      rule_exclusions:
+        - option_length_too_long
     enable_opentelemetry_logs:
+      rule_exclusions:
+        - option_length_too_long
+    enable_opentelemetry_logs_deprecated:
       rule_exclusions:
         - option_length_too_long
     disable_opentelemetry_logs:
       rule_exclusions:
         - option_length_too_long
+    disable_opentelemetry_logs_deprecated:
+      rule_exclusions:
+        - option_length_too_long
     opentelemetry_logs_port:
+      rule_exclusions:
+        - option_length_too_long
+    opentelemetry_logs_port_deprecated:
+      rule_exclusions:
+        - option_length_too_long
+    opentelemetry_logs_traces_port_grpc:
       rule_exclusions:
         - option_length_too_long
     enable_static_egress_gateway:
@@ -181,6 +205,12 @@ aks create:
       rule_exclusions:
         - option_length_too_long
     enable_continuous_control_plane_and_addon_monitor:
+      rule_exclusions:
+        - option_length_too_long
+    enable_on_demand_monitor:
+      rule_exclusions:
+        - option_length_too_long
+    enable_node_hardening:
       rule_exclusions:
         - option_length_too_long
 aks update:
@@ -302,6 +332,12 @@ aks update:
     enable_azure_monitor_logs:
       rule_exclusions:
         - option_length_too_long
+    enable_prometheus_metrics_scraping:
+      rule_exclusions:
+        - option_length_too_long
+    disable_prometheus_metrics_scraping:
+      rule_exclusions:
+        - option_length_too_long
     enable_msi_auth_for_monitoring:
       rule_exclusions:
         - option_length_too_long
@@ -314,13 +350,31 @@ aks update:
     opentelemetry_metrics_port:
       rule_exclusions:
         - option_length_too_long
+    opentelemetry_metrics_port_deprecated:
+      rule_exclusions:
+        - option_length_too_long
+    opentelemetry_metrics_port_grpc:
+      rule_exclusions:
+        - option_length_too_long
     enable_opentelemetry_logs:
+      rule_exclusions:
+        - option_length_too_long
+    enable_opentelemetry_logs_deprecated:
       rule_exclusions:
         - option_length_too_long
     disable_opentelemetry_logs:
       rule_exclusions:
         - option_length_too_long
+    disable_opentelemetry_logs_deprecated:
+      rule_exclusions:
+        - option_length_too_long
     opentelemetry_logs_port:
+      rule_exclusions:
+        - option_length_too_long
+    opentelemetry_logs_port_deprecated:
+      rule_exclusions:
+        - option_length_too_long
+    opentelemetry_logs_traces_port_grpc:
       rule_exclusions:
         - option_length_too_long
     bootstrap_artifact_source:
@@ -384,6 +438,18 @@ aks update:
       rule_exclusions:
         - option_length_too_long
     disable_continuous_control_plane_and_addon_monitor:
+      rule_exclusions:
+        - option_length_too_long
+    enable_on_demand_monitor:
+      rule_exclusions:
+        - option_length_too_long
+    disable_on_demand_monitor:
+      rule_exclusions:
+        - option_length_too_long
+    enable_node_hardening:
+      rule_exclusions:
+        - option_length_too_long
+    disable_node_hardening:
       rule_exclusions:
         - option_length_too_long
 aks delete:
@@ -479,6 +545,9 @@ aks nodepool add:
         - option_length_too_long
 aks nodepool update:
   parameters:
+    node_public_ip_prefix_ids:
+      rule_exclusions:
+        - option_length_too_long
     enable_artifact_streaming:
       rule_exclusions:
         - option_length_too_long
@@ -523,6 +592,9 @@ aks identity-binding create:
         - option_length_too_long
 aks machine add:
   parameters:
+    capacity_reservation_group:
+      rule_exclusions:
+        - option_length_too_long
     node_public_ip_prefix_id:
       rule_exclusions:
         - option_length_too_long

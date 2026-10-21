@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration config-template remove-version",
+    "workload-orchestration-preview config-template remove-version",
 )
 class RemoveVersion(AAZCommand):
     """Remove Config Template Version Resource
     :example: Remove a Config Template Version
-        az workload-orchestration config-template remove-version -n myConfigTemplate -g myResource
+        az workload-orchestration-preview config-template remove-version -n myConfigTemplate -g myResource
     """
 
     _aaz_info = {

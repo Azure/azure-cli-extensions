@@ -3,6 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import logging
+import sys
+
+
+logger = logging.getLogger(__name__)
+
+
 TEST_SUBS_DEFAULT = "1916d14f-6594-4756-955d-9b95970a73a8"
 TEST_RG_DEFAULT = "e2e-scenarios"
 TEST_WORKSPACE_DEFAULT = "qw-e2e-tests-eus"
@@ -49,6 +56,21 @@ def get_test_workspace_provider_sku_list():
     return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_PROVIDER_SKU_LIST", TEST_WORKSPACE_DEFAULT_PROVIDER_SKU_LIST)
 
 
+def run_cleanup_commands(test_case, cleanup_commands, test_failed=None):
+    if test_failed is None:
+        test_failed = sys.exc_info()[0] is not None
+    cleanup_errors = []
+    for description, command in cleanup_commands:
+        try:
+            test_case.cmd(command)
+        except Exception as cleanup_error:  # pylint: disable=broad-except
+            cleanup_errors.append(cleanup_error)
+            logger.warning("Failed to clean up %s: %s", description, cleanup_error)
+
+    if cleanup_errors and not test_failed:
+        raise cleanup_errors[0]
+
+
 def get_test_capabilities():
     return get_from_os_environment("AZURE_QUANTUM_CAPABILITIES", TEST_CAPABILITIES_DEFAULT).lower()
 
@@ -70,16 +92,34 @@ def get_test_workspace_random_name():
     return "e2e-test-w" + str(random.randint(1000000, 9999999))
 
 
-def get_test_workspace_random_long_name():
-    return get_test_workspace_random_name() + "-53-char-name12345678901234567890123"
-
-
 def all_providers_are_in_capabilities(provider_sku_string, capabilities_string):
     for provide_sku_pair in provider_sku_string.split(';'):
         provider = "new." + provide_sku_pair.split('/')[0].lower()
         if provider not in capabilities_string:
             return False
     return True
+
+
+def get_offer_targets_with_quota(offers, location, min_quota=1):
+    # Shared by test_quantum_jobs.py and test_quantum_workspace.py V2 target discovery.
+    normalized_location = location.replace(' ', '').lower()
+    results = []
+    for offer in offers:
+        properties = offer.get('properties') or {}
+        if (properties.get('location') or '').replace(' ', '').lower() != normalized_location:
+            continue
+        provider_id = properties.get('providerId')
+        if not provider_id:
+            continue
+        targets_with_quota = {
+            quota['targetId']: quota.get('standardMinutesLifetime')
+            for quota in properties.get('targetQuotas') or []
+            if quota.get('targetId')
+            and (quota.get('standardMinutesLifetime') or 0) >= min_quota
+        }
+        if targets_with_quota:
+            results.append((provider_id, targets_with_quota))
+    return results
 
 # import pytest
 # import sys

@@ -62,6 +62,10 @@ def cf_maintenance_configurations(cli_ctx, *_):
     return get_container_service_client(cli_ctx).maintenance_configurations
 
 
+def cf_maintenance_windows(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).maintenance_windows
+
+
 def cf_nodepool_snapshots(cli_ctx, *_):
     return get_container_service_client(cli_ctx).snapshots
 
@@ -170,3 +174,7 @@ def cf_vm_skus(cli_ctx, *_):
 
 def cf_prepared_image_specifications(cli_ctx, *_, subscription_id=None):
     return get_container_service_pis_client(cli_ctx, subscription_id=subscription_id).prepared_image_specifications
+
+
+def cf_alert_configurations(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).alert_configurations

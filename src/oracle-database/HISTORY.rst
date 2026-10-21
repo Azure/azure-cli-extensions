@@ -3,6 +3,28 @@
 Release History
 ===============
 
+3.0.1
+++++++
+* Update list private IPs command for cloud vm cluster operations to API version 2026-07-01-preview
+
+3.0.0
+++++++
+* Upgraded Oracle Database commands to stable API version 2026-06-01.
+* Added support for GoldenGate connections and deployments, Database Editions, and Database System Shapes.
+* Updated existing Oracle Database commands for the 2026-06-01 API changes.
+
+
+2.0.5
+++++++
+* Fixed autonomous database backup update and delete
+
+
+2.0.4
+++++++
+* Fixed autonomous database update discriminator databaseType
+* Save generated autonomous database wallets as zip files
+* Fixed autonomous database backup create and show result lookup for OCI-backed backups
+
 2.0.3
 ++++++
 * Fixed autonomous database  discriminator databaseType in cross region DR related commands

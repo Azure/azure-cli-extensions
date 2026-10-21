@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "mongo-db atlas",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage MongoDB Atlas
+    """Manage Atlas
     """
     pass
 

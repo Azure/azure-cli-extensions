@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration context review",
+    "workload-orchestration-preview context review",
 )
 class Review(AAZCommand):
     """Post request to review configuration

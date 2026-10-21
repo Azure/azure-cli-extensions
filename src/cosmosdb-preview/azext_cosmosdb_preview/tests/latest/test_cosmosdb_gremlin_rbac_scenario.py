@@ -83,7 +83,7 @@ class Cosmosdb_previewgremlinRbacScenarioTest(ScenarioTest):
 
 
         self.cmd(
-            'az cosmosdb create -n {acc} -g {rg} --kind GlobalDocumentDB --capabilities EnableGremlin')
+            'az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --kind GlobalDocumentDB --capabilities EnableGremlin')
             
         self.cmd(
             'az cosmosdb show --name {acc} --resource-group {rg}')        

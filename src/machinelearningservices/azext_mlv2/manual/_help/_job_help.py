@@ -39,6 +39,8 @@ def get_job_help():
         examples:
         - name: Set up ssh connection and sends the request to the SSH service.
           text: az ml job connect-ssh --name my-job-id --node-index 0 --private-key-file-path "C:/Temp/.ssh/id_rsa" --resource-group my-resource-group --workspace-name my-workspace
+        - name: Connect with local port forwarding and no remote command.
+          text: az ml job connect-ssh --name my-job-id --resource-group my-resource-group --workspace-name my-workspace --ssh-args=-N --ssh-args=-L --ssh-args=8080:localhost:80
     """
     helps[
         "ml job create"

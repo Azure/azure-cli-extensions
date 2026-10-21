@@ -140,7 +140,7 @@ class CdnAfdScenarioMixin:
 
     def afd_endpoint_create_cmd(self, resource_group_name, profile_name, endpoint_name,
                                 enabled_state,
-                                tags=None, checks=None, name_reuse_scope=None):
+                                tags=None, checks=None, name_reuse_scope=None, enforce_mtls=None):
         cmd = f'afd endpoint create -g {resource_group_name} --endpoint-name {endpoint_name} ' \
               f'--profile-name {profile_name} ' \
               f'--enabled-state {enabled_state}'
@@ -148,19 +148,22 @@ class CdnAfdScenarioMixin:
         if name_reuse_scope:
             cmd += f" --name-reuse-scope {name_reuse_scope}"
 
+        cmd = _add_paramter_if_needed(cmd, "enforce-mtls", enforce_mtls)
+
         if tags:
             cmd = add_tags(cmd, tags)
 
         return self.cmd(cmd, checks)
 
     def afd_endpoint_update_cmd(self, resource_group_name, profile_name, endpoint_name,
-                                enabled_state=None, tags=None, checks=None, options=None):
+                                enabled_state=None, tags=None, checks=None, options=None, enforce_mtls=None):
         command = f'afd endpoint update -g {resource_group_name} --endpoint-name {endpoint_name} ' \
                   f'--profile-name {profile_name}'
         if tags:
             command = add_tags(command, tags)
 
         command = _add_paramter_if_needed(command, "enabled-state", enabled_state)
+        command = _add_paramter_if_needed(command, "enforce-mtls", enforce_mtls)
 
         if options:
             command = command + ' ' + options
@@ -183,9 +186,14 @@ class CdnAfdScenarioMixin:
             command = command + ' ' + f'--domains {" ".join(domains)}'
         return self.cmd(command, checks)
 
-    def afd_rule_set_add_cmd(self, resource_group_name, rule_set_name, profile_name, checks=None):
+    def afd_rule_set_add_cmd(self, resource_group_name, rule_set_name, profile_name, checks=None,
+                             batch_mode=None, rules=None):
         command = f'az afd rule-set create -g {resource_group_name} --rule-set-name {rule_set_name} ' \
                   f'--profile-name {profile_name}'
+
+        command = _add_paramter_if_needed(command, "batch-mode", batch_mode)
+        if rules is not None:
+            command += f' --rules {_json_arg(rules)}'
 
         return self.cmd(command, checks)
 
@@ -288,15 +296,23 @@ class CdnAfdScenarioMixin:
         return self.cmd(command, checks)
 
     def afd_secret_create_cmd(self, resource_group_name, profile_name, secret_name, secret_source,
-                              use_latest_version, secret_version, checks=None):
-        parameters = {
-            'customer-certificate': {
-                'secret-source': {'id': secret_source},
-                'use-latest-version': _to_bool(use_latest_version)
+                              use_latest_version, secret_version, checks=None, secret_type='customer-certificate'):
+        if secret_type == 'mtls-certificate-chain':
+            parameters = {
+                'mtls-certificate-chain': {
+                    'secret-source': {'id': secret_source},
+                    'secret-version': secret_version
+                }
             }
-        }
-        if secret_version:
-            parameters['customer-certificate']['secret-version'] = secret_version
+        else:
+            parameters = {
+                'customer-certificate': {
+                    'secret-source': {'id': secret_source},
+                    'use-latest-version': _to_bool(use_latest_version)
+                }
+            }
+            if secret_version:
+                parameters['customer-certificate']['secret-version'] = secret_version
         cmd = f'afd secret create -g {resource_group_name} --profile-name {profile_name} ' \
               f'--secret-name {secret_name} --parameters {_json_arg(parameters)}'
 
@@ -334,7 +350,7 @@ class CdnAfdScenarioMixin:
 
     def afd_custom_domain_create_cmd(self, resource_group_name, profile_name, custom_domain_name,
                                      host_name, certificate_type, minimum_tls_version,
-                                     azure_dns_zone=None, secret=None, checks=None):
+                                     azure_dns_zone=None, secret=None, checks=None, mtls_settings=None):
         cmd = f'afd custom-domain create -g {resource_group_name} --profile-name {profile_name} ' \
               f'--custom-domain-name {custom_domain_name} --host-name {host_name} ' \
               f'--certificate-type {certificate_type} --minimum-tls-version {minimum_tls_version}'
@@ -343,12 +359,14 @@ class CdnAfdScenarioMixin:
             cmd += f' --azure-dns-zone={azure_dns_zone}'
         if secret:
             cmd += f' --secret={secret}'
+        if mtls_settings is not None:
+            cmd += f' --mtls-settings {_json_arg(mtls_settings)}'
 
         return self.cmd(cmd, checks)
 
     def afd_custom_domain_update_cmd(self, resource_group_name, profile_name, custom_domain_name,
                                      certificate_type=None, minimum_tls_version=None,
-                                     azure_dns_zone=None, secret=None, checks=None):
+                                     azure_dns_zone=None, secret=None, checks=None, mtls_settings=None):
         cmd = f'afd custom-domain update -g {resource_group_name} --profile-name {profile_name} ' \
               f'--custom-domain-name {custom_domain_name} ' \
               f'--certificate-type {certificate_type} --minimum-tls-version {minimum_tls_version}'
@@ -357,6 +375,8 @@ class CdnAfdScenarioMixin:
             cmd += f' --azure-dns-zone={azure_dns_zone}'
         if secret:
             cmd += f' --secret={secret}'
+        if mtls_settings is not None:
+            cmd += f' --mtls-settings {_json_arg(mtls_settings)}'
 
         return self.cmd(cmd, checks)
 
@@ -375,14 +395,19 @@ class CdnAfdScenarioMixin:
         return self.cmd(command, checks)
 
     def afd_security_policy_create_cmd(self, resource_group_name, profile_name, security_policy_name, domains,
-                                       waf_policy, checks=None):
-        web_application_firewall = {
-            'waf-policy': waf_policy,
-            'associations': [{
-                'domains': [{'id': domain} for domain in domains],
-                'patterns-to-match': ['/*']
-            }]
+                                       waf_policy, checks=None, is_profile_level=None, routes=None):
+        association = {
+            'domains': [{'id': domain} for domain in domains],
+            'patterns-to-match': ['/*']
         }
+        if routes is not None:
+            association['routes'] = [{'id': route} for route in routes]
+        web_application_firewall = {
+            'waf-policy': {'id': waf_policy},
+            'associations': [association]
+        }
+        if is_profile_level is not None:
+            web_application_firewall['is-profile-level'] = is_profile_level
         cmd = f'afd security-policy create -g {resource_group_name} --profile-name {profile_name} ' \
               f'--security-policy-name {security_policy_name} ' \
               f'--web-application-firewall {_json_arg(web_application_firewall)}'
@@ -390,17 +415,23 @@ class CdnAfdScenarioMixin:
         return self.cmd(cmd, checks)
 
     def afd_security_policy_update_cmd(self, resource_group_name, profile_name, security_policy_name, domains=None,
-                                       waf_policy=None, checks=None):
+                                       waf_policy=None, checks=None, is_profile_level=None, routes=None):
         cmd = f'afd security-policy update -g {resource_group_name} --profile-name {profile_name} ' \
               f'--security-policy-name {security_policy_name}'
         web_application_firewall = {}
-        if domains:
-            web_application_firewall['associations'] = [{
-                'domains': [{'id': domain} for domain in domains],
+        if domains is not None or routes is not None:
+            association = {
                 'patterns-to-match': ['/*']
-            }]
+            }
+            if domains is not None:
+                association['domains'] = [{'id': domain} for domain in domains]
+            if routes is not None:
+                association['routes'] = [{'id': route} for route in routes]
+            web_application_firewall['associations'] = [association]
         if waf_policy:
-            web_application_firewall['waf-policy'] = waf_policy
+            web_application_firewall['waf-policy'] = {'id': waf_policy}
+        if is_profile_level is not None:
+            web_application_firewall['is-profile-level'] = is_profile_level
         if web_application_firewall:
             cmd += f' --web-application-firewall {_json_arg(web_application_firewall)}'
 

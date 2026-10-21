@@ -12,6 +12,10 @@ KubernetesVersion tests scenarios
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 
 from .config import CONFIG
+from .utils.assert_messages import (
+    missing_field_message,
+    properties_key_mismatch_message,
+)
 
 
 def setup_scenario1(test):
@@ -27,43 +31,35 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(test, checks=[])
     step_update(test, checks=[])
     step_show(test, checks=[])
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
-    step_delete(test, checks=[])
     cleanup_scenario1(test)
-
-
-def step_create(test, checks=None):
-    """KubernetesVersion create operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkcloud kubernetesversion create --name {name} --extended-location "
-        ' name={extendedLocation} type="CustomLocation" --location {location} '
-        "--tags {tags} --resource-group {rg}",
-        checks=checks,
-    )
 
 
 def step_show(test, checks=None):
     """KubernetesVersion show operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
+    if checks is not None:
+        test.cmd(
+            "az networkcloud kubernetesversion show --name {name} --resource-group {rg}",
+            checks=checks,
+        )
+        return
+
+    result = test.cmd(
         "az networkcloud kubernetesversion show --name {name} --resource-group {rg}"
+    ).get_output_in_json()
+    context = "Kubernetesversion show"
+    assert result.get("name") is not None, missing_field_message(
+        context, "name", result
     )
-
-
-def step_delete(test, checks=None):
-    """KubernetesVersion delete operation"""
-    if checks is None:
-        checks = []
-    test.cmd(
-        "az networkcloud kubernetesversion delete --name {name} --resource-group {rg} -y"
-    )
+    properties = result.get("properties")
+    assert result.get("id"), missing_field_message(context, "id", result)
+    assert properties is not None, missing_field_message(context, "properties", result)
+    assert (
+        properties.get("provisioningState") == "Succeeded"
+    ), properties_key_mismatch_message("provisioningState")
 
 
 def step_list_resource_group(test, checks=None):

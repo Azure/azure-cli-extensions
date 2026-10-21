@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/securitypolicies/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/securitypolicies/{}", "2026-04-01-preview"],
         ]
     }
 
@@ -75,10 +75,6 @@ class Update(AAZCommand):
             options=["--web-application-firewall"],
             arg_group="Parameters",
         )
-        _args_schema.web_application_firewall_embedded = AAZObjectArg(
-            options=["--web-application-firewall-embedded"],
-            arg_group="Parameters",
-        )
 
         web_application_firewall = cls._args_schema.web_application_firewall
         web_application_firewall.associations = AAZListArg(
@@ -86,477 +82,84 @@ class Update(AAZCommand):
             help="Waf associations",
             nullable=True,
         )
-        web_application_firewall.waf_policy = AAZStrArg(
-            options=["waf-policy"],
-            help="The ID of Front Door WAF policy.",
+        web_application_firewall.is_profile_level = AAZBoolArg(
+            options=["is-profile-level"],
+            help="Indicates if this is a profile-level WAF policy.",
             nullable=True,
         )
+        web_application_firewall.waf_policy = AAZObjectArg(
+            options=["waf-policy"],
+            help="Resource ID.",
+            nullable=True,
+        )
+        cls._build_args_resource_reference_update(web_application_firewall.waf_policy)
 
         associations = cls._args_schema.web_application_firewall.associations
         associations.Element = AAZObjectArg(
             nullable=True,
         )
-        cls._build_args_security_policy_web_application_firewall_association_update(associations.Element)
 
-        web_application_firewall_embedded = cls._args_schema.web_application_firewall_embedded
-        web_application_firewall_embedded.associations = AAZListArg(
-            options=["associations"],
-            help="Waf associations",
-            nullable=True,
-        )
-        web_application_firewall_embedded.waf_policy = AAZObjectArg(
-            options=["waf-policy"],
-            help="Properties of the web application firewall policy.",
-            nullable=True,
-        )
-
-        associations = cls._args_schema.web_application_firewall_embedded.associations
-        associations.Element = AAZObjectArg(
-            nullable=True,
-        )
-        cls._build_args_security_policy_web_application_firewall_association_update(associations.Element)
-
-        waf_policy = cls._args_schema.web_application_firewall_embedded.waf_policy
-        waf_policy.etag = AAZStrArg(
-            options=["etag"],
-            help="Gets a unique read-only string that changes whenever the resource is updated.",
-            nullable=True,
-        )
-        waf_policy.custom_rules = AAZObjectArg(
-            options=["custom-rules"],
-            help="Describes custom rules inside the policy.",
-            nullable=True,
-        )
-        waf_policy.managed_rules = AAZObjectArg(
-            options=["managed-rules"],
-            help="Describes managed rules inside the policy.",
-            nullable=True,
-        )
-        waf_policy.policy_settings = AAZObjectArg(
-            options=["policy-settings"],
-            help="Describes settings for the policy.",
-            nullable=True,
-        )
-        waf_policy.sku = AAZObjectArg(
-            options=["sku"],
-            help="The pricing tier of web application firewall policy. Defaults to Classic_AzureFrontDoor if not specified.",
-            nullable=True,
-        )
-
-        custom_rules = cls._args_schema.web_application_firewall_embedded.waf_policy.custom_rules
-        custom_rules.rules = AAZListArg(
-            options=["rules"],
-            help="List of rules",
-            nullable=True,
-        )
-
-        rules = cls._args_schema.web_application_firewall_embedded.waf_policy.custom_rules.rules
-        rules.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.web_application_firewall_embedded.waf_policy.custom_rules.rules.Element
-        _element.action = AAZStrArg(
-            options=["action"],
-            help="Describes what action to be applied when rule matches.",
-            enum={"Allow": "Allow", "AnomalyScoring": "AnomalyScoring", "Block": "Block", "CAPTCHA": "CAPTCHA", "JSChallenge": "JSChallenge", "Log": "Log", "Redirect": "Redirect"},
-        )
-        _element.enabled_state = AAZStrArg(
-            options=["enabled-state"],
-            help="Describes if the custom rule is in enabled or disabled state. Defaults to Enabled if not specified.",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        _element.group_by = AAZListArg(
-            options=["group-by"],
-            help="Describes the list of variables to group the rate limit requests",
-            nullable=True,
-        )
-        _element.match_conditions = AAZListArg(
-            options=["match-conditions"],
-            help="List of match conditions.",
-        )
-        _element.name = AAZStrArg(
-            options=["name"],
-            help="Describes the name of the rule.",
-            nullable=True,
-            fmt=AAZStrArgFormat(
-                max_length=128,
-            ),
-        )
-        _element.priority = AAZIntArg(
-            options=["priority"],
-            help="Describes priority of the rule. Rules with a lower value will be evaluated before rules with a higher value.",
-        )
-        _element.rate_limit_duration_in_minutes = AAZIntArg(
-            options=["rate-limit-duration-in-minutes"],
-            help="Time window for resetting the rate limit count. Default is 1 minute.",
-            nullable=True,
-            fmt=AAZIntArgFormat(
-                maximum=5,
-                minimum=0,
-            ),
-        )
-        _element.rate_limit_threshold = AAZIntArg(
-            options=["rate-limit-threshold"],
-            help="Number of allowed requests per client within the time window.",
-            nullable=True,
-            fmt=AAZIntArgFormat(
-                minimum=0,
-            ),
-        )
-        _element.rule_type = AAZStrArg(
-            options=["rule-type"],
-            help="Describes type of rule.",
-            enum={"MatchRule": "MatchRule", "RateLimitRule": "RateLimitRule"},
-        )
-
-        group_by = cls._args_schema.web_application_firewall_embedded.waf_policy.custom_rules.rules.Element.group_by
-        group_by.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.web_application_firewall_embedded.waf_policy.custom_rules.rules.Element.group_by.Element
-        _element.variable_name = AAZStrArg(
-            options=["variable-name"],
-            help="Describes the supported variable for group by",
-            enum={"GeoLocation": "GeoLocation", "None": "None", "SocketAddr": "SocketAddr"},
-        )
-
-        match_conditions = cls._args_schema.web_application_firewall_embedded.waf_policy.custom_rules.rules.Element.match_conditions
-        match_conditions.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.web_application_firewall_embedded.waf_policy.custom_rules.rules.Element.match_conditions.Element
-        _element.match_value = AAZListArg(
-            options=["match-value"],
-            help="List of possible match values.",
-        )
-        _element.match_variable = AAZStrArg(
-            options=["match-variable"],
-            help="Request variable to compare with.",
-            enum={"ClientPort": "ClientPort", "Cookies": "Cookies", "HostName": "HostName", "HttpVersion": "HttpVersion", "IsDevice": "IsDevice", "PostArgs": "PostArgs", "QueryString": "QueryString", "RemoteAddress": "RemoteAddress", "RequestBody": "RequestBody", "RequestHeader": "RequestHeader", "RequestMethod": "RequestMethod", "RequestScheme": "RequestScheme", "RequestUri": "RequestUri", "ServerPort": "ServerPort", "SocketAddr": "SocketAddr", "SslProtocol": "SslProtocol", "UrlFileExtension": "UrlFileExtension", "UrlFileName": "UrlFileName", "UrlPath": "UrlPath"},
-        )
-        _element.negate_condition = AAZBoolArg(
-            options=["negate-condition"],
-            help="Describes if the result of this condition should be negated.",
-            nullable=True,
-        )
-        _element.operator = AAZStrArg(
-            options=["operator"],
-            help="Comparison type to use for matching with the variable value.",
-            enum={"Any": "Any", "BeginsWith": "BeginsWith", "Contains": "Contains", "EndsWith": "EndsWith", "Equal": "Equal", "GeoMatch": "GeoMatch", "GreaterThan": "GreaterThan", "GreaterThanOrEqual": "GreaterThanOrEqual", "IPMatch": "IPMatch", "LessThan": "LessThan", "LessThanOrEqual": "LessThanOrEqual", "RegEx": "RegEx"},
-        )
-        _element.selector = AAZStrArg(
-            options=["selector"],
-            help="Match against a specific key from the QueryString, PostArgs, RequestHeader or Cookies variables. Default is null.",
-            nullable=True,
-        )
-        _element.transforms = AAZListArg(
-            options=["transforms"],
-            help="List of transforms.",
-            nullable=True,
-        )
-
-        match_value = cls._args_schema.web_application_firewall_embedded.waf_policy.custom_rules.rules.Element.match_conditions.Element.match_value
-        match_value.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        transforms = cls._args_schema.web_application_firewall_embedded.waf_policy.custom_rules.rules.Element.match_conditions.Element.transforms
-        transforms.Element = AAZStrArg(
-            nullable=True,
-            enum={"Lowercase": "Lowercase", "RemoveNulls": "RemoveNulls", "Trim": "Trim", "Uppercase": "Uppercase", "UrlDecode": "UrlDecode", "UrlEncode": "UrlEncode"},
-        )
-
-        managed_rules = cls._args_schema.web_application_firewall_embedded.waf_policy.managed_rules
-        managed_rules.managed_rule_sets = AAZListArg(
-            options=["managed-rule-sets"],
-            help="List of rule sets.",
-            nullable=True,
-        )
-
-        managed_rule_sets = cls._args_schema.web_application_firewall_embedded.waf_policy.managed_rules.managed_rule_sets
-        managed_rule_sets.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.web_application_firewall_embedded.waf_policy.managed_rules.managed_rule_sets.Element
-        _element.exclusions = AAZListArg(
-            options=["exclusions"],
-            help="Describes the exclusions that are applied to all rules in the set.",
-            nullable=True,
-        )
-        _element.rule_group_overrides = AAZListArg(
-            options=["rule-group-overrides"],
-            help="Defines the rule group overrides to apply to the rule set.",
-            nullable=True,
-        )
-        _element.rule_set_action = AAZStrArg(
-            options=["rule-set-action"],
-            help="Defines the rule set action.",
-            nullable=True,
-            enum={"Block": "Block", "Log": "Log", "Redirect": "Redirect"},
-        )
-        _element.rule_set_type = AAZStrArg(
-            options=["rule-set-type"],
-            help="Defines the rule set type to use.",
-        )
-        _element.rule_set_version = AAZStrArg(
-            options=["rule-set-version"],
-            help="Defines the version of the rule set to use.",
-        )
-
-        exclusions = cls._args_schema.web_application_firewall_embedded.waf_policy.managed_rules.managed_rule_sets.Element.exclusions
-        exclusions.Element = AAZObjectArg(
-            nullable=True,
-        )
-        cls._build_args_managed_rule_exclusion_update(exclusions.Element)
-
-        rule_group_overrides = cls._args_schema.web_application_firewall_embedded.waf_policy.managed_rules.managed_rule_sets.Element.rule_group_overrides
-        rule_group_overrides.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.web_application_firewall_embedded.waf_policy.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element
-        _element.exclusions = AAZListArg(
-            options=["exclusions"],
-            help="Describes the exclusions that are applied to all rules in the group.",
-            nullable=True,
-        )
-        _element.rule_group_name = AAZStrArg(
-            options=["rule-group-name"],
-            help="Describes the managed rule group to override.",
-        )
-        _element.rules = AAZListArg(
-            options=["rules"],
-            help="List of rules that will be disabled. If none specified, all rules in the group will be disabled.",
-            nullable=True,
-        )
-
-        exclusions = cls._args_schema.web_application_firewall_embedded.waf_policy.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element.exclusions
-        exclusions.Element = AAZObjectArg(
-            nullable=True,
-        )
-        cls._build_args_managed_rule_exclusion_update(exclusions.Element)
-
-        rules = cls._args_schema.web_application_firewall_embedded.waf_policy.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element.rules
-        rules.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.web_application_firewall_embedded.waf_policy.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element.rules.Element
-        _element.action = AAZStrArg(
-            options=["action"],
-            help="Describes the override action to be applied when rule matches.",
-            nullable=True,
-            enum={"Allow": "Allow", "AnomalyScoring": "AnomalyScoring", "Block": "Block", "CAPTCHA": "CAPTCHA", "JSChallenge": "JSChallenge", "Log": "Log", "Redirect": "Redirect"},
-        )
-        _element.enabled_state = AAZStrArg(
-            options=["enabled-state"],
-            help="Describes if the managed rule is in enabled or disabled state. Defaults to Disabled if not specified.",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        _element.exclusions = AAZListArg(
-            options=["exclusions"],
-            help="Describes the exclusions that are applied to this specific rule.",
-            nullable=True,
-        )
-        _element.rule_id = AAZStrArg(
-            options=["rule-id"],
-            help="Identifier for the managed rule.",
-        )
-
-        exclusions = cls._args_schema.web_application_firewall_embedded.waf_policy.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element.rules.Element.exclusions
-        exclusions.Element = AAZObjectArg(
-            nullable=True,
-        )
-        cls._build_args_managed_rule_exclusion_update(exclusions.Element)
-
-        policy_settings = cls._args_schema.web_application_firewall_embedded.waf_policy.policy_settings
-        policy_settings.captcha_expiration_in_minutes = AAZIntArg(
-            options=["captcha-expiration-in-minutes"],
-            help="Defines the Captcha cookie validity lifetime in minutes. This setting is only applicable to Premium_AzureFrontDoor. Value must be an integer between 5 and 1440 with the default value being 30.",
-            nullable=True,
-            fmt=AAZIntArgFormat(
-                maximum=1440,
-                minimum=5,
-            ),
-        )
-        policy_settings.custom_block_response_body = AAZStrArg(
-            options=["custom-block-response-body"],
-            help="If the action type is block, customer can override the response body. The body must be specified in base64 encoding.",
-            nullable=True,
-            fmt=AAZStrArgFormat(
-                pattern="^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$",
-            ),
-        )
-        policy_settings.custom_block_response_status_code = AAZIntArg(
-            options=["custom-block-response-status-code"],
-            help="If the action type is block, customer can override the response status code.",
-            nullable=True,
-        )
-        policy_settings.enabled_state = AAZStrArg(
-            options=["enabled-state"],
-            help="Describes if the policy is in enabled or disabled state. Defaults to Enabled if not specified.",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        policy_settings.javascript_challenge_expiration_in_minutes = AAZIntArg(
-            options=["javascript-challenge-expiration-in-minutes"],
-            help="Defines the JavaScript challenge cookie validity lifetime in minutes. This setting is only applicable to Premium_AzureFrontDoor. Value must be an integer between 5 and 1440 with the default value being 30.",
-            nullable=True,
-            fmt=AAZIntArgFormat(
-                maximum=1440,
-                minimum=5,
-            ),
-        )
-        policy_settings.scrubbing_rules = AAZListArg(
-            options=["scrubbing-rules"],
-            help="List of log scrubbing rules applied to the Web Application Firewall logs.",
-            nullable=True,
-        )
-        policy_settings.state = AAZStrArg(
-            options=["state"],
-            help="State of the log scrubbing config. Default value is Enabled.",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        policy_settings.mode = AAZStrArg(
-            options=["mode"],
-            help="Describes if it is in detection mode or prevention mode at policy level.",
-            nullable=True,
-            enum={"Detection": "Detection", "Prevention": "Prevention"},
-        )
-        policy_settings.redirect_url = AAZStrArg(
-            options=["redirect-url"],
-            help="If action type is redirect, this field represents redirect URL for the client.",
-            nullable=True,
-        )
-        policy_settings.request_body_check = AAZStrArg(
-            options=["request-body-check"],
-            help="Describes if policy managed rules will inspect the request body content.",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-
-        scrubbing_rules = cls._args_schema.web_application_firewall_embedded.waf_policy.policy_settings.scrubbing_rules
-        scrubbing_rules.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.web_application_firewall_embedded.waf_policy.policy_settings.scrubbing_rules.Element
-        _element.match_variable = AAZStrArg(
-            options=["match-variable"],
-            help="The variable to be scrubbed from the logs.",
-            enum={"QueryStringArgNames": "QueryStringArgNames", "RequestBodyJsonArgNames": "RequestBodyJsonArgNames", "RequestBodyPostArgNames": "RequestBodyPostArgNames", "RequestCookieNames": "RequestCookieNames", "RequestHeaderNames": "RequestHeaderNames", "RequestIPAddress": "RequestIPAddress", "RequestUri": "RequestUri"},
-        )
-        _element.selector = AAZStrArg(
-            options=["selector"],
-            help="When matchVariable is a collection, operator used to specify which elements in the collection this rule applies to.",
-            nullable=True,
-        )
-        _element.selector_match_operator = AAZStrArg(
-            options=["selector-match-operator"],
-            help="When matchVariable is a collection, operate on the selector to specify which elements in the collection this rule applies to.",
-            enum={"Equals": "Equals", "EqualsAny": "EqualsAny"},
-        )
-        _element.state = AAZStrArg(
-            options=["state"],
-            help="Defines the state of a log scrubbing rule. Default value is enabled.",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-
-        sku = cls._args_schema.web_application_firewall_embedded.waf_policy.sku
-        sku.name = AAZStrArg(
-            options=["name"],
-            help="Name of the pricing tier.",
-            nullable=True,
-            enum={"Classic_AzureFrontDoor": "Classic_AzureFrontDoor", "Custom_Verizon": "Custom_Verizon", "Premium_AzureFrontDoor": "Premium_AzureFrontDoor", "Premium_Verizon": "Premium_Verizon", "StandardPlus_955BandWidth_ChinaCdn": "StandardPlus_955BandWidth_ChinaCdn", "StandardPlus_AvgBandWidth_ChinaCdn": "StandardPlus_AvgBandWidth_ChinaCdn", "StandardPlus_ChinaCdn": "StandardPlus_ChinaCdn", "Standard_955BandWidth_ChinaCdn": "Standard_955BandWidth_ChinaCdn", "Standard_Akamai": "Standard_Akamai", "Standard_AvgBandWidth_ChinaCdn": "Standard_AvgBandWidth_ChinaCdn", "Standard_AzureFrontDoor": "Standard_AzureFrontDoor", "Standard_ChinaCdn": "Standard_ChinaCdn", "Standard_Microsoft": "Standard_Microsoft", "Standard_Verizon": "Standard_Verizon"},
-        )
-        return cls._args_schema
-
-    _args_managed_rule_exclusion_update = None
-
-    @classmethod
-    def _build_args_managed_rule_exclusion_update(cls, _schema):
-        if cls._args_managed_rule_exclusion_update is not None:
-            _schema.match_variable = cls._args_managed_rule_exclusion_update.match_variable
-            _schema.selector = cls._args_managed_rule_exclusion_update.selector
-            _schema.selector_match_operator = cls._args_managed_rule_exclusion_update.selector_match_operator
-            return
-
-        cls._args_managed_rule_exclusion_update = AAZObjectArg(
-            nullable=True,
-        )
-
-        managed_rule_exclusion_update = cls._args_managed_rule_exclusion_update
-        managed_rule_exclusion_update.match_variable = AAZStrArg(
-            options=["match-variable"],
-            help="The variable type to be excluded.",
-            enum={"QueryStringArgNames": "QueryStringArgNames", "RequestBodyJsonArgNames": "RequestBodyJsonArgNames", "RequestBodyPostArgNames": "RequestBodyPostArgNames", "RequestCookieNames": "RequestCookieNames", "RequestHeaderNames": "RequestHeaderNames"},
-        )
-        managed_rule_exclusion_update.selector = AAZStrArg(
-            options=["selector"],
-            help="Selector value for which elements in the collection this exclusion applies to.",
-        )
-        managed_rule_exclusion_update.selector_match_operator = AAZStrArg(
-            options=["selector-match-operator"],
-            help="Comparison operator to apply to the selector when specifying which elements in the collection this exclusion applies to.",
-            enum={"Contains": "Contains", "EndsWith": "EndsWith", "Equals": "Equals", "EqualsAny": "EqualsAny", "StartsWith": "StartsWith"},
-        )
-
-        _schema.match_variable = cls._args_managed_rule_exclusion_update.match_variable
-        _schema.selector = cls._args_managed_rule_exclusion_update.selector
-        _schema.selector_match_operator = cls._args_managed_rule_exclusion_update.selector_match_operator
-
-    _args_security_policy_web_application_firewall_association_update = None
-
-    @classmethod
-    def _build_args_security_policy_web_application_firewall_association_update(cls, _schema):
-        if cls._args_security_policy_web_application_firewall_association_update is not None:
-            _schema.domains = cls._args_security_policy_web_application_firewall_association_update.domains
-            _schema.patterns_to_match = cls._args_security_policy_web_application_firewall_association_update.patterns_to_match
-            return
-
-        cls._args_security_policy_web_application_firewall_association_update = AAZObjectArg(
-            nullable=True,
-        )
-
-        security_policy_web_application_firewall_association_update = cls._args_security_policy_web_application_firewall_association_update
-        security_policy_web_application_firewall_association_update.domains = AAZListArg(
+        _element = cls._args_schema.web_application_firewall.associations.Element
+        _element.domains = AAZListArg(
             options=["domains"],
             help="List of domains.",
             nullable=True,
         )
-        security_policy_web_application_firewall_association_update.patterns_to_match = AAZListArg(
+        _element.patterns_to_match = AAZListArg(
             options=["patterns-to-match"],
             help="List of paths",
             nullable=True,
         )
+        _element.routes = AAZListArg(
+            options=["routes"],
+            help="List of routes.",
+            nullable=True,
+        )
 
-        domains = cls._args_security_policy_web_application_firewall_association_update.domains
+        domains = cls._args_schema.web_application_firewall.associations.Element.domains
         domains.Element = AAZObjectArg(
             nullable=True,
         )
 
-        _element = cls._args_security_policy_web_application_firewall_association_update.domains.Element
+        _element = cls._args_schema.web_application_firewall.associations.Element.domains.Element
         _element.id = AAZStrArg(
             options=["id"],
             help="Resource ID.",
             nullable=True,
         )
 
-        patterns_to_match = cls._args_security_policy_web_application_firewall_association_update.patterns_to_match
+        patterns_to_match = cls._args_schema.web_application_firewall.associations.Element.patterns_to_match
         patterns_to_match.Element = AAZStrArg(
             nullable=True,
         )
 
-        _schema.domains = cls._args_security_policy_web_application_firewall_association_update.domains
-        _schema.patterns_to_match = cls._args_security_policy_web_application_firewall_association_update.patterns_to_match
+        routes = cls._args_schema.web_application_firewall.associations.Element.routes
+        routes.Element = AAZObjectArg(
+            nullable=True,
+        )
+        cls._build_args_resource_reference_update(routes.Element)
+        return cls._args_schema
+
+    _args_resource_reference_update = None
+
+    @classmethod
+    def _build_args_resource_reference_update(cls, _schema):
+        if cls._args_resource_reference_update is not None:
+            _schema.id = cls._args_resource_reference_update.id
+            return
+
+        cls._args_resource_reference_update = AAZObjectArg(
+            nullable=True,
+        )
+
+        resource_reference_update = cls._args_resource_reference_update
+        resource_reference_update.id = AAZStrArg(
+            options=["id"],
+            help="Resource ID.",
+            nullable=True,
+        )
+
+        _schema.id = cls._args_resource_reference_update.id
 
     def _execute_operations(self):
         self.pre_operations()
@@ -640,7 +243,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -743,7 +346,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }
@@ -810,173 +413,39 @@ class Update(AAZCommand):
             parameters = _builder.get(".properties.parameters")
             if parameters is not None:
                 parameters.set_const("type", "WebApplicationFirewall", AAZStrType, ".web_application_firewall", typ_kwargs={"flags": {"required": True}})
-                parameters.set_const("type", "WebApplicationFirewallEmbedded", AAZStrType, ".web_application_firewall_embedded", typ_kwargs={"flags": {"required": True}})
                 parameters.discriminate_by("type", "WebApplicationFirewall")
-                parameters.discriminate_by("type", "WebApplicationFirewallEmbedded")
 
             disc_web_application_firewall = _builder.get(".properties.parameters{type:WebApplicationFirewall}")
             if disc_web_application_firewall is not None:
                 disc_web_application_firewall.set_prop("associations", AAZListType, ".web_application_firewall.associations")
-                disc_web_application_firewall.set_prop("wafPolicy", AAZObjectType)
+                disc_web_application_firewall.set_prop("isProfileLevel", AAZBoolType, ".web_application_firewall.is_profile_level")
+                _UpdateHelper._build_schema_resource_reference_update(disc_web_application_firewall.set_prop("wafPolicy", AAZObjectType, ".web_application_firewall.waf_policy"))
 
             associations = _builder.get(".properties.parameters{type:WebApplicationFirewall}.associations")
             if associations is not None:
-                _UpdateHelper._build_schema_security_policy_web_application_firewall_association_update(associations.set_elements(AAZObjectType, "."))
+                associations.set_elements(AAZObjectType, ".")
 
-            waf_policy = _builder.get(".properties.parameters{type:WebApplicationFirewall}.wafPolicy")
-            if waf_policy is not None:
-                waf_policy.set_prop("id", AAZStrType, ".web_application_firewall.waf_policy")
-
-            disc_web_application_firewall_embedded = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}")
-            if disc_web_application_firewall_embedded is not None:
-                disc_web_application_firewall_embedded.set_prop("associations", AAZListType, ".web_application_firewall_embedded.associations")
-                disc_web_application_firewall_embedded.set_prop("wafPolicy", AAZObjectType, ".web_application_firewall_embedded.waf_policy")
-
-            associations = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.associations")
-            if associations is not None:
-                _UpdateHelper._build_schema_security_policy_web_application_firewall_association_update(associations.set_elements(AAZObjectType, "."))
-
-            waf_policy = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy")
-            if waf_policy is not None:
-                waf_policy.set_prop("etag", AAZStrType, ".etag")
-                waf_policy.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-                waf_policy.set_prop("sku", AAZObjectType, ".sku")
-
-            properties = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties")
-            if properties is not None:
-                properties.set_prop("customRules", AAZObjectType, ".custom_rules")
-                properties.set_prop("managedRules", AAZObjectType, ".managed_rules")
-                properties.set_prop("policySettings", AAZObjectType, ".policy_settings")
-
-            custom_rules = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.customRules")
-            if custom_rules is not None:
-                custom_rules.set_prop("rules", AAZListType, ".rules")
-
-            rules = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.customRules.rules")
-            if rules is not None:
-                rules.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.customRules.rules[]")
+            _elements = _builder.get(".properties.parameters{type:WebApplicationFirewall}.associations[]")
             if _elements is not None:
-                _elements.set_prop("action", AAZStrType, ".action", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("enabledState", AAZStrType, ".enabled_state")
-                _elements.set_prop("groupBy", AAZListType, ".group_by")
-                _elements.set_prop("matchConditions", AAZListType, ".match_conditions", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("name", AAZStrType, ".name")
-                _elements.set_prop("priority", AAZIntType, ".priority", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("rateLimitDurationInMinutes", AAZIntType, ".rate_limit_duration_in_minutes")
-                _elements.set_prop("rateLimitThreshold", AAZIntType, ".rate_limit_threshold")
-                _elements.set_prop("ruleType", AAZStrType, ".rule_type", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("domains", AAZListType, ".domains")
+                _elements.set_prop("patternsToMatch", AAZListType, ".patterns_to_match")
+                _elements.set_prop("routes", AAZListType, ".routes")
 
-            group_by = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.customRules.rules[].groupBy")
-            if group_by is not None:
-                group_by.set_elements(AAZObjectType, ".")
+            domains = _builder.get(".properties.parameters{type:WebApplicationFirewall}.associations[].domains")
+            if domains is not None:
+                domains.set_elements(AAZObjectType, ".")
 
-            _elements = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.customRules.rules[].groupBy[]")
+            _elements = _builder.get(".properties.parameters{type:WebApplicationFirewall}.associations[].domains[]")
             if _elements is not None:
-                _elements.set_prop("variableName", AAZStrType, ".variable_name", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("id", AAZStrType, ".id")
 
-            match_conditions = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.customRules.rules[].matchConditions")
-            if match_conditions is not None:
-                match_conditions.set_elements(AAZObjectType, ".")
+            patterns_to_match = _builder.get(".properties.parameters{type:WebApplicationFirewall}.associations[].patternsToMatch")
+            if patterns_to_match is not None:
+                patterns_to_match.set_elements(AAZStrType, ".")
 
-            _elements = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.customRules.rules[].matchConditions[]")
-            if _elements is not None:
-                _elements.set_prop("matchValue", AAZListType, ".match_value", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("matchVariable", AAZStrType, ".match_variable", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("negateCondition", AAZBoolType, ".negate_condition")
-                _elements.set_prop("operator", AAZStrType, ".operator", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("selector", AAZStrType, ".selector")
-                _elements.set_prop("transforms", AAZListType, ".transforms")
-
-            match_value = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.customRules.rules[].matchConditions[].matchValue")
-            if match_value is not None:
-                match_value.set_elements(AAZStrType, ".")
-
-            transforms = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.customRules.rules[].matchConditions[].transforms")
-            if transforms is not None:
-                transforms.set_elements(AAZStrType, ".")
-
-            managed_rules = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.managedRules")
-            if managed_rules is not None:
-                managed_rules.set_prop("managedRuleSets", AAZListType, ".managed_rule_sets")
-
-            managed_rule_sets = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.managedRules.managedRuleSets")
-            if managed_rule_sets is not None:
-                managed_rule_sets.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.managedRules.managedRuleSets[]")
-            if _elements is not None:
-                _elements.set_prop("exclusions", AAZListType, ".exclusions")
-                _elements.set_prop("ruleGroupOverrides", AAZListType, ".rule_group_overrides")
-                _elements.set_prop("ruleSetAction", AAZStrType, ".rule_set_action")
-                _elements.set_prop("ruleSetType", AAZStrType, ".rule_set_type", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("ruleSetVersion", AAZStrType, ".rule_set_version", typ_kwargs={"flags": {"required": True}})
-
-            exclusions = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.managedRules.managedRuleSets[].exclusions")
-            if exclusions is not None:
-                _UpdateHelper._build_schema_managed_rule_exclusion_update(exclusions.set_elements(AAZObjectType, "."))
-
-            rule_group_overrides = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.managedRules.managedRuleSets[].ruleGroupOverrides")
-            if rule_group_overrides is not None:
-                rule_group_overrides.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.managedRules.managedRuleSets[].ruleGroupOverrides[]")
-            if _elements is not None:
-                _elements.set_prop("exclusions", AAZListType, ".exclusions")
-                _elements.set_prop("ruleGroupName", AAZStrType, ".rule_group_name", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("rules", AAZListType, ".rules")
-
-            exclusions = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.managedRules.managedRuleSets[].ruleGroupOverrides[].exclusions")
-            if exclusions is not None:
-                _UpdateHelper._build_schema_managed_rule_exclusion_update(exclusions.set_elements(AAZObjectType, "."))
-
-            rules = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.managedRules.managedRuleSets[].ruleGroupOverrides[].rules")
-            if rules is not None:
-                rules.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.managedRules.managedRuleSets[].ruleGroupOverrides[].rules[]")
-            if _elements is not None:
-                _elements.set_prop("action", AAZStrType, ".action")
-                _elements.set_prop("enabledState", AAZStrType, ".enabled_state")
-                _elements.set_prop("exclusions", AAZListType, ".exclusions")
-                _elements.set_prop("ruleId", AAZStrType, ".rule_id", typ_kwargs={"flags": {"required": True}})
-
-            exclusions = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.managedRules.managedRuleSets[].ruleGroupOverrides[].rules[].exclusions")
-            if exclusions is not None:
-                _UpdateHelper._build_schema_managed_rule_exclusion_update(exclusions.set_elements(AAZObjectType, "."))
-
-            policy_settings = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.policySettings")
-            if policy_settings is not None:
-                policy_settings.set_prop("captchaExpirationInMinutes", AAZIntType, ".captcha_expiration_in_minutes")
-                policy_settings.set_prop("customBlockResponseBody", AAZStrType, ".custom_block_response_body")
-                policy_settings.set_prop("customBlockResponseStatusCode", AAZIntType, ".custom_block_response_status_code")
-                policy_settings.set_prop("enabledState", AAZStrType, ".enabled_state")
-                policy_settings.set_prop("javascriptChallengeExpirationInMinutes", AAZIntType, ".javascript_challenge_expiration_in_minutes")
-                policy_settings.set_prop("logScrubbing", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-                policy_settings.set_prop("mode", AAZStrType, ".mode")
-                policy_settings.set_prop("redirectUrl", AAZStrType, ".redirect_url")
-                policy_settings.set_prop("requestBodyCheck", AAZStrType, ".request_body_check")
-
-            log_scrubbing = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.policySettings.logScrubbing")
-            if log_scrubbing is not None:
-                log_scrubbing.set_prop("scrubbingRules", AAZListType, ".scrubbing_rules")
-                log_scrubbing.set_prop("state", AAZStrType, ".state")
-
-            scrubbing_rules = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.policySettings.logScrubbing.scrubbingRules")
-            if scrubbing_rules is not None:
-                scrubbing_rules.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.properties.policySettings.logScrubbing.scrubbingRules[]")
-            if _elements is not None:
-                _elements.set_prop("matchVariable", AAZStrType, ".match_variable", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("selector", AAZStrType, ".selector")
-                _elements.set_prop("selectorMatchOperator", AAZStrType, ".selector_match_operator", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("state", AAZStrType, ".state")
-
-            sku = _builder.get(".properties.parameters{type:WebApplicationFirewallEmbedded}.wafPolicy.sku")
-            if sku is not None:
-                sku.set_prop("name", AAZStrType, ".name")
+            routes = _builder.get(".properties.parameters{type:WebApplicationFirewall}.associations[].routes")
+            if routes is not None:
+                _UpdateHelper._build_schema_resource_reference_update(routes.set_elements(AAZObjectType, "."))
 
             return _instance_value
 
@@ -993,93 +462,25 @@ class _UpdateHelper:
     """Helper class for Update"""
 
     @classmethod
-    def _build_schema_managed_rule_exclusion_update(cls, _builder):
+    def _build_schema_resource_reference_update(cls, _builder):
         if _builder is None:
             return
-        _builder.set_prop("matchVariable", AAZStrType, ".match_variable", typ_kwargs={"flags": {"required": True}})
-        _builder.set_prop("selector", AAZStrType, ".selector", typ_kwargs={"flags": {"required": True}})
-        _builder.set_prop("selectorMatchOperator", AAZStrType, ".selector_match_operator", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("id", AAZStrType, ".id")
+
+    _schema_resource_reference_read = None
 
     @classmethod
-    def _build_schema_security_policy_web_application_firewall_association_update(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("domains", AAZListType, ".domains")
-        _builder.set_prop("patternsToMatch", AAZListType, ".patterns_to_match")
-
-        domains = _builder.get(".domains")
-        if domains is not None:
-            domains.set_elements(AAZObjectType, ".")
-
-        _elements = _builder.get(".domains[]")
-        if _elements is not None:
-            _elements.set_prop("id", AAZStrType, ".id")
-
-        patterns_to_match = _builder.get(".patternsToMatch")
-        if patterns_to_match is not None:
-            patterns_to_match.set_elements(AAZStrType, ".")
-
-    _schema_managed_rule_exclusion_read = None
-
-    @classmethod
-    def _build_schema_managed_rule_exclusion_read(cls, _schema):
-        if cls._schema_managed_rule_exclusion_read is not None:
-            _schema.match_variable = cls._schema_managed_rule_exclusion_read.match_variable
-            _schema.selector = cls._schema_managed_rule_exclusion_read.selector
-            _schema.selector_match_operator = cls._schema_managed_rule_exclusion_read.selector_match_operator
+    def _build_schema_resource_reference_read(cls, _schema):
+        if cls._schema_resource_reference_read is not None:
+            _schema.id = cls._schema_resource_reference_read.id
             return
 
-        cls._schema_managed_rule_exclusion_read = _schema_managed_rule_exclusion_read = AAZObjectType()
+        cls._schema_resource_reference_read = _schema_resource_reference_read = AAZObjectType()
 
-        managed_rule_exclusion_read = _schema_managed_rule_exclusion_read
-        managed_rule_exclusion_read.match_variable = AAZStrType(
-            serialized_name="matchVariable",
-            flags={"required": True},
-        )
-        managed_rule_exclusion_read.selector = AAZStrType(
-            flags={"required": True},
-        )
-        managed_rule_exclusion_read.selector_match_operator = AAZStrType(
-            serialized_name="selectorMatchOperator",
-            flags={"required": True},
-        )
+        resource_reference_read = _schema_resource_reference_read
+        resource_reference_read.id = AAZStrType()
 
-        _schema.match_variable = cls._schema_managed_rule_exclusion_read.match_variable
-        _schema.selector = cls._schema_managed_rule_exclusion_read.selector
-        _schema.selector_match_operator = cls._schema_managed_rule_exclusion_read.selector_match_operator
-
-    _schema_security_policy_web_application_firewall_association_read = None
-
-    @classmethod
-    def _build_schema_security_policy_web_application_firewall_association_read(cls, _schema):
-        if cls._schema_security_policy_web_application_firewall_association_read is not None:
-            _schema.domains = cls._schema_security_policy_web_application_firewall_association_read.domains
-            _schema.patterns_to_match = cls._schema_security_policy_web_application_firewall_association_read.patterns_to_match
-            return
-
-        cls._schema_security_policy_web_application_firewall_association_read = _schema_security_policy_web_application_firewall_association_read = AAZObjectType()
-
-        security_policy_web_application_firewall_association_read = _schema_security_policy_web_application_firewall_association_read
-        security_policy_web_application_firewall_association_read.domains = AAZListType()
-        security_policy_web_application_firewall_association_read.patterns_to_match = AAZListType(
-            serialized_name="patternsToMatch",
-        )
-
-        domains = _schema_security_policy_web_application_firewall_association_read.domains
-        domains.Element = AAZObjectType()
-
-        _element = _schema_security_policy_web_application_firewall_association_read.domains.Element
-        _element.id = AAZStrType()
-        _element.is_active = AAZBoolType(
-            serialized_name="isActive",
-            flags={"read_only": True},
-        )
-
-        patterns_to_match = _schema_security_policy_web_application_firewall_association_read.patterns_to_match
-        patterns_to_match.Element = AAZStrType()
-
-        _schema.domains = cls._schema_security_policy_web_application_firewall_association_read.domains
-        _schema.patterns_to_match = cls._schema_security_policy_web_application_firewall_association_read.patterns_to_match
+        _schema.id = cls._schema_resource_reference_read.id
 
     _schema_security_policy_read = None
 
@@ -1109,7 +510,6 @@ class _UpdateHelper:
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        cls._build_schema_system_data_read(security_policy_read.system_data)
         security_policy_read.type = AAZStrType(
             flags={"read_only": True},
         )
@@ -1136,337 +536,66 @@ class _UpdateHelper:
 
         disc_web_application_firewall = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewall")
         disc_web_application_firewall.associations = AAZListType()
+        disc_web_application_firewall.is_profile_level = AAZBoolType(
+            serialized_name="isProfileLevel",
+        )
         disc_web_application_firewall.waf_policy = AAZObjectType(
             serialized_name="wafPolicy",
         )
+        cls._build_schema_resource_reference_read(disc_web_application_firewall.waf_policy)
 
         associations = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewall").associations
         associations.Element = AAZObjectType()
-        cls._build_schema_security_policy_web_application_firewall_association_read(associations.Element)
 
-        waf_policy = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewall").waf_policy
-        waf_policy.id = AAZStrType()
+        _element = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewall").associations.Element
+        _element.domains = AAZListType()
+        _element.patterns_to_match = AAZListType(
+            serialized_name="patternsToMatch",
+        )
+        _element.routes = AAZListType()
 
-        disc_web_application_firewall_embedded = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded")
-        disc_web_application_firewall_embedded.associations = AAZListType()
-        disc_web_application_firewall_embedded.waf_policy = AAZObjectType(
-            serialized_name="wafPolicy",
-        )
+        domains = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewall").associations.Element.domains
+        domains.Element = AAZObjectType()
 
-        associations = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").associations
-        associations.Element = AAZObjectType()
-        cls._build_schema_security_policy_web_application_firewall_association_read(associations.Element)
-
-        waf_policy = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy
-        waf_policy.etag = AAZStrType()
-        waf_policy.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        waf_policy.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        waf_policy.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        waf_policy.sku = AAZObjectType()
-        waf_policy.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        cls._build_schema_system_data_read(waf_policy.system_data)
-        waf_policy.type = AAZStrType(
+        _element = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewall").associations.Element.domains.Element
+        _element.id = AAZStrType()
+        _element.is_active = AAZBoolType(
+            serialized_name="isActive",
             flags={"read_only": True},
         )
 
-        properties = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties
-        properties.custom_rules = AAZObjectType(
-            serialized_name="customRules",
-        )
-        properties.frontend_endpoint_links = AAZListType(
-            serialized_name="frontendEndpointLinks",
-            flags={"read_only": True},
-        )
-        properties.managed_rules = AAZObjectType(
-            serialized_name="managedRules",
-        )
-        properties.policy_settings = AAZObjectType(
-            serialized_name="policySettings",
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.resource_state = AAZStrType(
-            serialized_name="resourceState",
-            flags={"read_only": True},
-        )
-        properties.routing_rule_links = AAZListType(
-            serialized_name="routingRuleLinks",
-            flags={"read_only": True},
-        )
-        properties.security_policy_links = AAZListType(
-            serialized_name="securityPolicyLinks",
-            flags={"read_only": True},
-        )
+        patterns_to_match = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewall").associations.Element.patterns_to_match
+        patterns_to_match.Element = AAZStrType()
 
-        custom_rules = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.custom_rules
-        custom_rules.rules = AAZListType()
+        routes = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewall").associations.Element.routes
+        routes.Element = AAZObjectType()
+        cls._build_schema_resource_reference_read(routes.Element)
 
-        rules = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.custom_rules.rules
-        rules.Element = AAZObjectType()
-
-        _element = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.custom_rules.rules.Element
-        _element.action = AAZStrType(
-            flags={"required": True},
+        system_data = _schema_security_policy_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
         )
-        _element.enabled_state = AAZStrType(
-            serialized_name="enabledState",
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
         )
-        _element.group_by = AAZListType(
-            serialized_name="groupBy",
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
         )
-        _element.match_conditions = AAZListType(
-            serialized_name="matchConditions",
-            flags={"required": True},
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
         )
-        _element.name = AAZStrType()
-        _element.priority = AAZIntType(
-            flags={"required": True},
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
         )
-        _element.rate_limit_duration_in_minutes = AAZIntType(
-            serialized_name="rateLimitDurationInMinutes",
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
         )
-        _element.rate_limit_threshold = AAZIntType(
-            serialized_name="rateLimitThreshold",
-        )
-        _element.rule_type = AAZStrType(
-            serialized_name="ruleType",
-            flags={"required": True},
-        )
-
-        group_by = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.custom_rules.rules.Element.group_by
-        group_by.Element = AAZObjectType()
-
-        _element = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.custom_rules.rules.Element.group_by.Element
-        _element.variable_name = AAZStrType(
-            serialized_name="variableName",
-            flags={"required": True},
-        )
-
-        match_conditions = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.custom_rules.rules.Element.match_conditions
-        match_conditions.Element = AAZObjectType()
-
-        _element = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.custom_rules.rules.Element.match_conditions.Element
-        _element.match_value = AAZListType(
-            serialized_name="matchValue",
-            flags={"required": True},
-        )
-        _element.match_variable = AAZStrType(
-            serialized_name="matchVariable",
-            flags={"required": True},
-        )
-        _element.negate_condition = AAZBoolType(
-            serialized_name="negateCondition",
-        )
-        _element.operator = AAZStrType(
-            flags={"required": True},
-        )
-        _element.selector = AAZStrType()
-        _element.transforms = AAZListType()
-
-        match_value = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.custom_rules.rules.Element.match_conditions.Element.match_value
-        match_value.Element = AAZStrType()
-
-        transforms = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.custom_rules.rules.Element.match_conditions.Element.transforms
-        transforms.Element = AAZStrType()
-
-        frontend_endpoint_links = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.frontend_endpoint_links
-        frontend_endpoint_links.Element = AAZObjectType()
-
-        _element = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.frontend_endpoint_links.Element
-        _element.id = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        managed_rules = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.managed_rules
-        managed_rules.managed_rule_sets = AAZListType(
-            serialized_name="managedRuleSets",
-        )
-
-        managed_rule_sets = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.managed_rules.managed_rule_sets
-        managed_rule_sets.Element = AAZObjectType()
-
-        _element = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.managed_rules.managed_rule_sets.Element
-        _element.exclusions = AAZListType()
-        _element.rule_group_overrides = AAZListType(
-            serialized_name="ruleGroupOverrides",
-        )
-        _element.rule_set_action = AAZStrType(
-            serialized_name="ruleSetAction",
-        )
-        _element.rule_set_type = AAZStrType(
-            serialized_name="ruleSetType",
-            flags={"required": True},
-        )
-        _element.rule_set_version = AAZStrType(
-            serialized_name="ruleSetVersion",
-            flags={"required": True},
-        )
-
-        exclusions = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.managed_rules.managed_rule_sets.Element.exclusions
-        exclusions.Element = AAZObjectType()
-        cls._build_schema_managed_rule_exclusion_read(exclusions.Element)
-
-        rule_group_overrides = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.managed_rules.managed_rule_sets.Element.rule_group_overrides
-        rule_group_overrides.Element = AAZObjectType()
-
-        _element = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element
-        _element.exclusions = AAZListType()
-        _element.rule_group_name = AAZStrType(
-            serialized_name="ruleGroupName",
-            flags={"required": True},
-        )
-        _element.rules = AAZListType()
-
-        exclusions = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element.exclusions
-        exclusions.Element = AAZObjectType()
-        cls._build_schema_managed_rule_exclusion_read(exclusions.Element)
-
-        rules = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element.rules
-        rules.Element = AAZObjectType()
-
-        _element = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element.rules.Element
-        _element.action = AAZStrType()
-        _element.enabled_state = AAZStrType(
-            serialized_name="enabledState",
-        )
-        _element.exclusions = AAZListType()
-        _element.rule_id = AAZStrType(
-            serialized_name="ruleId",
-            flags={"required": True},
-        )
-
-        exclusions = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.managed_rules.managed_rule_sets.Element.rule_group_overrides.Element.rules.Element.exclusions
-        exclusions.Element = AAZObjectType()
-        cls._build_schema_managed_rule_exclusion_read(exclusions.Element)
-
-        policy_settings = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.policy_settings
-        policy_settings.captcha_expiration_in_minutes = AAZIntType(
-            serialized_name="captchaExpirationInMinutes",
-        )
-        policy_settings.custom_block_response_body = AAZStrType(
-            serialized_name="customBlockResponseBody",
-        )
-        policy_settings.custom_block_response_status_code = AAZIntType(
-            serialized_name="customBlockResponseStatusCode",
-        )
-        policy_settings.enabled_state = AAZStrType(
-            serialized_name="enabledState",
-        )
-        policy_settings.javascript_challenge_expiration_in_minutes = AAZIntType(
-            serialized_name="javascriptChallengeExpirationInMinutes",
-        )
-        policy_settings.log_scrubbing = AAZObjectType(
-            serialized_name="logScrubbing",
-            flags={"client_flatten": True},
-        )
-        policy_settings.mode = AAZStrType()
-        policy_settings.redirect_url = AAZStrType(
-            serialized_name="redirectUrl",
-        )
-        policy_settings.request_body_check = AAZStrType(
-            serialized_name="requestBodyCheck",
-        )
-
-        log_scrubbing = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.policy_settings.log_scrubbing
-        log_scrubbing.scrubbing_rules = AAZListType(
-            serialized_name="scrubbingRules",
-        )
-        log_scrubbing.state = AAZStrType()
-
-        scrubbing_rules = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.policy_settings.log_scrubbing.scrubbing_rules
-        scrubbing_rules.Element = AAZObjectType()
-
-        _element = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.policy_settings.log_scrubbing.scrubbing_rules.Element
-        _element.match_variable = AAZStrType(
-            serialized_name="matchVariable",
-            flags={"required": True},
-        )
-        _element.selector = AAZStrType()
-        _element.selector_match_operator = AAZStrType(
-            serialized_name="selectorMatchOperator",
-            flags={"required": True},
-        )
-        _element.state = AAZStrType()
-
-        routing_rule_links = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.routing_rule_links
-        routing_rule_links.Element = AAZObjectType()
-
-        _element = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.routing_rule_links.Element
-        _element.id = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        security_policy_links = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.security_policy_links
-        security_policy_links.Element = AAZObjectType()
-
-        _element = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.properties.security_policy_links.Element
-        _element.id = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        sku = _schema_security_policy_read.properties.parameters.discriminate_by("type", "WebApplicationFirewallEmbedded").waf_policy.sku
-        sku.name = AAZStrType()
 
         _schema.id = cls._schema_security_policy_read.id
         _schema.name = cls._schema_security_policy_read.name
         _schema.properties = cls._schema_security_policy_read.properties
         _schema.system_data = cls._schema_security_policy_read.system_data
         _schema.type = cls._schema_security_policy_read.type
-
-    _schema_system_data_read = None
-
-    @classmethod
-    def _build_schema_system_data_read(cls, _schema):
-        if cls._schema_system_data_read is not None:
-            _schema.created_at = cls._schema_system_data_read.created_at
-            _schema.created_by = cls._schema_system_data_read.created_by
-            _schema.created_by_type = cls._schema_system_data_read.created_by_type
-            _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
-            _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
-            _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
-            return
-
-        cls._schema_system_data_read = _schema_system_data_read = AAZObjectType(
-            flags={"read_only": True}
-        )
-
-        system_data_read = _schema_system_data_read
-        system_data_read.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data_read.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data_read.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data_read.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data_read.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data_read.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        _schema.created_at = cls._schema_system_data_read.created_at
-        _schema.created_by = cls._schema_system_data_read.created_by
-        _schema.created_by_type = cls._schema_system_data_read.created_by_type
-        _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
-        _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
-        _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
 __all__ = ["Update"]

@@ -14,7 +14,7 @@ import tempfile
 import shutil
 import shlex
 
-from subprocess import check_output, CalledProcessError, run
+from subprocess import check_output, CalledProcessError, run, STDOUT
 from util import SRC_PATH
 
 logger = logging.getLogger(__name__)
@@ -93,12 +93,27 @@ def test_source_wheels():
     source_extensions = [os.path.join(SRC_PATH, n) for n in os.listdir(SRC_PATH)
                          if os.path.isdir(os.path.join(SRC_PATH, n))]
     for s in source_extensions:
-        if not os.path.isfile(os.path.join(s, 'setup.py')):
+        # Skip empty dirs left over from removed extensions. Git doesn't track empty dirs, so these
+        # only ever show up locally.
+        if not any(d.startswith('azext_') and os.path.isfile(os.path.join(s, d, '__init__.py'))
+                   for d in os.listdir(s)):
             continue
+        # An extension is buildable through either pyproject.toml or a legacy setup.py
+        if not any(os.path.isfile(os.path.join(s, f)) for f in ('pyproject.toml', 'setup.py')):
+            raise RuntimeError("Extension {} has neither pyproject.toml nor setup.py, "
+                               "so no wheel can be built for it.".format(os.path.basename(s)))
         try:
-            check_output(['python', 'setup.py', 'bdist_wheel', '-q', '-d', built_whl_dir], cwd=s)
+            # Pass the source dir as an argument instead of using cwd. With cwd set to the extension
+            # folder, the build/ dir setuptools drops there shadows the `build` module and every run
+            # after the first one fails.
+            # --no-isolation keeps parity with the old `setup.py bdist_wheel` behaviour, which
+            # extensions whose setup.py imports their own azext_* package still depend on.
+            # TODO: drop --no-isolation once those imports are gone.
+            check_output([sys.executable, '-m', 'build', '--wheel', '--no-isolation',
+                          '--outdir', built_whl_dir, s], stderr=STDOUT)
         except CalledProcessError as err:
-            raise("Unable to build extension {} : {}".format(s, err))
+            raise RuntimeError("Unable to build extension {} :\n{}".format(
+                s, err.output.decode('utf-8', 'replace'))) from err
     # Export built wheels so CI can publish them as artifacts
     wheels_out_dir = os.environ.get('WHEELS_OUTPUT_DIR')
     if wheels_out_dir:

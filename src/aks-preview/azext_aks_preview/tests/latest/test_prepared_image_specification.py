@@ -4,13 +4,29 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
+from unittest.mock import Mock, patch
 
 from azure.cli.testsdk import ScenarioTest, live_only
 
+from azext_aks_preview.prepared_image_specification import (
+    ensure_pis_managed_identity_permission_for_cluster,
+)
 from azext_aks_preview.tests.latest.recording_processors import KeyReplacer
 from azext_aks_preview.tests.latest.custom_preparers import (
     AKSCustomResourceGroupPreparer,
 )
+
+
+class PreparedImageSpecificationUnitTestCases(unittest.TestCase):
+    def test_ensure_cluster_permission_allows_no_agent_pools(self):
+        cluster = Mock(agent_pool_profiles=None)
+
+        with patch(
+            "azext_aks_preview.prepared_image_specification.pis_identity_resource_id"
+        ) as pis_identity_resource_id:
+            ensure_pis_managed_identity_permission_for_cluster(Mock(), cluster)
+
+        pis_identity_resource_id.assert_not_called()
 
 
 class PreparedImageSpecificationTestCases(ScenarioTest):

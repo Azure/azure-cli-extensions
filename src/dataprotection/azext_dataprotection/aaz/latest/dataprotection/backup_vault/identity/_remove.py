@@ -19,9 +19,9 @@ class Remove(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2025-07-01", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2026-06-01", "identity"],
         ]
     }
 
@@ -43,6 +43,10 @@ class Remove(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.x_ms_deleted_vault_id = AAZStrArg(
+            options=["--x-ms-deleted-vault-id"],
+            help="The ID of the deleted backup vault to restore from during undelete flow.",
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -160,7 +164,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -259,7 +263,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -268,6 +272,9 @@ class Remove(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "x-ms-deleted-vault-id", self.ctx.args.x_ms_deleted_vault_id,
+                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
@@ -406,6 +413,9 @@ class _RemoveHelper:
             serialized_name="bcdrSecurityLevel",
             flags={"read_only": True},
         )
+        properties.cost_management_settings = AAZObjectType(
+            serialized_name="costManagementSettings",
+        )
         properties.feature_settings = AAZObjectType(
             serialized_name="featureSettings",
         )
@@ -443,7 +453,11 @@ class _RemoveHelper:
         )
         properties.storage_settings = AAZListType(
             serialized_name="storageSettings",
-            flags={"required": True},
+        )
+
+        cost_management_settings = _schema_backup_vault_resource_read.properties.cost_management_settings
+        cost_management_settings.granularity_level = AAZStrType(
+            serialized_name="granularityLevel",
         )
 
         feature_settings = _schema_backup_vault_resource_read.properties.feature_settings

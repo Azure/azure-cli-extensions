@@ -18,6 +18,7 @@ from .utils import (
     is_dogfood_cluster,
     read_config_settings_file,
 )
+from knack.commands import CLICommand
 from knack.log import get_logger
 
 from azure.cli.core import get_default_cli, telemetry
@@ -26,6 +27,7 @@ from azure.cli.core.azclierror import (
     ClientRequestError,
     CLIInternalError,
     FileOperationError,
+    InvalidArgumentValueError,
     ResourceNotFoundError,
     ManualInterrupt,
     MutuallyExclusiveArgumentError,
@@ -38,12 +40,14 @@ from .vendored_sdks.models import Identity, Scope
 from ._validators import validate_cc_registration
 
 from .partner_extensions.ContainerInsights import ContainerInsights
-from .partner_extensions.AzureMonitorMetrics import AzureMonitorMetrics
+from .partner_extensions.AzureMonitorMetrics import AzureMonitorMetrics  # pylint: disable=no-name-in-module
 from .partner_extensions.AzureDefender import AzureDefender
 from .partner_extensions.OpenServiceMesh import OpenServiceMesh
 from .partner_extensions.AzureMLKubernetes import AzureMLKubernetes
 from .partner_extensions.DataProtectionKubernetes import DataProtectionKubernetes
 from .partner_extensions.Dapr import Dapr
+from .partner_extensions.VirtualNodes import VirtualNodes
+from .partner_extensions.ChaosStudio import ChaosStudio
 from .partner_extensions.DefaultExtension import (
     DefaultExtension,
     user_confirmation_factory,
@@ -55,19 +59,17 @@ from ._client_factory import cf_resources
 
 from kubernetes import client as kube_client
 from kubernetes import config
-from kubernetes.config.kube_config import KubeConfigMerger
-from kubernetes.client.rest import ApiException
-from kubernetes.client import CoreV1Api, V1NodeList
+from kubernetes.client import CoreV1Api
 
 from typing import Optional, Union
 
 import oras.client
 
-from knack.commands import CLICommand
-
 logger = get_logger(__name__)
 
 # A factory method to return the correct extension class based off of the extension name
+
+
 def ExtensionFactory(extension_name):
     extension_map = {
         "microsoft.azuremonitor.containers": ContainerInsights,
@@ -77,6 +79,8 @@ def ExtensionFactory(extension_name):
         "microsoft.azureml.kubernetes": AzureMLKubernetes,
         "microsoft.dapr": Dapr,
         "microsoft.dataprotection.kubernetes": DataProtectionKubernetes,
+        "microsoft.virtualnodes": VirtualNodes,
+        "microsoft.chaosstudio": ChaosStudio,
     }
 
     # Return the extension if we find it in the map, else return the default
@@ -117,6 +121,17 @@ def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_
         raise ex
 
 
+def _validate_fleet_extension_type(cluster_type_lower, extension_type_lower):
+    if (
+        cluster_type_lower == consts.FLEET_TYPE
+        and extension_type_lower != consts.FLEET_EXTENSION_TYPE
+    ):
+        raise InvalidArgumentValueError(
+            "Extension type '{}' is not supported for cluster type 'fleets'. "
+            "The supported extension type is 'microsoft.flux'.".format(extension_type_lower)
+        )
+
+
 def create_k8s_extension(
     cmd,
     client,
@@ -128,6 +143,7 @@ def create_k8s_extension(
     cluster_resource_provider=None,
     scope=None,
     auto_upgrade_minor_version=None,
+    auto_upgrade_mode=None,
     release_train=None,
     version=None,
     target_namespace=None,
@@ -144,6 +160,7 @@ def create_k8s_extension(
     """Create a new Extension Instance."""
 
     extension_type_lower = extension_type.lower()
+    _validate_fleet_extension_type(cluster_type.lower(), extension_type_lower)
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_resource_provider)
 
     # Configuration Settings & Configuration Protected Settings
@@ -205,6 +222,7 @@ def create_k8s_extension(
         extension_type_lower,
         scope,
         auto_upgrade_minor_version,
+        auto_upgrade_mode,
         release_train,
         version,
         target_namespace,
@@ -220,7 +238,13 @@ def create_k8s_extension(
 
     # Common validations
     __validate_version_and_auto_upgrade(
-        extension_instance.version, extension_instance.auto_upgrade_minor_version
+        extension_instance.version,
+        extension_instance.auto_upgrade_minor_version,
+        extension_instance.auto_upgrade_mode,
+    )
+    __validate_auto_upgrade_mode(
+        extension_instance.auto_upgrade_minor_version,
+        extension_instance.auto_upgrade_mode,
     )
     __validate_scope_after_customization(extension_instance.scope)
 
@@ -238,6 +262,12 @@ def create_k8s_extension(
                 identity_object,
                 location,
             )
+
+    if isinstance(extension_class, ChaosStudio):
+        return extension_class.Install(
+            cmd, client, resource_group_name, cluster_rp, cluster_type,
+            cluster_name, name, extension_instance, no_wait=no_wait,
+        )
 
     # Try to create the resource
     return sdk_no_wait(
@@ -266,6 +296,7 @@ def update_k8s_extension(
     cluster_type,
     cluster_resource_provider=None,
     auto_upgrade_minor_version=None,
+    auto_upgrade_mode=None,
     release_train=None,
     version=None,
     configuration_settings=None,
@@ -299,6 +330,7 @@ def update_k8s_extension(
         client, resource_group_name, cluster_name, name, cluster_type, cluster_rp
     )
     extension_type_lower = extension.extension_type.lower()
+    _validate_fleet_extension_type(cluster_type.lower(), extension_type_lower)
 
     config_settings = {}
     config_protected_settings = {}
@@ -330,12 +362,18 @@ def update_k8s_extension(
         resource_group_name,
         cluster_name,
         auto_upgrade_minor_version,
+        auto_upgrade_mode,
         release_train,
         version,
         config_settings,
         config_protected_settings,
         extension,
         yes,
+    )
+
+    __validate_auto_upgrade_mode(
+        upd_extension.auto_upgrade_minor_version,
+        upd_extension.auto_upgrade_mode,
     )
 
     return sdk_no_wait(
@@ -439,6 +477,10 @@ def list_extension_type_versions_by_location(
 
     """ List available versions for a Cluster Extension Type versions in a region. """
 
+    _validate_fleet_extension_type(
+        cluster_type.lower() if cluster_type else None,
+        extension_type.lower(),
+    )
     versions_list = client.list_versions(
         location,
         extension_type,
@@ -498,6 +540,7 @@ def show_extension_type_by_cluster(
         extension_type):
 
     """ Get properties for a Cluster Extension Type for an existing cluster"""
+    _validate_fleet_extension_type(cluster_type.lower(), extension_type.lower())
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
 
     return client.get(
@@ -520,6 +563,7 @@ def list_extension_type_versions_by_cluster(
         show_latest=False):
 
     """ List available versions for a Cluster Extension Type for a given cluster."""
+    _validate_fleet_extension_type(cluster_type.lower(), extension_type.lower())
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
 
     return client.cluster_list_versions(
@@ -544,6 +588,7 @@ def show_extension_type_version_by_cluster(
 
     """ Get properties associated with a Cluster Extension Type version for an existing cluster"""
 
+    _validate_fleet_extension_type(cluster_type.lower(), extension_type.lower())
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
 
     return client.cluster_get_version(
@@ -588,10 +633,10 @@ def troubleshoot_extension(
         load_kube_config(kube_config, kube_context, skip_ssl_verification)
 
         # Install helm client
-        helm_client_location = install_helm_client(cmd)
+        install_helm_client(cmd)
 
         # Install kubectl client
-        kubectl_client_location = install_kubectl_client()
+        install_kubectl_client()
 
         # Checking the connection to kubernetes cluster.
         check_kube_connection()
@@ -612,7 +657,7 @@ def troubleshoot_extension(
         api_instance = kube_client.CoreV1Api()
 
         for namespace in namespaces:
-            collect_namespace_status = collect_namespace(api_instance,filepath_with_timestamp, namespace)
+            collect_namespace_status = collect_namespace(api_instance, filepath_with_timestamp, namespace)
             if collect_namespace_status is not True:
                 storage_space_available = False
 
@@ -631,6 +676,7 @@ def troubleshoot_extension(
     # Handling the user manual interrupt
     except KeyboardInterrupt:
         raise ManualInterrupt("Process terminated externally.")
+
 
 def collect_namespace(api_instance: CoreV1Api, base_path: str, namespace: str) -> bool:
     print(f"Step: {utils.get_utctimestring()}: Collecting diagnostics information for namespace '{namespace}'...")
@@ -665,6 +711,7 @@ def collect_namespace(api_instance: CoreV1Api, base_path: str, namespace: str) -
 
     return collection_success
 
+
 def set_kube_config(kube_config: Union[str, None]) -> Union[str, None]:
     print(f"Step: {utils.get_utctimestring()}: Setting KubeConfig")
     if kube_config:
@@ -675,6 +722,7 @@ def set_kube_config(kube_config: Union[str, None]) -> Union[str, None]:
             kube_config = kube_config[:-1]
         return kube_config
     return None
+
 
 def load_kube_config(
     kube_config: Union[str, None], kube_context: Union[str, None], skip_ssl_verification: bool
@@ -689,6 +737,7 @@ def load_kube_config(
             Configuration.set_default(default_config)
     except Exception as e:
         telemetry.set_exception(
+
             exception=e,
             fault_type=consts.LOAD_KUBECONFIG_FAULT_TYPE,
             summary="Problem loading the kubeconfig file",
@@ -696,9 +745,11 @@ def load_kube_config(
         logger.warning(consts.KUBECONFIG_LOAD_FAILED_WARNING)
         raise FileOperationError("Problem loading the kubeconfig file. " + str(e))
 
+
 def install_helm_client(cmd: CLICommand) -> str:
     print(
         f"Step: {utils.get_utctimestring()}: Install Helm client if it does not exist"
+
     )
     # Return helm client path set by user
     helm_client_path = os.getenv("HELM_CLIENT_PATH")
@@ -719,6 +770,7 @@ def install_helm_client(cmd: CLICommand) -> str:
         download_file_name = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
         install_location_string = (
             f".azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe"
+
         )
         artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
     elif operating_system == "linux" or operating_system == "darwin":
@@ -811,6 +863,7 @@ def install_helm_client(cmd: CLICommand) -> str:
 
     return install_location
 
+
 def install_kubectl_client() -> str:
     print(
         f"Step: {utils.get_utctimestring()}: Install Kubectl client if it does not exist"
@@ -834,6 +887,7 @@ def install_kubectl_client() -> str:
         kubectl_path = os.path.join(kubectl_filepath, kubectl)
 
         if os.path.isfile(kubectl_path):
+
             return kubectl_path
 
         # Downloading kubectl executable if its not present in the machine
@@ -857,6 +911,7 @@ def install_kubectl_client() -> str:
         )
         raise CLIInternalError(f"Unable to install kubectl. Error: {e}")
 
+
 def check_kube_connection() -> str:
     print(f"Step: {utils.get_utctimestring()}: Checking Connectivity to Cluster")
     api_instance = kube_client.VersionApi()
@@ -875,11 +930,13 @@ def check_kube_connection() -> str:
     raise CLIInternalError(
         "Unable to verify connectivity to the Kubernetes cluster. No version information could be retrieved.")
 
+
 def __create_identity(cmd, resource_group_name, cluster_name, cluster_type, cluster_rp):
     subscription_id = get_subscription_id(cmd.cli_ctx)
     resources = cf_resources(cmd.cli_ctx, subscription_id)
 
     # We do not create any identities for managedClusters
+
     if cluster_type.lower() == consts.MANAGED_CLUSTER_TYPE:
         return None, None
 
@@ -897,7 +954,6 @@ def __create_identity(cmd, resource_group_name, cluster_name, cluster_type, clus
     except HttpResponseError as ex:
         raise ex
     identity_type = "SystemAssigned"
-
     return Identity(type=identity_type), location
 
 
@@ -924,10 +980,55 @@ def __validate_scope_after_customization(scope_obj: Scope):
         raise RequiredArgumentMissingError(message)
 
 
-def __validate_version_and_auto_upgrade(version, auto_upgrade_minor_version):
+def __validate_version_and_auto_upgrade(version, auto_upgrade_minor_version, auto_upgrade_mode=None):
     if version is not None:
         if auto_upgrade_minor_version:
             message = "To pin to specific version, auto-upgrade-minor-version must be set to 'false'."
             raise MutuallyExclusiveArgumentError(message)
 
+        if auto_upgrade_mode is None:
+            # Allow explicit '--auto-upgrade false' with a pinned version even when
+            # '--auto-upgrade-mode' is omitted.
+            if auto_upgrade_minor_version is False:
+                return
+            message = "To pin to specific version, auto-upgrade-mode must be set to 'none'."
+            raise RequiredArgumentMissingError(message)
+
+        normalized_auto_upgrade_mode = auto_upgrade_mode
+        if hasattr(normalized_auto_upgrade_mode, "value"):
+            normalized_auto_upgrade_mode = normalized_auto_upgrade_mode.value
+        normalized_auto_upgrade_mode = str(normalized_auto_upgrade_mode).strip().lower()
+        if "." in normalized_auto_upgrade_mode:
+            normalized_auto_upgrade_mode = normalized_auto_upgrade_mode.split(".")[-1]
+
+        if normalized_auto_upgrade_mode != "none":
+            message = "To pin to specific version, auto-upgrade-mode must be set to 'none'."
+
+            raise MutuallyExclusiveArgumentError(message)
+
         auto_upgrade_minor_version = False
+        auto_upgrade_mode = "none"
+
+
+def __validate_auto_upgrade_mode(auto_upgrade_minor_version, auto_upgrade_mode):
+    if auto_upgrade_minor_version is not None and auto_upgrade_mode is not None:
+        message = "auto-upgrade-mode cannot be specified together with auto-upgrade-minor-version."
+        raise MutuallyExclusiveArgumentError(message)
+
+    if auto_upgrade_mode is None:
+        return
+
+    normalized_auto_upgrade_mode = auto_upgrade_mode
+    if hasattr(normalized_auto_upgrade_mode, "value"):
+        normalized_auto_upgrade_mode = normalized_auto_upgrade_mode.value
+    normalized_auto_upgrade_mode = str(normalized_auto_upgrade_mode).strip().lower()
+    if "." in normalized_auto_upgrade_mode:
+        normalized_auto_upgrade_mode = normalized_auto_upgrade_mode.split(".")[-1]
+
+    allowed_auto_upgrade_modes = {"none", "patch", "compatible"}
+    if normalized_auto_upgrade_mode not in allowed_auto_upgrade_modes:
+        message = (
+            "Invalid value for auto-upgrade-mode. "
+            "Allowed values are: none, patch, compatible."
+        )
+        raise ClientRequestError(message)

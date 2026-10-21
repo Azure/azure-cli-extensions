@@ -28,13 +28,13 @@ def _log_step(msg, *args):
 
 
 @register_command(
-    "workload-orchestration sync",
+    "workload-orchestration-preview sync",
 )
 class Sync(AAZCommand):
     """Sync workload orchestration resources for a custom location
 
     :example: Sync resources for a custom location
-        az workload-orchestration sync --custom-location /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ExtendedLocation/customLocations/myCustomLocation
+        az workload-orchestration-preview sync --custom-location /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ExtendedLocation/customLocations/myCustomLocation
     """
 
     _aaz_info = {

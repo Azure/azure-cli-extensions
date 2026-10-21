@@ -23,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2026-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2026-06-01-preview"],
         ]
     }
 
@@ -150,7 +150,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2026-06-01-preview",
                     required=True,
                 ),
             }
@@ -192,6 +192,10 @@ class Show(AAZCommand):
             _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -199,7 +203,13 @@ class Show(AAZCommand):
             properties = cls._schema_on_200.properties
             properties.access_policy_name = AAZStrType(
                 serialized_name="accessPolicyName",
-                flags={"required": True},
+            )
+            properties.access_string = AAZStrType(
+                serialized_name="accessString",
+            )
+            properties.provisioning_error = AAZObjectType(
+                serialized_name="provisioningError",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -209,9 +219,38 @@ class Show(AAZCommand):
                 flags={"required": True},
             )
 
+            provisioning_error = cls._schema_on_200.properties.provisioning_error
+            provisioning_error.code = AAZStrType(
+                flags={"required": True},
+            )
+            provisioning_error.message = AAZStrType(
+                flags={"required": True},
+            )
+            provisioning_error.target = AAZStrType()
+
             user = cls._schema_on_200.properties.user
             user.object_id = AAZStrType(
                 serialized_name="objectId",
+            )
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             return cls._schema_on_200

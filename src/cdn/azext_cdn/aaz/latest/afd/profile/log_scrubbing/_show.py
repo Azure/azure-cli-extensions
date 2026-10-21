@@ -15,13 +15,13 @@ from azure.cli.core.aaz import *
     "afd profile log-scrubbing show",
 )
 class Show(AAZCommand):
-    """Defines rules that scrub sensitive fields in the Azure Front Door profile logs.
+    """Show Log Scrubbing
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2026-04-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}", "2025-06-01", "properties.logScrubbing"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}", "2026-04-01-preview", "properties.logScrubbing"],
         ]
     }
 
@@ -46,6 +46,11 @@ class Show(AAZCommand):
             options=["--profile-name"],
             help="Name of the Azure Front Door Standard or Azure Front Door Premium or CDN profile which is unique within the resource group.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]+(-*[a-zA-Z0-9])*$",
+                max_length=260,
+                min_length=1,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -128,7 +133,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2026-04-01-preview",
                     required=True,
                 ),
             }

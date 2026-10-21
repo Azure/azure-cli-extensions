@@ -34,31 +34,31 @@ class NetworkConfigurationPerimeterScenarioTest(ScenarioTest):
     def test_netowrk_configuration(self):
         rand_string = 'test'
         self.kwargs.update({
-            'machine': 'testmachine',
-            'rg': 'ytongtest',
+            'machine': 'LAPTOP-4GNU2K3H',
+            'rg': 'yao_test',
             'scope': 'myScope3',
-            'location': 'westus2',
+            'location': 'eastus',
             'subscription': '00000000-0000-0000-0000-000000000000',
             'perimeterName': '00000000-0000-0000-0000-000000000000.testAssociation',
         })
 
-        # Create a private link scope, NSP and perimeter profile, and associate them
-        # az connectedmachine private-link-scope create --location eastus --resource-group ytongtest --scope-name myScope3
-        # az network perimeter create -n testPerimeter -g ytongtest -l eastus
-        # az network perimeter profile create -n testProfile --perimeter-name testPerimeter -g ytongtest
-        # az network perimeter association create -n testAssociation --perimeter-name testPerimeter -g ytongtest --access-mode Learning 
-        # --private-link-resource "{id:/subscriptions/b24cc8ee-df4f-48ac-94cf-46edf36b0fae/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/privateLinkScopes/myScope3}" 
-        # --profile "{id:/subscriptions/b24cc8ee-df4f-48ac-94cf-46edf36b0fae/resourceGroups/ytongtest/providers/Microsoft.Network/networkSecurityPerimeters/testPerimeter/profiles/testProfile}"
+        # # Create a private link scope, NSP and perimeter profile, and associate them
+        # az connectedmachine private-link-scope create --location eastus --resource-group yao_test --scope-name myScope3
+        # az network perimeter create -n testPerimeter -g yao_test -l eastus
+        # az network perimeter profile create -n testProfile --perimeter-name testPerimeter -g yao_test
+        # az network perimeter association create -n testAssociation --perimeter-name testPerimeter -g yao_test --access-mode Learning --private-link-resource "{id:/subscriptions/b24cc8ee-df4f-48ac-94cf-46edf36b0fae/resourceGroups/yao_test/providers/Microsoft.HybridCompute/privateLinkScopes/myScope3}" --profile "{id:/subscriptions/b24cc8ee-df4f-48ac-94cf-46edf36b0fae/resourceGroups/yao_test/providers/Microsoft.Network/networkSecurityPerimeters/testPerimeter/profiles/testProfile}"
 
-        # Find perimeter name by running the list command, under 'name'
-        # az connectedmachine private-link-scope network-security-perimeter-configuration list --resource-group ytongtest --scope-name myScope3 --subscription b24cc8ee-df4f-48ac-94cf-46edf36b0fae
-
+        # # Find perimeter name by running the list command, under 'name'
         # network security perimeter configuration
-        self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration list '
+        nsp_configs = self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration list '
                 '--resource-group "{rg}" '
                 '--scope-name "{scope}" '
                 '--subscription "{subscription}"',
-                checks=[])
+                checks=[]).get_output_in_json()
+
+        # Use the actual perimeter configuration name returned by the list command.
+        # The name is '<perimeterGuid>.<associationName>' assigned by Azure and cannot be guessed.
+        self.kwargs['perimeterName'] = nsp_configs[0]['name']
 
         self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration show '
                 '--resource-group "{rg}" '

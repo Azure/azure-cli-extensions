@@ -7,7 +7,7 @@
 # pylint: disable=raise-missing-from,too-many-locals,broad-exception-caught
 # pylint: disable=too-many-arguments,too-many-positional-arguments
 
-"""Utility functions for the workload-orchestration support bundle feature."""
+"""Utility functions for the workload-orchestration-preview support bundle feature."""
 
 import json
 import os

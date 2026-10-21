@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration context site-reference delete",
+    "workload-orchestration-preview context site-reference delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete Site Reference Resource
     :example: Delete a Site Reference
-        az workload-orchestration context site-reference delete -n mySiteReference -g myResourceGroup --context-name myContext
+        az workload-orchestration-preview context site-reference delete -n mySiteReference -g myResourceGroup --context-name myContext
     """
 
     _aaz_info = {

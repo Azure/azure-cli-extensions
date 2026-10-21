@@ -17,12 +17,15 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the specified existing Qumulo file system storage resource permanently.
+
+    :example: FileSystems_Delete_MaximumSet
+        az qumulo storage file-system delete --resource-group  ankit-test --file-system-name cli-test-qumulo
     """
 
     _aaz_info = {
-        "version": "2024-06-19",
+        "version": "2026-04-16",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/qumulo.storage/filesystems/{}", "2024-06-19"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/qumulo.storage/filesystems/{}", "2026-04-16"],
         ]
     }
 
@@ -143,7 +146,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-19",
+                    "api-version", "2026-04-16",
                     required=True,
                 ),
             }

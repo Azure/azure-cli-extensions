@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "connectedmachine extension image list",
 )
 class List(AAZCommand):
-    """List all Extension versions based on location, publisher, extensionType
+    """List all Extension versions based on location, publisher, extensionType.
 
-    :example: GET a list of extension metadata
-        az connectedmachine extension image list --location EastUS --publisher microsoft.azure.monitor --extension-type azuremonitorlinuxagent
+    :example: Sample command for extension image list
+        az connectedmachine extension image list --publisher microsoft.azure.monitor --extension-type azuremonitorlinuxagent --location eastus
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.hybridcompute/locations/{}/publishers/{}/extensiontypes/{}/versions", "2024-11-10-preview"],
+            ["mgmt-plane", "/providers/microsoft.hybridcompute/locations/{}/publishers/{}/extensiontypes/{}/versions", "2026-07-15"],
         ]
     }
 
@@ -126,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }

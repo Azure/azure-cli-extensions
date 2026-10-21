@@ -20,37 +20,42 @@ class CdnAfdEndpointScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         endpoint_name = self.create_random_name(prefix='endpoint', length=24)
         enabled_state = "Enabled"
 
-        checks = [JMESPathCheck('enabledState', 'Enabled')]
+        checks = [JMESPathCheck('enabledState', 'Enabled'),
+              JMESPathCheck('enforceMtls', 'Disabled')]
         self.afd_endpoint_create_cmd(resource_group,
                                      profile_name,
                                      endpoint_name,
                                      enabled_state,
                                      name_reuse_scope="ResourceGroupReuse",
+                         enforce_mtls="Disabled",
                                      checks=checks)
         endpoint = self.afd_endpoint_show_cmd(resource_group, profile_name, endpoint_name).get_output_in_json()
         hostName = endpoint["hostName"] 
 
         list_checks = [JMESPathCheck('length(@)', 1),
                        JMESPathCheck('@[0].hostName', hostName),
-                       JMESPathCheck('@[0].enabledState', 'Enabled')]
+                                             JMESPathCheck('@[0].enabledState', 'Enabled'),
+                                             JMESPathCheck('@[0].enforceMtls', 'Disabled')]
         self.afd_endpoint_list_cmd(resource_group, profile_name, checks=list_checks)
 
         update_checks = [JMESPathCheck('hostName', hostName),
-                         JMESPathCheck('enabledState', 'Disabled')]
-        options = '--enabled-state Disabled'
+                                                 JMESPathCheck('enabledState', 'Disabled'),
+                                                 JMESPathCheck('enforceMtls', 'Enabled')]
         self.afd_endpoint_update_cmd(resource_group,
                                      profile_name,
                                      endpoint_name,
-                                     options=options,
+                                                                         enabled_state='Disabled',
+                                                                         enforce_mtls='Enabled',
                                      checks=update_checks)
 
         update_checks = [JMESPathCheck('hostName', hostName),
-                         JMESPathCheck('enabledState', 'Enabled')]
-        options = '--enabled-state Enabled'
+                                                 JMESPathCheck('enabledState', 'Enabled'),
+                                                 JMESPathCheck('enforceMtls', 'Disabled')]
         self.afd_endpoint_update_cmd(resource_group,
                                      profile_name,
                                      endpoint_name,
-                                     options=options,
+                                                                         enabled_state='Enabled',
+                                                                         enforce_mtls='Disabled',
                                      checks=update_checks)
 
     @ResourceGroupPreparer(additional_tags={'owner': 'jingnanxu'})

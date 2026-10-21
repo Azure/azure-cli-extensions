@@ -6,7 +6,7 @@
 import os
 from unittest import mock
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 
 from azext_staticwebapp.custom import create_dbconnection
 from azext_staticwebapp._utils import MySqlFlexHandler, PgSqlFlexHandler
@@ -15,7 +15,7 @@ from azext_staticwebapp._utils import MySqlFlexHandler, PgSqlFlexHandler
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class StaticwebappDbConnectionScenarioTest(ScenarioTest):
+class StaticwebappDbConnectionScenarioTest(LiveScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test')
     def test_staticwebapp_dbconnection_azure_sql(self, resource_group):
         name = self.create_random_name("cli_test", length=20)

@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration solution-deployment create",
+    "workload-orchestration-preview solution-deployment create",
 )
 class Create(AAZCommand):
     """Create or update a SolutionDeployment Resource
 
     :example: Create a Solution Deployment
-        az workload-orchestration solution-deployment create -g myResourceGroup -n mySolutionDeployment --location eastus --solution-template-name mySolutionTemplate --solution-template-version 1.0.0 --target-ids "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Edge/targets/{target}"
+        az workload-orchestration-preview solution-deployment create -g myResourceGroup -n mySolutionDeployment --location eastus --solution-template-name mySolutionTemplate --solution-template-version 1.0.0 --target-ids "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Edge/targets/{target}"
 
     :example: Create a Solution Deployment with multiple targetIds
-        az workload-orchestration solution-deployment create -g myResourceGroup -n mySolutionDeployment --location eastus --solution-template-name mySolutionTemplate --solution-template-version 1.0.0 --target-ids "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Edge/targets/{target1}" "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Edge/targets/{target2}"
+        az workload-orchestration-preview solution-deployment create -g myResourceGroup -n mySolutionDeployment --location eastus --solution-template-name mySolutionTemplate --solution-template-version 1.0.0 --target-ids "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Edge/targets/{target1}" "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Edge/targets/{target2}"
     """
 
     _aaz_info = {

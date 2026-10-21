@@ -17,15 +17,18 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """Retrieves relevant information about all Microsoft Connected Cache for Enterprise resources under the resource group.
 
-    :example: List MCC Enterprise Resources in Resource Group
-        az mcc ent resource list --resource-group [MccResourceRgName]
+    :example: List the MCC Enterprise resources in a resource group
+        az mcc ent resource list --resource-group MyResourceGroup
+
+    :example: List every MCC Enterprise resource in the subscription
+        az mcc ent resource list
     """
 
     _aaz_info = {
-        "version": "2024-11-30-preview",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.connectedcache/enterprisemcccustomers", "2024-11-30-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers", "2024-11-30-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.connectedcache/enterprisemcccustomers", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.connectedcache/enterprisemcccustomers", "2026-06-01"],
         ]
     }
 
@@ -112,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-30-preview",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -440,7 +443,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-30-preview",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }

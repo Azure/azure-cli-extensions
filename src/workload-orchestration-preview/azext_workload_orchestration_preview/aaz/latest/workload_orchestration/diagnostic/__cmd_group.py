@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "workload-orchestration diagnostic",
+    "workload-orchestration-preview diagnostic",
 )
 class __CMDGroup(AAZCommandGroup):
-    """workload-orchestration diagnostic helps to manage Diagnostics
+    """workload-orchestration-preview diagnostic helps to manage Diagnostics
     """
     pass
 

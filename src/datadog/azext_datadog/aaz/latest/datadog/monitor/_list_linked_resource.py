@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "datadog monitor list-linked-resource",
+    is_preview=True,
 )
 class ListLinkedResource(AAZCommand):
     """Lists all Azure resources that are linked to the same Datadog organization as the specified monitor resource, helping you understand the scope of integration.
@@ -22,9 +23,9 @@ class ListLinkedResource(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-06-11",
+        "version": "2025-12-26-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/listlinkedresources", "2025-06-11"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/listlinkedresources", "2025-12-26-preview"],
         ]
     }
 
@@ -126,7 +127,7 @@ class ListLinkedResource(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-11",
+                    "api-version", "2025-12-26-preview",
                     required=True,
                 ),
             }
