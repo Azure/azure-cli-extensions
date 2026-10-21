@@ -14,6 +14,9 @@ helps['quantum'] = """
 helps['quantum execute'] = """
     type: command
     short-summary: Submit a job to run on Azure Quantum, and wait for the result. Equivalent to `az quantum run`.
+  long-summary: >
+    Jobs use storage linked to the Azure Quantum workspace. Arbitrary per-job storage
+    accounts are not supported.
     examples:
       - name: Run QIR bitcode from a file in the current folder and wait for the result.
         text: |-
@@ -37,6 +40,9 @@ helps['quantum execute'] = """
 helps['quantum run'] = """
     type: command
     short-summary: Submit a job to run on Azure Quantum, and wait for the result. Equivalent to `az quantum execute`
+  long-summary: >
+    Jobs use storage linked to the Azure Quantum workspace. Arbitrary per-job storage
+    accounts are not supported.
     examples:
       - name: Run QIR bitcode from a file in the current folder and wait for the result.
         text: |-
@@ -149,6 +155,9 @@ helps['quantum job show'] = """
 helps['quantum job submit'] = """
     type: command
     short-summary: Submit a program or circuit to run on Azure Quantum.
+  long-summary: >
+    Jobs use storage linked to the Azure Quantum workspace. Arbitrary per-job storage
+    accounts are not supported.
     examples:
       - name: Submit QIR bitcode from a file in the current folder.
         text: |-

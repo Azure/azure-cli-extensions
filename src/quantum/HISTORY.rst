@@ -5,7 +5,8 @@ Release History
 
 1.0.0b31
 ++++++++++++++
-* Deprecated the ignored ``--storage`` argument for ``az quantum job submit``, ``az quantum execute``, and ``az quantum run``. Jobs use workspace-linked storage.
+* [BREAKING CHANGE] Removed the ignored ``--storage`` argument from ``az quantum job submit``, ``az quantum execute``, and ``az quantum run``. Remove this argument from scripts; jobs continue to use workspace-linked storage because the backend already supports only that storage. The workspace-level ``--storage-account`` argument is unchanged.
+* Updated the vendored Quantum SDK to remove explicit storage connection-string overrides and their obsolete container helpers, matching the upstream SDK change.
 
 1.0.0b30
 ++++++++++++++

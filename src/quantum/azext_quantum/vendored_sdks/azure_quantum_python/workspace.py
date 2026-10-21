@@ -51,10 +51,6 @@ from ._workspace_connection_params import (
 from ._constants import (
     ConnectionConstants,
 )
-# from azure.quantum.storage import (
-from .storage import (
-    get_container_uri,
-)
 # from azure.quantum._mgmt_client import WorkspaceMgmtClient
 from ._mgmt_client import WorkspaceMgmtClient
 # if TYPE_CHECKING:
@@ -80,8 +76,7 @@ class Workspace:
     to an Azure Quantum Workspace by calling
     :obj:`~ Workspace.from_connection_string() <Workspace.from_connection_string>`.
 
-    If the Azure Quantum workspace does not have linked storage, the caller
-    must also pass a valid Azure storage account connection string.
+    An Azure Quantum workspace only supports its linked storage.
 
     :param subscription_id:
         The Azure subscription ID.
@@ -94,11 +89,6 @@ class Workspace:
     :param name:
         The Azure Quantum workspace name.
         Ignored if resource_id is specified.
-
-    :param storage:
-        The Azure storage account connection string.
-        Required only if the specified Azure Quantum
-        workspace does not have linked storage.
 
     :param resource_id:
         The resource ID of the Azure Quantum workspace.
@@ -131,7 +121,7 @@ class Workspace:
         subscription_id: Optional[str] = None,
         resource_group: Optional[str] = None,
         name: Optional[str] = None,
-        storage: Optional[str] = None,
+        *,
         resource_id: Optional[str] = None,
         location: Optional[str] = None,
         credential: Optional[object] = None,
@@ -167,7 +157,6 @@ class Workspace:
         connection_params.on_new_client_request = self._on_new_client_request
 
         self._connection_params = connection_params
-        self._storage = storage
 
         if not self._mgmt_client:
             credential = connection_params.get_credential_or_default()
@@ -257,16 +246,6 @@ class Workspace:
     #     :rtype: typing.Any
     #     """
     #     return self._connection_params.credential
-
-    @property
-    def storage(self) -> str:
-        """
-        Returns the Azure Storage account name associated with the Quantum Workspace.
-
-        :return: Azure Storage account name.
-        :rtype: str
-        """
-        return self._storage
 
     def _create_client(self) -> WorkspaceClient:
         """"
@@ -961,22 +940,9 @@ class Workspace:
         if container_name is None:
             if job_id is not None:
                 container_name = container_name_format.format(job_id=job_id)
-            elif job_id is None:
+            else:
                 container_name = f"{self.name}-data"
-        # Create container URI and get container client
-        if self.storage is None:
-            # Get linked storage account from the service, a new container
-            # is created by the service if it does not yet exist
-            container_uri = self._get_linked_storage_sas_uri(
-                container_name
-            )
-        else:
-            # Use the storage acount specified to generate container URI,
-            # create a new container if it does not yet exist
-            container_uri = get_container_uri(
-                self.storage, container_name
-            )
-        return container_uri
+        return self._get_linked_storage_sas_uri(container_name)
 
     # def _create_filter(self,
     #         job_name: Optional[str] = None,
