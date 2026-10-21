@@ -10,15 +10,17 @@ from collections import deque
 from copy import deepcopy
 from importlib import import_module
 from inspect import unwrap
+from io import BytesIO
 import json
 import shlex
 from types import SimpleNamespace
 from unittest.mock import Mock
+import zipfile
 
 import pytest
 from azure.cli.core.aaz._client import AAZMgmtClient
 from azure.cli.core.aaz._command_ctx import AAZCommandCtx
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueError, ValidationError
 from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD
 from azure.cli.core.mock import DummyCli
 from azure.cli.core.sdk.policies import SafeNetworkTraceLoggingPolicy
@@ -29,7 +31,7 @@ from knack.parser import CLICommandParser
 from requests.structures import CaseInsensitiveDict
 
 from azext_edge_action import EdgeActionCommandsLoader
-from azext_edge_action.custom import EdgeActionSwapDefaultMgmtClient, ExecutionFilterUpdate
+from azext_edge_action.custom import EdgeActionSwapDefaultMgmtClient, ExecutionFilterUpdate, GetVersionCode
 from .spec_validation import RecordingValidator, spec
 
 API_VERSION = "2026-10-01"
@@ -602,6 +604,111 @@ def test_action_lro_uses_final_location(api, operation):
     assert [(req.method, req.url) for req in api.requests] == [
         ("POST", f"{RESOURCE_URL}/versions/v1/{action}?api-version={API_VERSION}"),
         ("GET", status_url), ("GET", status_url), ("GET", location)]
+
+
+@pytest.mark.parametrize("option", ["--output-directory", "-d"])
+@pytest.mark.parametrize("asynchronous", [False, True])
+def test_get_version_code_saves_zip_through_registered_alias(api, tmp_path, option, asynchronous):
+    archive = BytesIO()
+    with zipfile.ZipFile(archive, "w") as package:
+        package.writestr("handler.js", base64.b64decode(HANDLER))
+    content = archive.getvalue()
+    output_dir = tmp_path / "directory with spaces" / "nested"
+    location = "https://management.azure.com/operations/code-result"
+    if asynchronous:
+        api.respond(status=202, headers={"Location": location, "Retry-After": "0"})
+    api.respond({"name": "download", "content": base64.b64encode(content).decode("ascii")})
+    parsed = api.parse("version", "get_version_code", [
+        "-g", "rg", "--edge-action-name", "action", "--version", "v1", option, str(output_dir),
+    ])
+    result = api.invoke("version", "get_version_code", **parsed)
+    output_file = output_dir / "download.zip"
+    assert result == {"message": f"Version code saved to: {output_file}", "file": str(output_file)}
+    assert output_file.read_bytes() == content
+    expected_requests = [
+        ("POST", f"{RESOURCE_URL}/versions/v1/getVersionCode?api-version={API_VERSION}"),
+    ]
+    if asynchronous:
+        expected_requests.append(("GET", location))
+    assert [(request.method, request.url) for request in api.requests] == expected_requests
+    assert not api.requests[0].body
+
+
+def test_get_version_code_overwrites_existing_download(api, tmp_path):
+    output_file = tmp_path / "v1.zip"
+    output_file.write_bytes(b"previous download")
+    api.respond({"name": "v1", "content": HANDLER})
+    api.invoke("version", "get_version_code", **arguments("version"), output_directory=str(tmp_path))
+    assert output_file.read_bytes() == base64.b64decode(HANDLER)
+
+
+def test_get_version_code_argument_schema_is_cached_and_isolated(api):
+    handler = api.load("version", "get_version_code")
+    assert isinstance(handler, GetVersionCode)
+    schema = handler._build_arguments_schema()
+    assert handler._build_arguments_schema() is schema
+    generated = command("version", "get_version_code")(cli_ctx=handler.cli_ctx)
+    generated.load_arguments()
+    assert "output_directory" not in generated.arguments
+    handler.load_arguments()
+    assert handler.arguments["output_directory"].options_list == ["--output-directory", "-d"]
+    assert api.requests == []
+
+
+def test_get_version_code_no_wait_does_not_save_or_poll(api, tmp_path):
+    output_dir = tmp_path / "download"
+    api.respond(status=202, headers={"Location": "https://management.azure.com/operations/code-result"})
+    assert api.invoke("version", "get_version_code", **arguments("version"),
+                      output_directory=str(output_dir), no_wait=True) is None
+    assert len(api.requests) == 1
+    assert not output_dir.exists()
+
+
+@pytest.mark.parametrize("content,message", [
+    ("", "No content returned"),
+    ("not base64!", "Failed to decode base64 content"),
+    ("YQ", "Failed to decode base64 content"),
+])
+def test_get_version_code_rejects_invalid_content_before_writing(api, tmp_path, content, message):
+    output_dir = tmp_path / "download"
+    api.respond({"name": "v1", "content": content})
+    with pytest.raises(ValidationError, match=message):
+        api.invoke("version", "get_version_code", **arguments("version"), output_directory=str(output_dir))
+    assert not output_dir.exists()
+
+
+@pytest.mark.parametrize("name", ["../escape", "..\\escape", "C:escape", "bad\0name"])
+def test_get_version_code_rejects_paths_in_response_name(api, tmp_path, name):
+    output_dir = tmp_path / "download"
+    api.respond({"name": name, "content": HANDLER})
+    with pytest.raises(ValidationError, match="Invalid version code file name"):
+        api.invoke("version", "get_version_code", **arguments("version"), output_directory=str(output_dir))
+    assert not output_dir.exists()
+
+
+@pytest.mark.parametrize("failure", ["directory", "write"])
+def test_get_version_code_surfaces_file_errors(api, tmp_path, monkeypatch, failure):
+    output_dir = tmp_path / "download"
+    if failure == "directory":
+        output_dir.write_bytes(b"not a directory")
+    else:
+        monkeypatch.setattr("azext_edge_action.custom.open",
+                            Mock(side_effect=PermissionError("write denied")), raising=False)
+    api.respond({"name": "v1", "content": HANDLER})
+    with pytest.raises(FileOperationError, match="Failed to save file"):
+        api.invoke("version", "get_version_code", **arguments("version"), output_directory=str(output_dir))
+    assert not (output_dir / "v1.zip").exists()
+
+
+def test_get_version_code_polling_failure_does_not_save(api, tmp_path):
+    output_dir = tmp_path / "download"
+    api.respond(status=202, headers={
+        "Azure-AsyncOperation": "https://management.azure.com/operations/status", "Retry-After": "0"})
+    api.respond({"status": "Failed", "error": {"code": "OperationFailed", "message": "Download failed"}})
+    with pytest.raises(HttpResponseError, match="Download failed"):
+        api.invoke("version", "get_version_code", **arguments("version"), output_directory=str(output_dir))
+    assert not output_dir.exists()
+    assert len(api.requests) == 2
 
 
 @pytest.mark.parametrize("operation", ["deploy_version_code", "get_version_code", "swap_default"])

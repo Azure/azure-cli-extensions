@@ -45,9 +45,20 @@ az edge-action version deploy-from-file --resource-group myResourceGroup --edge-
 # List versions
 az edge-action version list --resource-group myResourceGroup --edge-action-name myEdgeAction
 
+# Download version code as a ZIP file
+az edge-action version get-version-code --resource-group myResourceGroup --edge-action-name myEdgeAction --version v1 --output-directory ./downloads
+
 # Delete a version
 az edge-action version delete --resource-group myResourceGroup --edge-action-name myEdgeAction --name v1
 ```
+
+`get-version-code --output-directory` (alias `-d`) creates the output directory
+when needed and saves the decoded bytes as `<response-name>.zip`, overwriting an
+existing file with that name. It returns `file` and `message` fields identifying
+the saved file. Without this option, the command returns the original `name` and
+base64-encoded `content`. With `--no-wait`, it does not wait for or save the download.
+Invalid content, unsafe response filenames, and file-write errors are reported
+instead of returning a successful download result.
 
 ### Execution Filters
 
@@ -97,6 +108,10 @@ The generated commands target API version `2026-10-01`. Maintain command models
 in AAZ and regenerate the `aaz` directory; do not patch generated request or response
 code by hand. Customizations in `custom.py` and `commands.py` are maintained
 separately from the generated `aaz` directory.
+
+The registered `GetVersionCode` subclass owns the download arguments and file-output
+handling. It retains the generated request, response deserialization, polling, and
+`--no-wait` behavior without modifying generated code.
 
 CLI help examples are maintained in the AAZ Workspace Editor's command examples.
 Export those examples to the AAZ repository before regenerating the extension;
@@ -162,6 +177,12 @@ For a direct offline run without installing the extension:
 $env:PYTHONPATH = (Resolve-Path .\src\edge-action).Path
 python -m pytest src\edge-action\azext_edge_action\tests\latest\test_edge_action_contract.py src\edge-action\azext_edge_action\tests\latest\test_edge_action_custom.py -q
 ```
+
+The integration-test runner in `scripts/ci/test_source.py` installs each selected
+extension's `<package>/tests/requirements.txt` before `azdev test --discover`.
+This installs `jsonschema` for these tests without adding it to the extension's
+runtime dependencies. Local test runs must install the test requirements explicitly
+as shown above; `azdev extension add` alone does not install them.
 
 ### Pinned specification and offline audit
 

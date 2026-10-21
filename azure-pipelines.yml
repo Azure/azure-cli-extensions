@@ -112,6 +112,7 @@ jobs:
         set -ev
         source ./env/bin/activate
         az --version
+        python -m pytest tests/ci/test_source_dependencies.py -q
         python scripts/ci/test_source.py -v
       displayName: 'Run integration test and build test'
       env:

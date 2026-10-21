@@ -71,6 +71,13 @@ def test_extension():
         cmd = ['azdev', 'extension', 'add', ext_name]
         run_command(cmd, check_return_code=True)
 
+        test_requirements = os.path.join(ext_path, pkg_name, 'tests', 'requirements.txt')
+        if os.path.isfile(test_requirements):
+            run_command(
+                [sys.executable, '-m', 'pip', 'install', '-r', test_requirements],
+                check_return_code=True,
+            )
+
         # Use azext_$ext_name, a unique long name for testing, to avoid the following error when the main module and extension name have the same name:
         # 'containerapp' exists in both 'azext_containerapp' and 'containerapp'. Resolve using `azext_containerapp.containerapp` or `containerapp.containerapp`
         # 'containerapp' not found. If newly added, re-run with --discover
