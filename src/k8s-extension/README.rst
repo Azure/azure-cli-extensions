@@ -86,8 +86,9 @@ A synchronous delete waits for the extension operation to finish before checking
 both the persisted ``namespaceLifecycle.createdByInstall=true`` assertion and
 that marker, then inventorying every namespaced API kind, including Secrets,
 ConfigMaps and custom resources, with pagination. An owned namespace is deleted
-only if no customer resources remain. The inventory excludes only the
-controller-managed default ServiceAccount and root CA ConfigMap, without customer
+only if no customer resources remain. The inventory excludes core/v1 and
+events.k8s.io Events, which are namespace-intrinsic and removed with the namespace,
+and the controller-managed default ServiceAccount and root CA ConfigMap, without customer
 changes or finalizers. AKS can omit managedFields on its pristine default
 ServiceAccount; customer annotations, labels, ownership references and account
 settings still prevent its exclusion. Create-only APIs such as bindings and
@@ -176,9 +177,11 @@ It exposed the create-only ``bindings`` discovery gap fixed here. Retrying
 namespace inspection preserved an unmarked ``durable-broker-learned-keys``
 ConfigMap and Kubernetes Events rather than erasing them. AKS also returned a
 pristine default ServiceAccount without managedFields, now covered by a regression.
-This isn't live proof of clean namespace removal. That proof still needs a
-compatible deployed subscriber/chart that owns and cleans up its learned-key
-state, and an empty namespace after transient Events expire. The built-in role
+This isn't live proof of clean namespace removal. That proof waits for chart
+0.1.13 or later to be published and registered with the learned-key owner marker
+and pre-delete cleanup already implemented in Chaos origin/main. The CLI doesn't
+special-case learned-key state; preserving the unmarked ConfigMap on 0.1.12 is
+correct. Events no longer block namespace removal. The built-in role
 readback still had empty Actions and DataActions, so this isn't live role
 authorization proof either.
 

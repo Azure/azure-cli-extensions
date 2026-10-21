@@ -921,6 +921,37 @@ class ClusterNamespaceTests(unittest.TestCase):
         self.assertFalse(any("/bindings?" in path for path in calls))
         self.assertFalse(any("/example.com/v2/namespaces/chaos/widgets?" in path for path in calls))
 
+    def test_namespace_events_do_not_block_cleanup_but_customer_state_does(self):
+        def resource(name):
+            return {"name": name, "namespaced": True, "verbs": ["list"]}
+
+        responses = {
+            "/api": {"versions": ["v1"]},
+            "/apis": {"groups": [
+                {"name": group, "preferredVersion": {"groupVersion": group + "/v1"},
+                 "versions": [{"groupVersion": group + "/v1"}]}
+                for group in ("events.k8s.io", "example.com")
+            ]},
+            "/api/v1": {"resources": [resource("events"), resource("configmaps")]},
+            "/apis/events.k8s.io/v1": {"resources": [resource("events")]},
+            "/apis/example.com/v1": {"resources": [resource("events")]},
+        }
+
+        def request(_method, path):
+            if path in responses:
+                return responses[path]
+            if "/configmaps?" in path:
+                return {"items": [{"metadata": {"name": "durable-broker-learned-keys"}}]}
+            return {"items": [{"metadata": {"name": "retained-event"}}]}
+
+        self.cluster.request = MagicMock(side_effect=request)
+        self.assertEqual(self.cluster.inventory("chaos"), [
+            "configmaps/durable-broker-learned-keys", "events.example.com/retained-event",
+        ])
+        calls = [call.args[1] for call in self.cluster.request.call_args_list]
+        self.assertTrue(any("/api/v1/namespaces/chaos/events?" in path for path in calls))
+        self.assertTrue(any("/apis/events.k8s.io/v1/namespaces/chaos/events?" in path for path in calls))
+
     def test_readable_kind_without_list_is_not_treated_as_empty(self):
         self.cluster.request = MagicMock(side_effect=[
             {"versions": ["v1"]}, {"groups": []},

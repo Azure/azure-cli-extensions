@@ -195,6 +195,8 @@ class _ClusterClient:
 
     @staticmethod
     def _namespace_default(group, resource, obj):
+        if resource == "events" and group in ("", "events.k8s.io"):
+            return True
         metadata = obj["metadata"]
         if group or (resource, metadata["name"]) not in (
             ("serviceaccounts", "default"), ("configmaps", "kube-root-ca.crt")
