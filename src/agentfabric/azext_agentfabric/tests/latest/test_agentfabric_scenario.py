@@ -13,6 +13,7 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import RecordingProcessor
+from azure.mgmt.core.tools import parse_resource_id
 
 
 LOCATION = os.environ.get("AZURE_TEST_AGENTFABRIC_LOCATION", "centraluseuap")
@@ -167,46 +168,36 @@ class AgentfabricResourceScenario(ScenarioTest):
         finally:
             self.cmd("agentfabric delete -g {rg} -n {fabric} --yes")
 
-    @ResourceGroupPreparer(name_prefix="clitestafmember", location=LOCATION)
-    def test_agentfabric_member_lifecycle(self, resource_group):
+    def test_agentfabric_member_read(self):
+        member_id = os.environ.get("AZURE_TEST_AGENTFABRIC_MEMBER_ID") if self.is_live else (
+            "/subscriptions/00000000-0000-0000-0000-000000000000"
+            "/resourceGroups/clitestafmember000001/providers/Microsoft.NetworkSecurity"
+            "/agentFabrics/cliaf000002/members/cliafmember000003"
+        )
+        if not member_id:
+            self.skipTest("Set AZURE_TEST_AGENTFABRIC_MEMBER_ID to an existing member for read-only live tests.")
+        resource = parse_resource_id(member_id)
+        self.assertEqual(resource.get("namespace", "").lower(), "microsoft.networksecurity")
+        self.assertEqual(resource.get("type", "").lower(), "agentfabrics")
+        self.assertEqual(resource.get("child_type_1", "").lower(), "members")
         self.kwargs.update({
-            "fabric": self.create_random_name(prefix="cliaf", length=24),
-            "member": self.create_random_name(prefix="cliafmember", length=24),
-            "location": LOCATION,
+            "subscription": resource["subscription"],
+            "rg": resource["resource_group"],
+            "fabric": resource["name"],
+            "member": resource["child_name_1"],
         })
-        with ExitStack() as cleanup:
-            self.cmd("agentfabric create -g {rg} -n {fabric} -l {location}")
-            cleanup.callback(self.cmd, "agentfabric delete -g {rg} -n {fabric} --yes")
-            cleanup.callback(
-                self.cmd, "agentfabric member wait -g {rg} --fabric-name {fabric} -n {member} --deleted"
-            )
-            cleanup.callback(
-                self.cmd, "agentfabric member delete -g {rg} --fabric-name {fabric} -n {member} --yes"
-            )
-            self.cmd(
-                "agentfabric member create -g {rg} --fabric-name {fabric} -n {member} -l {location} "
-                "--fqdn {member}.example.com",
-                checks=[
-                    self.check("name", "{member}"),
-                    self.check("properties.provisioningState", "Succeeded"),
-                ],
-            )
-            self.cmd("agentfabric member wait -g {rg} --fabric-name {fabric} -n {member} --created")
-            self.cmd("agentfabric member show -g {rg} --fabric-name {fabric} -n {member}", checks=[
-                self.check("properties.fqdn", "{member}.example.com"),
-            ])
-            self.cmd("agentfabric member list -g {rg} --fabric-name {fabric}", checks=[
-                self.check("[?name=='{member}'] | length(@)", 1),
-            ])
-            self.cmd(
-                "agentfabric member update -g {rg} --fabric-name {fabric} -n {member} "
-                "--fqdn updated.example.com --tags stage=updated --no-wait"
-            )
-            self.cmd("agentfabric member wait -g {rg} --fabric-name {fabric} -n {member} --updated")
-            self.cmd("agentfabric member show -g {rg} --fabric-name {fabric} -n {member}", checks=[
-                self.check("properties.fqdn", "updated.example.com"),
-                self.check("tags.stage", "updated"),
-            ])
+        self.cmd(
+            "agentfabric member wait --subscription {subscription} -g {rg} "
+            "--fabric-name {fabric} -n {member} --created --timeout 30"
+        )
+        self.cmd(
+            "agentfabric member show --subscription {subscription} -g {rg} --fabric-name {fabric} -n {member}",
+            checks=[self.check("name", "{member}")],
+        )
+        self.cmd(
+            "agentfabric member list --subscription {subscription} -g {rg} --fabric-name {fabric}",
+            checks=[self.check("[?name=='{member}'] | length(@)", 1)],
+        )
 
     @ResourceGroupPreparer(name_prefix="clitestafaks", location=LOCATION, random_name_length=24)
     def test_agentfabric_aks_lifecycle(self, resource_group):

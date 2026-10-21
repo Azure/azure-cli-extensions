@@ -22,11 +22,6 @@ COMMANDS = (
     ("agentfabric update", "azext_agentfabric.aaz.latest.agentfabric._update", "Update"),
     ("agentfabric delete", "azext_agentfabric.aaz.latest.agentfabric._delete", "Delete"),
     (
-        "agentfabric member create",
-        "azext_agentfabric.aaz.latest.agentfabric.member._create",
-        "Create",
-    ),
-    (
         "agentfabric member show",
         "azext_agentfabric.aaz.latest.agentfabric.member._show",
         "Show",
@@ -35,16 +30,6 @@ COMMANDS = (
         "agentfabric member list",
         "azext_agentfabric.aaz.latest.agentfabric.member._list",
         "List",
-    ),
-    (
-        "agentfabric member update",
-        "azext_agentfabric.aaz.latest.agentfabric.member._update",
-        "Update",
-    ),
-    (
-        "agentfabric member delete",
-        "azext_agentfabric.aaz.latest.agentfabric.member._delete",
-        "Delete",
     ),
     (
         "agentfabric aks attach",
@@ -138,30 +123,6 @@ REQUEST_SHAPES = (
         "AgentFabricsDelete",
         "DELETE",
         "/Microsoft.NetworkSecurity/agentFabrics/{agentFabricName}",
-        "2026-10-07-preview",
-    ),
-    (
-        "azext_agentfabric.aaz.latest.agentfabric.member._create",
-        "Create",
-        "MembersCreateOrUpdate",
-        "PUT",
-        "/agentFabrics/{agentFabricName}/members/{memberName}",
-        "2026-10-07-preview",
-    ),
-    (
-        "azext_agentfabric.aaz.latest.agentfabric.member._update",
-        "Update",
-        "MembersUpdate",
-        "PATCH",
-        "/agentFabrics/{agentFabricName}/members/{memberName}",
-        "2026-10-07-preview",
-    ),
-    (
-        "azext_agentfabric.aaz.latest.agentfabric.member._delete",
-        "Delete",
-        "MembersDelete",
-        "DELETE",
-        "/agentFabrics/{agentFabricName}/members/{memberName}",
         "2026-10-07-preview",
     ),
     (
@@ -274,6 +235,20 @@ class AgentfabricScenario(ScenarioTest):
 
 
 class AgentfabricGeneratedCommandTest(unittest.TestCase):
+
+    def test_member_command_subset(self):
+        from azure.cli.core import get_default_cli
+        from azext_agentfabric import AgentfabricCommandsLoader
+        from azext_agentfabric.aaz.latest.agentfabric import member
+        loader = AgentfabricCommandsLoader(cli_ctx=get_default_cli())
+        commands = loader.load_command_table(None)
+        self.assertEqual(
+            {name for name in commands if name.startswith("agentfabric member ")},
+            {f"agentfabric member {name}" for name in ("show", "list", "wait")},
+        )
+        for name in ("Create", "Update", "Delete"):
+            self.assertFalse(hasattr(member, name))
+            self.assertIsNone(importlib.util.find_spec(member.__name__ + "._" + name.lower()))
 
     def test_attach_help_documents_entra_prerequisite(self):
         self.assertIn("--enable-aad", AksAttach.__doc__)
@@ -498,16 +473,8 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
             Create, "AgentFabricsCreateOrUpdate", omitted,
         ).content.get("properties", {}))
 
-    def test_member_patch_and_egress_bundle_contract(self):
-        from azext_agentfabric.aaz.latest.agentfabric.member import Update
+    def test_egress_bundle_contract(self):
         from azext_agentfabric.aaz.latest.agentfabric.egress_trust_bundle import Show, List
-        operation = self._operation(Update, "MembersUpdate", {
-            "fabric_name": "fabric", "member_name": "member", "resource_group": "rg",
-            "fqdn": "member.example.com", "tags": {"env": "test"},
-        })
-        self.assertEqual(operation.content, {
-            "properties": {"fqdn": "member.example.com"}, "tags": {"env": "test"},
-        })
         show = self._operation(Show, "EgressTrustBundlesGet", {
             "fabric_name": "fabric", "resource_group": "rg",
         })
@@ -520,93 +487,27 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
         })
         self.assertTrue(List.AZ_SUPPORT_PAGINATION)
 
-    def test_member_create_only_registers_sandbox_workloads(self):
-        from azext_agentfabric.aaz.latest.agentfabric.member import Create
-        schema = Create._build_arguments_schema()
-        self.assertFalse(hasattr(schema.workload, "aci"))
-        self.assertFalse(hasattr(schema.workload, "aks"))
-        self.assertFalse(hasattr(schema.workload, "member_guid"))
-        self.assertTrue(hasattr(schema.workload, "agent_fabric_sandbox"))
-        self.assertNotIn("ACI", Create.__doc__)
-        self.assertNotIn("AKS", Create.__doc__)
-
-    def test_member_sandbox_endpoint_payload(self):
-        from azext_agentfabric.aaz.latest.agentfabric.member import Create
-        endpoint = {
-            "name": "http", "protocol": "TCP", "service_port": 80, "target_port": 8080,
-        }
-        arguments = {
-            "fabric_name": "fabric", "member_name": "member",
-            "resource_group": "rg", "location": "eastus", "fqdn": "member.example.com",
-        }
-        sandbox = dict(arguments, workload={"agent_fabric_sandbox": {
-            "image": {"uri": "example.com/agent:latest"},
-            "resources": {"cpu": "1", "memory": "1Gi"},
-            "domain": "example.com",
-            "endpoints": [endpoint],
-        }})
-        operation = self._operation(Create, "MembersCreateOrUpdate", sandbox)
-        workload = operation.content["properties"]["workload"]
-        self.assertEqual(workload["type"], "AgentFabricSandbox")
-        self.assertNotIn("port", workload["endpoints"][0])
-        self.assertEqual(workload["endpoints"][0]["targetPort"], 8080)
-
-    def test_member_agent_identity_payloads(self):
+    def test_existing_member_workload_response_schemas(self):
         from azext_agentfabric.aaz.latest.agentfabric.member import (
-            Create, List, Show, Update, Wait,
-        )
-        expected_identity = {
-            "tenantId": "22222222-2222-2222-2222-222222222222",
-            "agentId": "33333333-3333-3333-3333-333333333333",
-            "blueprintId": "44444444-4444-4444-4444-444444444444",
-        }
-        arguments = {
-            "fabric_name": "fabric",
-            "member_name": "member",
-            "resource_group": "rg",
-            "location": "eastus",
-            "fqdn": "member.example.com",
-        }
-
-        with self.subTest(workload_type="AgentFabricSandbox"):
-            sandbox = dict(arguments, workload={"agent_fabric_sandbox": {
-                "image": {"uri": "example.com/agent:latest"},
-                "resources": {"cpu": "1", "memory": "1Gi"},
-                "domain": "example.com",
-                "agent_identity": {
-                    "tenant_id": expected_identity["tenantId"],
-                    "agent_id": expected_identity["agentId"],
-                    "blueprint_id": expected_identity["blueprintId"],
-                },
-            }})
-            operation = self._operation(Create, "MembersCreateOrUpdate", sandbox)
-            self.assertEqual(
-                operation.content["properties"]["workload"]["agentIdentity"],
-                expected_identity,
-            )
-
-        create_workload = (
-            Create.MembersCreateOrUpdate._build_schema_on_200_201()
-            .properties.workload.get_discriminator({"type": "AgentFabricSandbox"})
-        )
-        self.assertEqual(
-            set(create_workload.agent_identity._fields),
-            {"agent_id", "blueprint_id", "tenant_id"},
+            List, Show, Wait,
         )
 
         read_response_schemas = {
             "show": Show.MembersGet._build_schema_on_200(),
             "list": List.MembersListByParent._build_schema_on_200().value.Element,
-            "update": Update.MembersUpdate._build_schema_on_200(),
             "wait": Wait.MembersGet._build_schema_on_200(),
         }
         for name, response_schema in read_response_schemas.items():
             with self.subTest(response=name, workload_type="AgentFabricSandbox"):
                 workload = response_schema.properties.workload
-                identity = workload.get_discriminator(
+                sandbox = workload.get_discriminator(
                     {"type": "AgentFabricSandbox"}
-                ).agent_identity
+                )
                 self.assertEqual(
-                    set(identity._fields),
+                    set(sandbox.agent_identity._fields),
                     {"agent_id", "blueprint_id", "tenant_id"},
+                )
+                self.assertEqual(
+                    set(sandbox.endpoints.Element._fields),
+                    {"name", "service_port", "protocol", "target_port"},
                 )

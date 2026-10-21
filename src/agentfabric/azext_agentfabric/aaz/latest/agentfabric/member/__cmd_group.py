@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class __CMDGroup(AAZCommandGroup):
     """Manage Agent Fabric members.
 
-    Members are children of an Agent Fabric and require the parent Fabric name. This command group supports Agent Fabric sandbox members.
+    Members are children of an Agent Fabric and require the parent Fabric name. Show, list, and wait are supported for existing members. Member creation, updates, and deletion are handled by resource providers, not this command group.
     """
     pass
 

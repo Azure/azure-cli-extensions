@@ -64,26 +64,20 @@ az agentfabric list --resource-group myResourceGroup
 Members are children of an Agent Fabric, so member commands require the parent
 Fabric name through `--fabric-name`.
 
-Member creation through this preview extension supports only the
-`AgentFabricSandbox` workload. Member commands do not model ACI or AKS member
-workloads. Endpoint mappings use `name`, `service-port`, `protocol`, and
-`target-port`, replacing the earlier single `port` field. Agent Fabric Sandbox
-workloads can include an Entra agent identity with required tenant and agent IDs
-plus an optional blueprint ID. Member PATCH supports tags and `fqdn`, not
-workload changes.
+Member creation, updates, and deletion are handled by resource providers, not
+this extension. The Agent Fabric Sandbox creation scenario is retired for now,
+including metadata-only creation without a workload. Existing members can
+still be shown, listed, and waited on.
 
 ```bash
-az agentfabric member create \
-  --resource-group myResourceGroup \
-  --fabric-name myFabric \
-  --member-name myMember \
-  --location eastus \
-  --workload "{agent-fabric-sandbox:{image:{uri:'contoso.azurecr.io/agents/sandbox:1.0.0',pull-policy:IfNotPresent},resources:{cpu:2,memory:4Gi,disk:20Gi},domain:my-member.my-fabric.contoso.com}}"
-
 az agentfabric member show \
   --resource-group myResourceGroup \
   --fabric-name myFabric \
   --member-name myMember
+
+az agentfabric member list \
+  --resource-group myResourceGroup \
+  --fabric-name myFabric
 ```
 
 ## AKS enrollment
@@ -185,13 +179,17 @@ azdev test agentfabric
 ```
 
 `AZURE_TEST_AGENTFABRIC_LOCATION` selects the service region (default:
-`centraluseuap`). The committed live recordings cover Fabric, Member, and
-Policy Group CRUD/wait, resource-group and subscription lists, and the egress
+`centraluseuap`). The committed live recordings cover Fabric and
+Policy Group CRUD/wait, existing Member show/list/wait,
+resource-group and subscription lists, and the egress
 trust bundle singleton read. They also cover AKS attach/show/list/update/detach
 and wait, including a Standard-to-Premium upgrade, using an Entra-enabled
-cluster. This is 21 of 22 API commands, plus all four wait commands.
-The member lifecycle tests the API's optional
-workload case; workload variant serialization is additionally unit-tested.
+cluster. This is 18 of 19 API commands, plus all four wait commands.
+The read-only member scenario replays the original service GET responses
+without member provisioning, mutation, or cleanup. To run it live, set
+`AZURE_TEST_AGENTFABRIC_MEMBER_ID` to an existing member's ARM resource ID.
+It skips live execution when that prerequisite is not supplied. Existing
+workload response schemas are additionally unit-tested.
 Signed operation-status URL values are scrubbed from recordings.
 
 The AKS lifecycle provisions an Entra-enabled cluster; managed identity alone
