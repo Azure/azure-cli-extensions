@@ -52,11 +52,18 @@ helps['service-group show'] = """
 helps['service-group update'] = """
     type: command
     short-summary: Update a service group.
-    long-summary: Update a service group. This is a long-running operation.
+    long-summary: >
+        Update a service group. This is a long-running operation. Service group kind is
+        create-time only and cannot be changed with this command. This command does not
+        support clearing display name, parent, or tags by passing an explicit null. Omit an
+        argument to retain its current value, or provide a replacement value.
     examples:
       - name: Update the display name of a service group
         text: >
             az service-group update --name MyServiceGroup --display-name "Updated Name"
+      - name: Update the criticality of a service group
+        text: >
+            az service-group update --name MyServiceGroup --attributes criticality=2
 """
 
 helps['service-group delete'] = """

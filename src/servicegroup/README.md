@@ -39,8 +39,13 @@ az service-group show --name MyServiceGroup
 
 #### Update a service group
 ```
-az service-group update --name MyServiceGroup --display-name "Updated Name"
+az service-group update --name MyServiceGroup --display-name "Updated Name" \
+    --attributes criticality=2
 ```
+
+`kind` is create-time only and cannot be changed with `service-group update`.
+Update does not support clearing display name, parent, or tags by passing an explicit null.
+Omit an argument to retain its current value, or provide a replacement value.
 
 #### Delete a service group
 ```

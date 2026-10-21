@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import inspect
+
 from azext_servicegroup.aaz.latest.service_group._create import Create
 from azext_servicegroup.aaz.latest.service_group._delete import Delete
 from azext_servicegroup.aaz.latest.service_group._show import Show
@@ -29,6 +31,28 @@ def test_servicegroup_criticality_range():
         criticality_format = command._build_arguments_schema().attributes.criticality._fmt
         assert criticality_format._minimum == 0
         assert criticality_format._maximum == 4
+
+
+def test_servicegroup_update_matches_stable_argument_contract():
+    create_schema = Create._build_arguments_schema()
+    update_schema = Update._build_arguments_schema()
+
+    assert "--kind" in create_schema._fields_alias_map
+    assert "--kind" not in update_schema._fields_alias_map
+    for argument in [
+        update_schema.display_name,
+        update_schema.parent,
+        update_schema.parent.resource_id,
+        update_schema.tags,
+    ]:
+        assert not argument._nullable
+
+
+def test_servicegroup_writes_retrieve_final_resource_from_original_uri():
+    create_source = inspect.getsource(Create.ServiceGroupsCreateOrUpdate)
+    update_source = inspect.getsource(Update.ServiceGroupsUpdate)
+    assert create_source.count('"final-state-via": "original-uri"') == 2
+    assert update_source.count('"final-state-via": "original-uri"') == 2
 
 
 def test_servicegroup_criticality_response_accepts_float():

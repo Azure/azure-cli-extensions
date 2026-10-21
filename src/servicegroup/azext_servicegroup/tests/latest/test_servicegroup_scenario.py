@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *  # pylint: disable=unused-import
+from azure.cli.testsdk.scenario_tests import GeneralNameReplacer
+from azure.cli.testsdk.scenario_tests.const import MOCKED_TENANT_ID
 
 
 class ServiceGroupScenarioTest(ScenarioTest):
@@ -23,6 +25,9 @@ class ServiceGroupScenarioTest(ScenarioTest):
     def _get_root_parent(self):
         """Return the root service group resource ID (tenantId-based)."""
         tenant_id = self.cmd('az account show').get_output_in_json()['tenantId']
+        tenant_replacer = GeneralNameReplacer()
+        tenant_replacer.register_name_pair(tenant_id, MOCKED_TENANT_ID)
+        self.recording_processors.append(tenant_replacer)
         return f'/providers/Microsoft.Management/serviceGroups/{tenant_id}'
 
     def test_servicegroup_crud(self):
@@ -32,10 +37,10 @@ class ServiceGroupScenarioTest(ScenarioTest):
             'name': self.create_random_name('sg-test-', 24),
             'display_name': 'Test Service Group',
             'updated_display_name': 'Updated Service Group',
-            'criticality': 1,
-            'expected_criticality': 1.0,
-            'updated_criticality': 2,
-            'expected_updated_criticality': 2.0,
+            'criticality': 0,
+            'expected_criticality': 0.0,
+            'updated_criticality': 4,
+            'expected_updated_criticality': 4.0,
             'root_parent': root_parent,
         })
 
@@ -62,6 +67,18 @@ class ServiceGroupScenarioTest(ScenarioTest):
             ]
         )
 
+        self.cmd(
+            'az service-group wait --name {name} --created --interval 1 --timeout 60'
+        )
+
+        for invalid_criticality in [-1, 5]:
+            self.kwargs['invalid_criticality'] = invalid_criticality
+            self.cmd(
+                'az service-group update --name {name} '
+                '--attributes criticality={invalid_criticality}',
+                expect_failure=True,
+            )
+
         # Update the service group display name, criticality, and tags
         self.cmd(
             'az service-group update --name {name} --display-name "{updated_display_name}" '
@@ -77,6 +94,12 @@ class ServiceGroupScenarioTest(ScenarioTest):
 
         # Delete the service group
         self.cmd('az service-group delete --name {name} --yes')
+
+        # Verify the deleted child service group is no longer available.
+        self.cmd(
+            'az service-group show --name {name}',
+            expect_failure=True,
+        )
 
     def test_servicegroup_create_with_nested_parent(self):
         """Test creating a 3-level hierarchy and verify its parent references."""
