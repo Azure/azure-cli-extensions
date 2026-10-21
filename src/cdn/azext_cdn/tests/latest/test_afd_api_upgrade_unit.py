@@ -5,8 +5,10 @@
 
 import argparse
 import copy
+import importlib
 import io
 import json
+import pkgutil
 from contextlib import ExitStack, redirect_stderr
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
@@ -27,7 +29,8 @@ from azure.cli.core.aaz._poller import AAZLROPoller
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.mock import DummyCli
 
-from azext_cdn.aaz.latest.afd import auth_policy, custom_domain, origin, origin_group, route, rule_set
+from azext_cdn.aaz.latest import cdn as cdn_commands
+from azext_cdn.aaz.latest.afd import auth_policy, custom_domain, origin, origin_group, profile, route, rule_set
 from azext_cdn.aaz.latest.afd.rule import action as rule_action
 from azext_cdn.aaz.latest.cdn import origin_group as cdn_origin_group
 from azext_cdn.aaz.latest.cdn.profile import deployment_version
@@ -36,7 +39,10 @@ from azext_cdn.custom.custom_afdx import (
     AFDOriginGroupUpdate, AFDRouteCreate, AFDRouteUpdate, AFDRuleCreate,
     AFDRuleActionAdd, AFDRuleActionRemove, AFDRuleActionShow, AFDRuleActionUpdate,
 )
-from azext_cdn.custom.custom_cdn import CDNEndpointCreate
+from azext_cdn.custom.custom_cdn import (
+    CDNEndpointCreate, CDNEndpointUpdate,
+    CDNProfileCreate, CDNProfileDelete, CDNProfileList, CDNProfileShow, CDNProfileUpdate,
+)
 
 
 SUBSCRIPTION = '00000000-0000-0000-0000-000000000000'
@@ -59,6 +65,8 @@ EDGE_ACTION = (
 
 
 class OfflineAazTest(TestCase):
+
+    api_version = API_VERSION
 
     def setUp(self):
         self.contexts = ExitStack()
@@ -102,7 +110,7 @@ class OfflineAazTest(TestCase):
         self.assertTrue(self.responses, f'Unexpected request: {request.method} {request.url}')
         method, status, body = self.responses.pop(0)
         self.assertEqual(method, request.method)
-        self.assertEqual([API_VERSION], parse_qs(urlparse(request.url).query)['api-version'])
+        self.assertEqual([self.api_version], parse_qs(urlparse(request.url).query)['api-version'])
         self.requests.append(request)
         response = Mock(spec=HttpResponse)
         response.request = request
@@ -513,18 +521,6 @@ class AfdApiUpgradeUnitTest(OfflineAazTest):
             with self.subTest(command=command_type.AZ_NAME, invalid=invalid):
                 self._assert_invalid(command_type, arguments + invalid)
 
-    def test_cdn_grpc_probes(self):
-        for command_type in (cdn_origin_group.Create, cdn_origin_group.Update):
-            with self.subTest(command=command_type.AZ_NAME):
-                properties = {'healthProbeSettings': {'probeProtocol': 'Grpc', 'probePath': '/'}}
-                arguments = COMMON_ARGS + [
-                    '--endpoint-name', 'endpoint', '--origin-group-name', 'group',
-                    '--health-probe-settings', '{probe-protocol:Grpc,probe-path:/}',
-                ]
-                self._write(command_type, arguments, properties,
-                            {'healthProbeSettings': {'probeProtocol': 'Https', 'probePath': '/'}}
-                            if command_type is cdn_origin_group.Update else None)
-
     def test_edge_action_client_response(self):
         for command_type in (AFDRuleCreate, rule_set.Create):
             with self.subTest(command=command_type.AZ_NAME):
@@ -581,21 +577,6 @@ class AfdApiUpgradeUnitTest(OfflineAazTest):
         self._invoke(AFDRuleActionRemove, named_args, [('GET', 200, populated), ('PUT', 200, empty)])
         self.assertEqual([], self._body()['properties']['actions'])
 
-    def test_cdn_endpoint_shared_enums(self):
-        origin_id = PROFILE_ID + '/endpoints/endpoint/origins/origin-example'
-        arguments = COMMON_ARGS + [
-            '--endpoint-name', 'endpoint', '--location', 'global', '--origin', 'origin.example',
-            '--delivery-policy', '{rules:[{name:responseRule,order:0,actions:[' + EDGE_ACTION + ']}]}',
-            '--origin-groups',
-            '[{name:group,origins:[{id:' + origin_id + '}],health-probe-settings:{probe-protocol:Grpc}}]',
-        ]
-        self._invoke(CDNEndpointCreate, arguments, [('PUT', 200, self._resource({}))])
-        properties = self._body()['properties']
-        edge_parameters = properties['deliveryPolicy']['rules'][0]['actions'][0]['parameters']
-        self.assertEqual('ClientResponse', edge_parameters['invocationPoint'])
-        self.assertEqual('DeliveryRuleEdgeActionParameters', edge_parameters['typeName'])
-        self.assertEqual('Grpc', properties['originGroups'][0]['properties']['healthProbeSettings']['probeProtocol'])
-
     def test_deployment_version_api_remains_pinned(self):
         commands = (
             deployment_version.Approve, deployment_version.Compare, deployment_version.List,
@@ -607,3 +588,83 @@ class AfdApiUpgradeUnitTest(OfflineAazTest):
                 self.assertEqual('2025-09-01-preview', info['version'])
                 self.assertTrue(all(resource[2] == '2025-09-01-preview'
                                     for resource in info['resources']))
+
+
+class ClassicCdnCompatibilityUnitTest(OfflineAazTest):
+
+    api_version = '2026-04-01-preview'
+
+    def test_classic_and_shared_profile_api_versions_remain_pinned(self):
+        checked = 0
+        for package in (cdn_commands, profile):
+            for module_info in pkgutil.walk_packages(package.__path__, package.__name__ + '.'):
+                if module_info.ispkg or (module_info.name.endswith('._usage') and package is profile):
+                    continue
+                module = importlib.import_module(module_info.name)
+                expected = '2025-09-01-preview' if '.deployment_version.' in module_info.name else self.api_version
+                for command_type in vars(module).values():
+                    if not isinstance(command_type, type) or command_type.__module__ != module.__name__:
+                        continue
+                    info = getattr(command_type, '_aaz_info', None)
+                    if info is None:
+                        continue
+                    with self.subTest(command=command_type.AZ_NAME):
+                        if 'version' in info:
+                            self.assertEqual(expected, info['version'])
+                        self.assertTrue(info['resources'])
+                        self.assertTrue(all(resource[2] == expected for resource in info['resources']))
+                        checked += 1
+        self.assertGreater(checked, 40)
+        for command_type in (
+            CDNProfileCreate, CDNProfileDelete, CDNProfileList, CDNProfileShow, CDNProfileUpdate,
+        ):
+            with self.subTest(command=command_type.AZ_NAME):
+                info = command_type._aaz_info  # pylint: disable=protected-access
+                self.assertEqual(self.api_version, info['version'])
+
+    def test_classic_origin_group_probe_protocols(self):
+        for command_type in (cdn_origin_group.Create, cdn_origin_group.Update):
+            arguments = COMMON_ARGS + ['--endpoint-name', 'endpoint', '--origin-group-name', 'group']
+            for protocol in ('Http', 'Https'):
+                with self.subTest(command=command_type.AZ_NAME, protocol=protocol):
+                    properties = {'healthProbeSettings': {'probeProtocol': protocol, 'probePath': '/'}}
+                    self._write(
+                        command_type, arguments + [
+                            '--health-probe-settings', '{probe-protocol:' + protocol + ',probe-path:/}',
+                        ], properties, properties if command_type is cdn_origin_group.Update else None,
+                    )
+            self._assert_invalid(
+                command_type, arguments + ['--health-probe-settings', '{probe-protocol:Grpc,probe-path:/}'],
+            )
+
+    def test_classic_endpoint_shared_enums(self):
+        origin_id = PROFILE_ID + '/endpoints/endpoint/origins/origin-example'
+        for command_type in (CDNEndpointCreate, CDNEndpointUpdate):
+            arguments = COMMON_ARGS + ['--endpoint-name', 'endpoint']
+            if command_type is CDNEndpointCreate:
+                arguments += ['--location', 'global', '--origin', 'origin.example']
+            for invocation, protocol in (('ClientRequest', 'Http'), ('OriginRequest', 'Https')):
+                with self.subTest(command=command_type.AZ_NAME, invocation=invocation, protocol=protocol):
+                    action = EDGE_ACTION.replace('ClientResponse', invocation)
+                    existing = self._resource({'isCompressionEnabled': False})
+                    existing['location'] = 'global'
+                    responses = [] if command_type is CDNEndpointCreate else [('GET', 200, existing)] * 2
+                    self._invoke(command_type, arguments + [
+                        '--delivery-policy', '{rules:[{name:requestRule,order:0,actions:[' + action + ']}]}',
+                        '--origin-groups',
+                        '[{name:group,origins:[{id:' + origin_id
+                        + '}],health-probe-settings:{probe-protocol:' + protocol + '}}]',
+                    ], responses + [('PUT', 200, self._resource({}))])
+                    properties = self._body()['properties']
+                    edge = properties['deliveryPolicy']['rules'][0]['actions'][0]['parameters']
+                    self.assertEqual(invocation, edge['invocationPoint'])
+                    self.assertEqual('DeliveryRuleEdgeActionParameters', edge['typeName'])
+                    self.assertEqual(
+                        protocol, properties['originGroups'][0]['properties']['healthProbeSettings']['probeProtocol'],
+                    )
+            self._assert_invalid(command_type, arguments + [
+                '--delivery-policy', '{rules:[{name:responseRule,order:0,actions:[' + EDGE_ACTION + ']}]}',
+            ])
+            self._assert_invalid(command_type, arguments + [
+                '--origin-groups', '[{name:group,health-probe-settings:{probe-protocol:Grpc}}]',
+            ])

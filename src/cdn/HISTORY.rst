@@ -5,12 +5,12 @@ Release History
 
 1.0.0b4
 +++++++
-* Upgrade CDN and AFD generated commands using API version 2026-04-01-preview to 2026-09-01-preview, preserving other pinned API versions.
+* Upgrade AFD feature commands to API version 2026-09-01-preview, preserving Classic CDN and shared profile commands on 2026-04-01-preview and other pinned API versions.
 * Add preview AFD authentication policy commands with Microsoft Entra ID configuration, domain and route associations, Block/Log actions, and token forwarding.
 * Add AFD custom domain server TLS group policies and configurable TLS groups.
 * Add AFD origin certificate name validation modes and custom certificate subjects.
-* Add origin group capacity distribution settings, gRPC health probes, and AFD route gRPC settings.
-* Add ClientResponse invocation support for EdgeAction rule actions, including rule action subcommands, batch rules, and CDN endpoint delivery policies.
+* Add AFD origin group capacity distribution settings and gRPC health probes, and AFD route gRPC settings.
+* Add ClientResponse invocation support for AFD EdgeAction rule actions, including rule action subcommands and batch rules.
 * Add offline regression tests for the new API surface and preserved API version pins.
 
 1.0.0b3
