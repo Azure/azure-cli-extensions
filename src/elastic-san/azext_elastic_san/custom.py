@@ -34,7 +34,7 @@ def _add_short_option(args_schema, field_name, option):
         arg._help["name"] = " ".join(arg._options)
 
 
-class _InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
+class _InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):  # pylint: disable=too-few-public-methods
     def __call__(self, *args, **kwargs):
         self._update_instance_by_generic(self.ctx.vars.instance, self.ctx.generic_update_args)
 
@@ -45,7 +45,7 @@ def _merge_update_payload(instance, payload):
     for key, value in payload.items():
         field = instance[key]
         if isinstance(value, dict) and isinstance(field._schema, AAZObjectType) and key != "identity":
-            if field == None:  # pylint: disable=singleton-comparison
+            if field._data is None:
                 instance[key] = {}
             _merge_update_payload(instance[key], value)
         else:
@@ -176,12 +176,18 @@ class VolumeGroupCreate(_VolumeGroupCreate):
         from azure.cli.core.aaz import AAZStrArg, AAZResourceIdArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         _add_short_option(args_schema, "delete_retention_policy", "-d")
-        args_schema.identity.user_assigned_identity_id = AAZStrArg(
-            options=["user-assigned-identity"],
-            help="The ARM resource identifier of the User Assigned identity that will be used with this volume group. ",
-            fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
-                                                "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
+        identity_id_format = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
+                     "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}"
         )
+        if hasattr(args_schema.identity, "user_assigned_identity_id"):
+            args_schema.identity.user_assigned_identity_id._fmt = identity_id_format
+        else:
+            args_schema.identity.user_assigned_identity_id = AAZStrArg(
+                options=["user-assigned-identity"],
+                help="The ARM resource identifier of the User Assigned identity that will be used with this volume group. ",
+                fmt=identity_id_format,
+            )
         args_schema.identity.user_assigned_identities._registered = False
         args_schema.encryption_properties.identity.user_assigned_identity._fmt = \
             AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
