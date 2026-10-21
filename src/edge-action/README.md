@@ -109,6 +109,9 @@ in AAZ and regenerate the `aaz` directory; do not patch generated request or res
 code by hand. Customizations in `custom.py` and `commands.py` are maintained
 separately from the generated `aaz` directory.
 
+Argument customizations isolate both `_args_schema` and `_arguments_schema` from
+their generated base classes so added options do not depend on command load order.
+
 The registered `GetVersionCode` subclass owns the download arguments and file-output
 handling. It retains the generated request, response deserialization, polling, and
 `--no-wait` behavior without modifying generated code.

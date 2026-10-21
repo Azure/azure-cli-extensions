@@ -655,6 +655,36 @@ def test_get_version_code_argument_schema_is_cached_and_isolated(api):
     assert api.requests == []
 
 
+@pytest.mark.parametrize("generated_first", [True, False])
+@pytest.mark.parametrize("group,operation,custom_class,added_options", [
+    ("version", "get_version_code", GetVersionCode, {"output_directory": ["--output-directory", "-d"]}),
+    ("execution_filter", "update", ExecutionFilterUpdate,
+     {field: ["--" + field.replace("_", "-")] for field in FILTER_UPDATE_PROPERTIES}),
+])
+def test_customized_argument_schemas_are_cached_and_isolated(
+        api, monkeypatch, group, operation, custom_class, added_options, generated_first):
+    generated_class = command(group, operation)
+    for cls in (generated_class, custom_class):
+        monkeypatch.setattr(cls, "_args_schema", None)
+        # Do not introduce cache ownership while testing inheritance.
+        if "_arguments_schema" in vars(cls):
+            monkeypatch.setattr(cls, "_arguments_schema", None)
+    handler = api.load(group, operation)
+    assert isinstance(handler, custom_class)
+    generated = generated_class(cli_ctx=handler.cli_ctx)
+    ordered = (generated, handler) if generated_first else (handler, generated)
+    for instance in ordered:
+        instance.load_arguments()
+    schema = handler.get_arguments_schema()
+    assert handler.get_arguments_schema() is schema
+    assert handler._build_arguments_schema() is schema
+    assert generated.get_arguments_schema() is not schema
+    for field, options in added_options.items():
+        assert field not in generated.arguments
+        assert handler.arguments[field].options_list == options
+    assert api.requests == []
+
+
 def test_get_version_code_no_wait_does_not_save_or_poll(api, tmp_path):
     output_dir = tmp_path / "download"
     api.respond(status=202, headers={"Location": "https://management.azure.com/operations/code-result"})

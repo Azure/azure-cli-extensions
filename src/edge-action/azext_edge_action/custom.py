@@ -50,7 +50,9 @@ class SwapDefault(_SwapDefault):
 
 
 class GetVersionCode(_GetVersionCode):
+    # Isolate both the generated cache and AAZ's public schema cache.
     _args_schema = None
+    _arguments_schema = None
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -98,6 +100,7 @@ class GetVersionCode(_GetVersionCode):
 
 class ExecutionFilterUpdate(_ExecutionFilterUpdate):
     _args_schema = None
+    _arguments_schema = None
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
