@@ -2,6 +2,13 @@
 
 Release History
 ===============
+3.0.0b7
++++++++++++++++
+* Validate optional JSON Schema Draft-07 conditions offline in the runbook
+  and execution parameter editors without rendering schema keywords as inputs.
+* Report conditional validation errors before preparing the upload command,
+  while allowing incomplete parameters to be saved as a draft.
+
 3.0.0b6
 +++++++++++++++
 * Add ``az migrate runbook`` command group to author, configure, and run
