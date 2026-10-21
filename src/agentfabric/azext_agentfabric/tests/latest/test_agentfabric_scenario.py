@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
-from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, live_only
+from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import RecordingProcessor
 from azure.mgmt.core.tools import parse_resource_id
 
@@ -164,7 +164,6 @@ class AgentfabricResourceScenario(ScenarioTest):
                 self.check("name", "default"),
                 self.check("type", "Microsoft.NetworkSecurity/agentFabrics/egressTrustBundles", case_sensitive=False),
             ])
-            # Collection GET currently fails with ResourceReadFailed in Central US EUAP.
         finally:
             self.cmd("agentfabric delete -g {rg} -n {fabric} --yes")
 
@@ -214,21 +213,43 @@ class AgentfabricResourceScenario(ScenarioTest):
         ), ExitStack() as cleanup:
             self._exercise_aks_lifecycle(cleanup)
 
-    @live_only()
-    @ResourceGroupPreparer(name_prefix="clitestafetblist", location=LOCATION)
-    def test_agentfabric_egress_trust_bundle_list(self, resource_group):
-        # No successful recording yet: public collection GET returned 404 ResourceReadFailed.
+    def test_agentfabric_egress_trust_bundle_list(self):
+        recorded_group = "clitestafetblist000001"
+        recorded_fabric = "cliafetb000002"
+        fabric_id = os.environ.get("AZURE_TEST_AGENTFABRIC_FABRIC_ID") if self.is_live else (
+            "/subscriptions/00000000-0000-0000-0000-000000000000"
+            f"/resourceGroups/{recorded_group}/providers/Microsoft.NetworkSecurity"
+            f"/agentFabrics/{recorded_fabric}"
+        )
+        if not fabric_id:
+            self.skipTest("Set AZURE_TEST_AGENTFABRIC_FABRIC_ID to an existing fabric for read-only live tests.")
+        resource = parse_resource_id(fabric_id)
+        self.assertEqual(resource.get("namespace", "").lower(), "microsoft.networksecurity")
+        self.assertEqual(resource.get("type", "").lower(), "agentfabrics")
+        self.assertNotIn("child_type_1", resource)
+        self.name_replacer.register_name_pair(resource["resource_group"], recorded_group)
+        self.name_replacer.register_name_pair(resource["name"], recorded_fabric)
         self.kwargs.update({
-            "fabric": self.create_random_name(prefix="cliafetb", length=24),
-            "location": LOCATION,
+            "subscription": resource["subscription"],
+            "rg": resource["resource_group"],
+            "fabric": resource["name"],
         })
-        self.cmd("agentfabric create -g {rg} -n {fabric} -l {location}")
-        try:
-            self.cmd("agentfabric egress-trust-bundle list -g {rg} --fabric-name {fabric}", checks=[
-                self.check("[?name=='default'] | length(@)", 1),
-            ])
-        finally:
-            self.cmd("agentfabric delete -g {rg} -n {fabric} --yes")
+        bundles = self.cmd(
+            "agentfabric egress-trust-bundle list --subscription {subscription} -g {rg} --fabric-name {fabric}",
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].name", "default"),
+                self.check("[0].type", "Microsoft.NetworkSecurity/agentFabrics/egressTrustBundles", case_sensitive=False),
+            ],
+        ).get_output_in_json()
+        bundle = self.cmd(
+            "agentfabric egress-trust-bundle show --subscription {subscription} -g {rg} --fabric-name {fabric}",
+            checks=[self.check("name", "default")],
+        ).get_output_in_json()
+        self.assertEqual(bundles[0]["id"].lower(), bundle["id"].lower())
+        self.assertEqual(bundle["id"].lower(), (fabric_id.rstrip("/") + "/egressTrustBundles/default").lower())
+        self.assertGreater(len(bundles[0]["properties"]["certificates"]), 0)
+        self.assertGreater(len(bundle["properties"]["certificates"]), 0)
 
     @staticmethod
     def _aks_prerequisite_client(cli_ctx, subscription_id=None):

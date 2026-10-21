@@ -181,10 +181,11 @@ azdev test agentfabric
 `AZURE_TEST_AGENTFABRIC_LOCATION` selects the service region (default:
 `centraluseuap`). The committed live recordings cover Fabric and
 Policy Group CRUD/wait, existing Member show/list/wait,
-resource-group and subscription lists, and the egress
-trust bundle singleton read. They also cover AKS attach/show/list/update/detach
+resource-group lists, and egress trust bundle singleton and collection reads.
+They also cover AKS attach/show/list/update/detach
 and wait, including a Standard-to-Premium upgrade, using an Entra-enabled
-cluster. This is 18 of 19 API commands, plus all four wait commands.
+cluster. This is 19 of 19 API commands, plus all four wait commands; command-name
+coverage does not establish every argument scope or workload variant.
 The read-only member scenario replays the original service GET responses
 without member provisioning, mutation, or cleanup. To run it live, set
 `AZURE_TEST_AGENTFABRIC_MEMBER_ID` to an existing member's ARM resource ID.
@@ -200,12 +201,19 @@ default AKS API version do not invalidate playback. Agent Fabric requests
 continue to use `2026-10-07-preview`; request matching and recorded responses
 are unchanged.
 
-The egress trust bundle collection scenario is marked `@live_only()`:
-LIST returned HTTP 404 `ResourceReadFailed`, while singleton show succeeded.
-It is skipped only during ordinary offline playback, not unconditionally.
-Run `azdev test test_agentfabric_egress_trust_bundle_list --live` to exercise
-the endpoint after a rollout. The live test asserts success and will still
-fail if the service returns that error. Once a successful live recording is
-available, remove the marker and include it in normal playback coverage.
+The egress trust bundle collection scenario runs in ordinary playback. Its
+successful live recording verifies that LIST returns the `default` bundle with
+certificates and that SHOW returns the same resource ID. To record it live, set
+`AZURE_TEST_AGENTFABRIC_FABRIC_ID` to an existing Fabric's ARM resource ID, then
+run `azdev test test_agentfabric_egress_trust_bundle_list --live`. This scenario
+only reads the supplied Fabric; it does not provision or delete resources. It
+skips live execution if the existing-Fabric prerequisite is not supplied.
+
+The three 404s in the AKS lifecycle recording are intentional: the AKS create
+command first checks that its new cluster does not exist, and the association
+and Fabric deleted waits verify that their resources are gone. Attach, show,
+list, upgrade, and detach succeeded in that recorded lifecycle. The successful
+egress reads do not imply GA or availability in every region; the API remains
+`2026-10-07-preview`.
 
 Failed-run recordings are not committed as successful playback fixtures.
