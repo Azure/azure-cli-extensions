@@ -8,7 +8,9 @@ import copy
 import importlib
 import io
 import json
+import os
 import pkgutil
+import shlex
 from contextlib import ExitStack, redirect_stderr
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
@@ -22,6 +24,7 @@ from azure.core.pipeline import PipelineContext, PipelineResponse
 from azure.core.pipeline.policies import ContentDecodePolicy
 from azure.core.pipeline.transport import HttpResponse, HttpTransport
 from azure.core.polling import NoPolling
+from azure.cli.core import _session
 from azure.cli.core.aaz import AAZUndefined, AAZWaitCommand
 from azure.cli.core.aaz._command_ctx import AAZCommandCtx
 from azure.cli.core.aaz._paging import AAZPaged
@@ -29,8 +32,8 @@ from azure.cli.core.aaz._poller import AAZLROPoller
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.mock import DummyCli
 
-from azext_cdn.aaz.latest import cdn as cdn_commands
-from azext_cdn.aaz.latest.afd import auth_policy, custom_domain, origin, origin_group, profile, route, rule_set
+from azext_cdn.aaz.latest import afd as afd_commands, cdn as cdn_commands
+from azext_cdn.aaz.latest.afd import auth_policy, custom_domain, origin, origin_group, route, rule_set
 from azext_cdn.aaz.latest.afd.rule import action as rule_action
 from azext_cdn.aaz.latest.cdn import origin_group as cdn_origin_group
 from azext_cdn.aaz.latest.cdn.profile import deployment_version
@@ -43,6 +46,7 @@ from azext_cdn.custom.custom_cdn import (
     CDNEndpointCreate, CDNEndpointUpdate,
     CDNProfileCreate, CDNProfileDelete, CDNProfileList, CDNProfileShow, CDNProfileUpdate,
 )
+from .afdx_scenario_mixin import CdnAfdScenarioMixin
 
 
 SUBSCRIPTION = '00000000-0000-0000-0000-000000000000'
@@ -71,10 +75,9 @@ class OfflineAazTest(TestCase):
     def setUp(self):
         self.contexts = ExitStack()
         self.addCleanup(self.contexts.close)
-        config_dir = TemporaryDirectory()
-        self.addCleanup(config_dir.cleanup)
+        config_dir = self.contexts.enter_context(TemporaryDirectory())
         environment = self.contexts.enter_context(patch.dict('os.environ', {
-            'AZURE_CONFIG_DIR': config_dir.name,
+            'AZURE_CONFIG_DIR': config_dir,
             'AZURE_CORE_COLLECT_TELEMETRY': 'false',
             'AZURE_CORE_ONLY_SHOW_ERRORS': 'true',
         }))
@@ -89,6 +92,11 @@ class OfflineAazTest(TestCase):
             'azure.cli.core.commands.client_factory.get_subscription_id', return_value=SUBSCRIPTION
         ))
         self.contexts.enter_context(patch('azure.cli.core.util.handle_version_update'))
+        # AzCli reloads shared Session instances that other modules also reference.
+        for session in vars(_session).values():
+            if isinstance(session, _session.Session):
+                self.contexts.enter_context(patch.object(session, 'filename', session.filename))
+                self.contexts.enter_context(patch.object(session, 'data', copy.deepcopy(session.data)))
         self.cli = DummyCli()
         self.loader = SimpleNamespace(cli_ctx=self.cli)
         transport = MagicMock(spec=HttpTransport)
@@ -379,6 +387,26 @@ class AuthPolicyUnitTest(OfflineAazTest):
 
 class AfdApiUpgradeUnitTest(OfflineAazTest):
 
+    def test_all_afd_api_versions_are_upgraded(self):
+        checked = 0
+        for module_info in pkgutil.walk_packages(afd_commands.__path__, afd_commands.__name__ + '.'):
+            if module_info.ispkg:
+                continue
+            module = importlib.import_module(module_info.name)
+            for command_type in vars(module).values():
+                if not isinstance(command_type, type) or command_type.__module__ != module.__name__:
+                    continue
+                info = getattr(command_type, '_aaz_info', None)
+                if info is None:
+                    continue
+                with self.subTest(module=module_info.name):
+                    if 'version' in info:
+                        self.assertEqual(API_VERSION, info['version'])
+                    self.assertTrue(info['resources'])
+                    self.assertTrue(all(resource[2] == API_VERSION for resource in info['resources']))
+                    checked += 1
+        self.assertGreater(checked, 0)
+
     def test_custom_domain_tls_groups(self):
         groups = [
             'SecP256r1MLKEM768', 'SecP384r1MLKEM1024', 'X25519',
@@ -590,15 +618,103 @@ class AfdApiUpgradeUnitTest(OfflineAazTest):
                                     for resource in info['resources']))
 
 
+class OfflineAazIsolationUnitTest(TestCase):
+
+    def test_global_sessions_are_restored_after_cleanup(self):
+        for setup_fails in (False, True):
+            with self.subTest(setup_fails=setup_fails):
+                with TemporaryDirectory() as config_dir, ExitStack() as contexts:
+                    originals = []
+                    for name, session in vars(_session).items():
+                        if not isinstance(session, _session.Session):
+                            continue
+                        filename = os.path.join(config_dir, name + '.json')
+                        data = {'original': name}
+                        contexts.enter_context(patch.object(session, 'filename', filename))
+                        contexts.enter_context(patch.object(session, 'data', data))
+                        originals.append((session, filename, data))
+                    fixture = OfflineAazTest()
+                    try:
+                        if setup_fails:
+                            with patch(__name__ + '.PipelineClient', side_effect=RuntimeError('Setup failed')):
+                                with self.assertRaisesRegex(RuntimeError, 'Setup failed'):
+                                    fixture.setUp()
+                        else:
+                            fixture.setUp()
+                        fixture_config_dir = fixture.cli.config.config_dir
+                    finally:
+                        self.assertTrue(fixture.doCleanups())
+                    self.assertFalse(os.path.exists(fixture_config_dir))
+                    for session, filename, data in originals:
+                        self.assertEqual(filename, session.filename)
+                        self.assertIs(data, session.data)
+                        self.assertEqual({'original': data['original']}, session.data)
+                        session['after'] = 'cleanup'
+                        with open(filename, encoding='utf-8-sig') as stream:
+                            self.assertEqual(dict(data, after='cleanup'), json.load(stream))
+
+
+class ByocIdentityFixtureUnitTest(TestCase):
+
+    def test_vault_access_is_scoped_and_cleaned_up(self):
+        identity = {
+            'principalId': '11111111-1111-1111-1111-111111111111',
+            'tenantId': '22222222-2222-2222-2222-222222222222',
+        }
+        for fail in (False, True):
+            with self.subTest(fail=fail):
+                scenario = Mock()
+                scenario.assertTrue = self.assertTrue
+                scenario.is_playback_mode.return_value = True
+                scenario.get_subscription_id.return_value = SUBSCRIPTION
+                scenario.cmd.return_value.get_output_in_json.return_value = identity
+                if fail:
+                    with self.assertRaisesRegex(RuntimeError, 'fixture failure'):
+                        with CdnAfdScenarioMixin.afd_byoc_identity(scenario, 'rg', 'profile'):
+                            raise RuntimeError('fixture failure')
+                else:
+                    with CdnAfdScenarioMixin.afd_byoc_identity(scenario, 'rg', 'profile'):
+                        self.assertEqual(2, scenario.cmd.call_count)
+
+                calls = scenario.cmd.call_args_list
+                self.assertEqual(3, len(calls))
+                self.assertIn('afd profile identity assign', calls[0].args[0])
+                for call, operation in zip(calls[1:], ('add', 'remove')):
+                    arguments = shlex.split(call.args[0])
+                    self.assertEqual('put', arguments[arguments.index('--method') + 1].lower())
+                    url = urlparse(arguments[arguments.index('--url') + 1])
+                    self.assertTrue(url.path.endswith('/vaults/Azure-CDN-BYOC/accessPolicies/' + operation))
+                    self.assertEqual(['2023-07-01'], parse_qs(url.query)['api-version'])
+                    body = json.loads(arguments[arguments.index('--body') + 1])
+                    self.assertEqual({
+                        'properties': {'accessPolicies': [{
+                            'tenantId': identity['tenantId'],
+                            'objectId': identity['principalId'],
+                            'permissions': {'secrets': ['get']},
+                        }]},
+                    }, body)
+
+
 class ClassicCdnCompatibilityUnitTest(OfflineAazTest):
 
     api_version = '2026-04-01-preview'
 
-    def test_classic_and_shared_profile_api_versions_remain_pinned(self):
+    def test_classic_profile_command_registration(self):
+        for verb, command_type in (
+            ('create', CDNProfileCreate), ('delete', CDNProfileDelete), ('list', CDNProfileList),
+            ('show', CDNProfileShow), ('update', CDNProfileUpdate),
+        ):
+            with self.subTest(command=verb):
+                self.assertEqual('cdn profile ' + verb, command_type.AZ_NAME)
+                self.assertTrue(command_type.AZ_HELP['short-summary'])
+        self.assertFalse(CDNProfileDelete.AZ_CONFIRMATION)
+        self.assertFalse(hasattr(cdn_commands.profile, 'Wait'))
+
+    def test_classic_api_versions_remain_pinned(self):
         checked = 0
-        for package in (cdn_commands, profile):
+        for package in (cdn_commands,):
             for module_info in pkgutil.walk_packages(package.__path__, package.__name__ + '.'):
-                if module_info.ispkg or (module_info.name.endswith('._usage') and package is profile):
+                if module_info.ispkg:
                     continue
                 module = importlib.import_module(module_info.name)
                 expected = '2025-09-01-preview' if '.deployment_version.' in module_info.name else self.api_version
@@ -621,6 +737,28 @@ class ClassicCdnCompatibilityUnitTest(OfflineAazTest):
             with self.subTest(command=command_type.AZ_NAME):
                 info = command_type._aaz_info  # pylint: disable=protected-access
                 self.assertEqual(self.api_version, info['version'])
+
+    def test_classic_profile_requests_use_the_existing_api(self):
+        resource = {
+            'id': PROFILE_ID,
+            'name': 'profile',
+            'location': 'global',
+            'sku': {'name': 'Standard_Microsoft'},
+            'properties': {'provisioningState': 'Succeeded'},
+        }
+        arguments = ['--resource-group', 'rg', '--name', 'profile']
+        for command_type, args, responses in (
+            (CDNProfileCreate, arguments + ['--sku', 'Standard_Microsoft'], [('PUT', 200, resource)]),
+            (CDNProfileUpdate, arguments + ['--tags', '{key:value}'],
+             [('GET', 200, resource), ('PUT', 200, resource)]),
+            (CDNProfileShow, arguments, [('GET', 200, resource)]),
+            (CDNProfileList, ['--resource-group', 'rg'], [('GET', 200, {'value': [resource]})]),
+            (CDNProfileDelete, arguments, [('DELETE', 204, None)]),
+        ):
+            with self.subTest(command=command_type.__name__):
+                with patch('azure.cli.core.aaz._command_ctx.get_resource_group_location', return_value='global'):
+                    self._invoke(command_type, args, responses)
+                self.assertTrue(self.requests)
 
     def test_classic_origin_group_probe_protocols(self):
         for command_type in (cdn_origin_group.Create, cdn_origin_group.Update):

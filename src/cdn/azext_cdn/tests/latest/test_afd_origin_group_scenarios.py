@@ -98,6 +98,9 @@ class CdnAfdOriginGroupScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
 
         origin_group_name = self.create_random_name(prefix='og', length=16)
         checks = [JMESPathCheck('name', origin_group_name),
+                  JMESPathCheck('loadBalancingSettings.capacityDistributionSettings.distributionType',
+                                'DynamicWeights'),
+                  JMESPathCheck('loadBalancingSettings.capacityDistributionSettings.capacityConsciousThreshold', 80),
                   JMESPathCheck('loadBalancingSettings.sampleSize', 4),
                   JMESPathCheck('loadBalancingSettings.successfulSamplesRequired', 3),
                   JMESPathCheck('loadBalancingSettings.additionalLatencyInMilliseconds', 50),
@@ -111,9 +114,16 @@ class CdnAfdOriginGroupScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                                          origin_group_name,
                                          "--probe-request-type GET --probe-protocol Http --probe-interval-in-seconds 120 --probe-path /test1/azure.txt "
                                          "--sample-size 4 --successful-samples-required 3 "
-                                         "--additional-latency-in-milliseconds 50",
+                                         "--additional-latency-in-milliseconds 50 "
+                                         "--capacity-settings "
+                                         "'{\"distribution-type\":\"DynamicWeights\",\"capacity-conscious-threshold\":80}'",
                                          checks=checks)
+        self.afd_origin_group_show_cmd(resource_group, profile_name, origin_group_name, checks=checks)
         list_checks = [JMESPathCheck('length(@)', 1),
+                       JMESPathCheck('@[0].loadBalancingSettings.capacityDistributionSettings.distributionType',
+                                     'DynamicWeights'),
+                       JMESPathCheck('@[0].loadBalancingSettings.capacityDistributionSettings.capacityConsciousThreshold',
+                                     80),
                        JMESPathCheck('@[0].name', origin_group_name)]
         self.afd_origin_group_list_cmd(resource_group, profile_name, checks=list_checks)
 
@@ -164,6 +174,58 @@ class CdnAfdOriginGroupScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                                          origin_group_name,
                                          options=options,
                                          checks=update_checks)
+
+        distribution_checks = [
+            JMESPathCheck('loadBalancingSettings.sampleSize', 4),
+            JMESPathCheck('loadBalancingSettings.successfulSamplesRequired', 3),
+            JMESPathCheck('loadBalancingSettings.additionalLatencyInMilliseconds', 30),
+            JMESPathCheck('loadBalancingSettings.capacityDistributionSettings.distributionType', 'DynamicWeights'),
+            JMESPathCheck('loadBalancingSettings.capacityDistributionSettings.capacityConsciousThreshold', 80),
+            JMESPathCheck('healthProbeSettings.probeProtocol', 'Https'),
+            JMESPathCheck('healthProbeSettings.probeRequestType', 'HEAD'),
+        ]
+        self.afd_origin_group_show_cmd(resource_group, profile_name, origin_group_name,
+                                       checks=distribution_checks)
+        distribution_checks = [
+            JMESPathCheck('loadBalancingSettings.sampleSize', 4),
+            JMESPathCheck('loadBalancingSettings.successfulSamplesRequired', 3),
+            JMESPathCheck('loadBalancingSettings.additionalLatencyInMilliseconds', 30),
+            JMESPathCheck('loadBalancingSettings.capacityDistributionSettings.distributionType', 'StaticWeights'),
+            JMESPathCheck('loadBalancingSettings.capacityDistributionSettings.capacityConsciousThreshold', 100),
+            JMESPathCheck('healthProbeSettings.probeProtocol', 'Https'),
+            JMESPathCheck('healthProbeSettings.probeRequestType', 'HEAD'),
+            JMESPathCheck('provisioningState', 'Succeeded'),
+        ]
+        self.afd_origin_group_update_cmd(
+            resource_group, profile_name, origin_group_name,
+            options='--capacity-distribution-settings '
+                    '\'{"distribution-type":"StaticWeights","capacity-conscious-threshold":100}\'',
+            checks=distribution_checks)
+        self.afd_origin_group_show_cmd(resource_group, profile_name, origin_group_name,
+                                       checks=distribution_checks)
+
+        # This group has no origins: validate persistence without probing an HTTP-only backend.
+        grpc_checks = [
+            JMESPathCheck('healthProbeSettings.probeProtocol', 'Grpc'),
+            JMESPathCheck('healthProbeSettings.probePath', '/'),
+            JMESPathCheck('healthProbeSettings.probeIntervalInSeconds', 120),
+            JMESPathCheck('loadBalancingSettings.sampleSize', 4),
+            JMESPathCheck('loadBalancingSettings.successfulSamplesRequired', 3),
+            JMESPathCheck('loadBalancingSettings.capacityDistributionSettings.distributionType', 'StaticWeights'),
+            JMESPathCheck('loadBalancingSettings.capacityDistributionSettings.capacityConsciousThreshold', 100),
+            JMESPathCheck('provisioningState', 'Succeeded'),
+        ]
+        self.afd_origin_group_update_cmd(
+            resource_group, profile_name, origin_group_name,
+            options='--probe-protocol Grpc --probe-path / --probe-request-type GET',
+            checks=grpc_checks)
+        self.afd_origin_group_show_cmd(resource_group, profile_name, origin_group_name, checks=grpc_checks)
+        self.afd_origin_group_list_cmd(resource_group, profile_name, checks=[
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].healthProbeSettings.probeProtocol', 'Grpc'),
+            JMESPathCheck('[0].loadBalancingSettings.capacityDistributionSettings.distributionType', 'StaticWeights'),
+            JMESPathCheck('[0].loadBalancingSettings.capacityDistributionSettings.capacityConsciousThreshold', 100),
+        ])
 
         self.afd_origin_group_delete_cmd(resource_group, profile_name, origin_group_name)
 

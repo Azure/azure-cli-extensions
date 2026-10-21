@@ -5,7 +5,7 @@ Release History
 
 1.0.0b4
 +++++++
-* Upgrade AFD feature commands to API version 2026-09-01-preview, preserving Classic CDN and shared profile commands on 2026-04-01-preview and other pinned API versions.
+* Upgrade AFD commands to API version 2026-09-01-preview, preserving Classic CDN commands on 2026-04-01-preview and other pinned API versions through separate profile command models.
 * Add preview AFD authentication policy commands with Microsoft Entra ID configuration, domain and route associations, Block/Log actions, and token forwarding.
 * Add AFD custom domain server TLS group policies and configurable TLS groups.
 * Add AFD origin certificate name validation modes and custom certificate subjects.

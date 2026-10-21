@@ -5,6 +5,9 @@
 
 
 import json
+from contextlib import contextmanager
+
+from azure.cli.testsdk import JMESPathCheck
 
 from .scenario_mixin import add_tags
 
@@ -102,6 +105,37 @@ class CdnAfdScenarioMixin:
         return super().cmd(_escape_format_placeholders(command, getattr(self, 'kwargs', {})), checks,
                            expect_failure=expect_failure)
 
+    @contextmanager
+    def afd_byoc_identity(self, resource_group, profile_name):
+        identity = self.cmd(
+            f'afd profile identity assign -g {resource_group} --profile-name {profile_name} '
+            '--system-assigned').get_output_in_json()
+        principal_id = identity['principalId']
+        self.assertTrue(principal_id, 'The profile system-assigned identity must have a principal ID')
+        tenant_id = identity['tenantId']
+        self.assertTrue(tenant_id, 'The profile system-assigned identity must have a tenant ID')
+        # Recording processors sanitize every subscription, including this cross-subscription vault.
+        vault_subscription = (
+            '3c0124f9-e564-4c42-86f7-fa79457aedc3'
+            if self.in_recording or self.is_live else self.get_subscription_id()
+        )
+        policy_url = (
+            f'https://management.azure.com/subscriptions/{vault_subscription}/resourceGroups/byoc'
+            '/providers/Microsoft.KeyVault/vaults/Azure-CDN-BYOC/accessPolicies'
+        )
+        policy_body = _json_arg({'properties': {'accessPolicies': [{
+            'tenantId': tenant_id,
+            'objectId': principal_id,
+            'permissions': {'secrets': ['get']},
+        }]}})
+        self.cmd(f'rest --method put --url "{policy_url}/add?api-version=2023-07-01" '
+                 f'--headers Content-Type=application/json --body {policy_body}')
+        try:
+            yield
+        finally:
+            self.cmd(f'rest --method put --url "{policy_url}/remove?api-version=2023-07-01" '
+                     f'--headers Content-Type=application/json --body {policy_body}')
+
     def afd_profile_create_cmd(self, resource_group_name, profile_name, tags=None, checks=None, options=None,
                                sku="Standard_AzureFrontDoor", expect_failure=False):
         command = f'afd profile create -g {resource_group_name} --profile-name {profile_name} --sku {sku}'
@@ -111,6 +145,28 @@ class CdnAfdScenarioMixin:
             command = command + ' ' + options
 
         return self.cmd(command, checks, expect_failure=expect_failure)
+
+    def afd_nonproduction_profile_create_cmd(self, resource_group_name, profile_name,
+                                             sku="Standard_AzureFrontDoor"):
+        profile_url = (
+            f'https://management.azure.com/subscriptions/{self.get_subscription_id()}'
+            f'/resourceGroups/{resource_group_name}/providers/Microsoft.Cdn/profiles/{profile_name}'
+            '?api-version=2026-09-01-preview'
+        )
+        # The RP accepts this create-only preview fixture field, but the CLI exposes it as read-only.
+        profile_body = {
+            'location': 'global',
+            'sku': {'name': sku},
+            'properties': {'extendedProperties': {'environmentType': 'NonProduction'}},
+        }
+        self.cmd(
+            f'rest --method put --url "{profile_url}" '
+            f'--headers Content-Type=application/json --body {_json_arg(profile_body)}')
+        profile_args = f'-g {resource_group_name} --profile-name {profile_name}'
+        self.cmd(f'afd profile wait {profile_args} --created')
+        return self.cmd(f'afd profile show {profile_args}', checks=[
+            JMESPathCheck('extendedProperties.environmentType', 'NonProduction'),
+        ])
 
     def afd_profile_update_cmd(self, group, name, tags=None, checks=None, options=None):
         command = 'afd profile update -g {} --profile-name {}'.format(group, name)
@@ -350,7 +406,8 @@ class CdnAfdScenarioMixin:
 
     def afd_custom_domain_create_cmd(self, resource_group_name, profile_name, custom_domain_name,
                                      host_name, certificate_type, minimum_tls_version,
-                                     azure_dns_zone=None, secret=None, checks=None, mtls_settings=None):
+                                     azure_dns_zone=None, secret=None, checks=None, mtls_settings=None,
+                                     server_tls_group_policy=None):
         cmd = f'afd custom-domain create -g {resource_group_name} --profile-name {profile_name} ' \
               f'--custom-domain-name {custom_domain_name} --host-name {host_name} ' \
               f'--certificate-type {certificate_type} --minimum-tls-version {minimum_tls_version}'
@@ -361,6 +418,7 @@ class CdnAfdScenarioMixin:
             cmd += f' --secret={secret}'
         if mtls_settings is not None:
             cmd += f' --mtls-settings {_json_arg(mtls_settings)}'
+        cmd = _add_paramter_if_needed(cmd, "server-tls-group-policy", server_tls_group_policy)
 
         return self.cmd(cmd, checks)
 
