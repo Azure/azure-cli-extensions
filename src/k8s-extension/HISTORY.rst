@@ -4,6 +4,10 @@ Release History
 ===============
 1.9.5
 +++++++++++++++++++
+* Microsoft.ChaosStudio: assign the built-in Chaos Kubernetes Extension Operator role instead of provisioning or validating custom roles. Create and update add a separate built-in assignment; existing owned legacy assignments stay until uninstall to avoid interrupting authorization during migration. Delete removes both owned assignments but never role definitions.
+* Microsoft.ChaosStudio: require the persisted namespaceLifecycle.createdByInstall assertion as well as the matching namespace marker before post-uninstall namespace removal.
+* Microsoft.ChaosStudio: skip create-only Kubernetes APIs such as bindings and access reviews during namespace inventory; they aren't stored collections. Readable kinds without list support still fail cleanup.
+* Microsoft.ChaosStudio: recognize AKS's pristine default ServiceAccount when managedFields is absent, but retain accounts with customer metadata or settings.
 * Microsoft.ChaosStudio: record namespace creation ownership before bootstrap and preserve it on resumed installs. Callers can't override namespaceLifecycle.createdByInstall.
 * Microsoft.ChaosStudio: after confirmed synchronous extension deletion, inventory all namespaced API kinds with pagination and delete the namespace only when its creation marker matches the installation and no customer resources remain. Only controller-managed default ServiceAccounts and root CA ConfigMaps are excluded. Foreign/unmarked namespaces, learned-key state and retained ChaosEngines are preserved and reported. --no-wait and --force skip namespace cleanup; failures never trigger it.
 * Microsoft.ChaosStudio: namespace inspection requires AKS user credentials (Microsoft.ContainerService/managedClusters/listClusterUserCredential/action), kubelogin for Entra clusters, namespace get/delete and list access to every namespaced API kind. Current kube context and admin credentials aren't used. Cleanup has the chart hook's 210-second API budget and reports an error if namespace finalization doesn't complete. Engine-name reclamation and deleting the chaosengines CRD while engines remain aren't implemented.
