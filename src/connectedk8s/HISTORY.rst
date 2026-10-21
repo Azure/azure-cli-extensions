@@ -5,6 +5,10 @@ Release History
 1.11.5
 +++++++
 * Retry transient pre-onboarding diagnostic log retrieval failures and continue onboarding when logs remain unavailable after a completed diagnostic job.
+* Add temporary AGC diagnostic chart compatibility for USSec and USNat by using scheme-less MCR repository values.
+* Continue onboarding when cleanup of a stale diagnostic Helm release fails while preserving warning and telemetry reporting.
+* Treat a single generic DNS timeout as transient while keeping repeated or explicit DNS failures blocking.
+* Accept both exported chart directories and packaged Helm chart files.
 
 1.11.4
 +++++++
