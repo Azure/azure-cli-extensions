@@ -14,6 +14,35 @@ Install this extension using the following CLI command `az extension add --name 
 
 Remove this extension using the following CLI command `az extension remove --name aks-preview`.
 
+Azure Managed Lustre
+--------------------
+
+Install the ``k8s-extension`` CLI extension before enabling Azure Managed Lustre::
+
+    az extension add --name k8s-extension
+    az aks create --resource-group <resource-group> --name <cluster-name> --generate-ssh-keys --enable-azure-managed-lustre
+
+For an existing AKS cluster, enable or disable the extension with::
+
+    az aks update --resource-group <resource-group> --name <cluster-name> --enable-azure-managed-lustre
+    az aks update --resource-group <resource-group> --name <cluster-name> --disable-azure-managed-lustre
+
+Enabling installs ``microsoft.azuremanagedlustre`` as ``azurelustre`` with cluster scope
+on the ``stable`` release train without pinning a version, with automatic minor-version
+upgrades disabled.
+Flatcar and Ubuntu 26.04 node pools are not supported by the extension.
+Ubuntu 22.04 and Azure Linux 3 node pools are not supported on ARM64.
+The cluster must have at least one compatible node pool.
+Compatibility validation resolves the ``Ubuntu`` and ``AzureLinux`` aliases, including
+the default ``Ubuntu`` OS SKU when ``--os-sku`` is omitted, using the pool or cluster
+Kubernetes version. If no version is specified, validation queries the regional AKS
+default version. If that default cannot be determined, specify ``--kubernetes-version``.
+Enabling an existing installation leaves its configuration unchanged.
+As with Azure Container Storage, these operations wait for cluster provisioning before
+installing or uninstalling the extension, even when ``--no-wait`` is specified.
+The enable and disable flags cannot be used together. Disabling uninstalls the cluster
+extension; it does not delete an Azure Managed Lustre file system.
+
 Dependency between aks-preview and azure-cli/acs (azure-cli-core)
 =================================================================
 
