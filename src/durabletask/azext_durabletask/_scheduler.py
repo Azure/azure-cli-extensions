@@ -15,8 +15,6 @@ from azure.core.exceptions import HttpResponseError
 import logging
 logger = logging.getLogger(__name__)
 
-API_VERSION = "2026-05-01-preview"
-
 RESOURCE_TYPE_MAP = {
     "microsoft.web/sites": "functionapp",
     "microsoft.app/containerapps": "containerapp",
@@ -577,37 +575,3 @@ def attach_scheduler(cmd, resource_group_name, scheduler_name, task_hub_name,  #
         result["identityResourceId"] = identity
         result["identityClientId"] = client_id
     return result
-
-
-def restart_scheduler(cmd, resource_group_name, scheduler_name):
-    """Restart a Durable Task scheduler by calling POST /restart on the resource."""
-    from azure.cli.core.util import send_raw_request
-
-    cli_ctx = cmd.cli_ctx
-
-    # Retrieve the scheduler to validate it exists and get its resource ID.
-    logger.info("Retrieving scheduler '%s' in resource group '%s'...",
-                scheduler_name, resource_group_name)
-    scheduler = _SchedulerShow(cli_ctx=cli_ctx)(command_args={
-        "resource_group": resource_group_name,
-        "name": scheduler_name,
-    })
-    scheduler_id = scheduler.get("id")
-    if not scheduler_id:
-        raise ResourceNotFoundError(
-            f"Scheduler '{scheduler_name}' not found in resource group "
-            f"'{resource_group_name}'. Please verify the name and resource group."
-        )
-
-    arm_endpoint = cli_ctx.cloud.endpoints.resource_manager.rstrip('/')
-    url = f"{arm_endpoint}{scheduler_id}/restart?api-version={API_VERSION}"
-
-    logger.info("Restarting scheduler '%s'...", scheduler_name)
-    send_raw_request(cli_ctx, 'POST', url)
-    logger.info("Scheduler '%s' restart initiated successfully.", scheduler_name)
-
-    return {
-        "schedulerName": scheduler_name,
-        "resourceGroupName": resource_group_name,
-        "status": "Restart initiated",
-    }
