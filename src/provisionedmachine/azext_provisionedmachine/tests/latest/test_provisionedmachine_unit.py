@@ -18,6 +18,7 @@ Run with: python -m pytest azext_provisionedmachine/tests/latest/test_provisione
 """
 
 import unittest
+from unittest import mock
 import sys
 import os
 
@@ -72,6 +73,8 @@ azclierror_mod = sys.modules['azure.cli.core.azclierror']
 azclierror_mod.ResourceNotFoundError = type('ResourceNotFoundError', (Exception,), {})
 azclierror_mod.InvalidArgumentValueError = type('InvalidArgumentValueError', (Exception,), {})
 azclierror_mod.RequiredArgumentMissingError = type('RequiredArgumentMissingError', (Exception,), {})
+azclierror_mod.FileOperationError = type('FileOperationError', (Exception,), {})
+azclierror_mod.MutuallyExclusiveArgumentError = type('MutuallyExclusiveArgumentError', (Exception,), {})
 
 # Add required attributes to stubs
 aaz_mod = sys.modules['azure.cli.core.aaz']
@@ -114,6 +117,7 @@ from azext_provisionedmachine.commands import (
 
 # Import _compare_versions from install_os module
 from azext_provisionedmachine.aaz.latest.provisionedmachine._install_os import InstallOs
+from azext_provisionedmachine.aaz.latest.provisionedmachine._create import Create
 _compare_versions = InstallOs._compare_versions
 
 
@@ -618,6 +622,157 @@ class TestAutoResolveVersionLogic(unittest.TestCase):
             if vsr and (latest_version is None or _compare_versions(vsr, latest_version) > 0):
                 latest_version = vsr
         self.assertEqual(latest_version, "50.2605.0.3")
+
+
+class TestCreateImageSelection(unittest.TestCase):
+    """Create must validate the voucher before resolving a compatible image."""
+
+    @staticmethod
+    def _arg(value):
+        argument = mock.Mock()
+        argument.to_serialized_data.return_value = value
+        return argument
+
+    def setUp(self):
+        Create._validation_result = None
+        Create._resolved_version = None
+        self.addCleanup(setattr, Create, "_validation_result", None)
+        self.addCleanup(setattr, Create, "_resolved_version", None)
+        self.command = mock.Mock()
+        self.command.ctx.args = types.SimpleNamespace(
+            os_image_type=self._arg("AzureLinux"),
+            os_image_version=None,
+            location=self._arg("eastus"),
+        )
+        self.command._validate_voucher_response.side_effect = (
+            lambda: Create._validate_voucher_response(self.command)
+        )
+        self.validation_response = {
+            "ownershipVoucherValidationDetails": [{"validationStatus": "Valid", "architecture": "amd64"}]
+        }
+        self.events = []
+
+        def validate_voucher():
+            self.events.append("voucher")
+            Create._validation_result = self.validation_response
+
+        def resolve_image(*args):
+            self.events.append("image")
+            return "50.2610.0.20"
+
+        self.command.ValidateOwnershipVoucher.return_value.side_effect = validate_voucher
+        self.command._resolve_latest_version.side_effect = resolve_image
+        self.command.EdgeMachinesCreateOrUpdate.return_value.side_effect = lambda: self.events.append("create")
+
+    def test_auto_selection_uses_validated_voucher_architecture_before_create(self):
+        for architecture in ("amd64", "arm64", "AMD64"):
+            with self.subTest(architecture=architecture):
+                self.events.clear()
+                self.validation_response["ownershipVoucherValidationDetails"][0]["architecture"] = architecture
+
+                list(Create._execute_operations(self.command))
+
+                self.assertEqual(self.events, ["voucher", "image", "create"])
+                self.command._resolve_latest_version.assert_called_with(
+                    "azurelinux", "eastus", architecture.lower())
+                self.assertEqual(Create._resolved_version, "50.2610.0.20")
+
+    def test_explicit_version_is_preserved_without_image_lookup(self):
+        self.command.ctx.args.os_image_version = self._arg("50.2609.0.10")
+        self.validation_response["ownershipVoucherValidationDetails"][0].pop("architecture")
+
+        list(Create._execute_operations(self.command))
+
+        self.assertEqual(self.events, ["voucher", "create"])
+        self.command._resolve_latest_version.assert_not_called()
+        self.assertEqual(Create._resolved_version, "50.2609.0.10")
+
+    def test_local_validation_does_not_resolve_image_before_voucher_validation(self):
+        args = self.command.ctx.args
+        args.ownership_voucher = self._arg("voucher.pem")
+        args.ssh_public_key = self._arg("ssh-rsa test-key")
+        for name in ("site_resource_id", "arc_gateway_resource_id", "key_vault_secret_id",
+                     "ip_address", "subnet_mask", "gateway", "dns_servers", "vlan_id",
+                     "ntp_server", "timezone", "hostname", "proxy_settings"):
+            setattr(args, name, None)
+
+        with mock.patch("os.path.exists", return_value=True), \
+                mock.patch("os.path.isfile", return_value=True), \
+                mock.patch("builtins.open", mock.mock_open(read_data=b"voucher")):
+            Create.pre_operations(self.command)
+
+        self.command._resolve_latest_version.assert_not_called()
+
+    def test_resolver_forwards_architecture_to_shared_helper(self):
+        with mock.patch(
+                "azext_provisionedmachine.provisioned_machine_utils.resolve_latest_os_image_version",
+                return_value="50.2610.0.20") as resolve_version:
+            result = Create._resolve_latest_version(self.command, "azurelinux", "eastus", "amd64")
+
+        resolve_version.assert_called_once_with(
+            self.command.ctx.cli_ctx, self.command.ctx.subscription_id, "azurelinux", "eastus", "amd64")
+        self.assertEqual(result, "50.2610.0.20")
+
+    def test_no_os_request_does_not_resolve_an_image(self):
+        self.command.ctx.args.os_image_type = None
+
+        list(Create._execute_operations(self.command))
+
+        self.command._resolve_latest_version.assert_not_called()
+        self.assertEqual(self.events, ["voucher", "create"])
+        self.assertIsNone(Create._resolved_version)
+
+    def test_hci_auto_selection_does_not_filter_by_voucher_architecture(self):
+        self.command.ctx.args.os_image_type = self._arg("HCI")
+
+        list(Create._execute_operations(self.command))
+
+        self.command._resolve_latest_version.assert_called_once_with("hci", "eastus", None)
+
+    def test_invalid_voucher_stops_before_image_lookup_and_create(self):
+        self.validation_response = {"ownershipVoucherValidationDetails": [{
+            "validationStatus": "Invalid",
+            "error": {"message": "Voucher is already in use", "details": [
+                {"code": "InvalidOwnershipVoucher", "message": "Choose another voucher"}
+            ]},
+        }]}
+
+        with self.assertRaisesRegex(azclierror_mod.InvalidArgumentValueError, "Choose another voucher"):
+            list(Create._execute_operations(self.command))
+
+        self.command._resolve_latest_version.assert_not_called()
+        self.command.EdgeMachinesCreateOrUpdate.assert_not_called()
+
+    def test_missing_or_unknown_validation_result_stops_before_image_lookup(self):
+        for response in (None, {}, {"ownershipVoucherValidationDetails": []},
+                         {"ownershipVoucherValidationDetails": [{"validationStatus": "Unknown"}]}):
+            with self.subTest(response=response):
+                self.validation_response = response
+
+                with self.assertRaises(azclierror_mod.InvalidArgumentValueError):
+                    list(Create._execute_operations(self.command))
+
+                self.command._resolve_latest_version.assert_not_called()
+                self.command.EdgeMachinesCreateOrUpdate.assert_not_called()
+
+    def test_missing_or_unsupported_architecture_does_not_default_to_amd64(self):
+        for architecture in (None, "", "riscv64"):
+            with self.subTest(architecture=architecture):
+                self.validation_response["ownershipVoucherValidationDetails"][0]["architecture"] = architecture
+
+                with self.assertRaisesRegex(azclierror_mod.InvalidArgumentValueError, "device architecture"):
+                    list(Create._execute_operations(self.command))
+
+                self.command._resolve_latest_version.assert_not_called()
+                self.command.EdgeMachinesCreateOrUpdate.assert_not_called()
+
+    def test_image_lookup_failure_does_not_create_machine(self):
+        self.command._resolve_latest_version.side_effect = azclierror_mod.ResourceNotFoundError("No compatible image")
+
+        with self.assertRaisesRegex(azclierror_mod.ResourceNotFoundError, "No compatible image"):
+            list(Create._execute_operations(self.command))
+
+        self.command.EdgeMachinesCreateOrUpdate.assert_not_called()
 
 
 class TestAzureLinuxPayloadMapping(unittest.TestCase):

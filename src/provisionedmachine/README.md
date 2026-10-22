@@ -34,20 +34,26 @@ az extension update --name provisionedmachine
 
 ### Create a provisioned machine
 
+For AzureLinux, omitting `--os-image-version` selects the latest available image
+matching the architecture returned by ownership voucher validation. If no matching
+image is available, creation stops rather than selecting an incompatible image.
+Use `--os-image-version <VsrVersion>` to pin a specific recipe; the service still
+validates that recipe against the device architecture.
+
 ```bash
 # AzureLinux
 az provisionedmachine create -n myProvisionedMachine -g myResourceGroup \
   --location eastus \
-  --voucher-file ./ownership-voucher.pem \
-  --site-id "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.ExtendedLocation/customLocations/<site>" \
+  --ownership-voucher ./ownership-voucher.pem \
+  --site-resource-id "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Edge/sites/<site>" \
   --os-image-type AzureLinux \
   --ssh-public-key "ssh-rsa AAAAB3..."
 
 # HCI
 az provisionedmachine create -n myProvisionedMachine -g myResourceGroup \
   --location eastus \
-  --voucher-file ./ownership-voucher.pem \
-  --site-id "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.ExtendedLocation/customLocations/<site>" \
+  --ownership-voucher ./ownership-voucher.pem \
+  --site-resource-id "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Edge/sites/<site>" \
   --os-image-type HCI \
   --key-vault-secret-id "/subscriptions/.../secrets/mySecret"
 ```

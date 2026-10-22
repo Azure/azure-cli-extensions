@@ -1062,7 +1062,8 @@ def _openssh_install_message(system):
     )
 
 
-OS_IMAGES_API_VERSION = "2026-05-01-preview"
+# Match os-image list so the response includes each image's architecture.
+OS_IMAGES_API_VERSION = "2026-10-15-preview"
 
 # Fallback region for OS image version discovery when the caller cannot
 # determine a location. Mirrors the ``provisionedmachine os-image list``
@@ -1070,13 +1071,14 @@ OS_IMAGES_API_VERSION = "2026-05-01-preview"
 DEFAULT_OS_IMAGE_LOCATION = "eastus"
 
 
-def resolve_latest_os_image_version(cli_ctx, subscription_id, os_image_type, location):
+def resolve_latest_os_image_version(cli_ctx, subscription_id, os_image_type, location, architecture=None):
     """Resolve the latest available OS image version by calling the os-image list API.
 
     The API returns images sorted in descending order by version
     (guaranteed by RP's GetNLatestRecipesAsync which uses
     OrderByDescending(Version.Parse(FullSolutionVersion))).
-    So the first image is always the latest.
+    When an AzureLinux architecture is supplied, the API request and returned
+    images are filtered before selecting the first compatible image.
 
     The returned value is the ``validatedSolutionRecipeVersion`` (the VSR
     version) for both HCI and AzureLinux images, and must be assigned to the
@@ -1089,6 +1091,7 @@ def resolve_latest_os_image_version(cli_ctx, subscription_id, os_image_type, loc
     :param location: Azure region to query. When falsy, falls back to
         :data:`DEFAULT_OS_IMAGE_LOCATION` ("eastus"), matching the
         ``provisionedmachine os-image list`` command's default.
+    :param architecture: Optional CPU architecture filter for AzureLinux images.
     :returns: The latest validated solution recipe (VSR) version string.
     :raises ResourceNotFoundError: If no images are found or the latest
         version cannot be determined.
@@ -1100,19 +1103,31 @@ def resolve_latest_os_image_version(cli_ctx, subscription_id, os_image_type, loc
         # Match `provisionedmachine os-image list`, whose --location defaults to eastus.
         location = DEFAULT_OS_IMAGE_LOCATION
 
+    image_architecture = (
+        architecture.lower() if architecture and os_image_type.lower() == "azurelinux" else None
+    )
+
     try:
         os_images_url = (
             f"/subscriptions/{subscription_id}"
             f"/providers/Microsoft.AzureStackHCI/locations/{location}/osImages"
             f"?api-version={OS_IMAGES_API_VERSION}&solution-type={os_image_type}"
         )
+        if image_architecture:
+            os_images_url += f"&architecture={image_architecture}"
         response = send_raw_request(cli_ctx, "GET", os_images_url)
         data = response.json()
         images = data.get("value", [])
+        if image_architecture:
+            images = [
+                image for image in images
+                if (image.get("properties", {}).get("architecture") or "").lower() == image_architecture
+            ]
 
         if not images:
+            architecture_description = f" and architecture '{image_architecture}'" if image_architecture else ""
             raise ResourceNotFoundError(
-                f"No OS images found for type '{os_image_type}' in location '{location}'. "
+                f"No OS images found for type '{os_image_type}'{architecture_description} in location '{location}'. "
                 f"Please specify --os-image-version explicitly."
             )
 

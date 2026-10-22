@@ -1230,6 +1230,64 @@ class TestResolveLatestOsImageVersion(unittest.TestCase):
         self.assertEqual(result, "50.2607.0.32")
 
     @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_selects_first_image_matching_voucher_architecture(self, mock_send):
+        images = [
+            {"properties": {"validatedSolutionRecipeVersion": "60.2611.0.40", "architecture": "arm64"}},
+            {"properties": {"validatedSolutionRecipeVersion": "50.2610.0.20", "architecture": "amd64"}},
+            {"properties": {"validatedSolutionRecipeVersion": "50.2609.0.10", "architecture": "amd64"}},
+        ]
+        for architecture, expected_version in (("amd64", "50.2610.0.20"), ("arm64", "60.2611.0.40")):
+            with self.subTest(architecture=architecture):
+                mock_send.return_value = self._response({"value": images})
+
+                result = pm.resolve_latest_os_image_version(
+                    mock.Mock(), "sub-123", "AzureLinux", "eastus", architecture)
+
+                self.assertEqual(result, expected_version)
+                self.assertIn("&architecture=" + architecture, mock_send.call_args[0][2])
+                self.assertIn("api-version=2026-10-15-preview", mock_send.call_args[0][2])
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_architecture_comparison_is_case_insensitive(self, mock_send):
+        mock_send.return_value = self._response({
+            "value": [{"properties": {
+                "validatedSolutionRecipeVersion": "50.2610.0.20", "architecture": "AMD64"
+            }}]
+        })
+
+        result = pm.resolve_latest_os_image_version(
+            mock.Mock(), "sub-123", "AzureLinux", "eastus", "AMD64")
+
+        self.assertEqual(result, "50.2610.0.20")
+        self.assertIn("&architecture=amd64", mock_send.call_args[0][2])
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_no_compatible_image_raises_instead_of_selecting_another_architecture(self, mock_send):
+        for images in (
+            [],
+            [{"properties": {"validatedSolutionRecipeVersion": "60.2611.0.40", "architecture": "arm64"}}],
+            [{"properties": {"validatedSolutionRecipeVersion": "50.2610.0.20"}}],
+        ):
+            with self.subTest(images=images):
+                mock_send.return_value = self._response({"value": images})
+
+                with self.assertRaisesRegex(azclierror.ResourceNotFoundError, "architecture 'amd64'"):
+                    pm.resolve_latest_os_image_version(
+                        mock.Mock(), "sub-123", "AzureLinux", "eastus", "amd64")
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
+    def test_hci_does_not_apply_architecture_filter(self, mock_send):
+        mock_send.return_value = self._response({
+            "value": [{"properties": {"validatedSolutionRecipeVersion": "12.2607.1003.50"}}]
+        })
+
+        result = pm.resolve_latest_os_image_version(
+            mock.Mock(), "sub-123", "HCI", "eastus", "amd64")
+
+        self.assertEqual(result, "12.2607.1003.50")
+        self.assertNotIn("architecture=", mock_send.call_args[0][2])
+
+    @mock.patch('azure.cli.core.util.send_raw_request')
     def test_url_contains_subscription_location_and_solution_type(self, mock_send):
         mock_send.return_value = self._response({
             "value": [{"properties": {"validatedSolutionRecipeVersion": "12.2607.1003.50"}}]
