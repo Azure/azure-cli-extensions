@@ -3,9 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import datetime
 import unittest
 from azure.cli.core.azclierror import ValidationError
-from azext_containerapp._utils import validate_environment_mode_and_workload_profiles_compatible
+from azext_containerapp._utils import validate_environment_mode_and_workload_profiles_compatible, _object_to_dict
 
 
 class TestResolveEnvironmentModeAndWorkloadProfiles(unittest.TestCase):
@@ -70,3 +71,24 @@ class TestResolveEnvironmentModeAndWorkloadProfiles(unittest.TestCase):
     def test_workload_profiles_case_insensitive_with_deprecated_false_raises(self):
         with self.assertRaises(ValidationError):
             validate_environment_mode_and_workload_profiles_compatible('workloadprofiles', False)
+
+class TestObjectToDict(unittest.TestCase):
+    """Tests for the _object_to_dict function, specifically datetime serialization."""
+
+    def test_datetime_date_is_serialized(self):
+        """datetime.date values (e.g. from YAML) should be converted to ISO format strings."""
+        obj = {"date": datetime.date(2024, 1, 15)}
+        result = _object_to_dict(obj)
+        self.assertEqual(result["date"], "2024-01-15")
+
+    def test_datetime_datetime_is_serialized(self):
+        """datetime.datetime values should be converted to ISO format strings."""
+        obj = {"timestamp": datetime.datetime(2024, 1, 15, 12, 30, 0)}
+        result = _object_to_dict(obj)
+        self.assertEqual(result["timestamp"], "2024-01-15T12:30:00")
+
+    def test_plain_dict_is_unchanged(self):
+        """Plain dict values should pass through unchanged."""
+        obj = {"name": "myapp", "replicas": 3}
+        result = _object_to_dict(obj)
+        self.assertEqual(result, {"name": "myapp", "replicas": 3})
