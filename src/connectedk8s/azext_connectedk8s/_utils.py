@@ -644,27 +644,6 @@ def report_connectedk8s_error(
     return error.as_error(recommendation=recommendation, **context)
 
 
-def mark_command_succeeded(cmd: CLICommand | None) -> None:
-    """Force a Success result once the command has completed.
-
-    Handled, non-blocking failures may already have set UserFault or Failure, and Azure CLI's
-    set_success() cannot override an existing result. The replaced result is kept in telemetry.
-    """
-    try:
-        session = telemetry._session  # pylint: disable=protected-access
-        previous = session.result
-        if previous in ("None", "Success"):
-            return
-        add_connectedk8s_telemetry_event(
-            cmd, {consts.Telemetry_Overridden_Result_Key: previous}
-        )
-        session.result = "Success"
-        session.result_summary = None
-        session.error_type = "None"
-    except Exception:  # pylint: disable=broad-except
-        logger.debug("Unable to record command success in telemetry", exc_info=True)
-
-
 def _get_underlying_exception_type(exception: BaseException) -> str:
     """Return the deepest wrapped exception type without emitting its message."""
     current = exception

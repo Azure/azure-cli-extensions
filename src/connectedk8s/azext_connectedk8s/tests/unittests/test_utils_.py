@@ -835,38 +835,6 @@ def test_report_connectedk8s_error_sets_user_fault(monkeypatch):
     mock_telemetry.set_user_fault.assert_called_once_with()
 
 
-@pytest.mark.parametrize("previous", ["UserFault", "Failure"])
-def test_mark_command_succeeded_overrides_nonblocking_result(monkeypatch, previous):
-    session = SimpleNamespace(
-        result=previous, result_summary="warning summary", error_type="ValidationError"
-    )
-    monkeypatch.setattr(utils_module, "telemetry", SimpleNamespace(_session=session))
-    add_event = MagicMock()
-    monkeypatch.setattr(utils_module, "add_connectedk8s_telemetry_event", add_event)
-
-    utils_module.mark_command_succeeded(None)
-
-    assert session.result == "Success"
-    assert session.result_summary is None
-    assert session.error_type == "None"
-    add_event.assert_called_once_with(
-        None, {consts.Telemetry_Overridden_Result_Key: previous}
-    )
-
-
-@pytest.mark.parametrize("previous", ["None", "Success"])
-def test_mark_command_succeeded_leaves_clean_result(monkeypatch, previous):
-    session = SimpleNamespace(result=previous, result_summary=None, error_type="None")
-    monkeypatch.setattr(utils_module, "telemetry", SimpleNamespace(_session=session))
-    add_event = MagicMock()
-    monkeypatch.setattr(utils_module, "add_connectedk8s_telemetry_event", add_event)
-
-    utils_module.mark_command_succeeded(None)
-
-    assert session.result == previous
-    add_event.assert_not_called()
-
-
 def test_arm_exception_handler_reports_standardized_arm_error(monkeypatch):
     class ReportedError(Exception):
         pass
