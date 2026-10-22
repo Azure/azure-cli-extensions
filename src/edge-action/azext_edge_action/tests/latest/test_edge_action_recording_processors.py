@@ -147,9 +147,24 @@ def test_bulk_sanitization_preserves_recording_evidence(tmp_path):
 def test_scenario_keeps_defaults_and_registers_both_hooks():
     from .test_edge_action import EdgeActionScenarioTest
     scenario = EdgeActionScenarioTest("test_edge_action_crud")
+    assert "body" in scenario.vcr.match_on
     for processors in (scenario.recording_processors, scenario.replay_processors):
         assert any(isinstance(item, EdgeActionRecordingProcessor) for item in processors)
         assert len(processors) > 1
+
+
+def test_scenario_playback_matches_request_bodies(tmp_path):
+    from .test_edge_action import EdgeActionScenarioTest
+    scenario = EdgeActionScenarioTest("test_edge_action_crud")
+    path = str(tmp_path / "body-matching.yaml")
+    headers = {"Content-Type": "application/json"}
+    with scenario.vcr.use_cassette(path, record_mode="all") as cassette:
+        cassette.append(Request("PUT", URL, '{"tags":{"purpose":"updated"}}', headers), response())
+    with scenario.vcr.use_cassette(path, record_mode="none") as cassette:
+        assert cassette.can_play_response_for(
+            Request("PUT", URL, '{ "tags": { "purpose": "updated" } }', headers))
+        for body in ('{"tags":{}}', '{"tags":{"purpose":false}}', '{"tags":{"purpose":"old"}}'):
+            assert not cassette.can_play_response_for(Request("PUT", URL, body, headers))
 
 
 @pytest.mark.parametrize("path", sorted(Path(__file__).with_name("recordings").glob("*.yaml")),

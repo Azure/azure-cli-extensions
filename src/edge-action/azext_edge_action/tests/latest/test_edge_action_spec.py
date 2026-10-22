@@ -8,10 +8,34 @@ from pathlib import Path
 
 import pytest
 import yaml
-from jsonschema import Draft4Validator
 
 from .spec_validation import API_VERSION, RecordingValidator, spec, url_key
-from .test_edge_action_contract import RESOURCE_URL, resource
+
+
+RESOURCE_ID = ("/subscriptions/00000000-0000-0000-0000-000000000000"
+               "/resourceGroups/rg/providers/Microsoft.Cdn/edgeActions/action")
+RESOURCE_URL = "https://management.azure.com" + RESOURCE_ID
+
+
+def resource(group):
+    suffix, properties = {
+        "": ("", {"attachments": []}),
+        "version": ("/versions/v1", {
+            "deploymentType": "file", "isDefaultVersion": "False", "validationStatus": "Succeeded",
+        }),
+        "execution_filter": ("/executionFilters/filter", {
+            "versionId": RESOURCE_ID + "/versions/v1",
+            "executionFilterIdentifierHeaderName": "x-cli-test",
+            "executionFilterIdentifierHeaderValue": "initial",
+        }),
+    }[group]
+    result = {
+        "id": RESOURCE_ID + suffix, "name": "action", "location": "global",
+        "tags": {"purpose": "initial"}, "properties": {"provisioningState": "Succeeded", **properties},
+    }
+    if not group:
+        result["sku"] = {"name": "Standard", "tier": "Standard"}
+    return result
 
 
 def operation(method="GET", suffix=""):
@@ -29,7 +53,7 @@ def test_snapshot_is_self_contained(monkeypatch):
         for item in path.values():
             for response in item["responses"].values():
                 if "schema" in response:
-                    Draft4Validator.check_schema(spec().prepare_schema(response["schema"]))
+                    spec().check_schema(spec().prepare_schema(response["schema"]))
 
     def check_refs(value):
         if isinstance(value, dict):
@@ -42,6 +66,53 @@ def test_snapshot_is_self_contained(monkeypatch):
             for item in value:
                 check_refs(item)
     check_refs(snapshot)
+
+
+@pytest.mark.parametrize("schema,valid,invalid,rule", [
+    ({"type": "integer"}, 1, True, "type"),
+    ({"type": "string", "minLength": 1}, "a", "", "minLength"),
+    ({"type": "string", "maxLength": 2}, "ab", "abc", "maxLength"),
+    ({"type": "string", "pattern": "^[a-z]+$"}, "abc", "123", "pattern"),
+    ({"type": "string", "enum": ["True", "False"]}, "False", "false", "enum"),
+    ({"enum": [True]}, True, 1, "enum"),
+    ({"type": "object", "additionalProperties": {"type": "string"}}, {"tag": "1"}, {"tag": 1}, "type"),
+    ({"type": "array", "items": {"type": "string"}}, ["a"], [1], "type"),
+    ({"allOf": [{"type": "object"}, {"required": ["name"]}]}, {"name": "a"}, {}, "required"),
+    ({"type": "string", "format": "uuid"}, "00000000-0000-0000-0000-000000000000", "invalid", "format"),
+    ({"type": "string", "format": "date-time"}, "2026-10-01T00:00:00Z", "2026-02-30T00:00:00Z", "format"),
+    ({"type": "string", "format": "date-time"}, "2026-10-01T01:00:00+01:00", "2026-10-01", "format"),
+    ({"type": "string", "format": "date-time"}, "2026-10-01T00:00:00Z", "2026-10-01T00:00:00+00:99", "format"),
+    ({"type": "string", "format": "uri"}, "https://example.test/path", "not a URL", "format"),
+    ({"type": "string", "format": "uri"}, "https://example.test/?x=%20", "https://example.test/?x=%zz", "format"),
+    ({"type": "string", "format": "uri"}, "https://[::1]/path", "https://example.test/[invalid]", "format"),
+])
+def test_pinned_schema_constraints(schema, valid, invalid, rule):
+    spec().validate_schema(valid, schema, "Constraint")
+    with pytest.raises(AssertionError, match=rule):
+        spec().validate_schema(invalid, schema, "Constraint")
+
+
+@pytest.mark.parametrize("schema", [
+    {"type": "integer", "minimum": 0},
+    {"type": "object", "properties": {"optional": {"not": {"type": "string"}}}},
+    {"type": "string", "format": "unknown"},
+])
+def test_new_schema_constraints_fail_closed(schema):
+    with pytest.raises(AssertionError, match="Unsupported pinned schema"):
+        spec().validate_schema(None, schema, "Constraint")
+
+
+def test_schema_reference_preparation_retains_swagger_semantics():
+    spec().validate_schema(None, {"type": "string", "x-nullable": True}, "Nullable")
+    spec().validate_schema("new-value", {
+        "type": "string", "enum": ["old-value"], "x-ms-enum": {"modelAsString": True},
+    }, "Extensible enum")
+    schema = {"type": "object", "required": ["id", "name"], "properties": {
+        "id": {"type": "string", "readOnly": True}, "name": {"type": "string"},
+    }}
+    spec().validate_schema({"name": "a"}, schema, "Request", request=True)
+    with pytest.raises(AssertionError, match="required"):
+        spec().validate_schema({"name": "a"}, schema, "Response")
 
 
 @pytest.mark.parametrize("group,suffix", [
@@ -324,14 +395,18 @@ def test_status_document_is_not_a_resource_response():
         validator.validate("GET", "https://management.azure.com/opaque/status", None, {}, 200, resource(""), {})
 
 
-def test_next_link_response_preserves_list_contract():
+@pytest.mark.parametrize("group,suffix", [
+    ("", ""), ("version", "/versions"), ("execution_filter", "/executionFilters"),
+])
+def test_next_link_response_preserves_list_contract(group, suffix):
     validator = RecordingValidator(spec())
-    url = RESOURCE_URL.rsplit("/", 1)[0] + f"?api-version={API_VERSION}"
+    collection_url = RESOURCE_URL + suffix if suffix else RESOURCE_URL.rsplit("/", 1)[0]
+    url = collection_url + f"?api-version={API_VERSION}"
     next_link = "https://management.azure.com/opaque/page?$skiptoken=2"
     validator.validate("GET", url, None, {}, 200, {"value": [], "nextLink": next_link}, {})
-    validator.validate("GET", next_link, None, {}, 200, {"value": [resource("")]}, {})
+    validator.validate("GET", next_link, None, {}, 200, {"value": [resource(group)]}, {})
     with pytest.raises(AssertionError, match="required"):
-        validator.validate("GET", next_link, None, {}, 200, resource(""), {})
+        validator.validate("GET", next_link, None, {}, 200, resource(group), {})
 
 
 def test_preview_recording_cannot_validate_as_stable(tmp_path):

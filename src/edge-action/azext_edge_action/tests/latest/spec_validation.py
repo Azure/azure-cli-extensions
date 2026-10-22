@@ -5,6 +5,7 @@
 """Pinned Swagger validation. Refresh is explicit; validation never accesses Azure or the network."""
 
 import argparse
+from datetime import datetime
 from functools import lru_cache
 import hashlib
 import json
@@ -13,7 +14,6 @@ import re
 from urllib.parse import parse_qs, parse_qsl, urldefrag, urljoin, urlsplit
 from urllib.request import urlopen
 
-from jsonschema import Draft4Validator, FormatChecker
 import yaml
 
 
@@ -106,10 +106,116 @@ class Spec:
 
     def validate_schema(self, value, schema, description, request=False):
         bundled = self.prepare_schema(schema, request=request)
-        for error in Draft4Validator(bundled, format_checker=FormatChecker()).iter_errors(value):
-            field = ".".join(str(part) for part in error.absolute_path) or "<body>"
+        self.check_schema(bundled)
+        error = self.schema_error(value, bundled)
+        if error:
+            path, rule = error
+            field = ".".join(str(part) for part in path) or "<body>"
             # Do not echo response values, URLs with signed queries, or validation-error reprs.
-            raise AssertionError(f"{description}: {field} violates OpenAPI {error.validator}") from None
+            raise AssertionError(f"{description}: {field} violates OpenAPI {rule}")
+
+    def check_schema(self, schema):
+        """Fail closed when the pinned Swagger introduces an unsupported constraint."""
+        supported = {
+            "$ref", "type", "properties", "additionalProperties", "required", "items",
+            "allOf", "anyOf", "enum", "minLength", "maxLength", "pattern", "format",
+            "definitions", "description", "title", "readOnly", "name", "in",
+        }
+        unknown = {key for key in schema if key not in supported and not key.startswith("x-")}
+        assert not unknown, f"Unsupported pinned schema keywords: {sorted(unknown)}"
+        if "$ref" in schema:
+            self.resolve(schema)
+        if "type" in schema:
+            assert schema["type"] in ("object", "array", "string", "integer", "number", "boolean", "null")
+        if "format" in schema:
+            assert schema["format"] in ("uuid", "date-time", "uri", "arm-id", "int32"), (
+                "Unsupported pinned schema format")
+        for key in ("properties", "definitions"):
+            for child in schema.get(key, {}).values():
+                self.check_schema(child)
+        for key in ("items", "additionalProperties"):
+            if isinstance(schema.get(key), dict):
+                self.check_schema(schema[key])
+        for key in ("allOf", "anyOf"):
+            for child in schema.get(key, []):
+                self.check_schema(child)
+
+    def schema_error(self, value, schema, path=(), definitions=None):
+        """Validate only the schema vocabulary used by this pinned Swagger."""
+        if definitions is None:
+            definitions = schema.get("definitions", self.definitions)
+        while "$ref" in schema:
+            schema = definitions[schema["$ref"].rsplit("/", 1)[-1]]
+        for child in schema.get("allOf", []):
+            error = self.schema_error(value, child, path, definitions)
+            if error:
+                return error
+        if "anyOf" in schema and all(self.schema_error(value, child, path, definitions) is not None
+                                     for child in schema["anyOf"]):
+            return path, "anyOf"
+        types = {
+            "object": isinstance(value, dict), "array": isinstance(value, list),
+            "string": isinstance(value, str), "integer": type(value) is int,
+            "number": type(value) in (int, float), "boolean": type(value) is bool,
+            "null": value is None,
+        }
+        if "type" in schema and not types[schema["type"]]:
+            return path, "type"
+        if "enum" in schema and not any(
+                value == item and isinstance(value, bool) == isinstance(item, bool)
+                for item in schema["enum"]):
+            return path, "enum"
+        if isinstance(value, dict):
+            if any(key not in value for key in schema.get("required", [])):
+                return path, "required"
+            properties = schema.get("properties", {})
+            for key, item in value.items():
+                child = properties.get(key, schema.get("additionalProperties", True))
+                if child is False:
+                    return path + (key,), "additionalProperties"
+                if isinstance(child, dict):
+                    error = self.schema_error(item, child, path + (key,), definitions)
+                    if error:
+                        return error
+        elif isinstance(value, list) and "items" in schema:
+            for index, item in enumerate(value):
+                error = self.schema_error(item, schema["items"], path + (index,), definitions)
+                if error:
+                    return error
+        elif isinstance(value, str):
+            for key, failed in (
+                    ("minLength", len(value) < schema.get("minLength", 0)),
+                    ("maxLength", len(value) > schema.get("maxLength", len(value))),
+                    ("pattern", "pattern" in schema and re.search(schema["pattern"], value) is None)):
+                if failed:
+                    return path, key
+            if not self.valid_format(value, schema.get("format")):
+                return path, "format"
+        return None
+
+    @staticmethod
+    def valid_format(value, format_name):
+        if format_name == "uuid":
+            return re.fullmatch(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}", value) is not None
+        if format_name == "date-time":
+            if not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?"
+                    r"(?:[Zz]|[+-](?:[01]\d|2[0-3]):[0-5]\d)", value):
+                return False
+            try:
+                datetime.fromisoformat(value.upper().replace("Z", "+00:00"))
+            except ValueError:
+                return False
+        elif format_name == "uri":
+            if not value.isascii() or re.search(r'[\x00-\x20\x7f<>"{}|\\^`]|%(?![0-9a-fA-F]{2})', value):
+                return False
+            try:
+                parsed = urlsplit(value)
+                return bool(parsed.scheme) and not re.search(r"[\[\]#]", parsed.path + parsed.query + parsed.fragment)
+            except ValueError:
+                return False
+        # arm-id/int32 are Swagger annotations, not JSON Schema format constraints.
+        return True
 
     def validate_request(self, method, url, body=None, headers=None):
         operation, path_values = self.operation(method, url)

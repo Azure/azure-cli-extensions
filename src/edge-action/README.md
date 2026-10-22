@@ -142,50 +142,59 @@ The test suite separates offline contracts from recorded service evidence:
 
 | Suite | Purpose |
 | --- | --- |
-| `test_edge_action_contract.py` | Offline tests through registered commands and the AAZ HTTP pipeline: API version, request serialization, flattened resource output, pagination, named/generic execution-filter updates and polling, help argument parsing, no-content responses, errors, and `no_wait`. Responses are synthetic, not recordings. |
-| `test_edge_action_custom.py` | Offline tests for file/ZIP encoding, automatic ZIP creation, validation, and forwarding to the generated deployment command. |
-| `test_edge_action.py` | Recordable `ScenarioTest` lifecycles using `ResourceGroupPreparer`, covering CRUD, tag updates, file/ZIP deployment, code retrieval, default-version swaps, and every execution-filter update field. |
+| `test_edge_action_custom.py` | Standard `unittest` tests for download aliases and file output, argument-cache isolation, field boundaries, generic-update precedence, client-side pagination limits/resumption, file/ZIP deployment, and registered customization polling, no-wait, and failure paths. Transport calls are mocked; command serialization and polling execute normally. |
+| `test_edge_action.py` | Recordable `ScenarioTest` lifecycles using `ResourceGroupPreparer`, covering CRUD, tag replacement/clearing, property preservation, deployment results, retrieved code content, default-version swaps, and independent/combined/generic execution-filter updates. |
 | `test_edge_action_spec.py` | Offline pinned-Swagger validation: positive/negative request and response schema tests, polling and pagination contracts, API-version checks, and strict validation of every checked-in cassette. |
 | `test_edge_action_recording_processors.py` | Sanitizer regression tests, cassette hygiene, and offline VCR matching of signed polling links. |
 
-Every synthetic request and response in `test_edge_action_contract.py` also passes
-through the pinned specification validator. Coverage includes create HTTP 200/201
-polling followed by GET, asynchronous deletion, and both immediate and asynchronous
-action results. These tests exercise generated behavior, but do not replace
-successful playback of real stable-API recordings.
+The existing eight scenarios remain the service-contract regression tests.
+Coverage additions extend those scenarios rather than rewriting their setup.
+Root and version updates check that replacing or clearing tags preserves the
+other resource fields. Deployment checks assert the stable version-resource result,
+and code retrieval checks the deployed bytes, including service-packaged ZIPs.
+The filter scenario checks independent and combined named updates, tag clearing,
+generic-update precedence, string preservation, and tag removal, verifying each
+result with a subsequent GET. It uses full version resource IDs and deletes the
+filter, then the non-default version, then the default version.
 
-The lifecycle assertions follow the EdgeActions Python and PowerShell scenarios:
-verify the result as well as the subsequent GET, preserve deployment/default-version
-properties during tag updates, use full version resource IDs in execution filters,
-and delete filters before versions, with non-default versions deleted before the
-default version. All three resource update commands retain
-GET/PUT generic update. The execution-filter live scenario deploys two versions
-and independently changes tags, header
-name, header value, and version ID; it also updates all four together and clears
-tags. It also exercises `--set` with `--force-string` and `--remove`.
-Every step checks both the update result and a subsequent GET, including all
-unchanged fields. Header pairs are derived from the randomized filter name.
+Playback retains the test SDK's default request matchers and additionally uses
+VCR's JSON-aware body matcher. A serialized request-body regression therefore
+cannot pass merely because its URL still matches a recorded response. The
+separate pinned-spec audit checks the request and response contracts in every
+recording. Focused mocked-transport unit tests cover customization failure and
+polling variants without requiring live service failures or synthetic cassettes.
 
 From the repository root, in an activated Azure CLI development environment:
 
 ```powershell
-python -m pip install -r src\edge-action\azext_edge_action\tests\requirements.txt
-azdev extension add edge-action
-azdev test test_edge_action_contract test_edge_action_custom --discover --series
+azdev test azext_edge_action --discover --series
 ```
+
+Measure command and argument coverage separately:
+
+```powershell
+azdev cmdcov edge-action
+azdev cmdcov edge-action --level argument
+```
+
+The argument report measures scenario-source/recording coverage, not all unit
+tests. Download output and the three list commands' `--max-items`/`--next-token`
+behavior are covered by local unit tests. The report also includes CLI-wide
+`--change-reference` and `--acquire-policy-token` arguments, whose policy-token
+workflow is outside this extension's API migration. Do not describe the raw
+argument percentage as complete live coverage or add unrelated policy resources
+just to increase it.
 
 For a direct offline run without installing the extension:
 
 ```powershell
 $env:PYTHONPATH = (Resolve-Path .\src\edge-action).Path
-python -m pytest src\edge-action\azext_edge_action\tests\latest\test_edge_action_contract.py src\edge-action\azext_edge_action\tests\latest\test_edge_action_custom.py -q
+python -m unittest azext_edge_action.tests.latest.test_edge_action_custom -v
 ```
 
-The integration-test runner in `scripts/ci/test_source.py` installs each selected
-extension's `<package>/tests/requirements.txt` before `azdev test --discover`.
-This installs `jsonschema` for these tests without adding it to the extension's
-runtime dependencies. Local test runs must install the test requirements explicitly
-as shown above; `azdev extension add` alone does not install them.
+No extension-specific test dependencies or shared CI changes are required.
+Spec validation uses the Python standard library; recording loading uses PyYAML,
+which is already part of the Azure CLI test environment.
 
 ### Pinned specification and offline audit
 
@@ -213,7 +222,12 @@ separately, append `-k "not test_recording_matches_pinned_spec"` to the pytest
 command. Do not interpret that selected run as a passing stable recording audit.
 
 Validation checks HTTP requests and responses rather than inspecting generated
-Python source. An actual PUT 202 is rejected because this Swagger declares only
+Python source. The validator supports the pinned Swagger's local references,
+object inheritance, required fields, types, arrays, tag dictionaries, enums,
+string constraints, and UUID/date-time/URI formats. Swagger read-only requirements,
+extensible enums, and nullable fields retain their request/response semantics.
+Unknown schema constraints or formats fail explicitly; this is not a general
+JSON Schema implementation. An actual PUT 202 is rejected because this Swagger declares only
 PUT 200/201. Resource responses,
 required fields, types, no-content responses, polling headers, status documents,
 Location results and pagination bodies are checked against their own contracts.
@@ -261,8 +275,9 @@ committing; these targeted rules are not a general-purpose secret scanner.
 ### Recording service scenarios
 
 Live execution must be explicitly authorized against a suitable test environment.
-Re-record affected scenarios whenever their command sequence or assertions change,
-including execution-filter named-field updates, generic options, and cleanup.
+Re-record affected scenarios whenever their HTTP interactions change, including
+execution-filter named-field updates, generic options, and cleanup. Assertion-only
+changes can be checked against fresh recordings of the same interactions.
 Do not change API-version strings or synthesize interactions to make playback pass.
 
 Select an authorized disposable test subscription with access to the stable API.
@@ -288,11 +303,9 @@ azdev test test_edge_action_execution_filter_crud --discover --series --live
 azdev test test_edge_action_execution_filter_crud --series
 ```
 
-Subscription-level listing is defined in the stable Swagger, but the current
-exported AAZ models place it under `cdn edge-action list`. This extension's
-`edge-action list` still requires `--resource-group`; merging both list resources
-under the intended command is an AAZ-model change, not something the tests should
-silently emulate.
+Subscription-level listing is defined in the stable Swagger but is not exported
+by this extension. `edge-action list` requires `--resource-group`; the legacy
+`cdn edge-action` command group is outside this migration's scope.
 
 References:
 [Azure CLI test guidance](https://github.com/Azure/azure-cli/blob/dev/doc/authoring_tests.md),

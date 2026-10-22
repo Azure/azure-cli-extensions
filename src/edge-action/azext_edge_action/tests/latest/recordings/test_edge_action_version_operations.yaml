@@ -25,7 +25,7 @@ interactions:
       string: '{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/edgeactionoperations/a2a08a4d-6be8-42fc-a39a-84fa832ac70e?api-version=2026-10-01&t=Sanitized_a5f91d9dbf46606e&c=Sanitized_ab149f2be084e5fa&s=Sanitized_27de21ae40d03683&h=Sanitized_41e3d87b883042f0
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/edgeactionoperations/bf58f70b-e723-4746-8d0c-88d5bce0a212?api-version=2026-10-01&t=Sanitized_c8e59d54eae8b95f&c=Sanitized_d132b19121d1d572&s=Sanitized_6bbe70c73234592f&h=Sanitized_7217de35b9bd6a96
       cache-control:
       - no-cache
       content-length:
@@ -33,7 +33,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 20 Oct 2026 21:53:46 GMT
+      - Thu, 22 Oct 2026 15:35:33 GMT
       expires:
       - '-1'
       location:
@@ -47,7 +47,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '1531'
+      - '1562'
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
@@ -71,19 +71,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/edgeactionoperations/a2a08a4d-6be8-42fc-a39a-84fa832ac70e?api-version=2026-10-01&t=Sanitized_a5f91d9dbf46606e&c=Sanitized_ab149f2be084e5fa&s=Sanitized_27de21ae40d03683&h=Sanitized_41e3d87b883042f0
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/edgeactionoperations/bf58f70b-e723-4746-8d0c-88d5bce0a212?api-version=2026-10-01&t=Sanitized_c8e59d54eae8b95f&c=Sanitized_d132b19121d1d572&s=Sanitized_6bbe70c73234592f&h=Sanitized_7217de35b9bd6a96
   response:
     body:
-      string: '{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActionOperations/a2a08a4d-6be8-42fc-a39a-84fa832ac70e","operationId":"a2a08a4d-6be8-42fc-a39a-84fa832ac70e","status":"Succeeded","operationType":"create","startTime":"2026-10-20T21:53:45.8403814+00:00","endTime":"2026-10-20T21:53:47.0591096+00:00","error":null}'
+      string: '{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActionOperations/bf58f70b-e723-4746-8d0c-88d5bce0a212","operationId":"bf58f70b-e723-4746-8d0c-88d5bce0a212","status":"Succeeded","operationType":"create","startTime":"2026-10-22T15:35:31.466863+00:00","endTime":"2026-10-22T15:35:32.7068267+00:00","error":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '388'
+      - '387'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 20 Oct 2026 21:53:49 GMT
+      - Thu, 22 Oct 2026 15:35:34 GMT
       expires:
       - '-1'
       pragma:
@@ -95,7 +95,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '139'
+      - '140'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
     status:
@@ -129,7 +129,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 20 Oct 2026 21:53:50 GMT
+      - Thu, 22 Oct 2026 15:35:37 GMT
       expires:
       - '-1'
       pragma:
@@ -141,14 +141,14 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '348'
+      - '381'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location":"global","properties":{"deploymentType":"file","isDefaultVersion":"True"}}'
+    body: '{"location":"global","properties":{"deploymentType":"file","isDefaultVersion":"False"}}'
     headers:
       Accept:
       - application/json
@@ -159,7 +159,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '86'
+      - '87'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -170,10 +170,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
   response:
     body:
-      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-20T21:53:54.6481414+00:00"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
+      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-22T15:35:40.3339912+00:00"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/edgeactionoperations/7460d7d4-5de6-4c65-ad6a-881abb36f67a?api-version=2026-10-01&t=Sanitized_37b4373705264709&c=Sanitized_d132b19121d1d572&s=Sanitized_0494818c5ab4928c&h=Sanitized_528527abb8510f48
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/edgeactionoperations/b377c42a-135a-4aff-a3d4-f426869345c3?api-version=2026-10-01&t=Sanitized_87495143a4785d64&c=Sanitized_ab149f2be084e5fa&s=Sanitized_086d75d1138f8d4d&h=Sanitized_c44865f5326cc1c2
       cache-control:
       - no-cache
       content-length:
@@ -181,7 +181,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 20 Oct 2026 21:53:55 GMT
+      - Thu, 22 Oct 2026 15:35:40 GMT
       expires:
       - '-1'
       location:
@@ -195,7 +195,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '1472'
+      - '1261'
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
@@ -219,10 +219,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/edgeactionoperations/7460d7d4-5de6-4c65-ad6a-881abb36f67a?api-version=2026-10-01&t=Sanitized_37b4373705264709&c=Sanitized_d132b19121d1d572&s=Sanitized_0494818c5ab4928c&h=Sanitized_528527abb8510f48
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/edgeactionoperations/b377c42a-135a-4aff-a3d4-f426869345c3?api-version=2026-10-01&t=Sanitized_87495143a4785d64&c=Sanitized_ab149f2be084e5fa&s=Sanitized_086d75d1138f8d4d&h=Sanitized_c44865f5326cc1c2
   response:
     body:
-      string: '{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActionOperations/7460d7d4-5de6-4c65-ad6a-881abb36f67a","operationId":"7460d7d4-5de6-4c65-ad6a-881abb36f67a","status":"Succeeded","operationType":"create","startTime":"2026-10-20T21:53:53.8019496+00:00","endTime":"2026-10-20T21:53:54.9655457+00:00","error":null}'
+      string: '{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActionOperations/b377c42a-135a-4aff-a3d4-f426869345c3","operationId":"b377c42a-135a-4aff-a3d4-f426869345c3","status":"Succeeded","operationType":"create","startTime":"2026-10-22T15:35:39.6972007+00:00","endTime":"2026-10-22T15:35:40.6372065+00:00","error":null}'
     headers:
       cache-control:
       - no-cache
@@ -231,7 +231,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 20 Oct 2026 21:53:56 GMT
+      - Thu, 22 Oct 2026 15:35:42 GMT
       expires:
       - '-1'
       pragma:
@@ -268,7 +268,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
   response:
     body:
-      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-20T21:53:54.6481414+00:00"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
+      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-22T15:35:40.3339912+00:00"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
     headers:
       cache-control:
       - no-cache
@@ -277,247 +277,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 20 Oct 2026 21:53:58 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-envoy-upstream-service-time:
-      - '346'
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate, zstd
-      CommandName:
-      - edge-action version show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --edge-action-name -n
-      User-Agent:
-      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
-  response:
-    body:
-      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-20T21:53:54.6481414+00:00"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '424'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 20 Oct 2026 21:54:01 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-envoy-upstream-service-time:
-      - '346'
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate, zstd
-      CommandName:
-      - edge-action version update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --edge-action-name -n --tags
-      User-Agent:
-      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
-  response:
-    body:
-      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-20T21:53:54.6481414+00:00"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '424'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 20 Oct 2026 21:54:02 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-envoy-upstream-service-time:
-      - '351'
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location":"global","properties":{"deploymentType":"file","isDefaultVersion":"True"},"tags":{"purpose":"updated"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate, zstd
-      CommandName:
-      - edge-action version update
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '115'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -g --edge-action-name -n --tags
-      User-Agent:
-      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
-  response:
-    body:
-      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-20T21:53:54.6481414+00:00"},"location":"global","tags":{"purpose":"updated"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/edgeactionoperations/5c49dc38-117d-4d50-aca1-627c1e1fcefb?api-version=2026-10-01&t=Sanitized_39577a302a21d04b&c=Sanitized_ab149f2be084e5fa&s=Sanitized_1a11ff0f6acaac67&h=Sanitized_80d898463576b055
-      cache-control:
-      - no-cache
-      content-length:
-      - '443'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 20 Oct 2026 21:54:05 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-envoy-upstream-service-time:
-      - '957'
-      x-ms-ratelimit-remaining-subscription-global-writes:
-      - '11999'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate, zstd
-      CommandName:
-      - edge-action version update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --edge-action-name -n --tags
-      User-Agent:
-      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/edgeactionoperations/5c49dc38-117d-4d50-aca1-627c1e1fcefb?api-version=2026-10-01&t=Sanitized_39577a302a21d04b&c=Sanitized_ab149f2be084e5fa&s=Sanitized_1a11ff0f6acaac67&h=Sanitized_80d898463576b055
-  response:
-    body:
-      string: '{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActionOperations/5c49dc38-117d-4d50-aca1-627c1e1fcefb","operationId":"5c49dc38-117d-4d50-aca1-627c1e1fcefb","status":"Succeeded","operationType":"create","startTime":"2026-10-20T21:54:04.7148306+00:00","endTime":"2026-10-20T21:54:05.3453965+00:00","error":null}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '388'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 20 Oct 2026 21:54:07 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-envoy-upstream-service-time:
-      - '139'
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate, zstd
-      CommandName:
-      - edge-action version update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --edge-action-name -n --tags
-      User-Agent:
-      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
-  response:
-    body:
-      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-20T21:53:54.6481414+00:00"},"location":"global","tags":{"purpose":"updated"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '443'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 20 Oct 2026 21:54:08 GMT
+      - Thu, 22 Oct 2026 15:35:45 GMT
       expires:
       - '-1'
       pragma:
@@ -554,16 +314,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
   response:
     body:
-      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-20T21:53:54.6481414+00:00"},"location":"global","tags":{"purpose":"updated"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
+      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-22T15:35:40.3339912+00:00"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '443'
+      - '424'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 20 Oct 2026 21:54:12 GMT
+      - Thu, 22 Oct 2026 15:35:48 GMT
       expires:
       - '-1'
       pragma:
@@ -575,7 +335,487 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '992'
+      - '352'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action version update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --edge-action-name -n --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
+  response:
+    body:
+      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-22T15:35:40.3339912+00:00"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '424'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Oct 2026 15:35:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '349'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location":"global","properties":{"deploymentType":"file","isDefaultVersion":"True"},"tags":{"purpose":"updated"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action version update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '115'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --edge-action-name -n --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
+  response:
+    body:
+      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-22T15:35:40.3339912+00:00"},"location":"global","tags":{"purpose":"updated"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/edgeactionoperations/6afd591f-f2ab-4e80-afea-35889373f268?api-version=2026-10-01&t=Sanitized_12c78edddc433c33&c=Sanitized_ab149f2be084e5fa&s=Sanitized_bfe99e6e04c1d697&h=Sanitized_e4b84b10626a86cf
+      cache-control:
+      - no-cache
+      content-length:
+      - '443'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Oct 2026 15:35:53 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '964'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action version update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --edge-action-name -n --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/edgeactionoperations/6afd591f-f2ab-4e80-afea-35889373f268?api-version=2026-10-01&t=Sanitized_12c78edddc433c33&c=Sanitized_ab149f2be084e5fa&s=Sanitized_bfe99e6e04c1d697&h=Sanitized_e4b84b10626a86cf
+  response:
+    body:
+      string: '{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActionOperations/6afd591f-f2ab-4e80-afea-35889373f268","operationId":"6afd591f-f2ab-4e80-afea-35889373f268","status":"Succeeded","operationType":"create","startTime":"2026-10-22T15:35:52.7415908+00:00","endTime":"2026-10-22T15:35:53.3785281+00:00","error":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '388'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Oct 2026 15:35:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '141'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action version update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --edge-action-name -n --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
+  response:
+    body:
+      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-22T15:35:40.3339912+00:00"},"location":"global","tags":{"purpose":"updated"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '443'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Oct 2026 15:35:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '343'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action version show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --edge-action-name -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
+  response:
+    body:
+      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-22T15:35:40.3339912+00:00"},"location":"global","tags":{"purpose":"updated"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '443'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Oct 2026 15:35:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '344'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action version update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --edge-action-name -n --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
+  response:
+    body:
+      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-22T15:35:40.3339912+00:00"},"location":"global","tags":{"purpose":"updated"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '443'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Oct 2026 15:36:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '347'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location":"global","properties":{"deploymentType":"file","isDefaultVersion":"True"},"tags":{}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action version update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '96'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --edge-action-name -n --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
+  response:
+    body:
+      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-22T15:35:40.3339912+00:00"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/edgeactionoperations/88e0e03c-f377-462b-a7ce-725ac6f01ee7?api-version=2026-10-01&t=Sanitized_d618e7165eb81fd1&c=Sanitized_ab149f2be084e5fa&s=Sanitized_5c8942a4042d7257&h=Sanitized_2e8408dcf79e7bbc
+      cache-control:
+      - no-cache
+      content-length:
+      - '424'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Oct 2026 15:36:06 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '924'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action version update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --edge-action-name -n --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/edgeactionoperations/88e0e03c-f377-462b-a7ce-725ac6f01ee7?api-version=2026-10-01&t=Sanitized_d618e7165eb81fd1&c=Sanitized_ab149f2be084e5fa&s=Sanitized_5c8942a4042d7257&h=Sanitized_2e8408dcf79e7bbc
+  response:
+    body:
+      string: '{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActionOperations/88e0e03c-f377-462b-a7ce-725ac6f01ee7","operationId":"88e0e03c-f377-462b-a7ce-725ac6f01ee7","status":"Succeeded","operationType":"create","startTime":"2026-10-22T15:36:05.949823+00:00","endTime":"2026-10-22T15:36:06.5710016+00:00","error":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '387'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Oct 2026 15:36:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '139'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action version update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --edge-action-name -n --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
+  response:
+    body:
+      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-22T15:35:40.3339912+00:00"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '424'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Oct 2026 15:36:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '2001'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action version show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --edge-action-name -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1?api-version=2026-10-01
+  response:
+    body:
+      string: '{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-22T15:35:40.3339912+00:00"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '424'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Oct 2026 15:36:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '348'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
     status:
@@ -600,16 +840,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions?api-version=2026-10-01
   response:
     body:
-      string: '{"value":[{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-20T21:53:54.6481414+00:00"},"location":"global","tags":{"purpose":"updated"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}]}'
+      string: '{"value":[{"properties":{"deploymentType":"file","validationStatus":null,"provisioningState":"Succeeded","isDefaultVersion":"True","lastPackageUpdateTime":"2026-10-22T15:35:40.3339912+00:00"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002/versions/v1","name":"v1","type":"Microsoft.Cdn/EdgeActions/versions"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '455'
+      - '436'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 20 Oct 2026 21:54:14 GMT
+      - Thu, 22 Oct 2026 15:36:19 GMT
       expires:
       - '-1'
       pragma:
@@ -621,9 +861,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '1073'
+      - '460'
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16498'
+      - '16499'
     status:
       code: 200
       message: OK
@@ -655,7 +895,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 20 Oct 2026 21:54:17 GMT
+      - Thu, 22 Oct 2026 15:36:24 GMT
       expires:
       - '-1'
       pragma:
@@ -667,7 +907,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '930'
+      - '2642'
       x-ms-ratelimit-remaining-subscription-deletes:
       - '799'
       x-ms-ratelimit-remaining-subscription-global-deletes:
@@ -703,7 +943,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 20 Oct 2026 21:54:20 GMT
+      - Thu, 22 Oct 2026 15:36:28 GMT
       expires:
       - '-1'
       pragma:
@@ -715,7 +955,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '1142'
+      - '1166'
       x-ms-ratelimit-remaining-subscription-deletes:
       - '799'
       x-ms-ratelimit-remaining-subscription-global-deletes:
