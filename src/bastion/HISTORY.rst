@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.4.4
+++++++
+* Fix native-client authentication when the Bastion subscription is in a different tenant from the default subscription.
+* Surface connection authentication failures and close failed tunnel clients promptly.
+
 1.4.3
 ++++++
 * Replace deprecated pkg_resources with packaging for Python 3.13 compatibility
