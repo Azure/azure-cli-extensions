@@ -12,4 +12,7 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    from .custom import WorkspaceUpdate
+
+    with self.command_group('storage-discovery workspace'):
+        self.command_table['storage-discovery workspace update'] = WorkspaceUpdate(loader=self)
