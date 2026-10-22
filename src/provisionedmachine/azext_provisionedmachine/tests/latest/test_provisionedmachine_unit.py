@@ -743,13 +743,22 @@ class TestCreateImageSelection(unittest.TestCase):
         self.command._resolve_latest_version.assert_not_called()
         self.command.EdgeMachinesCreateOrUpdate.assert_not_called()
 
-    def test_missing_or_unknown_validation_result_stops_before_image_lookup(self):
+    def test_existing_validation_behavior_is_preserved(self):
+        for response in (None, {}, {"ownershipVoucherValidationDetails": []},
+                         {"ownershipVoucherValidationDetails": [{"validationStatus": "Unknown"}]},
+                         {"ownershipVoucherValidationDetails": [{"validationStatus": "Valid"}] * 2}):
+            with self.subTest(response=response):
+                Create._validation_result = response
+
+                self.assertIsNone(Create._validate_voucher_response(self.command))
+
+    def test_auto_selection_without_voucher_architecture_stops_before_image_lookup(self):
         for response in (None, {}, {"ownershipVoucherValidationDetails": []},
                          {"ownershipVoucherValidationDetails": [{"validationStatus": "Unknown"}]}):
             with self.subTest(response=response):
                 self.validation_response = response
 
-                with self.assertRaises(azclierror_mod.InvalidArgumentValueError):
+                with self.assertRaisesRegex(azclierror_mod.InvalidArgumentValueError, "device architecture"):
                     list(Create._execute_operations(self.command))
 
                 self.command._resolve_latest_version.assert_not_called()

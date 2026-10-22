@@ -1228,6 +1228,8 @@ class TestResolveLatestOsImageVersion(unittest.TestCase):
             mock.Mock(), "sub-123", "AzureLinux", "eastus2euap")
 
         self.assertEqual(result, "50.2607.0.32")
+        self.assertIn("api-version=2026-05-01-preview", mock_send.call_args[0][2])
+        self.assertNotIn("architecture=", mock_send.call_args[0][2])
 
     @mock.patch('azure.cli.core.util.send_raw_request')
     def test_selects_first_image_matching_voucher_architecture(self, mock_send):
@@ -1286,6 +1288,7 @@ class TestResolveLatestOsImageVersion(unittest.TestCase):
 
         self.assertEqual(result, "12.2607.1003.50")
         self.assertNotIn("architecture=", mock_send.call_args[0][2])
+        self.assertIn("api-version=2026-05-01-preview", mock_send.call_args[0][2])
 
     @mock.patch('azure.cli.core.util.send_raw_request')
     def test_url_contains_subscription_location_and_solution_type(self, mock_send):

@@ -186,7 +186,7 @@ class Create(AAZCommand):
         Create._validation_result = None
         Create._resolved_version = None
         self.ValidateOwnershipVoucher(ctx=self.ctx)()
-        voucher_details = self._validate_voucher_response()
+        self._validate_voucher_response()
 
         args = self.ctx.args
         if has_value(args.os_image_type):
@@ -198,7 +198,9 @@ class Create(AAZCommand):
                 if os_image_type == "AzureLinux":
                     from azure.cli.core.azclierror import InvalidArgumentValueError
 
-                    architecture = voucher_details.get("architecture")
+                    validation_result = Create._validation_result or {}
+                    voucher_details = validation_result.get("ownershipVoucherValidationDetails", [])
+                    architecture = voucher_details[0].get("architecture") if voucher_details else None
                     if not isinstance(architecture, str) or architecture.lower() not in ("amd64", "arm64"):
                         raise InvalidArgumentValueError(
                             "Ownership voucher validation did not return a supported device architecture "
@@ -222,28 +224,23 @@ class Create(AAZCommand):
         """Check the validation response and raise error if invalid."""
         from azure.cli.core.azclierror import InvalidArgumentValueError
         
-        validation_result = Create._validation_result or {}
-        details = validation_result.get("ownershipVoucherValidationDetails", [])
-        if not details or len(details) != 1:
-            raise InvalidArgumentValueError(
-                "Ownership voucher validation did not return a validation result for the supplied voucher."
-            )
-
-        detail = details[0]
-        status = detail.get("validationStatus", "")
-        if status.lower() != "valid":
-            error_info = detail.get("error") or {}
-            error_message = error_info.get("message", "Unknown error")
-            error_details = error_info.get("details", [])
-
-            full_message = f"Ownership voucher validation failed: {error_message}"
-            if error_details:
-                for err_detail in error_details:
-                    full_message += f"\n  - {err_detail.get('code', '')}: {err_detail.get('message', '')}"
-
-            raise InvalidArgumentValueError(full_message)
-
-        return detail
+        validation_result = Create._validation_result
+        if validation_result:
+            details = validation_result.get("ownershipVoucherValidationDetails", [])
+            for detail in details:
+                status = detail.get("validationStatus", "")
+                if status.lower() == "invalid":
+                    error_info = detail.get("error", {})
+                    error_message = error_info.get("message", "Unknown error")
+                    error_details = error_info.get("details", [])
+                    
+                    # Build detailed error message
+                    full_message = f"Ownership voucher validation failed: {error_message}"
+                    if error_details:
+                        for err_detail in error_details:
+                            full_message += f"\n  - {err_detail.get('code', '')}: {err_detail.get('message', '')}"
+                    
+                    raise InvalidArgumentValueError(full_message)
 
     @register_callback
     def pre_operations(self):

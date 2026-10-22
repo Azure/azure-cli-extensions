@@ -1062,8 +1062,7 @@ def _openssh_install_message(system):
     )
 
 
-# Match os-image list so the response includes each image's architecture.
-OS_IMAGES_API_VERSION = "2026-10-15-preview"
+OS_IMAGES_API_VERSION = "2026-05-01-preview"
 
 # Fallback region for OS image version discovery when the caller cannot
 # determine a location. Mirrors the ``provisionedmachine os-image list``
@@ -1106,12 +1105,14 @@ def resolve_latest_os_image_version(cli_ctx, subscription_id, os_image_type, loc
     image_architecture = (
         architecture.lower() if architecture and os_image_type.lower() == "azurelinux" else None
     )
+    # Earlier API versions omit architecture from the image response.
+    api_version = "2026-10-15-preview" if image_architecture else OS_IMAGES_API_VERSION
 
     try:
         os_images_url = (
             f"/subscriptions/{subscription_id}"
             f"/providers/Microsoft.AzureStackHCI/locations/{location}/osImages"
-            f"?api-version={OS_IMAGES_API_VERSION}&solution-type={os_image_type}"
+            f"?api-version={api_version}&solution-type={os_image_type}"
         )
         if image_architecture:
             os_images_url += f"&architecture={image_architecture}"

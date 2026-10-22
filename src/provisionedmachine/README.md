@@ -44,16 +44,16 @@ validates that recipe against the device architecture.
 # AzureLinux
 az provisionedmachine create -n myProvisionedMachine -g myResourceGroup \
   --location eastus \
-  --ownership-voucher ./ownership-voucher.pem \
-  --site-resource-id "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Edge/sites/<site>" \
+  --voucher-file ./ownership-voucher.pem \
+  --site-id "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.ExtendedLocation/customLocations/<site>" \
   --os-image-type AzureLinux \
   --ssh-public-key "ssh-rsa AAAAB3..."
 
 # HCI
 az provisionedmachine create -n myProvisionedMachine -g myResourceGroup \
   --location eastus \
-  --ownership-voucher ./ownership-voucher.pem \
-  --site-resource-id "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Edge/sites/<site>" \
+  --voucher-file ./ownership-voucher.pem \
+  --site-id "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.ExtendedLocation/customLocations/<site>" \
   --os-image-type HCI \
   --key-vault-secret-id "/subscriptions/.../secrets/mySecret"
 ```
