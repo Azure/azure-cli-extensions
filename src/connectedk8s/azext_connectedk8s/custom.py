@@ -1032,6 +1032,7 @@ def create_connectedk8s(
                     chart_path,
                     cmd,
                 )
+            utils.mark_command_succeeded(cmd)
             return cc_response
 
         # else case
@@ -1424,11 +1425,13 @@ def create_connectedk8s(
             print(
                 f"Step: {utils.get_utctimestring()}: Agent state has reached terminal state."
             )
+            utils.mark_command_succeeded(cmd)
             return connected_cluster
 
         raise _agent_state_timeout_error(cmd, "create")
     if cl_oid and enable_custom_locations and cl_oid == custom_locations_oid:
         logger.warning(consts.Manual_Custom_Location_Oid_Warning)
+    utils.mark_command_succeeded(cmd)
     return put_cc_response
 
 

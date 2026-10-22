@@ -582,12 +582,15 @@ def report_connectedk8s_diagnostic(
     error: errors.ArcError,
     *,
     exception: BaseException | None = None,
-    user_fault: bool = False,
     telemetry_properties: dict[str, Any] | None = None,
     fault_type: str | None = None,
     **context: object,
 ) -> str:
-    """Report one standardized diagnostic to telemetry without raising it."""
+    """Report one standardized diagnostic to telemetry without raising it.
+
+    Diagnostics never set the command result. Azure CLI keeps the first result that is set,
+    so a non-blocking user fault here would hide a later success.
+    """
     message = error.format(**context)
     telemetry_message = sanitize_telemetry_text(message)
     properties = (telemetry_properties or {}).copy()
@@ -607,8 +610,6 @@ def report_connectedk8s_diagnostic(
         properties[consts.Telemetry_Error_Tsg_Link_Key] = error.tsg_link
     add_connectedk8s_telemetry_event(cmd, properties)
 
-    if user_fault:
-        telemetry.set_user_fault()
     telemetry_exception = sanitize_telemetry_exception(exception, telemetry_message)
     telemetry.set_exception(
         exception=telemetry_exception,
@@ -630,16 +631,38 @@ def report_connectedk8s_error(
     **context: object,
 ) -> AzCLIError:
     """Report one standardized error to telemetry and return its console exception."""
+    if user_fault:
+        telemetry.set_user_fault()
     report_connectedk8s_diagnostic(
         cmd,
         error,
         exception=exception,
-        user_fault=user_fault,
         telemetry_properties=telemetry_properties,
         fault_type=fault_type,
         **context,
     )
     return error.as_error(recommendation=recommendation, **context)
+
+
+def mark_command_succeeded(cmd: CLICommand | None) -> None:
+    """Force a Success result once the command has completed.
+
+    Handled, non-blocking failures may already have set UserFault or Failure, and Azure CLI's
+    set_success() cannot override an existing result. The replaced result is kept in telemetry.
+    """
+    try:
+        session = telemetry._session  # pylint: disable=protected-access
+        previous = session.result
+        if previous in ("None", "Success"):
+            return
+        add_connectedk8s_telemetry_event(
+            cmd, {consts.Telemetry_Overridden_Result_Key: previous}
+        )
+        session.result = "Success"
+        session.result_summary = None
+        session.error_type = "None"
+    except Exception:  # pylint: disable=broad-except
+        logger.debug("Unable to record command success in telemetry", exc_info=True)
 
 
 def _get_underlying_exception_type(exception: BaseException) -> str:
@@ -1259,7 +1282,6 @@ def check_cluster_outbound_connectivity(  # pylint: disable=too-many-branches,to
                     cmd,
                     errors.CLUSTER_CONNECT_OUTBOUND_CONNECTIVITY_FAILED,
                     details=details,
-                    user_fault=True,
                 )
                 logger.warning(
                     "%s\n"
@@ -1383,7 +1405,6 @@ def check_cluster_outbound_connectivity(  # pylint: disable=too-many-branches,to
                     f"{details} Review network requirements at "
                     f"{consts.Doc_Network_Requirements_Url}."
                 ),
-                user_fault=True,
             )
             logger.warning(message)
             if storage_space_available:
@@ -1934,8 +1955,6 @@ def arm_exception_handler(
 
     if isinstance(ex, HttpOperationError):
         status_code = ex.response.status_code
-        if status_code // 100 == 4:
-            telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
         if status_code // 100 == 5:
             raise AzureInternalError(
@@ -1959,8 +1978,6 @@ def arm_exception_handler(
 
     if isinstance(ex, HttpResponseError):
         status_code = ex.status_code
-        if status_code and status_code // 100 == 4:
-            telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
         if status_code and status_code // 100 == 5:
             raise AzureInternalError(
@@ -2053,7 +2070,6 @@ def kubernetes_exception_handler(
                 details=details,
             )
             return
-        telemetry.set_user_fault()
         if raise_error:
             telemetry.set_exception(
                 exception=ex, fault_type=fault_type, summary=summary
@@ -2077,7 +2093,6 @@ def kubernetes_exception_handler(
             )
             logger.debug("Kubernetes Exception", exc_info=True)
             return
-        telemetry.set_user_fault()
         if raise_error:
             telemetry.set_exception(
                 exception=ex, fault_type=fault_type, summary=summary
@@ -2127,7 +2142,6 @@ def ensure_namespace_cleanup(cmd: CLICommand | None = None) -> None:
                     arc_error=errors.KUBERNETES_NAMESPACE_GET_FAILED,
                     cmd=cmd,
                 )
-            telemetry.set_user_fault()
             logger.warning(
                 "Namespace 'azure-arc' still in terminating state. Please ensure that you delete the "
                 "'azure-arc' namespace before onboarding the cluster again."
@@ -2939,7 +2953,6 @@ def check_provider_registrations(
                 )
                 raise ValidationError(err_msg)
 
-            telemetry.set_user_fault()
             logger.warning(
                 "%s provider is not registered",
                 consts.Kubernetes_Configuration_Provider_Namespace,
