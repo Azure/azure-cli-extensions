@@ -200,10 +200,11 @@ class Spec:
         if format_name == "date-time":
             if not re.fullmatch(
                     r"\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?"
-                    r"(?:[Zz]|[+-](?:[01]\d|2[0-3]):[0-5]\d)", value):
+                    r"(?:[Zz]|[+-](?:[01]\d|2[0-3]):[0-5]\d)", value, re.ASCII):
                 return False
             try:
-                datetime.fromisoformat(value.upper().replace("Z", "+00:00"))
+                # Python 3.10 only parses 3/6 fractional digits; the regex accepts any precision.
+                datetime.fromisoformat(re.sub(r"\.\d+", "", value.upper()).replace("Z", "+00:00"))
             except ValueError:
                 return False
         elif format_name == "uri":

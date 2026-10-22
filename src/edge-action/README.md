@@ -164,6 +164,13 @@ separate pinned-spec audit checks the request and response contracts in every
 recording. Focused mocked-transport unit tests cover customization failure and
 polling variants without requiring live service failures or synthetic cassettes.
 
+The JavaScript upload fixture is pinned to CRLF by `test_files/.gitattributes`
+because deployment reads and base64-encodes its raw bytes. This preserves the
+recorded payload on both Linux and Windows; an offline check compares the JS/ZIP
+fixture bytes with their recorded requests. Date-time validation accepts the
+service's fractional-second precision on all supported Python versions while
+still checking calendar dates, times, and timezone offsets.
+
 From the repository root, in an activated Azure CLI development environment:
 
 ```powershell

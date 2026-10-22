@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import base64
 from copy import deepcopy
 import json
 from pathlib import Path
@@ -165,6 +166,20 @@ def test_scenario_playback_matches_request_bodies(tmp_path):
             Request("PUT", URL, '{ "tags": { "purpose": "updated" } }', headers))
         for body in ('{"tags":{}}', '{"tags":{"purpose":false}}', '{"tags":{"purpose":"old"}}'):
             assert not cassette.can_play_response_for(Request("PUT", URL, body, headers))
+
+
+@pytest.mark.parametrize("deployment_type,filename", [
+    ("file", "sample_edge_action.js"), ("zip", "sample_edge_action.zip"),
+])
+def test_deployment_fixture_bytes_match_recording(deployment_type, filename):
+    directory = Path(__file__).parent
+    path = directory / "recordings" / f"test_edge_action_version_deploy_with_{deployment_type}.yaml"
+    recording = yaml.safe_load(path.read_text(encoding="utf-8"))
+    requests = [item["request"] for item in recording["interactions"]
+                if "/deployVersionCode?" in item["request"]["uri"]]
+    assert len(requests) == 1
+    recorded = base64.b64decode(body_json(requests[0]["body"])["content"], validate=True)
+    assert (directory / "test_files" / filename).read_bytes() == recorded
 
 
 @pytest.mark.parametrize("path", sorted(Path(__file__).with_name("recordings").glob("*.yaml")),

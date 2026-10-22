@@ -92,6 +92,26 @@ def test_pinned_schema_constraints(schema, valid, invalid, rule):
         spec().validate_schema(invalid, schema, "Constraint")
 
 
+@pytest.mark.parametrize("fraction", [
+    "", ".1", ".12", ".123", ".1234", ".12345", ".123456", ".1234567", ".123456789",
+])
+@pytest.mark.parametrize("zone", ["Z", "z", "+05:30", "-07:00"])
+def test_datetime_fractional_precision(fraction, zone):
+    schema = {"type": "string", "format": "date-time"}
+    spec().validate_schema(f"2026-10-22T12:34:56{fraction}{zone}", schema, "Timestamp")
+    for invalid in (f"2026-02-30T12:34:56{fraction}{zone}", f"2026-10-22T24:34:56{fraction}{zone}",
+                    f"2026-10-22T12:34:56{fraction}+00:99"):
+        with pytest.raises(AssertionError, match="format"):
+            spec().validate_schema(invalid, schema, "Timestamp")
+
+
+@pytest.mark.parametrize("fraction", [".", ".1e2", ".\u0661"])
+def test_datetime_rejects_malformed_fraction(fraction):
+    with pytest.raises(AssertionError, match="format"):
+        spec().validate_schema(f"2026-10-22T12:34:56{fraction}Z",
+                               {"type": "string", "format": "date-time"}, "Timestamp")
+
+
 @pytest.mark.parametrize("schema", [
     {"type": "integer", "minimum": 0},
     {"type": "object", "properties": {"optional": {"not": {"type": "string"}}}},
