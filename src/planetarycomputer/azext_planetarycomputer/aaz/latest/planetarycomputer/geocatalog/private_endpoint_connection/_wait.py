@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "planetarycomputer geocatalog identity wait",
+    "planetarycomputer geocatalog private-endpoint-connection wait",
 )
 class Wait(AAZWaitCommand):
     """Place the CLI in a waiting state until a condition is met.
@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.orbital/geocatalogs/{}", "2026-04-15", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.orbital/geocatalogs/{}/privateendpointconnections/{}", "2026-10-01"],
         ]
     }
 
@@ -41,13 +41,19 @@ class Wait(AAZWaitCommand):
 
         _args_schema = cls._args_schema
         _args_schema.catalog_name = AAZStrArg(
-            options=["-n", "--name", "--catalog-name"],
+            options=["--catalog-name"],
             help="The name of the catalog",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
+        )
+        _args_schema.private_endpoint_connection_name = AAZStrArg(
+            options=["-n", "--name", "--private-endpoint-connection-name"],
+            help="The name of the private endpoint connection associated with the Azure resource.",
+            required=True,
+            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -56,7 +62,7 @@ class Wait(AAZWaitCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.GeoCatalogsGet(ctx=self.ctx)()
+        self.PrivateEndpointConnectionsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -71,7 +77,7 @@ class Wait(AAZWaitCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class GeoCatalogsGet(AAZHttpOperation):
+    class PrivateEndpointConnectionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -85,7 +91,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Orbital/geoCatalogs/{catalogName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Orbital/geoCatalogs/{catalogName}/privateEndpointConnections/{privateEndpointConnectionName}",
                 **self.url_parameters
             )
 
@@ -105,6 +111,10 @@ class Wait(AAZWaitCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "privateEndpointConnectionName", self.ctx.args.private_endpoint_connection_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
@@ -119,7 +129,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-15",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
@@ -155,67 +165,51 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZIdentityObjectType()
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            identity = cls._schema_on_200.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-            identity.type = AAZStrType(
-                flags={"required": True},
-            )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType(
-                nullable=True,
-            )
-
-            _element = cls._schema_on_200.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-                flags={"read_only": True},
-            )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-
             properties = cls._schema_on_200.properties
-            properties.auto_generated_domain_name_label_scope = AAZStrType(
-                serialized_name="autoGeneratedDomainNameLabelScope",
-            )
-            properties.catalog_uri = AAZStrType(
-                serialized_name="catalogUri",
+            properties.group_ids = AAZListType(
+                serialized_name="groupIds",
                 flags={"read_only": True},
+            )
+            properties.private_endpoint = AAZObjectType(
+                serialized_name="privateEndpoint",
+            )
+            properties.private_link_service_connection_state = AAZObjectType(
+                serialized_name="privateLinkServiceConnectionState",
+                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.tier = AAZStrType()
+
+            group_ids = cls._schema_on_200.properties.group_ids
+            group_ids.Element = AAZStrType()
+
+            private_endpoint = cls._schema_on_200.properties.private_endpoint
+            private_endpoint.id = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            private_link_service_connection_state = cls._schema_on_200.properties.private_link_service_connection_state
+            private_link_service_connection_state.actions_required = AAZStrType(
+                serialized_name="actionsRequired",
+            )
+            private_link_service_connection_state.description = AAZStrType()
+            private_link_service_connection_state.status = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -236,9 +230,6 @@ class Wait(AAZWaitCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
