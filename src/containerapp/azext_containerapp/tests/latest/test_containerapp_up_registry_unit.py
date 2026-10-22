@@ -32,6 +32,11 @@ class TestContainerappUpRegistryDetails(unittest.TestCase):
                 ("myacr.azurecr.io", ".azurecr.io", None),
                 ("myacr.azurecr.io", ".azurecr.io", "."),
                 ("MyAcr.AzureCR.io", ".azurecr.io", None),
+                ("https://myacr.azurecr.io", ".azurecr.io", None),
+                ("https://myacr.azurecr.io", ".azurecr.io", "."),
+                ("https://myacr.azurecr.io/", ".azurecr.io", None),
+                ("https://myacr.azurecr.io/", ".azurecr.io", "."),
+                ("https://MyAcr.AzureCR.io/", ".azurecr.io", None),
                 ("myacr.azurecr.cn", ".azurecr.cn", None)):
             for username, password in ((None, None), ("user", None), (None, "password")):
                 with self.subTest(server=server, source=source, username=username, password=password):
