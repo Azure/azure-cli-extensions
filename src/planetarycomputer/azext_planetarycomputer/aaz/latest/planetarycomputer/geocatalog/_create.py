@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a GeoCatalog
 
-    :example: Create a GeoCatalog
-        az planetarycomputer geocatalog create --name MyGeoCatalog --resource-group MyResourceGroup --location westus2
+    :example: Create a GeoCatalog with a user-assigned identity
+        az planetarycomputer geocatalog create --resource-group MyResourceGroup --name MyCatalog --location eastus --tier Basic --scope NoReuse --public-network-access Disabled --user-assigned /subscriptions/cd9b6cdf-dcf0-4dca-ab19-82be07b74704/resourceGroups/MyResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyManagedIdentity
     """
 
     _aaz_info = {
-        "version": "2026-04-15",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.orbital/geocatalogs/{}", "2026-04-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.orbital/geocatalogs/{}", "2026-10-01"],
         ]
     }
 
@@ -60,6 +60,12 @@ class Create(AAZCommand):
         # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Identity",
+            help="Set the system managed identity.",
+            blank="True",
+        )
         _args_schema.mi_user_assigned = AAZListArg(
             options=["--user-assigned", "--mi-user-assigned"],
             arg_group="Identity",
@@ -80,12 +86,58 @@ class Create(AAZCommand):
             default="TenantReuse",
             enum={"NoReuse": "NoReuse", "ResourceGroupReuse": "ResourceGroupReuse", "SubscriptionReuse": "SubscriptionReuse", "TenantReuse": "TenantReuse"},
         )
+        _args_schema.premium_configuration = AAZObjectArg(
+            options=["--premium-configuration"],
+            arg_group="Properties",
+            help="Premium tier configuration. Only valid when `tier` is `Premium`; must be omitted for Basic catalogs. The server will return a validation error if provided with a Basic tier catalog.",
+        )
+        _args_schema.public_network_access = AAZStrArg(
+            options=["--public-network-access"],
+            arg_group="Properties",
+            help="Whether or not public network access is allowed for the GeoCatalog.",
+            default="Enabled",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
         _args_schema.tier = AAZStrArg(
             options=["--tier"],
             arg_group="Properties",
             help="Tier of the catalog. This cannot be changed after the catalog is created. If not provided, defaults to Basic.",
             default="Basic",
-            enum={"Basic": "Basic"},
+            enum={"Basic": "Basic", "Premium": "Premium"},
+        )
+
+        premium_configuration = cls._args_schema.premium_configuration
+        premium_configuration.compute_properties = AAZObjectArg(
+            options=["compute-properties"],
+            help="The compute properties of the geocatalog",
+        )
+        premium_configuration.database_tier = AAZStrArg(
+            options=["database-tier"],
+            help="The database tier for the geocatalog",
+            default="Basic",
+            enum={"Basic": "Basic", "Premium": "Premium", "Standard": "Standard"},
+        )
+        premium_configuration.managed_storage_capacity = AAZIntArg(
+            options=["managed-storage-capacity"],
+            help="The capacity of managed storage in Petabytes (minimum 5)",
+            default=5,
+            fmt=AAZIntArgFormat(
+                minimum=5,
+            ),
+        )
+
+        compute_properties = cls._args_schema.premium_configuration.compute_properties
+        compute_properties.catalog_tier = AAZStrArg(
+            options=["catalog-tier"],
+            help="The compute properties of the catalog service",
+            default="Basic",
+            enum={"Basic": "Basic", "Premium": "Premium", "Standard": "Standard"},
+        )
+        compute_properties.ingestion_tier = AAZStrArg(
+            options=["ingestion-tier"],
+            help="The compute properties of the ingestion service",
+            default="Standard",
+            enum={"Basic": "Basic", "Premium": "Premium", "Standard": "Standard"},
         )
 
         # define Arg Group "Resource"
@@ -190,7 +242,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-15",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
@@ -223,6 +275,7 @@ class Create(AAZCommand):
             identity = _builder.get(".identity")
             if identity is not None:
                 identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
 
             user_assigned = _builder.get(".identity.userAssigned")
             if user_assigned is not None:
@@ -231,7 +284,20 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("autoGeneratedDomainNameLabelScope", AAZStrType, ".auto_generated_domain_name_label_scope")
+                properties.set_prop("premiumConfiguration", AAZObjectType, ".premium_configuration")
+                properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
                 properties.set_prop("tier", AAZStrType, ".tier")
+
+            premium_configuration = _builder.get(".properties.premiumConfiguration")
+            if premium_configuration is not None:
+                premium_configuration.set_prop("computeProperties", AAZObjectType, ".compute_properties")
+                premium_configuration.set_prop("databaseTier", AAZStrType, ".database_tier")
+                premium_configuration.set_prop("managedStorageCapacity", AAZIntType, ".managed_storage_capacity")
+
+            compute_properties = _builder.get(".properties.premiumConfiguration.computeProperties")
+            if compute_properties is not None:
+                compute_properties.set_prop("catalogTier", AAZStrType, ".catalog_tier")
+                compute_properties.set_prop("ingestionTier", AAZStrType, ".ingestion_tier")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -272,6 +338,7 @@ class Create(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _CreateHelper._build_schema_system_data_read(_schema_on_200_201.system_data)
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
@@ -316,31 +383,108 @@ class Create(AAZCommand):
                 serialized_name="catalogUri",
                 flags={"read_only": True},
             )
+            properties.managed_storage_resource_ids = AAZListType(
+                serialized_name="managedStorageResourceIds",
+                flags={"read_only": True},
+            )
+            properties.premium_configuration = AAZObjectType(
+                serialized_name="premiumConfiguration",
+            )
+            properties.private_endpoint_connections = AAZListType(
+                serialized_name="privateEndpointConnections",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.public_network_access = AAZStrType(
+                serialized_name="publicNetworkAccess",
+            )
+            properties.state = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.stopped_since_utc = AAZStrType(
+                serialized_name="stoppedSinceUtc",
+                flags={"read_only": True},
+            )
             properties.tier = AAZStrType()
 
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
+            managed_storage_resource_ids = cls._schema_on_200_201.properties.managed_storage_resource_ids
+            managed_storage_resource_ids.Element = AAZStrType()
+
+            premium_configuration = cls._schema_on_200_201.properties.premium_configuration
+            premium_configuration.compute_properties = AAZObjectType(
+                serialized_name="computeProperties",
             )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
+            premium_configuration.database_tier = AAZStrType(
+                serialized_name="databaseTier",
             )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
+            premium_configuration.managed_storage_capacity = AAZIntType(
+                serialized_name="managedStorageCapacity",
             )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
+
+            compute_properties = cls._schema_on_200_201.properties.premium_configuration.compute_properties
+            compute_properties.catalog_tier = AAZStrType(
+                serialized_name="catalogTier",
             )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
+            compute_properties.ingestion_tier = AAZStrType(
+                serialized_name="ingestionTier",
             )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
+
+            private_endpoint_connections = cls._schema_on_200_201.properties.private_endpoint_connections
+            private_endpoint_connections.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.private_endpoint_connections.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
             )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _CreateHelper._build_schema_system_data_read(_element.system_data)
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200_201.properties.private_endpoint_connections.Element.properties
+            properties.group_ids = AAZListType(
+                serialized_name="groupIds",
+                flags={"read_only": True},
+            )
+            properties.private_endpoint = AAZObjectType(
+                serialized_name="privateEndpoint",
+            )
+            properties.private_link_service_connection_state = AAZObjectType(
+                serialized_name="privateLinkServiceConnectionState",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            group_ids = cls._schema_on_200_201.properties.private_endpoint_connections.Element.properties.group_ids
+            group_ids.Element = AAZStrType()
+
+            private_endpoint = cls._schema_on_200_201.properties.private_endpoint_connections.Element.properties.private_endpoint
+            private_endpoint.id = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            private_link_service_connection_state = cls._schema_on_200_201.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
+            private_link_service_connection_state.actions_required = AAZStrType(
+                serialized_name="actionsRequired",
+            )
+            private_link_service_connection_state.description = AAZStrType()
+            private_link_service_connection_state.status = AAZStrType()
 
             tags = cls._schema_on_200_201.tags
             tags.Element = AAZStrType()
@@ -350,6 +494,50 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
+
+    _schema_system_data_read = None
+
+    @classmethod
+    def _build_schema_system_data_read(cls, _schema):
+        if cls._schema_system_data_read is not None:
+            _schema.created_at = cls._schema_system_data_read.created_at
+            _schema.created_by = cls._schema_system_data_read.created_by
+            _schema.created_by_type = cls._schema_system_data_read.created_by_type
+            _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+            _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+            _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
+            return
+
+        cls._schema_system_data_read = _schema_system_data_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        system_data_read = _schema_system_data_read
+        system_data_read.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data_read.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data_read.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data_read.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data_read.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data_read.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        _schema.created_at = cls._schema_system_data_read.created_at
+        _schema.created_by = cls._schema_system_data_read.created_by
+        _schema.created_by_type = cls._schema_system_data_read.created_by_type
+        _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+        _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+        _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
 __all__ = ["Create"]
