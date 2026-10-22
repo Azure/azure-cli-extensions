@@ -11,3 +11,4 @@ def load_command_table(self, _):
         g.custom_command('config', 'ssh_config')
         g.custom_command('cert', 'ssh_cert')
         g.custom_command('arc', 'ssh_arc')
+        g.custom_command('cert-create', 'ssh_cert_create')
