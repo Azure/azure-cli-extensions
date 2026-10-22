@@ -5,6 +5,10 @@ Release History
 upcoming
 ++++++
 
+1.3.0b6
+++++++
+* 'az containerapp up': Validate registry server before getting ACR credentials
+
 1.3.0b5
 ++++++
 * 'az containerapp env storage set': Support Azure Files authentication with an Azure Key Vault secret or managed identity
