@@ -82,6 +82,11 @@ def load_arguments(self, _):
         c.argument('ssh_client_folder', options_list=['--ssh-client-folder'],
                    help='Folder path that contains ssh executables (ssh.exe, ssh-keygen.exe, etc). '
                    'Default to ssh pre-installed if not provided.')
+        c.argument('skip_cert_file_permissions', options_list=['--skip-cert-file-permissions', '--skip-cert-perms'],
+                   action='store_true',
+                   help='Skip setting permissions on the generated public certificate file. '
+                   'Use for filesystems without ACL support. Existing file permissions are left unchanged; '
+                   'permissions on generated key pairs are not affected.')
 
     with self.argument_context('ssh arc') as c:
         c.argument('vm_name', options_list=['--vm-name', '--name', '-n'], help='The name of the Arc Server')
