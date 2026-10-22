@@ -14,8 +14,10 @@ import concurrent
 import concurrent.futures
 import os
 import os.path
+import random
 import sys
 import typing
+from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING
 
 import websockets  # pylint: disable=import-error
@@ -23,6 +25,30 @@ import websockets.client  # pylint: disable=import-error
 import websockets.exceptions  # pylint: disable=import-error
 
 from azure.cli.core import get_default_cli
+
+# Errors raised while establishing (not yet during an active) websocket tunnel that are
+# worth retrying: transient network failures, handshake timeouts/resets from the proxy,
+# and any failure of the websocket opening handshake itself.
+RETRYABLE_CONNECT_EXCEPTIONS = (
+    OSError,
+    asyncio.TimeoutError,
+    websockets.exceptions.InvalidHandshake,
+    websockets.exceptions.ConnectionClosed,
+)
+
+
+def _get_int_env(name, default):
+    try:
+        return int(os.environ[name])
+    except (KeyError, ValueError):
+        return default
+
+
+def _get_float_env(name, default):
+    try:
+        return float(os.environ[name])
+    except (KeyError, ValueError):
+        return default
 
 
 def run_az_cli(args):
@@ -39,6 +65,52 @@ def run_az_cli(args):
 
 if TYPE_CHECKING:
     from azure.ai.ml.operations import DatastoreOperations
+
+
+@asynccontextmanager
+async def _connect_with_retry(uri, extra_headers):
+    """Open the websocket tunnel used for SSH, retrying transient failures.
+
+    The proxy/broker fronting the compute node can occasionally refuse or reset the
+    connection before the SSH handshake even begins (e.g. handshake timeouts, resets
+    during the websocket opening handshake). Retrying the *initial* connection with an
+    exponential backoff meaningfully improves success rate, similar to the resiliency
+    already built into SSH clients such as VS Code Remote-SSH.
+
+    Once the tunnel is open and bytes are being relayed, we do not attempt to silently
+    reconnect: this tunnel carries the raw SSH transport, so a new websocket connection
+    cannot resume an in-flight SSH session and a mid-stream reconnect would just corrupt
+    it. Recovering from mid-session drops requires server-side session continuity
+    (tracked separately), not client-side retries.
+    """
+    max_retries = _get_int_env("AZUREML_SSH_CONNECT_MAX_RETRIES", 5)
+    base_delay = _get_float_env("AZUREML_SSH_CONNECT_RETRY_BASE_DELAY_SECONDS", 1.0)
+    max_delay = _get_float_env("AZUREML_SSH_CONNECT_RETRY_MAX_DELAY_SECONDS", 30.0)
+
+    attempt = 0
+    websocket = None
+    while websocket is None:
+        attempt += 1
+        try:
+            websocket = await websockets.client.connect(uri=uri, extra_headers=extra_headers)
+        except RETRYABLE_CONNECT_EXCEPTIONS as e:
+            if attempt > max_retries:
+                print(
+                    f"Failed to establish websocket connection after {attempt} attempt(s): {e}",
+                    file=sys.stderr,
+                )
+                raise
+            delay = min(max_delay, base_delay * (2 ** (attempt - 1))) + random.uniform(0, base_delay)
+            print(
+                f"Websocket connection attempt {attempt} failed ({e}); retrying in {delay:.1f}s...",
+                file=sys.stderr,
+            )
+            await asyncio.sleep(delay)
+
+    try:
+        yield websocket
+    finally:
+        await websocket.close()
 
 
 class SshConnector:  # pylint: disable=too-few-public-methods
@@ -70,7 +142,7 @@ class SshConnector:  # pylint: disable=too-few-public-methods
 
         aml_token = run_az_cli(["account", "get-access-token", "--scope", mgtScope[0]])["accessToken"]
 
-        async with websockets.client.connect(
+        async with _connect_with_retry(
             uri=uri,
             extra_headers={"Authorization": f"Bearer {aml_token}"},
         ) as websocket:
