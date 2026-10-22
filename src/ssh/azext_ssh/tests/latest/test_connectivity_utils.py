@@ -11,6 +11,48 @@ from azure.cli.core import azclierror
 
 class SshConnectivityUtilsCommandTest(unittest.TestCase):
 
+    def test_get_mcr_path(self):
+        input_active_directory = "login.microsoftonline.com"
+        expected_output = "mcr.microsoft.com"
+        self.assertEqual(connectivity_utils.get_mcr_path(input_active_directory), expected_output)
+
+        input_active_directory = "login.microsoftonline.us"
+        expected_output = "mcr.microsoft.com"
+        self.assertEqual(connectivity_utils.get_mcr_path(input_active_directory), expected_output)
+
+        input_active_directory = "login.chinacloudapi.cn"
+        expected_output = "mcr.microsoft.com"
+        self.assertEqual(connectivity_utils.get_mcr_path(input_active_directory), expected_output)
+
+        input_active_directory = "https://login.microsoftonline.microsoft.foo"
+        expected_output = "mcr.microsoft.foo"
+        self.assertEqual(connectivity_utils.get_mcr_path(input_active_directory), expected_output)
+
+        input_active_directory = "https://login.microsoftonline.some.cloud.bar"
+        expected_output = "mcr.microsoft.some.cloud.bar"
+        self.assertEqual(connectivity_utils.get_mcr_path(input_active_directory), expected_output)
+
+    @mock.patch('azext_ssh.connectivity_utils.file_utils.delete_file')
+    @mock.patch('azext_ssh.connectivity_utils._extract_proxy_tar_files')
+    @mock.patch('azext_ssh.connectivity_utils._get_proxy_package_path_from_oras_response')
+    @mock.patch('azext_ssh.connectivity_utils.telemetry.add_extension_event')
+    @mock.patch('azext_ssh.connectivity_utils.oras.client.OrasClient')
+    def test_download_proxy_cloud_target(self, mock_client, mock_telemetry, mock_package, mock_extract, mock_delete):
+        cmd = mock.Mock()
+        cmd.cli_ctx.cloud.endpoints.active_directory = 'https://login.microsoftonline.microsoft.foo/'
+        mock_package.return_value = 'proxy.tar.gz'
+
+        connectivity_utils._download_proxy_from_MCR(cmd, '/dir', 'proxy', 'Linux', 'amd64')
+
+        mock_client.return_value.pull.assert_called_once_with(
+            target='mcr.microsoft.foo/azureconnectivity/proxy/linux/amd64/ssh-proxy:'
+                   + connectivity_utils.consts.CLIENT_PROXY_VERSION,
+            outdir='/dir')
+        mock_package.assert_called_once_with(mock_client.return_value.pull.return_value)
+        mock_extract.assert_called_once_with('proxy.tar.gz', '/dir', 'proxy')
+        mock_delete.assert_called_once()
+        mock_telemetry.assert_called_once()
+
     @mock.patch('platform.machine')
     def test_get_client_architecture_arm64(self, mock_plat):
         mock_plat.return_value = 'arm64'
@@ -133,8 +175,9 @@ class SshConnectivityUtilsCommandTest(unittest.TestCase):
         mock_get_proxy_dir.return_value = "/dir/proxy"
         mock_isfile.return_value = False
 
-        connectivity_utils.install_client_side_proxy(None)
+        cmd = mock.Mock()
+        connectivity_utils.install_client_side_proxy(cmd, None)
 
         mock_dir.assert_called_once_with("/dir/proxy", "Failed to create client proxy directory \'/dir/proxy\'.")
-        mock_download.assert_called_once_with("/dir/proxy", "sshProxy_linux_arm64_1_3_033291", "linux", "arm64")
+        mock_download.assert_called_once_with(cmd, "/dir/proxy", "sshProxy_linux_arm64_1_3_033291", "linux", "arm64")
         mock_check.assert_called_once_with("/dir/proxy", "sshProxy_linux_arm64_1_3_033291")
