@@ -6,6 +6,7 @@
 import copy
 import json
 import os
+import subprocess
 from typing import Any, List, Dict
 from azext_confcom.template_util import (
     case_insensitive_dict_get,
@@ -832,6 +833,15 @@ class ContainerImage:
         for exec_process in self._exec_processes:
             if exec_process not in exec_processes:
                 exec_processes.append(exec_process)
+            if self._platform.startswith("windows"):
+                # Work around hcsshim passing CommandLine as one argument on Windows.
+                # Retain argv above so corrected hcsshim needs no confcom change.
+                exec_process = exec_process.copy()
+                exec_process[config.POLICY_FIELD_CONTAINERS_ELEMENTS_COMMANDS] = [
+                    subprocess.list2cmdline(exec_process[config.POLICY_FIELD_CONTAINERS_ELEMENTS_COMMANDS])
+                ]
+                if exec_process not in exec_processes:
+                    exec_processes.append(exec_process)
 
         elements = {
             config.POLICY_FIELD_CONTAINERS_NAME: self.get_name(),
