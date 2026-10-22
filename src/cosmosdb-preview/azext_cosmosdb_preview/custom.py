@@ -1596,6 +1596,7 @@ def cli_cosmosdb_sql_container_update(client,
     sql_container_resource.default_ttl = sql_container.resource.default_ttl
     sql_container_resource.unique_key_policy = sql_container.resource.unique_key_policy
     sql_container_resource.conflict_resolution_policy = sql_container.resource.conflict_resolution_policy
+    sql_container_resource.computed_properties = sql_container.resource.computed_properties
     sql_container_resource.materialized_view_definition = materialized_view_definition
 
     # client encryption policy is immutable
