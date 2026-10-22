@@ -39,7 +39,8 @@ for ext in $output; do
     fi
 done
 
-pip install azure-cli-core azure-cli requests azure-storage-blob==1.5.0
-# arcdata: ModuleNotFoundError: No module named 'regex._regex'
-pip install regex
+# Preserve the CLI environment from azdev setup; the legacy storage SDK pin
+# causes pip to downgrade the CLI below current extensions' minimum version.
+# regex is needed by arcdata.
+python -m pip install requests regex
 python $(cd $(dirname $0); pwd)/update_ext_cmd_tree.py $filter_exts
