@@ -13,7 +13,6 @@ import zipfile
 import hashlib
 import re
 import requests
-import shutil
 import packaging.version as SemVer
 import random
 
@@ -28,6 +27,7 @@ from azure.cli.command_modules.containerapp._client_factory import handle_raw_ex
 from azure.cli.core._profile import Profile
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, CLIError, InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
+from azure.cli.core.util import get_safe_executable_path
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
 from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 from ._utils_validation import validate_image_name  # noqa: F401
@@ -264,13 +264,17 @@ def list_environment_locations(cmd, resource_type=MANAGED_ENVIRONMENT_RESOURCE_T
 
 
 def is_docker_running():
+    docker_exec_path = get_safe_executable_path("docker")
+    if not docker_exec_path:
+        return False
+
     try:
         # Run a simple 'docker stats --no-stream' command to check if the Docker daemon is running
-        command = ["docker", "stats", "--no-stream"]
+        command = [docker_exec_path, "stats", "--no-stream"]
         with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
             _, _ = process.communicate()
             return process.returncode == 0
-    except Exception:
+    except (OSError, subprocess.SubprocessError):
         return False
 
 
