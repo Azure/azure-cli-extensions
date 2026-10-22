@@ -367,21 +367,28 @@ helps['quantum workspace clear'] = """
 helps['quantum workspace create'] = """
     type: command
     short-summary: Create a new Azure Quantum workspace.
+    long-summary: |
+        When --storage-account is omitted, or --skip-role-assignment is used with a user-provided storage account,
+        creation returns without waiting for provisioning to finish. Use az quantum workspace show to inspect
+        properties.provisioningState before using the workspace.
     examples:
-      - name: Create a new Azure Quantum workspace with the providers that offer free credit.
+      - name: Create a new Azure Quantum workspace with managed storage and the providers that offer free credit.
+        text: |-
+            az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation
+      - name: Create a new Azure Quantum workspace with managed storage and a specific list of providers.
         text: |-
             az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-                -a MyStorageAccountName
-      - name: Create a new Azure Quantum workspace with a specific list of providers.
-        text: |-
-            az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-                -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" --skip-autoadd -a MyStorageAccountName\n
+                -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" --skip-autoadd
+
             To display a list of available providers and their SKUs, use the following command:
                 az quantum offerings list -l MyLocation -o table
-      - name: Create a V2 workspace with quota allocations for provider targets.
+      - name: Create a new Azure Quantum workspace with a specific storage account.
+        text: |-
+            az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation -a MyStorageAccountName
+      - name: Create a V2 workspace with managed storage and quota allocations for provider targets.
         text: |-
             az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-                --workspace-kind V2 -r "MyProvider/default" --skip-autoadd -a MyStorageAccountName \\
+                --workspace-kind V2 -r "MyProvider/default" \\
                 --quota provider-id=MyProvider target-id=MyProvider.Target1 standard-minutes-lifetime=500 high-minutes-lifetime=50 \\
                 --quota provider-id=MyProvider target-id=MyProvider.Target2 standard-minutes-lifetime=250
 """
