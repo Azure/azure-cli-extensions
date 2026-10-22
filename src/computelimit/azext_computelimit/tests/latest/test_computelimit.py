@@ -291,3 +291,138 @@ class ComputelimitScenario(ScenarioTest):
                 'az computelimit guest-subscription add '
                 '--guest-subscription-id 11111111-1111-1111-1111-111111111111'
             )
+
+    # =============================================
+    # Trusted Host Subscription Tests
+    # =============================================
+
+    @record_only()
+    def test_computelimit_trusted_host_subscription_list(self):
+        """Test listing all trusted host subscriptions in a location."""
+        self.kwargs.update({
+            'location': 'eastus'
+        })
+
+        # List all trusted host subscriptions
+        result = self.cmd(
+            'az computelimit trusted-host-subscription list --location {location}'
+        ).get_output_in_json()
+
+        # Verify result is a list
+        self.assertIsInstance(result, list)
+
+    @record_only()
+    def test_computelimit_trusted_host_subscription_show(self):
+        """Test showing a specific trusted host subscription."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'host_subscription_id': '22222222-2222-2222-2222-222222222222'
+        })
+
+        # Show a trusted host subscription
+        result = self.cmd(
+            'az computelimit trusted-host-subscription show --location {location} --host-subscription-id {host_subscription_id}',
+            checks=[
+                self.check('name', '{host_subscription_id}')
+            ]
+        ).get_output_in_json()
+
+        # Verify response contains expected fields
+        self.assertIsNotNone(result)
+        self.assertIn('name', result)
+        self.assertIn('id', result)
+        self.assertIn('type', result)
+
+    @record_only()
+    def test_computelimit_trusted_host_subscription_add(self):
+        """Test adding a trusted host subscription."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'host_subscription_id': '22222222-2222-2222-2222-222222222222'
+        })
+
+        # Add a trusted host subscription
+        result = self.cmd(
+            'az computelimit trusted-host-subscription add --location {location} --host-subscription-id {host_subscription_id}',
+            checks=[
+                self.check('name', '{host_subscription_id}')
+            ]
+        ).get_output_in_json()
+
+        # Verify response contains expected fields
+        self.assertIsNotNone(result)
+        self.assertIn('name', result)
+        self.assertIn('id', result)
+
+    @record_only()
+    def test_computelimit_trusted_host_subscription_remove(self):
+        """Test removing a trusted host subscription."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'host_subscription_id': '22222222-2222-2222-2222-222222222222'
+        })
+
+        # Remove a trusted host subscription (using --yes to skip confirmation)
+        self.cmd(
+            'az computelimit trusted-host-subscription remove --location {location} --host-subscription-id {host_subscription_id} --yes'
+        )
+
+    @record_only()
+    def test_computelimit_trusted_host_subscription_crud(self):
+        """Test complete CRUD workflow for trusted host subscriptions."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'host_subscription_id': '22222222-2222-2222-2222-222222222222'
+        })
+
+        # Add a trusted host subscription
+        add_result = self.cmd(
+            'az computelimit trusted-host-subscription add --location {location} --host-subscription-id {host_subscription_id}',
+            checks=[
+                self.check('name', '{host_subscription_id}')
+            ]
+        ).get_output_in_json()
+        self.assertIsNotNone(add_result)
+
+        # Show the trusted host subscription
+        show_result = self.cmd(
+            'az computelimit trusted-host-subscription show --location {location} --host-subscription-id {host_subscription_id}',
+            checks=[
+                self.check('name', '{host_subscription_id}')
+            ]
+        ).get_output_in_json()
+        self.assertIsNotNone(show_result)
+        self.assertEqual(show_result['name'], self.kwargs['host_subscription_id'])
+
+        # List trusted host subscriptions and verify the added subscription is present
+        list_result = self.cmd(
+            'az computelimit trusted-host-subscription list --location {location}'
+        ).get_output_in_json()
+        self.assertIsInstance(list_result, list)
+        names = [item['name'] for item in list_result]
+        self.assertIn(self.kwargs['host_subscription_id'], names)
+
+        # Remove the trusted host subscription
+        self.cmd(
+            'az computelimit trusted-host-subscription remove --location {location} --host-subscription-id {host_subscription_id} --yes'
+        )
+
+    def test_computelimit_trusted_host_subscription_add_invalid_uuid(self):
+        """Test that an invalid host subscription ID (not a UUID) is rejected."""
+        self.kwargs.update({
+            'location': 'eastus',
+            'host_subscription_id': 'not-a-valid-uuid'
+        })
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd(
+                'az computelimit trusted-host-subscription add --location {location} '
+                '--host-subscription-id {host_subscription_id}'
+            )
+
+    def test_computelimit_trusted_host_subscription_add_missing_location(self):
+        """Test that missing required --location parameter is rejected."""
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd(
+                'az computelimit trusted-host-subscription add '
+                '--host-subscription-id 22222222-2222-2222-2222-222222222222'
+            )
