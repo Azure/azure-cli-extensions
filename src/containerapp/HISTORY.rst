@@ -5,7 +5,7 @@ Release History
 upcoming
 ++++++
 
-1.3.1b5
+1.3.0b6
 ++++++
 * 'az containerapp up': Validate registry server before getting ACR credentials
 
