@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.4.1
++++++
+* Retain Windows exec argument arrays and additionally emit Windows-quoted command lines to work around hcsshim passing CommandLine as one argument, including probes and lifecycle hooks
+
 2.4.0
 +++++
 * Update bundled integrity-vhd tooling to v2.4 to fix the Windows version check

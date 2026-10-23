@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * `az aks create`: Add `--enable-quick-attach-detach` (preview) to enable Quick Attach Detach for the AzureDisk CSI Driver, which sets `storageProfile.diskCSIDriver.quickAttachDetach.enabled`.
+
+22.0.0b15
++++++++++
+* `az aks nodepool add/update`: Reject explicit `--gpu-driver None` combined with `--enable-managed-gpu true`, `--gpu-mig-strategy` or `--gpu-mig-profiles` instead of silently overriding the driver setting. Managed GPU and MIG require AKS driver installation.
 * `az aks create` and `az aks update`: Reject `--enable-azure-monitor-logs` on clusters using service principal authentication, since the Azure Monitor profile onboards with managed identity only.
 * `az aks update`: Reject `--enable-azure-monitor-logs` when Azure Monitor logs is already enabled on the cluster, matching `az aks enable-addons -a monitoring`. Run `--disable-azure-monitor-logs` first to change the configuration.
 * `az aks update`: `--disable-azure-monitor-logs` now removes the data collection rule association and resets the Container Insights settings (syslog port, Prometheus scraping and container network logs) back to their defaults, and asks for confirmation when OpenTelemetry logs and traces are enabled.
