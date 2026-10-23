@@ -3,6 +3,13 @@
 Release History
 ===============
 
+1.0.15
+++++++
+* Switch to the 2026-10-01 API version for `az aro hcp`.
+* Add the `az aro hcp identity-role-sets list` command.
+* Add support for HCP cluster etcd encryption using Azure Key Vault Managed HSM.
+* Add the ability to specify a managed identity for an HCP cluster's container image registry.
+
 1.0.14
 ++++++
 * Migrate Disk Encryption Set validation from the Compute SDK to AAZ.
