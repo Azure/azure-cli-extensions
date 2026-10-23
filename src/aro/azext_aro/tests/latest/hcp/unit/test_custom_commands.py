@@ -48,11 +48,17 @@ class ClusterCreateTest(unittest.TestCase):
         self.assertIn("--assign-data-plane-operator-identity", example_text)
         self.assertIn("--assign-service-managed-identity", example_text)
         self.assertNotIn("--etcd-encryption-type", example_text)
-        self.assertNotIn("--key-management-mode", example_text)
+        self.assertIn("--key-management-mode CustomerManaged", example_text)
         self.assertNotIn("--control-plane-operators", example_text)
         self.assertNotIn("--data-plane-operators", example_text)
         self.assertEqual(9, example_text.count("--assign-control-plane-operator-identity"))
         self.assertEqual(3, example_text.count("--assign-data-plane-operator-identity"))
+
+    def test_key_management_mode_is_required_without_default(self):
+        schema = ClusterCreate._build_arguments_schema()
+
+        self.assertTrue(schema.key_management_mode._required)
+        self.assertIsNone(schema.key_management_mode._default)
 
     @staticmethod
     def _identity_parser():
@@ -82,7 +88,8 @@ class ClusterCreateTest(unittest.TestCase):
         ))
         return command
 
-    def test_pre_operations_maps_operator_identities(self):
+    @mock.patch("azext_aro.azext_aro_hcp.custom.has_value", side_effect=lambda arg: arg.to_serialized_data() is not None)
+    def test_pre_operations_maps_operator_identities(self, _):
         service = "/subscriptions/000/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/service"
         control_plane_id = "/subscriptions/000/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/control"
         data_plane_id = "/subscriptions/000/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/data"
@@ -107,7 +114,8 @@ class ClusterCreateTest(unittest.TestCase):
             }
         }, args.operators_authentication)
 
-    def test_pre_operations_resolves_all_identity_names_from_subnet(self):
+    @mock.patch("azext_aro.azext_aro_hcp.custom.has_value", side_effect=lambda arg: arg.to_serialized_data() is not None)
+    def test_pre_operations_resolves_all_identity_names_from_subnet(self, _):
         command = self._command(
             [_OperatorIdentity("control-plane", "control")],
             [_OperatorIdentity("disk-csi-driver", "data")],
