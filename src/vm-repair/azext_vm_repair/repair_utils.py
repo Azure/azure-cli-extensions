@@ -5,7 +5,6 @@
 # pylint: disable=line-too-long, deprecated-method, global-statement
 # from logging import Logger  # , log
 import subprocess
-import sys
 import shlex
 import os
 import re
@@ -20,6 +19,9 @@ from .encryption_types import Encryption
 from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SkuNotAvailableError)
 
 from azure.cli.core.azclierror import CLIError, InvalidArgumentValueError
+from azure.cli.core.aaz import has_value
+from azure.cli.core.commands import LongRunningOperation
+from azure.cli.command_modules.vm.operations.vm import VMUpdate
 
 # The run drivers download the script bundle from this same fork and branch. Keep the map
 # URL derived from them so a run id cannot resolve from one branch and execute from another.
@@ -60,6 +62,44 @@ def _uses_managed_disk(vm):
     return True
 
 
+def _attach_unmanaged_disk_by_aaz(cmd, resource_group_name, vm_name, disk_name, disk_uri):
+    def attach_disk(instance, **_):
+        storage_profile = instance.properties.storage_profile
+        storage_profile.image_reference = None
+        if not has_value(storage_profile.data_disks):
+            storage_profile.data_disks = []
+        disks = storage_profile.data_disks
+        used_luns = {disk.lun.to_serialized_data() for disk in disks}
+        lun = next(value for value in range(len(used_luns) + 1) if value not in used_luns)
+        disks.append({
+            'name': disk_name,
+            'lun': lun,
+            'createOption': 'Attach',
+            'vhd': {'uri': disk_uri},
+        })
+
+    return LongRunningOperation(cmd.cli_ctx)(VMUpdate(cli_ctx=cmd.cli_ctx, callbacks={
+        'post_instance_update': attach_disk,
+    })(command_args={'resource_group': resource_group_name, 'vm_name': vm_name}))
+
+
+def _detach_unmanaged_disk_by_aaz(cmd, resource_group_name, vm_name, disk_name):
+    def detach_disk(instance, **_):
+        storage_profile = instance.properties.storage_profile
+        storage_profile.image_reference = None
+        disks = storage_profile.data_disks
+        matches = [index for index, disk in enumerate(disks) if has_value(disk.name)
+                   and disk.name.to_serialized_data().lower() == disk_name.lower()] if has_value(disks) else []
+        if not matches:
+            raise InvalidArgumentValueError('The repaired data disk was not found on the repair VM.')
+        for index in reversed(matches):
+            del disks[index]
+
+    return LongRunningOperation(cmd.cli_ctx)(VMUpdate(cli_ctx=cmd.cli_ctx, callbacks={
+        'post_instance_update': detach_disk,
+    })(command_args={'resource_group': resource_group_name, 'vm_name': vm_name}))
+
+
 def _is_gen2(vm):
     gen = vm.get('instanceView', {}).get('hyperVGeneration')
     if gen and gen.lower() == 'v2':
@@ -69,35 +109,38 @@ def _is_gen2(vm):
 
 def _is_unsafe_command_value(value):
     return (
-        '"' in value
+        any(char in value for char in ('"', '%', '!'))
         or any(ord(ch) < 32 or ord(ch) == 127 for ch in value)
     )
 
 
-def _validate_command_token(token, field_name=None):
+def _validate_command_token(token, field_name=None, tag_style=False, uri=False):
     """
-    Preserve the existing quote/control-character restriction on Windows command values.
+    Validate an original value before it is placed into a legacy command.
     Omit the token from errors because it may carry a secret.
     """
-    if _is_unsafe_command_value(token):
+    unsafe = ('"' in token or any(ord(char) < 32 or ord(char) == 127 for char in token)) if uri else \
+        _is_unsafe_command_value(token)
+    if not tag_style and not uri:
+        unsafe = unsafe or any(char in token for char in "'&|<>()^$`;")
+    if unsafe:
         where = f' (from {field_name})' if field_name else ''
         raise InvalidArgumentValueError(
-            f'A value being passed to a nested az command{where} contains a double quote '
-            'or control character, which is not supported by this command on Windows. '
+            f'A value being passed to a nested az command{where} contains an unsupported character. '
             'The value has been omitted because it may be sensitive. '
             'Remove or rename the offending value on the affected resource and retry.')
 
 
 def _validate_tags_for_command(merged_tags):
     """
-    Preserve the existing quote/control-character restriction on tag keys and values.
+    Preserve the pre-PR tag restrictions.
     """
     for tag_key, tag_value in merged_tags.items():
         for tag_field in (str(tag_key), str(tag_value)):
             if _is_unsafe_command_value(tag_field):
                 raise InvalidArgumentValueError(
-                    f'Tag keys and values must not contain double quotes or control characters. '
-                    f'Offending tag: {tag_key}={tag_value}'
+                    'Tag keys and values must not contain double quotes, percent signs, '
+                    'exclamation marks, or control characters.'
                 )
 
 
@@ -109,8 +152,36 @@ def _validate_command_values(command_string, field_name=None):
     """
     if os.name != 'nt':
         return
-    for token in shlex.split(command_string)[1:]:
-        _validate_command_token(token, field_name=field_name)
+    _validate_legacy_tokens(shlex.split(command_string)[1:], field_name=field_name)
+
+
+def _validate_legacy_tokens(tokens, field_name=None):
+    query = False
+    for token in tokens:
+        _validate_command_token(token, field_name=field_name, tag_style=query)
+        query = token == '--query'
+
+
+def _quote_cmd_arg(value):
+    # Double trailing backslashes for the receiving Windows argument parser.
+    trailing = len(value) - len(value.rstrip('\\'))
+    return '"' + value + '\\' * trailing + '"'
+
+
+def _legacy_value(value):
+    value = str(value)
+    if os.name == 'nt':
+        _validate_command_token(value)
+    return shlex.quote(value)
+
+
+def _validate_legacy_values(*values):
+    if os.name != 'nt':
+        return
+
+    for value in values:
+        if value is not None:
+            _validate_command_token(str(value))
 
 
 def _call_az_command(command_string, run_async=False, secure_params=None):
@@ -139,18 +210,22 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
                 command_string = command_string.replace(param, '********')
     logger.debug("Calling: %s", command_string)
 
-    # Bypass az.cmd on Windows so cmd.exe cannot expand '%'/'!' or interpret shell
-    # metacharacters. Isolate the running CLI's interpreter from untrusted import paths.
     windows_os_name = 'nt'
+    process_options = {}
     if os.name == windows_os_name:
-        for token in tokenized_command[1:]:
-            _validate_command_token(token)
-        command_to_run = [sys.executable, '-I', '-m', 'azure.cli', *tokenized_command[1:]]
+        _validate_legacy_tokens(tokenized_command[1:])
+        arguments = ' '.join(_quote_cmd_arg(token) for token in tokenized_command[1:])
+        interpreter = os.path.join(os.environ.get('SystemRoot', r'C:\Windows'), 'System32', 'cmd.exe')
+        command_to_run = subprocess.list2cmdline([interpreter]) + ' /d /v:off /s /c "az ' + arguments + '"'
+        environment = dict(os.environ)
+        environment.pop('PYTHONPATH', None)
+        environment['PYTHONSAFEPATH'] = '1'
+        process_options = {'cwd': os.path.dirname(os.path.abspath(__file__)), 'env': environment}
     else:
         command_to_run = tokenized_command
 
     process = subprocess.Popen(command_to_run, shell=False, stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE, universal_newlines=True)
+                               stderr=subprocess.PIPE, universal_newlines=True, **process_options)
 
     # Wait for process to terminate and fetch stdout and stderror
     if not run_async:
@@ -198,13 +273,20 @@ def _invoke_run_command(script_name, vm_name, rg_name, is_linux, parameters=None
     additional_scripts_string = ''
     if additional_custom_scripts:
         for script in additional_custom_scripts:
-            additional_scripts_string += ' "@{script_name}"'.format(script_name=script)
+            additional_scripts_string += ' ' + _legacy_value('@' + script)
 
     run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
-                  '--scripts @"{run_script}"{additional_scripts} -o json' \
-                  .format(rg=rg_name, vm=vm_name, command_id=command_id, run_script=run_script, additional_scripts=additional_scripts_string)
+                  '--scripts {run_script}{additional_scripts} -o json' \
+                  .format(rg=_legacy_value(rg_name), vm=_legacy_value(vm_name), command_id=command_id,
+                          run_script=_legacy_value('@' + run_script), additional_scripts=additional_scripts_string)
     if parameters:
-        run_command += " --parameters {params}".format(params=' '.join(parameters))
+        parameter_tokens = []
+        for param in parameters:
+            parts = shlex.split(param)
+            if len(parts) != 1:
+                raise InvalidArgumentValueError('Each run-command parameter must contain exactly one value.')
+            parameter_tokens.append(_legacy_value(parts[0]))
+        run_command += " --parameters {params}".format(params=' '.join(parameter_tokens))
     return_str = _call_az_command(run_command)
 
     # Extract stdout and stderr, if stderr exists then possible error
@@ -274,7 +356,7 @@ def _clean_up_resources(resource_group_name, confirm, skip_cleanup=False):
                 logger.warning('Skipping clean-up')
                 return
 
-        delete_resource_group_command = 'az group delete --name {name} --yes --no-wait'.format(name=resource_group_name)
+        delete_resource_group_command = 'az group delete --name {name} --yes --no-wait'.format(name=_legacy_value(resource_group_name))
         logger.info('Cleaning up resources by deleting repair resource group \'%s\'...', resource_group_name)
         _call_az_command(delete_resource_group_command)
     # NoTTYException exception only thrown from confirm block
@@ -295,7 +377,7 @@ def _clean_up_resources(resource_group_name, confirm, skip_cleanup=False):
 def _check_existing_rg(rg_name):
     # Check for existing dup name
     try:
-        exists_rg_command = 'az group exists -n {resource_group_name} -o json'.format(resource_group_name=rg_name)
+        exists_rg_command = 'az group exists -n {resource_group_name} -o json'.format(resource_group_name=_legacy_value(rg_name))
         logger.info('Checking for existing resource groups with identical name within subscription...')
         group_exists = loads(_call_az_command(exists_rg_command))
     except AzCommandError as azCommandError:
@@ -334,7 +416,7 @@ def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_
                 logger.warning('Skipping VM start')
                 return False
 
-        start_vm_command = 'az vm start --resource-group {rg} --name {n}'.format(rg=resource_group_name, n=vm_name)
+        start_vm_command = 'az vm start --resource-group {rg} --name {n}'.format(rg=_legacy_value(resource_group_name), n=_legacy_value(vm_name))
         logger.info('Starting the VM. This might take a few minutes...\n')
         _call_az_command(start_vm_command)
         logger.info('VM started\n')
@@ -383,7 +465,7 @@ def _fetch_compatible_sku(source_vm, hyperv, requested_sku=None):
             'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
             'capabilities[?name==\'CpuArchitectureType\' && value==\'x64\'] && ' \
             'capabilities[?name==\'HyperVGenerations\']].name" -o json ' \
-            .format(loc=location)
+            .format(loc=_legacy_value(location))
         logger.info('Fetching available VM sizes for repair VM candidate ...')
         sku_list = loads(_call_az_command(list_sku_command).strip('\n'))
 
@@ -393,7 +475,7 @@ def _fetch_compatible_sku(source_vm, hyperv, requested_sku=None):
         raise SkuNotAvailableError('Failed to find compatible VM size for source VM\'s OS disk within given region and subscription that supports nested virtualization.')
 
     # could also check "permissions" and/or availability, but for now, check if the sku is available in the region
-    check_sku_command = 'az vm list-skus -s {sku} -l {loc} --query [].name -o tsv'.format(sku=determined_sku, loc=location)
+    check_sku_command = 'az vm list-skus -s {sku} -l {loc} --query [].name -o tsv'.format(sku=_legacy_value(determined_sku), loc=_legacy_value(location))
     logger.info('Checking if provided VM size is available...')
     sku_check = _call_az_command(check_sku_command).strip()
 
@@ -411,7 +493,7 @@ def _fetch_source_disk_controller_type(source_vm):
     vm_id = source_vm.get('id')
     if not vm_id:
         return None
-    show_command = 'az vm show --ids {id} --query storageProfile.diskControllerType -o tsv'.format(id=vm_id)
+    show_command = 'az vm show --ids {id} --query storageProfile.diskControllerType -o tsv'.format(id=_legacy_value(vm_id))
     return (_call_az_command(show_command) or '').strip() or None
 
 
@@ -419,7 +501,7 @@ def _fetch_sku_disk_controller_types(sku, location):
     """Return the disk controller types supported by a VM size."""
     query = "[0].capabilities[?name=='DiskControllerTypes'].value"
     command = 'az vm list-skus -s {sku} -l {loc} --query "{query}" -o tsv'.format(
-        sku=sku, loc=location, query=query)
+        sku=_legacy_value(sku), loc=_legacy_value(location), query=query)
     raw = (_call_az_command(command) or '').strip()
     return [part.strip() for part in raw.split(',') if part.strip()]
 
@@ -440,7 +522,7 @@ def _select_repair_disk_controller_type(source_controller, supported_types, requ
 
 def _fetch_disk_info(resource_group_name, disk_name):
     """ Returns sku, location, os_type, hyperVgeneration, and disk_id as a tuple """
-    show_disk_command = 'az disk show -g {g} -n {name} --query [sku.name,location,osType,hyperVGeneration,id] -o json'.format(g=resource_group_name, name=disk_name)
+    show_disk_command = 'az disk show -g {g} -n {name} --query [sku.name,location,osType,hyperVGeneration,id] -o json'.format(g=_legacy_value(resource_group_name), name=_legacy_value(disk_name))
     disk_info = loads(_call_az_command(show_disk_command))
     # Note that disk_info will always have 5 elements if the command succeeded, if it fails it will cause an exception
     sku, location, os_type, hyper_v_version, disk_id = disk_info[0], disk_info[1], disk_info[2], disk_info[3], disk_info[4]
@@ -453,7 +535,7 @@ def _get_repair_resource_tag(resource_group_name, source_vm_name):
 
 def _list_resource_ids_in_rg(resource_group_name):
     get_resources_command = 'az resource list --resource-group {rg} --query [].id -o json' \
-                            .format(rg=resource_group_name)
+                            .format(rg=_legacy_value(resource_group_name))
     logger.debug('Fetching resources in resource group...')
     ids = loads(_call_az_command(get_resources_command))
     return ids
@@ -471,7 +553,7 @@ def _fetch_encryption_settings(source_vm):
 
     disk_id = source_vm.get('storageProfile', {}).get('osDisk', {}).get('managedDisk', {}).get('id')
     show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.enabled,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.secretUrl] -o json' \
-                        .format(i=disk_id)
+                        .format(i=_legacy_value(disk_id))
     encryption_type, enabled, key_vault, kekurl, secreturl = loads(_call_az_command(show_disk_command))
     if [encryption_type, key_vault, kekurl] == [None, None, None]:
         return Encryption.NONE, key_vault, kekurl, secreturl
@@ -487,7 +569,7 @@ def _fetch_encryption_settings(source_vm):
 def _check_hyperV_gen(source_vm):
     disk_id = source_vm.get('storageProfile', {}).get('osDisk', {}).get('managedDisk', {}).get('id')
     show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
-                        .format(i=disk_id)
+                        .format(i=_legacy_value(disk_id))
     hyperVGen = loads(_call_az_command(show_disk_command))
     if hyperVGen == 'V2':
         raise SkuDoesNotSupportHyperV('Cannot support V2 HyperV generation. Please run command without --enabled-nested')
@@ -498,13 +580,13 @@ def _check_hyperV_gen(source_vm):
 def _check_linux_hyperV_gen(source_vm):
     disk_id = source_vm.get('storageProfile', {}).get('osDisk', {}).get('managedDisk', {}).get('id')
     show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
-                        .format(i=disk_id)
+                        .format(i=_legacy_value(disk_id))
     disk_hyperVGen = loads(_call_az_command(show_disk_command))
 
     if disk_hyperVGen != 'V2':
         logger.info('Checking if source VM is gen2')
         # if image is created from Marketplace gen2 image , the disk will not have the mark for gen2
-        fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=source_vm.get('id'))
+        fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=_legacy_value(source_vm.get('id')))
         hyperVGen_list = loads(_call_az_command(fetch_hypervgen_command))
         vm_hyperVGen = hyperVGen_list[0]
         if vm_hyperVGen != 'V2':
@@ -608,6 +690,7 @@ def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encr
 
 def _fetch_compatible_windows_os_urn(source_vm, source_vm_instance_view):
     location = source_vm.get('location')
+    _validate_legacy_values(location)
     publisher = "MicrosoftWindowsServer"
     offer = "WindowsServer"
     sku = "2022-datacenter-smalldisk"
@@ -616,7 +699,9 @@ def _fetch_compatible_windows_os_urn(source_vm, source_vm_instance_view):
     if vmgen == 2:
         sku = "2022-datacenter-smalldisk-g2"
 
-    fetch_urn_command = 'az vm image list -s {sku} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc=location, publisher=publisher, offer=offer, sku=sku)
+    fetch_urn_command = 'az vm image list -s {sku_arg} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(
+        loc=_legacy_value(location), publisher=_legacy_value(publisher),
+        offer=_legacy_value(offer), sku_arg=_legacy_value(sku), sku=sku)
     logger.info('Fetching compatible Windows OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
 
@@ -639,19 +724,23 @@ def _fetch_compatible_windows_os_urn(source_vm, source_vm_instance_view):
 
 def _fetch_matching_windows_os_urn(source_vm):
     location = source_vm.get('location')
+    _validate_legacy_values(location)
 
     # We will prefer to fetch image using source vm sku, that we match the CVM requirements.
     if source_vm.get('storageProfile', {}).get('imageReference') is not None:
         sku = source_vm['storageProfile']['imageReference'].get('sku')
         offer = source_vm['storageProfile']['imageReference'].get('offer')
         publisher = source_vm['storageProfile']['imageReference'].get('publisher')
-        fetch_urn_command = 'az vm image list -s {sku} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc=location, sku=sku, offer=offer, publisher=publisher)
+        _validate_legacy_values(sku, offer, publisher)
+        fetch_urn_command = 'az vm image list -s {sku_arg} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(
+            loc=_legacy_value(location), sku_arg=_legacy_value(sku), sku=sku,
+            offer=_legacy_value(offer), publisher=_legacy_value(publisher))
         logger.info('Fetching compatible Windows OS images from gallery V2...')
         urns = loads(_call_az_command(fetch_urn_command))
 
     if not urns or len(urns) == 0:
         # If source SKU not available then defaulting 2022 datacenter image.
-        fetch_urn_command = 'az vm image list -s "2022-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2022-datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=location)
+        fetch_urn_command = 'az vm image list -s "2022-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2022-datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=_legacy_value(location))
         logger.info('Fetching compatible Windows OS images from gallery for 2022 Datacenter V2...')
         urns = loads(_call_az_command(fetch_urn_command))
 
@@ -894,23 +983,16 @@ def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encryp
         raise CLIError('Unexpected error occured while unlocking encrypted disk.')
 
 
-def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=False):
-
-    # logging parameters of the function individually
-    logger.info(
-        'Creating repair VM with command: %s',
-        create_repair_vm_command.replace(repair_password, '********').replace(repair_username, '********')
-    )
-    logger.info('copy_disk_id: %s', copy_disk_id)
-    logger.info('fix_uuid: %s', fix_uuid)
-
+def _create_repair_vm(cmd, copy_disk_id, arguments, fix_uuid=False):
+    from .vm_creation import create_repair_vm
+    arguments = dict(arguments)
     if not fix_uuid:
-        create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
+        arguments['attach_data_disks'] = [copy_disk_id]
 
     logger.info('Validating VM template before continuing...')
-    _call_az_command(create_repair_vm_command + ' --validate', secure_params=[repair_password, repair_username])
+    create_repair_vm(cmd, arguments, validate=True)
     logger.info('Creating repair VM...')
-    _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
+    create_repair_vm(cmd, arguments)
 
 
 def _fetch_architecture(source_vm):
@@ -920,7 +1002,7 @@ def _fetch_architecture(source_vm):
     location = source_vm.get('location')
     vm_size = source_vm.get('hardwareProfile', {}).get('vmSize')
     architecture_type_cmd = 'az vm list-skus -l {loc} --size {vm_size} --query "[].capabilities[?name==\'CpuArchitectureType\'].value" -o json' \
-                            .format(loc=location, vm_size=vm_size)
+                            .format(loc=_legacy_value(location), vm_size=_legacy_value(vm_size))
 
     logger.info('Fetching architecture type of the source VM...')
     architecture = loads(_call_az_command(architecture_type_cmd).strip('\n'))

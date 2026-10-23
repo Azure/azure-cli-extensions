@@ -4,10 +4,13 @@ Release History
 
 2.4.6
 ++++++
-* Fixed a Windows command-injection gap by running nested Azure CLI commands through the current Python interpreter with ``-I -m azure.cli`` and ``shell=False``, bypassing ``cmd.exe`` and ``az.cmd``. Isolated startup prevents the current working directory, ``PYTHONPATH``, and user site-packages from replacing the installed Azure CLI. Shell metacharacters are passed literally without environment-variable expansion, preserving percent-encoded URIs and literal ``%`` and ``!`` characters. Linux and macOS retain their existing launch path.
-* On Windows, every nested ``az`` command now validates its original argument values for double quotes and control characters. Nonempty values supplied through ``secure_params`` (e.g. a repair password) are checked before tokenization, preventing quotes, tabs, or newlines from silently changing a password or introducing extra CLI arguments. Nested-command validation errors omit the offending value and name the affected property (e.g. ``storageProfile.osDisk.vhd.uri``) when known.
+* Windows legacy commands reject shell-sensitive argument values and use a quoted batch launcher without Python ``-I``. Child processes ignore inherited ``PYTHONPATH`` and run from the installed extension directory. Linux and macOS retain their existing launch path.
+* Repair VM creation reuses core argument preparation and ARM deployment in process. Tags and repair usernames retain the pre-existing tag restrictions on quotes, percent signs, exclamation marks, and control characters. Passwords use existing password validation without additional shell-character restrictions; accepted values are passed as structured data.
+* Unmanaged snapshots, blob copies, and copy-status reads use the Storage SDK with existing account-key authentication, preserving source URI characters without shell parsing.
+* Requires Azure CLI 2.90.0 or later so reused VM creation validators and Compute operations use AAZ rather than the Compute SDK.
 * On Windows, ``restore`` and ``reset-nic`` now validate the follow-up command (re-attach disk / revert NIC) before detaching the disk or changing the NIC IP configuration, so a validation failure cannot leave the disk detached or the NIC on the temporary IP address.
-* Fixed an argument-injection gap in unmanaged-disk restore: an embedded double quote in the disk URI could previously be consumed as shlex quoting syntax and inject extra arguments into the nested ``az vm update`` call. The URI assignment is now built with ``shlex.quote()`` to preserve it as a single argument, allowing Windows validation to reject the embedded double quote.
+* Unmanaged-disk restore now detaches the repair disk and updates the source OS-disk URI through in-process AAZ operations instead of nested CLI commands. Structured update arguments preserve literal ``%`` and ``&`` without shell or command-string parsing. Existing Windows quote/control-character validation remains before detach.
+* Unmanaged repair-VM creation now attaches the copied VHD through an AAZ instance-update operation, preserving literal URI characters without constructing a nested attach command or using SDK-backed core helpers.
 
 2.4.5
 ++++++

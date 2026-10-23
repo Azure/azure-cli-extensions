@@ -16,14 +16,23 @@ import shlex
 import subprocess
 import sys
 import unittest
+from copy import deepcopy
+from types import SimpleNamespace
 from unittest import mock
 
 import pytest
+import requests
 
+from azure.cli.core import get_default_cli
+from azure.cli.core.aaz._client import AAZMgmtClient
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.core.exceptions import HttpResponseError
+from azure.core.pipeline import PipelineContext, PipelineResponse
+from azure.core.pipeline.policies import ContentDecodePolicy, SansIOHTTPPolicy
+from azure.core.pipeline.transport import RequestsTransportResponse
 
 from azext_vm_repair._validators import validate_vm_password
-from azext_vm_repair.custom import reset_nic, restore
+from azext_vm_repair.custom import create, reset_nic, restore, run
 from azext_vm_repair.exceptions import AzCommandError
 from azext_vm_repair.repair_utils import (
     _call_az_command,
@@ -46,15 +55,13 @@ class _FakeProcess:
 
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
-def test_call_az_command_windows_passes_argument_list(mock_popen):
+def test_call_az_command_windows_rejects_shell_symbols(mock_popen):
     mock_popen.return_value = _FakeProcess(returncode=0, stdout='ok')
     payload = 'az vm create --tags env=ok&echo pwned>file.txt&rem'
     with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'):
-        _call_az_command(payload)
-
-    command_args = mock_popen.call_args[0][0]
-    assert command_args == [sys.executable, '-I', '-m', 'azure.cli', *shlex.split(payload)[1:]]
-    assert mock_popen.call_args.kwargs['shell'] is False
+        with pytest.raises(InvalidArgumentValueError):
+            _call_az_command(payload)
+    mock_popen.assert_not_called()
 
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
@@ -82,10 +89,9 @@ def test_malicious_tag_is_neutralized_end_to_end(mock_popen):
     command = 'az vm create -g rg -n vm --tags {tag}'.format(tag=tag_token)
 
     with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'):
-        _call_az_command(command)
-
-    command_args = mock_popen.call_args[0][0]
-    assert command_args[-1] == 'env=' + malicious_value
+        with pytest.raises(InvalidArgumentValueError):
+            _call_az_command(command)
+    mock_popen.assert_not_called()
 
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
@@ -124,19 +130,13 @@ ROUNDTRIP_PAYLOADS = [
 
 @pytest.fixture
 def argv_receiver(tmp_path, monkeypatch):
-    """Check production argv, then use a real isolated process to receive its values."""
+    """Exercise the actual cmd/batch launcher with a harmless argument receiver."""
     receiver = tmp_path / 'argv receiver.py'
     receiver.write_text(
         'import json, sys\nprint(json.dumps(sys.argv[1:]))\n', encoding='utf-8')
-    real_popen = subprocess.Popen
-
-    def receive_command(command_args, **kwargs):
-        assert command_args[:4] == [sys.executable, '-I', '-m', 'azure.cli']
-        assert kwargs['shell'] is False
-        return real_popen(
-            [sys.executable, '-I', str(receiver), *command_args[4:]], **kwargs)
-
-    monkeypatch.setattr('azext_vm_repair.repair_utils.subprocess.Popen', receive_command)
+    (tmp_path / 'az.cmd').write_text(
+        '@echo off\n"{}" "{}" %*\n'.format(sys.executable, receiver), encoding='utf-8')
+    monkeypatch.setenv('PATH', str(tmp_path) + os.pathsep + os.environ['PATH'])
     monkeypatch.setenv('VM_REPAIR_EXPANSION_TEST', 'must-not-expand')
 
 
@@ -144,6 +144,10 @@ def argv_receiver(tmp_path, monkeypatch):
 @pytest.mark.parametrize('payload', ROUNDTRIP_PAYLOADS)
 def test_argument_roundtrip_through_real_process(payload, argv_receiver):
     command = 'az vm update --set ' + shlex.quote('storageProfile.osDisk.vhd.uri=' + payload)
+    if any(char in payload for char in "\"'%!&|<>()^$`;"):
+        with pytest.raises(InvalidArgumentValueError):
+            _call_az_command(command)
+        return
     _validate_command_values(command, field_name='storageProfile.osDisk.vhd.uri')
     output = _call_az_command(command)
     assert json.loads(output) == ['vm', 'update', '--set', 'storageProfile.osDisk.vhd.uri=' + payload]
@@ -153,22 +157,16 @@ def test_argument_roundtrip_through_real_process(payload, argv_receiver):
 def test_no_command_injection_through_real_process(tmp_path, argv_receiver):
     marker = tmp_path / 'INJECTED.txt'
     payload = 'safe&echo boom>{marker}&rem'.format(marker=marker)
-    output = _call_az_command('az vm create --tags ' + shlex.quote('env=' + payload))
+    with pytest.raises(InvalidArgumentValueError):
+        _call_az_command('az vm create --tags ' + shlex.quote('env=' + payload))
     assert not marker.exists(), 'command injection occurred: marker file was created'
-    assert json.loads(output)[-1] == 'env=' + payload
 
 
 @pytest.mark.skipif(os.name != 'nt', reason='interpreter-based launch is Windows-specific')
 def test_expansion_like_tags_reach_process_literally(argv_receiver):
     tags = {'owner%VM_REPAIR_EXPANSION_TEST%': 'R&D !VM_REPAIR_EXPANSION_TEST! 100%'}
-    _validate_tags_for_command(tags)
-    command = 'az vm create --tags ' + ' '.join(
-        shlex.quote('{}={}'.format(key, value)) for key, value in tags.items())
-
-    assert json.loads(_call_az_command(command)) == [
-        'vm', 'create', '--tags',
-        'owner%VM_REPAIR_EXPANSION_TEST%=R&D !VM_REPAIR_EXPANSION_TEST! 100%',
-    ]
+    with pytest.raises(InvalidArgumentValueError):
+        _validate_tags_for_command(tags)
 
 
 # ---------------------------------------------------------------------------
@@ -180,6 +178,8 @@ def test_expansion_like_tags_reach_process_literally(argv_receiver):
 # Characters that must be rejected in either a tag key or a tag value.
 UNSAFE_TAG_CHARS = [
     '"',
+    '%',
+    '!',
     '\n',       # control character
     '\r',       # control character
     '\x00',     # NUL
@@ -216,9 +216,6 @@ ALLOWED_TAG_VALUES = [
     '$(whoami)',
     '`whoami`',
     'space separated value',
-    '%USERNAME%',
-    '!USERNAME!',
-    '100%',
 ]
 
 
@@ -236,8 +233,7 @@ def test_validate_tags_error_message_names_offending_tag():
     with pytest.raises(InvalidArgumentValueError) as exc_info:
         _validate_tags_for_command({'owner': 'bad"value'})
     message = str(exc_info.value)
-    assert 'owner' in message
-    assert 'bad"value' in message
+    assert 'bad"value' not in message
 
 
 # ---------------------------------------------------------------------------
@@ -276,8 +272,8 @@ def test_expansion_osdisk_uri_is_literal(tmp_path, argv_receiver):
     marker = tmp_path / 'EXPANSION_INJECTED.txt'
     uri = EXPANSION_DISK_URI.replace('calc.exe', 'echo PWNED>{}'.format(marker))
     command = 'az vm update --set ' + shlex.quote('storageProfile.osDisk.vhd.uri=' + uri)
-    _validate_command_values(command)
-    assert json.loads(_call_az_command(command))[-1] == 'storageProfile.osDisk.vhd.uri=' + uri
+    with pytest.raises(InvalidArgumentValueError):
+        _call_az_command(command)
     assert not marker.exists()
 
 
@@ -366,13 +362,12 @@ def test_expansion_like_secret_is_passed_unmasked_but_not_logged(mock_popen, moc
     command = 'az vm create --admin-password ' + shlex.quote(secret)
 
     with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'):
-        with pytest.raises(AzCommandError) as raised:
+        with pytest.raises(InvalidArgumentValueError) as raised:
             _call_az_command(command, secure_params=[None, '', secret])
 
-    assert mock_popen.call_args[0][0][-1] == secret
+    mock_popen.assert_not_called()
     assert secret not in str(mock_logger.debug.call_args_list)
     assert secret not in str(raised.value)
-    assert '********' in str(raised.value)
 
 
 def test_osdisk_uri_injection_is_blocked_before_any_process_is_spawned(monkeypatch):
@@ -405,6 +400,180 @@ RESTORE_REPAIR_VM_ID = '/subscriptions/00000000-0000-0000-0000-000000000000/reso
 UNSAFE_ATTACH_VALUE = 'invalid\x00value'
 
 
+@pytest.mark.parametrize('uri', [
+    'https://acct.blob.core.windows.net/vhds/os%20disk%25copy.vhd?sig=test%2Bvalue&sp=r',
+    'https://acct.blob.core.windows.net/vhds/%E4%B8%AD.vhd?sig=%NAME%&sp=!NAME!',
+])
+@pytest.mark.parametrize('operation', [
+    'restore', 'restore-missing', 'create', 'create-empty', 'create-gap', 'create-failed',
+])
+def test_unmanaged_aaz_requests_preserve_uri_and_vm_state(uri, operation):
+    subscription = '00000000-0000-0000-0000-000000000000'
+
+    def vm(name, group):
+        return {
+            'id': '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Compute/virtualMachines/{}'.format(
+                subscription, group, name),
+            'name': name,
+            'location': 'westus',
+            'tags': {'keep': 'literal%value&more'},
+            'properties': {
+                'provisioningState': 'Succeeded',
+                'hardwareProfile': {'vmSize': 'Standard_D2s_v3'},
+                'networkProfile': {'networkInterfaces': [{
+                    'id': '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Network/networkInterfaces/nic'.format(
+                        subscription, group),
+                }]},
+                'storageProfile': {
+                    'osDisk': {
+                        'name': 'original-os',
+                        'createOption': 'Attach',
+                        'osType': 'Windows',
+                        'caching': 'ReadWrite',
+                        'vhd': {'uri': 'https://acct.blob.core.windows.net/vhds/original.vhd'},
+                    },
+                    'dataDisks': [
+                        {'name': 'fixed-disk', 'lun': 0, 'createOption': 'Attach', 'vhd': {'uri': uri}},
+                        {'name': 'keep-disk', 'lun': 1, 'createOption': 'Attach',
+                         'vhd': {'uri': 'https://acct.blob.core.windows.net/vhds/keep.vhd'}},
+                    ],
+                },
+            },
+        }
+
+    source = vm('source-vm', 'source-rg')
+    repair = vm('repair-vm', 'repair-rg')
+    if operation == 'create-empty':
+        repair['properties']['storageProfile']['dataDisks'] = []
+    elif operation == 'create-gap':
+        repair['properties']['storageProfile']['dataDisks'][1]['lun'] = 2
+    writes = []
+    cli_ctx = get_default_cli()
+    client = AAZMgmtClient(SimpleNamespace(cli_ctx=cli_ctx), credential=mock.Mock(),
+                           logging_policy=SansIOHTTPPolicy())
+    storage_service = mock.Mock()
+    source_blob_client = mock.Mock()
+    destination_blob_client = mock.Mock()
+    snapshot_timestamp = '2026-10-23T01:02:03.0000000Z'
+
+    def send(request, **_kwargs):
+        resource = repair if '/virtualMachines/repair-vm' in request.url else source
+        body = deepcopy(resource)
+        if operation == 'restore-missing' and resource is repair:
+            body['properties']['storageProfile']['dataDisks'] = []
+        if request.method == 'PUT':
+            body = json.loads(request.body)
+            writes.append((resource['name'], body))
+        response = requests.Response()
+        response.status_code = 409 if operation == 'create-failed' and request.method == 'PUT' else 200
+        if response.status_code == 409:
+            body = {'error': {'code': 'OperationNotAllowed', 'message': 'attach failed'}}
+        response.headers['Content-Type'] = 'application/json'
+        response._content = json.dumps(body).encode('utf-8')  # pylint: disable=protected-access
+        context = PipelineContext(None, stream=False)
+        context[ContentDecodePolicy.CONTEXT_NAME] = body
+        return PipelineResponse(request, RequestsTransportResponse(request, response), context)
+
+    def get_vm(_cmd, group, _name, *_args, **_kwargs):
+        resource = repair if group == 'repair-rg' else source
+        return {**resource, **resource['properties']}
+
+    with mock.patch('azext_vm_repair.custom.command_helper', FakeCommandHelper), \
+            mock.patch('azext_vm_repair.custom._create_vm_by_core') as create_vm, \
+            mock.patch('azext_vm_repair.custom.get_vm_by_aaz', side_effect=get_vm), \
+            mock.patch('azext_vm_repair.custom._uses_managed_disk', return_value=False), \
+            mock.patch('azext_vm_repair.custom._call_az_command', return_value='success') as nested_cli, \
+            mock.patch('azext_vm_repair.custom._clean_up_resources') as cleanup, \
+            mock.patch('azext_vm_repair.custom._fetch_source_disk_controller_type', return_value='SCSI'), \
+            mock.patch('azext_vm_repair.custom._fetch_architecture', return_value='x64'), \
+            mock.patch('azext_vm_repair.custom._fetch_compatible_windows_os_urn', return_value='publisher:offer:sku:latest'), \
+            mock.patch('azext_vm_repair.custom._fetch_compatible_sku', return_value='Standard_D2s_v3'), \
+            mock.patch('azext_vm_repair.custom._check_existing_rg', return_value=True), \
+            mock.patch('azext_vm_repair.custom._list_resource_ids_in_rg', return_value=[]), \
+            mock.patch('azext_vm_repair.custom.StorageResourceIdentifier') as storage_id, \
+            mock.patch('azext_vm_repair.custom.get_unmanaged_blob_service_client',
+                       return_value=storage_service) as get_blob_service, \
+            mock.patch('azext_vm_repair.custom.get_unmanaged_blob_client',
+                       side_effect=[source_blob_client, destination_blob_client]) as get_blob_client, \
+            mock.patch('azext_vm_repair.custom.create_unmanaged_blob_snapshot',
+                       return_value=snapshot_timestamp) as create_snapshot, \
+            mock.patch('azext_vm_repair.custom.start_unmanaged_blob_copy') as start_copy, \
+            mock.patch('azext_vm_repair.custom.get_unmanaged_blob_copy_status',
+                       return_value='success') as get_copy_status, \
+            mock.patch('azure.cli.core.aaz._command_ctx.AAZCommandCtx.subscription_id',
+                       new_callable=mock.PropertyMock, return_value=subscription), \
+            mock.patch('azure.cli.core.aaz._command_ctx.AAZCommandCtx.get_http_client', return_value=client), \
+            mock.patch.object(client, 'send_request', side_effect=send):
+        cmd = SimpleNamespace(cli_ctx=cli_ctx)
+        if operation.startswith('restore'):
+            result = restore(cmd, 'source-vm', 'source-rg', disk_name='fixed-disk',
+                             repair_vm_id=RESTORE_REPAIR_VM_ID, no_cleanup=True)
+        else:
+            storage_id.return_value.account_name = 'account'
+            storage_id.return_value.container = 'vhds'
+            storage_id.return_value.blob = 'original.vhd'
+            blob_name = uri.rsplit('/', 1)[1]
+            password = 'RepairPassword9"%!&'
+            result = create(cmd, 'source-vm', 'source-rg', repair_password=password,
+                            repair_username='repairuser', repair_vm_name='repair-vm', repair_group_name='repair-rg',
+                            copy_disk_name=blob_name, disable_trusted_launch=True)
+
+    if operation.startswith('create'):
+        assert [call.args[1]['admin_password'] for call in create_vm.call_args_list] == [password, password]
+        get_blob_service.assert_called_once_with(cmd, 'source-rg', 'account')
+        assert get_blob_client.call_args_list == [
+            mock.call(storage_service, 'vhds', 'original.vhd'),
+            mock.call(storage_service, 'vhds', blob_name + '.vhd'),
+        ]
+        create_snapshot.assert_called_once_with(source_blob_client)
+        start_copy.assert_called_once_with(
+            destination_blob_client,
+            'https://acct.blob.core.windows.net/vhds/original.vhd?snapshot={}'.format(snapshot_timestamp))
+        get_copy_status.assert_called_once_with(destination_blob_client)
+
+    if operation == 'restore-missing':
+        assert result['status'] == 'ERROR'
+        assert 'data disk was not found' in result['error_message']
+        assert writes == []
+        nested_cli.assert_not_called()
+        cleanup.assert_not_called()
+        return
+    if operation == 'create-failed':
+        assert result['status'] == 'ERROR'
+        assert 'attach failed' in result['error_message']
+        assert 'Repair create failed' in result['message']
+        cleanup.assert_called_once_with('repair-rg', confirm=True)
+        return
+    assert result['status'] == 'SUCCESS', result
+    if operation.startswith('create'):
+        assert not any('unmanaged-disk attach' in call.args[0] for call in nested_cli.call_args_list)
+        cleanup.assert_not_called()
+        assert [name for name, _ in writes] == ['repair-vm']
+        attached_disks = writes[0][1]['properties']['storageProfile']['dataDisks']
+        assert attached_disks[-1]['vhd']['uri'] == uri + '.vhd'
+        assert attached_disks[-1]['createOption'] == 'Attach'
+        assert attached_disks[-1]['lun'] == {'create': 2, 'create-empty': 0, 'create-gap': 1}[operation]
+        assert attached_disks[:-1] == repair['properties']['storageProfile']['dataDisks']
+        assert writes[0][1]['properties']['storageProfile']['osDisk'] == repair['properties']['storageProfile']['osDisk']
+        assert writes[0][1]['properties']['networkProfile'] == repair['properties']['networkProfile']
+        assert writes[0][1]['tags'] == repair['tags']
+        return
+    nested_cli.assert_not_called()
+    cleanup.assert_called_once_with('repair-rg', confirm=True, skip_cleanup=True)
+    assert [name for name, _ in writes] == ['repair-vm', 'source-vm']
+    assert [disk['name'] for disk in writes[0][1]['properties']['storageProfile']['dataDisks']] == ['keep-disk']
+    assert writes[0][1]['tags'] == repair['tags']
+    for key in ('hardwareProfile', 'networkProfile'):
+        assert writes[0][1]['properties'][key] == repair['properties'][key]
+    assert writes[0][1]['properties']['storageProfile']['osDisk'] == repair['properties']['storageProfile']['osDisk']
+    expected = deepcopy(source)
+    expected['properties']['storageProfile']['osDisk']['vhd']['uri'] = uri
+    for key in ('tags', 'location'):
+        assert writes[1][1][key] == expected[key]
+    for key in ('hardwareProfile', 'networkProfile', 'storageProfile'):
+        assert writes[1][1]['properties'][key] == expected['properties'][key]
+
+
 class FakeCommandHelper:
     """Stands in for command_helper so the tests do not emit telemetry or drive a progress controller."""
 
@@ -414,6 +583,7 @@ class FakeCommandHelper:
         self.error_stack_trace = ''
         self.status = ''
         self.return_dict = {}
+        self.script = SimpleNamespace(output='')
 
     def set_status_success(self):
         self.status = 'SUCCESS'
@@ -429,6 +599,52 @@ class FakeCommandHelper:
         if not self.is_status_success():
             self.return_dict['error_message'] = self.error_message
         return self.return_dict
+
+
+@pytest.mark.parametrize('invalid', [
+    {'repair_vm_name': 'repair&unexpected'},
+    {'copy_disk_name': 'copy&unexpected'},
+    {'encrypt_recovery_key': 'invalid"key'},
+    {'tags': {'owner': 'invalid!tag'}},
+])
+def test_rejected_create_values_do_not_mutate_or_clean_up(invalid):
+    arguments = {
+        'repair_vm_name': 'repair', 'repair_group_name': 'repair-rg',
+        'copy_disk_name': 'copy', 'repair_username': 'repairuser',
+        'repair_password': 'Password123',
+        **invalid,
+    }
+    source = {'storageProfile': {
+        'diskControllerType': 'SCSI',
+        'osDisk': {'name': 'source-os', 'osType': 'Windows', 'managedDisk': {'id': 'disk-id'}},
+    }}
+    with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
+            mock.patch('azext_vm_repair.custom.command_helper', FakeCommandHelper), \
+            mock.patch('azext_vm_repair.custom.get_vm_by_aaz', return_value=source), \
+            mock.patch('azext_vm_repair.custom._is_gen2', return_value=False), \
+            mock.patch('azext_vm_repair.custom._call_az_command') as nested, \
+            mock.patch('azext_vm_repair.custom._create_vm_by_core') as deploy, \
+            mock.patch('azext_vm_repair.custom._clean_up_resources') as cleanup:
+        result = create(SimpleNamespace(cli_ctx=get_default_cli()), 'source', 'source-rg', **arguments)
+    assert result['status'] == 'ERROR'
+    assert 'unsupported character' in result['error_message'] or 'must not contain' in result['error_message']
+    nested.assert_not_called()
+    deploy.assert_not_called()
+    cleanup.assert_not_called()
+
+
+@pytest.mark.parametrize('value', ['value"quoted"', "value'quoted'", 'value\nnext', 'value&next'])
+def test_run_rejects_original_parameters_before_wrapping(value):
+    with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
+            mock.patch('azext_vm_repair.custom.command_helper', FakeCommandHelper), \
+            mock.patch('azext_vm_repair.custom.get_vm_by_aaz') as get_vm, \
+            mock.patch('azext_vm_repair.custom._invoke_run_command') as invoke:
+        result = run(SimpleNamespace(cli_ctx=get_default_cli()), 'source', 'source-rg',
+                     run_id='test-script', parameters=[value])
+    assert result['status'] == 'ERROR'
+    assert 'unsupported character' in result['error_message']
+    get_vm.assert_not_called()
+    invoke.assert_not_called()
 
 
 @mock.patch('azext_vm_repair.custom.command_helper', FakeCommandHelper)
@@ -472,37 +688,62 @@ class UnmanagedDiskAttachValidationTest(unittest.TestCase):
             return self._repair_vm()
         return self._source_vm()
 
-    def _restore(self, invoke=None):
+    def _restore(self, detach_error=None, attach_error=None, **kwargs):
+        operations = mock.Mock()
+        operations.detach.side_effect = detach_error
+        operations.wait.side_effect = attach_error
         with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
                 mock.patch('azext_vm_repair.custom.get_vm_by_aaz', side_effect=self._get_vm_by_aaz_side_effect), \
                 mock.patch('azext_vm_repair.custom._uses_managed_disk', return_value=False), \
-                mock.patch('azext_vm_repair.custom._call_az_command', side_effect=invoke) as mock_az, \
+                mock.patch('azext_vm_repair.custom._call_az_command') as mock_az, \
+                mock.patch('azext_vm_repair.custom._detach_unmanaged_disk_by_aaz', operations.detach), \
+                mock.patch('azext_vm_repair.custom.VMUpdate', return_value=operations.update), \
+                mock.patch('azext_vm_repair.custom.LongRunningOperation', return_value=operations.wait), \
                 mock.patch('azext_vm_repair.custom._clean_up_resources') as mock_clean_up:
-            result = restore(mock.MagicMock(), 'source-vm', 'source-rg', disk_name='fixed-disk', repair_vm_id=RESTORE_REPAIR_VM_ID)
-        return result, mock_az, mock_clean_up
+            result = restore(mock.MagicMock(), 'source-vm', 'source-rg', disk_name='fixed-disk',
+                             repair_vm_id=RESTORE_REPAIR_VM_ID, **kwargs)
+        return result, mock_az, mock_clean_up, operations
 
     def test_unsafe_attach_value_blocks_before_detach(self):
-        result, mock_az, mock_clean_up = self._restore()
+        result, mock_az, mock_clean_up, operations = self._restore()
 
         self.assertEqual(result['status'], 'ERROR')
         mock_az.assert_not_called()
         mock_clean_up.assert_not_called()
+        operations.detach.assert_not_called()
 
-    def test_percent_encoded_uri_is_preserved_through_restore(self):
-        uri = 'https://acct.blob.core.windows.net/vhds/os%20disk%25copy.vhd?sig=test%2Bvalue&sp=r'
-        repair_vm = {'storageProfile': {'dataDisks': [{'name': 'fixed-disk', 'vhd': {'uri': uri}}]}}
-        with mock.patch.object(self, '_repair_vm', return_value=repair_vm), \
-                mock.patch('azext_vm_repair.repair_utils.subprocess.Popen',
-                           return_value=_FakeProcess()) as mock_popen:
-            result, mock_az, _ = self._restore(invoke=_call_az_command)
+    def test_missing_uri_blocks_before_detach(self):
+        for uri in (None, ''):
+            with self.subTest(uri=uri):
+                repair_vm = {'storageProfile': {'dataDisks': [{'name': 'fixed-disk', 'vhd': {'uri': uri}}]}}
+                with mock.patch.object(self, '_repair_vm', return_value=repair_vm):
+                    result, _, cleanup, operations = self._restore()
+                self.assertEqual(result['status'], 'ERROR')
+                operations.detach.assert_not_called()
+                cleanup.assert_not_called()
 
-        self.assertEqual(result['status'], 'SUCCESS')
-        self.assertEqual(mock_az.call_count, 2)
-        self.assertIn('detach', mock_popen.call_args_list[0][0][0])
-        self.assertEqual(mock_popen.call_args_list[1][0][0], [
-            sys.executable, '-I', '-m', 'azure.cli', 'vm', 'update',
-            '-g', 'source-rg', '-n', 'source-vm', '--set', 'storageProfile.osDisk.vhd.uri=' + uri,
-        ])
+    def test_detach_failure_prevents_attach_and_cleanup(self):
+        repair_vm = {'storageProfile': {'dataDisks': [{'name': 'fixed-disk', 'vhd': {'uri': 'https://acct/fixed.vhd'}}]}}
+        with mock.patch.object(self, '_repair_vm', return_value=repair_vm):
+            result, mock_az, cleanup, operations = self._restore(detach_error=HttpResponseError('detach failed'))
+        self.assertEqual(result['status'], 'ERROR')
+        self.assertIn('detach failed', result['error_message'])
+        self.assertIn('Repair restore failed', result['message'])
+        operations.update.assert_not_called()
+        operations.wait.assert_not_called()
+        cleanup.assert_not_called()
+        mock_az.assert_not_called()
+
+    def test_attach_failure_prevents_cleanup(self):
+        repair_vm = {'storageProfile': {'dataDisks': [{'name': 'fixed-disk', 'vhd': {'uri': 'https://acct/fixed.vhd'}}]}}
+        with mock.patch.object(self, '_repair_vm', return_value=repair_vm):
+            result, mock_az, cleanup, operations = self._restore(attach_error=HttpResponseError('attach failed'))
+        self.assertEqual(result['status'], 'ERROR')
+        self.assertIn('attach failed', result['error_message'])
+        self.assertIn('Repair restore failed', result['message'])
+        self.assertEqual([call[0] for call in operations.mock_calls], ['detach', 'update', 'wait'])
+        cleanup.assert_not_called()
+        mock_az.assert_not_called()
 
 
 # ---------------------------------------------------------------------------
@@ -557,12 +798,14 @@ class UnmanagedDiskQuoteInjectionTest(unittest.TestCase):
         with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
                 mock.patch('azext_vm_repair.custom.get_vm_by_aaz', side_effect=self._get_vm_by_aaz_side_effect), \
                 mock.patch('azext_vm_repair.custom._uses_managed_disk', return_value=False), \
+                mock.patch('azext_vm_repair.custom._detach_unmanaged_disk_by_aaz') as detach, \
                 mock.patch('azext_vm_repair.custom._call_az_command') as mock_az, \
                 mock.patch('azext_vm_repair.custom._clean_up_resources') as mock_clean_up:
             result = restore(mock.MagicMock(), 'source-vm', 'source-rg', disk_name='fixed-disk', repair_vm_id=RESTORE_REPAIR_VM_ID)
 
         self.assertEqual(result['status'], 'ERROR')
         mock_az.assert_not_called()
+        detach.assert_not_called()
         mock_clean_up.assert_not_called()
 
 
@@ -618,8 +861,8 @@ class NicRevertValidationTest(unittest.TestCase):
         result, mock_az = self._reset_nic()
 
         self.assertEqual(result['status'], 'ERROR')
-        # Only the 3 read-only lookups should have run; the IP swap itself must not.
-        self.assertEqual(mock_az.call_count, 3)
+        # Reject the ASG immediately after the two NIC lookups, before any IP swap.
+        self.assertEqual(mock_az.call_count, 2)
 
 
 @mock.patch('azext_vm_repair.custom.command_helper', FakeCommandHelper)

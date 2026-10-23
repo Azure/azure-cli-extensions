@@ -3,17 +3,20 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# Regression tests for shell-free nested Azure CLI invocation and error reporting.
+# Regression tests for validated nested Azure CLI invocation and error reporting.
 
 import json
 import os
 import sys
+import subprocess
+from pathlib import Path
 from unittest import mock
 
 import pytest
 
 from azext_vm_repair.exceptions import AzCommandError
 from azext_vm_repair.repair_utils import _call_az_command
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
 class _FakeProcess:
@@ -39,11 +42,13 @@ def _windows_command_line(mock_popen, command):
 # ---------------------------------------------------------------------------
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
-def test_windows_uses_current_cli_interpreter_without_shell(mock_popen):
+def test_windows_uses_validated_batch_launcher_without_isolated_python(mock_popen):
     mock_popen.return_value = _FakeProcess(returncode=0, stdout='ok')
     command_line = _windows_command_line(mock_popen, 'az vm show -g rg -n vm')
 
-    assert command_line == [sys.executable, '-I', '-m', 'azure.cli', 'vm', 'show', '-g', 'rg', '-n', 'vm']
+    interpreter = os.path.join(os.environ.get('SystemRoot', r'C:\Windows'), 'System32', 'cmd.exe')
+    assert command_line == subprocess.list2cmdline([interpreter]) + \
+        ' /d /v:off /s /c "az "vm" "show" "-g" "rg" "-n" "vm""'
     assert mock_popen.call_args.kwargs['shell'] is False
 
 
@@ -52,16 +57,16 @@ def test_windows_command_without_arguments(mock_popen):
     mock_popen.return_value = _FakeProcess(returncode=0, stdout='ok')
     command_line = _windows_command_line(mock_popen, 'az')
 
-    assert command_line == [sys.executable, '-I', '-m', 'azure.cli']
+    interpreter = os.path.join(os.environ.get('SystemRoot', r'C:\Windows'), 'System32', 'cmd.exe')
+    assert command_line == subprocess.list2cmdline([interpreter]) + ' /d /v:off /s /c "az "'
 
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
 def test_windows_metacharacters_in_arguments_are_still_neutralized(mock_popen):
     mock_popen.return_value = _FakeProcess(returncode=0, stdout='ok')
-    command_line = _windows_command_line(
-        mock_popen, 'az vm create --tags "env=ok&echo pwned>file.txt&rem"')
-
-    assert command_line[-1] == 'env=ok&echo pwned>file.txt&rem'
+    with pytest.raises(InvalidArgumentValueError):
+        _windows_command_line(mock_popen, 'az vm create --tags "env=ok&echo pwned>file.txt&rem"')
+    mock_popen.assert_not_called()
 
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')
@@ -166,13 +171,14 @@ def nested_cli_environment(request, tmp_path, monkeypatch):
             encoding='utf-8')
         if request.param == 'cwd':
             working_directory = shadow_root
+            (working_directory / 'cmd.exe').write_bytes(b'Not a Windows executable')
         else:
             monkeypatch.setenv('PYTHONPATH', str(shadow_root))
     monkeypatch.chdir(working_directory)
     return marker
 
 
-@pytest.mark.skipif(os.name != 'nt', reason='interpreter-based launch is Windows-specific')
+@pytest.mark.skipif(os.name != 'nt', reason='batch launch is Windows-specific')
 def test_real_nested_az_call_succeeds(nested_cli_environment):
     output = _call_az_command('az version -o json')
 
@@ -180,7 +186,7 @@ def test_real_nested_az_call_succeeds(nested_cli_environment):
     assert json.loads(output).get('azure-cli')
 
 
-@pytest.mark.skipif(os.name != 'nt', reason='interpreter-based launch is Windows-specific')
+@pytest.mark.skipif(os.name != 'nt', reason='batch launch is Windows-specific')
 def test_real_failing_az_call_reports_a_message(nested_cli_environment):
     # A genuinely failing az command must produce a non-empty, actionable error.
     with pytest.raises(AzCommandError) as raised:
@@ -194,3 +200,29 @@ def test_real_failing_az_call_reports_a_message(nested_cli_environment):
 def test_async_command_does_not_wait(mock_popen):
     assert _call_az_command('az version', run_async=True) is None
     mock_popen.return_value.communicate.assert_not_called()
+
+
+@pytest.mark.skipif(
+    os.name != 'nt' or not os.environ.get('VM_REPAIR_TEST_USER_BASE'),
+    reason='requires an isolated real pip --user Azure CLI installation')
+def test_actual_helper_runs_user_site_only_cli(tmp_path, monkeypatch):
+    user_base = Path(os.environ['VM_REPAIR_TEST_USER_BASE'])
+    python = Path(sys._base_executable)  # pylint: disable=protected-access
+    monkeypatch.setenv('PYTHONUSERBASE', str(user_base))
+    monkeypatch.delenv('PYTHONPATH', raising=False)
+    monkeypatch.setenv('AZURE_CONFIG_DIR', str(tmp_path / 'config'))
+    monkeypatch.setenv('PATH', os.pathsep.join([
+        str(user_base / 'Python{}{}'.format(*sys.version_info[:2]) / 'Scripts'), str(python.parent),
+        str(Path(os.environ['SystemRoot']) / 'System32'), os.environ['SystemRoot'],
+    ]))
+    isolated = subprocess.run(
+        [str(python), '-I', '-c', 'import azure.cli'], capture_output=True, check=False)
+    assert isolated.returncode != 0, 'A global CLI would invalidate the user-site-only proof'
+    probe = subprocess.run(
+        [str(python), '-c',
+         'import azure.cli.core, importlib.metadata, json; '
+         'print(json.dumps([azure.cli.core.__file__, importlib.metadata.version("azure-cli")]))'],
+        capture_output=True, text=True, check=True)
+    location, version = json.loads(probe.stdout)
+    assert Path(location).is_relative_to(user_base)
+    assert json.loads(_call_az_command('az version -o json'))['azure-cli'] == version
