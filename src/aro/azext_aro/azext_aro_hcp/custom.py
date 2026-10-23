@@ -133,7 +133,8 @@ class ClusterCreate(_ClusterCreate):
                 "name": "Create a cluster",
                 "text": "az aro hcp cluster create --resource-group MyResourceGroup --name MyCluster "
                         "--location eastus --version 4.19 --channel-group stable --network-type OVNKubernetes "
-                        "--subnet-id <subnet-id> --kms-vault-name MyKeyVault "
+                        "--subnet-id <subnet-id> --key-management-mode CustomerManaged "
+                        "--kms-vault-name MyKeyVault "
                         "--kms-active-key \"{name:MyKey,version:<key-version>}\" "
                         "--assign-service-managed-identity <service-identity-id> "
                         "--assign-control-plane-operator-identity cluster-api-azure "
@@ -171,6 +172,7 @@ class ClusterCreate(_ClusterCreate):
         # Remove once platform managed etcd encryption has been implemented and
         # key management mode can safely default to PlatformManaged
         args_schema.key_management_mode._default = None
+        args_schema.key_management_mode._required = True
 
         args_schema.user_assigned_identities._registered = False
         args_schema.operators_authentication._registered = False
