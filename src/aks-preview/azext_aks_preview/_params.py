@@ -1327,6 +1327,9 @@ def load_arguments(self, _):
                    is_preview=True,
                    action="store_true"
                    )
+        c.argument('enable_pod_snapshot_restore',
+                   options_list=['--enable-pod-snapshot-restore', '--enable-pod-snapshot'],
+                   is_preview=True, action='store_true')
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
@@ -2104,6 +2107,12 @@ def load_arguments(self, _):
         c.argument("disable_cost_analysis", action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         c.argument('disable_ai_toolchain_operator', is_preview=True, action='store_true')
+        c.argument('enable_pod_snapshot_restore',
+                   options_list=['--enable-pod-snapshot-restore', '--enable-pod-snapshot'],
+                   is_preview=True, action='store_true')
+        c.argument('disable_pod_snapshot_restore',
+                   options_list=['--disable-pod-snapshot-restore', '--disable-pod-snapshot'],
+                   is_preview=True, action='store_true')
         # azure container storage
         c.argument(
             "enable_azure_container_storage",

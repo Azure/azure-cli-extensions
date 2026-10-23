@@ -720,6 +720,10 @@ helps['aks create'] = f"""
         - name: --enable-ai-toolchain-operator
           type: bool
           short-summary: Enable AI toolchain operator to the cluster.
+        - name: --enable-pod-snapshot --enable-pod-snapshot-restore
+          type: bool
+          short-summary: Enable the AKS-managed Pod Snapshot Restore extension.
+          long-summary: Requires Microsoft.ContainerService/PodSnapshotRestorePreview registration and a supported cluster configuration and region. AKS manages the extension through podSnapshotProfile.
         - name: --ssh-access
           type: string
           short-summary: Configure SSH setting for the first system pool in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key. Note, this configuration will not take effect for later created new node pools, please use option `az aks nodepool add --ssh-access` to configure SSH access for new node pools.
@@ -1611,6 +1615,14 @@ helps['aks update'] = """
         - name: --disable-ai-toolchain-operator
           type: bool
           short-summary: Disable AI toolchain operator.
+        - name: --enable-pod-snapshot --enable-pod-snapshot-restore
+          type: bool
+          short-summary: Enable the AKS-managed Pod Snapshot Restore extension.
+          long-summary: Requires Microsoft.ContainerService/PodSnapshotRestorePreview registration and a supported cluster configuration and region. Cannot be combined with --disable-pod-snapshot-restore.
+        - name: --disable-pod-snapshot --disable-pod-snapshot-restore
+          type: bool
+          short-summary: Disable the AKS-managed Pod Snapshot Restore extension.
+          long-summary: Sets podSnapshotProfile.enabled to false. Cannot be combined with --enable-pod-snapshot-restore.
         - name: --node-init-taints --nodepool-initialization-taints
           type: string
           short-summary: The node initialization taints for all node pools in cluster.
