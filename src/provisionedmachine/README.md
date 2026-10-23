@@ -1,6 +1,6 @@
 # Provisioned Machine
 
-> **Preview** — This extension is currently in public preview (`1.0.0b5`).
+> **Preview** — This extension is currently in public preview (`1.0.0b8`).
 
 Manage Azure Stack HCI Edge Machines using the Azure CLI.
 
