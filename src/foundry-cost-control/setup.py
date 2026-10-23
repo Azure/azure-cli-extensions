@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 
 
 # HISTORY.rst entry.
-VERSION = '1.0.0b2'
+VERSION = '1.0.0b3'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -37,7 +37,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='foundry-cost-control',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools -- Foundry Cost Control Extension.',
+    description='Microsoft Azure Command-Line Tools Foundry Cost Control Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
