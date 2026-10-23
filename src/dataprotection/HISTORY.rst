@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.14.0
+++++++
+* ``az dataprotection backup-instance initialize-restoreconfig`` and ``az dataprotection backup-instance restore initialize-for-item-recovery``: Added item-level restore support for AzureCosmosDB databases and containers.
+
 1.13.0
 ++++++
 * ``az dataprotection backup-vault create/update``: Added ``--cost-management-granularity`` (alias ``--cost-granularity``) to configure vault cost management settings. Supported values are ``VaultLevel``, ``ProtectedItemLevel``, and ``ProtectedItemWithParentTag``; vault creation defaults to ``VaultLevel``.
