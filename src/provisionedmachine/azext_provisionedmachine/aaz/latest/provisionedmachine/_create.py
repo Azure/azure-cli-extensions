@@ -19,7 +19,7 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a Provisioned Machine resource.
 
-    :example: Create an AzureLinux provisioned machine (auto-picks latest OS version)
+    :example: Create an AzureLinux provisioned machine (auto-picks latest OS version matching the voucher architecture)
         az provisionedmachine create -g myResourceGroup -n myProvisionedMachine -l eastus --site-resource-id /subscriptions/.../sites/mySite --os-image-type AzureLinux --ownership-voucher /path/to/voucher.pem --ssh-public-key "ssh-rsa AAAAB3..."
 
     :example: Create an HCI provisioned machine with specific version
@@ -104,7 +104,7 @@ class Create(AAZCommand):
         _args_schema.os_image_version = AAZStrArg(
             options=["--os-image-version"],
             arg_group="OS Configuration",
-            help="Version of the OS image. If not specified, the latest available version is automatically selected. ⚡ CHANGED: Renamed from --version -v",
+            help="Version of the OS image. If not specified, the latest available version is automatically selected, matching the ownership voucher architecture for AzureLinux. ⚡ CHANGED: Renamed from --version -v",
         )
 
         # Define Arg Group "Authentication"
@@ -183,8 +183,34 @@ class Create(AAZCommand):
     def _execute_operations(self):
         self.pre_operations()
         # First validate the ownership voucher
+        Create._validation_result = None
+        Create._resolved_version = None
         self.ValidateOwnershipVoucher(ctx=self.ctx)()
         self._validate_voucher_response()
+
+        args = self.ctx.args
+        if has_value(args.os_image_type):
+            os_image_type = args.os_image_type.to_serialized_data()
+            if has_value(args.os_image_version) and args.os_image_version.to_serialized_data():
+                Create._resolved_version = args.os_image_version.to_serialized_data()
+            else:
+                architecture = None
+                if os_image_type == "AzureLinux":
+                    from azure.cli.core.azclierror import InvalidArgumentValueError
+
+                    validation_result = Create._validation_result or {}
+                    voucher_details = validation_result.get("ownershipVoucherValidationDetails", [])
+                    architecture = voucher_details[0].get("architecture") if voucher_details else None
+                    if not isinstance(architecture, str) or architecture.lower() not in ("amd64", "arm64"):
+                        raise InvalidArgumentValueError(
+                            "Ownership voucher validation did not return a supported device architecture "
+                            "(amd64 or arm64). Cannot automatically select a compatible OS image. "
+                            "Please specify --os-image-version explicitly."
+                        )
+                    architecture = architecture.lower()
+                Create._resolved_version = self._resolve_latest_version(
+                    os_image_type.lower(), args.location.to_serialized_data(), architecture)
+
         # If validation passed, proceed with create
         yield self.EdgeMachinesCreateOrUpdate(ctx=self.ctx)()
         #self.post_operations()
@@ -278,17 +304,6 @@ class Create(AAZCommand):
                 kv_secret = args.key_vault_secret_id.to_serialized_data()
                 self._validate_key_vault_secret_id(kv_secret)
 
-            # Auto-resolve version if not provided
-            if not has_value(args.os_image_version) or not args.os_image_version.to_serialized_data():
-                location = args.location.to_serialized_data()
-                resolved_version = self._resolve_latest_version(os_image_type.lower(), location)
-                # Store resolved version for use in content property
-                Create._resolved_version = resolved_version
-            else:
-                Create._resolved_version = args.os_image_version.to_serialized_data()
-
-
-
         # Validate IP address format
         if has_value(args.ip_address):
             ip_address = args.ip_address.to_serialized_data()
@@ -333,11 +348,11 @@ class Create(AAZCommand):
             self._validate_hostname(hostname)
 
 
-    def _resolve_latest_version(self, os_image_type, location):
+    def _resolve_latest_version(self, os_image_type, location, architecture=None):
         """Resolve the latest available OS image (VSR) version via the shared helper."""
         from azext_provisionedmachine import provisioned_machine_utils as pm
         return pm.resolve_latest_os_image_version(
-            self.ctx.cli_ctx, self.ctx.subscription_id, os_image_type, location)
+            self.ctx.cli_ctx, self.ctx.subscription_id, os_image_type, location, architecture)
 
     def _validate_resource_id(self, resource_id, param_name):
         """Validate Azure resource ID format."""
