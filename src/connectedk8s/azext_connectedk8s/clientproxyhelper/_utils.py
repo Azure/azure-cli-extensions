@@ -6,9 +6,11 @@
 from __future__ import annotations
 
 import base64
+import errno
 import json
 import os
 import platform
+import socket
 import sys
 import time
 from base64 import b64decode, b64encode
@@ -42,7 +44,31 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
-def check_if_port_is_open(port: int) -> bool:
+def check_if_port_is_open(port: int | str) -> bool:
+    if platform.system() == "Darwin":
+        port = int(port)
+        # macOS system-wide connection inspection can require elevated privileges.
+        for family, host in (
+            (socket.AF_INET, "127.0.0.1"),
+            (socket.AF_INET6, "::1"),
+        ):
+            try:
+                with socket.socket(family, socket.SOCK_STREAM) as probe:
+                    probe.bind((host, port))
+            except OSError as e:
+                if e.errno == errno.EADDRINUSE:
+                    return True
+                if family == socket.AF_INET6 and e.errno in (
+                    errno.EAFNOSUPPORT,
+                    errno.EADDRNOTAVAIL,
+                    errno.EPROTONOSUPPORT,
+                ):
+                    continue
+                raise CLIInternalError(
+                    f"Failed to check local proxy port {port}: {e}"
+                ) from e
+        return False
+
     try:
         connections = net_connections(kind="inet")
         for tup in connections:
