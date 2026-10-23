@@ -1,6 +1,6 @@
 # Provisioned Machine
 
-> **Preview** — This extension is currently in public preview (`1.0.0b5`).
+> **Preview** — This extension is currently in public preview (`1.0.0b8`).
 
 Manage Azure Stack HCI Edge Machines using the Azure CLI.
 
@@ -102,6 +102,10 @@ az provisionedmachine os-image list --os-image-type AzureLinux --architecture ar
 
 ### Install OS on a provisioned machine
 
+When `--os-image-version` is omitted for AzureLinux, the latest image matching
+`reportedProperties.hardwareProfile.architecture` is selected. Missing architecture
+defaults to `amd64`. An explicit version is passed unchanged to the service.
+
 ```bash
 # AzureLinux (auto-selects latest version when --os-image-version is not specified)
 az provisionedmachine install-os -g myResourceGroup -n myProvisionedMachine --os-image-type AzureLinux --ssh-public-key "ssh-rsa AAAAB3..."
@@ -114,6 +118,9 @@ az provisionedmachine install-os -g myResourceGroup -n myProvisionedMachine --os
 ```
 
 ### Reset OS on a provisioned machine
+
+Reset requests leave the maintenance/ROE image URL unset so the resource provider
+selects its configured image for the device architecture.
 
 ```bash
 az provisionedmachine reset-os -n myProvisionedMachine -g myResourceGroup
