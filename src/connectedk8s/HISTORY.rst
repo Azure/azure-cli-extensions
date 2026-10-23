@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.11.5
++++++++
+* Fix client proxy port detection on macOS without requiring system-wide connection inspection.
+
 1.11.4
 +++++++
 * Standardize error reporting for configuration input, kubectl and cluster access, network connectivity, ARM operations, Helm, pre-onboarding diagnostics, custom locations, and the client proxy.
