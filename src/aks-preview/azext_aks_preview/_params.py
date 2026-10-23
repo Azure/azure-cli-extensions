@@ -884,6 +884,7 @@ def load_arguments(self, _):
         c.argument("defender_config", validator=validate_defender_config_parameter)
         c.argument("enable_disk_driver", action="store_true")
         c.argument("disable_disk_driver", action="store_true")
+        c.argument("enable_quick_attach_detach", action="store_true", is_preview=True)
         c.argument("disable_file_driver", action="store_true")
         c.argument("enable_blob_driver", action="store_true")
         c.argument("disable_snapshot_controller", action="store_true")

@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create`: Add `--enable-quick-attach-detach` (preview) to enable Quick Attach Detach for the AzureDisk CSI Driver, which sets `storageProfile.diskCSIDriver.quickAttachDetach.enabled`.
 
 22.0.0b15
 +++++++++
