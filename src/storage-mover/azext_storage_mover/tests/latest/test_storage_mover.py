@@ -6,13 +6,31 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
+from azure.cli.core._profile import Profile
+from azure.cli.testsdk.scenario_tests.const import MOCKED_TENANT_ID
 import time
 import unittest
 from datetime import datetime, timedelta, timezone
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse, GeneralNameReplacer
+
+
+class StorageMoverTenantIdReplacer(GeneralNameReplacer):
+    def process_response(self, response):
+        response = super().process_response(response)
+        for old, new in self.names_name:
+            self.replace_header(response, 'x-ms-operation-identifier', old, new)
+        return response
 
 
 class StorageMoverScenario(ScenarioTest):
+    def setUp(self):
+        super().setUp()
+        if self.in_recording:
+            tenant_id = Profile(cli_ctx=self.cli_ctx).get_subscription()['tenantId']
+            replacer = StorageMoverTenantIdReplacer()
+            replacer.register_name_pair(tenant_id, MOCKED_TENANT_ID)
+            self.recording_processors.append(replacer)
+
     @ResourceGroupPreparer(location='westcentralus')
     def test_storage_mover_scenarios(self, resource_group):
         self.kwargs.update({
@@ -41,6 +59,7 @@ class StorageMoverScenario(ScenarioTest):
     # az storage-mover create -n teststoragemover2 -g test-storagemover-rg2
     # https://www.microsoft.com/en-us/download/details.aspx?id=104590
     # https://learn.microsoft.com/en-us/azure/storage-mover/agent-deploy?tabs=xdmshell
+    @unittest.skip("requires a disposable registered Storage Mover agent; unregistering a shared agent is unsafe")
     def test_storage_mover_agent_scenarios(self):
         self.kwargs.update({
             "rg": "test-storagemover-rg2",
@@ -85,15 +104,13 @@ class StorageMoverScenario(ScenarioTest):
                  checks=[JMESPathCheck('uploadLimitSchedule', None)])
 
     @ResourceGroupPreparer(location='westcentralus')
-    @StorageAccountPreparer()
+    @StorageAccountPreparer(kind='StorageV2', allow_shared_key_access=False)
     @AllowLargeResponse()
     def test_storage_mover_endpoint_scenarios(self, resource_group, storage_account):
         self.kwargs.update({
             "mover_name": self.create_random_name('storage-mover', 24),
             "container_name": self.create_random_name('container', 24),
             "account_name": storage_account,
-            "account_key": self.cmd('az storage account keys list -n {} -g {} --query "[0].value" '
-                                    '-otsv'.format(storage_account, resource_group)).output,
             "account_id": self.cmd('az storage account show -n {} -g {} --query id '
                                    '-otsv'.format(storage_account, resource_group)).output.strip(),
             "endpoint_container": self.create_random_name('test-ep-container', 32),
@@ -110,8 +127,8 @@ class StorageMoverScenario(ScenarioTest):
                  '--tags {{key1:value1}} --description MoverDesc')
 
         # create for storage container
-        self.cmd('az storage container create -n {container_name} --account-name {account_name} '
-                 '--account-key {account_key}')
+        self.cmd('az storage container-rm create -n {container_name} --storage-account {account_name} '
+                 '-g {rg}')
         self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '
                  '-n {endpoint_container} --container-name {container_name} --storage-account-id {account_id} '
                  '--endpoint-kind Target --description endpointDesc')
@@ -133,8 +150,8 @@ class StorageMoverScenario(ScenarioTest):
                          JMESPathCheck('properties.description', "endpointDescUpdate")])
 
         # create for storage smb file share
-        self.cmd('az storage share create -n {file_share_name} --account-name {account_name} '
-                 '--account-key {account_key}')
+        self.cmd('az storage share-rm create -n {file_share_name} --storage-account {account_name} '
+                 '-g {rg}')
         self.cmd('az storage-mover endpoint create-for-storage-smb-file-share -g {rg} '
                  '--storage-mover-name {mover_name} '
                  '-n {endpoint_file_share} --file-share-name {file_share_name} --storage-account-id {account_id} '
@@ -312,13 +329,14 @@ class StorageMoverScenario(ScenarioTest):
                  '--password-uri "https://smb-demo-kv.vault.azure.net/secrets/password" '
                  '--endpoint-kind Target --description smbTargetShouldFail',
                  expect_failure=True)
-        # #28 SmbFileShareEndpointKindSource_Fails — SmbFileShare is Target-only.
-        self.kwargs.update({"endpoint_smbfs_src_fail": self.create_random_name('smbfs-src', 24)})
+        # The May API supports Azure Storage SMB file shares as sources.
+        self.kwargs.update({"endpoint_smbfs_source": self.create_random_name('test-smbfs-src', 24)})
         self.cmd('az storage-mover endpoint create-for-storage-smb-file-share -g {rg} '
-                 '--storage-mover-name {mover_name} -n {endpoint_smbfs_src_fail} '
+                 '--storage-mover-name {mover_name} -n {endpoint_smbfs_source} '
                  '--file-share-name {file_share_name} --storage-account-id {account_id} '
-                 '--endpoint-kind Source --description smbFileShareSourceShouldFail',
-                 expect_failure=True)
+                 '--endpoint-kind Source --description smbFileShareSource',
+                 checks=[JMESPathCheck('properties.endpointType', 'AzureStorageSmbFileShare'),
+                         JMESPathCheck('properties.endpointKind', 'Source')])
         # #29 NfsFileShareEndpointKindSource_Fails — NfsFileShare is Target-only.
         self.kwargs.update({"endpoint_nfsfs_src_fail": self.create_random_name('nfsfs-src', 24)})
         self.cmd('az storage-mover endpoint create-for-storage-nfs-file-share -g {rg} '
@@ -385,7 +403,7 @@ class StorageMoverScenario(ScenarioTest):
 
 
     @ResourceGroupPreparer(location='westcentralus')
-    @StorageAccountPreparer()
+    @StorageAccountPreparer(kind='StorageV2', allow_shared_key_access=False)
     @AllowLargeResponse()
     def test_storage_mover_job_definition_scenarios(self, resource_group, storage_account):
         self.kwargs.update({
@@ -393,8 +411,6 @@ class StorageMoverScenario(ScenarioTest):
             "project_name": self.create_random_name('project', 24),
             "job_definition": self.create_random_name('jobdef', 24),
             "account_name": storage_account,
-            "account_key": self.cmd('az storage account keys list -n {} -g {} --query "[0].value" '
-                                    '-otsv'.format(storage_account, resource_group)).output,
             "account_id": self.cmd('az storage account show -n {} -g {} --query id '
                                    '-otsv'.format(storage_account, resource_group)).output.strip(),
             "source_container": self.create_random_name('srccontainer', 24),
@@ -407,10 +423,10 @@ class StorageMoverScenario(ScenarioTest):
                  '--description ProjectDesc')
 
         # create source and target containers
-        self.cmd('az storage container create -n {source_container} --account-name {account_name} '
-                 '--account-key {account_key}')
-        self.cmd('az storage container create -n {target_container} --account-name {account_name} '
-                 '--account-key {account_key}')
+        self.cmd('az storage container-rm create -n {source_container} --storage-account {account_name} '
+                 '-g {rg}')
+        self.cmd('az storage container-rm create -n {target_container} --storage-account {account_name} '
+                 '-g {rg}')
 
         # create source and target endpoints (both blob containers for cloud-to-cloud)
         self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '
@@ -1048,4 +1064,3 @@ class StorageMoverScenario(ScenarioTest):
                  '--project-name {project_name} --storage-mover-name {mover_name} -y')
         self.cmd('az storage-mover connection delete -g {rg} --storage-mover-name {mover_name} '
                  '-n {connection_name} -y')
-

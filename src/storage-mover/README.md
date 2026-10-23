@@ -1,5 +1,6 @@
 # Azure CLI StorageMover Extension #
 This is an extension to Azure CLI to manage StorageMover resources.
+It uses the stable management API version `2026-05-01`.
 
 ## How to use ##
 ### Create a top-level Storage Mover resource.
@@ -34,3 +35,51 @@ https://learn.microsoft.com/en-us/azure/storage-mover/agent-register
 
 ### Delete a Job Definition resource.
 `az storage-mover job-definition delete -g "rg" -n "job_definition" --project-name "project_name" --storage-mover-name "mover_name"`
+
+## API 2026-05-01 features ##
+
+### Cross-tenant endpoints and job definitions
+The storage container and storage SMB file share endpoint commands accept
+`--enable-cross-tenant-transfer` and `--allowed-storage-accounts`. The allow list
+contains full ARM resource IDs of storage accounts in the partner tenant.
+
+`az storage-mover endpoint create-for-storage-container -g "rg" --storage-mover-name "mover_name" -n "source_endpoint" --container-name "source_container" --storage-account-id "source_account_id" --endpoint-kind Source --enable-cross-tenant-transfer true --allowed-storage-accounts "partner_account_id"`
+
+Updating the allow list replaces the entire list. Omit the option to preserve it,
+or specify it without values to clear it:
+
+`az storage-mover endpoint update-for-storage-container -g "rg" --storage-mover-name "mover_name" -n "source_endpoint" --allowed-storage-accounts`
+
+Use the following create-only parameters for a cross-tenant job definition. Both
+endpoints must allow the other tenant's storage account:
+
+`az storage-mover job-definition create -g "rg" -n "job_definition" --project-name "project_name" --storage-mover-name "mover_name" --copy-mode Additive --job-type CloudToCloud --source-name "source_endpoint" --target-name "partner_target_endpoint" --is-cross-tenant-job true --cross-tenant-endpoint-tenant-id "partner_tenant_id" --cross-tenant-endpoint-resource-id "partner_endpoint_resource_id"`
+
+### Hourly schedules and synchronization
+Job definition create and update commands accept `Hourly` schedules with a
+`repeat-interval`, as well as `--sync-mode` and `--mover-synced-until`.
+
+`az storage-mover job-definition update -g "rg" -n "job_definition" --project-name "project_name" --storage-mover-name "mover_name" --schedule "{frequency:Hourly,repeat-interval:1h,is-active:true}"`
+
+Reconcile a running job without creating a new job definition:
+
+`az storage-mover job-definition reconcile-job -g "rg" --job-definition-name "job_definition" --project-name "project_name" --storage-mover-name "mover_name"`
+
+This action sends a bodyless POST and returns the job run resource ID.
+
+### Agentless and FSX sources
+Job definitions support `--job-type OnPremToCloudAgentLess` with `--connections`.
+NFS endpoints support `--nfs-version NFSv4_1` and `--source-type FSX-EFS`. SMB mount
+endpoints support `--source-type FSX-SMB`.
+
+`az storage-mover endpoint create-for-nfs -g "rg" --storage-mover-name "mover_name" -n "source_endpoint" --export "/export" --host "nfs.example.com" --nfs-version NFSv4_1 --source-type FSX-EFS`
+
+## Development ##
+Run recorded scenarios and offline contract tests with `azdev test storage-mover --series`.
+The self-contained scenarios use disposable resource groups and keyless StorageV2
+accounts, provisioning containers and file shares through ARM. Tenant identifiers
+are sanitized in recordings.
+
+Registered-agent scenarios are skipped until a disposable registered agent is
+available. Scenarios that depend on shared multi-cloud or private-link
+infrastructure retain their existing live-only restrictions.

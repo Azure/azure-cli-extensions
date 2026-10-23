@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-12-01",
+        "version": "2026-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/connections/{}", "2025-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/connections/{}", "2026-05-01"],
         ]
     }
 
@@ -78,7 +78,7 @@ class Create(AAZCommand):
             help="List of job definitions associated with this connection.",
         )
         _args_schema.private_link_service_id = AAZResourceIdArg(
-            options=["--private-link-service-id", "--pls-id"],
+            options=["--pls-id", "--private-link-service-id"],
             arg_group="Properties",
             help="The PrivateLinkServiceId for the connection.",
             required=True,
@@ -157,7 +157,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-12-01",
+                    "api-version", "2026-05-01",
                     required=True,
                 ),
             }
