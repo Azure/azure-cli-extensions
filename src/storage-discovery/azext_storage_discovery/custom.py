@@ -10,12 +10,35 @@
 
 from knack.log import get_logger
 
-from azure.cli.core.aaz import has_value
+from azure.cli.core.aaz import AAZBoolArg, has_value
 
+from .aaz.latest.storage_discovery.workspace import Query as _WorkspaceQuery
 from .aaz.latest.storage_discovery.workspace import Update as _WorkspaceUpdate
+from .aaz.latest.storage_discovery.workspace.report import GenerateReport as _ReportGenerateReport
 
 
 logger = get_logger(__name__)
+
+
+class WorkspaceQuery(_WorkspaceQuery):
+    AZ_SUPPORT_NO_WAIT = False
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        schema = super()._build_arguments_schema(*args, **kwargs)
+        # Generated LRO operations still read this internal argument.
+        schema.no_wait = AAZBoolArg(default=False, registered=False)
+        return schema
+
+
+class ReportGenerateReport(_ReportGenerateReport):
+    AZ_SUPPORT_NO_WAIT = False
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        schema = super()._build_arguments_schema(*args, **kwargs)
+        schema.no_wait = AAZBoolArg(default=False, registered=False)
+        return schema
 
 
 class WorkspaceUpdate(_WorkspaceUpdate):

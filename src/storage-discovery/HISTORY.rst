@@ -12,7 +12,6 @@ Release History
 * Add preview command ``az storage-discovery workspace query`` to execute queries directly against a workspace.
 * Add preview commands ``az storage-discovery workspace report list`` and ``show`` to retrieve named report resources.
 * Add preview command ``az storage-discovery workspace report generate-report`` to execute queries against a named report.
-* Support ``--no-wait`` for workspace query and named-report generation.
 
 1.0.0
 ++++++

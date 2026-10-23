@@ -10,18 +10,20 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
 
+from azure.cli.core import get_default_cli
 from azure.cli.core.aaz._command_ctx import AAZCommandCtx
 from azure.core.exceptions import HttpResponseError
 from azure.core.pipeline.policies import ContentDecodePolicy
 from azure.core.pipeline.transport import RequestsTransportResponse
 from requests import Response
 
-from azext_storage_discovery.aaz.latest.storage_discovery.workspace import Create, List, Query, Show
+from azext_storage_discovery import StorageDiscoveryCommandsLoader
+from azext_storage_discovery.aaz.latest.storage_discovery.workspace import Create, List, Show
 from azext_storage_discovery.aaz.latest.storage_discovery.workspace.report import (
-    GenerateReport,
     List as ReportList,
     Show as ReportShow,
 )
+from azext_storage_discovery.custom import ReportGenerateReport as GenerateReport, WorkspaceQuery as Query
 
 
 class StorageDiscoveryFeaturesTest(unittest.TestCase):
@@ -211,7 +213,7 @@ class StorageDiscoveryFeaturesTest(unittest.TestCase):
                     command = self.command(
                         command_type, resource_group="testrg",
                         storage_discovery_workspace_name="testworkspace",
-                        queries=[self.encoded_query], no_wait=False, **arguments,
+                        queries=[self.encoded_query], **arguments,
                     )
                     self.client.send_request.return_value = self.session({}, status=status)
                     polling = Mock()
@@ -231,21 +233,19 @@ class StorageDiscoveryFeaturesTest(unittest.TestCase):
                     sent_query = self.client._request.call_args.args[4]["queries"][0]
                     self.assertEqual(json.loads(base64.b64decode(sent_query)), self.query_payload)
 
-    def test_query_actions_no_wait_do_not_run_polling(self):
-        for command_type in (Query, GenerateReport):
+    def test_query_actions_do_not_expose_no_wait(self):
+        loader = StorageDiscoveryCommandsLoader(cli_ctx=get_default_cli())
+        loader.load_command_table([])
+        for command_name, command_type in (
+            ("storage-discovery workspace query", Query),
+            ("storage-discovery workspace report generate-report", GenerateReport),
+        ):
             with self.subTest(command=command_type.__name__):
-                arguments = {"discovery_resource_name": "testreport"} if command_type is GenerateReport else {}
-                command = self.command(
-                    command_type, resource_group="testrg", storage_discovery_workspace_name="testworkspace",
-                    queries=[self.encoded_query], no_wait=True, **arguments,
-                )
-                self.client.send_request.return_value = self.session({}, status=202)
-                polling = Mock()
-                self.client.build_lro_polling.return_value = polling
-                result = command.build_lro_poller(command._execute_operations, command._output)
-                self.assertIsNone(result)
-                self.assertTrue(self.client.build_lro_polling.call_args.args[0])
-                polling.run.assert_not_called()
+                command = loader.command_table[command_name]
+                self.assertIsInstance(command, command_type)
+                self.assertFalse(command.supports_no_wait)
+                arguments = dict(command._cli_arguments_loader())
+                self.assertNotIn("no_wait", arguments)
 
     def test_query_actions_propagate_http_errors(self):
         for command_type, operation_type in (

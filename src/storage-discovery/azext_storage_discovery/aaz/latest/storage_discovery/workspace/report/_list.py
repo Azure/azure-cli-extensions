@@ -49,7 +49,7 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg()
         _args_schema.storage_discovery_workspace_name = AAZStrArg(
-            options=["--storage-discovery-workspace-name"],
+            options=["-n", "--name", "--storage-discovery-workspace-name"],
             help="The name of the StorageDiscoveryWorkspace",
             required=True,
             fmt=AAZStrArgFormat(

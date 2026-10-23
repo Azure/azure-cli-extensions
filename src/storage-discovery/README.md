@@ -125,5 +125,5 @@ az storage-discovery workspace report generate-report \
   --queries "<base64-encoded-query-payload>"
 ```
 
-Both `workspace query` and `workspace report generate-report` support
-`--no-wait` to return without waiting for the operation to complete.
+Both `workspace query` and `workspace report generate-report` wait for the
+operation to complete and return its results. Neither command exposes `--no-wait`.

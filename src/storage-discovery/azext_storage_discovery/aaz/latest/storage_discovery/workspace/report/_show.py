@@ -46,7 +46,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.discovery_resource_name = AAZStrArg(
-            options=["-n", "--name", "--discovery-resource-name"],
+            options=["--resource-name", "--discovery-resource-name"],
             help="The name of the ReportResource",
             required=True,
             id_part="child_name_1",
@@ -58,7 +58,7 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.storage_discovery_workspace_name = AAZStrArg(
-            options=["--storage-discovery-workspace-name"],
+            options=["-n", "--name", "--storage-discovery-workspace-name"],
             help="The name of the StorageDiscoveryWorkspace",
             required=True,
             id_part="name",
