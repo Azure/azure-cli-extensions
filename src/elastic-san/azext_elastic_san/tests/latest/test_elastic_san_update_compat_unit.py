@@ -29,6 +29,9 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
         schema = ElasticSanCreate._build_arguments_schema()
         command = object.__new__(ElasticSanCreate)
         command.callbacks = {}
+        command._explicit_capacity_args = {
+            name for name in ("base_size_tib", "extended_capacity_size_tib") if name in args_data
+        }
         command.ctx = SimpleNamespace(
             args=schema._ValueCls(schema, schema.process_data(args_data)),
             get_http_client=Mock(),
@@ -69,6 +72,10 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
         })
 
     def test_v1_create_preserves_capacity_defaults(self):
+        schema = ElasticSanCreate._build_arguments_schema()
+        self.assertEqual(schema.base_size_tib._default, 20)
+        self.assertEqual(schema.extended_capacity_size_tib._default, 0)
+
         for version in ({}, {"version": "V1"}):
             with self.subTest(version=version):
                 body = self._create_body({"sku": {"name": "Premium_LRS"}, **version})

@@ -455,15 +455,28 @@ class ElasticSanCreate(_ElasticSanCreate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.base_size_tib._required = False
         args_schema.extended_capacity_size_tib._required = False
-        args_schema.base_size_tib._default = None
-        args_schema.extended_capacity_size_tib._default = None
         return args_schema
+
+    def _handler(self, command_args):
+        from azure.cli.core.aaz._arg_action import AAZArgActionOperations
+
+        capacity_args = ("base_size_tib", "extended_capacity_size_tib")
+        self._explicit_capacity_args = {  # pylint: disable=attribute-defined-outside-init
+            name for name in capacity_args
+            if isinstance(command_args.get(name), AAZArgActionOperations)
+        }
+        return super()._handler(command_args)
 
     def pre_operations(self):
         from azure.cli.core.aaz import has_value
 
         args = self.ctx.args
-        if args.version != "V2":
+        if args.version == "V2":
+            explicit_args = getattr(self, "_explicit_capacity_args", set())
+            for name in ("base_size_tib", "extended_capacity_size_tib"):
+                if name not in explicit_args:
+                    del args[name]
+        else:
             if not has_value(args.base_size_tib):
                 args.base_size_tib = 20
             if not has_value(args.extended_capacity_size_tib):
