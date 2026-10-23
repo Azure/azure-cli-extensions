@@ -14,6 +14,27 @@ Install this extension using the following CLI command `az extension add --name 
 
 Remove this extension using the following CLI command `az extension remove --name aks-preview`.
 
+Pod Snapshot Restore preview
+============================
+
+In a build containing Pod Snapshot Restore support, use the managed cluster
+profile instead of creating the extension directly::
+
+    az aks create -g MyResourceGroup -n MyCluster --enable-managed-identity --generate-ssh-keys --enable-pod-snapshot-restore
+    az aks update -g MyResourceGroup -n MyCluster --enable-pod-snapshot-restore
+    az aks update -g MyResourceGroup -n MyCluster --disable-pod-snapshot-restore
+
+The shorter aliases ``--enable-pod-snapshot`` and ``--disable-pod-snapshot``
+are also supported.
+
+Enablement requires ``Microsoft.ContainerService/PodSnapshotRestorePreview``
+registration, managed identity, and a Kubernetes version and region supported by
+the service. Feature registration alone does not make every region eligible.
+The service validates these prerequisites; the CLI does not register the feature
+or change rollout eligibility. Omitting both update flags preserves the current
+profile. These flags only set ``podSnapshotProfile.enabled``; they do not create
+storage accounts, configure broker workload identity, or configure a Kata node pool.
+
 Dependency between aks-preview and azure-cli/acs (azure-cli-core)
 =================================================================
 
