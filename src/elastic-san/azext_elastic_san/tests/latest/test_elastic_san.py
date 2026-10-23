@@ -11,19 +11,24 @@ import unittest
 
 
 class ElasticSanScenario(ScenarioTest):
-    @ResourceGroupPreparer(location='eastus2', name_prefix='clitest.rg.testelasticsan')
+    def setUp(self):
+        super().setUp()
+        # These recordings use the canary ARM endpoint; keep the override scoped to this test CLI.
+        self.cli_ctx.cloud.endpoints.resource_manager = 'https://eastus2euap.management.azure.com/'
+
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan')
     def test_elastic_san_scenarios(self, resource_group):
         self.kwargs.update({
             "san_name": self.create_random_name('elastic-san', 24),
             "san_2_name": self.create_random_name('elastic-san', 24)
         })
-        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2 '
+        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
                  '--sku {{name:Premium_LRS,tier:Premium}} --public-network-access Enabled '
                  '--auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 17 '
                  '--increase-capacity-unit-by-tib 4 --unused-size-tib 24 --availability-zones 1',
                  checks=[JMESPathCheck('name', self.kwargs.get('san_name', '')),
-                         JMESPathCheck('location', "eastus2"),
+                         JMESPathCheck('location', "eastus2euap"),
                          JMESPathCheck('tags', {"key1810": "aaaa"}),
                          JMESPathCheck('baseSizeTiB', 23),
                          JMESPathCheck('extendedCapacitySizeTiB', 14),
@@ -36,7 +41,7 @@ class ElasticSanScenario(ScenarioTest):
                          JMESPathCheck('autoScaleProperties.scaleUpProperties.unusedSizeTiB', 24)])
         self.cmd('az elastic-san show -g {rg} -n {san_name}',
                  checks=[JMESPathCheck('name', self.kwargs.get('san_name', '')),
-                         JMESPathCheck('location', "eastus2"),
+                         JMESPathCheck('location', "eastus2euap"),
                          JMESPathCheck('tags', {"key1810": "aaaa"}),
                          JMESPathCheck('baseSizeTiB', 23),
                          JMESPathCheck('extendedCapacitySizeTiB', 14),
@@ -60,16 +65,62 @@ class ElasticSanScenario(ScenarioTest):
         self.cmd('az elastic-san delete -g {rg} -n {san_name} -y')
         time.sleep(20)
         self.cmd('az elastic-san list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
-        self.cmd('az elastic-san create -n {san_2_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2 '
+        self.cmd('az elastic-san create -n {san_2_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
                  '--sku {{name:Premium_LRS,tier:Premium}} --public-network-access Enabled '
                  '--auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 17 '
                  '--increase-capacity-unit-by-tib 4 --unused-size-tib 14 --availability-zones 1',
                  checks=[JMESPathCheck('name', self.kwargs.get('san_2_name', '')),
+                         JMESPathCheck('version', 'V1'),
                          JMESPathCheck('baseSizeTiB', 20),
                          JMESPathCheck('extendedCapacitySizeTiB', 0)])
         self.cmd('az elastic-san delete -g {rg} -n {san_2_name} -y')
 
-    @ResourceGroupPreparer(location='eastus2', name_prefix='clitest.rg.testelasticsan.volumegroup')
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.v2.')
+    def test_elastic_san_v2_scenarios(self, resource_group):
+        self.kwargs.update({
+            "san_name": self.create_random_name('elastic-san', 24)
+        })
+        self.cmd('az elastic-san create -n {san_name} -g {rg} -l eastus2euap '
+                 '--sku {{name:ElasticSAN_LRS}} --version V2 '
+                 '--total-iops 100000 --total-mbps 2000 --total-size-tib 25 '
+                 '--auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 30 '
+                 '--increase-capacity-unit-by-tib 4 --unused-size-tib 14',
+                 checks=[JMESPathCheck('name', self.kwargs['san_name']),
+                         JMESPathCheck('location', 'eastus2euap'),
+                         JMESPathCheck('sku.name', 'ElasticSAN_LRS'),
+                         JMESPathCheck('version', 'V2'),
+                         JMESPathCheck('totalIops', 100000),
+                         JMESPathCheck('totalMBps', 2000),
+                         JMESPathCheck('totalSizeTiB', 25),
+                         JMESPathCheck('autoScaleProperties.scaleUpProperties.autoScalePolicyEnforcement', 'Enabled'),
+                         JMESPathCheck('autoScaleProperties.scaleUpProperties.capacityUnitScaleUpLimitTiB', 30),
+                         JMESPathCheck('autoScaleProperties.scaleUpProperties.increaseCapacityUnitByTiB', 4),
+                         JMESPathCheck('autoScaleProperties.scaleUpProperties.unusedSizeTiB', 14)])
+        self.cmd('az elastic-san show -n {san_name} -g {rg}',
+                 checks=[JMESPathCheck('version', 'V2'),
+                         JMESPathCheck('sku.name', 'ElasticSAN_LRS'),
+                         JMESPathCheck('totalIops', 100000),
+                         JMESPathCheck('totalMBps', 2000),
+                         JMESPathCheck('totalSizeTiB', 25)])
+        self.cmd('az elastic-san list -g {rg}',
+                 checks=[JMESPathCheck('length(@)', 1),
+                         JMESPathCheck('[0].name', self.kwargs['san_name']),
+                         JMESPathCheck('[0].version', 'V2')])
+        self.cmd('az elastic-san update -n {san_name} -g {rg} '
+                 '--total-iops 110000 --total-mbps 2200 --total-size-tib 26',
+                 checks=[JMESPathCheck('version', 'V2'),
+                         JMESPathCheck('sku.name', 'ElasticSAN_LRS'),
+                         JMESPathCheck('totalIops', 110000),
+                         JMESPathCheck('totalMBps', 2200),
+                         JMESPathCheck('totalSizeTiB', 26)])
+        self.cmd('az elastic-san show -n {san_name} -g {rg}',
+                 checks=[JMESPathCheck('version', 'V2'),
+                         JMESPathCheck('totalIops', 110000),
+                         JMESPathCheck('totalMBps', 2200),
+                         JMESPathCheck('totalSizeTiB', 26)])
+        self.cmd('az elastic-san delete -n {san_name} -g {rg} -y')
+
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.volumegroup')
     def test_elastic_san_volume_group_and_volume_scenarios(self, resource_group):
         self.kwargs.update({
             "san_name": self.create_random_name('elastic-san', 24),
@@ -79,7 +130,7 @@ class ElasticSanScenario(ScenarioTest):
             "subnet_name_2": self.create_random_name('subnet', 24),
             "volume_name": self.create_random_name('volume', 24)
         })
-        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2 '
+        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
                  '--sku {{name:Premium_LRS,tier:Premium}} --availability-zones 1')
         subnet_id = self.cmd('az network vnet create -g {rg} -n {vnet_name} --address-prefix 10.0.0.0/16 '
@@ -106,10 +157,9 @@ class ElasticSanScenario(ScenarioTest):
                                '--service-endpoints Microsoft.Storage').get_output_in_json()["id"]
         self.kwargs.update({"subnet_id_2": subnet_id_2})
         self.cmd('az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} '
-                 '--protocol-type None '
                  '--network-acls {{virtual-network-rules:[{{id:{subnet_id_2},action:Allow}}]}} '
                  '--enforce-data-integrity-check-for-iscsi false',
-                 checks=[JMESPathCheck('protocolType', "None"),
+                 checks=[JMESPathCheck('protocolType', "iSCSI"),
                          JMESPathCheck('networkAcls.virtualNetworkRules[0].id', subnet_id_2),
                          JMESPathCheck('enforceDataIntegrityCheckForIscsi', False)])
 
@@ -129,7 +179,7 @@ class ElasticSanScenario(ScenarioTest):
         time.sleep(20)
         self.cmd('az elastic-san delete -g {rg} -n {san_name} -y')
 
-    @ResourceGroupPreparer(location='eastus2', name_prefix='clitest.rg.testelasticsan.snapshot')
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.snapshot')
     def test_elastic_san_snapshot_scenarios(self, resource_group):
         self.kwargs.update({
             "san_name": self.create_random_name('elastic-san', 24),
@@ -142,7 +192,7 @@ class ElasticSanScenario(ScenarioTest):
             "snapshot2_name": self.create_random_name('snapshot', 24),
             "snapshot3_name": self.create_random_name('snapshot', 24)
         })
-        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2 '
+        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
                  '--sku {{name:Premium_LRS,tier:Premium}} --availability-zones 1')
         self.cmd('az network vnet create -g {rg} -n {vnet_name} --address-prefix 10.0.0.0/16')
@@ -158,7 +208,9 @@ class ElasticSanScenario(ScenarioTest):
                              '-n {volume_name}').get_output_in_json()["id"]
         self.kwargs.update({"volume_id": volume_id})
         self.cmd('az elastic-san volume snapshot create -g {rg} -e {san_name} -v {vg_name} -n {snapshot_name} '
-                 '--creation-data {{source-id:{volume_id}}}')
+                 '--creation-data {{source-id:{volume_id}}}',
+                 checks=[JMESPathCheck('name', self.kwargs.get('snapshot_name', '')),
+                         JMESPathCheck('creationData.sourceId', self.kwargs.get("volume_id"))])
         self.cmd('az elastic-san volume snapshot show -g {rg} -e {san_name} -v {vg_name} -n {snapshot_name}',
                  checks=[JMESPathCheck('name', self.kwargs.get('snapshot_name', '')),
                          JMESPathCheck('creationData.sourceId', self.kwargs.get("volume_id"))])
@@ -186,7 +238,7 @@ class ElasticSanScenario(ScenarioTest):
         time.sleep(20)
         self.cmd('az elastic-san delete -g {rg} -n {san_name} -y')
 
-    @ResourceGroupPreparer(location='eastus2', name_prefix='clitest.rg.testelasticsan.cmk.sai.')
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.cmk.sai.')
     def test_elastic_san_customer_managed_key_system_assigned_identity_scenarios(self, resource_group):
         logged_in_user = self.cmd('ad signed-in-user show').get_output_in_json()
         logged_in_user = logged_in_user["id"] if logged_in_user is not None else "a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e"
@@ -200,11 +252,11 @@ class ElasticSanScenario(ScenarioTest):
             "vg_name": self.create_random_name('volume-group', 24),
             "volume_name": self.create_random_name('volume', 24)
         })
-        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2 '
+        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
                  '--sku {{name:Premium_LRS,tier:Premium}} --availability-zones 1')
         # 1. Create a key vault with a key in it. Key type should be RSA
-        self.cmd('az keyvault create --name {kv_name} --resource-group {rg} --location eastus2 '
+        self.cmd('az keyvault create --name {kv_name} --resource-group {rg} --location eastus2euap '
                  '--enable-purge-protection --retention-days 7 --enable-rbac-authorization false')
         kv = self.cmd('az keyvault show --name {kv_name} --resource-group {rg}').get_output_in_json()
         self.kwargs.update({"vault_uri": kv["properties"]["vaultUri"]})
@@ -238,7 +290,7 @@ class ElasticSanScenario(ScenarioTest):
         time.sleep(20)
         self.cmd('az elastic-san delete -g {rg} -n {san_name} -y')
 
-    @ResourceGroupPreparer(location='eastus2', name_prefix='clitest.rg.testelasticsan.cmk.uai.')
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.cmk.uai.')
     def test_elastic_san_customer_managed_key_user_assigned_identity_scenarios(self, resource_group):
         logged_in_user = self.cmd('ad signed-in-user show').get_output_in_json()
         logged_in_user = logged_in_user["id"] if logged_in_user is not None else "a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e"
@@ -254,7 +306,7 @@ class ElasticSanScenario(ScenarioTest):
             "vg_name": self.create_random_name('volume-group', 24),
             "volume_name": self.create_random_name('volume', 24)
         })
-        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2 '
+        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
                  '--sku {{name:Premium_LRS,tier:Premium}} --availability-zones 1')
         # 1. Create a user assigned identity and grant it the access to the key vault
@@ -262,7 +314,7 @@ class ElasticSanScenario(ScenarioTest):
         self.kwargs.update({"uai_principal_id": uai["principalId"],
                             "uai_id": uai["id"],
                             "uai_client_id": uai["clientId"]})
-        self.cmd('az keyvault create --name {kv_name} --resource-group {rg} --location eastus2 '
+        self.cmd('az keyvault create --name {kv_name} --resource-group {rg} --location eastus2euap '
                  '--enable-purge-protection --retention-days 7 --enable-rbac-authorization false')
         kv = self.cmd('az keyvault show --name {kv_name} --resource-group {rg}').get_output_in_json()
         self.kwargs.update({"vault_uri": kv["properties"]["vaultUri"]})
@@ -297,8 +349,18 @@ class ElasticSanScenario(ScenarioTest):
                             "uai_2_client_id": uai_2["clientId"]})
         self.cmd('az keyvault set-policy -n {kv_name} --object-id {uai_2_principal_id} '
                  '--key-permissions get wrapkey unwrapkey ')
+        # Release the encryption dependency before removing the current identity.
+        self.cmd("az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} "
+                 "--encryption EncryptionAtRestWithPlatformKey",
+                 checks=[JMESPathCheck('encryption', "EncryptionAtRestWithPlatformKey")])
+        self.cmd("az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} "
+                 "--identity {{type:None}}",
+                 checks=[JMESPathCheck('encryption', "EncryptionAtRestWithPlatformKey"),
+                         JMESPathCheck("identity.type || 'None'", "None"),
+                         JMESPathCheck('length(keys(identity.userAssignedIdentities || `{}`))', 0)])
         self.cmd("az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} --identity "
-                 "{{type:UserAssigned,user-assigned-identity:{uai_2_id}}} --encryption-properties "
+                 "{{type:UserAssigned,user-assigned-identity:{uai_2_id}}} "
+                 "--encryption EncryptionAtRestWithCustomerManagedKey --encryption-properties "
                  "\"{{key-vault-properties:{{key-name:{key_name},key-vault-uri:\'{vault_uri}\'}},"
                  "identity:{{user-assigned-identity:{uai_2_id}}}}}\"",
                  checks=[JMESPathCheck('encryption', "EncryptionAtRestWithCustomerManagedKey"),
@@ -315,15 +377,22 @@ class ElasticSanScenario(ScenarioTest):
                  "--encryption EncryptionAtRestWithPlatformKey",
                  checks=[JMESPathCheck('encryption', "EncryptionAtRestWithPlatformKey"),
                          ]).get_output_in_json()
+        self.cmd("az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} "
+                 "--identity {{type:None}}",
+                 checks=[JMESPathCheck('encryption', "EncryptionAtRestWithPlatformKey"),
+                         JMESPathCheck("identity.type || 'None'", "None"),
+                         JMESPathCheck('length(keys(identity.userAssignedIdentities || `{}`))', 0)])
 
         # 5. Change to system assigned identity
         self.cmd("az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} "
                  "--identity {{type:SystemAssigned}}",
-                 checks=[JMESPathCheck('identity.type', "SystemAssigned")
+                 checks=[JMESPathCheck('encryption', "EncryptionAtRestWithPlatformKey"),
+                         JMESPathCheck('identity.type', "SystemAssigned"),
+                         JMESPathCheck('length(keys(identity.userAssignedIdentities || `{}`))', 0)
                          ]).get_output_in_json()
 
     @unittest.skip("Soft delete has been disabled in service for this release, skipping until later")
-    @ResourceGroupPreparer(location='eastus2', name_prefix='clitest.rg.testelasticsan.softdelete')
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.softdelete')
     def test_elastic_san_soft_delete_scenarios(self, resource_group):
         self.kwargs.update({
             "san_name": self.create_random_name('elastic-san', 24),
@@ -334,7 +403,7 @@ class ElasticSanScenario(ScenarioTest):
             "volume_name": self.create_random_name('volume', 24),
             "volume2_name": self.create_random_name('volume', 24)
         })
-        self.cmd('az elastic-san create -n {san_name} -g {rg} -l eastus2 '
+        self.cmd('az elastic-san create -n {san_name} -g {rg} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
                  '--sku {{name:Premium_LRS,tier:Premium}} --availability-zones 1 '
                  '--auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 40 '
@@ -388,7 +457,7 @@ class ElasticSanScenario(ScenarioTest):
         self.cmd('az elastic-san volume list -g {rg} -e {san_name} -v {vg_name} --access-soft-deleted-resources true',
                  checks=[JMESPathCheck('length(@)', 0)])
 
-    @ResourceGroupPreparer(location='eastus2', name_prefix='clitest.rg.testelasticsan.testrestore')
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.testrestore')
     def test_elastic_san_test_restore_backup_scenarios(self, resource_group):
         self.kwargs.update({
             "san_name": self.create_random_name('elastic-san', 24),
@@ -398,7 +467,7 @@ class ElasticSanScenario(ScenarioTest):
             "volume_name": self.create_random_name('volume', 24),
             "snapshot_name": self.create_random_name('snapshot', 24)
         })
-        self.cmd('az elastic-san create -n {san_name} -g {rg} -l eastus2 '
+        self.cmd('az elastic-san create -n {san_name} -g {rg} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
                  '--sku {{name:Premium_LRS,tier:Premium}} --availability-zones 1 '
                  '--auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 40 '

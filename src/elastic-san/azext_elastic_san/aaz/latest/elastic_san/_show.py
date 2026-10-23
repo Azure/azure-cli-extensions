@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -125,7 +125,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -189,11 +189,9 @@ class Show(AAZCommand):
             )
             properties.base_size_ti_b = AAZIntType(
                 serialized_name="baseSizeTiB",
-                flags={"required": True},
             )
             properties.extended_capacity_size_ti_b = AAZIntType(
                 serialized_name="extendedCapacitySizeTiB",
-                flags={"required": True},
             )
             properties.private_endpoint_connections = AAZListType(
                 serialized_name="privateEndpointConnections",
@@ -211,20 +209,30 @@ class Show(AAZCommand):
             )
             properties.total_iops = AAZIntType(
                 serialized_name="totalIops",
-                flags={"read_only": True},
             )
             properties.total_m_bps = AAZIntType(
                 serialized_name="totalMBps",
+            )
+            properties.total_reserved_iops = AAZIntType(
+                serialized_name="totalReservedIops",
+                flags={"read_only": True},
+            )
+            properties.total_reserved_m_bps = AAZIntType(
+                serialized_name="totalReservedMBps",
                 flags={"read_only": True},
             )
             properties.total_size_ti_b = AAZIntType(
                 serialized_name="totalSizeTiB",
-                flags={"read_only": True},
             )
             properties.total_volume_size_gi_b = AAZIntType(
                 serialized_name="totalVolumeSizeGiB",
                 flags={"read_only": True},
             )
+            properties.used_capacity_gi_b = AAZIntType(
+                serialized_name="usedCapacityGiB",
+                flags={"read_only": True},
+            )
+            properties.version = AAZStrType()
             properties.volume_group_count = AAZIntType(
                 serialized_name="volumeGroupCount",
                 flags={"read_only": True},

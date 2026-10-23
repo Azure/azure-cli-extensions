@@ -29,20 +29,21 @@ class Update(AAZCommand):
     :example: Update volume group back to PlatformManagedKey
         az elastic-san volume-group update -e "san_name" -n "vg_name" -g "rg" --encryption EncryptionAtRestWithPlatformKey
 
+    :example: Update Volume Group with Network ACLs
+        az elastic-san volume-group update --resource-group resourcegroupname --elastic-san-name elasticsanname --volume-group-name volumegroupname --network-acls "{virtual-network-rules:[{action:Allow,id:fhhawhc}]}"
+
     :example: Update volume group back to SystemAssignedIdentity
         az elastic-san volume-group update -e "san_name" -n "vg_name" -g "rg" --identity '{type:SystemAssigned}'
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2026-05-01-preview"],
         ]
     }
 
     AZ_SUPPORT_NO_WAIT = True
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -85,139 +86,150 @@ class Update(AAZCommand):
             ),
         )
 
-        # define Arg Group "Parameters"
+        # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
-        _args_schema.identity = AAZObjectArg(
-            options=["--identity"],
-            arg_group="Parameters",
-            help="The identity of the resource.",
-            nullable=True,
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Identity",
+            help="Set the system managed identity.",
+            blank="True",
         )
 
-        identity = cls._args_schema.identity
-        identity.type = AAZStrArg(
-            options=["type"],
-            help="The identity type.",
-            enum={"None": "None", "SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"},
-        )
-        identity.user_assigned_identities = AAZDictArg(
-            options=["user-assigned-identities"],
-            help="Gets or sets a list of key value pairs that describe the set of User Assigned identities that will be used with this volume group. The key is the ARM resource identifier of the identity.",
-            nullable=True,
+        # define Arg Group "Parameters.identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.user_assigned_identity = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned", "--user-assigned-identity"],
+            arg_group="Parameters.identity",
+            help="Set the user managed identities.",
+            blank=[],
         )
 
-        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectArg(
-            nullable=True,
-            blank={},
-        )
+        user_assigned_identity = cls._args_schema.user_assigned_identity
+        user_assigned_identity.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.delete_retention_policy = AAZObjectArg(
+            options=["--delete-retention-policy"],
+            arg_group="Properties",
+            help="The retention policy for the soft deleted volume group and its associated resources",
+        )
         _args_schema.encryption = AAZStrArg(
             options=["--encryption"],
             arg_group="Properties",
             help="Type of encryption",
-            nullable=True,
             enum={"EncryptionAtRestWithCustomerManagedKey": "EncryptionAtRestWithCustomerManagedKey", "EncryptionAtRestWithPlatformKey": "EncryptionAtRestWithPlatformKey"},
         )
         _args_schema.encryption_properties = AAZObjectArg(
             options=["--encryption-properties"],
             arg_group="Properties",
             help="Encryption Properties describing Key Vault and Identity information",
-            nullable=True,
         )
         _args_schema.enforce_data_integrity_check_for_iscsi = AAZBoolArg(
             options=["--data-integrity-check", "--enforce-data-integrity-check-for-iscsi"],
             arg_group="Properties",
             help="A boolean indicating whether or not Data Integrity Check is enabled",
-            nullable=True,
         )
         _args_schema.network_acls = AAZObjectArg(
             options=["--network-acls"],
             arg_group="Properties",
             help="A collection of rules governing the accessibility from specific network locations.",
-            nullable=True,
         )
         _args_schema.protocol_type = AAZStrArg(
             options=["--protocol-type"],
             arg_group="Properties",
             help="Type of storage target",
-            nullable=True,
-            enum={"Iscsi": "Iscsi", "None": "None"},
+            enum={"DirectAttach": "DirectAttach", "Iscsi": "Iscsi", "None": "None"},
+        )
+        _args_schema.reserved_iops = AAZIntArg(
+            options=["--reserved-iops"],
+            arg_group="Properties",
+            help="Reserved IOPS allocated for this volume group, applicable for QualityOfService PerformanceCritical only.",
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
+        )
+        _args_schema.reserved_mbps = AAZIntArg(
+            options=["--reserved-mbps"],
+            arg_group="Properties",
+            help="Reserved MBps allocated for this volume group, applicable for QualityOfService PerformanceCritical only.",
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
+        )
+
+        delete_retention_policy = cls._args_schema.delete_retention_policy
+        delete_retention_policy.policy_state = AAZStrArg(
+            options=["policy-state"],
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        delete_retention_policy.retention_period_days = AAZIntArg(
+            options=["retention-period-days"],
+            help="The number of days to retain the resources after deletion.",
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
         )
 
         encryption_properties = cls._args_schema.encryption_properties
         encryption_properties.identity = AAZObjectArg(
             options=["identity"],
             help="The identity to be used with service-side encryption at rest.",
-            nullable=True,
         )
         encryption_properties.key_vault_properties = AAZObjectArg(
             options=["key-vault-properties"],
             help="Properties provided by key vault.",
-            nullable=True,
         )
 
         identity = cls._args_schema.encryption_properties.identity
         identity.user_assigned_identity = AAZStrArg(
             options=["user-assigned-identity"],
             help="Resource identifier of the UserAssigned identity to be associated with server-side encryption on the volume group.",
-            nullable=True,
         )
 
         key_vault_properties = cls._args_schema.encryption_properties.key_vault_properties
         key_vault_properties.key_name = AAZStrArg(
             options=["key-name"],
             help="The name of KeyVault key.",
-            nullable=True,
         )
         key_vault_properties.key_vault_uri = AAZStrArg(
             options=["key-vault-uri"],
             help="The Uri of KeyVault.",
-            nullable=True,
         )
         key_vault_properties.key_version = AAZStrArg(
             options=["key-version"],
             help="The version of KeyVault key.",
-            nullable=True,
         )
 
         network_acls = cls._args_schema.network_acls
         network_acls.virtual_network_rules = AAZListArg(
             options=["virtual-network-rules"],
             help="The list of virtual network rules.",
-            nullable=True,
         )
 
         virtual_network_rules = cls._args_schema.network_acls.virtual_network_rules
-        virtual_network_rules.Element = AAZObjectArg(
-            nullable=True,
-        )
+        virtual_network_rules.Element = AAZObjectArg()
 
         _element = cls._args_schema.network_acls.virtual_network_rules.Element
         _element.action = AAZStrArg(
             options=["action"],
             help="The action of virtual network rule.",
-            nullable=True,
+            default="Allow",
             enum={"Allow": "Allow"},
         )
         _element.id = AAZStrArg(
             options=["id"],
             help="Resource ID of a subnet, for example: /subscriptions/{subscriptionId}/resourceGroups/{groupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}.",
+            required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.VolumeGroupsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        yield self.VolumeGroupsCreate(ctx=self.ctx)()
+        yield self.VolumeGroupsUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -228,106 +240,11 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class VolumeGroupsGet(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumegroups/{volumeGroupName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "elasticSanName", self.ctx.args.elastic_san_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "volumeGroupName", self.ctx.args.volume_group_name,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2025-09-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_volume_group_read(cls._schema_on_200)
-
-            return cls._schema_on_200
-
-    class VolumeGroupsCreate(AAZHttpOperation):
+    class VolumeGroupsUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -337,16 +254,16 @@ class Update(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200, 201]:
+            if session.http_response.status_code in [200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -363,7 +280,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -395,7 +312,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -417,61 +334,36 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_volume_group_read(cls._schema_on_200_201)
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
-            )
-            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             identity = _builder.get(".identity")
             if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+                identity.set_prop("userAssigned", AAZListType, ".user_assigned_identity", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
 
-            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
-            if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".")
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("deleteRetentionPolicy", AAZObjectType, ".delete_retention_policy")
                 properties.set_prop("encryption", AAZStrType, ".encryption")
                 properties.set_prop("encryptionProperties", AAZObjectType, ".encryption_properties")
                 properties.set_prop("enforceDataIntegrityCheckForIscsi", AAZBoolType, ".enforce_data_integrity_check_for_iscsi")
                 properties.set_prop("networkAcls", AAZObjectType, ".network_acls")
                 properties.set_prop("protocolType", AAZStrType, ".protocol_type")
+                properties.set_prop("reservedIops", AAZIntType, ".reserved_iops")
+                properties.set_prop("reservedMBps", AAZIntType, ".reserved_mbps")
+
+            delete_retention_policy = _builder.get(".properties.deleteRetentionPolicy")
+            if delete_retention_policy is not None:
+                delete_retention_policy.set_prop("policyState", AAZStrType, ".policy_state")
+                delete_retention_policy.set_prop("retentionPeriodDays", AAZIntType, ".retention_period_days")
 
             encryption_properties = _builder.get(".properties.encryptionProperties")
             if encryption_properties is not None:
@@ -501,15 +393,222 @@ class Update(AAZCommand):
                 _elements.set_prop("action", AAZStrType, ".action")
                 _elements.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
 
-            return _instance_value
+            return self.serialize_content(_content_value)
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
             )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.identity = AAZIdentityObjectType()
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _UpdateHelper._build_schema_system_data_read(_schema_on_200.system_data)
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.delete_retention_policy = AAZObjectType(
+                serialized_name="deleteRetentionPolicy",
+            )
+            properties.encryption = AAZStrType()
+            properties.encryption_in_transit = AAZBoolType(
+                serialized_name="encryptionInTransit",
+            )
+            properties.encryption_properties = AAZObjectType(
+                serialized_name="encryptionProperties",
+            )
+            properties.enforce_data_integrity_check_for_iscsi = AAZBoolType(
+                serialized_name="enforceDataIntegrityCheckForIscsi",
+            )
+            properties.network_acls = AAZObjectType(
+                serialized_name="networkAcls",
+            )
+            properties.private_endpoint_connections = AAZListType(
+                serialized_name="privateEndpointConnections",
+                flags={"read_only": True},
+            )
+            properties.protocol_type = AAZStrType(
+                serialized_name="protocolType",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.quality_of_service = AAZStrType(
+                serialized_name="qualityOfService",
+            )
+            properties.reserved_iops = AAZIntType(
+                serialized_name="reservedIops",
+            )
+            properties.reserved_m_bps = AAZIntType(
+                serialized_name="reservedMBps",
+            )
+
+            delete_retention_policy = cls._schema_on_200.properties.delete_retention_policy
+            delete_retention_policy.policy_state = AAZStrType(
+                serialized_name="policyState",
+            )
+            delete_retention_policy.retention_period_days = AAZIntType(
+                serialized_name="retentionPeriodDays",
+            )
+
+            encryption_properties = cls._schema_on_200.properties.encryption_properties
+            encryption_properties.identity = AAZObjectType()
+            encryption_properties.key_vault_properties = AAZObjectType(
+                serialized_name="keyVaultProperties",
+            )
+
+            identity = cls._schema_on_200.properties.encryption_properties.identity
+            identity.user_assigned_identity = AAZStrType(
+                serialized_name="userAssignedIdentity",
+            )
+
+            key_vault_properties = cls._schema_on_200.properties.encryption_properties.key_vault_properties
+            key_vault_properties.current_versioned_key_expiration_timestamp = AAZStrType(
+                serialized_name="currentVersionedKeyExpirationTimestamp",
+                flags={"read_only": True},
+            )
+            key_vault_properties.current_versioned_key_identifier = AAZStrType(
+                serialized_name="currentVersionedKeyIdentifier",
+                flags={"read_only": True},
+            )
+            key_vault_properties.key_name = AAZStrType(
+                serialized_name="keyName",
+            )
+            key_vault_properties.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
+            )
+            key_vault_properties.key_version = AAZStrType(
+                serialized_name="keyVersion",
+            )
+            key_vault_properties.last_key_rotation_timestamp = AAZStrType(
+                serialized_name="lastKeyRotationTimestamp",
+                flags={"read_only": True},
+            )
+
+            network_acls = cls._schema_on_200.properties.network_acls
+            network_acls.virtual_network_rules = AAZListType(
+                serialized_name="virtualNetworkRules",
+            )
+
+            virtual_network_rules = cls._schema_on_200.properties.network_acls.virtual_network_rules
+            virtual_network_rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.network_acls.virtual_network_rules.Element
+            _element.action = AAZStrType()
+            _element.id = AAZStrType(
+                flags={"required": True},
+            )
+
+            private_endpoint_connections = cls._schema_on_200.properties.private_endpoint_connections
+            private_endpoint_connections.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.private_endpoint_connections.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _UpdateHelper._build_schema_system_data_read(_element.system_data)
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties.private_endpoint_connections.Element.properties
+            properties.group_ids = AAZListType(
+                serialized_name="groupIds",
+            )
+            properties.private_endpoint = AAZObjectType(
+                serialized_name="privateEndpoint",
+            )
+            properties.private_link_service_connection_state = AAZObjectType(
+                serialized_name="privateLinkServiceConnectionState",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            group_ids = cls._schema_on_200.properties.private_endpoint_connections.Element.properties.group_ids
+            group_ids.Element = AAZStrType()
+
+            private_endpoint = cls._schema_on_200.properties.private_endpoint_connections.Element.properties.private_endpoint
+            private_endpoint.id = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            private_link_service_connection_state = cls._schema_on_200.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
+            private_link_service_connection_state.actions_required = AAZStrType(
+                serialized_name="actionsRequired",
+            )
+            private_link_service_connection_state.description = AAZStrType()
+            private_link_service_connection_state.status = AAZStrType()
+
+            return cls._schema_on_200
 
 
 class _UpdateHelper:
@@ -558,201 +657,6 @@ class _UpdateHelper:
         _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
         _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
         _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
-
-    _schema_volume_group_read = None
-
-    @classmethod
-    def _build_schema_volume_group_read(cls, _schema):
-        if cls._schema_volume_group_read is not None:
-            _schema.id = cls._schema_volume_group_read.id
-            _schema.identity = cls._schema_volume_group_read.identity
-            _schema.name = cls._schema_volume_group_read.name
-            _schema.properties = cls._schema_volume_group_read.properties
-            _schema.system_data = cls._schema_volume_group_read.system_data
-            _schema.type = cls._schema_volume_group_read.type
-            return
-
-        cls._schema_volume_group_read = _schema_volume_group_read = AAZObjectType()
-
-        volume_group_read = _schema_volume_group_read
-        volume_group_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        volume_group_read.identity = AAZIdentityObjectType()
-        volume_group_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        volume_group_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        volume_group_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        cls._build_schema_system_data_read(volume_group_read.system_data)
-        volume_group_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        identity = _schema_volume_group_read.identity
-        identity.principal_id = AAZStrType(
-            serialized_name="principalId",
-            flags={"read_only": True},
-        )
-        identity.tenant_id = AAZStrType(
-            serialized_name="tenantId",
-            flags={"read_only": True},
-        )
-        identity.type = AAZStrType(
-            flags={"required": True},
-        )
-        identity.user_assigned_identities = AAZDictType(
-            serialized_name="userAssignedIdentities",
-        )
-
-        user_assigned_identities = _schema_volume_group_read.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectType()
-
-        _element = _schema_volume_group_read.identity.user_assigned_identities.Element
-        _element.client_id = AAZStrType(
-            serialized_name="clientId",
-            flags={"read_only": True},
-        )
-        _element.principal_id = AAZStrType(
-            serialized_name="principalId",
-            flags={"read_only": True},
-        )
-
-        properties = _schema_volume_group_read.properties
-        properties.encryption = AAZStrType()
-        properties.encryption_properties = AAZObjectType(
-            serialized_name="encryptionProperties",
-        )
-        properties.enforce_data_integrity_check_for_iscsi = AAZBoolType(
-            serialized_name="enforceDataIntegrityCheckForIscsi",
-        )
-        properties.network_acls = AAZObjectType(
-            serialized_name="networkAcls",
-        )
-        properties.private_endpoint_connections = AAZListType(
-            serialized_name="privateEndpointConnections",
-            flags={"read_only": True},
-        )
-        properties.protocol_type = AAZStrType(
-            serialized_name="protocolType",
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-
-        encryption_properties = _schema_volume_group_read.properties.encryption_properties
-        encryption_properties.identity = AAZObjectType()
-        encryption_properties.key_vault_properties = AAZObjectType(
-            serialized_name="keyVaultProperties",
-        )
-
-        identity = _schema_volume_group_read.properties.encryption_properties.identity
-        identity.user_assigned_identity = AAZStrType(
-            serialized_name="userAssignedIdentity",
-        )
-
-        key_vault_properties = _schema_volume_group_read.properties.encryption_properties.key_vault_properties
-        key_vault_properties.current_versioned_key_expiration_timestamp = AAZStrType(
-            serialized_name="currentVersionedKeyExpirationTimestamp",
-            flags={"read_only": True},
-        )
-        key_vault_properties.current_versioned_key_identifier = AAZStrType(
-            serialized_name="currentVersionedKeyIdentifier",
-            flags={"read_only": True},
-        )
-        key_vault_properties.key_name = AAZStrType(
-            serialized_name="keyName",
-        )
-        key_vault_properties.key_vault_uri = AAZStrType(
-            serialized_name="keyVaultUri",
-        )
-        key_vault_properties.key_version = AAZStrType(
-            serialized_name="keyVersion",
-        )
-        key_vault_properties.last_key_rotation_timestamp = AAZStrType(
-            serialized_name="lastKeyRotationTimestamp",
-            flags={"read_only": True},
-        )
-
-        network_acls = _schema_volume_group_read.properties.network_acls
-        network_acls.virtual_network_rules = AAZListType(
-            serialized_name="virtualNetworkRules",
-        )
-
-        virtual_network_rules = _schema_volume_group_read.properties.network_acls.virtual_network_rules
-        virtual_network_rules.Element = AAZObjectType()
-
-        _element = _schema_volume_group_read.properties.network_acls.virtual_network_rules.Element
-        _element.action = AAZStrType()
-        _element.id = AAZStrType(
-            flags={"required": True},
-        )
-
-        private_endpoint_connections = _schema_volume_group_read.properties.private_endpoint_connections
-        private_endpoint_connections.Element = AAZObjectType()
-
-        _element = _schema_volume_group_read.properties.private_endpoint_connections.Element
-        _element.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
-        )
-        _element.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        cls._build_schema_system_data_read(_element.system_data)
-        _element.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        properties = _schema_volume_group_read.properties.private_endpoint_connections.Element.properties
-        properties.group_ids = AAZListType(
-            serialized_name="groupIds",
-        )
-        properties.private_endpoint = AAZObjectType(
-            serialized_name="privateEndpoint",
-        )
-        properties.private_link_service_connection_state = AAZObjectType(
-            serialized_name="privateLinkServiceConnectionState",
-            flags={"required": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-
-        group_ids = _schema_volume_group_read.properties.private_endpoint_connections.Element.properties.group_ids
-        group_ids.Element = AAZStrType()
-
-        private_endpoint = _schema_volume_group_read.properties.private_endpoint_connections.Element.properties.private_endpoint
-        private_endpoint.id = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        private_link_service_connection_state = _schema_volume_group_read.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
-        private_link_service_connection_state.actions_required = AAZStrType(
-            serialized_name="actionsRequired",
-        )
-        private_link_service_connection_state.description = AAZStrType()
-        private_link_service_connection_state.status = AAZStrType()
-
-        _schema.id = cls._schema_volume_group_read.id
-        _schema.identity = cls._schema_volume_group_read.identity
-        _schema.name = cls._schema_volume_group_read.name
-        _schema.properties = cls._schema_volume_group_read.properties
-        _schema.system_data = cls._schema_volume_group_read.system_data
-        _schema.type = cls._schema_volume_group_read.type
 
 
 __all__ = ["Update"]
