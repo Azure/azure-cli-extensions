@@ -55,6 +55,7 @@ def _is_wow64_process():
 
 def _get_native_program_files_path():
     import ntpath
+
     try:
         import winreg
     except ImportError as error:

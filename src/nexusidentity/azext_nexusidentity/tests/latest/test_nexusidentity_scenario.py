@@ -43,7 +43,10 @@ class NexusidentityScenarioTest(ScenarioTest):
                     return key_directory
                 return expanduser(path)
 
-            with patch.object(
+            with patch(
+                "azure.cli.core.extension.DEV_EXTENSION_SOURCES",
+                [os.path.dirname(os.path.dirname(os.path.abspath(custom.__file__)))],
+            ), patch.object(
                 custom, "get_windows_ssh_keygen_path", return_value="ssh-keygen"
             ), patch.object(
                 custom.os.path, "expanduser", side_effect=isolated_home
@@ -80,19 +83,30 @@ class NexusidentityScenarioTest(ScenarioTest):
                             [
                                 call(
                                     [
-                                        "ssh-keygen", "-t", algorithm,
-                                        "-O", "resident", "-O", "verify-required",
-                                        "-C", "NexusIdentitySSHKey",
-                                        "-f", os.path.join(key_directory, key_name),
+                                        "ssh-keygen",
+                                        "-t",
+                                        algorithm,
+                                        "-O",
+                                        "resident",
+                                        "-O",
+                                        "verify-required",
+                                        "-C",
+                                        "NexusIdentitySSHKey",
+                                        "-f",
+                                        os.path.join(key_directory, key_name),
                                     ],
                                     check=True,
                                     shell=False,
                                 ),
                                 call(
                                     [
-                                        "az", "account", "get-access-token",
-                                        "--resource", "https://graph.microsoft.com",
-                                        "--output", "json",
+                                        "az",
+                                        "account",
+                                        "get-access-token",
+                                        "--resource",
+                                        "https://graph.microsoft.com",
+                                        "--output",
+                                        "json",
                                     ],
                                     capture_output=True,
                                     text=True,
