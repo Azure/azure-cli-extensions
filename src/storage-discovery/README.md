@@ -107,7 +107,7 @@ Retrieve an existing named report resource:
 az storage-discovery workspace report show \
   --resource-group myRG \
   --storage-discovery-workspace-name myWorkspace \
-  --name myReport
+  --discovery-resource-name myReport
 ```
 
 ### az storage-discovery workspace report generate-report

@@ -19,7 +19,7 @@ class GenerateReport(AAZCommand):
     """A long-running resource action.
 
     :example: Generate the StorageDiscoveryWorkspace data query
-        az storage-discovery workspace report generate-report --resource-group sample-rg --storage-discovery-workspace-name Sample-Storage-Workspace --discovery-resource-name reportTest2 --queries "[Q2FwYWNpdHlIb3VybHkgfCBzdW1tYXJpemUgc3VtKHRvdGFsT2JqZWN0U2l6ZUJ5dGVzKSBieSB0aW1lUGVyaW9k,Q2FwYWNpdHlIb3VybHkgfCBzdW1tYXJpemUgc3VtKHRvdGFsT2JqZWN0U2l6ZUJ5dGVzKSBieSzzzzzzzzzzzz]"
+        az storage-discovery workspace report generate-report --resource-group sample-rg --storage-discovery-workspace-name Sample-Storage-Workspace --discovery-resource-name reportTest2 --queries "[eyJxdWVyaWVzIjpbeyJuYW1lIjoiY2FwYWNpdHkiLCJxdWVyeSI6IkNhcGFjaXR5SG91cmx5IHwgdGFrZSAxIn1dfQ==]"
     """
 
     _aaz_info = {
