@@ -53,6 +53,9 @@ Release History
   finding catalogs, independent of later package versions.
 * Exclude dedicated native test/state directories and raw TRX from deployment
   packages, refusing colocation with runtime content rather than omitting it.
+* Package SDK-based codeful projects through isolated Release/net8.0 publish
+  output under ``lib/codeful``, with worker metadata normalization and validation
+  while preserving deterministic codeless packaging.
 * Normalize omitted context-create ports at the real CLI boundary to 7071,
   without weakening explicit-port or stored-context validation.
 * Escape OAuth callback details as HTML text and bound accepted-client reads
