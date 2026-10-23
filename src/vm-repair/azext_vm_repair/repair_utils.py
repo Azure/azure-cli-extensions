@@ -114,14 +114,14 @@ def _is_unsafe_command_value(value):
     )
 
 
-def _validate_command_token(token, field_name=None, tag_style=False, uri=False):
+def _validate_command_token(token, field_name=None, tag_style=False, uri=False, file_reference=False):
     """
     Validate an original value before it is placed into a legacy command.
     Omit the token from errors because it may carry a secret.
     """
     unsafe = ('"' in token or any(ord(char) < 32 or ord(char) == 127 for char in token)) if uri else \
         _is_unsafe_command_value(token)
-    if not tag_style and not uri:
+    if not tag_style and not uri and not (file_reference and token.startswith('@')):
         unsafe = unsafe or any(char in token for char in "'&|<>()^$`;")
     if unsafe:
         where = f' (from {field_name})' if field_name else ''
@@ -157,8 +157,13 @@ def _validate_command_values(command_string, field_name=None):
 
 def _validate_legacy_tokens(tokens, field_name=None):
     query = False
+    run_command = tokens[:3] == ['vm', 'run-command', 'invoke']
+    script_files = False
     for token in tokens:
-        _validate_command_token(token, field_name=field_name, tag_style=query)
+        if token.startswith('-'):
+            script_files = run_command and token == '--scripts'
+        _validate_command_token(token, field_name=field_name, tag_style=query,
+                                file_reference=script_files and token.startswith('@'))
         query = token == '--query'
 
 
@@ -168,10 +173,10 @@ def _quote_cmd_arg(value):
     return '"' + value + '\\' * trailing + '"'
 
 
-def _legacy_value(value):
+def _legacy_value(value, file_reference=False):
     value = str(value)
     if os.name == 'nt':
-        _validate_command_token(value)
+        _validate_command_token(value, file_reference=file_reference)
     return shlex.quote(value)
 
 
@@ -278,12 +283,13 @@ def _invoke_run_command(script_name, vm_name, rg_name, is_linux, parameters=None
             else:
                 # Preserve symlink/.. traversal on POSIX.
                 script_path = os.path.join(os.getcwd(), script)
-            additional_scripts_string += ' ' + _legacy_value('@' + script_path)
+            additional_scripts_string += ' ' + _legacy_value('@' + script_path, file_reference=True)
 
     run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
                   '--scripts {run_script}{additional_scripts} -o json' \
                   .format(rg=_legacy_value(rg_name), vm=_legacy_value(vm_name), command_id=command_id,
-                          run_script=_legacy_value('@' + run_script), additional_scripts=additional_scripts_string)
+                          run_script=_legacy_value('@' + run_script, file_reference=True),
+                          additional_scripts=additional_scripts_string)
     if parameters:
         parameter_tokens = []
         for param in parameters:

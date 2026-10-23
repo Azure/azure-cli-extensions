@@ -101,6 +101,50 @@ def test_call_az_command_rejects_non_az_command(mock_popen):
     mock_popen.assert_not_called()
 
 
+def test_script_file_symbols_pass_preflight_and_execution_validation():
+    file_references = [r"@C:\Users\O'Brien\fix.ps1", r'@C:\Tools (x86)\second.ps1']
+    command = 'az vm run-command invoke --scripts ' + ' '.join(shlex.quote(path) for path in file_references)
+    with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
+            mock.patch('azext_vm_repair.repair_utils.subprocess.Popen',
+                       return_value=_FakeProcess()) as popen:
+        _validate_command_values(command)
+        _call_az_command(command)
+    popen.assert_called_once()
+
+
+@pytest.mark.parametrize('command', [
+    'az vm show --name ' + shlex.quote("@O'Brien"),
+    'az vm create --scripts ' + shlex.quote("@O'Brien"),
+    'az vm run-command invoke --scripts ' + shlex.quote("Write-Output 'hello'"),
+    'az vm run-command invoke --scripts @safe.ps1 --parameters ' + shlex.quote("@O'Brien"),
+    'az vm run-command invoke --scripts @safe.ps1 --name ' + shlex.quote("@O'Brien"),
+], ids=['resource-name', 'other-command', 'literal-script', 'parameters', 'option-after-scripts'])
+def test_script_file_allowance_does_not_relax_other_arguments(command):
+    with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
+            mock.patch('azext_vm_repair.repair_utils.subprocess.Popen') as popen:
+        with pytest.raises(InvalidArgumentValueError):
+            _validate_command_values(command)
+        with pytest.raises(InvalidArgumentValueError):
+            _call_az_command(command)
+    popen.assert_not_called()
+
+
+@pytest.mark.parametrize('bad_value', ['"', '%PATH%', '!PATH!', '\n', '\r', '\x00', '\t', '\x7f'],
+                         ids=['quote', 'percent', 'delayed-expansion', 'newline', 'return', 'nul', 'tab', 'del'])
+def test_script_file_rejects_expansion_and_control_characters(bad_value):
+    file_reference = '@C:\\scripts\\private' + bad_value + '.ps1'
+    command = 'az vm run-command invoke --scripts ' + shlex.quote(file_reference)
+    with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
+            mock.patch('azext_vm_repair.repair_utils.subprocess.Popen') as popen:
+        with pytest.raises(InvalidArgumentValueError) as preflight:
+            _validate_command_values(command)
+        with pytest.raises(InvalidArgumentValueError) as execution:
+            _call_az_command(command)
+    popen.assert_not_called()
+    assert file_reference not in str(preflight.value)
+    assert file_reference not in str(execution.value)
+
+
 # Values must reach a real child process literally through the production helper.
 ROUNDTRIP_PAYLOADS = [
     'safe',
@@ -160,6 +204,19 @@ def test_no_command_injection_through_real_process(tmp_path, argv_receiver):
     with pytest.raises(InvalidArgumentValueError):
         _call_az_command('az vm create --tags ' + shlex.quote('env=' + payload))
     assert not marker.exists(), 'command injection occurred: marker file was created'
+
+
+@pytest.mark.skipif(os.name != 'nt', reason='batch launch is Windows-specific')
+def test_script_reference_metacharacters_reach_the_child_literally(tmp_path, argv_receiver):
+    marker = tmp_path / 'SCRIPT_REFERENCE_INJECTED.txt'
+    reference = '@safe&echo boom>{}&rem'.format(marker)
+    command = 'az vm run-command invoke --scripts ' + shlex.quote(reference)
+
+    _validate_command_values(command)
+    output = _call_az_command(command)
+
+    assert json.loads(output) == ['vm', 'run-command', 'invoke', '--scripts', reference]
+    assert not marker.exists(), 'Script file punctuation executed a local shell command'
 
 
 @pytest.mark.skipif(os.name != 'nt', reason='interpreter-based launch is Windows-specific')

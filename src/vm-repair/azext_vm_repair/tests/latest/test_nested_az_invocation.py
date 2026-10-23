@@ -10,6 +10,7 @@ import os
 import sys
 import subprocess
 from pathlib import Path
+from types import SimpleNamespace
 from unittest import mock
 
 import pytest
@@ -198,22 +199,41 @@ def test_real_failing_az_call_reports_a_message(nested_cli_environment):
 
 
 @pytest.mark.skipif(os.name != 'nt', reason='batch launch is Windows-specific')
-def test_real_custom_script_uses_caller_file_with_hardened_child_directory(tmp_path, monkeypatch):
-    caller_directory = tmp_path / 'caller directory'
-    extension_directory = tmp_path / 'extension directory'
+@pytest.mark.parametrize('installation_name', ["O'Brien", 'Program Files (x86)', "O'Brien (x86) & tools"])
+@pytest.mark.parametrize('driver,is_linux,custom_scripts', [
+    ('win-run-driver.ps1', False, True),
+    ('linux-mount-encrypted-disk.sh', True, False),
+    ('win-mount-encrypted-disk.ps1', False, False),
+])
+def test_real_script_paths_preserve_symbols_and_caller_directory(
+        tmp_path, monkeypatch, installation_name, driver, is_linux, custom_scripts):
+    caller_directory = tmp_path / "caller O'Brien (x86)"
+    extension_directory = tmp_path / installation_name
     caller_directory.mkdir()
     extension_directory.mkdir()
-    script = caller_directory / 'custom script.ps1'
-    script.write_text('caller-script', encoding='utf-8')
-    (extension_directory / script.name).write_text('decoy-script', encoding='utf-8')
+    scripts_directory = extension_directory / 'scripts'
+    scripts_directory.mkdir()
+    driver_content = 'driver-script\n# \u4fee\u590d\n'
+    (scripts_directory / driver).write_text(driver_content, encoding='utf-16')
+    custom_names = ["custom O'Brien (x86) & ^ $ ` ;.ps1", 'second custom script.ps1']
+    custom_contents = ['caller-script\n\n', '# \u4fee\u590d\nsecond-script\n']
+    for name, content in zip(custom_names, custom_contents):
+        (caller_directory / name).write_text(content, encoding='utf-8-sig')
+        (extension_directory / name).write_text('decoy-script', encoding='utf-8')
+    marker = caller_directory / 'untrusted-az-ran.txt'
+    (caller_directory / 'az.cmd').write_text(
+        '@echo off\necho untrusted>"{}"\nexit /b 1\n'.format(marker), encoding='utf-8')
     receiver = tmp_path / 'script receiver.py'
     receiver.write_text(
         'import json, os, sys\n'
-        'from pathlib import Path\n'
-        'scripts = sys.argv[sys.argv.index("--scripts") + 1:sys.argv.index("-o")]\n'
-        'result = {"cwd": os.getcwd(), "scripts": scripts,\n'
-        '          "content": Path(scripts[1][1:]).read_text(encoding="utf-8")}\n'
-        'print(json.dumps({"value": [{"message": json.dumps(result)}, {"message": ""}]}))\n',
+        'from azure.cli.core.commands import _expand_file_prefixed_files\n'
+        'arguments = sys.argv[1:]\n'
+        'scripts = arguments[arguments.index("--scripts") + 1:arguments.index("-o")]\n'
+        'result = json.dumps({"cwd": os.getcwd(), "scripts": scripts,\n'
+        '                     "contents": _expand_file_prefixed_files(scripts)})\n'
+        'if arguments[arguments.index("--command-id") + 1] == "RunShellScript":\n'
+        '    result = "[stdout]\\n" + result + "\\n[stderr]\\n"\n'
+        'print(json.dumps({"value": [{"message": result}, {"message": ""}]}))\n',
         encoding='utf-8')
     (tmp_path / 'az.cmd').write_text(
         '@echo off\n"{}" "{}" %*\n'.format(sys.executable, receiver), encoding='utf-8')
@@ -221,14 +241,22 @@ def test_real_custom_script_uses_caller_file_with_hardened_child_directory(tmp_p
     monkeypatch.setattr(repair_utils, '__file__', str(extension_directory / 'repair_utils.py'))
     monkeypatch.chdir(caller_directory)
 
-    stdout, stderr = repair_utils._invoke_run_command(
-        'win-run-driver.ps1', 'source-vm', 'source-rg', False,
-        additional_custom_scripts=[script.name])
+    with mock.patch.object(repair_utils.importlib.util, 'find_spec',
+                           return_value=SimpleNamespace(origin=str(extension_directory / '__init__.py'))):
+        stdout, stderr = repair_utils._invoke_run_command(
+            driver, 'source-vm', 'source-rg', is_linux,
+            additional_custom_scripts=custom_names if custom_scripts else None)
 
     result = json.loads(stdout)
     assert result['cwd'] == str(extension_directory)
-    assert result['content'] == 'caller-script'
-    assert result['scripts'][-1] == '@' + str(script)
+    expected_scripts = ['@' + str(scripts_directory / driver)]
+    expected_contents = [driver_content.rstrip(os.linesep)]
+    if custom_scripts:
+        expected_scripts.extend('@' + str(caller_directory / name) for name in custom_names)
+        expected_contents.extend(content.rstrip(os.linesep) for content in custom_contents)
+    assert result['scripts'] == expected_scripts
+    assert result['contents'] == expected_contents
+    assert not marker.exists(), 'The caller directory replaced the trusted launcher'
     assert stderr == ''
     assert Path.cwd() == caller_directory
 
