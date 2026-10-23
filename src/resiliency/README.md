@@ -15,7 +15,7 @@ az extension add --name resiliency
 az resiliency --help
 
 # Manage drills
-az resiliency drill create --service-group-name <name> --drill-name <name> --location <location>
+az resiliency drill create --service-group-name <name> --drill-name <name>
 az resiliency drill list --service-group-name <name>
 az resiliency drill show --service-group-name <name> --drill-name <name>
 
