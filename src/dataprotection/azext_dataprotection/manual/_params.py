@@ -318,9 +318,9 @@ def load_arguments(self, _):
                    options_list=['--resource-modifier-reference', '--resource-modifier'],
                    help='Key value mapping for resource modifier reference')
         c.argument('resource_identifiers', type=str, nargs='+',
-                   help='List of source volume identifiers (volume names or ARM IDs) to restore. '
-                        'Use this parameter for DatasourceType AzureElasticSAN. '
-                        'For DatasourceType AzureCosmosDB, provide the database or database/container names to restore.')
+                   help='List of resource identifiers to restore. For DatasourceType AzureElasticSAN, provide source '
+                        'volume identifiers (volume names or ARM IDs). For DatasourceType AzureCosmosDB, provide '
+                        'database or database/container names.')
         c.argument('resource_name_overrides', type=validate_file_or_dict,
                    options_list=['--resource-name-overrides', '--name-overrides'],
                    help='Map of source volume names to target volume names to restore into. Keys must match selected '

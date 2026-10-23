@@ -19,7 +19,7 @@ The end-to-end live scenario lives in
 ``test_dataprotection_backup_and_restore_workloads.py::BackupAndRestoreScenarioTest.test_dataprotection_backup_and_restore_cosmosdb``.
 """
 
-from azure.cli.core.azclierror import RequiredArgumentMissingError
+from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
@@ -230,3 +230,30 @@ class CosmosDBItemRestoreInitializeTest(ScenarioTest):
                 '--datasource-type AzureCosmosDB --restore-location northcentralus --source-datastore VaultStore '
                 '--recovery-point-id 33d445e6891444638ffca3d35b3c479f --target-resource-id "{targetResourceId}"'
             )
+
+    def test_dataprotection_cosmosdb_restore_initialize_item_recovery_validates_inputs(test):
+        restore_config_cmd = 'az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureCosmosDB '
+        restore_config = test.cmd(restore_config_cmd + '--resource-identifiers " db1/container1 " db2').get_output_in_json()
+        test.assertEqual(restore_config['resource_selectors']['resource_identifiers'], ['db1/container1', 'db2'])
+
+        test.kwargs.update({
+            'targetResourceId': TARGET_COSMOS_ID,
+            'restoreConfig': restore_config,
+            'nameOverrides': {'db1': 'db3'},
+            'aksRestoreConfig': {'object_type': 'KubernetesClusterRestoreCriteria', 'include_cluster_scope_resources': True},
+        })
+        for invalid_args in ['--resource-identifiers " "', '--resource-identifiers "db1/ "',
+                             '--resource-identifiers db1 --excluded-namespaces ns1',
+                             '--resource-identifiers db1 --resource-name-overrides "{nameOverrides}"']:
+            with test.assertRaises(InvalidArgumentValueError):
+                test.cmd(restore_config_cmd + invalid_args)
+
+        item_recovery_cmd = (
+            'az dataprotection backup-instance restore initialize-for-item-recovery '
+            '--datasource-type AzureCosmosDB --restore-location northcentralus --source-datastore VaultStore '
+            '--recovery-point-id 33d445e6891444638ffca3d35b3c479f --target-resource-id "{targetResourceId}" '
+        )
+        for invalid_args in ['--restore-configuration "{restoreConfig}" --container-list container1',
+                             '--restore-configuration "{aksRestoreConfig}"']:
+            with test.assertRaises(InvalidArgumentValueError):
+                test.cmd(item_recovery_cmd + invalid_args)
