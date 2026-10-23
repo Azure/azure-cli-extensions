@@ -10,5 +10,60 @@
 
 from knack.log import get_logger
 
+from azure.cli.core.aaz import AAZBoolArg, has_value
+
+from .aaz.latest.storage_discovery.workspace import Query as _WorkspaceQuery
+from .aaz.latest.storage_discovery.workspace import Update as _WorkspaceUpdate
+from .aaz.latest.storage_discovery.workspace.report import GenerateReport as _ReportGenerateReport
+
 
 logger = get_logger(__name__)
+
+
+class WorkspaceQuery(_WorkspaceQuery):
+    AZ_SUPPORT_NO_WAIT = False
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        schema = super()._build_arguments_schema(*args, **kwargs)
+        # Generated LRO operations still read this internal argument.
+        schema.no_wait = AAZBoolArg(default=False, registered=False)
+        return schema
+
+
+class ReportGenerateReport(_ReportGenerateReport):
+    AZ_SUPPORT_NO_WAIT = False
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        schema = super()._build_arguments_schema(*args, **kwargs)
+        schema.no_wait = AAZBoolArg(default=False, registered=False)
+        return schema
+
+
+class WorkspaceUpdate(_WorkspaceUpdate):
+    def pre_instance_update(self, instance):
+        capabilities = self.ctx.args.capabilities
+        existing = instance.properties.capabilities
+        if (not has_value(capabilities) or capabilities.to_serialized_data() is None or
+                not has_value(existing) or existing.to_serialized_data() is None):
+            return
+
+        if not has_value(capabilities.azure_blob_storage):
+            capabilities.azure_blob_storage = existing.azure_blob_storage
+            return
+
+        blob_storage = capabilities.azure_blob_storage
+        existing_blob_storage = existing.azure_blob_storage
+        if not has_value(blob_storage) or not has_value(existing_blob_storage):
+            return
+
+        if not has_value(blob_storage.capacity_details):
+            blob_storage.capacity_details = existing_blob_storage.capacity_details
+        elif (has_value(blob_storage.capacity_details) and
+              has_value(existing_blob_storage.capacity_details) and
+              not has_value(blob_storage.capacity_details.status)):
+            blob_storage.capacity_details.status = existing_blob_storage.capacity_details.status
+
+        if not has_value(blob_storage.prefix_configurations):
+            blob_storage.prefix_configurations = existing_blob_storage.prefix_configurations

@@ -18,14 +18,14 @@ class Create(AAZCommand):
     """Create a StorageDiscoveryWorkspace
 
     :example: Create or Update a StorageDiscoveryWorkspace
-        az az storage-discovery workspace create --resource-group myRG --name myWorkspace --location francecentral --workspace-roots "/subscriptions/mySubId/resourceGroups/myRG" --scopes '[{"displayName":"basic","resourceTypes":["Microsoft.Storage/storageAccounts"]}]'
+        az storage-discovery workspace create --resource-group myRG --name myWorkspace --location francecentral --workspace-roots "/subscriptions/mySubId/resourceGroups/myRG" --scopes '[{"displayName":"basic","resourceTypes":["Microsoft.Storage/storageAccounts"]}]'
         az storage-discovery workspace create --resource-group myRG --name myWorkspace --location francecentral --description "My workspace for storage discovery" --sku Standard --workspace-roots "/subscriptions/mySubId/resourceGroups/myRG" --scopes '[{"displayName":"production","resourceTypes":["Microsoft.Storage/storageAccounts"],"tagKeysOnly":["environment"],"tags":{"project":"demo","tier":"prod"}}]'
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagediscovery/storagediscoveryworkspaces/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagediscovery/storagediscoveryworkspaces/{}", "2026-10-01-preview"],
         ]
     }
 
@@ -62,6 +62,11 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.capabilities = AAZObjectArg(
+            options=["--capabilities"],
+            arg_group="Properties",
+            help="The capabilities configured for the storage discovery workspace.",
+        )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
@@ -83,6 +88,64 @@ class Create(AAZCommand):
             options=["--workspace-roots"],
             arg_group="Properties",
             help="The view level storage discovery data estate",
+        )
+
+        capabilities = cls._args_schema.capabilities
+        capabilities.azure_blob_storage = AAZObjectArg(
+            options=["azure-blob-storage"],
+            help="The Azure Blob Storage capability configuration for the storage discovery workspace.",
+            required=True,
+        )
+
+        azure_blob_storage = cls._args_schema.capabilities.azure_blob_storage
+        azure_blob_storage.capacity_details = AAZObjectArg(
+            options=["capacity-details"],
+            help="The capacity details configuration for Azure Blob Storage.",
+            required=True,
+        )
+        azure_blob_storage.prefix_configurations = AAZListArg(
+            options=["prefix-configurations"],
+            help="The prefix configurations that scope the capacity details to specific storage accounts, containers, and prefixes.",
+        )
+
+        capacity_details = cls._args_schema.capabilities.azure_blob_storage.capacity_details
+        capacity_details.status = AAZStrArg(
+            options=["status"],
+            help="The enablement status of the capacity details capability.",
+            required=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
+        prefix_configurations = cls._args_schema.capabilities.azure_blob_storage.prefix_configurations
+        prefix_configurations.Element = AAZObjectArg()
+
+        _element = cls._args_schema.capabilities.azure_blob_storage.prefix_configurations.Element
+        _element.container_name = AAZStrArg(
+            options=["container-name"],
+            help="The name of the blob container within the storage account.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-z0-9]([a-z0-9]|(-(?!-))){1,61}[a-z0-9]$",
+                max_length=63,
+                min_length=3,
+            ),
+        )
+        _element.prefix = AAZStrArg(
+            options=["prefix"],
+            help="The blob prefix within the container to scope capacity details to. An empty value scopes to the entire container. Must not start with a '/'.",
+            fmt=AAZStrArgFormat(
+                max_length=1024,
+            ),
+        )
+        _element.storage_account_name = AAZStrArg(
+            options=["storage-account-name"],
+            help="The name of the storage account.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-z0-9]{3,24}$",
+                max_length=24,
+                min_length=3,
+            ),
         )
 
         scopes = cls._args_schema.scopes
@@ -213,7 +276,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }
@@ -244,10 +307,34 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("capabilities", AAZObjectType, ".capabilities")
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("scopes", AAZListType, ".scopes", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("sku", AAZStrType, ".sku")
                 properties.set_prop("workspaceRoots", AAZListType, ".workspace_roots", typ_kwargs={"flags": {"required": True}})
+
+            capabilities = _builder.get(".properties.capabilities")
+            if capabilities is not None:
+                capabilities.set_prop("azureBlobStorage", AAZObjectType, ".azure_blob_storage", typ_kwargs={"flags": {"required": True}})
+
+            azure_blob_storage = _builder.get(".properties.capabilities.azureBlobStorage")
+            if azure_blob_storage is not None:
+                azure_blob_storage.set_prop("capacityDetails", AAZObjectType, ".capacity_details", typ_kwargs={"flags": {"required": True}})
+                azure_blob_storage.set_prop("prefixConfigurations", AAZListType, ".prefix_configurations")
+
+            capacity_details = _builder.get(".properties.capabilities.azureBlobStorage.capacityDetails")
+            if capacity_details is not None:
+                capacity_details.set_prop("status", AAZStrType, ".status", typ_kwargs={"flags": {"required": True}})
+
+            prefix_configurations = _builder.get(".properties.capabilities.azureBlobStorage.prefixConfigurations")
+            if prefix_configurations is not None:
+                prefix_configurations.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.capabilities.azureBlobStorage.prefixConfigurations[]")
+            if _elements is not None:
+                _elements.set_prop("containerName", AAZStrType, ".container_name", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("prefix", AAZStrType, ".prefix")
+                _elements.set_prop("storageAccountName", AAZStrType, ".storage_account_name", typ_kwargs={"flags": {"required": True}})
 
             scopes = _builder.get(".properties.scopes")
             if scopes is not None:
@@ -320,6 +407,7 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.capabilities = AAZObjectType()
             properties.description = AAZStrType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -331,6 +419,40 @@ class Create(AAZCommand):
             properties.sku = AAZStrType()
             properties.workspace_roots = AAZListType(
                 serialized_name="workspaceRoots",
+                flags={"required": True},
+            )
+
+            capabilities = cls._schema_on_200_201.properties.capabilities
+            capabilities.azure_blob_storage = AAZObjectType(
+                serialized_name="azureBlobStorage",
+                flags={"required": True},
+            )
+
+            azure_blob_storage = cls._schema_on_200_201.properties.capabilities.azure_blob_storage
+            azure_blob_storage.capacity_details = AAZObjectType(
+                serialized_name="capacityDetails",
+                flags={"required": True},
+            )
+            azure_blob_storage.prefix_configurations = AAZListType(
+                serialized_name="prefixConfigurations",
+            )
+
+            capacity_details = cls._schema_on_200_201.properties.capabilities.azure_blob_storage.capacity_details
+            capacity_details.status = AAZStrType(
+                flags={"required": True},
+            )
+
+            prefix_configurations = cls._schema_on_200_201.properties.capabilities.azure_blob_storage.prefix_configurations
+            prefix_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.capabilities.azure_blob_storage.prefix_configurations.Element
+            _element.container_name = AAZStrType(
+                serialized_name="containerName",
+                flags={"required": True},
+            )
+            _element.prefix = AAZStrType()
+            _element.storage_account_name = AAZStrType(
+                serialized_name="storageAccountName",
                 flags={"required": True},
             )
 
