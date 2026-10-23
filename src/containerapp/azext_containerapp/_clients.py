@@ -9,7 +9,7 @@ import time
 import os
 import requests
 
-from azure.cli.core.azclierror import CLIError, AzureResponseError
+from azure.cli.core.azclierror import CLIError, AzureResponseError, HTTPError, ResourceNotFoundError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp._clients import (
@@ -71,6 +71,19 @@ class GitHubActionPreviewClient(GitHubActionClient):
 # Clients for preview
 class ContainerAppPreviewClient(ContainerAppClient):
     api_version = PREVIEW_API_VERSION
+
+    @classmethod
+    def show(cls, cmd, resource_group_name, name):
+        try:
+            return super().show(cmd, resource_group_name, name)
+        except HTTPError as e:
+            if e.response.status_code != 404:
+                raise
+            error = ResourceNotFoundError(
+                f"(ResourceNotFound) The container app '{name}' in resource group '{resource_group_name}' was not found.")
+            # Existing resource checks use the response status to tolerate missing apps.
+            error.response = e.response
+            raise error from e
 
 
 class LabelHistoryPreviewClient:
