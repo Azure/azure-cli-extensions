@@ -55,7 +55,12 @@ def _is_wow64_process():
 
 def _get_native_program_files_path():
     import ntpath
-    import winreg
+    try:
+        import winreg
+    except ImportError as error:
+        raise CLIError(
+            "Windows registry access is unavailable; this operation requires Windows."
+        ) from error
 
     with winreg.OpenKey(
         winreg.HKEY_LOCAL_MACHINE,

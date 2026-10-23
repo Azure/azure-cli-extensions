@@ -135,6 +135,13 @@ class TestNativeProgramFiles(unittest.TestCase):
         with self.assertRaises(PermissionError):
             ssh_keygen._get_native_program_files_path()
 
+    def test_unavailable_registry_module_is_reported(self):
+        with patch.dict(sys.modules, {"winreg": None}):
+            with self.assertRaisesRegex(CLIError, "requires Windows") as raised:
+                ssh_keygen._get_native_program_files_path()
+        self.assertIsInstance(raised.exception.__cause__, ImportError)
+        self.registry.OpenKey.assert_not_called()
+
 
 class TestWindowsInstallationPaths(unittest.TestCase):
     def setUp(self):

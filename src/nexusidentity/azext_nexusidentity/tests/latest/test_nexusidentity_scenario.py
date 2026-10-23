@@ -4,46 +4,116 @@
 # --------------------------------------------------------------------------------------------
 
 """
-Nexus Identity Ssh-Key Geneation Scenario Test
+Offline Nexus Identity SSH key generation scenario test.
 """
 
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, live_only
+import json
+import os
+import subprocess
+import tempfile
+from unittest.mock import Mock, call, patch
 
+from azure.cli.testsdk import ScenarioTest
 
-def setup_scenario1(test):
-    """Env setup_scenario1"""
-    pass
-
-
-def cleanup_scenario1(test):
-    """Env cleanup_scenario1"""
-    pass
-
-
-def call_scenario1(test):
-    """Testcase: scenario1"""
-    setup_scenario1(test)
-    step_gen_keys(test, checks=[])
-    cleanup_scenario1(test)
-
-
-def step_gen_keys(test, checks=None):
-    """Generate Nexus Identity ssh keys"""
-    if checks is None:
-        checks = []
-    test.cmd("az nexusidentity gen-keys")
-    test.cmd("az nexusidentity gen-keys --algorithm ecdsa-sk")
-    test.cmd("az nexusidentity gen-keys --algorithm ed25519-sk")
+from azext_nexusidentity import custom
 
 
 class NexusidentityScenarioTest(ScenarioTest):
-    """Nexus Identity Ssh-Key Generation Scenario Test"""
+    """Exercise CLI dispatch without hardware, credentials, or Graph access."""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    @live_only()
     def test_nexusidentity_scenario1(self):
+        public_key = "test-public-key"
+        user = Mock()
+        user.json.return_value = {"mail": "user@example.invalid"}
+        extensions = Mock()
+        extensions.json.return_value = {"value": []}
+        expanduser = os.path.expanduser
 
-        # Testcase: scenario1
-        call_scenario1(self)
+        with tempfile.TemporaryDirectory() as key_directory:
+            for key_name in ("id_ed25519_sk", "id_ecdsa_sk"):
+                with open(
+                    os.path.join(key_directory, key_name + ".pub"),
+                    "w",
+                    encoding="utf-8",
+                ) as key_file:
+                    key_file.write(public_key)
+
+            def isolated_home(path):
+                if path in ("~/.ssh", "~\\.ssh"):
+                    return key_directory
+                return expanduser(path)
+
+            with patch.object(
+                custom, "get_windows_ssh_keygen_path", return_value="ssh-keygen"
+            ), patch.object(
+                custom.os.path, "expanduser", side_effect=isolated_home
+            ), patch.object(
+                custom.subprocess,
+                "run",
+                return_value=subprocess.CompletedProcess(
+                    [], 0, stdout='{"accessToken": "test-token"}'
+                ),
+            ) as run, patch(
+                "shutil.which", return_value="az"
+            ), patch(
+                "requests.get"
+            ) as get, patch(
+                "requests.post"
+            ) as post, patch(
+                "requests.patch"
+            ) as update:
+                for arguments, algorithm, key_name in (
+                    ("", "ed25519-sk", "id_ed25519_sk"),
+                    (" --algorithm ecdsa-sk", "ecdsa-sk", "id_ecdsa_sk"),
+                    (" --algorithm ed25519-sk", "ed25519-sk", "id_ed25519_sk"),
+                ):
+                    with self.subTest(algorithm=arguments or "default"):
+                        run.reset_mock()
+                        get.reset_mock()
+                        post.reset_mock()
+                        get.side_effect = [user, extensions]
+
+                        self.cmd("az nexusidentity gen-keys" + arguments)
+
+                        self.assertEqual(
+                            run.call_args_list,
+                            [
+                                call(
+                                    [
+                                        "ssh-keygen", "-t", algorithm,
+                                        "-O", "resident", "-O", "verify-required",
+                                        "-C", "NexusIdentitySSHKey",
+                                        "-f", os.path.join(key_directory, key_name),
+                                    ],
+                                    check=True,
+                                    shell=False,
+                                ),
+                                call(
+                                    [
+                                        "az", "account", "get-access-token",
+                                        "--resource", "https://graph.microsoft.com",
+                                        "--output", "json",
+                                    ],
+                                    capture_output=True,
+                                    text=True,
+                                    check=True,
+                                ),
+                            ],
+                        )
+                        self.assertEqual(
+                            [request.args[0] for request in get.call_args_list],
+                            [
+                                "https://graph.microsoft.com/v1.0/me",
+                                "https://graph.microsoft.com/v1.0/me/extensions",
+                            ],
+                        )
+                        post.assert_called_once()
+                        self.assertEqual(
+                            post.call_args.args[0],
+                            "https://graph.microsoft.com/v1.0/me/extensions",
+                        )
+                        self.assertEqual(
+                            json.loads(post.call_args.kwargs["data"])["publicKey"],
+                            public_key,
+                        )
+                        update.assert_not_called()
