@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
+import logging
 from types import SimpleNamespace
 import traceback
 from unittest import mock
@@ -11,6 +13,8 @@ import pytest
 
 from azure.cli.core import get_default_cli
 from azure.cli.command_modules.vm._validators import _validate_admin_password
+from azure.cli.command_modules.vm._template_builder import StorageProfile
+from azure.cli.command_modules.vm import _vm_utils
 from azure.cli.core.commands.validators import validate_tags
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from knack.util import CLIError
@@ -103,3 +107,56 @@ def test_core_creation_redacts_credentials_from_errors(during_validation):
     assert arguments['admin_username'] not in rendered
     assert arguments['admin_password'] not in rendered
     assert '********' in str(raised.value)
+
+
+@pytest.mark.parametrize('unmanaged,level,fail_validation', [
+    (False, logging.INFO, False),
+    (True, logging.DEBUG, False),
+    (True, logging.INFO, True),
+], ids=['managed-verbose', 'unmanaged-debug', 'failed-validation'])
+def test_real_core_validation_does_not_log_credentials(
+        monkeypatch, caplog, unmanaged, level, fail_validation):
+    password = 'Validation password "quoted" \\ secret!234'
+    arguments = {
+        'resource_group': 'repair-rg', 'name': 'repair-vm',
+        'image': 'Win2022Datacenter', 'admin_username': 'repairuser',
+        'admin_password': password, 'use_unmanaged_disk': unmanaged,
+    }
+    client = mock.Mock()
+    client.begin_validate.return_value.done.return_value = True
+    client.begin_validate.return_value.result.return_value = None
+    if fail_validation:
+        client.begin_validate.side_effect = CLIError('ARM validation failed')
+
+    def prepare(cmd, namespace):
+        namespace.disk_info = {'os': {'storageAccountType': 'Standard_LRS'}}
+        namespace.storage_profile = StorageProfile.SAPirImage if unmanaged else StorageProfile.ManagedPirImage
+        namespace.storage_account = 'repairsa'
+        namespace.location = 'westus'
+        namespace.os_type = 'Windows'
+        namespace.nics = [{'id': '/subscriptions/sub/resourceGroups/repair-rg/'
+                           'providers/Microsoft.Network/networkInterfaces/repair-nic'}]
+        _vm_utils.logger.warning('Repair validation warning remains visible')
+
+    monkeypatch.setattr('azure.cli.command_modules.vm.commands.process_vm_create_namespace', prepare)
+    monkeypatch.setattr('azure.cli.command_modules.vm.custom.get_subscription_id', lambda _: 'sub')
+    monkeypatch.setattr(
+        'azure.cli.command_modules.vm.custom.get_mgmt_service_client',
+        mock.Mock(return_value=SimpleNamespace(deployments=client)))
+    caplog.set_level(level, logger='cli')
+    original_filters = list(_vm_utils.logger.filters)
+
+    if fail_validation:
+        with pytest.raises(AzCommandError, match='ARM validation failed'):
+            create_repair_vm(SimpleNamespace(cli_ctx=get_default_cli()), arguments, validate=True)
+    else:
+        create_repair_vm(SimpleNamespace(cli_ctx=get_default_cli()), arguments, validate=True)
+
+    deployment = client.begin_validate.call_args.args[2]
+    assert deployment.properties.parameters['adminPassword']['value'] == password
+    assert password not in caplog.text
+    assert json.dumps(password)[1:-1] not in caplog.text
+    assert 'Repair validation warning remains visible' in caplog.text
+    assert _vm_utils.logger.filters == original_filters
+    _vm_utils.log_pprint_template({'after_validation': 'logging restored'})
+    assert 'logging restored' in caplog.text

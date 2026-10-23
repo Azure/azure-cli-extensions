@@ -10,6 +10,7 @@ from azure.cli.core.commands import AzCliCommandInvoker
 from azure.cli.core.parser import AzCliCommandParser
 from azure.cli.core._help import AzCliHelp
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from knack.log import get_logger
 from knack.util import CLIError
 
 from .exceptions import AzCommandError
@@ -54,6 +55,13 @@ def create_repair_vm(cmd, arguments, validate=False):
             tokens.append('{}={}'.format(option, value))
     if validate:
         tokens.append('--validate')
+
+    # Core validation logs deployment parameters, including secure values.
+    def exclude_template_logs(record):
+        return record.funcName != 'log_pprint_template'
+
+    core_logger = get_logger('azure.cli.command_modules.vm._vm_utils')
+    core_logger.addFilter(exclude_template_logs)
     try:
         namespace = invocation.parser.parse_args(tokens)
         for name in ('tags', 'admin_password', 'admin_username'):
@@ -68,3 +76,5 @@ def create_repair_vm(cmd, arguments, validate=False):
             if arguments.get(name):
                 message = message.replace(arguments[name], '********')
         raise AzCommandError(message) from None
+    finally:
+        core_logger.removeFilter(exclude_template_logs)
