@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Query(AAZCommand):
     """A long-running resource action.
+
+    :example: Get the StorageDiscoveryWorkspace data from workspace
+        az storage-discovery workspace query --resource-group sample-rg --storage-discovery-workspace-name sampleworkspace --queries "[examplequery,examplequery2]"
     """
 
     _aaz_info = {
