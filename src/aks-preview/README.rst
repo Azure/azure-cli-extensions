@@ -14,6 +14,23 @@ Install this extension using the following CLI command `az extension add --name 
 
 Remove this extension using the following CLI command `az extension remove --name aks-preview`.
 
+Agent Sandbox preview
+=====================
+
+In a build containing Agent Sandbox support, use the managed cluster profile
+instead of creating the extension directly::
+
+    az aks create -g MyResourceGroup -n MyCluster --enable-managed-identity --generate-ssh-keys --enable-agent-sandbox
+    az aks update -g MyResourceGroup -n MyCluster --enable-agent-sandbox
+    az aks update -g MyResourceGroup -n MyCluster --disable-agent-sandbox
+
+Enablement requires ``Microsoft.ContainerService/AgentSandboxPreview``
+registration, managed identity, and a Kubernetes version and region supported by
+the service. Feature registration alone does not make every region eligible.
+The service validates these prerequisites; the CLI does not register the feature
+or change rollout eligibility. Omitting both update flags preserves the current
+profile. Enabling the extension does not configure a Kata node pool.
+
 Dependency between aks-preview and azure-cli/acs (azure-cli-core)
 =================================================================
 

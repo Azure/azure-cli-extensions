@@ -1610,6 +1610,7 @@ def aks_create(
     enable_cost_analysis=False,
     # AI toolchain operator
     enable_ai_toolchain_operator=False,
+    enable_agent_sandbox=False,
     # azure container storage
     enable_azure_container_storage=None,
     container_storage_version=None,
@@ -1892,6 +1893,8 @@ def aks_update(
     # AI toolchain operator
     enable_ai_toolchain_operator=False,
     disable_ai_toolchain_operator=False,
+    enable_agent_sandbox=False,
+    disable_agent_sandbox=False,
     # azure container storage
     enable_azure_container_storage=None,
     disable_azure_container_storage=None,

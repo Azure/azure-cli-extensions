@@ -4506,6 +4506,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("node_provisioning_default_pools")
 
+    def get_agent_sandbox_enabled(self, enable_validation: bool = False) -> Union[bool, None]:
+        """Return the requested Agent Sandbox state, or None when unchanged."""
+        enable = self.raw_param.get("enable_agent_sandbox")
+        disable = self.raw_param.get("disable_agent_sandbox")
+        if enable_validation and enable and disable:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-agent-sandbox and --disable-agent-sandbox at the same time."
+            )
+        if enable:
+            return True
+        if disable:
+            return False
+        return None
+
     def get_ai_toolchain_operator(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_ai_toolchain_operator.
 
@@ -6029,6 +6043,14 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_agent_sandbox_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+        if self.context.get_agent_sandbox_enabled(enable_validation=True):
+            mc.agent_sandbox_profile = (
+                self.models.ManagedClusterAgentSandboxProfile(enabled=True)  # pylint: disable=no-member
+            )
+        return mc
+
     def set_up_ai_toolchain_operator(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -6361,6 +6383,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_azure_monitor_profile(mc)
         # set up AI toolchain operator
         mc = self.set_up_ai_toolchain_operator(mc)
+        mc = self.set_up_agent_sandbox_profile(mc)
         # set up for azure container storage
         mc = self.set_up_azure_container_storage(mc)
         # set up node provisioning profile
@@ -9088,6 +9111,17 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_agent_sandbox_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+        enabled = self.context.get_agent_sandbox_enabled(enable_validation=True)
+        if enabled is not None:
+            if mc.agent_sandbox_profile is None:
+                mc.agent_sandbox_profile = (
+                    self.models.ManagedClusterAgentSandboxProfile()  # pylint: disable=no-member
+                )
+            mc.agent_sandbox_profile.enabled = enabled
+        return mc
+
     def update_ai_toolchain_operator(self, mc: ManagedCluster) -> ManagedCluster:
         """Updates the aiToolchainOperatorProfile field of the managed cluster
 
@@ -9817,6 +9851,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_k8s_support_plan(mc)
         # update AI toolchain operator
         mc = self.update_ai_toolchain_operator(mc)
+        mc = self.update_agent_sandbox_profile(mc)
         # update azure container storage
         mc = self.update_azure_container_storage(mc)
         # update node provisioning profile

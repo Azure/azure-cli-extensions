@@ -11,6 +11,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create`: Add `--enable-agent-sandbox` to enable the AKS-managed Agent Sandbox extension.
+* `az aks update`: Add `--enable-agent-sandbox` and `--disable-agent-sandbox` to manage the Agent Sandbox profile.
 
 22.0.0b15
 +++++++++
