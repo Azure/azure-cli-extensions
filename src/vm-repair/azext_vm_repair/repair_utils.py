@@ -273,7 +273,12 @@ def _invoke_run_command(script_name, vm_name, rg_name, is_linux, parameters=None
     additional_scripts_string = ''
     if additional_custom_scripts:
         for script in additional_custom_scripts:
-            additional_scripts_string += ' ' + _legacy_value('@' + script)
+            if os.name == 'nt':
+                script_path = os.path.abspath(script)
+            else:
+                # Preserve symlink/.. traversal on POSIX.
+                script_path = os.path.join(os.getcwd(), script)
+            additional_scripts_string += ' ' + _legacy_value('@' + script_path)
 
     run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
                   '--scripts {run_script}{additional_scripts} -o json' \
@@ -339,7 +344,7 @@ def check_extension_version(extension_name):
     logger.debug('The extension with name %s does not exist within available extensions.', extension_name)
 
 
-def _clean_up_resources(resource_group_name, confirm, skip_cleanup=False):
+def _clean_up_resources(resource_group_name, confirm, skip_cleanup=False, raise_on_failure=False):
 
     if skip_cleanup:
         logger.warning("Skipping clean-up. The repair resources in the resource group '%s' were kept. "
@@ -370,6 +375,8 @@ def _clean_up_resources(resource_group_name, confirm, skip_cleanup=False):
         if resource_not_found_error_string in str(azCommandError):
             logger.info('Resource group not found. Skipping clean up.')
             return
+        if raise_on_failure:
+            raise
         logger.error(azCommandError)
         logger.error("Clean up failed.")
 

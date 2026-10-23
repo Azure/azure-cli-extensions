@@ -15,6 +15,7 @@ from unittest import mock
 import pytest
 
 from azext_vm_repair.exceptions import AzCommandError
+from azext_vm_repair import repair_utils
 from azext_vm_repair.repair_utils import _call_az_command
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
@@ -194,6 +195,42 @@ def test_real_failing_az_call_reports_a_message(nested_cli_environment):
 
     assert str(raised.value).strip()
     assert not nested_cli_environment.exists(), 'An untrusted package replaced Azure CLI'
+
+
+@pytest.mark.skipif(os.name != 'nt', reason='batch launch is Windows-specific')
+def test_real_custom_script_uses_caller_file_with_hardened_child_directory(tmp_path, monkeypatch):
+    caller_directory = tmp_path / 'caller directory'
+    extension_directory = tmp_path / 'extension directory'
+    caller_directory.mkdir()
+    extension_directory.mkdir()
+    script = caller_directory / 'custom script.ps1'
+    script.write_text('caller-script', encoding='utf-8')
+    (extension_directory / script.name).write_text('decoy-script', encoding='utf-8')
+    receiver = tmp_path / 'script receiver.py'
+    receiver.write_text(
+        'import json, os, sys\n'
+        'from pathlib import Path\n'
+        'scripts = sys.argv[sys.argv.index("--scripts") + 1:sys.argv.index("-o")]\n'
+        'result = {"cwd": os.getcwd(), "scripts": scripts,\n'
+        '          "content": Path(scripts[1][1:]).read_text(encoding="utf-8")}\n'
+        'print(json.dumps({"value": [{"message": json.dumps(result)}, {"message": ""}]}))\n',
+        encoding='utf-8')
+    (tmp_path / 'az.cmd').write_text(
+        '@echo off\n"{}" "{}" %*\n'.format(sys.executable, receiver), encoding='utf-8')
+    monkeypatch.setenv('PATH', str(tmp_path) + os.pathsep + os.environ['PATH'])
+    monkeypatch.setattr(repair_utils, '__file__', str(extension_directory / 'repair_utils.py'))
+    monkeypatch.chdir(caller_directory)
+
+    stdout, stderr = repair_utils._invoke_run_command(
+        'win-run-driver.ps1', 'source-vm', 'source-rg', False,
+        additional_custom_scripts=[script.name])
+
+    result = json.loads(stdout)
+    assert result['cwd'] == str(extension_directory)
+    assert result['content'] == 'caller-script'
+    assert result['scripts'][-1] == '@' + str(script)
+    assert stderr == ''
+    assert Path.cwd() == caller_directory
 
 
 @mock.patch('azext_vm_repair.repair_utils.subprocess.Popen')

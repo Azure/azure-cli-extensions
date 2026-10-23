@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except, too-many-branches
+import enum
 import json
 import os
 import re
@@ -612,6 +613,13 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     return return_dict
 
 
+class _RestoreStage(enum.Enum):
+    PREPARATION = 'preparation'
+    DISK_DETACH = 'disk detach'
+    SOURCE_VM_UPDATE = 'source VM update'
+    REPAIR_RESOURCE_CLEANUP = 'repair resource cleanup'
+
+
 # This method is responsible for restoring the VM after repair
 def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False, no_cleanup=False):
 
@@ -619,6 +627,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     command = command_helper(logger, cmd, 'vm repair restore')
     source_disk = None
     repair_resource_group = None
+    restore_stage = _RestoreStage.PREPARATION
 
     try:
         # Fetch source and repair VM data
@@ -651,8 +660,10 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
                 # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
                 logger.info('Detaching repaired data disk from repair VM...')
+                restore_stage = _RestoreStage.DISK_DETACH
                 _call_az_command(detach_disk_command)
                 logger.info('Attaching repaired data disk to source VM as an OS disk...')
+                restore_stage = _RestoreStage.SOURCE_VM_UPDATE
                 _call_az_command(attach_fixed_command)
 
             # For UNMANAGED DISK
@@ -675,36 +686,42 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
                     _validate_command_token(disk_uri, field_name='storageProfile.osDisk.vhd.uri', uri=True)
 
                 def update_os_disk_uri(instance, **_):
-                    instance.properties.storage_profile.os_disk.vhd.uri = disk_uri
+                    storage_profile = instance.properties.storage_profile
+                    storage_profile.image_reference = None
+                    storage_profile.os_disk.vhd.uri = disk_uri
 
-                # Mutate only the URI on the fetched instance, not the whole OS-disk object.
+                # Preserve the existing OS-disk object when updating its VHD URI.
                 attach_os_disk = VMUpdate(cli_ctx=cmd.cli_ctx, callbacks={
                     'post_instance_update': update_os_disk_uri,
                 })
 
                 # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
                 logger.info('Detaching repaired data disk from repair VM...')
+                restore_stage = _RestoreStage.DISK_DETACH
                 _detach_unmanaged_disk_by_aaz(cmd, repair_resource_group, repair_vm_name, disk_name)
                 logger.info('Attaching repaired data disk to source VM as an OS disk...')
+                restore_stage = _RestoreStage.SOURCE_VM_UPDATE
                 LongRunningOperation(cmd.cli_ctx)(attach_os_disk(command_args={
                     'resource_group': resource_group_name,
                     'vm_name': vm_name,
                 }))
 
             # Clean up the resources in the repair resource group
-            _clean_up_resources(repair_resource_group, confirm=not yes, skip_cleanup=no_cleanup)
+            restore_stage = _RestoreStage.REPAIR_RESOURCE_CLEANUP
+            _clean_up_resources(repair_resource_group, confirm=not yes, skip_cleanup=no_cleanup,
+                                raise_on_failure=True)
             command.set_status_success()  # Set the command status to success
     # Handle possible exceptions
     except KeyboardInterrupt:
         # Capture the stack trace and set the error message if the command is interrupted by the user
         command.error_stack_trace = traceback.format_exc()
         command.error_message = "Command interrupted by user input."
-        command.message = "Command interrupted by user input. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'."
+        command.message = "Command interrupted by user input."
     except (AzCommandError, HttpResponseError) as azCommandError:
         # Capture the stack trace and set the error message if an Azure command error occurs
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(azCommandError)
-        command.message = "Repair restore failed. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'."
+        command.message = "Repair restore failed."
     except Exception as exception:
         # Capture the stack trace and set the error message if an unexpected error occurs
         command.error_stack_trace = traceback.format_exc()
@@ -717,6 +734,31 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
     # Set the command status to error if it's not success
     if not command.is_status_success():
+        command.message += ' Restore stopped during {stage}.'.format(stage=restore_stage.value)
+        if restore_stage == _RestoreStage.PREPARATION:
+            command.message += ' No disk detach was attempted.'
+        elif restore_stage == _RestoreStage.REPAIR_RESOURCE_CLEANUP:
+            command.message += (
+                " The source VM disk update completed. Do not repeat the disk swap."
+                " Cleanup may have partially completed. Verify the source VM health and inspect"
+                " remaining resources in repair resource group '{repair_rg}' before retrying only cleanup."
+            ).format(repair_rg=repair_resource_group)
+        else:
+            if restore_stage == _RestoreStage.DISK_DETACH:
+                command.message += ' The source VM update was not started.'
+            else:
+                command.message += ' Disk detach completed.'
+            command.message += (
+                " Repair resource cleanup was not started."
+                " Check disk attachments on source VM '{source_vm}' in resource group '{source_rg}'"
+                " and repair VM '{repair_vm}' in resource group '{repair_rg}'."
+                " The operation outcome may be unknown after a timeout or interruption."
+                " Wait for any in-progress operation to finish."
+                " If the source VM already uses the repaired disk, do not reattach it elsewhere."
+                " If the source update is confirmed unsuccessful and the disk is unused,"
+                " retry that update or manually reattach the disk to the repair VM."
+            ).format(source_vm=vm_name, source_rg=resource_group_name,
+                     repair_vm=repair_vm_name, repair_rg=repair_resource_group)
         command.set_status_error()
         return_dict = command.init_return_dict()
     else:
