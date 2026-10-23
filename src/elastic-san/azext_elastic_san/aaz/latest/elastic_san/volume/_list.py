@@ -50,7 +50,7 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.x_ms_access_soft_deleted_resources = AAZStrArg(
             options=["--access-soft-deleted-resources", "--x-ms-access-soft-deleted-resources"],
-            help="Optional, returns only soft deleted volume groups if set to true. If set to false or if not specified, returns only active volume groups.",
+            help="Optional, returns only soft-deleted volumes if set to true. If set to false or if not specified, returns only active volumes.",
             enum={"false": "false", "true": "true"},
         )
         _args_schema.elastic_san_name = AAZStrArg(

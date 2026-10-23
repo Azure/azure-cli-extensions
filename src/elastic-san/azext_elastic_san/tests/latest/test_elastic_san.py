@@ -11,6 +11,11 @@ import unittest
 
 
 class ElasticSanScenario(ScenarioTest):
+    def setUp(self):
+        super().setUp()
+        # These recordings use the canary ARM endpoint; keep the override scoped to this test CLI.
+        self.cli_ctx.cloud.endpoints.resource_manager = 'https://eastus2euap.management.azure.com/'
+
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan')
     def test_elastic_san_scenarios(self, resource_group):
         self.kwargs.update({

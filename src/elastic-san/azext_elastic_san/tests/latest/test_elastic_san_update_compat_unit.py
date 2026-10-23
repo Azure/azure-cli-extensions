@@ -261,6 +261,12 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
                 arg = command._build_arguments_schema()._fields["delete_retention_policy"]
                 self.assertIn("-d", arg._options)
 
+    def test_volume_list_soft_delete_help_describes_volumes(self):
+        arg = VolumeList._build_arguments_schema()._fields["x_ms_access_soft_deleted_resources"]
+        help_text = arg._help["short-summary"]
+        self.assertIn("soft-deleted volumes", help_text)
+        self.assertNotIn("volume groups", help_text)
+
     def test_legacy_sku_and_zones_use_full_put_body(self):
         args_schema = ElasticSanUpdate._build_arguments_schema()
         args = args_schema._ValueCls(
