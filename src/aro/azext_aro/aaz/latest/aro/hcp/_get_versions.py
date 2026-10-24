@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "aro hcp get-versions",
-    is_preview=True,
 )
 class GetVersions(AAZCommand):
     """List Azure Red Hat OpenShift with hosted control plane versions

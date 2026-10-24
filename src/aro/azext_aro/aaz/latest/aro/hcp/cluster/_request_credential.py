@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "aro hcp cluster request-credential",
-    is_preview=True,
 )
 class RequestCredential(AAZCommand):
     """Request a temporary credential for your Azure Red Hat OpenShift with hosted control plane cluster

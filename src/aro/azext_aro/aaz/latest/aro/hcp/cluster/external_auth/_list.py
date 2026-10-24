@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "aro hcp cluster external-auth list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List Azure Red Hat OpenShift with hosted control plane external authentication instances

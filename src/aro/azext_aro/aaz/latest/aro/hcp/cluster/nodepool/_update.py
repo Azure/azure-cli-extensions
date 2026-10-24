@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "aro hcp cluster nodepool update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update an Azure Red Hat OpenShift with hosted control plane node pool

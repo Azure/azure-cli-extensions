@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "aro hcp identity-role-sets list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List Azure Red Hat OpenShift with hosted control plane identity role sets by location
