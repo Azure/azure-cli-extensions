@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "aro hcp cluster list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List Azure Red Hat OpenShift with hosted control plane clusters
@@ -26,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-09-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.redhatopenshift/hcpopenshiftclusters", "2026-09-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.redhatopenshift/hcpopenshiftclusters", "2026-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.redhatopenshift/hcpopenshiftclusters", "2026-10-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.redhatopenshift/hcpopenshiftclusters", "2026-10-01"],
         ]
     }
 
@@ -116,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
@@ -315,6 +314,9 @@ class List(AAZCommand):
                 serialized_name="activeKey",
                 flags={"required": True},
             )
+            kms.key_vault_type = AAZStrType(
+                serialized_name="keyVaultType",
+            )
             kms.vault_name = AAZStrType(
                 serialized_name="vaultName",
                 flags={"required": True},
@@ -366,6 +368,9 @@ class List(AAZCommand):
             )
 
             platform = cls._schema_on_200.value.Element.properties.platform
+            platform.container_registry = AAZObjectType(
+                serialized_name="containerRegistry",
+            )
             platform.issuer_url = AAZStrType(
                 serialized_name="issuerUrl",
                 flags={"read_only": True},
@@ -391,6 +396,11 @@ class List(AAZCommand):
             platform.vnet_integration_subnet_id = AAZStrType(
                 serialized_name="vnetIntegrationSubnetId",
                 flags={"required": True},
+            )
+
+            container_registry = cls._schema_on_200.value.Element.properties.platform.container_registry
+            container_registry.managed_identity = AAZStrType(
+                serialized_name="managedIdentity",
             )
 
             operators_authentication = cls._schema_on_200.value.Element.properties.platform.operators_authentication
@@ -420,7 +430,19 @@ class List(AAZCommand):
             data_plane_operators.Element = AAZStrType()
 
             status = cls._schema_on_200.value.Element.properties.status
+            status.active_versions = AAZListType(
+                serialized_name="activeVersions",
+                flags={"read_only": True},
+            )
             status.conditions = AAZListType(
+                flags={"read_only": True},
+            )
+
+            active_versions = cls._schema_on_200.value.Element.properties.status.active_versions
+            active_versions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.status.active_versions.Element
+            _element.version = AAZStrType(
                 flags={"read_only": True},
             )
 
@@ -522,7 +544,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
@@ -721,6 +743,9 @@ class List(AAZCommand):
                 serialized_name="activeKey",
                 flags={"required": True},
             )
+            kms.key_vault_type = AAZStrType(
+                serialized_name="keyVaultType",
+            )
             kms.vault_name = AAZStrType(
                 serialized_name="vaultName",
                 flags={"required": True},
@@ -772,6 +797,9 @@ class List(AAZCommand):
             )
 
             platform = cls._schema_on_200.value.Element.properties.platform
+            platform.container_registry = AAZObjectType(
+                serialized_name="containerRegistry",
+            )
             platform.issuer_url = AAZStrType(
                 serialized_name="issuerUrl",
                 flags={"read_only": True},
@@ -797,6 +825,11 @@ class List(AAZCommand):
             platform.vnet_integration_subnet_id = AAZStrType(
                 serialized_name="vnetIntegrationSubnetId",
                 flags={"required": True},
+            )
+
+            container_registry = cls._schema_on_200.value.Element.properties.platform.container_registry
+            container_registry.managed_identity = AAZStrType(
+                serialized_name="managedIdentity",
             )
 
             operators_authentication = cls._schema_on_200.value.Element.properties.platform.operators_authentication
@@ -826,7 +859,19 @@ class List(AAZCommand):
             data_plane_operators.Element = AAZStrType()
 
             status = cls._schema_on_200.value.Element.properties.status
+            status.active_versions = AAZListType(
+                serialized_name="activeVersions",
+                flags={"read_only": True},
+            )
             status.conditions = AAZListType(
+                flags={"read_only": True},
+            )
+
+            active_versions = cls._schema_on_200.value.Element.properties.status.active_versions
+            active_versions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.status.active_versions.Element
+            _element.version = AAZStrType(
                 flags={"read_only": True},
             )
 

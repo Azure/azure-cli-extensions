@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "aro hcp cluster request-credential",
-    is_preview=True,
 )
 class RequestCredential(AAZCommand):
     """Request a temporary credential for your Azure Red Hat OpenShift with hosted control plane cluster
@@ -23,9 +22,9 @@ class RequestCredential(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-09-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.redhatopenshift/hcpopenshiftclusters/{}/requestadmincredential", "2026-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.redhatopenshift/hcpopenshiftclusters/{}/requestadmincredential", "2026-10-01"],
         ]
     }
 
@@ -143,7 +142,7 @@ class RequestCredential(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
