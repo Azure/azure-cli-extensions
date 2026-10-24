@@ -4621,6 +4621,10 @@ Only the key is returned in response, the value is not. If not specified, defaul
     - name: Install Cluster extension with optional parameter configuration settings
       text: az aks extension create --resource-group abc --cluster-name test --name flux \
 --extension-type microsoft.flux --config useKubeletIdentity=true
+    - name: Install Agent Sandbox directly through ClusterConfig on an eligible cluster not managed by agentSandboxProfile
+      text: az aks extension create --resource-group my-resource-group --cluster-name mycluster \
+--name aks-managed-agent-sandbox --extension-type Microsoft.AgentSandbox \
+--scope cluster --release-namespace agent-sandbox-system --config replicaCount=2
 """
 
 helps['aks extension delete'] = """
@@ -4705,6 +4709,9 @@ Only the key is returned in response, the value is not. If not specified, defaul
 --config-protected-settings protected-settings-key=protected-value \
 --config-settings-file=config-settings-file \
 --config-protected-file=protected-settings-file
+    - name: Update configuration of a directly managed Agent Sandbox extension
+      text: az aks extension update --resource-group my-resource-group --cluster-name mycluster \
+--name aks-managed-agent-sandbox --config replicaCount=2 controller.sandboxWarmPoolConcurrentWorkers=2
 """
 
 helps['aks extension list'] = """
