@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models entity update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a Entity
@@ -23,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-05-01-preview",
+        "version": "2026-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}", "2026-11-01"],
         ]
     }
 
@@ -118,6 +117,16 @@ class Update(AAZCommand):
             nullable=True,
             enum={"Limited": "Limited", "Standard": "Standard", "Suppressed": "Suppressed"},
         )
+        _args_schema.signal_aggregation_groups = AAZListArg(
+            options=["--signal-aggregation-groups"],
+            arg_group="Properties",
+            help="Logical aggregation groups over the signals on this entity. Overlap is allowed: the same signal may appear in more than one group's members. Each group is evaluated independently according to its strategy, and a shared signal can contribute to multiple group states and related per-group telemetry. Group states contribute alongside any ungrouped signals and the dependency-aggregated child health to the entity's overall worst-of composite.",
+            nullable=True,
+            fmt=AAZListArgFormat(
+                max_length=20,
+                min_length=1,
+            ),
+        )
         _args_schema.signal_groups = AAZObjectArg(
             options=["--signal-groups"],
             arg_group="Properties",
@@ -171,6 +180,78 @@ class Update(AAZCommand):
             fmt=AAZStrArgFormat(
                 max_length=100,
                 min_length=1,
+            ),
+        )
+
+        signal_aggregation_groups = cls._args_schema.signal_aggregation_groups
+        signal_aggregation_groups.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.signal_aggregation_groups.Element
+        _element.aggregation_type = AAZStrArg(
+            options=["aggregation-type"],
+            help="Aggregation strategy applied across the members of this group.",
+            nullable=True,
+            enum={"BestOf": "BestOf", "MaxNotHealthy": "MaxNotHealthy", "MinHealthy": "MinHealthy", "WorstOf": "WorstOf"},
+        )
+        _element.degraded_threshold = AAZFloatArg(
+            options=["degraded-threshold"],
+            help="Degraded threshold for threshold-bearing strategies (MinHealthy, MaxNotHealthy). For MinHealthy: group is degraded when the healthy member count/percentage falls to or below this value. For MaxNotHealthy: group is degraded when the not-healthy member count/percentage reaches or exceeds this value. Optional — if not set, the group transitions directly between Healthy and Unhealthy. MUST NOT be set when aggregationType is WorstOf or BestOf.",
+            nullable=True,
+            fmt=AAZFloatArgFormat(
+                minimum=0.0,
+            ),
+        )
+        _element.display_name = AAZStrArg(
+            options=["display-name"],
+            help="Display name",
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                max_length=260,
+                min_length=1,
+            ),
+        )
+        _element.ignore_unknown = AAZBoolArg(
+            options=["ignore-unknown"],
+            help="If true (default), members reporting Unknown are excluded from the aggregation. For MinHealthy and MaxNotHealthy this flag affects the denominator/count and is meaningful. For WorstOf and BestOf the flag has no observable effect: under WorstOf, Unknown=0 is the lowest severity and can never beat any non-Unknown member in a Max() so filtering it changes nothing observable; under BestOf, Unknown is unconditionally excluded by the strategy itself irrespective of the flag. The flag is retained on the contract for vocabulary symmetry across all four strategies.",
+            nullable=True,
+        )
+        _element.members = AAZListArg(
+            options=["members"],
+            help="Names of signals on this entity which are members of the group. Members are matched by name; references to signals that do not currently exist on the entity are accepted (typically for pre-declared external signals) and surfaced via 'unresolvedMembers'. A signal may be listed in multiple groups; no duplicates within this list.",
+            fmt=AAZListArgFormat(
+                max_length=50,
+                min_length=1,
+            ),
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="Name of the aggregation group. Unique within the entity.",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{1,258}[a-zA-Z0-9]$",
+            ),
+        )
+        _element.unhealthy_threshold = AAZFloatArg(
+            options=["unhealthy-threshold"],
+            help="Unhealthy threshold for threshold-bearing strategies. Required when aggregationType is MinHealthy or MaxNotHealthy; MUST NOT be set otherwise.",
+            nullable=True,
+            fmt=AAZFloatArgFormat(
+                minimum=0.0,
+            ),
+        )
+        _element.unit = AAZStrArg(
+            options=["unit"],
+            help="Unit type for the thresholds. Required when aggregationType is MinHealthy or MaxNotHealthy; MUST NOT be set otherwise.",
+            nullable=True,
+            enum={"Absolute": "Absolute", "Percentage": "Percentage"},
+        )
+
+        members = cls._args_schema.signal_aggregation_groups.Element.members
+        members.Element = AAZStrArg(
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{1,258}[a-zA-Z0-9]$",
             ),
         )
 
@@ -456,7 +537,7 @@ class Update(AAZCommand):
             help="Optional: Dimension filter to apply to the dimension. Must only be set if also Dimension is set.",
             nullable=True,
             fmt=AAZStrArgFormat(
-                max_length=256,
+                max_length=2048,
                 min_length=1,
             ),
         )
@@ -528,7 +609,7 @@ class Update(AAZCommand):
         dependencies.aggregation_type = AAZStrArg(
             options=["aggregation-type"],
             help="Aggregation type for child dependencies.",
-            enum={"MaxNotHealthy": "MaxNotHealthy", "MinHealthy": "MinHealthy", "WorstOf": "WorstOf"},
+            enum={"BestOf": "BestOf", "MaxNotHealthy": "MaxNotHealthy", "MinHealthy": "MinHealthy", "WorstOf": "WorstOf"},
         )
         dependencies.degraded_threshold = AAZFloatArg(
             options=["degraded-threshold"],
@@ -650,7 +731,6 @@ class Update(AAZCommand):
     @classmethod
     def _build_args_threshold_rule_v2_update(cls, _schema):
         if cls._args_threshold_rule_v2_update is not None:
-            _schema.look_back_window = cls._args_threshold_rule_v2_update.look_back_window
             _schema.operator = cls._args_threshold_rule_v2_update.operator
             _schema.sensitivity = cls._args_threshold_rule_v2_update.sensitivity
             _schema.threshold = cls._args_threshold_rule_v2_update.threshold
@@ -661,12 +741,6 @@ class Update(AAZCommand):
         )
 
         threshold_rule_v2_update = cls._args_threshold_rule_v2_update
-        threshold_rule_v2_update.look_back_window = AAZStrArg(
-            options=["look-back-window"],
-            help="ISO 8601 duration for the historical look-back window used by dynamic threshold computation. Only applicable when operator is Dynamic.",
-            nullable=True,
-            enum={"PT15M": "PT15M", "PT1H": "PT1H", "PT30M": "PT30M", "PT5M": "PT5M"},
-        )
         threshold_rule_v2_update.operator = AAZStrArg(
             options=["operator"],
             help="Operator how to compare the signal value with the threshold",
@@ -684,7 +758,6 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        _schema.look_back_window = cls._args_threshold_rule_v2_update.look_back_window
         _schema.operator = cls._args_threshold_rule_v2_update.operator
         _schema.sensitivity = cls._args_threshold_rule_v2_update.sensitivity
         _schema.threshold = cls._args_threshold_rule_v2_update.threshold
@@ -771,7 +844,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-11-01",
                     required=True,
                 ),
             }
@@ -874,7 +947,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-11-01",
                     required=True,
                 ),
             }
@@ -942,6 +1015,7 @@ class Update(AAZCommand):
                 properties.set_prop("healthObjective", AAZFloatType, ".health_objective")
                 properties.set_prop("icon", AAZObjectType, ".icon")
                 properties.set_prop("impact", AAZStrType, ".impact")
+                properties.set_prop("signalAggregationGroups", AAZListType, ".signal_aggregation_groups")
                 properties.set_prop("signalGroups", AAZObjectType, ".signal_groups")
                 properties.set_prop("tags", AAZDictType, ".tags")
 
@@ -959,6 +1033,25 @@ class Update(AAZCommand):
             if icon is not None:
                 icon.set_prop("customData", AAZStrType, ".custom_data")
                 icon.set_prop("iconName", AAZStrType, ".icon_name", typ_kwargs={"flags": {"required": True}})
+
+            signal_aggregation_groups = _builder.get(".properties.signalAggregationGroups")
+            if signal_aggregation_groups is not None:
+                signal_aggregation_groups.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.signalAggregationGroups[]")
+            if _elements is not None:
+                _elements.set_prop("aggregationType", AAZStrType, ".aggregation_type")
+                _elements.set_prop("degradedThreshold", AAZFloatType, ".degraded_threshold")
+                _elements.set_prop("displayName", AAZStrType, ".display_name")
+                _elements.set_prop("ignoreUnknown", AAZBoolType, ".ignore_unknown")
+                _elements.set_prop("members", AAZListType, ".members", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("unhealthyThreshold", AAZFloatType, ".unhealthy_threshold")
+                _elements.set_prop("unit", AAZStrType, ".unit")
+
+            members = _builder.get(".properties.signalAggregationGroups[].members")
+            if members is not None:
+                members.set_elements(AAZStrType, ".")
 
             signal_groups = _builder.get(".properties.signalGroups")
             if signal_groups is not None:
@@ -1092,7 +1185,6 @@ class _UpdateHelper:
     def _build_schema_threshold_rule_v2_update(cls, _builder):
         if _builder is None:
             return
-        _builder.set_prop("lookBackWindow", AAZStrType, ".look_back_window")
         _builder.set_prop("operator", AAZStrType, ".operator", typ_kwargs={"flags": {"required": True}})
         _builder.set_prop("sensitivity", AAZStrType, ".sensitivity")
         _builder.set_prop("threshold", AAZFloatType, ".threshold")
@@ -1180,6 +1272,9 @@ class _UpdateHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+        properties.signal_aggregation_groups = AAZListType(
+            serialized_name="signalAggregationGroups",
+        )
         properties.signal_groups = AAZObjectType(
             serialized_name="signalGroups",
         )
@@ -1207,6 +1302,47 @@ class _UpdateHelper:
             serialized_name="iconName",
             flags={"required": True},
         )
+
+        signal_aggregation_groups = _schema_entity_read.properties.signal_aggregation_groups
+        signal_aggregation_groups.Element = AAZObjectType()
+
+        _element = _schema_entity_read.properties.signal_aggregation_groups.Element
+        _element.aggregated_health_state = AAZStrType(
+            serialized_name="aggregatedHealthState",
+            flags={"read_only": True},
+        )
+        _element.aggregation_type = AAZStrType(
+            serialized_name="aggregationType",
+        )
+        _element.degraded_threshold = AAZFloatType(
+            serialized_name="degradedThreshold",
+        )
+        _element.display_name = AAZStrType(
+            serialized_name="displayName",
+        )
+        _element.ignore_unknown = AAZBoolType(
+            serialized_name="ignoreUnknown",
+        )
+        _element.members = AAZListType(
+            flags={"required": True},
+        )
+        _element.name = AAZStrType(
+            flags={"required": True},
+        )
+        _element.unhealthy_threshold = AAZFloatType(
+            serialized_name="unhealthyThreshold",
+        )
+        _element.unit = AAZStrType()
+        _element.unresolved_members = AAZListType(
+            serialized_name="unresolvedMembers",
+            flags={"read_only": True},
+        )
+
+        members = _schema_entity_read.properties.signal_aggregation_groups.Element.members
+        members.Element = AAZStrType()
+
+        unresolved_members = _schema_entity_read.properties.signal_aggregation_groups.Element.unresolved_members
+        unresolved_members.Element = AAZStrType()
 
         signal_groups = _schema_entity_read.properties.signal_groups
         signal_groups.azure_log_analytics = AAZObjectType(
@@ -1587,7 +1723,6 @@ class _UpdateHelper:
     @classmethod
     def _build_schema_threshold_rule_v2_read(cls, _schema):
         if cls._schema_threshold_rule_v2_read is not None:
-            _schema.look_back_window = cls._schema_threshold_rule_v2_read.look_back_window
             _schema.operator = cls._schema_threshold_rule_v2_read.operator
             _schema.sensitivity = cls._schema_threshold_rule_v2_read.sensitivity
             _schema.threshold = cls._schema_threshold_rule_v2_read.threshold
@@ -1596,16 +1731,12 @@ class _UpdateHelper:
         cls._schema_threshold_rule_v2_read = _schema_threshold_rule_v2_read = AAZObjectType()
 
         threshold_rule_v2_read = _schema_threshold_rule_v2_read
-        threshold_rule_v2_read.look_back_window = AAZStrType(
-            serialized_name="lookBackWindow",
-        )
         threshold_rule_v2_read.operator = AAZStrType(
             flags={"required": True},
         )
         threshold_rule_v2_read.sensitivity = AAZStrType()
         threshold_rule_v2_read.threshold = AAZFloatType()
 
-        _schema.look_back_window = cls._schema_threshold_rule_v2_read.look_back_window
         _schema.operator = cls._schema_threshold_rule_v2_read.operator
         _schema.sensitivity = cls._schema_threshold_rule_v2_read.sensitivity
         _schema.threshold = cls._schema_threshold_rule_v2_read.threshold
