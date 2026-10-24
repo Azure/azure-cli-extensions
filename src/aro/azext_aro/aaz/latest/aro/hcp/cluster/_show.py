@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "aro hcp cluster show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get an Azure Red Hat OpenShift with hosted control plane cluster

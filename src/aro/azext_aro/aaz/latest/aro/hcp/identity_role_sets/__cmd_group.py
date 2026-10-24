@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "aro hcp identity-role-sets",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """View Azure Red Hat OpenShift with hosted control plane identity role sets

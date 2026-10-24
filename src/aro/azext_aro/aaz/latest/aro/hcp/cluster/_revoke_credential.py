@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "aro hcp cluster revoke-credential",
-    is_preview=True,
 )
 class RevokeCredential(AAZCommand):
     """Revoke all credentials for your Azure Red Hat OpenShift with hosted control plane cluster

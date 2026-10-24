@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "aro hcp cluster external-auth update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update an Azure Red Hat OpenShift with hosted control plane external authentication instance
