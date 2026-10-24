@@ -14,6 +14,52 @@ Install this extension using the following CLI command `az extension add --name 
 
 Remove this extension using the following CLI command `az extension remove --name aks-preview`.
 
+Pod Snapshot Restore preview
+============================
+
+In a build containing Pod Snapshot Restore support, install the ``k8s-extension``
+CLI dependency and manage the extension on an existing, eligible AKS cluster::
+
+    az extension add --name k8s-extension
+    az aks extension create -g MyResourceGroup --cluster-name MyCluster --name aks-managed-pod-snapshot --extension-type Microsoft.PodSnapshot --scope cluster --release-namespace pod-snapshot-system --config-file psr-config.json
+    az aks extension update -g MyResourceGroup --cluster-name MyCluster --name aks-managed-pod-snapshot --config-file psr-config.json
+    az aks extension show -g MyResourceGroup --cluster-name MyCluster --name aks-managed-pod-snapshot
+    az aks extension delete -g MyResourceGroup --cluster-name MyCluster --name aks-managed-pod-snapshot
+
+These commands delegate to ``k8s-extension`` for ``managedClusters`` and call
+``Microsoft.KubernetesConfiguration/extensions`` (ClusterConfig), which drives
+Extension Manager and Helm. They do not set ``podSnapshotProfile`` or invoke
+its ``Microsoft.ContainerService/PodSnapshotRestorePreview`` AFEC validation.
+ClusterConfig registration must permit direct customer installation and
+configuration updates; preview subscription, region, Kubernetes compatibility,
+identity, and Azure RBAC requirements still apply. Adding the type to the CLI
+allowlist does not grant access or change the registration.
+
+Do not use this path for an instance owned by ``podSnapshotProfile``.
+Disabling an existing profile requests deletion, not an ownership handoff;
+migration requires a separately coordinated procedure.
+
+For the Kata/Blob workflow, prepare the cluster OIDC issuer, broker user-assigned
+managed identity, storage account, and storage-account-scoped Storage Blob Data
+Contributor role assignment. The broker identity needs a federated credential
+with subject ``system:serviceaccount:pod-snapshot-system:pod-snapshot-broker``
+and audience ``api://AzureADTokenExchange``. A compatible Kata node pool is also
+required. The CLI wrapper does not provision these prerequisites.
+
+Supply the chart's broker settings in ``psr-config.json`` using real values::
+
+    {
+      "broker.enabled": "true",
+      "nodeWorker.enabled": "true",
+      "broker.storageAccount": "<storage-account-name>",
+      "azureBlob.workloadIdentity.clientID": "<broker-managed-identity-client-id>",
+      "azureBlob.workloadIdentity.tenantID": "<tenant-id>"
+    }
+
+Include any additional settings required by the selected chart and runtime,
+such as worker node selection. ``--config-file`` and ``--config-settings-file``
+are aliases; ``--config`` accepts inline key/value settings.
+
 Dependency between aks-preview and azure-cli/acs (azure-cli-core)
 =================================================================
 
