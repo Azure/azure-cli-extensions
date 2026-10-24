@@ -11,8 +11,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* `az aks create`: Add `--enable-pod-snapshot-restore` to enable the AKS-managed Pod Snapshot Restore extension.
-* `az aks update`: Add `--enable-pod-snapshot-restore` and `--disable-pod-snapshot-restore` to manage the Pod Snapshot Restore profile.
+* `az aks extension`: Support direct Pod Snapshot Restore installation and configuration through ClusterConfig using `Microsoft.PodSnapshot`.
+* `az aks extension create/update/delete/show/list`: Propagate extension operation failures instead of returning an empty successful result.
 
 22.0.0b15
 +++++++++

@@ -1610,7 +1610,6 @@ def aks_create(
     enable_cost_analysis=False,
     # AI toolchain operator
     enable_ai_toolchain_operator=False,
-    enable_pod_snapshot_restore=False,
     # azure container storage
     enable_azure_container_storage=None,
     container_storage_version=None,
@@ -1893,8 +1892,6 @@ def aks_update(
     # AI toolchain operator
     enable_ai_toolchain_operator=False,
     disable_ai_toolchain_operator=False,
-    enable_pod_snapshot_restore=False,
-    disable_pod_snapshot_restore=False,
     # azure container storage
     enable_azure_container_storage=None,
     disable_azure_container_storage=None,
@@ -6008,6 +6005,7 @@ def create_k8s_extension(
         return result
     except Exception as ex:
         logger.error("K8s extension failed to install.\nError: %s", ex)
+        raise
 
 
 def list_k8s_extension(
@@ -6030,6 +6028,7 @@ def list_k8s_extension(
         return get_all_extensions_in_allow_list(result)
     except Exception as ex:
         logger.error("Failed to list the K8s extension.\nError: %s", ex)
+        raise
 
 
 def update_k8s_extension(
@@ -6067,6 +6066,7 @@ def update_k8s_extension(
         return result
     except Exception as ex:
         logger.error("K8s extension failed to patch.\nError: %s", ex)
+        raise
 
 
 def delete_k8s_extension(
@@ -6098,6 +6098,7 @@ def delete_k8s_extension(
         return result
     except Exception as ex:
         logger.error("Failed to delete K8s extension.\nError: %s", ex)
+        raise
 
 
 def show_k8s_extension(cmd, client, resource_group_name, cluster_name, name):
@@ -6116,6 +6117,7 @@ def show_k8s_extension(cmd, client, resource_group_name, cluster_name, name):
         return get_extension_in_allow_list(result)
     except Exception as ex:
         logger.error("Failed to get K8s extension.\nError: %s", ex)
+        raise
 
 
 def list_k8s_extension_types(
