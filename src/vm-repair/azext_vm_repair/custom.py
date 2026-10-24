@@ -799,7 +799,9 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         _set_repair_map_url(preview)
 
     try:
-        _validate_legacy_values(vm_name, resource_group_name, custom_script_file, *(parameters or []))
+        _validate_legacy_values(vm_name, resource_group_name, *(parameters or []))
+        if os.name == 'nt' and custom_script_file:
+            _validate_command_token('@' + custom_script_file, field_name='custom_script_file', file_reference=True)
         # Fetch data of the VM on which the script is to be run
         source_vm = get_vm_by_aaz(cmd, resource_group_name, vm_name)
 

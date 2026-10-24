@@ -744,6 +744,47 @@ def test_rejected_create_values_do_not_mutate_or_clean_up(invalid):
     cleanup.assert_not_called()
 
 
+@pytest.mark.parametrize('script_path', [
+    r"C:\Users\O'Brien\fix.ps1",
+    r'C:\Tools (x86)\fix.ps1',
+    r"O'Brien (x86)\fix.ps1",
+], ids=['apostrophe', 'parentheses', 'relative'])
+def test_run_accepts_windows_custom_script_file_punctuation(script_path):
+    helper = FakeCommandHelper(None, None, None)
+    helper.script = mock.Mock(status='SUCCESS')
+    stdout = '[Log-Start 01/01/2026 00:00:00]\n[STATUS]::SUCCESS'
+    response = json.dumps({'value': [{'message': stdout}, {'message': ''}]})
+    source = {'storageProfile': {'osDisk': {'osType': 'Windows'}}}
+    with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
+            mock.patch('azext_vm_repair.custom.command_helper', return_value=helper), \
+            mock.patch('azext_vm_repair.custom.get_vm_by_aaz', return_value=source), \
+            mock.patch('azext_vm_repair.custom._enrich_source_resource_context'), \
+            mock.patch('azext_vm_repair.repair_utils.subprocess.Popen',
+                       return_value=_FakeProcess(stdout=response)) as popen:
+        result = run(SimpleNamespace(), 'source', 'source-rg', custom_script_file=script_path)
+
+    assert result['status'] == 'SUCCESS', result
+    assert result['script_status'] == 'SUCCESS'
+    popen.assert_called_once()
+    assert '"@{}"'.format(os.path.abspath(script_path)) in popen.call_args.args[0]
+
+
+@pytest.mark.parametrize('bad_char', UNSAFE_TAG_CHARS)
+def test_run_rejects_unsafe_custom_script_file_before_vm_lookup(bad_char):
+    script_path = "C:\\Users\\O'Brien\\fix" + bad_char + '.ps1'
+    with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
+            mock.patch('azext_vm_repair.custom.command_helper', FakeCommandHelper), \
+            mock.patch('azext_vm_repair.custom.get_vm_by_aaz') as get_vm, \
+            mock.patch('azext_vm_repair.custom._invoke_run_command') as invoke:
+        result = run(SimpleNamespace(), 'source', 'source-rg', custom_script_file=script_path)
+
+    assert result['status'] == 'ERROR'
+    assert 'unsupported character' in result['error_message']
+    assert script_path not in result['error_message']
+    get_vm.assert_not_called()
+    invoke.assert_not_called()
+
+
 @pytest.mark.parametrize('value', ['value"quoted"', "value'quoted'", 'value\nnext', 'value&next'])
 def test_run_rejects_original_parameters_before_wrapping(value):
     with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'), \
