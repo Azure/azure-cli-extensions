@@ -171,12 +171,12 @@ class ClusterCreate(_ClusterCreate):
 
         # Remove once platform managed etcd encryption has been implemented and
         # key management mode can safely default to PlatformManaged
-        args_schema.key_management_mode._default = None
-        args_schema.key_management_mode._required = True
+        args_schema.key_management_mode._default = None  # pylint: disable=protected-access
+        args_schema.key_management_mode._required = True  # pylint: disable=protected-access
 
-        args_schema.user_assigned_identities._registered = False
-        args_schema.operators_authentication._registered = False
-        args_schema.container_registry_managed_identity._registered = False
+        args_schema.user_assigned_identities._registered = False  # pylint: disable=protected-access
+        args_schema.operators_authentication._registered = False  # pylint: disable=protected-access
+        args_schema.container_registry_managed_identity._registered = False  # pylint: disable=protected-access
 
         args_schema.assign_control_plane_operator_identity = _build_operator_identity_arg(
             ["--control-plane-identity", "--assign-control-plane-operator-identity"],
@@ -285,9 +285,9 @@ class ClusterUpdate(_ClusterUpdate):
         if hasattr(args_schema, "assign_control_plane_operator_identity"):
             return args_schema
 
-        args_schema.user_assigned_identities._registered = False
-        args_schema.operators_authentication._registered = False
-        args_schema.container_registry_managed_identity._registered = False
+        args_schema.user_assigned_identities._registered = False  # pylint: disable=protected-access
+        args_schema.operators_authentication._registered = False  # pylint: disable=protected-access
+        args_schema.container_registry_managed_identity._registered = False  # pylint: disable=protected-access
 
         args_schema.assign_control_plane_operator_identity = _build_operator_identity_arg(
             ["--control-plane-identity", "--assign-control-plane-operator-identity"],
@@ -454,7 +454,7 @@ class RequestCredential(_RequestCredential):
         args_schema.certificate_signing_request = AAZStrArg(
             options=["--certificate-signing-request"],
         )
-        args_schema.certificate_signing_request._registered = False
+        args_schema.certificate_signing_request._registered = False  # pylint: disable=protected-access
         args_schema.admin = AAZBoolArg(
             options=["-a", "--admin"],
             help="Get cluster administrator credentials. Default: cluster user credentials.",
@@ -482,7 +482,7 @@ class RequestCredential(_RequestCredential):
 
         if not command_args.get("admin"):
             raise InvalidArgumentValueError(
-                "Requesting a non-admin credential is not supported yet. Specify --admin/-a to request an admin credential."
+                "Requesting a non-admin credential is not supported yet. Specify --admin/-a to request an admin credential."  # pylint: disable=line-too-long
             )
         private_key_pem, command_args["certificate_signing_request"] = _generate_admin_credential_request()
         self._private_key_pem = private_key_pem
@@ -514,7 +514,7 @@ class RequestCredential(_RequestCredential):
             # generic "admin" context, so without this every cluster would merge into the
             # same context name and collide in the kubeconfig.
             context_name = "{}-admin".format(self.ctx.args.name.to_serialized_data())
-        overwrite_existing = bool(self.ctx.args.overwrite_existing.to_serialized_data()) if has_value(self.ctx.args.overwrite_existing) else False
+        overwrite_existing = bool(self.ctx.args.overwrite_existing.to_serialized_data()) if has_value(self.ctx.args.overwrite_existing) else False  # pylint: disable=line-too-long
 
         # honor $KUBECONFIG when the caller kept the default path
         if path == _default_kubeconfig_path() and os.environ.get("KUBECONFIG"):
