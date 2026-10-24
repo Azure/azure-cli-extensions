@@ -2,6 +2,16 @@
 Release History
 ===============
 
+2.4.6
+++++++
+* Windows legacy commands reject shell-sensitive argument values and use a quoted batch launcher without Python ``-I``. Child processes ignore inherited ``PYTHONPATH`` and run from the installed extension directory. Linux and macOS retain their existing launch path.
+* Repair VM creation reuses core argument preparation and ARM deployment in process. Tags and repair usernames retain the pre-existing tag restrictions on quotes, percent signs, exclamation marks, and control characters. Passwords use existing password validation without additional shell-character restrictions; accepted values are passed as structured data.
+* Unmanaged snapshots, blob copies, and copy-status reads use the Storage SDK with existing account-key authentication, preserving source URI characters without shell parsing.
+* Requires Azure CLI 2.90.0 or later so reused VM creation validators and Compute operations use AAZ rather than the Compute SDK.
+* On Windows, ``restore`` and ``reset-nic`` now validate the follow-up command (re-attach disk / revert NIC) before detaching the disk or changing the NIC IP configuration, so a validation failure cannot leave the disk detached or the NIC on the temporary IP address.
+* Unmanaged-disk restore now detaches the repair disk and updates the source OS-disk URI through in-process AAZ operations instead of nested CLI commands. Structured update arguments preserve literal ``%`` and ``&`` without shell or command-string parsing. Existing Windows quote/control-character validation remains before detach.
+* Unmanaged repair-VM creation now attaches the copied VHD through an AAZ instance-update operation, preserving literal URI characters without constructing a nested attach command or using SDK-backed core helpers.
+
 2.4.5
 ++++++
 Documenting the Windows Generation 2 NVMe boot-driver recovery now available through the ``win-enable-nvme-boot-driver`` run id. The README and command help show the read-only report, explicit repair, and rollback flow, including the detector signatures that require the operator to stop instead of modifying the offline disk. Linux recovery and Generation 1 conversion remain unavailable.
