@@ -720,10 +720,6 @@ helps['aks create'] = f"""
         - name: --enable-ai-toolchain-operator
           type: bool
           short-summary: Enable AI toolchain operator to the cluster.
-        - name: --enable-agent-sandbox
-          type: bool
-          short-summary: Enable the AKS-managed Agent Sandbox extension.
-          long-summary: Requires Microsoft.ContainerService/AgentSandboxPreview registration and a supported cluster configuration and region. AKS manages the extension through agentSandboxProfile.
         - name: --ssh-access
           type: string
           short-summary: Configure SSH setting for the first system pool in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key. Note, this configuration will not take effect for later created new node pools, please use option `az aks nodepool add --ssh-access` to configure SSH access for new node pools.
@@ -1615,14 +1611,6 @@ helps['aks update'] = """
         - name: --disable-ai-toolchain-operator
           type: bool
           short-summary: Disable AI toolchain operator.
-        - name: --enable-agent-sandbox
-          type: bool
-          short-summary: Enable the AKS-managed Agent Sandbox extension.
-          long-summary: Requires Microsoft.ContainerService/AgentSandboxPreview registration and a supported cluster configuration and region. Cannot be combined with --disable-agent-sandbox.
-        - name: --disable-agent-sandbox
-          type: bool
-          short-summary: Disable the AKS-managed Agent Sandbox extension.
-          long-summary: Sets agentSandboxProfile.enabled to false. Cannot be combined with --enable-agent-sandbox.
         - name: --node-init-taints --nodepool-initialization-taints
           type: string
           short-summary: The node initialization taints for all node pools in cluster.
@@ -4633,6 +4621,10 @@ Only the key is returned in response, the value is not. If not specified, defaul
     - name: Install Cluster extension with optional parameter configuration settings
       text: az aks extension create --resource-group abc --cluster-name test --name flux \
 --extension-type microsoft.flux --config useKubeletIdentity=true
+    - name: Install Agent Sandbox directly through ClusterConfig on an eligible cluster not managed by agentSandboxProfile
+      text: az aks extension create --resource-group my-resource-group --cluster-name mycluster \
+--name aks-managed-agent-sandbox --extension-type Microsoft.AgentSandbox \
+--scope cluster --release-namespace agent-sandbox-system --config replicaCount=2
 """
 
 helps['aks extension delete'] = """
@@ -4717,6 +4709,9 @@ Only the key is returned in response, the value is not. If not specified, defaul
 --config-protected-settings protected-settings-key=protected-value \
 --config-settings-file=config-settings-file \
 --config-protected-file=protected-settings-file
+    - name: Update configuration of a directly managed Agent Sandbox extension
+      text: az aks extension update --resource-group my-resource-group --cluster-name mycluster \
+--name aks-managed-agent-sandbox --config replicaCount=2 controller.sandboxWarmPoolConcurrentWorkers=2
 """
 
 helps['aks extension list'] = """

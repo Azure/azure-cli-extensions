@@ -17,19 +17,30 @@ Remove this extension using the following CLI command `az extension remove --nam
 Agent Sandbox preview
 =====================
 
-In a build containing Agent Sandbox support, use the managed cluster profile
-instead of creating the extension directly::
+In a build containing Agent Sandbox support, install the ``k8s-extension`` CLI
+dependency and manage the extension on an existing, eligible AKS cluster::
 
-    az aks create -g MyResourceGroup -n MyCluster --enable-managed-identity --generate-ssh-keys --enable-agent-sandbox
-    az aks update -g MyResourceGroup -n MyCluster --enable-agent-sandbox
-    az aks update -g MyResourceGroup -n MyCluster --disable-agent-sandbox
+    az extension add --name k8s-extension
+    az aks extension create -g MyResourceGroup --cluster-name MyCluster --name aks-managed-agent-sandbox --extension-type Microsoft.AgentSandbox --scope cluster --release-namespace agent-sandbox-system
+    az aks extension update -g MyResourceGroup --cluster-name MyCluster --name aks-managed-agent-sandbox --config replicaCount=2 controller.sandboxWarmPoolConcurrentWorkers=2
+    az aks extension show -g MyResourceGroup --cluster-name MyCluster --name aks-managed-agent-sandbox
+    az aks extension delete -g MyResourceGroup --cluster-name MyCluster --name aks-managed-agent-sandbox
 
-Enablement requires ``Microsoft.ContainerService/AgentSandboxPreview``
-registration, managed identity, and a Kubernetes version and region supported by
-the service. Feature registration alone does not make every region eligible.
-The service validates these prerequisites; the CLI does not register the feature
-or change rollout eligibility. Omitting both update flags preserves the current
-profile. Enabling the extension does not configure a Kata node pool.
+These commands delegate to ``k8s-extension`` for ``managedClusters`` and call
+``Microsoft.KubernetesConfiguration/extensions`` (ClusterConfig), which drives
+Extension Manager and Helm. They do not set ``agentSandboxProfile`` or invoke
+its ``Microsoft.ContainerService/AgentSandboxPreview`` AFEC validation.
+ClusterConfig registration must permit direct customer installation and
+configuration updates; preview subscription, region, Kubernetes compatibility,
+identity, and Azure RBAC requirements still apply. Adding the type to the CLI
+allowlist does not grant access or change the registration.
+
+Do not use this path for an instance owned by ``agentSandboxProfile``.
+Disabling an existing profile requests deletion, not an ownership handoff;
+migration requires a separately coordinated procedure. The chart has defaults
+for base installation. Optional overrides can be supplied with ``--config`` or
+``--config-file`` (alias ``--config-settings-file``). Installation does not
+configure a Kata node pool or install Pod Snapshot Restore.
 
 Dependency between aks-preview and azure-cli/acs (azure-cli-core)
 =================================================================

@@ -11,8 +11,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* `az aks create`: Add `--enable-agent-sandbox` to enable the AKS-managed Agent Sandbox extension.
-* `az aks update`: Add `--enable-agent-sandbox` and `--disable-agent-sandbox` to manage the Agent Sandbox profile.
+* `az aks extension`: Support direct Agent Sandbox installation and configuration through ClusterConfig using `Microsoft.AgentSandbox`.
+* `az aks extension create/update/delete/show/list`: Propagate extension operation failures instead of returning an empty successful result.
 
 22.0.0b15
 +++++++++
