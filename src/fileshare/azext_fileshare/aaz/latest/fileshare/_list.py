@@ -22,10 +22,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-01",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.fileshares/fileshares", "2026-06-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.fileshares/fileshares", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.fileshares/fileshares", "2026-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.fileshares/fileshares", "2026-09-01"],
         ]
     }
 
@@ -112,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
@@ -159,6 +159,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -176,7 +177,39 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.value.Element.properties
+            properties.encryption = AAZObjectType()
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
                 flags={"read_only": True},
@@ -191,6 +224,10 @@ class List(AAZCommand):
             )
             properties.media_tier = AAZStrType(
                 serialized_name="mediaTier",
+            )
+            properties.migration_state = AAZObjectType(
+                serialized_name="migrationState",
+                flags={"read_only": True},
             )
             properties.mount_name = AAZStrType(
                 serialized_name="mountName",
@@ -235,6 +272,58 @@ class List(AAZCommand):
                 serialized_name="publicNetworkAccess",
             )
             properties.redundancy = AAZStrType()
+            properties.scale_mode = AAZStrType(
+                serialized_name="scaleMode",
+            )
+
+            encryption = cls._schema_on_200.value.Element.properties.encryption
+            encryption.auto_key_rotation_error = AAZObjectType(
+                serialized_name="autoKeyRotationError",
+                flags={"read_only": True},
+            )
+            _ListHelper._build_schema_error_detail_read(encryption.auto_key_rotation_error)
+            encryption.current_key_encryption_key_url = AAZStrType(
+                serialized_name="currentKeyEncryptionKeyUrl",
+                flags={"read_only": True},
+            )
+            encryption.customer_managed_key_encryption = AAZObjectType(
+                serialized_name="customerManagedKeyEncryption",
+            )
+            encryption.infrastructure_encryption = AAZStrType(
+                serialized_name="infrastructureEncryption",
+            )
+            encryption.last_key_rotation_timestamp = AAZStrType(
+                serialized_name="lastKeyRotationTimestamp",
+                flags={"read_only": True},
+            )
+
+            customer_managed_key_encryption = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption
+            customer_managed_key_encryption.key_encryption_key_identity = AAZObjectType(
+                serialized_name="keyEncryptionKeyIdentity",
+            )
+            customer_managed_key_encryption.key_encryption_key_url = AAZStrType(
+                serialized_name="keyEncryptionKeyUrl",
+            )
+
+            key_encryption_key_identity = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption.key_encryption_key_identity
+            key_encryption_key_identity.delegated_identity_client_id = AAZStrType(
+                serialized_name="delegatedIdentityClientId",
+            )
+            key_encryption_key_identity.federated_client_id = AAZStrType(
+                serialized_name="federatedClientId",
+            )
+            key_encryption_key_identity.identity_type = AAZStrType(
+                serialized_name="identityType",
+            )
+            key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
+            )
+
+            migration_state = cls._schema_on_200.value.Element.properties.migration_state
+            migration_state.redundancy_conversion_in_progress = AAZBoolType(
+                serialized_name="redundancyConversionInProgress",
+                flags={"read_only": True},
+            )
 
             nfs_protocol_properties = cls._schema_on_200.value.Element.properties.nfs_protocol_properties
             nfs_protocol_properties.encryption_in_transit_required = AAZStrType(
@@ -355,7 +444,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
@@ -402,6 +491,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.identity = AAZIdentityObjectType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -419,7 +509,39 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.value.Element.properties
+            properties.encryption = AAZObjectType()
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
                 flags={"read_only": True},
@@ -434,6 +556,10 @@ class List(AAZCommand):
             )
             properties.media_tier = AAZStrType(
                 serialized_name="mediaTier",
+            )
+            properties.migration_state = AAZObjectType(
+                serialized_name="migrationState",
+                flags={"read_only": True},
             )
             properties.mount_name = AAZStrType(
                 serialized_name="mountName",
@@ -478,6 +604,58 @@ class List(AAZCommand):
                 serialized_name="publicNetworkAccess",
             )
             properties.redundancy = AAZStrType()
+            properties.scale_mode = AAZStrType(
+                serialized_name="scaleMode",
+            )
+
+            encryption = cls._schema_on_200.value.Element.properties.encryption
+            encryption.auto_key_rotation_error = AAZObjectType(
+                serialized_name="autoKeyRotationError",
+                flags={"read_only": True},
+            )
+            _ListHelper._build_schema_error_detail_read(encryption.auto_key_rotation_error)
+            encryption.current_key_encryption_key_url = AAZStrType(
+                serialized_name="currentKeyEncryptionKeyUrl",
+                flags={"read_only": True},
+            )
+            encryption.customer_managed_key_encryption = AAZObjectType(
+                serialized_name="customerManagedKeyEncryption",
+            )
+            encryption.infrastructure_encryption = AAZStrType(
+                serialized_name="infrastructureEncryption",
+            )
+            encryption.last_key_rotation_timestamp = AAZStrType(
+                serialized_name="lastKeyRotationTimestamp",
+                flags={"read_only": True},
+            )
+
+            customer_managed_key_encryption = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption
+            customer_managed_key_encryption.key_encryption_key_identity = AAZObjectType(
+                serialized_name="keyEncryptionKeyIdentity",
+            )
+            customer_managed_key_encryption.key_encryption_key_url = AAZStrType(
+                serialized_name="keyEncryptionKeyUrl",
+            )
+
+            key_encryption_key_identity = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption.key_encryption_key_identity
+            key_encryption_key_identity.delegated_identity_client_id = AAZStrType(
+                serialized_name="delegatedIdentityClientId",
+            )
+            key_encryption_key_identity.federated_client_id = AAZStrType(
+                serialized_name="federatedClientId",
+            )
+            key_encryption_key_identity.identity_type = AAZStrType(
+                serialized_name="identityType",
+            )
+            key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
+            )
+
+            migration_state = cls._schema_on_200.value.Element.properties.migration_state
+            migration_state.redundancy_conversion_in_progress = AAZBoolType(
+                serialized_name="redundancyConversionInProgress",
+                flags={"read_only": True},
+            )
 
             nfs_protocol_properties = cls._schema_on_200.value.Element.properties.nfs_protocol_properties
             nfs_protocol_properties.encryption_in_transit_required = AAZStrType(
@@ -557,6 +735,64 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_error_detail_read = None
+
+    @classmethod
+    def _build_schema_error_detail_read(cls, _schema):
+        if cls._schema_error_detail_read is not None:
+            _schema.additional_info = cls._schema_error_detail_read.additional_info
+            _schema.code = cls._schema_error_detail_read.code
+            _schema.details = cls._schema_error_detail_read.details
+            _schema.message = cls._schema_error_detail_read.message
+            _schema.target = cls._schema_error_detail_read.target
+            return
+
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        error_detail_read = _schema_error_detail_read
+        error_detail_read.additional_info = AAZListType(
+            serialized_name="additionalInfo",
+            flags={"read_only": True},
+        )
+        error_detail_read.code = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.details = AAZListType(
+            flags={"read_only": True},
+        )
+        error_detail_read.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.target = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        additional_info = _schema_error_detail_read.additional_info
+        additional_info.Element = AAZObjectType()
+
+        _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZDictType(
+            flags={"read_only": True},
+        )
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
+
+        details = _schema_error_detail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_error_detail_read(details.Element)
+
+        _schema.additional_info = cls._schema_error_detail_read.additional_info
+        _schema.code = cls._schema_error_detail_read.code
+        _schema.details = cls._schema_error_detail_read.details
+        _schema.message = cls._schema_error_detail_read.message
+        _schema.target = cls._schema_error_detail_read.target
 
     _schema_system_data_read = None
 
