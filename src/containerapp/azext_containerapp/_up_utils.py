@@ -19,6 +19,7 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
     CLIError, CLIInternalError,
+    HTTPError,
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice._create_util import (
@@ -39,7 +40,6 @@ from azure.cli.command_modules.containerapp._utils import (
     is_int,
     create_service_principal_for_github_action,
     repo_url_to_name,
-    get_container_app_if_exists,
     get_containerapps_job_if_exists,
     _ensure_location_allowed,
     register_provider_if_needed,
@@ -464,17 +464,20 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
     def _get(self):
         return ContainerAppPreviewClient.show(self.cmd, self.resource_group.name, self.name)
 
-    def create(self, no_registry=False):  # pylint: disable=arguments-differ
-        # no_registry: don't pass in a registry during create even if the app has one (used for GH actions)
-        if get_container_app_if_exists(self.cmd, self.resource_group.name, self.name):
-            logger.warning(
-                f"Updating Containerapp {self.name} in resource group {self.resource_group.name}"
-            )
-        else:
-            logger.warning(
-                f"Creating Containerapp {self.name} in resource group {self.resource_group.name}"
-            )
+    def get(self):
+        try:
+            containerapp_def = self._get()
+        except (HTTPError, HttpResponseError) as ex:
+            if ex.response is None or ex.response.status_code != 404:
+                raise
+            return None
+        if not containerapp_def:
+            raise CLIInternalError(f"Containerapp lookup for '{self.name}' returned an empty response.")
+        return containerapp_def
 
+    # Resource.create is variadic; this implementation exposes app-specific optional arguments.
+    def create(self, no_registry=False, apply_image_defaults=True):  # pylint: disable=arguments-differ
+        # no_registry: don't pass in a registry during create even if the app has one (used for GH actions)
         return containerapp_up_logic(
             cmd=self.cmd,
             name=self.name,
@@ -498,6 +501,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             cpu=self.cpu,
             memory=self.memory,
             kind=self.kind,
+            apply_image_defaults=apply_image_defaults,
         )
 
     def set_force_single_container_updates(self, force_single_container_updates):
@@ -578,7 +582,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 # Make sure that a container app exists before triggering the cloud build
                 logger.warning("Creating the base container app required to build")
                 self.image = "mcr.microsoft.com/k8se/quickstart:latest"
-                self.create(no_registry=True)
+                self.create(no_registry=True, apply_image_defaults=False)
             return run_cloud_build(self.cmd, source, build_env_vars, location, resource_group_name, self.env.name, container_app_name, run_full_id, logs_file, logs_file_path)
         except Exception as exception:
             logs_file.close()

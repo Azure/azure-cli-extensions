@@ -8,6 +8,7 @@ import time
 import unittest
 from unittest import mock
 
+from knack.util import CLIError
 from azure.cli.command_modules.containerapp._utils import format_location
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only, JMESPathCheck, JMESPathCheckExists)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -43,6 +44,151 @@ class ContainerAppUpImageTest(ScenarioTest):
             JMESPathCheck("properties.provisioningState", "Succeeded"),
         ])
         self.cmd(f'group delete -n {resource_group} --yes --no-wait', expect_failure=False)
+
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_up_image_preserves_existing_configuration(self, resource_group):
+        env_name = self.create_random_name(prefix='env', length=24)
+        app_name = self.create_random_name(prefix='containerapp', length=24)
+        original_image = "mcr.microsoft.com/k8se/quickstart"
+        updated_image = "mcr.microsoft.com/k8se/quickstart:latest"
+        env = self.cmd(
+            f'containerapp env create -g {resource_group} -n {env_name} --logs-destination none'
+        ).get_output_in_json()
+
+        self.cmd(
+            f'containerapp create -g {resource_group} -n {app_name} --environment {env_name} '
+            f'--image {original_image} --ingress external --target-port 80 --system-assigned '
+            '--secrets keep-secret=preserved-test-value '
+            '--env-vars KEEP_VALUE=preserved KEEP_SECRET=secretref:keep-secret'
+        )
+        # Change ingress after deployment so the quickstart image's health probes still use port 80.
+        # This tests configuration preservation, not HTTP availability on port 3000.
+        self.cmd(
+            f'containerapp ingress enable -g {resource_group} -n {app_name} --type internal '
+            '--target-port 3000 --allow-insecure --transport http2'
+        )
+        original = self.cmd(f'containerapp show -g {resource_group} -n {app_name}', checks=[
+            JMESPathCheck('properties.template.containers[0].image', original_image),
+            JMESPathCheck('properties.environmentId', env["id"]),
+            JMESPathCheck('identity.type', "SystemAssigned"),
+            JMESPathCheck('properties.configuration.ingress.external', False),
+            JMESPathCheck('properties.configuration.ingress.targetPort', 3000),
+            JMESPathCheck('properties.configuration.ingress.allowInsecure', True),
+            JMESPathCheck('properties.configuration.ingress.transport', "Http2"),
+        ]).get_output_in_json()
+        original_secrets = self.cmd(
+            f'containerapp secret list -g {resource_group} -n {app_name} --show-values', checks=[
+                JMESPathCheck('[?name==`keep-secret`].value | [0]', "preserved-test-value"),
+            ]
+        ).get_output_in_json()
+
+        self.cmd(f'containerapp up -g {resource_group} -n {app_name} --image {updated_image}')
+
+        updated = self.cmd(f'containerapp show -g {resource_group} -n {app_name}', checks=[
+            JMESPathCheck('properties.template.containers[0].image', updated_image),
+            JMESPathCheck('properties.environmentId', env["id"]),
+            JMESPathCheck('length(properties.template.containers[0].env)', 2),
+            JMESPathCheck('properties.template.containers[0].env[?name==`KEEP_VALUE`].value | [0]',
+                          "preserved"),
+            JMESPathCheck('properties.template.containers[0].env[?name==`KEEP_SECRET`].secretRef | [0]',
+                          "keep-secret"),
+        ]).get_output_in_json()
+        self.assertNotEqual(original["properties"]["template"]["containers"][0]["image"],
+                            updated["properties"]["template"]["containers"][0]["image"])
+        self.assertEqual(original["identity"], updated["identity"])
+        self.assertEqual(original["properties"]["configuration"]["ingress"],
+                         updated["properties"]["configuration"]["ingress"])
+        self.assertEqual(original["properties"]["configuration"]["secrets"],
+                         updated["properties"]["configuration"]["secrets"])
+        self.assertEqual(original_secrets, self.cmd(
+            f'containerapp secret list -g {resource_group} -n {app_name} --show-values'
+        ).get_output_in_json())
+
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_up_image_preserves_custom_domain_binding(self, resource_group):
+        env_name = self.create_random_name(prefix='env', length=24)
+        app_name = self.create_random_name(prefix='containerapp', length=24)
+        original_image = "mcr.microsoft.com/k8se/quickstart"
+        updated_image = "mcr.microsoft.com/k8se/quickstart:latest"
+        self.cmd(f'containerapp env create -g {resource_group} -n {env_name} --logs-destination none')
+        app = self.cmd(
+            f'containerapp create -g {resource_group} -n {app_name} --environment {env_name} '
+            f'--image {original_image} --ingress external --target-port 80'
+        ).get_output_in_json()
+
+        contacts = os.path.join(TEST_DIR, 'domain-contact.json')
+        zone_name = f'{app_name}.com'
+        subdomain = "devtest"
+        hostname = f'{subdomain}.{zone_name}'
+        verification_id = app["properties"]["customDomainVerificationId"]
+        fqdn = app["properties"]["configuration"]["ingress"]["fqdn"]
+        self.cmd(
+            f"appservice domain create -g {resource_group} --hostname {zone_name} "
+            f"--contact-info=@'{contacts}' --accept-terms"
+        )
+        self.cmd(
+            f'network dns record-set txt add-record -g {resource_group} -z {zone_name} '
+            f'-n asuid.{subdomain} -v {verification_id}'
+        )
+        self.cmd(
+            f'network dns record-set cname create -g {resource_group} -z {zone_name} -n {subdomain}'
+        )
+        self.cmd(
+            f'network dns record-set cname set-record -g {resource_group} -z {zone_name} '
+            f'-n {subdomain} -c {fqdn}'
+        )
+        pfx_file = os.path.join(TEST_DIR, 'cert.pfx')
+        certificate_id = self.cmd(
+            f'containerapp ssl upload -g {resource_group} -n {app_name} --environment {env_name} '
+            f'--hostname {hostname} --certificate-file "{pfx_file}" --password test12', checks=[
+                JMESPathCheck('[0].name', hostname),
+                JMESPathCheck('[0].bindingType', "SniEnabled"),
+            ]
+        ).get_output_in_json()[0]["certificateId"]
+        original = self.cmd(f'containerapp show -g {resource_group} -n {app_name}', checks=[
+            JMESPathCheck('properties.template.containers[0].image', original_image),
+            JMESPathCheck('length(properties.configuration.ingress.customDomains)', 1),
+            JMESPathCheck('properties.configuration.ingress.customDomains[0].name', hostname),
+            JMESPathCheck('properties.configuration.ingress.customDomains[0].bindingType', "SniEnabled"),
+            JMESPathCheck('properties.configuration.ingress.customDomains[0].certificateId', certificate_id),
+        ]).get_output_in_json()
+
+        self.cmd(f'containerapp up -g {resource_group} -n {app_name} --image {updated_image}')
+
+        updated = self.cmd(f'containerapp show -g {resource_group} -n {app_name}', checks=[
+            JMESPathCheck('properties.template.containers[0].image', updated_image),
+            JMESPathCheck('length(properties.configuration.ingress.customDomains)', 1),
+            JMESPathCheck('properties.configuration.ingress.customDomains[0].name', hostname),
+            JMESPathCheck('properties.configuration.ingress.customDomains[0].bindingType', "SniEnabled"),
+            JMESPathCheck('properties.configuration.ingress.customDomains[0].certificateId', certificate_id),
+        ]).get_output_in_json()
+        self.assertEqual(original["properties"]["configuration"]["ingress"],
+                         updated["properties"]["configuration"]["ingress"])
+
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_up_image_creates_missing_app_with_defaults(self, resource_group):
+        env_name = self.create_random_name(prefix='env', length=24)
+        app_name = self.create_random_name(prefix='containerapp', length=24)
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
+        env = self.cmd(
+            f'containerapp env create -g {resource_group} -n {env_name} --logs-destination none'
+        ).get_output_in_json()
+        with self.assertRaisesRegex(CLIError, "ResourceNotFound"):
+            self.cmd(f'containerapp show -g {resource_group} -n {app_name}')
+
+        self.cmd(
+            f'containerapp up -g {resource_group} -n {app_name} --environment {env_name} --image {image}'
+        )
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app_name}', checks=[
+            JMESPathCheck('name', app_name),
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck('properties.environmentId', env["id"]),
+            JMESPathCheck('length(properties.template.containers)', 1),
+            JMESPathCheck('properties.template.containers[0].image', image),
+            JMESPathCheck('properties.configuration.ingress.external', True),
+            JMESPathCheck('properties.configuration.ingress.targetPort', 80),
+        ])
 
     @live_only()
     @ResourceGroupPreparer(location="eastus2")
