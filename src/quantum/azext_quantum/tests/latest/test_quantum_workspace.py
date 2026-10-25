@@ -10,12 +10,12 @@ import re
 import unittest
 import time
 from types import SimpleNamespace
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, call, patch
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (LiveScenarioTest, ScenarioTest, ResourceGroupPreparer)
-from azure.cli.core.azclierror import ResourceNotFoundError, InvalidArgumentValueError, ForbiddenError, ServiceError
-from azure.core.exceptions import ResourceNotFoundError as AzureResourceNotFoundError
+from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError, InvalidArgumentValueError, ForbiddenError, ServiceError
+from azure.core.exceptions import HttpResponseError, ResourceNotFoundError as AzureResourceNotFoundError
 from azure.cli.command_modules.role._msgrpah._graph_client import GraphError
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_storage_grs, get_test_capabilities, get_test_workspace_provider_sku_list, all_providers_are_in_capabilities, run_cleanup_commands, get_offer_targets_with_quota
 from ..._version_check_helper import check_version
@@ -31,7 +31,6 @@ from ...vendored_sdks.azure_quantum_python._client.operations._operations import
 )
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-WORKSPACE_PROVISIONING_ATTEMPTS = 60
 
 
 def _not_found_pager():
@@ -79,7 +78,8 @@ def _get_workspace_quota_row(quotas, provider_id, target_id, dimension):
 
 
 def _wait_for_workspace_provisioned(test_case, resource_group, workspace_name,
-                                    attempts=WORKSPACE_PROVISIONING_ATTEMPTS, delay=11):
+                                    attempts=6, delay=11):
+    # Creation waits in the CLI; keep follow-up GET consistency checks short and bounded.
     last_state = None
     for attempt in range(attempts):
         workspace = test_case.cmd(
@@ -200,14 +200,16 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
                 f'az quantum workspace create --auto-accept --skip-autoadd '
                 f'-g {test_resource_group} -w {test_workspace} '
                 f'-l {test_location} -r "{test_provider_sku_list}" -o json',
-                checks=[self.check('name', test_workspace)]
+                checks=[
+                    self.check('name', test_workspace),
+                    self.check('properties.provisioningState', 'Succeeded'),
+                ]
             )
 
             workspace = _wait_for_workspace_provisioned(
                 self,
                 test_resource_group,
                 test_workspace,
-                attempts=WORKSPACE_PROVISIONING_ATTEMPTS,
             )
 
             self.assertEqual(workspace['properties']['provisioningState'], 'Succeeded')
@@ -302,9 +304,10 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
         workspaces_to_cleanup = [test_workspace_temp]
         try:
             self.cmd(f'az quantum workspace create --auto-accept --workspace-kind V2 -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -r "{test_provider_sku_list}" --quota {create_quota} -o json', checks=[
-                self.check("name", test_workspace_temp)
+                self.check("name", test_workspace_temp),
+                self.check("properties.provisioningState", "Succeeded"),
             ])
-            workspace = _wait_for_workspace_provisioned(self, test_resource_group, test_workspace_temp, attempts=WORKSPACE_PROVISIONING_ATTEMPTS)
+            workspace = _wait_for_workspace_provisioned(self, test_resource_group, test_workspace_temp)
             self.assertEqual(workspace['properties']['provisioningState'], 'Succeeded')
             self.assertEqual(workspace['properties']['workspaceKind'], 'V2')
             self._assert_managed_storage(workspace)
@@ -553,16 +556,49 @@ class QuantumWorkspacesUnitTest(unittest.TestCase):
 
     @patch('azext_quantum.tests.latest.test_quantum_workspace.time.sleep')
     def test_wait_for_workspace_provisioned_fails_fast(self, sleep_mock):
+        for state in ('Failed', 'Canceled'):
+            with self.subTest(state=state):
+                sleep_mock.reset_mock()
+                test_case = Mock()
+                test_case.cmd.return_value.get_output_in_json.return_value = {
+                    'properties': {'provisioningState': state}
+                }
+
+                with self.assertRaisesRegex(AssertionError, f"ended in state '{state}'"):
+                    _wait_for_workspace_provisioned(test_case, 'group', 'workspace')
+
+                test_case.cmd.assert_called_once()
+                sleep_mock.assert_not_called()
+
+    @patch('azext_quantum.tests.latest.test_quantum_workspace.time.sleep')
+    def test_wait_for_workspace_provisioned_default_is_bounded(self, sleep_mock):
         test_case = Mock()
         test_case.cmd.return_value.get_output_in_json.return_value = {
-            'properties': {'provisioningState': 'Failed'}
+            'properties': {'provisioningState': 'Accepted'}
         }
 
-        with self.assertRaisesRegex(AssertionError, "ended in state 'Failed'"):
+        # The shared default must not introduce another eleven-minute wait after creation.
+        with self.assertRaisesRegex(AssertionError, 'did not finish provisioning after 6 attempts'):
             _wait_for_workspace_provisioned(test_case, 'group', 'workspace')
 
-        test_case.cmd.assert_called_once()
-        sleep_mock.assert_not_called()
+        self.assertEqual(test_case.cmd.call_count, 6)
+        self.assertEqual(sleep_mock.call_args_list, [call(11)] * 5)
+
+    @patch('azext_quantum.tests.latest.test_quantum_workspace.time.sleep')
+    def test_wait_for_workspace_provisioned_accepts_explicit_budget(self, sleep_mock):
+        test_case = Mock()
+        pending = {'properties': {'provisioningState': 'Accepted'}}
+        succeeded = {'properties': {'provisioningState': 'Succeeded'}}
+        test_case.cmd.return_value.get_output_in_json.side_effect = [pending] * 7 + [succeeded]
+
+        # Keep per-case overrides available if future live measurements justify one.
+        workspace = _wait_for_workspace_provisioned(
+            test_case, 'group', 'workspace', attempts=8, delay=1
+        )
+
+        self.assertIs(workspace, succeeded)
+        self.assertEqual(test_case.cmd.call_count, 8)
+        self.assertEqual(sleep_mock.call_args_list, [call(1)] * 7)
 
     @patch('azext_quantum.tests.latest.test_quantum_workspace.time.sleep')
     def test_wait_for_workspace_provisioned_times_out(self, sleep_mock):
@@ -639,10 +675,11 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
             self.addCleanup(cleanup_workspaces)
 
-            # create
+            # Verify the create response itself so the follow-up GET cannot hide an early return.
             workspaces_to_cleanup.append(test_workspace_temp)
             self.cmd(f'az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[
                 self.check("name", test_workspace_temp),
+                self.check("properties.provisioningState", "Succeeded"),
             ])
 
             workspace = _wait_for_workspace_provisioned(self, test_resource_group, test_workspace_temp)
@@ -675,7 +712,10 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             # Create workspace with "--skip-role-assignment" and "--skip-autoadd" parameters
             test_workspace_temp = self.create_random_name(prefix='e2e-test-w', length=18)
             workspaces_to_cleanup.append(test_workspace_temp)
-            self.cmd(f'az quantum workspace create --skip-autoadd --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[self.check("name", test_workspace_temp)])
+            self.cmd(f'az quantum workspace create --skip-autoadd --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[
+                self.check("name", test_workspace_temp),
+                self.check("properties.provisioningState", "Succeeded"),
+            ])
 
             workspace = _wait_for_workspace_provisioned(self, test_resource_group, test_workspace_temp)
             _assert_user_storage(self, workspace, test_storage_account)
@@ -851,22 +891,24 @@ class QuantumWorkspaceOperationsTest(unittest.TestCase):
 
     def test_skip_role_assignment_requires_user_storage(self):
         from ...operations import workspace as workspace_ops
+
         cmd = SimpleNamespace(cli_ctx=object())
-        with patch.object(workspace_ops, 'cf_workspaces') as client_factory, patch.object(workspace_ops, '_add_quantum_providers') as add_providers:
-            with self.assertRaisesRegex(InvalidArgumentValueError, 'requires.*--storage-account'):
-                create(cmd, resource_group_name='group', workspace_name='workspace', location='eastus', storage_account=None, skip_role_assignment=True)
-            client_factory.assert_not_called()
-            add_providers.assert_not_called()
+        for storage_account in (None, ''):
+            with self.subTest(storage_account=storage_account):
+                # A missing dependent argument must be rejected before any Azure work begins.
+                with patch.object(workspace_ops, 'cf_workspaces') as client_factory, \
+                        patch.object(workspace_ops, '_add_quantum_providers') as add_providers:
+                    with self.assertRaisesRegex(RequiredArgumentMissingError, 'requires.*--storage-account'):
+                        create(
+                            cmd, resource_group_name='group', workspace_name='workspace',
+                            location='eastus', storage_account=storage_account,
+                            skip_role_assignment=True,
+                        )
+                    client_factory.assert_not_called()
+                    add_providers.assert_not_called()
 
     def test_create_without_storage_account_uses_sdk_path(self):
         from ...operations import workspace as workspace_ops
-
-        created_workspace = object()
-        poller = Mock()
-        poller.result.return_value = created_workspace
-
-        client = Mock()
-        client.begin_create_or_update.return_value = poller
 
         info = SimpleNamespace(
             subscription='subscription',
@@ -875,35 +917,89 @@ class QuantumWorkspaceOperationsTest(unittest.TestCase):
         )
         cmd = SimpleNamespace(cli_ctx=object())
 
-        with patch.object(workspace_ops, 'cf_workspaces', return_value=client), \
-                patch.object(workspace_ops, 'WorkspaceInfo', return_value=info), \
-                patch.object(workspace_ops, '_add_quantum_providers'), \
-                patch.object(workspace_ops, '_apply_target_quotas'), \
-                patch.object(workspace_ops, '_validate_target_quota_bounds'), \
-                patch.object(workspace_ops, 'list_storage_accounts') as list_storage_accounts, \
-                patch.object(workspace_ops, '_get_data_credentials') as get_credentials, \
-                patch.object(workspace_ops, 'ResourceManagementClient') as arm_client:
-            result = create(
-                cmd,
-                resource_group_name='resource-group',
-                workspace_name='workspace',
-                location='westus',
-            )
-        self.assertIs(result, created_workspace)
-        poller.result.assert_called_once_with()
+        for workspace_kind, expected_api_key_enabled in ((None, True), ('V1', True), ('V2', False)):
+            with self.subTest(workspace_kind=workspace_kind):
+                created_workspace = object()
+                poller = Mock()
+                poller.result.return_value = created_workspace
+                client = Mock()
+                client.begin_create_or_update.return_value = poller
 
-        client.begin_create_or_update.assert_called_once()
-        create_args = client.begin_create_or_update.call_args
-        self.assertEqual(create_args.args[:2], ('resource-group', 'workspace'))
-        self.assertIs(create_args.kwargs['polling'], False)
+                # Exercise the real handler and model setup, not real provisioning or discovery.
+                with patch.object(workspace_ops, 'cf_workspaces', return_value=client), \
+                        patch.object(workspace_ops, 'WorkspaceInfo', return_value=info), \
+                        patch.object(workspace_ops, '_add_quantum_providers') as add_providers, \
+                        patch.object(workspace_ops, '_apply_target_quotas') as apply_quotas, \
+                        patch.object(workspace_ops, '_validate_target_quota_bounds') as validate_quotas, \
+                        patch.object(workspace_ops, 'list_storage_accounts') as list_storage_accounts, \
+                        patch.object(workspace_ops, '_get_data_credentials') as get_credentials, \
+                        patch.object(workspace_ops, 'ResourceManagementClient') as arm_client:
+                    result = create(
+                        cmd,
+                        resource_group_name='resource-group',
+                        workspace_name='workspace',
+                        location='westus',
+                        workspace_kind=workspace_kind,
+                    )
+                self.assertIs(result, created_workspace)
+                poller.result.assert_called_once_with()
 
-        workspace = create_args.args[2]
-        self.assertIsNone(workspace.properties.storage_account)
-        self.assertEqual(workspace.identity.type, 'SystemAssigned')
+                client.begin_create_or_update.assert_called_once()
+                create_args = client.begin_create_or_update.call_args
+                self.assertEqual(create_args.args[:2], ('resource-group', 'workspace'))
+                self.assertIs(create_args.kwargs['polling'], True)
 
-        list_storage_accounts.assert_not_called()
-        get_credentials.assert_not_called()
-        arm_client.assert_not_called()
+                workspace = create_args.args[2]
+                self.assertIsNone(workspace.properties.storage_account)
+                self.assertEqual(workspace.identity.type, 'SystemAssigned')
+                self.assertEqual(workspace.properties.api_key_enabled, expected_api_key_enabled)
+                self.assertEqual(add_providers.call_args.args[-1], workspace_kind == 'V2')
+                if workspace_kind == 'V2':
+                    apply_quotas.assert_called_once_with(workspace.properties.providers, None)
+                    validate_quotas.assert_called_once_with(cmd, info, workspace, None, include_usage=False)
+                else:
+                    apply_quotas.assert_not_called()
+                    validate_quotas.assert_not_called()
+                list_storage_accounts.assert_not_called()
+                get_credentials.assert_not_called()
+                arm_client.assert_not_called()
+
+    def test_direct_create_propagates_provisioning_error(self):
+        from ...operations import workspace as workspace_ops
+
+        info = SimpleNamespace(subscription='sub', resource_group='group', name='workspace')
+        # Both direct-create routes must surface a failed operation, not retry via an ARM deployment.
+        for storage_account, skip_role_assignment in ((None, False), ('storage', True)):
+            for workspace_kind in (None, 'V1', 'V2'):
+                with self.subTest(storage_account=storage_account, workspace_kind=workspace_kind):
+                    error = HttpResponseError(message='Workspace provisioning failed.')
+                    poller = Mock()
+                    poller.result.side_effect = error
+                    client = Mock()
+                    client.begin_create_or_update.return_value = poller
+
+                    with patch.object(workspace_ops, 'cf_workspaces', return_value=client), \
+                            patch.object(workspace_ops, 'WorkspaceInfo', return_value=info), \
+                            patch.object(workspace_ops, '_add_quantum_providers'), \
+                            patch.object(workspace_ops, '_apply_target_quotas'), \
+                            patch.object(workspace_ops, '_validate_target_quota_bounds'), \
+                            patch.object(workspace_ops, 'list_storage_accounts') as list_storage_accounts, \
+                            patch.object(workspace_ops, 'ResourceManagementClient') as arm_client:
+                        with self.assertRaises(HttpResponseError) as raised:
+                            create(
+                                SimpleNamespace(cli_ctx=object()),
+                                resource_group_name='group', workspace_name='workspace',
+                                location='eastus', storage_account=storage_account,
+                                skip_role_assignment=skip_role_assignment,
+                                workspace_kind=workspace_kind,
+                            )
+
+                    self.assertIs(raised.exception, error)
+                    client.begin_create_or_update.assert_called_once()
+                    self.assertIs(client.begin_create_or_update.call_args.kwargs['polling'], True)
+                    poller.result.assert_called_once_with()
+                    list_storage_accounts.assert_not_called()
+                    arm_client.assert_not_called()
 
     def test_get_basic_quantum_workspace_without_storage_account(self):
         info = SimpleNamespace(
@@ -1142,7 +1238,8 @@ class QuantumWorkspaceOperationsTest(unittest.TestCase):
 
             self.assertIs(result, workspace)
             create_args = client.begin_create_or_update.call_args
-            self.assertIs(create_args.kwargs['polling'], False)
+            client.begin_create_or_update.assert_called_once()
+            self.assertIs(create_args.kwargs['polling'], True)
             poller.result.assert_called_once_with()
             self.assertEqual(workspace.properties.api_key_enabled, expected_api_key_enabled)
             self.assertEqual(add_providers.call_args.args[-1], workspace_kind == 'V2')

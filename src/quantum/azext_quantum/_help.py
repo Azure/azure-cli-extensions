@@ -368,9 +368,10 @@ helps['quantum workspace create'] = """
     type: command
     short-summary: Create a new Azure Quantum workspace.
     long-summary: |
-        When --storage-account is omitted, or --skip-role-assignment is used with a user-provided storage account,
-        creation returns without waiting for provisioning to finish. Use az quantum workspace show to inspect
-        properties.provisioningState before using the workspace.
+      Creation waits for provisioning to finish. When --storage-account is omitted,
+      Azure Quantum provisions managed storage and configures its role assignments automatically.
+      Use --skip-role-assignment only with a user-provided storage account to skip assigning
+      the workspace a role on that account; creation still waits for provisioning to finish.
     examples:
       - name: Create a new Azure Quantum workspace with managed storage and the providers that offer free credit.
         text: |-
