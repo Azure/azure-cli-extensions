@@ -118,6 +118,7 @@ from azext_provisionedmachine.commands import (
 # Import _compare_versions from install_os module
 from azext_provisionedmachine.aaz.latest.provisionedmachine._install_os import InstallOs
 from azext_provisionedmachine.aaz.latest.provisionedmachine._create import Create
+from azext_provisionedmachine.aaz.latest.provisionedmachine._reset_os import ResetOs
 _compare_versions = InstallOs._compare_versions
 
 
@@ -622,6 +623,205 @@ class TestAutoResolveVersionLogic(unittest.TestCase):
             if vsr and (latest_version is None or _compare_versions(vsr, latest_version) > 0):
                 latest_version = vsr
         self.assertEqual(latest_version, "50.2605.0.3")
+
+
+class TestInstallOsImageSelection(unittest.TestCase):
+    """Standalone install must use the existing device's hardware architecture."""
+
+    @staticmethod
+    def _arg(value):
+        argument = mock.Mock()
+        argument.to_serialized_data.return_value = value
+        return argument
+
+    def setUp(self):
+        self.command = mock.Mock()
+        self.command.ctx.args = types.SimpleNamespace(
+            os_image_type=self._arg("AzureLinux"),
+            os_image_version=None,
+            ssh_public_key=self._arg("ssh-rsa test-key"),
+            key_vault_secret_id=None,
+            resource_group=self._arg("test-rg"),
+            edge_machine_name=self._arg("test-machine"),
+        )
+        for name in ("ip_address", "subnet_mask", "gateway", "dns_servers", "vlan_id",
+                     "ntp_server", "hostname"):
+            setattr(self.command.ctx.args, name, None)
+        self.machine = {
+            "location": "eastus",
+            "properties": {
+                "machineState": "Unpurposed",
+                "reportedProperties": {"hardwareProfile": {"architecture": "amd64"}},
+            },
+        }
+        self.command._validate_machine_state.return_value = self.machine
+        self.command._resolve_latest_version.return_value = "50.2610.0.88"
+
+    def test_auto_selection_uses_reported_hardware_architecture(self):
+        for architecture in ("amd64", "arm64", "ARM64"):
+            with self.subTest(architecture=architecture):
+                self.command.ctx.args.os_image_version = None
+                self.machine["properties"]["reportedProperties"]["hardwareProfile"]["architecture"] = architecture
+
+                InstallOs.pre_operations(self.command)
+
+                self.command._resolve_latest_version.assert_called_with("AzureLinux", "eastus", architecture)
+                self.assertEqual(self.command.ctx.args.os_image_version, "50.2610.0.88")
+
+    def test_missing_hardware_architecture_defaults_to_amd64(self):
+        for properties in (
+                {"reportedProperties": {"hardwareProfile": {"architecture": None}}},
+                {"reportedProperties": {"hardwareProfile": {"architecture": ""}}},
+                {"reportedProperties": {"hardwareProfile": {}}},
+                {"reportedProperties": {"hardwareProfile": None}},
+                {"reportedProperties": {}},
+                {"reportedProperties": None},
+                {}):
+            with self.subTest(properties=properties):
+                self.command.ctx.args.os_image_version = None
+                self.machine["properties"] = properties
+
+                InstallOs.pre_operations(self.command)
+
+                self.command._resolve_latest_version.assert_called_with("AzureLinux", "eastus", "amd64")
+
+    def test_explicit_version_bypasses_automatic_selection(self):
+        self.machine["properties"]["reportedProperties"] = None
+        for os_type in ("AzureLinux", "HCI"):
+            with self.subTest(os_type=os_type):
+                version = self._arg("50.2609.0.10")
+                self.command.ctx.args.os_image_type = self._arg(os_type)
+                self.command.ctx.args.os_image_version = version
+                self.command.ctx.args.key_vault_secret_id = self._arg("/test-secret")
+
+                InstallOs.pre_operations(self.command)
+
+                self.command._resolve_latest_version.assert_not_called()
+                self.assertIs(self.command.ctx.args.os_image_version, version)
+
+    def test_empty_explicit_version_uses_hardware_architecture(self):
+        self.command.ctx.args.os_image_version = self._arg("")
+
+        InstallOs.pre_operations(self.command)
+
+        self.command._resolve_latest_version.assert_called_once_with("AzureLinux", "eastus", "amd64")
+
+    def test_nonempty_architecture_is_forwarded_without_new_cli_validation(self):
+        self.machine["properties"]["reportedProperties"]["hardwareProfile"]["architecture"] = "riscv64"
+
+        InstallOs.pre_operations(self.command)
+
+        self.command._resolve_latest_version.assert_called_once_with("AzureLinux", "eastus", "riscv64")
+
+    def test_missing_required_credentials_stops_before_image_lookup(self):
+        for os_type in ("AzureLinux", "HCI"):
+            with self.subTest(os_type=os_type):
+                self.command.ctx.args.os_image_type = self._arg(os_type)
+                self.command.ctx.args.ssh_public_key = None
+                self.command.ctx.args.key_vault_secret_id = None
+
+                with self.assertRaises(azclierror_mod.RequiredArgumentMissingError):
+                    InstallOs.pre_operations(self.command)
+
+                self.command._resolve_latest_version.assert_not_called()
+
+    def test_hci_automatic_selection_does_not_use_hardware_architecture(self):
+        self.command.ctx.args.os_image_type = self._arg("HCI")
+        self.command.ctx.args.key_vault_secret_id = self._arg("/test-secret")
+
+        InstallOs.pre_operations(self.command)
+
+        self.command._resolve_latest_version.assert_called_once_with("HCI", "eastus", None)
+
+    def test_resolver_forwards_architecture_to_existing_helper(self):
+        with mock.patch(
+                "azext_provisionedmachine.provisioned_machine_utils.resolve_latest_os_image_version",
+                return_value="60.2611.0.40") as resolve_version:
+            result = InstallOs._resolve_latest_version(self.command, "AzureLinux", "eastus", "arm64")
+
+        resolve_version.assert_called_once_with(
+            self.command.ctx.cli_ctx, self.command.ctx.subscription_id, "AzureLinux", "eastus", "arm64")
+        self.assertEqual(result, "60.2611.0.40")
+
+    def test_machine_get_uses_architecture_capable_api_and_preserves_state_checks(self):
+        with mock.patch("azure.cli.core.util.send_raw_request", create=True) as send_request:
+            send_request.return_value.status_code = 200
+            send_request.return_value.json.return_value = self.machine
+            for state in ("Unpurposed", "Transitioning"):
+                with self.subTest(state=state):
+                    self.machine["properties"]["machineState"] = state
+
+                    self.assertIs(InstallOs._validate_machine_state(self.command), self.machine)
+                    self.assertIn("api-version=2026-10-15-preview", send_request.call_args[0][2])
+
+            for state in ("Registering", "Purposed", "Failed"):
+                with self.subTest(state=state):
+                    self.machine["properties"]["machineState"] = state
+
+                    with self.assertRaises(azclierror_mod.InvalidArgumentValueError):
+                        InstallOs._validate_machine_state(self.command)
+
+    def test_image_lookup_failure_prevents_job_submission(self):
+        self.command.pre_operations.side_effect = lambda: InstallOs.pre_operations(self.command)
+        self.command._resolve_latest_version.side_effect = azclierror_mod.ResourceNotFoundError("No matching image")
+
+        with self.assertRaisesRegex(azclierror_mod.ResourceNotFoundError, "No matching image"):
+            list(InstallOs._execute_operations(self.command))
+
+        self.command.EdgeMachinesJobsProvisionOs.assert_not_called()
+
+    def test_machine_read_errors_do_not_fall_back_to_image_selection(self):
+        self.command.pre_operations.side_effect = lambda: InstallOs.pre_operations(self.command)
+        self.command._validate_machine_state.side_effect = lambda: InstallOs._validate_machine_state(self.command)
+        with mock.patch("azure.cli.core.util.send_raw_request", create=True) as send_request:
+            for status in (403, 404, 500):
+                with self.subTest(status=status):
+                    send_request.return_value.status_code = status
+
+                    with self.assertRaises(azclierror_mod.InvalidArgumentValueError):
+                        list(InstallOs._execute_operations(self.command))
+
+                    self.command._resolve_latest_version.assert_not_called()
+                    self.command.EdgeMachinesJobsProvisionOs.assert_not_called()
+
+
+class TestResetOsImageSelection(unittest.TestCase):
+    """Reset must leave the ROE image choice to the resource provider."""
+
+    def test_reset_payload_requests_reset_without_overriding_image(self):
+        payload = ResetOs.EdgeMachinesJobsProvisionOs.content.fget(mock.Mock())
+        properties = payload["properties"]
+        request = properties["provisioningRequest"]
+        profile = request["osProfile"]
+
+        self.assertEqual(properties["jobType"], "ProvisionOs")
+        self.assertEqual(properties["deploymentMode"], "Deploy")
+        self.assertEqual(request["target"], "AzureLinux")
+        self.assertEqual(profile["osType"], "AzureLinuxROE")
+        self.assertNotIn("osImageLocation", profile)
+        self.assertNotIn("vsrVersion", profile)
+
+    def test_reset_state_checks_and_preflight_api_are_unchanged(self):
+        command = mock.Mock()
+        for name, value in (("resource_group", "test-rg"), ("edge_machine_name", "test-machine")):
+            argument = mock.Mock()
+            argument.to_serialized_data.return_value = value
+            setattr(command.ctx.args, name, argument)
+        with mock.patch("azure.cli.core.util.send_raw_request", create=True) as send_request:
+            send_request.return_value.status_code = 200
+            for state in ("Purposed", "Transitioning", "Resetting"):
+                with self.subTest(state=state):
+                    send_request.return_value.json.return_value = {"properties": {"machineState": state}}
+
+                    ResetOs._validate_machine_state(command)
+
+                    self.assertIn("api-version=2026-05-01-preview", send_request.call_args[0][2])
+            for state in ("Registering", "Unpurposed", "Failed"):
+                with self.subTest(state=state):
+                    send_request.return_value.json.return_value = {"properties": {"machineState": state}}
+
+                    with self.assertRaises(azclierror_mod.InvalidArgumentValueError):
+                        ResetOs._validate_machine_state(command)
 
 
 class TestCreateImageSelection(unittest.TestCase):

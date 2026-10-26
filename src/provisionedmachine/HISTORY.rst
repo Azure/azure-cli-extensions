@@ -2,6 +2,13 @@
 
 Release History
 ===============
+1.0.0b8
++++++++
+* ``az provisionedmachine create`` - Fixed automatic AzureLinux OS image selection to use the architecture returned by ownership voucher validation before choosing the first compatible image. Architecture-aware lookups use ``2026-10-15-preview``; existing unfiltered callers retain ``2026-05-01-preview``. Explicit ``--os-image-version`` selection remains unchanged.
+* ``az provisionedmachine install-os`` - Fixed automatic AzureLinux OS image selection to use ``reportedProperties.hardwareProfile.architecture``, defaulting to ``amd64`` when absent. The machine preflight GET uses ``2026-10-15-preview`` to retrieve architecture. Explicit versions, HCI selection and existing state checks remain unchanged.
+* ``az provisionedmachine reset-os`` - Removed the fixed maintenance image URL so the resource provider selects its configured ROE image for the device architecture. Existing reset detection and state checks remain unchanged.
+* Updated the package version, runtime ``__version__`` and README preview-version label to ``1.0.0b8``.
+
 1.0.0b7
 ++++++
 * ``az provisionedmachine os-image list`` - Added an optional ``--architecture`` filter (``amd64``/``arm64``) and a new ``Architecture`` column to the table output. The ``OsImageType`` column is now populated from the ``solutionType`` returned by the service.
