@@ -15,8 +15,9 @@ These tests exercise local CLI logic only (no Azure calls):
   * restore initialize-for-data-recovery output (AlternateLocation)
   * restore initialize-for-item-recovery output (database/container selection)
 
-The end-to-end live scenario lives in
-``test_dataprotection_backup_and_restore_workloads.py::BackupAndRestoreScenarioTest.test_dataprotection_backup_and_restore_cosmosdb``.
+The end-to-end live scenarios live in
+``test_dataprotection_backup_and_restore_workloads.py::BackupAndRestoreScenarioTest.test_dataprotection_backup_and_restore_cosmosdb``
+(full restore) and ``...test_dataprotection_backup_and_restore_cosmosdb_item_level`` (item-level restore).
 """
 
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError
