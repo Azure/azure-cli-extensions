@@ -38,7 +38,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='edge-action',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Extension for Azure Front Door Edge Actions',
+    description='Manage Azure Front Door edge actions, deploy code versions, and configure execution filters.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
