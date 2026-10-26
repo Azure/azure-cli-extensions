@@ -10,6 +10,7 @@ import traceback
 from unittest import mock
 
 import pytest
+import requests
 
 from azure.cli.core import get_default_cli
 from azure.cli.command_modules.vm._validators import _validate_admin_password
@@ -17,6 +18,11 @@ from azure.cli.command_modules.vm._template_builder import StorageProfile
 from azure.cli.command_modules.vm import _vm_utils
 from azure.cli.core.commands.validators import validate_tags
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.sdk.policies import SafeNetworkTraceLoggingPolicy
+from azure.core.credentials import AccessToken
+from azure.core.pipeline.transport import HttpTransport
+from azure.core.rest._requests_basic import RestRequestsTransportResponse
+from azure.mgmt.resource.resources import ResourceManagementClient
 from knack.util import CLIError
 from azext_vm_repair.vm_creation import create_repair_vm
 from azext_vm_repair.exceptions import AzCommandError
@@ -109,24 +115,48 @@ def test_core_creation_redacts_credentials_from_errors(during_validation):
     assert '********' in str(raised.value)
 
 
-@pytest.mark.parametrize('unmanaged,level,fail_validation', [
-    (False, logging.INFO, False),
-    (True, logging.DEBUG, False),
-    (True, logging.INFO, True),
-], ids=['managed-verbose', 'unmanaged-debug', 'failed-validation'])
-def test_real_core_validation_does_not_log_credentials(
-        monkeypatch, caplog, unmanaged, level, fail_validation):
+@pytest.mark.parametrize('unmanaged,level,validate,fail_request', [
+    (False, logging.INFO, True, False),
+    (False, logging.DEBUG, True, False),
+    (True, logging.DEBUG, True, False),
+    (False, logging.DEBUG, False, False),
+    (True, logging.DEBUG, False, False),
+    (True, logging.DEBUG, True, True),
+    (True, logging.DEBUG, False, True),
+], ids=['managed-verbose', 'managed-validation-debug', 'unmanaged-validation-debug',
+        'managed-deployment-debug', 'unmanaged-deployment-debug',
+        'failed-validation', 'failed-deployment'])
+def test_real_core_creation_does_not_log_credentials(
+        monkeypatch, caplog, unmanaged, level, validate, fail_request):
     password = 'Validation password "quoted" \\ secret!234'
     arguments = {
         'resource_group': 'repair-rg', 'name': 'repair-vm',
         'image': 'Win2022Datacenter', 'admin_username': 'repairuser',
         'admin_password': password, 'use_unmanaged_disk': unmanaged,
     }
-    client = mock.Mock()
-    client.begin_validate.return_value.done.return_value = True
-    client.begin_validate.return_value.result.return_value = None
-    if fail_validation:
-        client.begin_validate.side_effect = CLIError('ARM validation failed')
+    transport = mock.Mock(spec=HttpTransport)
+    client = ResourceManagementClient(
+        mock.Mock(spec=['get_token'], get_token=mock.Mock(return_value=AccessToken('test-token', 2 ** 63))),
+        'sub', transport=transport, logging_policy=SafeNetworkTraceLoggingPolicy())
+    sent = []
+
+    def send(request, **_kwargs):
+        body = json.loads(request.body)
+        sent.append((request.method, request.url, body))
+        network_logger.warning('Repair HTTP warning remains visible')
+        # Echo secure parameters to cover response logging as well as request logging.
+        response_body = {'properties': {
+            'provisioningState': 'Succeeded', 'parameters': body['properties']['parameters']}}
+        if fail_request:
+            response_body['error'] = {'code': 'InvalidTemplateDeployment', 'message': 'ARM request failed'}
+        response = requests.Response()
+        response.status_code = 400 if fail_request else 200
+        response.headers['Content-Type'] = 'application/json'
+        response._content = json.dumps(response_body).encode('utf-8')  # pylint: disable=protected-access
+        response._content_consumed = True  # pylint: disable=protected-access
+        return RestRequestsTransportResponse(request=request, internal_response=response, block_size=4096)
+
+    transport.send.side_effect = send
 
     def prepare(cmd, namespace):
         namespace.disk_info = {'os': {'storageAccountType': 'Standard_LRS'}}
@@ -142,21 +172,37 @@ def test_real_core_validation_does_not_log_credentials(
     monkeypatch.setattr('azure.cli.command_modules.vm.custom.get_subscription_id', lambda _: 'sub')
     monkeypatch.setattr(
         'azure.cli.command_modules.vm.custom.get_mgmt_service_client',
-        mock.Mock(return_value=SimpleNamespace(deployments=client)))
+        mock.Mock(return_value=client))
+    monkeypatch.setattr('azure.cli.command_modules.vm.custom.get_vm_details', mock.Mock(return_value={
+        'id': '/subscriptions/sub/resourceGroups/repair-rg/providers/Microsoft.Compute/virtualMachines/repair-vm'}))
     caplog.set_level(level, logger='cli')
-    original_filters = list(_vm_utils.logger.filters)
+    network_logger = logging.getLogger('cli.azure.cli.core.sdk.policies')
+    original_filters = {logger: list(logger.filters) for logger in (_vm_utils.logger, network_logger)}
 
-    if fail_validation:
-        with pytest.raises(AzCommandError, match='ARM validation failed'):
-            create_repair_vm(SimpleNamespace(cli_ctx=get_default_cli()), arguments, validate=True)
+    if fail_request:
+        with pytest.raises(AzCommandError, match='ARM request failed'):
+            create_repair_vm(SimpleNamespace(cli_ctx=get_default_cli()), arguments, validate=validate)
     else:
-        create_repair_vm(SimpleNamespace(cli_ctx=get_default_cli()), arguments, validate=True)
+        create_repair_vm(SimpleNamespace(cli_ctx=get_default_cli()), arguments, validate=validate)
 
-    deployment = client.begin_validate.call_args.args[2]
-    assert deployment.properties.parameters['adminPassword']['value'] == password
+    assert len(sent) == 1
+    method, url, deployment = sent[0]
+    assert method == ('POST' if validate else 'PUT')
+    assert ('/validate?' in url) == validate
+    assert deployment['properties']['parameters']['adminPassword']['value'] == password
     assert password not in caplog.text
     assert json.dumps(password)[1:-1] not in caplog.text
+    assert 'Request body:' not in caplog.text
+    assert 'Response content:' not in caplog.text
     assert 'Repair validation warning remains visible' in caplog.text
-    assert _vm_utils.logger.filters == original_filters
+    assert 'Repair HTTP warning remains visible' in caplog.text
+    for logger, filters in original_filters.items():
+        assert logger.filters == filters
     _vm_utils.log_pprint_template({'after_validation': 'logging restored'})
     assert 'logging restored' in caplog.text
+    caplog.set_level(logging.DEBUG, logger=network_logger.name)
+    fail_request = False
+    client.deployments.begin_validate('repair-rg', 'after-repair', {
+        'properties': {'mode': 'Incremental', 'template': {}, 'parameters': {}}})
+    assert 'Request body:' in caplog.text
+    assert 'Response content:' in caplog.text

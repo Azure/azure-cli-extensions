@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from copy import copy, deepcopy
+import logging
 
 from azure.cli.core import MainCommandsLoader
 from azure.cli.core.commands import AzCliCommandInvoker
@@ -56,12 +57,16 @@ def create_repair_vm(cmd, arguments, validate=False):
     if validate:
         tokens.append('--validate')
 
-    # Core validation logs deployment parameters, including secure values.
-    def exclude_template_logs(record):
-        return record.funcName != 'log_pprint_template'
+    # Template dumps and HTTP traces can expose secure deployment parameters.
+    network_logger = get_logger('azure.cli.core.sdk.policies')
+
+    def exclude_sensitive_logs(record):
+        return record.funcName != 'log_pprint_template' and not (
+            record.name == network_logger.name and record.levelno == logging.DEBUG)
 
     core_logger = get_logger('azure.cli.command_modules.vm._vm_utils')
-    core_logger.addFilter(exclude_template_logs)
+    for logger in (core_logger, network_logger):
+        logger.addFilter(exclude_sensitive_logs)
     try:
         namespace = invocation.parser.parse_args(tokens)
         for name in ('tags', 'admin_password', 'admin_username'):
@@ -77,4 +82,5 @@ def create_repair_vm(cmd, arguments, validate=False):
                 message = message.replace(arguments[name], '********')
         raise AzCommandError(message) from None
     finally:
-        core_logger.removeFilter(exclude_template_logs)
+        for logger in (core_logger, network_logger):
+            logger.removeFilter(exclude_sensitive_logs)
