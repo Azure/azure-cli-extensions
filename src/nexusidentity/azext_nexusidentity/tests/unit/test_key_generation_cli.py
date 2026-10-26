@@ -4,24 +4,28 @@
 # --------------------------------------------------------------------------------------------
 
 """
-Offline Nexus Identity SSH key generation scenario test.
+Offline Nexus Identity SSH key generation CLI unit tests.
 """
 
 import json
 import os
 import subprocess
 import tempfile
+import unittest
+from contextlib import redirect_stdout
+from io import StringIO
 from unittest.mock import Mock, call, patch
 
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.core.mock import DummyCli
 
 from azext_nexusidentity import custom
 
 
-class NexusidentityScenarioTest(ScenarioTest):
+class TestKeyGenerationCLI(unittest.TestCase):
     """Exercise CLI dispatch without hardware, credentials, or Graph access."""
 
-    def test_nexusidentity_scenario1(self):
+    def test_key_generation_command_dispatch(self):
+        cli = DummyCli()
         public_key = "test-public-key"
         user = Mock()
         user.json.return_value = {"mail": "user@example.invalid"}
@@ -66,9 +70,9 @@ class NexusidentityScenarioTest(ScenarioTest):
                 "requests.patch"
             ) as update:
                 for arguments, algorithm, key_name in (
-                    ("", "ed25519-sk", "id_ed25519_sk"),
-                    (" --algorithm ecdsa-sk", "ecdsa-sk", "id_ecdsa_sk"),
-                    (" --algorithm ed25519-sk", "ed25519-sk", "id_ed25519_sk"),
+                    ((), "ed25519-sk", "id_ed25519_sk"),
+                    (("--algorithm", "ecdsa-sk"), "ecdsa-sk", "id_ecdsa_sk"),
+                    (("--algorithm", "ed25519-sk"), "ed25519-sk", "id_ed25519_sk"),
                 ):
                     with self.subTest(algorithm=arguments or "default"):
                         run.reset_mock()
@@ -76,7 +80,16 @@ class NexusidentityScenarioTest(ScenarioTest):
                         post.reset_mock()
                         get.side_effect = [user, extensions]
 
-                        self.cmd("az nexusidentity gen-keys" + arguments)
+                        output = StringIO()
+                        with redirect_stdout(output):
+                            exit_code = cli.invoke(
+                                ["nexusidentity", "gen-keys", *arguments],
+                                out_file=output,
+                            )
+                        self.assertEqual(exit_code, 0, output.getvalue())
+                        self.assertIn(
+                            "Successfully uploaded public key", output.getvalue()
+                        )
 
                         self.assertEqual(
                             run.call_args_list,
