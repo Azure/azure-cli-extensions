@@ -464,7 +464,9 @@ def _resolve_codeful_project(root, project):
 
 
 def _stage_codeful_project(root, staging, project, dotnet, output_path, manifest_path):
-    excluded = _copy_codeful_assets(root, staging, output_path, manifest_path)
+    ignore_patterns = _read_ignore_file(root)
+    excluded = _copy_codeful_assets(
+        root, staging, output_path, manifest_path, ignore_patterns)
     publish_dir = os.path.join(staging, "lib", "codeful")
     os.makedirs(publish_dir, exist_ok=True)
     command = [
@@ -481,13 +483,13 @@ def _stage_codeful_project(root, staging, project, dotnet, output_path, manifest
         raise FileOperationError("Could not start dotnet publish using '{}'.".format(dotnet)) from ex
     if completed.returncode:
         raise ValidationError("dotnet publish failed with exit code {}.".format(completed.returncode))
-    _normalize_and_validate_worker(staging, publish_dir)
+    required_worker_files = _normalize_and_validate_worker(staging, publish_dir)
+    excluded.extend(_filter_published_content(publish_dir, ignore_patterns, required_worker_files))
     return excluded
 
 
-def _copy_codeful_assets(root, staging, output_path, manifest_path):
+def _copy_codeful_assets(root, staging, output_path, manifest_path, ignore_patterns):
     excluded = []
-    ignore_patterns = _read_ignore_file(root)
     for directory, dirnames, filenames in os.walk(root, onerror=_package_walk_error):
         if _dedicated_test_directory(directory, root, dirnames, filenames):
             excluded.append({
@@ -578,6 +580,33 @@ def _normalize_and_validate_worker(staging, publish_dir):
             handle.write("\n")
     except OSError as ex:
         raise FileOperationError("Could not normalize worker.config.json.") from ex
+    return {
+        "worker.config.json",
+        os.path.relpath(assembly_path, publish_dir).replace(os.sep, "/")
+    }
+
+
+def _filter_published_content(publish_dir, ignore_patterns, required_worker_files):
+    excluded = []
+    for directory, _dirnames, filenames in os.walk(
+            publish_dir, topdown=False, onerror=_package_walk_error):
+        for filename in filenames:
+            full = os.path.join(directory, filename)
+            rel = os.path.relpath(full, publish_dir).replace(os.sep, "/")
+            if rel in required_worker_files or not _matches_ignore(rel, ignore_patterns):
+                continue
+            try:
+                os.remove(full)
+            except OSError as ex:
+                raise FileOperationError(
+                    "Could not exclude published package content: {}".format(rel)) from ex
+            excluded.append({"path": "lib/codeful/" + rel, "reason": "ignoreFile"})
+    for rel in required_worker_files:
+        full = os.path.join(publish_dir, rel.replace("/", os.sep))
+        if not os.path.isfile(full):
+            raise ValidationError(
+                "Required published worker file was excluded or removed: {}".format(rel))
+    return sorted(excluded, key=lambda item: item["path"])
 
 
 def _distinct_package_outputs(output_path, manifest_path):
@@ -696,9 +725,10 @@ def _read_ignore_file(root):
         entry = line.strip()
         if not entry or entry.startswith("#"):
             continue
-        if entry.startswith("\\") and len(entry) > 1 and entry[1] in ("#", "!"):
+        escaped_leading = entry.startswith("\\") and len(entry) > 1 and entry[1] in ("#", "!")
+        if escaped_leading:
             entry = entry[1:]
-        negated = entry.startswith("!")
+        negated = not escaped_leading and entry.startswith("!")
         if negated:
             entry = entry[1:]
         if not entry:
@@ -720,12 +750,16 @@ def _matches_ignore(rel, patterns):
     for pattern, negated, directory_only, anchored in patterns:
         has_slash = "/" in pattern
         if anchored or has_slash:
-            matched = fnmatch.fnmatchcase(normalized, pattern)
-            matched = matched or normalized.startswith(pattern + "/")
+            candidates = [
+                "/".join(components[:index])
+                for index in range(1, len(components))
+            ]
+            if not directory_only:
+                candidates.append(normalized)
+            matched = any(fnmatch.fnmatchcase(candidate, pattern) for candidate in candidates)
         else:
-            matched = any(fnmatch.fnmatchcase(component, pattern) for component in components)
-            if directory_only:
-                matched = any(component == pattern for component in components[:-1])
+            candidates = components[:-1] if directory_only else components
+            matched = any(fnmatch.fnmatchcase(component, pattern) for component in candidates)
         if matched:
             ignored = not negated
     return ignored

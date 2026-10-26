@@ -167,6 +167,79 @@ class CodefulPackagingTests(unittest.TestCase):
         self.assertEqual("package-output", reasons["package.zip"])
         self.assertEqual("package-output", reasons["package.manifest.json"])
 
+    def test_source_ignore_rules_filter_publish_output_but_preserve_required_worker_files(self):
+        self.write_codeful_project()
+        (self.root / ".funcignore").write_text(
+            "private.json\nworker.config.json\nApp.dll\n", encoding="utf-8")
+
+        def publish_with_private_content(command, **_kwargs):
+            output = Path(command[command.index("--output") + 1])
+            output.mkdir(parents=True, exist_ok=True)
+            (output / "App.dll").write_bytes(b"synthetic assembly")
+            (output / "private.json").write_text('{"secret":"synthetic"}', encoding="utf-8")
+            (output / "worker.config.json").write_text(json.dumps({
+                "description": {
+                    "language": "dotnet-isolated",
+                    "defaultExecutablePath": "dotnet",
+                    "defaultWorkerPath": "App.dll"
+                }
+            }), encoding="utf-8")
+            return subprocess.CompletedProcess(command, 0, "", "")
+
+        with mock.patch("azext_logicapp._workflow.subprocess.run",
+                        side_effect=publish_with_private_content):
+            result = custom.deployment_package(
+                None, path=str(self.root), output_path=str(self.archive),
+                manifest=str(self.manifest))
+
+        with zipfile.ZipFile(self.archive) as package:
+            names = set(package.namelist())
+            self.assertNotIn("lib/codeful/private.json", names)
+            self.assertIn("lib/codeful/worker.config.json", names)
+            self.assertIn("lib/codeful/App.dll", names)
+        self.assertIn(
+            {"path": "lib/codeful/private.json", "reason": "ignoreFile"},
+            result["excluded"])
+
+    def test_escaped_bang_is_a_literal_exclusion_after_an_earlier_json_rule(self):
+        (self.root / ".funcignore").write_text(
+            "*.json\n\\!private.json\n!host.json\n", encoding="utf-8")
+        (self.root / "private.json").write_text("{}", encoding="utf-8")
+        (self.root / "!private.json").write_text("{}", encoding="utf-8")
+
+        result = custom.deployment_package(
+            None, path=str(self.root), output_path=str(self.archive),
+            manifest=str(self.manifest))
+
+        included = {item["path"] for item in result["included"]}
+        self.assertNotIn("private.json", included)
+        self.assertNotIn("!private.json", included)
+        self.assertIn("host.json", included)
+
+    def test_directory_only_wildcards_match_root_and_nested_ancestors_in_order(self):
+        (self.root / ".funcignore").write_text(
+            "private*/\n!private-keep/allowed.json\n", encoding="utf-8")
+        files = {
+            "private-data/token.txt": "excluded root",
+            "nested/private-cache/token.txt": "excluded nested",
+            "private-keep/blocked.txt": "excluded by directory rule",
+            "private-keep/allowed.json": "included by later negation"
+        }
+        for relative, content in files.items():
+            path = self.root / Path(relative)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
+
+        result = custom.deployment_package(
+            None, path=str(self.root), output_path=str(self.archive),
+            manifest=str(self.manifest))
+
+        included = {item["path"] for item in result["included"]}
+        self.assertNotIn("private-data/token.txt", included)
+        self.assertNotIn("nested/private-cache/token.txt", included)
+        self.assertNotIn("private-keep/blocked.txt", included)
+        self.assertIn("private-keep/allowed.json", included)
+
     def test_rejects_missing_or_escaping_worker_assembly_without_outputs(self):
         self.write_codeful_project()
 
