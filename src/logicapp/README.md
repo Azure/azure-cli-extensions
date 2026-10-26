@@ -147,6 +147,8 @@ ports and stored values retain strict integer/range validation.
 ```powershell
 az logicapp connection managed create -g my-rg --logic-app-name my-app --name blobProd --connector azureblob -l eastus --auth-mode managed-identity
 az logicapp connection managed create -g my-rg --logic-app-name my-app --name outlook --connector office365 -l eastus --auth-mode oauth
+az logicapp connection managed create --path .\App --name outlook --connector office365 --auth-mode oauth
+az logicapp connection managed create --context development --name outlook --connector office365 --auth-mode oauth
 ```
 
 `--name` names the connection; `--logic-app-name` names its consuming site.
@@ -157,6 +159,69 @@ inspect the reported state before retrying. Legacy
 available, with a deprecation warning and its original interpretation throughout
 this preview. Removing it requires an announced breaking change, not a silent
 flip of `--name`.
+
+### Managed connections for local projects
+
+A managed connection is still an Azure `Microsoft.Web/connections` resource
+when its consuming workflow runs locally. No deployed Logic App is required.
+Use an explicit `--path`, a named local `--context`, or the active local context.
+Contexts remain path/port bookmarks; they do not store subscription or resource
+group metadata.
+
+The project must have `host.json` and an unencrypted `local.settings.json` with
+string-valued `Values`. Add the non-secret Azure scope to the existing `Values`
+object (do not replace unrelated settings):
+
+```json
+{
+  "WORKFLOWS_SUBSCRIPTION_ID": "11111111-1111-1111-1111-111111111111",
+  "WORKFLOWS_RESOURCE_GROUP_NAME": "dev-connections-rg",
+  "WORKFLOWS_LOCATION_NAME": "eastus"
+}
+```
+
+Explicit `--subscription`, `--resource-group` and `--location` override the
+corresponding project values for that command only. Azure CLI resolves an
+explicit subscription name/ID through its signed-in accounts; a saved project
+subscription must be a UUID. The command does not call `az account set`, change
+the context, or rewrite the project's scope settings. Without an explicit
+subscription it requires `WORKFLOWS_SUBSCRIPTION_ID`, not the default CLI account.
+Missing/invalid scope, malformed/encrypted settings, unsafe file paths and
+unsupported local identity combinations fail before creating a connection.
+Full connector resource IDs must match the selected subscription and location.
+Azure login and rights to create/use the API connection are still required.
+
+Local creation supports connector backend `--auth-mode raw`,
+`service-principal` and `oauth`, including the existing secret-on-stdin and
+browser-consent flows. Separately, it requests a **seven-day development
+runtime key** from Azure. The key is saved only in
+`local.settings.json` as `NAME-connectionKey`; `connections.json` contains
+`Raw`/`Key` authentication with an `@appsetting('NAME-connectionKey')` reference.
+The command does not print the key or grant a deployed app access. Local
+`--auth-mode managed-identity` and `--user-assigned-identity` are refused;
+these require the existing deployed-app path. Never use a development key as
+production authentication; expiry requires an explicit new key operation, not
+an automatic workflow retry. See Microsoft's
+[local versus deployed authentication guidance](https://learn.microsoft.com/azure/logic-apps/devops-deployment-single-tenant-azure-logic-apps#authentication).
+
+Existing Azure resources, local entries or key settings require `--force`.
+Other connection classes, entries and settings are preserved. Tracked
+`local.settings.json` is refused before credentials are created, and a local
+ignore rule is added before saving a key. If Git cannot establish tracked
+status, the result says `trackedByGit: null`; inspect source-control protection
+yourself. Do not publish `local.settings.json`, private temporary state, provider
+errors or `--debug` output. Deployment packaging excludes the local settings and
+`.azurelogicapps` private state; review the manifest before deploying.
+
+Local publication stages private files, rechecks the original file snapshots,
+and uses a bounded advisory lock under `.azurelogicapps` plus individual atomic
+file replacements. This is **not a multi-file transaction or CAS against
+noncooperating editors**. A failure after Azure creation can leave the connection
+or credentials changed and local files partially updated. No Azure resources
+are deleted, no automatic file rollback is attempted, and no mutation is
+retried. Inspect the retained resource and local files before deliberately
+retrying. Deployed creation retains its identity/access-policy and conditional
+remote-file behavior; legacy `connection create --managed-api` is deployed-only.
 
 ## Execute and control Stateful runs
 

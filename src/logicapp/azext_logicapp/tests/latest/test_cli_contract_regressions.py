@@ -444,9 +444,99 @@ class CliContractRegressions(unittest.TestCase):
             missing_app = canonical[:]
             index = missing_app.index("--logic-app-name")
             del missing_app[index:index + 2]
-            self.invoke(missing_app, expected=2)
+            with mock.patch.object(custom, "get_context", return_value=(None, {})):
+                self.invoke(missing_app, expected=1)
             self.invoke(canonical + ["--connection-name", "other"], expected=2)
             self.assertEqual(count, create.call_count)
+
+    def test_local_managed_create_parser_accepts_project_scope_and_global_subscription_override(self):
+        subscription = "22222222-2222-2222-2222-222222222222"
+
+        def capture(cmd, *args, **kwargs):
+            return {"scope": cmd.cli_ctx.data.get("subscription_id"),
+                    "path": kwargs["local_project"], "group": args[0], "location": args[4]}
+
+        command = ["logicapp", "connection", "managed", "create", "--name", "conn",
+                   "--connector", "office365", "--auth-mode", "oauth", "--path", str(self.project)]
+        with mock.patch.object(custom._managed_connection, "create_managed_connection", side_effect=capture), \
+                mock.patch("azure.cli.core._profile.Profile.get_subscription",
+                           return_value={"id": subscription, "name": "Override", "tenantId": "tenant"}), \
+                mock.patch("azure.cli.core._profile.Profile.load_cached_subscriptions",
+                           return_value=[{"id": subscription, "name": "Override", "tenantId": "tenant"}]):
+            result, _ = self.invoke(command + ["--subscription", subscription, "-g", "override", "-l", "westus"])
+            self.assertEqual(subscription, result["scope"])
+            self.assertEqual(str(self.project), result["path"])
+            self.assertEqual("override", result["group"])
+            self.assertEqual("westus", result["location"])
+            result, _ = self.invoke(command + ["--subscription", "Override"])
+            self.assertEqual(subscription, result["scope"])
+            result, _ = self.invoke(command)
+            self.assertIsNone(result["scope"])
+            self.assertIsNone(result["group"])
+            self.assertIsNone(result["location"])
+
+    def test_managed_create_accepts_named_and_active_contexts_without_changing_context_schema(self):
+        command = ["logicapp", "connection", "managed", "create", "--name", "conn",
+                   "--connector", "office365", "--auth-mode", "oauth"]
+        with mock.patch.object(custom._managed_connection, "create_managed_connection", return_value={}) as create:
+            local = {"target": {"kind": "local", "path": str(self.project), "port": 7071}}
+            with mock.patch.object(custom, "get_context", return_value=(local, {})):
+                self.invoke(command + ["--context", "dev"])
+                self.assertEqual(str(self.project), create.call_args.kwargs["local_project"])
+                self.invoke(command)
+                self.assertEqual(str(self.project), create.call_args.kwargs["local_project"])
+                self.invoke(command + ["--context", "dev", "--logic-app-name", "app"], expected=1)
+                self.invoke(command + ["--context", "dev", "--path", ""], expected=1)
+            cloud = {"target": {"kind": "cloud", "resourceGroup": "rg", "logicAppName": "app"}}
+            with mock.patch.object(custom, "get_context", return_value=(cloud, {})):
+                self.invoke(command + ["--context", "prod", "-l", "eastus"])
+                self.assertEqual(("rg", "app", "conn", "office365", "eastus", "oauth"),
+                                 create.call_args.args[1:])
+                self.assertNotIn("local_project", create.call_args.kwargs)
+                self.invoke(command + ["--context", "prod", "--path", str(self.project)], expected=1)
+
+    def test_local_managed_create_parser_runs_complete_local_path_without_a_deployed_app(self):
+        from azext_logicapp import _local_managed_connection
+
+        subscription = "11111111-1111-1111-1111-111111111111"
+        settings_path = self.project / "local.settings.json"
+        settings_path.write_text(json.dumps({"IsEncrypted": False, "Values": {
+            "WORKFLOWS_SUBSCRIPTION_ID": subscription, "WORKFLOWS_RESOURCE_GROUP_NAME": "rg",
+            "WORKFLOWS_LOCATION_NAME": "eastus"}}), encoding="utf-8")
+        resource = None
+        calls = []
+
+        def arm(_cmd, method, resource_id, body=None, _sender=None):
+            nonlocal resource
+            calls.append((method, resource_id))
+            self.assertNotIn("/sites/", resource_id)
+            self.assertNotIn("/accessPolicies", resource_id)
+            if resource_id.endswith("/listConnectionKeys"):
+                return {"connectionKey": PRIVATE}
+            if method == "PUT":
+                resource = copy.deepcopy(body)
+                resource["properties"]["connectionRuntimeUrl"] = "https://connector.invalid/runtime"
+                return resource
+            if resource is None:
+                raise ResourceNotFoundError("Not found")
+            return resource
+
+        with mock.patch.object(custom._managed_connection, "_arm", side_effect=arm), \
+                mock.patch.object(_local_managed_connection, "Profile") as profile, \
+                mock.patch.object(_local_managed_connection, "is_tracked_by_git", return_value=False), \
+                mock.patch.object(custom._managed_connection, "_resolve_app_principal",
+                                  side_effect=AssertionError("Unexpected deployed identity")), \
+                mock.patch.object(custom._managed_connection, "_ConnectionsFile",
+                                  side_effect=AssertionError("Unexpected remote VFS")):
+            profile.return_value.get_subscription.return_value = {"id": subscription}
+            result, _ = self.invoke(["logicapp", "connection", "managed", "create", "--name", "conn",
+                                     "--connector", "office365", "--auth-mode", "raw", "--path", str(self.project)])
+        self.assertIsNone(result["accessPolicy"])
+        self.assertEqual(str(self.project), result["localProject"])
+        self.assertEqual(["GET", "PUT", "GET", "POST"], [row[0] for row in calls])
+        saved = json.loads(settings_path.read_text(encoding="utf-8"))
+        self.assertEqual(PRIVATE, saved["Values"]["conn-connectionKey"])
+        self.assertNotIn(PRIVATE, (self.project / "connections.json").read_text(encoding="utf-8"))
 
     def test_failed_wait_then_metadata_inspection_has_independent_exits_and_query_output(self):
         reason = {"code": "InvalidTemplate", "message": "The template language function 'int' cannot convert the value."}

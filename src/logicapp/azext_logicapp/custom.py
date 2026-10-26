@@ -217,16 +217,38 @@ def connection_create(cmd, name, connector, secret=None, path=None, secret_param
                                    force=force, manage_gitignore=not no_gitignore)
 
 
-def connection_managed_create(cmd, name, logic_app_name, resource_group_name, connector, location,
-                              auth_mode, display_name=None, parameter=None, secret_parameter=None,
+def connection_managed_create(cmd, name, connector, auth_mode, logic_app_name=None,
+                              resource_group_name=None, location=None, display_name=None,
+                              parameter=None, secret_parameter=None,
                               parameter_set=None, user_assigned_identity=None, no_browser=False,
-                              consent_timeout=None, force=False):
+                              consent_timeout=None, force=False, path=None, context=None):
+    if path is not None and (not isinstance(path, str) or not path.strip()):
+        raise InvalidArgumentValueError("--path must identify an existing local project.")
+    if logic_app_name is not None and (path is not None or context is not None):
+        raise MutuallyExclusiveArgumentError("--logic-app-name cannot be combined with --path or --context.")
+    selected = None
+    if context is not None or (path is None and logic_app_name is None):
+        selected, _ = get_context(context)
+    local_project = None
+    if selected:
+        target = selected["target"]
+        if target["kind"] == "local":
+            local_project = abs_path(path if path is not None else target["path"])
+        else:
+            if path is not None or resource_group_name is not None:
+                raise MutuallyExclusiveArgumentError("A cloud --context cannot be combined with --path or --resource-group.")
+            logic_app_name, resource_group_name = target["logicAppName"], target["resourceGroup"]
+    elif path is not None:
+        local_project = abs_path(path)
+    elif logic_app_name is None:
+        raise RequiredArgumentMissingError(
+            "Choose a local --path/--context or a deployed --logic-app-name/--context.")
     return _connection_create_managed(
         cmd, logic_app_name, connector, resource_group_name=resource_group_name,
         connection_name=name, location=location, auth_mode=auth_mode,
         display_name=display_name, parameter=parameter, secret_parameter=secret_parameter,
         parameter_set=parameter_set, user_assigned_identity=user_assigned_identity,
-        no_browser=no_browser, consent_timeout=consent_timeout, force=force)
+        no_browser=no_browser, consent_timeout=consent_timeout, force=force, local_project=local_project)
 
 
 def _connection_create_managed(cmd, name, connector, resource_group_name=None, connection_name=None,
@@ -234,21 +256,22 @@ def _connection_create_managed(cmd, name, connector, resource_group_name=None, c
                                secret_parameter=None, parameter_set=None,
                                user_assigned_identity=None, force=False, secret=None, path=None,
                                context=None, app_setting=None, no_browser=False,
-                               consent_timeout=None):
+                               consent_timeout=None, local_project=None):
     for flag, value in (("--secret", secret), ("--path", path), ("--context", context),
                         ("--app-setting", app_setting)):
         if value:
             raise MutuallyExclusiveArgumentError(
                 "{} applies to local project connections and cannot be combined with "
                 "--managed-api.".format(flag))
-    missing = [flag for flag, value in (("--resource-group", resource_group_name),
-                                        ("--connection-name", connection_name),
-                                        ("--location", location),
-                                        ("--auth-mode", auth_mode)) if not value]
+    required = [("--connection-name", connection_name), ("--auth-mode", auth_mode)]
+    if local_project is None:
+        required += [("--resource-group", resource_group_name), ("--location", location)]
+    missing = [flag for flag, value in required if not value]
     if missing:
         raise RequiredArgumentMissingError(
-            "--managed-api requires {}. With --managed-api, --name is the Logic App that will use "
-            "the connection and --connection-name is the connection to create.".format(
+            "Managed connection creation requires {}. For a deployed target, --logic-app-name "
+            "identifies the app and --name identifies the connection. In legacy --managed-api mode, "
+            "--name identifies the app and --connection-name identifies the connection.".format(
                 ", ".join(missing)))
     secret_value = None
     if secret_parameter:
@@ -263,7 +286,8 @@ def _connection_create_managed(cmd, name, connector, resource_group_name=None, c
         display_name=display_name, parameter=parameter, secret_parameter=secret_parameter,
         secret_value=secret_value, parameter_set=parameter_set,
         user_assigned_identity=user_assigned_identity, force=force,
-        no_browser=no_browser, consent_timeout=consent_timeout)
+        no_browser=no_browser, consent_timeout=consent_timeout,
+        **({"local_project": local_project} if local_project is not None else {}))
 
 
 def connection_acl_list(cmd, resource_group_name, connection):

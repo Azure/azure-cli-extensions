@@ -270,7 +270,7 @@ class FeedbackValidationContracts(unittest.TestCase):
         module = ast.parse(Path(_test_report.__file__).read_text(encoding="utf-8"))
         version = next(node for node in module.body if isinstance(node, ast.Assign)
                        and any(isinstance(target, ast.Name) and target.id == "VERSION" for target in node.targets))
-        version.value = ast.copy_location(ast.Constant(value="1.0.0b2"), version.value)
+        version.value = ast.copy_location(ast.Constant(value="1.0.0b3"), version.value)
         namespace = {}
         exec(compile(module, "<future-report-producer>", "exec"), namespace)
         (self.root / "host.json").write_text(json.dumps(_workflow.HOST_JSON), encoding="utf-8")
@@ -303,12 +303,13 @@ class FeedbackValidationContracts(unittest.TestCase):
             _test_report.finalize(saved)
             with self.subTest(schema=schema, legacy=legacy):
                 self.assertTrue(namespace["validate_report"](saved))
-                saved["provenance"]["cliVersion"] = "1.0.0b2"
+                saved["provenance"]["cliVersion"] = "1.0.0b3"
                 self.assertEqual(schema == "2.0" and not legacy, namespace["validate_report"](saved))
 
         for schema, legacy in (("1.0", True), ("2.0", True), ("2.0", False)):
             saved = copy.deepcopy(report)
             saved["schemaVersion"] = schema
+            saved["provenance"]["cliVersion"] = "1.0.0b1"
             if schema == "1.0":
                 del saved["exitPolicy"]
             saved["findings"].append(_test_report.finding(
@@ -316,7 +317,7 @@ class FeedbackValidationContracts(unittest.TestCase):
             _test_report.finalize(saved)
             with self.subTest(schema=schema, legacy=legacy, rule="report.invalid"):
                 self.assertTrue(namespace["validate_report"](saved))
-                saved["provenance"]["cliVersion"] = "1.0.0b2"
+                saved["provenance"]["cliVersion"] = "1.0.0b3"
                 self.assertEqual(schema == "2.0" and not legacy, namespace["validate_report"](saved))
 
     def test_sdk_era_foundation_producers_retain_exact_error_catalogs_and_blocked_gates(self):
