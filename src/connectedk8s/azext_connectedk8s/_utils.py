@@ -582,12 +582,15 @@ def report_connectedk8s_diagnostic(
     error: errors.ArcError,
     *,
     exception: BaseException | None = None,
-    user_fault: bool = False,
     telemetry_properties: dict[str, Any] | None = None,
     fault_type: str | None = None,
     **context: object,
 ) -> str:
-    """Report one standardized diagnostic to telemetry without raising it."""
+    """Report one standardized diagnostic to telemetry without raising it.
+
+    Diagnostics never set the command result. Azure CLI keeps the first result that is set,
+    so a non-blocking user fault here would hide a later success.
+    """
     message = error.format(**context)
     telemetry_message = sanitize_telemetry_text(message)
     properties = (telemetry_properties or {}).copy()
@@ -607,8 +610,6 @@ def report_connectedk8s_diagnostic(
         properties[consts.Telemetry_Error_Tsg_Link_Key] = error.tsg_link
     add_connectedk8s_telemetry_event(cmd, properties)
 
-    if user_fault:
-        telemetry.set_user_fault()
     telemetry_exception = sanitize_telemetry_exception(exception, telemetry_message)
     telemetry.set_exception(
         exception=telemetry_exception,
@@ -630,11 +631,12 @@ def report_connectedk8s_error(
     **context: object,
 ) -> AzCLIError:
     """Report one standardized error to telemetry and return its console exception."""
+    if user_fault:
+        telemetry.set_user_fault()
     report_connectedk8s_diagnostic(
         cmd,
         error,
         exception=exception,
-        user_fault=user_fault,
         telemetry_properties=telemetry_properties,
         fault_type=fault_type,
         **context,
@@ -865,8 +867,8 @@ def get_chart_path(
     else:
         chart_path = os.getenv("HELMCHART", helm_chart_path)
 
-    if not os.path.isdir(chart_path):
-        details = f"Expected exported chart directory was not found: {chart_path}"
+    if not (os.path.isdir(chart_path) or os.path.isfile(chart_path)):
+        details = f"Expected exported chart path was not found: {chart_path}"
         raise report_connectedk8s_error(
             cmd,
             errors.HELM_CHART_EXPORT_FAILED,
@@ -1056,6 +1058,13 @@ def check_cluster_DNS(
             ("communications error", errors.DNS_COMMUNICATIONS_ERROR),
             ("timed out", errors.DNS_TIMEOUT),
         )
+        generic_timeout_count = len(
+            re.findall("timed out", formatted_dns_log, flags=re.IGNORECASE)
+        )
+        has_specific_failure = any(
+            re.search(re.escape(marker), formatted_dns_log, flags=re.IGNORECASE)
+            for marker, _ in failure_markers[:-1]
+        )
         latest_failure = max(
             (
                 (match.start(), dns_error)
@@ -1090,6 +1099,12 @@ def check_cluster_DNS(
         dns_check_failed = (
             latest_failure is not None and last_success_position < latest_failure[0]
         )
+        if dns_check_failed and generic_timeout_count == 1 and not has_specific_failure:
+            logger.warning(
+                "The DNS diagnostic timed out once. Continuing onboarding because "
+                "the timeout may be transient."
+            )
+            return consts.Diagnostic_Check_Not_Applicable, storage_space_available
 
         # Validating if DNS is working or not and displaying proper result
         # These are standard error strings from DNS tools (nslookup/dig) indicating resolution failures
@@ -1246,7 +1261,6 @@ def check_cluster_outbound_connectivity(  # pylint: disable=too-many-branches,to
                     cmd,
                     errors.CLUSTER_CONNECT_OUTBOUND_CONNECTIVITY_FAILED,
                     details=details,
-                    user_fault=True,
                 )
                 logger.warning(
                     "%s\n"
@@ -1370,7 +1384,6 @@ def check_cluster_outbound_connectivity(  # pylint: disable=too-many-branches,to
                     f"{details} Review network requirements at "
                     f"{consts.Doc_Network_Requirements_Url}."
                 ),
-                user_fault=True,
             )
             logger.warning(message)
             if storage_space_available:
@@ -1921,8 +1934,6 @@ def arm_exception_handler(
 
     if isinstance(ex, HttpOperationError):
         status_code = ex.response.status_code
-        if status_code // 100 == 4:
-            telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
         if status_code // 100 == 5:
             raise AzureInternalError(
@@ -1946,8 +1957,6 @@ def arm_exception_handler(
 
     if isinstance(ex, HttpResponseError):
         status_code = ex.status_code
-        if status_code and status_code // 100 == 4:
-            telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
         if status_code and status_code // 100 == 5:
             raise AzureInternalError(
@@ -2040,7 +2049,6 @@ def kubernetes_exception_handler(
                 details=details,
             )
             return
-        telemetry.set_user_fault()
         if raise_error:
             telemetry.set_exception(
                 exception=ex, fault_type=fault_type, summary=summary
@@ -2064,7 +2072,6 @@ def kubernetes_exception_handler(
             )
             logger.debug("Kubernetes Exception", exc_info=True)
             return
-        telemetry.set_user_fault()
         if raise_error:
             telemetry.set_exception(
                 exception=ex, fault_type=fault_type, summary=summary
@@ -2114,7 +2121,6 @@ def ensure_namespace_cleanup(cmd: CLICommand | None = None) -> None:
                     arc_error=errors.KUBERNETES_NAMESPACE_GET_FAILED,
                     cmd=cmd,
                 )
-            telemetry.set_user_fault()
             logger.warning(
                 "Namespace 'azure-arc' still in terminating state. Please ensure that you delete the "
                 "'azure-arc' namespace before onboarding the cluster again."
@@ -2926,7 +2932,6 @@ def check_provider_registrations(
                 )
                 raise ValidationError(err_msg)
 
-            telemetry.set_user_fault()
             logger.warning(
                 "%s provider is not registered",
                 consts.Kubernetes_Configuration_Provider_Namespace,
