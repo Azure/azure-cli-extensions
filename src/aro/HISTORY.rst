@@ -9,6 +9,10 @@ Release History
 * Add the `az aro hcp identity-role-sets list` command.
 * Add support for HCP cluster etcd encryption using Azure Key Vault Managed HSM.
 * Add the ability to specify a managed identity for an HCP cluster's container image registry.
+* Fix bug in identity argument handling for `az aro hcp cluster update`.
+* Fix kubeconfig merging functionality for `az aro hcp cluster request-credential` to use per-cluster user names.
+* Remove `--no-wait` from `az aro hcp cluster request-credential`.
+* Update `az aro hcp cluster create` example command in help text.
 
 1.0.14
 ++++++
