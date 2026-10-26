@@ -307,6 +307,7 @@ class FoundationTests(unittest.TestCase):
         for schema, legacy in (("1.0", True), ("1.0", False), ("2.0", True), ("2.0", False)):
             report = copy.deepcopy(source)
             report["schemaVersion"] = schema
+            report["provenance"]["cliVersion"] = "1.0.0b1"
             if schema == "1.0":
                 del report["exitPolicy"]
             row = protocol.finding("report.invalid", "report",
