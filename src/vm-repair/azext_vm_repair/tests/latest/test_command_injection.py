@@ -31,11 +31,13 @@ from azure.core.pipeline import PipelineContext, PipelineResponse
 from azure.core.pipeline.policies import ContentDecodePolicy, SansIOHTTPPolicy
 from azure.core.pipeline.transport import RequestsTransportResponse
 
-from azext_vm_repair._validators import validate_vm_password
+from azext_vm_repair._validators import _validate_resource_group_name, validate_vm_password
 from azext_vm_repair.custom import create, reset_nic, restore, run
 from azext_vm_repair.exceptions import AzCommandError
 from azext_vm_repair.repair_utils import (
     _call_az_command,
+    _legacy_value,
+    _validate_legacy_values,
     _validate_tags_for_command,
     _validate_command_token,
     _validate_command_values,
@@ -184,11 +186,29 @@ def argv_receiver(tmp_path, monkeypatch):
     monkeypatch.setenv('VM_REPAIR_EXPANSION_TEST', 'must-not-expand')
 
 
+@pytest.mark.skipif(os.name != 'nt', reason='batch launch is Windows-specific')
+@pytest.mark.parametrize('group_name', ['production(rg)', 'production(rg', 'production)rg'])
+@pytest.mark.parametrize('use_resource_id', [False, True], ids=['resource-group', 'resource-id'])
+def test_resource_group_parentheses_reach_windows_child_literally(group_name, use_resource_id, argv_receiver):
+    with mock.patch('azext_vm_repair._validators._check_existing_rg', return_value=False):
+        _validate_resource_group_name(group_name)
+    value = '/subscriptions/sub/resourceGroups/{}/providers/Microsoft.Compute/virtualMachines/vm'.format(group_name) \
+        if use_resource_id else group_name
+    option = '--ids' if use_resource_id else '--resource-group'
+    _validate_legacy_values(value)
+    command = 'az vm show {} {}'.format(option, _legacy_value(value))
+
+    _validate_command_values(command)
+    output = _call_az_command(command)
+
+    assert json.loads(output) == ['vm', 'show', option, value]
+
+
 @pytest.mark.skipif(os.name != 'nt', reason='interpreter-based launch is Windows-specific')
 @pytest.mark.parametrize('payload', ROUNDTRIP_PAYLOADS)
 def test_argument_roundtrip_through_real_process(payload, argv_receiver):
     command = 'az vm update --set ' + shlex.quote('storageProfile.osDisk.vhd.uri=' + payload)
-    if any(char in payload for char in "\"'%!&|<>()^$`;"):
+    if any(char in payload for char in "\"'%!&|<>^$`;"):
         with pytest.raises(InvalidArgumentValueError):
             _call_az_command(command)
         return

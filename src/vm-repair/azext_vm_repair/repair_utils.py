@@ -122,7 +122,7 @@ def _validate_command_token(token, field_name=None, tag_style=False, uri=False, 
     unsafe = ('"' in token or any(ord(char) < 32 or ord(char) == 127 for char in token)) if uri else \
         _is_unsafe_command_value(token)
     if not tag_style and not uri and not (file_reference and token.startswith('@')):
-        unsafe = unsafe or any(char in token for char in "'&|<>()^$`;")
+        unsafe = unsafe or any(char in token for char in "'&|<>^$`;")
     if unsafe:
         where = f' (from {field_name})' if field_name else ''
         raise InvalidArgumentValueError(
