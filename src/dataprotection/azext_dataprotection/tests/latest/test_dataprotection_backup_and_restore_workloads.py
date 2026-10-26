@@ -482,7 +482,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
         track_job_to_completion(test)
 
     # Uses persistent vault, policy, backup instance and Cosmos DB accounts pre-provisioned in
-    # rg-cosmos-ilr-ecy-b4e7e093 (subscription 97cda027-4279-4cde-b4ff-19afa0021d87, eastus2euap):
+    # rg-cosmos-ilr-ecy-b4e7e093 (eastus2euap) in the subscription the test runs under:
     #   - source 'cosilrecyb4e7e093src' with databases db1 (col1, col2), db2 (c1, c2) and db3 (control)
     #   - target 'cosilrecyb4e7e093tgt', which must be empty because item-level restore needs an empty account
     #   - backup vault 'cosilrecyb4e7e093-vault' + policy 'CosmosWeeklyPolicy'
@@ -501,7 +501,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
             'policyRuleName': 'BackupWeekly',
             'backupInstanceName': 'cosilrecyb4e7e093src-cosilrecyb4e7e093src-1f881bee-cbe8-11f1-8146-7ced8d285cbf',
             'targetCosmosDbName': 'cosilrecyb4e7e093tgt',
-            'targetCosmosDbId': '/subscriptions/97cda027-4279-4cde-b4ff-19afa0021d87/resourceGroups/rg-cosmos-ilr-ecy-b4e7e093/providers/Microsoft.DocumentDB/databaseAccounts/cosilrecyb4e7e093tgt',
+            'targetCosmosDbId': f'/subscriptions/{test.get_subscription_id()}/resourceGroups/rg-cosmos-ilr-ecy-b4e7e093/providers/Microsoft.DocumentDB/databaseAccounts/cosilrecyb4e7e093tgt',
         })
 
         backup_instance_validate_create(test, reuse_existing=True)
