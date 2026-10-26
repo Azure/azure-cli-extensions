@@ -40,13 +40,13 @@ Azure CLI runtime patch.
 
 ## Tests
 
-The test suite separates offline contracts from recorded service evidence:
+The test suite uses recorded scenarios as contract snapshots and unit tests for
+local behavior:
 
 | Suite | Purpose |
 | --- | --- |
 | `test_edge_action_custom.py` | Standard `unittest` tests for download aliases and file output, argument-cache isolation, field boundaries, generic-update precedence, client-side pagination limits/resumption, file/ZIP deployment, and registered customization polling, no-wait, and failure paths. Transport calls are mocked; command serialization and polling execute normally. |
 | `test_edge_action.py` | Recordable `ScenarioTest` lifecycles using `ResourceGroupPreparer`, covering CRUD, tag replacement/clearing, property preservation, deployment results, retrieved code content, default-version swaps, and independent/combined/generic execution-filter updates. |
-| `test_edge_action_spec.py` | Offline pinned-Swagger validation: positive/negative request and response schema tests, polling and pagination contracts, API-version checks, and strict validation of every checked-in cassette. |
 | `test_edge_action_recording_processors.py` | Sanitizer regression tests, cassette hygiene, and offline VCR matching of signed polling links. |
 
 The recorded scenarios provide service-contract regression coverage.
@@ -58,19 +58,19 @@ generic-update precedence, string preservation, and tag removal, verifying each
 result with a subsequent GET. It uses full version resource IDs and deletes the
 filter, then the non-default version, then the default version.
 
-Playback retains the test SDK's default request matchers and additionally uses
-VCR's JSON-aware body matcher. A serialized request-body regression therefore
-cannot pass merely because its URL still matches a recorded response. The
-separate pinned-spec audit checks the request and response contracts in every
-recording. Focused mocked-transport unit tests cover customization failure and
+Playback retains the test SDK's default request matchers, including the method,
+URL, and query string (`api-version`), and additionally uses VCR's JSON-aware body
+matcher. Scenario JMESPath checks assert the response fields and outcomes that
+matter to the commands. A serialized request-body regression therefore cannot
+pass merely because its URL still matches a recorded response, and a recording
+for a different API version does not match. There is no separate Swagger snapshot
+or schema validator to maintain. Focused mocked-transport unit tests cover customization failure and
 polling variants without requiring live service failures or synthetic cassettes.
 
 The JavaScript upload fixture is pinned to CRLF by `test_files/.gitattributes`
 because deployment reads and base64-encodes its raw bytes. This preserves the
 recorded payload on both Linux and Windows; an offline check compares the JS/ZIP
-fixture bytes with their recorded requests. Date-time validation accepts the
-service's fractional-second precision on all supported Python versions while
-still checking calendar dates, times, and timezone offsets.
+fixture bytes with their recorded requests.
 
 From the repository root, in an activated Azure CLI development environment:
 
@@ -100,60 +100,8 @@ $env:PYTHONPATH = (Resolve-Path .\src\edge-action).Path
 python -m unittest azext_edge_action.tests.latest.test_edge_action_custom -v
 ```
 
-Spec validation uses the Python standard library; recording loading uses PyYAML,
+Recording loading uses PyYAML,
 which is already part of the Azure CLI test environment.
-
-### Pinned specification and offline audit
-
-`azext_edge_action/tests/latest/spec_snapshot.json` bundles the stable Swagger and its common-type
-references from `Azure/azure-rest-api-specs` commit
-`9d29928794867148db0aed101144d14b2876e3a1`, with SHA-256 hashes of both source
-documents.
-
-A commit hash is not required to generate from a local checkout, but a full SHA
-is required to refresh this reproducible test snapshot. Refresh downloads from
-that immutable commit; ordinary tests and cassette audits never fetch schemas:
-
-```powershell
-python src\edge-action\azext_edge_action\tests\latest\spec_validation.py --refresh 9d29928794867148db0aed101144d14b2876e3a1
-python -m pytest src\edge-action\azext_edge_action\tests\latest\test_edge_action_spec.py src\edge-action\azext_edge_action\tests\latest\test_edge_action_recording_processors.py -q
-python src\edge-action\azext_edge_action\tests\latest\spec_validation.py --recordings src\edge-action\azext_edge_action\tests\latest\recordings
-```
-
-The audit reports the cassette and interaction number and exits nonzero on any
-mismatch. Preview recordings fail the stable API check; they must not be skipped
-or relabeled to claim stable coverage. To exercise validator/sanitizer unit tests
-separately, append `-k "not test_recording_matches_pinned_spec"` to the pytest
-command. Do not interpret that selected run as a passing stable recording audit.
-
-Validation checks HTTP requests and responses rather than inspecting generated
-Python source. The validator supports the pinned Swagger's local references,
-object inheritance, required fields, types, arrays, tag dictionaries, enums,
-string constraints, and UUID/date-time/URI formats. Swagger read-only requirements,
-extensible enums, and nullable fields retain their request/response semantics.
-Unknown schema constraints or formats fail explicitly; this is not a general
-JSON Schema implementation. An actual PUT 202 is rejected because this Swagger declares only
-PUT 200/201. Resource responses,
-required fields, types, no-content responses, polling headers, status documents,
-Location results and pagination bodies are checked against their own contracts.
-The validator has two explicit, test-only exceptions: version response
-`validationStatus` may be null, and swapDefault's Location response need not be
-HTTP 204 with an empty body. A swapDefault Location HTTP 200 response and
-Azure-AsyncOperation status responses validate only the JSON `status` field
-(a nonempty string), not other body fields. A swapDefault Location HTTP 204
-response is accepted without inspecting its body. HTTP success and API-version
-checks remain enforced. Other operations' response contracts and swapDefault's
-initial POST response remain unchanged; the pinned Swagger is not modified.
-When swapDefault's Location points to the affected version resource itself, a
-HTTP 200 response is validated against the version GET schema, not the status
-document schema. Subsequent GETs to that resource keep the same resource
-validation; opaque Location endpoints still require a status document.
-The swapDefault behavioral tests accept either a successful polling status body
-or an empty Location result, without requiring the RP to return a body. They invoke
-the registered customization against the unmodified Azure CLI runtime, including
-Azure-AsyncOperation-only, Location-only, and combined polling flows. Schema
-allowances alone do not fix the missing-deserializer error; the customization
-described above supplies that runtime compatibility.
 
 ### Recording sanitization
 

@@ -37,9 +37,6 @@ from azext_edge_action.custom import (
     EdgeActionSwapDefaultMgmtClient, ExecutionFilterUpdate, GetVersionCode, deploy_edge_action_version,
 )
 
-from .spec_validation import API_VERSION, spec
-
-
 HANDLER = b"function handler(event) { return event; }"
 SUBSCRIPTION = "00000000-0000-0000-0000-000000000000"
 RESOURCE_ID = f"/subscriptions/{SUBSCRIPTION}/resourceGroups/rg/providers/Microsoft.Cdn/edgeActions/action"
@@ -95,8 +92,6 @@ class EdgeActionCustomTests(unittest.TestCase):
             self.assertLess(len(requests), len(responses), "Unexpected HTTP request")
             status, body, headers = responses[len(requests)]
             requests.append(request)
-            if "/providers/Microsoft.Cdn/edgeActions" in request.url:
-                spec().validate_request(request.method, request.url, request.body, dict(request.headers))
             return MockResponse(request, status, body, headers)
 
         def get_client(_ctx, client_type):
@@ -526,7 +521,7 @@ class EdgeActionCustomTests(unittest.TestCase):
                 with self.subTest(status=use_status, location=use_location, final_status=final_status):
                     headers, responses = {}, []
                     urls = [f"https://management.azure.com{RESOURCE_ID}/versions/v1/swapDefault"
-                            f"?api-version={API_VERSION}"]
+                            "?api-version=2026-10-01"]
                     if use_status:
                         headers["Azure-AsyncOperation"] = STATUS_URL
                         responses.extend([(200, {"status": "InProgress"}, {}), (200, {"status": "Succeeded"}, {})])

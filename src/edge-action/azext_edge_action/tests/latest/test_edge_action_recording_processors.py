@@ -17,7 +17,6 @@ from .recording_processors import (
     EdgeActionRecordingProcessor, PRIVATE_HEADERS, REDACTED, SENSITIVE_QUERY, sanitize_body,
     sanitize_json, sanitize_recording, sanitize_text,
 )
-from .spec_validation import body_json
 
 
 URL = "https://management.azure.com/operationResults/one?api-version=2026-10-01&t=opaque-time&c=opaque-token"
@@ -178,7 +177,7 @@ def test_deployment_fixture_bytes_match_recording(deployment_type, filename):
     requests = [item["request"] for item in recording["interactions"]
                 if "/deployVersionCode?" in item["request"]["uri"]]
     assert len(requests) == 1
-    recorded = base64.b64decode(body_json(requests[0]["body"])["content"], validate=True)
+    recorded = base64.b64decode(json.loads(requests[0]["body"])["content"], validate=True)
     assert (directory / "test_files" / filename).read_bytes() == recorded
 
 
@@ -195,5 +194,5 @@ def test_checked_in_recordings_are_sanitized(path):
         request = interaction["request"]
         assert request["uri"] == sanitize_text(request["uri"])
         for raw in (request.get("body"), interaction["response"]["body"].get("string")):
-            parsed = body_json(raw)
+            parsed = json.loads(raw) if raw else None
             assert parsed == sanitize_json(parsed)
