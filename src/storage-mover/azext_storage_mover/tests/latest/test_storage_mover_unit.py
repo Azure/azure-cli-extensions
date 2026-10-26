@@ -13,7 +13,7 @@ from unittest.mock import Mock, patch
 from urllib.parse import parse_qs, urlparse
 
 from azure.cli.core.aaz import AAZCommand, AAZWaitCommand
-from azure.cli.core.aaz._client import AAZMgmtClient
+from azure.cli.core.commands import client_factory
 from azure.cli.core.mock import DummyCli
 from azure.core.pipeline.policies import ContentDecodePolicy
 from azext_storage_mover import custom
@@ -167,8 +167,8 @@ class StorageMoverApiContractTest(unittest.TestCase):
     def _invoke(self, command_class, args, responses):
         command = command_class(cli_ctx=DummyCli())
         AAZCommand._handler(command, dict(args, subscription=SUBSCRIPTION_ID))
-        client = AAZMgmtClient(command.ctx, credential=Mock())
-        command.ctx._clients["MgmtClient"] = client
+        with patch.object(command.ctx, "get_login_credential", return_value=Mock()):
+            client = command.ctx.get_http_client("MgmtClient")
         sessions = [
             SimpleNamespace(
                 http_response=Mock(status_code=200),
@@ -184,6 +184,21 @@ class StorageMoverApiContractTest(unittest.TestCase):
         for request in requests:
             self.assertEqual(parse_qs(urlparse(request.url).query)["api-version"], ["2026-05-01"])
         return requests, output
+
+    def test_invocation_uses_cli_client_configuration(self):
+        with patch.object(
+            client_factory, "_prepare_client_kwargs_track2",
+            wraps=client_factory._prepare_client_kwargs_track2,
+        ) as prepare:
+            self._invoke(
+                ReconcileJob,
+                {
+                    "job_definition_name": "job", "resource_group": "resource-group",
+                    "storage_mover_name": "storage-mover", "project_name": "project",
+                },
+                [{"jobRunResourceId": "job-run-resource-id"}],
+            )
+        prepare.assert_called_once()
 
     def test_cross_tenant_endpoint_create_serialization(self):
         for argument, endpoint_type, required in [

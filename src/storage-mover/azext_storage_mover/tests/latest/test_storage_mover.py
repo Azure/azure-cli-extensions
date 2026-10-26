@@ -7,6 +7,7 @@
 
 from azure.cli.testsdk import *
 from azure.cli.core._profile import Profile
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.testsdk.scenario_tests.const import MOCKED_TENANT_ID
 import time
 import unittest
@@ -111,8 +112,10 @@ class StorageMoverScenario(ScenarioTest):
             "mover_name": self.create_random_name('storage-mover', 24),
             "container_name": self.create_random_name('container', 24),
             "account_name": storage_account,
-            "account_id": self.cmd('az storage account show -n {} -g {} --query id '
-                                   '-otsv'.format(storage_account, resource_group)).output.strip(),
+            "account_id": self.cmd(
+                'az rest --method get --url "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Storage/'
+                'storageAccounts/{}?api-version=2024-01-01" --query id -otsv'.format(
+                    get_subscription_id(self.cli_ctx), resource_group, storage_account)).output.strip(),
             "endpoint_container": self.create_random_name('test-ep-container', 32),
             "endpoint_file_share": self.create_random_name('test-ep-fileshare', 32),
             "endpoint_nfs": self.create_random_name('test-ep-nfs', 32),
@@ -126,9 +129,9 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus '
                  '--tags {{key1:value1}} --description MoverDesc')
 
-        # create for storage container
-        self.cmd('az storage container-rm create -n {container_name} --storage-account {account_name} '
-                 '-g {rg}')
+        # Keep prerequisite Storage requests independent of the CLI's Storage SDK version.
+        self.cmd('az rest --method put --url "{account_id}/blobServices/default/containers/{container_name}'
+                 '?api-version=2024-01-01" --body "{{}}"')
         self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '
                  '-n {endpoint_container} --container-name {container_name} --storage-account-id {account_id} '
                  '--endpoint-kind Target --description endpointDesc')
@@ -150,8 +153,8 @@ class StorageMoverScenario(ScenarioTest):
                          JMESPathCheck('properties.description', "endpointDescUpdate")])
 
         # create for storage smb file share
-        self.cmd('az storage share-rm create -n {file_share_name} --storage-account {account_name} '
-                 '-g {rg}')
+        self.cmd('az rest --method put --url "{account_id}/fileServices/default/shares/{file_share_name}'
+                 '?api-version=2024-01-01" --body "{{}}"')
         self.cmd('az storage-mover endpoint create-for-storage-smb-file-share -g {rg} '
                  '--storage-mover-name {mover_name} '
                  '-n {endpoint_file_share} --file-share-name {file_share_name} --storage-account-id {account_id} '
@@ -411,8 +414,10 @@ class StorageMoverScenario(ScenarioTest):
             "project_name": self.create_random_name('project', 24),
             "job_definition": self.create_random_name('jobdef', 24),
             "account_name": storage_account,
-            "account_id": self.cmd('az storage account show -n {} -g {} --query id '
-                                   '-otsv'.format(storage_account, resource_group)).output.strip(),
+            "account_id": self.cmd(
+                'az rest --method get --url "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Storage/'
+                'storageAccounts/{}?api-version=2024-01-01" --query id -otsv'.format(
+                    get_subscription_id(self.cli_ctx), resource_group, storage_account)).output.strip(),
             "source_container": self.create_random_name('srccontainer', 24),
             "target_container": self.create_random_name('tgtcontainer', 24),
             "source_endpoint": self.create_random_name('test-srcep', 24),
@@ -423,10 +428,10 @@ class StorageMoverScenario(ScenarioTest):
                  '--description ProjectDesc')
 
         # create source and target containers
-        self.cmd('az storage container-rm create -n {source_container} --storage-account {account_name} '
-                 '-g {rg}')
-        self.cmd('az storage container-rm create -n {target_container} --storage-account {account_name} '
-                 '-g {rg}')
+        self.cmd('az rest --method put --url "{account_id}/blobServices/default/containers/{source_container}'
+                 '?api-version=2024-01-01" --body "{{}}"')
+        self.cmd('az rest --method put --url "{account_id}/blobServices/default/containers/{target_container}'
+                 '?api-version=2024-01-01" --body "{{}}"')
 
         # create source and target endpoints (both blob containers for cloud-to-cloud)
         self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '

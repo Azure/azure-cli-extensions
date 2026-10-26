@@ -79,6 +79,8 @@ Run recorded scenarios and offline contract tests with `azdev test storage-mover
 The self-contained scenarios use disposable resource groups and keyless StorageV2
 accounts, provisioning containers and file shares through ARM. Tenant identifiers
 are sanitized in recordings.
+Prerequisite Storage requests use an explicit stable API version so playback does
+not depend on the Azure CLI Storage SDK version.
 
 Registered-agent scenarios are skipped until a disposable registered agent is
 available. Scenarios that depend on shared multi-cloud or private-link
