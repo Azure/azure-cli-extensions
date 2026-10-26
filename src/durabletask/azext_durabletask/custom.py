@@ -8,6 +8,7 @@
 from ._scheduler import (  # noqa: F401 # pylint: disable=unused-import
     CreateScheduler,
     UpdateScheduler,
+    RestartScheduler,
     AssignIdentity,
     RemoveIdentity,
     attach_scheduler,

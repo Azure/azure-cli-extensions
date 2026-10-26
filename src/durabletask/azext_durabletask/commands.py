@@ -18,12 +18,13 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group(
             'durabletask scheduler',
             custom_command_type=self.module_kwargs['custom_command_type']) as g:
-        from .custom import CreateScheduler, UpdateScheduler
+        from .custom import CreateScheduler, UpdateScheduler, RestartScheduler
         from .aaz.latest.durabletask.scheduler import Show as _SchedulerShow, List as _SchedulerList
         self.command_table["durabletask scheduler create"] = CreateScheduler(
             loader=self, table_transformer=scheduler_table_format)
         self.command_table["durabletask scheduler update"] = UpdateScheduler(
             loader=self, table_transformer=scheduler_table_format)
+        self.command_table["durabletask scheduler restart"] = RestartScheduler(loader=self)
         self.command_table["durabletask scheduler show"] = _SchedulerShow(
             loader=self, table_transformer=scheduler_table_format)
         self.command_table["durabletask scheduler list"] = _SchedulerList(

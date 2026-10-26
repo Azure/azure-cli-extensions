@@ -6,6 +6,7 @@
 from .aaz.latest.durabletask.scheduler import Create as _SchedulerCreate
 from .aaz.latest.durabletask.scheduler import Update as _SchedulerUpdate
 from .aaz.latest.durabletask.scheduler import Show as _SchedulerShow
+from .aaz.latest.durabletask.scheduler import Restart as _SchedulerRestart
 from .aaz.latest.durabletask.scheduler.identity import Assign as _IdentityAssign
 from .aaz.latest.durabletask.scheduler.identity import Remove as _IdentityRemove
 from .aaz.latest.durabletask.taskhub import Show as _TaskHubShow
@@ -75,6 +76,18 @@ class UpdateScheduler(_SchedulerUpdate):
         capacity = sku.capacity.to_serialized_data()
         if capacity is None or capacity == 0:
             sku.capacity = None
+
+
+class RestartScheduler(_SchedulerRestart):
+    """Preserve the restart response while using the generated operation."""
+
+    def _handler(self, command_args):
+        super()._handler(command_args)
+        return {
+            "schedulerName": self.ctx.args.scheduler_name.to_serialized_data(),
+            "resourceGroupName": self.ctx.args.resource_group.to_serialized_data(),
+            "status": "Restart initiated",
+        }
 
 
 def _unset_unused_sku_capacity(scheduler_instance):
