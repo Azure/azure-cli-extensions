@@ -8161,7 +8161,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
-    # FIPS mode at the cluster level is gated by EnableFIPSPreview AFEC and requires K8s 1.34+,
+    # FIPS mode at the cluster level is gated by EnableFIPSPreview AFEC and requires K8s 1.35+,
     # so this scenario is live-only until the preview is broadly available.
     @live_only()
     @AllowLargeResponse()
@@ -8174,7 +8174,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
         k8s_version = self._get_version_at_least(
-            location=resource_group_location, min_version="1.34.0"
+            location=resource_group_location, min_version="1.35.0"
         )
         self.kwargs.update(
             {
@@ -8214,7 +8214,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
         k8s_version = self._get_version_at_least(
-            location=resource_group_location, min_version="1.34.0"
+            location=resource_group_location, min_version="1.35.0"
         )
         self.kwargs.update(
             {
@@ -25384,9 +25384,9 @@ spec:
             "ManagedBastion",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.bastionProfile.enabled", True),
-                self.check("networkProfile.bastionProfile.sku", "Standard"),
-                self.check("networkProfile.bastionProfile.scaleUnits", 2),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.enabled", True),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.sku", "Standard"),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.scaleUnits", 2),
             ],
         )
 
@@ -25400,9 +25400,9 @@ spec:
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.bastionProfile.enabled", True),
-                self.check("networkProfile.bastionProfile.sku", "Premium"),
-                self.check("networkProfile.bastionProfile.scaleUnits", 4),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.enabled", True),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.sku", "Premium"),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.scaleUnits", 4),
             ],
         )
 
@@ -25415,7 +25415,7 @@ spec:
             disable_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.bastionProfile.enabled", False),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.enabled", False),
             ],
         )
 
@@ -25478,10 +25478,10 @@ spec:
             "ManagedBastion",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.bastionProfile.enabled", True),
-                self.check("networkProfile.bastionProfile.sku", "Standard"),
-                self.check("networkProfile.bastionProfile.scaleUnits", 2),
-                self.check("networkProfile.bastionProfile.publicIpAddressId", pip_id)
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.enabled", True),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.sku", "Standard"),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.scaleUnits", 2),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.publicIpAddressId", pip_id)
             ],
         )
 
@@ -25494,7 +25494,7 @@ spec:
             disable_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.bastionProfile.enabled", False),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.enabled", False),
             ],
         )
 

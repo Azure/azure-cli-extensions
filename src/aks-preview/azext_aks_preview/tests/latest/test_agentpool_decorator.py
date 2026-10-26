@@ -517,6 +517,58 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_1.attach_agentpool(agentpool)
         self.assertEqual(ctx_1.get_gpu_driver(), CONST_GPU_DRIVER_INSTALL)
 
+        managed_gpu_options = (
+            {"enable_managed_gpu": True},
+            {"gpu_mig_strategy": "Single"},
+            {"gpu_mig_strategy": "Mixed"},
+            {"gpu_mig_profiles": ["MIG3g"]},
+            {
+                "enable_managed_gpu": True,
+                "gpu_mig_strategy": "Mixed",
+                "gpu_mig_profiles": ["MIG1g", "MIG2g", "MIG2g", "MIG2g"],
+            },
+        )
+        for mode in (DecoratorMode.CREATE, DecoratorMode.UPDATE):
+            for options in managed_gpu_options:
+                for driver in ("None", "none", "NONE"):
+                    with self.subTest(mode=mode, options=options, driver=driver):
+                        ctx = AKSPreviewAgentPoolContext(
+                            self.cmd,
+                            AKSAgentPoolParamDict({"gpu_driver": driver, **options}),
+                            self.models,
+                            mode,
+                            self.agentpool_decorator_mode,
+                        )
+                        # Earlier decorators may already have selected Install.
+                        ctx.attach_agentpool(agentpool)
+                        with self.assertRaisesRegex(
+                            MutuallyExclusiveArgumentError,
+                            "Managed GPU and MIG require AKS driver installation",
+                        ):
+                            ctx.get_gpu_driver()
+
+                for driver in (None, CONST_GPU_DRIVER_INSTALL):
+                    with self.subTest(mode=mode, options=options, driver=driver):
+                        ctx = AKSPreviewAgentPoolContext(
+                            self.cmd,
+                            AKSAgentPoolParamDict({"gpu_driver": driver, **options}),
+                            self.models,
+                            mode,
+                            self.agentpool_decorator_mode,
+                        )
+                        self.assertEqual(ctx.get_gpu_driver(), driver)
+
+            for options in ({}, {"enable_managed_gpu": False}):
+                with self.subTest(mode=mode, options=options):
+                    ctx = AKSPreviewAgentPoolContext(
+                        self.cmd,
+                        AKSAgentPoolParamDict({"gpu_driver": CONST_GPU_DRIVER_NONE, **options}),
+                        self.models,
+                        mode,
+                        self.agentpool_decorator_mode,
+                    )
+                    self.assertEqual(ctx.get_gpu_driver(), CONST_GPU_DRIVER_NONE)
+
     def common_get_driver_type(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(

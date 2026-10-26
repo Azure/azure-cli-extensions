@@ -823,6 +823,17 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
         # read the original value passed by the command
         gpu_driver = self.raw_param.get("gpu_driver")
+        if gpu_driver is not None and gpu_driver.lower() == CONST_GPU_DRIVER_NONE.lower():
+            if (
+                self.raw_param.get("enable_managed_gpu") is True or
+                self.raw_param.get("gpu_mig_strategy") is not None or
+                self.raw_param.get("gpu_mig_profiles") is not None
+            ):
+                raise MutuallyExclusiveArgumentError(
+                    "--gpu-driver None cannot be used with --enable-managed-gpu true, "
+                    "--gpu-mig-strategy or --gpu-mig-profiles. Managed GPU and MIG require "
+                    "AKS driver installation. Omit --gpu-driver or use --gpu-driver Install."
+                )
 
         # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
         if self.decorator_mode == DecoratorMode.CREATE:
@@ -835,7 +846,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 gpu_driver = self.agentpool.gpu_profile.driver
 
         # this parameter does not need dynamic completion
-        # this parameter does not need validation
         return gpu_driver
 
     def get_gpu_driver(self) -> Union[str, None]:
