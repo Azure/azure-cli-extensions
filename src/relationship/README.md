@@ -141,6 +141,22 @@ Run the unit tests and recorded scenarios without Azure credentials:
 python -m pytest src/relationship/azext_relationship/tests/latest -q
 ```
 
+PR readiness also requires both linter passes from the repository workflow:
+
+```powershell
+azdev linter relationship --min-severity medium
+$mergeBase = git merge-base HEAD upstream/main
+azdev linter EXT --repo . --src HEAD --tgt $mergeBase --rules missing_command_example
+foreach ($file in (git diff --name-only --diff-filter=AM $mergeBase)) {
+    $scan = azdev scan --confidence-level MEDIUM -f $file --continue-on-failure | ConvertFrom-Json
+    if ($scan.secrets_detected) { throw "Secret scan findings in $file" }
+}
+```
+
+The second pass uses Git history and is not covered by the first invocation.
+Examples for generated commands must be defined in their AAZ models; handwritten
+help entries alone do not populate the generated command metadata.
+
 All scenarios support offline playback from the checked-in recordings. A missing
 recording fails rather than implicitly accessing Azure.
 

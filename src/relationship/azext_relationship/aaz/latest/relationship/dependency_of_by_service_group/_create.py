@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a DependencyOfRelationship
+
+    :example: Create a dependency between Service Groups
+        az relationship dependency-of-by-service-group create --service-group-name sourceSG --name myDependency --target-id "/providers/Microsoft.Management/serviceGroups/targetSG"
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a ServiceGroupMemberRelationship
+
+    :example: Update the Service Group source of a membership
+        az relationship service-group-member update --resource-uri "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}" --name myMembership --source-id "/providers/Microsoft.Management/serviceGroups/mySG"
     """
 
     _aaz_info = {

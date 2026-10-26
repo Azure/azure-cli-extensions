@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a DependencyOfRelationship
+
+    :example: Update the target of a resource-scoped dependency
+        az relationship dependency-of update --resource-uri "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}" --name myDependency --target-id "/providers/Microsoft.Management/serviceGroups/targetSG"
     """
 
     _aaz_info = {

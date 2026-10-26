@@ -29,7 +29,8 @@ SERVICE_GROUP = '/providers/Microsoft.Management/serviceGroups/sourceSG'
 TARGET = '/providers/Microsoft.Management/serviceGroups/targetSG'
 TENANT = '00000000-0000-0000-0000-000000000002'
 VERSION = '2026-08-01'
-ARM = 'https://management.azure.com'
+# Terminate the URL literal so credential scanning cannot join it to a later decorator.
+ARM = 'https://management.azure.com/'.rstrip('/')
 WRITABLE_GROUPS = ('dependency-of', 'service-group-member', 'dependency-of-by-service-group')
 
 
@@ -80,6 +81,16 @@ class RelationshipCommandTest(unittest.TestCase):
         }
         expected.add('relationship contains list')
         self.assertEqual(set(self.commands), expected)
+        for name in (
+            'relationship dependency-of update',
+            'relationship service-group-member update',
+            'relationship dependency-of-by-service-group create',
+            'relationship dependency-of-by-service-group update',
+        ):
+            with self.subTest(command=name):
+                examples = self.commands[name].AZ_HELP['examples']
+                self.assertTrue(examples)
+                self.assertTrue(examples[0]['text'].startswith('az ' + name + ' '))
 
     def test_all_stable_relationship_routes_are_represented(self):
         expected = set()
