@@ -4,10 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 
+import hashlib
 import json
 from contextlib import contextmanager
 
 from azure.cli.testsdk import JMESPathCheck
+from azure.cli.testsdk.scenario_tests.recording_processors import RecordingProcessor
 
 from .scenario_mixin import add_tags
 
@@ -99,6 +101,54 @@ def _escape_format_placeholders(command, format_placeholders=None):
     return ''.join(escaped)
 
 
+class ByocVaultRecordingProcessor(RecordingProcessor):
+    def __init__(self, principal_id):
+        self.principal_id = principal_id
+
+    @staticmethod
+    def _scrub_identity(value):
+        prefix = '00000000-0000-0000-0000-'
+        if not value or value.startswith(prefix):
+            return value
+        return prefix + hashlib.sha256(value.lower().encode()).hexdigest()[:12]
+
+    def _scrub_body(self, body):
+        if not body:
+            return body
+        try:
+            payload = json.loads(body)
+        except (TypeError, ValueError):
+            return body
+        if not isinstance(payload, dict):
+            return body
+        properties = payload.get('properties')
+        if not isinstance(properties, dict):
+            return body
+        policies = properties.get('accessPolicies')
+        if policies is None:
+            return body
+        for policy in policies:
+            if policy.get('objectId', '').lower() == self.principal_id.lower():
+                continue
+            for name in ('objectId', 'tenantId', 'applicationId'):
+                if name in policy:
+                    policy[name] = self._scrub_identity(policy[name])
+        system_data = payload.get('systemData') or {}
+        for name in ('createdBy', 'lastModifiedBy'):
+            if name in system_data:
+                system_data[name] = self._scrub_identity(system_data[name])
+        scrubbed = json.dumps(payload)
+        return scrubbed.encode() if isinstance(body, bytes) else scrubbed
+
+    def process_request(self, request):
+        request.body = self._scrub_body(request.body)
+        return request
+
+    def process_response(self, response):
+        response['body']['string'] = self._scrub_body(response['body']['string'])
+        return response
+
+
 # pylint: disable=too-many-public-methods
 class CdnAfdScenarioMixin:
     def cmd(self, command, checks=None, expect_failure=False):
@@ -106,7 +156,8 @@ class CdnAfdScenarioMixin:
                            expect_failure=expect_failure)
 
     @contextmanager
-    def afd_byoc_identity(self, resource_group, profile_name):
+    def afd_byoc_identity(self, resource_group, profile_name, vault_name='Azure-CDN-BYOC',
+                          vault_resource_group='byoc', vault_subscription='3c0124f9-e564-4c42-86f7-fa79457aedc3'):
         identity = self.cmd(
             f'afd profile identity assign -g {resource_group} --profile-name {profile_name} '
             '--system-assigned').get_output_in_json()
@@ -114,27 +165,26 @@ class CdnAfdScenarioMixin:
         self.assertTrue(principal_id, 'The profile system-assigned identity must have a principal ID')
         tenant_id = identity['tenantId']
         self.assertTrue(tenant_id, 'The profile system-assigned identity must have a tenant ID')
-        # Recording processors sanitize every subscription, including this cross-subscription vault.
+        # Recording processors sanitize every subscription, including cross-subscription vaults.
         vault_subscription = (
-            '3c0124f9-e564-4c42-86f7-fa79457aedc3'
+            vault_subscription
             if self.in_recording or self.is_live else self.get_subscription_id()
         )
-        policy_url = (
-            f'https://management.azure.com/subscriptions/{vault_subscription}/resourceGroups/byoc'
-            '/providers/Microsoft.KeyVault/vaults/Azure-CDN-BYOC/accessPolicies'
+        policy_args = (
+            f'--name {vault_name} --resource-group {vault_resource_group} --subscription {vault_subscription} '
+            f'--object-id {principal_id}'
         )
-        policy_body = _json_arg({'properties': {'accessPolicies': [{
-            'tenantId': tenant_id,
-            'objectId': principal_id,
-            'permissions': {'secrets': ['get']},
-        }]}})
-        self.cmd(f'rest --method put --url "{policy_url}/add?api-version=2023-07-01" '
-                 f'--headers Content-Type=application/json --body {policy_body}')
+        # The built-in commands serialize the shared vault's other policies as well.
+        processor = ByocVaultRecordingProcessor(principal_id)
+        self.recording_processors.append(processor)
         try:
-            yield
+            self.cmd(f'keyvault set-policy {policy_args} --secret-permissions get')
+            try:
+                yield
+            finally:
+                self.cmd(f'keyvault delete-policy {policy_args}')
         finally:
-            self.cmd(f'rest --method put --url "{policy_url}/remove?api-version=2023-07-01" '
-                     f'--headers Content-Type=application/json --body {policy_body}')
+            self.recording_processors.remove(processor)
 
     def afd_profile_create_cmd(self, resource_group_name, profile_name, tags=None, checks=None, options=None,
                                sku="Standard_AzureFrontDoor", expect_failure=False):
@@ -148,21 +198,11 @@ class CdnAfdScenarioMixin:
 
     def afd_nonproduction_profile_create_cmd(self, resource_group_name, profile_name,
                                              sku="Standard_AzureFrontDoor"):
-        profile_url = (
-            f'https://management.azure.com/subscriptions/{self.get_subscription_id()}'
-            f'/resourceGroups/{resource_group_name}/providers/Microsoft.Cdn/profiles/{profile_name}'
-            '?api-version=2026-09-01-preview'
-        )
-        # The RP accepts this create-only preview fixture field, but the CLI exposes it as read-only.
-        profile_body = {
-            'location': 'global',
-            'sku': {'name': sku},
-            'properties': {'extendedProperties': {'environmentType': 'NonProduction'}},
-        }
-        self.cmd(
-            f'rest --method put --url "{profile_url}" '
-            f'--headers Content-Type=application/json --body {_json_arg(profile_body)}')
         profile_args = f'-g {resource_group_name} --profile-name {profile_name}'
+        # Keep the AAZ-only create input when re-importing the read-only Swagger dictionary.
+        self.cmd(
+            f'afd profile create {profile_args} --sku {sku} '
+            '--environment-type NonProduction --no-wait')
         self.cmd(f'afd profile wait {profile_args} --created')
         return self.cmd(f'afd profile show {profile_args}', checks=[
             JMESPathCheck('extendedProperties.environmentType', 'NonProduction'),
