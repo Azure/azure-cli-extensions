@@ -13,6 +13,7 @@ from types import SimpleNamespace
 import subprocess
 import unittest
 from unittest import mock
+from urllib.parse import urlunsplit
 
 from azure.cli.core.azclierror import CLIError, CLIInternalError, ResourceNotFoundError
 
@@ -174,6 +175,30 @@ class LocalManagedConnections(unittest.TestCase):
         self.profile.get_subscription.assert_not_called()
         self.assertEqual([], self.calls)
 
+    def test_missing_project_files_fail_before_arm(self):
+        for filename in ("host.json", "local.settings.json"):
+            with self.subTest(filename=filename):
+                path = self.root / filename
+                original = path.read_bytes()
+                path.unlink()
+                try:
+                    with self.assertRaises(CLIError):
+                        self.create()
+                    self.assertEqual([], self.calls)
+                finally:
+                    path.write_bytes(original)
+
+    def test_project_subscription_must_be_signed_in_and_match(self):
+        self.profile.get_subscription.side_effect = CLIError("Sign in to the selected subscription.")
+        with self.assertRaisesRegex(CLIError, "Sign in"):
+            self.create()
+        self.profile.get_subscription.side_effect = None
+        self.profile.get_subscription.return_value = {"id": OVERRIDE}
+        with self.assertRaisesRegex(CLIError, "does not match"):
+            self.create()
+        self.assertEqual([], self.calls)
+        self.assertEqual(self.settings, json.loads((self.root / "local.settings.json").read_text(encoding="utf-8")))
+
     def test_explicit_scope_can_supply_all_missing_scope_settings(self):
         self.write("local.settings.json", {"IsEncrypted": False, "Values": {}})
         self.cmd.cli_ctx.data["subscription_id"] = OVERRIDE
@@ -260,7 +285,8 @@ class LocalManagedConnections(unittest.TestCase):
 
     def test_invalid_runtime_url_does_not_request_a_key_or_publish_wiring(self):
         send = self.arm
-        for url in (None, "https://", "http://connector.invalid", "https://user:secret@connector.invalid",
+        credential_url = urlunsplit(("https", "user:secret@connector.invalid", "", "", ""))
+        for url in (None, "https://", "http://connector.invalid", credential_url,
                     "https://connector.invalid/#fragment", "https://connector.invalid/\n"):
             with self.subTest(url=url):
                 self.resource = None
