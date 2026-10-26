@@ -229,6 +229,8 @@ def connection_managed_create(cmd, name, connector, auth_mode, logic_app_name=No
     selected = None
     if context is not None or (path is None and logic_app_name is None):
         selected, _ = get_context(context)
+    if logic_app_name is None and getattr(resource_group_name, "is_default", False):
+        resource_group_name = None
     local_project = None
     if selected:
         target = selected["target"]

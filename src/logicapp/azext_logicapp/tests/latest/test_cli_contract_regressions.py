@@ -498,6 +498,7 @@ class CliContractRegressions(unittest.TestCase):
     def test_local_managed_create_parser_runs_complete_local_path_without_a_deployed_app(self):
         from azext_logicapp import _local_managed_connection
 
+        self.cli.config.set_value("defaults", "group", "unrelated-default-group")
         subscription = "11111111-1111-1111-1111-111111111111"
         settings_path = self.project / "local.settings.json"
         settings_path.write_text(json.dumps({"IsEncrypted": False, "Values": {
@@ -537,6 +538,32 @@ class CliContractRegressions(unittest.TestCase):
         saved = json.loads(settings_path.read_text(encoding="utf-8"))
         self.assertEqual(PRIVATE, saved["Values"]["conn-connectionKey"])
         self.assertNotIn(PRIVATE, (self.project / "connections.json").read_text(encoding="utf-8"))
+        self.assertTrue(all("/resourceGroups/rg/" in resource_id for _, resource_id in calls))
+
+    def test_managed_create_configured_group_applies_only_to_explicit_deployed_targets(self):
+        self.cli.config.set_value("defaults", "group", "configured-group")
+        command = ["logicapp", "connection", "managed", "create", "--name", "conn",
+                   "--connector", "office365", "--auth-mode", "raw"]
+        with mock.patch.object(custom._managed_connection, "create_managed_connection", return_value={}) as create:
+            self.invoke(command + ["--path", str(self.project)])
+            self.assertIsNone(create.call_args.args[1])
+            self.invoke(command + ["--path", str(self.project), "-g", "configured-group"])
+            self.assertEqual("configured-group", create.call_args.args[1])
+            local = {"target": {"kind": "local", "path": str(self.project), "port": 7071}}
+            with mock.patch.object(custom, "get_context", return_value=(local, {})):
+                for target in ([], ["--context", "dev"]):
+                    self.invoke(command + target)
+                    self.assertIsNone(create.call_args.args[1])
+            cloud = {"target": {"kind": "cloud", "resourceGroup": "context-group", "logicAppName": "app"}}
+            with mock.patch.object(custom, "get_context", return_value=(cloud, {})):
+                for target in ([], ["--context", "prod"]):
+                    self.invoke(command + target + ["-l", "eastus"])
+                    self.assertEqual("context-group", create.call_args.args[1])
+                count = create.call_count
+                self.invoke(command + ["--context", "prod", "-g", "configured-group", "-l", "eastus"], expected=1)
+                self.assertEqual(count, create.call_count)
+            self.invoke(command + ["--logic-app-name", "app", "-l", "eastus"])
+            self.assertEqual("configured-group", create.call_args.args[1])
 
     def test_failed_wait_then_metadata_inspection_has_independent_exits_and_query_output(self):
         reason = {"code": "InvalidTemplate", "message": "The template language function 'int' cannot convert the value."}

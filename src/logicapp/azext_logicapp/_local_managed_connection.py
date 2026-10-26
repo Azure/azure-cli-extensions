@@ -45,7 +45,11 @@ def _safe_path(path):
 def _snapshot(path, required=False):
     try:
         _safe_path(path)
-        with open(path, "rb") as handle:
+        info = os.lstat(path)
+        if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
+            raise ValidationError("Local managed connection files must be regular, unaliased files.")
+        flags = os.O_RDONLY | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_BINARY", 0)
+        with os.fdopen(os.open(path, flags), "rb") as handle:
             before = os.fstat(handle.fileno())
             if not stat.S_ISREG(before.st_mode) or before.st_nlink != 1:
                 raise ValidationError("Local managed connection files must be regular, unaliased files.")
@@ -176,6 +180,14 @@ class LocalConnectionsFile:  # pylint: disable=too-many-instance-attributes
                     "Local project files changed during connection creation; no further local files were written. "
                     "Inspect retained Azure resources and local files before retrying.")
 
+    def _publish(self, filename, path, data):
+        # Not a multi-file transaction or CAS against noncooperating writers.
+        self.check_unchanged()
+        os.replace(path, self.paths[filename])
+        self.before[filename] = _snapshot(self.paths[filename], required=True)
+        if self.before[filename][1] != data:
+            raise ValidationError("Local connection publication could not be verified; inspect local files.")
+
     def write(self, entry, key):
         settings = copy.deepcopy(self.settings)
         settings["Values"][self.key_setting] = key
@@ -183,12 +195,13 @@ class LocalConnectionsFile:  # pylint: disable=too-many-instance-attributes
         connections.setdefault("managedApiConnections", {})[self.name] = entry
         rules = [line.rstrip() for line in self.ignore.splitlines()
                  if line.rstrip() and not line.startswith("#")]
-        ignored = bool(rules) and rules[-1] in ("local.settings.json", "/local.settings.json")
+        ignored = (len(rules) >= 2 and rules[-2] == "/.azurelogicapps/"
+                   and rules[-1] in ("local.settings.json", "/local.settings.json"))
         payloads = {}
         if not ignored:
             payloads[".gitignore"] = (
                 self.ignore.rstrip("\r\n") +
-                "\n# Holds local secrets. Never commit.\nlocal.settings.json\n").encode("utf-8")
+                "\n# Holds local secrets. Never commit.\n/.azurelogicapps/\nlocal.settings.json\n").encode("utf-8")
         payloads.update({
             "local.settings.json": (json.dumps(settings, indent=2, allow_nan=False) + "\n").encode("utf-8"),
             "connections.json": (json.dumps(connections, indent=2, allow_nan=False) + "\n").encode("utf-8"),
@@ -201,20 +214,20 @@ class LocalConnectionsFile:  # pylint: disable=too-many-instance-attributes
             with _store_lock(self.lock_path, label="Local managed connection files"):
                 self.check_unchanged()
                 for filename, data in payloads.items():
+                    self.check_unchanged()
                     handle, path = tempfile.mkstemp(prefix=".managed-connection-", dir=os.path.dirname(self.lock_path))
                     temporary.append((filename, path))
                     with os.fdopen(handle, "wb") as stream:
                         stream.write(data)
                         stream.flush()
                         os.fsync(stream.fileno())
+                    if filename == ".gitignore":
+                        # Exclude private staging before any credential bytes are written.
+                        self._publish(filename, path, data)
                 self.check_unchanged()
                 for filename, path in temporary:
-                    # Not a multi-file transaction or CAS against noncooperating writers.
-                    self.check_unchanged()
-                    os.replace(path, self.paths[filename])
-                    self.before[filename] = _snapshot(self.paths[filename], required=True)
-                    if self.before[filename][1] != payloads[filename]:
-                        raise ValidationError("Local connection publication could not be verified; inspect local files.")
+                    if filename != ".gitignore":
+                        self._publish(filename, path, payloads[filename])
         except OSError:
             raise FileOperationError(
                 "Could not finish local managed connection publication. Files may be partially updated; "

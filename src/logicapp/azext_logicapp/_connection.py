@@ -317,7 +317,9 @@ def is_tracked_by_git(root, relative):
             cwd=root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
     except OSError:
         return None
-    return completed.returncode == 0
+    if completed.returncode == 0:
+        return True
+    return False if completed.returncode == 1 else None
 
 
 # --------------------------- deployed connection reads ---------------------------

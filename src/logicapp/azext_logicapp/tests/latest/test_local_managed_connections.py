@@ -8,6 +8,7 @@ import copy
 import json
 import os
 from pathlib import Path
+import stat
 import tempfile
 from types import SimpleNamespace
 import subprocess
@@ -17,7 +18,7 @@ from urllib.parse import urlunsplit
 
 from azure.cli.core.azclierror import CLIError, CLIInternalError, ResourceNotFoundError
 
-from azext_logicapp import _local_managed_connection as local, _managed_connection as managed, _workflow, custom
+from azext_logicapp import _connection, _local_managed_connection as local, _managed_connection as managed, _workflow, custom
 
 SUBSCRIPTION = "11111111-1111-1111-1111-111111111111"
 OVERRIDE = "22222222-2222-2222-2222-222222222222"
@@ -346,6 +347,143 @@ class LocalManagedConnections(unittest.TestCase):
                 result = subprocess.run([git, "-C", str(self.root), "check-ignore", "local.settings.json"],
                                         capture_output=True, text=True, check=False)
                 self.assertEqual(0, result.returncode, result.stderr)
+
+    def test_git_tracking_exit_codes_distinguish_absence_from_failure(self):
+        for code, expected in ((0, True), (1, False), (128, None), (129, None), (-9, None)):
+            with self.subTest(code=code), \
+                    mock.patch.object(_connection.shutil, "which", return_value="git"), \
+                    mock.patch.object(_connection.subprocess, "run",
+                                      return_value=SimpleNamespace(returncode=code)):
+                self.assertIs(expected, _connection.is_tracked_by_git(str(self.root), "local.settings.json"))
+        with mock.patch.object(_connection.shutil, "which", return_value="git"), \
+                mock.patch.object(_connection.subprocess, "run", side_effect=OSError("unavailable")):
+            self.assertIsNone(_connection.is_tracked_by_git(str(self.root), "local.settings.json"))
+        with mock.patch.object(_connection.shutil, "which", return_value=None):
+            self.assertIsNone(_connection.is_tracked_by_git(str(self.root), "local.settings.json"))
+
+    def test_secret_staging_is_ignored_before_writing_and_after_cleanup_failure(self):
+        import shutil
+
+        git = shutil.which("git")
+        if not git:
+            self.skipTest("Git is not installed on this host.")
+        subprocess.run([git, "init", "--quiet", str(self.root)], check=True, capture_output=True)
+        (self.root / ".gitignore").write_text(
+            "/.azurelogicapps/\nlocal.settings.json\n!/.azurelogicapps/\n!local.settings.json\n",
+            encoding="utf-8")
+        stage = tempfile.mkstemp
+        unlink = os.unlink
+        replace = os.replace
+        staged_secret_paths = []
+
+        def observe_stage(*args, **kwargs):
+            handle, path = stage(*args, **kwargs)
+            if (self.root / ".gitignore").read_text(encoding="utf-8").splitlines()[-1] == "local.settings.json":
+                ignored = subprocess.run([git, "-C", str(self.root), "check-ignore", path],
+                                         capture_output=True, check=False)
+                self.assertEqual(0, ignored.returncode)
+                staged_secret_paths.append(path)
+            return handle, path
+
+        def fail_secret_publication(source, destination):
+            if str(destination).endswith("local.settings.json"):
+                raise PermissionError("locked")
+            return replace(source, destination)
+
+        def retain_secret_stage(path, *args, **kwargs):
+            if path in staged_secret_paths:
+                raise PermissionError("locked")
+            return unlink(path, *args, **kwargs)
+
+        try:
+            with mock.patch.object(local.tempfile, "mkstemp", side_effect=observe_stage), \
+                    mock.patch.object(local.os, "replace", side_effect=fail_secret_publication), \
+                    mock.patch.object(local.os, "unlink", side_effect=retain_secret_stage):
+                with self.assertRaises(CLIInternalError):
+                    self.create()
+            self.assertEqual(2, len(staged_secret_paths))
+            self.assertTrue(any(KEY.encode() in Path(path).read_bytes() for path in staged_secret_paths))
+            subprocess.run([git, "-C", str(self.root), "add", "."], check=True, capture_output=True)
+            tracked = subprocess.run([git, "-C", str(self.root), "ls-files"], check=True,
+                                     capture_output=True, text=True).stdout.splitlines()
+            self.assertNotIn("local.settings.json", tracked)
+            self.assertFalse(any(path.startswith(".azurelogicapps/") for path in tracked))
+        finally:
+            for path in staged_secret_paths:
+                if os.path.exists(path):
+                    unlink(path)
+
+    def test_nonregular_files_are_rejected_before_open_without_arm(self):
+        lstat = os.lstat
+        open_file = os.open
+        for filename in ("host.json", "local.settings.json", "connections.json", ".gitignore"):
+            with self.subTest(filename=filename):
+                target = str(self.root / filename)
+
+                def file_type(path):
+                    if os.fspath(path) == target:
+                        return SimpleNamespace(st_mode=stat.S_IFIFO, st_nlink=1, st_file_attributes=0)
+                    return lstat(path)
+
+                def never_open_fifo(path, *args, **kwargs):
+                    self.assertNotEqual(target, os.fspath(path))
+                    return open_file(path, *args, **kwargs)
+
+                with mock.patch.object(local.os, "lstat", side_effect=file_type), \
+                        mock.patch.object(local.os, "open", side_effect=never_open_fifo):
+                    with self.assertRaisesRegex(CLIError, "regular"):
+                        self.create()
+                self.assertEqual([], self.calls)
+
+    def test_ignore_publication_failure_prevents_secret_staging(self):
+        replace = os.replace
+        staged_payloads = []
+        stage = tempfile.mkstemp
+
+        def observe_stage(*args, **kwargs):
+            handle, path = stage(*args, **kwargs)
+            staged_payloads.append(path)
+            return handle, path
+
+        def refuse_ignore(source, destination):
+            if str(destination).endswith(".gitignore"):
+                self.assertNotIn(KEY.encode(), Path(source).read_bytes())
+                raise PermissionError("locked")
+            return replace(source, destination)
+
+        with mock.patch.object(local.tempfile, "mkstemp", side_effect=observe_stage), \
+                mock.patch.object(local.os, "replace", side_effect=refuse_ignore):
+            with self.assertRaises(CLIInternalError):
+                self.create()
+        self.assertEqual(1, len(staged_payloads))
+        self.assertFalse((self.root / "connections.json").exists())
+        self.assertEqual(self.settings, json.loads((self.root / "local.settings.json").read_text(encoding="utf-8")))
+        self.assertFalse(any(Path(path).exists() for path in staged_payloads))
+
+    @unittest.skipUnless(hasattr(os, "mkfifo"), "This host does not support FIFO files.")
+    def test_actual_fifo_is_rejected_without_opening_or_waiting_for_a_writer(self):
+        target = self.root / "connections.json"
+        os.mkfifo(target)
+        with mock.patch.object(local.os, "open", side_effect=AssertionError("FIFO must not be opened")):
+            with self.assertRaisesRegex(CLIError, "regular"):
+                local._snapshot(str(target))
+
+    @unittest.skipUnless(hasattr(os, "mkfifo") and hasattr(os, "O_NONBLOCK"),
+                         "This host does not support nonblocking FIFO files.")
+    def test_fifo_replacement_between_lstat_and_open_is_nonblocking_and_refused(self):
+        target = self.root / "connections.json"
+        target.write_text("{}", encoding="utf-8")
+        open_file = os.open
+
+        def replace_with_fifo(path, flags):
+            self.assertTrue(flags & os.O_NONBLOCK)
+            target.unlink()
+            os.mkfifo(target)
+            return open_file(path, flags)
+
+        with mock.patch.object(local.os, "open", side_effect=replace_with_fifo):
+            with self.assertRaisesRegex(CLIError, "regular"):
+                local._snapshot(str(target))
 
     def test_packaging_does_not_export_local_key_or_private_state(self):
         self.create()

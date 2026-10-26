@@ -183,7 +183,9 @@ object (do not replace unrelated settings):
 Explicit `--subscription`, `--resource-group` and `--location` override the
 corresponding project values for that command only. Azure CLI resolves an
 explicit subscription name/ID through its signed-in accounts; a saved project
-subscription must be a UUID. The command does not call `az account set`, change
+subscription must be a UUID. Configured resource-group defaults do not override
+local settings or a saved cloud context; they still apply to an explicit deployed
+`--logic-app-name` target. The command does not call `az account set`, change
 the context, or rewrite the project's scope settings. Without an explicit
 subscription it requires `WORKFLOWS_SUBSCRIPTION_ID`, not the default CLI account.
 Missing/invalid scope, malformed/encrypted settings, unsafe file paths and
@@ -213,7 +215,10 @@ yourself. Do not publish `local.settings.json`, private temporary state, provide
 errors or `--debug` output. Deployment packaging excludes the local settings and
 `.azurelogicapps` private state; review the manifest before deploying.
 
-Local publication stages private files, rechecks the original file snapshots,
+Local publication first establishes final Git ignore rules for both
+`local.settings.json` and `.azurelogicapps/`, before writing any secret staging
+contents. Leftover private staging files remain ignored if cleanup fails.
+It then stages private files, rechecks the original file snapshots,
 and uses a bounded advisory lock under `.azurelogicapps` plus individual atomic
 file replacements. This is **not a multi-file transaction or CAS against
 noncooperating editors**. A failure after Azure creation can leave the connection
