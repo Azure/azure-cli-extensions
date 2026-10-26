@@ -285,6 +285,32 @@ class QuantumWorkspacesLiveScenarioTest(LiveScenarioTest):
                 self.check("properties.provisioningState", "Deleting")
             ])
             workspaces_to_cleanup.remove(test_workspace_temp)
+
+            # Create a V2 workspace with user storage via --skip-role-assignment.
+            test_workspace_temp = self.create_random_name(prefix='e2e-test-w', length=18)
+            workspaces_to_cleanup.append(test_workspace_temp)
+            self.cmd(
+                f'az quantum workspace create --workspace-kind V2 --auto-accept --skip-role-assignment '
+                f'-g {test_resource_group} -w {test_workspace_temp} -l {test_location} '
+                f'-a {test_storage_account} -r "{test_provider_sku_list}" -o json',
+                checks=[
+                    self.check('name', test_workspace_temp),
+                    self.check('properties.provisioningState', 'Succeeded'),
+                ],
+            )
+            workspace = _wait_for_workspace_provisioned(
+                self, test_resource_group, test_workspace_temp
+            )
+            self.assertEqual(workspace['properties']['workspaceKind'], 'V2')
+            _assert_user_storage(self, workspace, test_storage_account)
+            self.cmd(
+                f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp} -o json',
+                checks=[
+                    self.check('name', test_workspace_temp),
+                    self.check('properties.provisioningState', 'Deleting'),
+                ],
+            )
+            workspaces_to_cleanup.remove(test_workspace_temp)
         finally:
             cleanup_commands = [
                 ('temporary workspace',
