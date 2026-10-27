@@ -58,3 +58,40 @@ class SystemConfigurationScenarioTest(ScenarioTest):
             self.assertIn("required", detail["message"].lower())
         if not self.in_recording:
             self.assertTrue(self.cassette.all_played)
+
+    def test_system_configuration_create_and_show(self):
+        subscription = self.get_subscription_id()
+        self.kwargs.update({
+            "dns": "192.0.2.53",
+            "intent": "Connected",
+            "stamp": "11111111-1111-1111-1111-111111111111",
+            "device": (
+                "/subscriptions/{subscription}/resourceGroups/rg-test/"
+                "providers/Microsoft.Edge/disconnectedOperations/test-device"
+            ).format(subscription=subscription),
+        })
+        checks = [
+            self.check("name", "default"),
+            self.check("type", "Microsoft.EdgeOperator/systemConfiguration", case_sensitive=False),
+            self.check("properties.dnsForwarderIpAddress", "{dns}"),
+            self.check("properties.connectionIntent", "{intent}"),
+            self.check("properties.stampId", "{stamp}"),
+            self.check("properties.deviceResourceId", "{device}"),
+        ]
+        self.cmd(
+            "aldo system-configuration create --dns-forwarder-ip {dns} "
+            "--connection-intent {intent} --stamp-id {stamp} "
+            "--device-resource-id {device}",
+            checks=checks + [self.check("properties.provisioningState", "Succeeded")],
+        )
+        self.cmd("aldo system-configuration show", checks=checks + [
+            self.check("type(id)", "string"),
+            self.check("type(properties)", "object"),
+            self.check("type(properties.externalDomainSuffix)", "string"),
+            self.check("type(properties.imageVersion)", "string"),
+            self.check("type(properties.ingressNicPrefixLength)", "number"),
+            self.check("type(properties.ingressNicIpAddress)", "string"),
+            self.check("type(properties.ingressNicDefaultGateway)", "string"),
+        ])
+        if not self.in_recording:
+            self.assertTrue(self.cassette.all_played)
