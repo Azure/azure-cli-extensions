@@ -30,9 +30,9 @@ def create_repair_vm(cmd, arguments, validate=False):
         cli_ctx=cli_ctx, commands_loader_cls=MainCommandsLoader, parser_cls=_RepairCreateParser,
         help_cls=AzCliHelp)
     cli_ctx.invocation = invocation
-    invocation.data['command_string'] = 'vm create'
     loader = invocation.commands_loader
     loader.load_command_table(['vm', 'create'])
+    invocation.data['command_string'] = 'vm create'
     command = loader.command_table['vm create']
     loader.command_table = {'vm create': command}
     loader.load_arguments('vm create')

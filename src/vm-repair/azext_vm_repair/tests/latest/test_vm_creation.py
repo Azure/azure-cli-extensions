@@ -12,7 +12,7 @@ from unittest import mock
 import pytest
 import requests
 
-from azure.cli.core import get_default_cli
+from azure.cli.core import MainCommandsLoader, get_default_cli
 from azure.cli.command_modules.vm._validators import _validate_admin_password
 from azure.cli.command_modules.vm._template_builder import StorageProfile
 from azure.cli.command_modules.vm import _vm_utils
@@ -29,8 +29,19 @@ from azext_vm_repair.exceptions import AzCommandError
 from azext_vm_repair._validators import validate_vm_password
 
 
+@pytest.fixture(autouse=True)
+def isolated_cli_config(monkeypatch, tmp_path):
+    monkeypatch.setattr('azure.cli.core._config.GLOBAL_CONFIG_DIR', str(tmp_path / 'config'))
+    monkeypatch.setenv('AZURE_CONFIG_DIR', str(tmp_path / 'config'))
+    monkeypatch.setenv('AZURE_EXTENSION_DIR', str(tmp_path / 'extensions'))
+    monkeypatch.setattr('azure.cli.core.extension.get_extensions', lambda: [])
+
+
+@pytest.mark.parametrize('use_command_index', [True, False], ids=['indexed', 'full-loader'])
 @pytest.mark.parametrize('unmanaged,validate', [(False, True), (False, False), (True, True), (True, False)])
-def test_core_creation_prepares_arguments_and_calls_registered_handler(tmp_path, unmanaged, validate):
+def test_core_creation_prepares_arguments_and_calls_registered_handler(
+        tmp_path, monkeypatch, unmanaged, validate, use_command_index):
+    monkeypatch.setenv('AZURE_CORE_USE_COMMAND_INDEX', str(use_command_index).lower())
     context = get_default_cli()
     original_invocation = context.invocation
     original_handlers = {event: list(handlers) for event, handlers in context._event_handlers.items()}
@@ -46,6 +57,15 @@ def test_core_creation_prepares_arguments_and_calls_registered_handler(tmp_path,
         'custom_data': str(cloud_init),
     }
     captured = {}
+    loaded_commands = {}
+    load_command_table = MainCommandsLoader.load_command_table
+
+    def load(loader, args):
+        table = load_command_table(loader, args)
+        loaded_commands.update(table)
+        return table
+
+    monkeypatch.setattr(MainCommandsLoader, 'load_command_table', load)
 
     def handler(command_args):
         captured.update(command_args)
@@ -60,10 +80,14 @@ def test_core_creation_prepares_arguments_and_calls_registered_handler(tmp_path,
         namespace.disk_info = {'os': {'storageAccountType': 'Standard_LRS'}}
     with mock.patch('azure.cli.command_modules.vm.commands.process_vm_create_namespace', prepare), \
             mock.patch('azure.cli.core.commands.command_operation.CommandOperation.handler', side_effect=handler):
-        create_repair_vm(SimpleNamespace(cli_ctx=context), arguments, validate=validate)
+        result = create_repair_vm(SimpleNamespace(cli_ctx=context), arguments, validate=validate)
 
+    assert result['id'].endswith('/virtualMachines/vm')
+    assert ('storage account create' in loaded_commands) is not use_command_index
     assert context.invocation is original_invocation
     assert dict(context._event_handlers) == original_handlers
+    assert captured['vm_name'] == arguments['name']
+    assert captured['resource_group_name'] == arguments['resource_group']
     assert captured['admin_password'] == arguments['admin_password']
     assert captured['tags'] == arguments['tags']
     assert captured['public_ip_address'] == ''
