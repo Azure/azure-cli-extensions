@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-04-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints/{}/routes/{}", "2026-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints/{}/routes/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -103,6 +103,12 @@ class Create(AAZCommand):
             help="Protocol this rule will use when forwarding traffic to backends.",
             default="MatchRequest",
             enum={"HttpOnly": "HttpOnly", "HttpsOnly": "HttpsOnly", "MatchRequest": "MatchRequest"},
+        )
+        _args_schema.grpc_state = AAZStrArg(
+            options=["--grpc-state"],
+            arg_group="Properties",
+            help="Whether or not gRPC is enabled on this route. Permitted values are 'Enabled' or 'Disabled'",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.https_redirect = AAZStrArg(
             options=["--https-redirect"],
@@ -297,7 +303,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -330,6 +336,7 @@ class Create(AAZCommand):
                 properties.set_prop("customDomains", AAZListType, ".formatted_custom_domains")
                 properties.set_prop("enabledState", AAZStrType, ".enabled_state")
                 properties.set_prop("forwardingProtocol", AAZStrType, ".forwarding_protocol")
+                properties.set_prop("grpcState", AAZStrType, ".grpc_state")
                 properties.set_prop("httpsRedirect", AAZStrType, ".https_redirect")
                 properties.set_prop("linkToDefaultDomain", AAZStrType, ".link_to_default_domain")
                 properties.set_prop("originGroup", AAZObjectType)
@@ -476,6 +483,9 @@ class _CreateHelper:
         )
         properties.forwarding_protocol = AAZStrType(
             serialized_name="forwardingProtocol",
+        )
+        properties.grpc_state = AAZStrType(
+            serialized_name="grpcState",
         )
         properties.https_redirect = AAZStrType(
             serialized_name="httpsRedirect",
