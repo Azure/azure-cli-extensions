@@ -23,6 +23,7 @@ from azure.core.credentials import AccessToken
 from azure.core.pipeline.transport import HttpTransport
 from azure.core.rest._requests_basic import RestRequestsTransportResponse
 from azure.mgmt.resource.resources import ResourceManagementClient
+from knack.events import EVENT_INVOKER_POST_PARSE_ARGS
 from knack.util import CLIError
 from azext_vm_repair.vm_creation import create_repair_vm
 from azext_vm_repair.exceptions import AzCommandError
@@ -101,6 +102,71 @@ def test_core_creation_prepares_arguments_and_calls_registered_handler(
     assert captured['enable_vtpm'] is False
     assert captured['storage_sku'] == ['Standard_LRS']
     assert captured['custom_data'] == arguments['custom_data'] == str(cloud_init)
+
+
+@pytest.mark.parametrize('failure_stage', [None, 'load', 'arguments', 'validation'],
+                         ids=['success', 'load-error', 'argument-error', 'validation-error'])
+def test_core_creation_isolates_parent_event_handlers(monkeypatch, failure_stage):
+    monkeypatch.setenv('AZURE_CORE_USE_COMMAND_INDEX', 'false')
+    context = get_default_cli()
+    existing_handler = mock.Mock()
+    added_handler = mock.Mock()
+    context.register_event(EVENT_INVOKER_POST_PARSE_ARGS, existing_handler)
+    original_invocation = context.invocation
+    original_data = context.data
+    original_values = dict(original_data)
+    original_registry = context._event_handlers
+    original_lists = dict(original_registry)
+    original_handlers = {event: list(handlers) for event, handlers in original_registry.items()}
+    children = []
+    load_command_table = MainCommandsLoader.load_command_table
+
+    def load(loader, args):
+        children.append(loader.cli_ctx)
+        table = load_command_table(loader, args)
+        loader.cli_ctx.register_event(EVENT_INVOKER_POST_PARSE_ARGS, added_handler)
+        loader.cli_ctx.register_event('Repair.Test.NewEvent', added_handler)
+        loader.cli_ctx.data['repair_only'] = True
+        if failure_stage == 'load':
+            raise CLIError('repair setup failed')
+        return table
+
+    def prepare(cmd, namespace):
+        if failure_stage == 'validation':
+            raise InvalidArgumentValueError('invalid repair settings')
+
+    monkeypatch.setattr(MainCommandsLoader, 'load_command_table', load)
+    arguments = {'resource_group': 'rg', 'name': 'repair', 'image': 'Ubuntu2204'}
+    if failure_stage == 'arguments':
+        arguments['invalid_repair_option'] = 'invalid'
+    vm_id = '/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Compute/virtualMachines/repair-vm'
+    with mock.patch('azure.cli.command_modules.vm.commands.process_vm_create_namespace', prepare), \
+            mock.patch('azure.cli.core.commands.command_operation.CommandOperation.handler',
+                       return_value={'id': vm_id}) as deploy:
+        if failure_stage:
+            expected_error = CLIError if failure_stage == 'load' else AzCommandError
+            with pytest.raises(expected_error):
+                create_repair_vm(SimpleNamespace(cli_ctx=context), arguments)
+            deploy.assert_not_called()
+        else:
+            assert create_repair_vm(SimpleNamespace(cli_ctx=context), arguments)['id'] == vm_id
+            deploy.assert_called_once()
+
+    assert context.invocation is original_invocation
+    assert context.data is original_data
+    assert context.data == original_values
+    assert context._event_handlers is original_registry
+    assert dict(original_registry) == original_handlers
+    assert len(children) == 1
+    child = children[0]
+    assert child.data is not original_data
+    assert child._event_handlers is not original_registry
+    for event, handlers in original_lists.items():
+        assert original_registry[event] is handlers
+        assert child._event_handlers[event] is not handlers
+    assert child._event_handlers[EVENT_INVOKER_POST_PARSE_ARGS][-2] is existing_handler
+    assert child._event_handlers[EVENT_INVOKER_POST_PARSE_ARGS][-1] is added_handler
+    assert child._event_handlers['Repair.Test.NewEvent'] == [added_handler]
 
 
 def test_core_creation_validation_failure_does_not_deploy():

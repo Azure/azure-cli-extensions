@@ -26,6 +26,11 @@ def create_repair_vm(cmd, arguments, validate=False):
     """Prepare core VM-create arguments without starting another CLI or process."""
     cli_ctx = copy(cmd.cli_ctx)
     cli_ctx.data = dict(cmd.cli_ctx.data)
+    # pylint: disable=protected-access
+    cli_ctx._event_handlers = copy(cmd.cli_ctx._event_handlers)
+    for event, handlers in cmd.cli_ctx._event_handlers.items():
+        cli_ctx._event_handlers[event] = list(handlers)
+    # pylint: enable=protected-access
     invocation = AzCliCommandInvoker(
         cli_ctx=cli_ctx, commands_loader_cls=MainCommandsLoader, parser_cls=_RepairCreateParser,
         help_cls=AzCliHelp)
