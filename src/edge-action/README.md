@@ -3,7 +3,7 @@
 Manage Azure Front Door Edge Actions, code versions, execution filters, and route
 attachments with Azure CLI.
 
-This extension is in preview and uses the stable `2026-10-01` API. It requires
+This extension uses the stable `2026-10-01` API. Version 1.0.0 is its first stable release. It requires
 Azure CLI 2.75.0 or later.
 
 ## Installation

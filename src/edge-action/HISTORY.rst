@@ -3,8 +3,9 @@
 Release History
 ===============
 
-1.0.0b5
-+++++++
+1.0.0
++++++
+* GA release of the Edge Action extension.
 * Upgrade Edge Action commands to stable API version `2026-10-01`.
 * Add optional version ID and header name/value arguments to execution-filter updates while preserving omitted fields and generic update options.
 * Preserve `get-version-code --output-directory`/`-d` ZIP downloads across command regeneration and report invalid download content and file-write errors.
