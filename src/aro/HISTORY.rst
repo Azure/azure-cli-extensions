@@ -12,6 +12,7 @@ Pending
 * Fix bug in identity argument handling for `az aro hcp cluster update`.
 * Fix kubeconfig merging functionality for `az aro hcp cluster request-credential` to use per-cluster user names.
 * Remove `--no-wait` from `az aro hcp cluster request-credential`.
+* Fix etcd encryption arguments for both `az aro hcp cluster create` and `az aro hcp cluster update`
 * Update `az aro hcp cluster create` example command in help text.
 
 1.0.14
