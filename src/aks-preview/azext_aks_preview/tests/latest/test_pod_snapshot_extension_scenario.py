@@ -46,7 +46,7 @@ class PodSnapshotExtensionScenarioTest(ScenarioTest):
         ])
         extensions = self.cmd(
             "aks extension list --cluster-name {cluster}" + target
-        ).get_output()
+        ).get_output_in_json()
         self.assertFalse(any(
             extension["extensionType"].lower() == "microsoft.podsnapshot"
             or extension["name"] == self.kwargs["extension"]
@@ -65,7 +65,7 @@ class PodSnapshotExtensionScenarioTest(ScenarioTest):
         result = self.cmd(
             "aks extension show --cluster-name {cluster} -n {extension}" + target,
             checks=[self.check("provisioningState", "Succeeded")],
-        ).get_output()
+        ).get_output_in_json()
         for key, value in settings.items():
             self.assertEqual(result["configurationSettings"][key], value)
         self.cmd("aks extension list --cluster-name {cluster}" + target, checks=[
