@@ -21,10 +21,13 @@ In a build containing Pod Snapshot Restore support, install the ``k8s-extension`
 CLI dependency and manage the extension on an existing, eligible AKS cluster::
 
     az extension add --name k8s-extension
-    az aks extension create -g MyResourceGroup --cluster-name MyCluster --name aks-managed-pod-snapshot --extension-type Microsoft.PodSnapshot --scope cluster --release-namespace pod-snapshot-system --config-file psr-config.json
-    az aks extension update -g MyResourceGroup --cluster-name MyCluster --name aks-managed-pod-snapshot --config-file psr-config.json
-    az aks extension show -g MyResourceGroup --cluster-name MyCluster --name aks-managed-pod-snapshot
-    az aks extension delete -g MyResourceGroup --cluster-name MyCluster --name aks-managed-pod-snapshot
+    az aks extension create -g MyResourceGroup --cluster-name MyCluster --name pod-snapshot --extension-type Microsoft.PodSnapshot --scope cluster --release-namespace pod-snapshot-system --config-file psr-config.json
+    az aks extension update -g MyResourceGroup --cluster-name MyCluster --name pod-snapshot --config-file psr-config.json
+    az aks extension show -g MyResourceGroup --cluster-name MyCluster --name pod-snapshot
+    az aks extension delete -g MyResourceGroup --cluster-name MyCluster --name pod-snapshot
+
+Use a customer-managed instance name such as ``pod-snapshot``. Names containing
+``aks-managed`` are reserved for authorized service clients.
 
 These commands delegate to ``k8s-extension`` for ``managedClusters`` and call
 ``Microsoft.KubernetesConfiguration/extensions`` (ClusterConfig), which drives
@@ -59,6 +62,34 @@ Supply the chart's broker settings in ``psr-config.json`` using real values::
 Include any additional settings required by the selected chart and runtime,
 such as worker node selection. ``--config-file`` and ``--config-settings-file``
 are aliases; ``--config`` accepts inline key/value settings.
+
+Live fresh-create scenario
+--------------------------
+
+The live-only scenario creates ``Microsoft.PodSnapshot`` using ``--config-file``,
+checks that show/list return the instance and every supplied configuration value,
+then deletes it and checks that it is absent. It calls the actual delegated
+implementation and service, without mocking extension operations.
+
+Prepare a dedicated eligible cluster and the identity/storage prerequisites
+above. Neither AKS profile may be enabled, and no Pod Snapshot extension or
+Helm release may already be installed. Supply a nonempty JSON object of string
+configuration values for the selected chart; do not put secrets in this file.
+From an Azure CLI development environment with this checkout's ``aks-preview``
+and the ``k8s-extension`` dependency installed, run::
+
+    export AZURE_CLI_TEST_POD_SNAPSHOT_RESOURCE_GROUP=<dedicated-resource-group>
+    export AZURE_CLI_TEST_POD_SNAPSHOT_CLUSTER=<dedicated-cluster>
+    export AZURE_CLI_TEST_POD_SNAPSHOT_SUBSCRIPTION=<subscription-id>
+    export AZURE_CLI_TEST_POD_SNAPSHOT_CONFIG_FILE=/absolute/path/to/psr-config.json
+    azdev test test_pod_snapshot_extension_fresh_create --live --series
+
+Missing target settings or non-live execution skip the scenario. Service errors
+fail it rather than being reported as validated. Cleanup attempts to delete the
+test extension even after a partial failure; cluster, identity, and storage
+cleanup remain the caller's responsibility. This scenario validates extension
+installation and configuration forwarding, not snapshot/restore E2E. A compatible
+Kata node pool is needed to exercise the actual snapshot/restore workload.
 
 Dependency between aks-preview and azure-cli/acs (azure-cli-core)
 =================================================================

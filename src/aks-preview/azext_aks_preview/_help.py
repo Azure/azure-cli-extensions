@@ -4623,7 +4623,7 @@ Only the key is returned in response, the value is not. If not specified, defaul
 --extension-type microsoft.flux --config useKubeletIdentity=true
     - name: Install Pod Snapshot Restore directly through ClusterConfig using prepared broker configuration on an eligible cluster not managed by podSnapshotProfile
       text: az aks extension create --resource-group my-resource-group --cluster-name mycluster \
---name aks-managed-pod-snapshot --extension-type Microsoft.PodSnapshot \
+--name pod-snapshot --extension-type Microsoft.PodSnapshot \
 --scope cluster --release-namespace pod-snapshot-system --config-file psr-config.json
 """
 
@@ -4711,7 +4711,7 @@ Only the key is returned in response, the value is not. If not specified, defaul
 --config-protected-file=protected-settings-file
     - name: Update configuration of a directly managed Pod Snapshot Restore extension
       text: az aks extension update --resource-group my-resource-group --cluster-name mycluster \
---name aks-managed-pod-snapshot --config-file psr-config.json
+--name pod-snapshot --config-file psr-config.json
 """
 
 helps['aks extension list'] = """

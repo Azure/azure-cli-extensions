@@ -19,7 +19,7 @@ from azext_aks_preview._helpers import raise_validation_error_if_extension_type_
 
 class PodSnapshotExtensionTestCase(unittest.TestCase):
     extension_type = "Microsoft.PodSnapshot"
-    extension_name = "aks-managed-pod-snapshot"
+    extension_name = "pod-snapshot"
     namespace = "pod-snapshot-system"
     settings = {
         "broker.storageAccount": "storage",
