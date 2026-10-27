@@ -7,6 +7,7 @@ import time
 from unittest.mock import patch
 
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, live_only
+from azure.core.exceptions import HttpResponseError
 
 from azext_durabletask._scheduler import _get_caller_object_id
 
@@ -99,6 +100,110 @@ class DurabletaskLifecycleScenario(ScenarioTest):
         self.cmd('durabletask taskhub list -g {rg} -s {scheduler}', checks=[self.is_empty()])
         self.cmd('durabletask scheduler delete -g {rg} -n {scheduler} --yes')
         self.cmd('durabletask scheduler list -g {rg}', checks=[self.is_empty()])
+
+    @ResourceGroupPreparer(name_prefix='clitest-durabletask-', random_name_length=40, location='northcentralus')
+    def test_durabletask_taskhub_lifecycle_recorded(self):
+        self.kwargs.update(
+            scheduler=self.create_random_name('dts', 24),
+            hub=self.create_random_name('hub', 24), location='northcentralus')
+        self.cmd(
+            'durabletask scheduler create -g {rg} -n {scheduler} -l {location} --sku-name Consumption')
+        self.cmd('durabletask taskhub create -g {rg} -s {scheduler} -n {hub} --capabilities []', checks=[
+            self.check('name', '{hub}'),
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('properties.capabilities', []),
+        ])
+        self.cmd('durabletask taskhub show -g {rg} -s {scheduler} -n {hub}', checks=[
+            self.check('name', '{hub}'),
+            self.check('properties.capabilities', []),
+            self.exists('properties.dashboardUrl'),
+        ])
+        self.cmd('durabletask taskhub list -g {rg} -s {scheduler}', checks=[
+            self.check("length([?name=='{hub}'])", 1),
+        ])
+        self.cmd('durabletask taskhub create -g {rg} -s {scheduler} -n {hub} --capabilities []', checks=[
+            self.check('name', '{hub}'),
+            self.check('properties.provisioningState', 'Succeeded'),
+        ])
+        self.cmd('durabletask taskhub delete -g {rg} -s {scheduler} -n {hub} --yes')
+        self.cmd('durabletask taskhub list -g {rg} -s {scheduler}', checks=[self.is_empty()])
+        with self.assertRaises(HttpResponseError) as deleted:
+            self.cmd('durabletask taskhub show -g {rg} -s {scheduler} -n {hub}')
+        self.assertEqual(deleted.exception.status_code, 404)
+        self.cmd('durabletask scheduler delete -g {rg} -n {scheduler} --yes')
+
+    @ResourceGroupPreparer(name_prefix='clitest-durabletask-', random_name_length=40, location='northcentralus')
+    def test_durabletask_retention_policy_lifecycle_recorded(self):
+        self.kwargs.update(scheduler=self.create_random_name('dts', 24), location='northcentralus')
+        self.cmd(
+            'durabletask scheduler create -g {rg} -n {scheduler} -l {location} --sku-name Consumption')
+        self.cmd(
+            'durabletask retention-policy create -g {rg} -s {scheduler} --default-days 30 '
+            '--canceled-days 1 --completed-days 2 --failed-days 3 --terminated-days 4', checks=[
+                self.check('length(properties.retentionPolicies)', 5),
+                self.check('properties.retentionPolicies[?orchestrationState==`null`].retentionPeriodInDays', [30]),
+                self.check('properties.retentionPolicies[?orchestrationState==`Canceled`].retentionPeriodInDays', [1]),
+                self.check('properties.retentionPolicies[?orchestrationState==`Completed`].retentionPeriodInDays', [2]),
+                self.check('properties.retentionPolicies[?orchestrationState==`Failed`].retentionPeriodInDays', [3]),
+                self.check('properties.retentionPolicies[?orchestrationState==`Terminated`].retentionPeriodInDays', [4]),
+            ])
+        self.cmd('durabletask retention-policy show -g {rg} -s {scheduler}', checks=[
+            self.check('length(properties.retentionPolicies)', 5),
+        ])
+        self.cmd(
+            'durabletask retention-policy create -g {rg} -s {scheduler} --default-days 7 --failed-days 14',
+            checks=[self.check('length(properties.retentionPolicies)', 2)])
+        self.cmd('durabletask retention-policy show -g {rg} -s {scheduler}', checks=[
+            self.check('length(properties.retentionPolicies)', 2),
+            self.check('properties.retentionPolicies[?orchestrationState==`null`].retentionPeriodInDays', [7]),
+            self.check('properties.retentionPolicies[?orchestrationState==`Failed`].retentionPeriodInDays', [14]),
+        ])
+        self.cmd('durabletask retention-policy delete -g {rg} -s {scheduler} --yes')
+        with self.assertRaises(HttpResponseError) as deleted:
+            self.cmd('durabletask retention-policy show -g {rg} -s {scheduler}')
+        self.assertEqual(deleted.exception.status_code, 404)
+        self.cmd('durabletask scheduler delete -g {rg} -n {scheduler} --yes')
+
+    @ResourceGroupPreparer(name_prefix='clitest-durabletask-', random_name_length=40, location='northcentralus')
+    def test_durabletask_identity_lifecycle_recorded(self):
+        self.kwargs.update(
+            scheduler=self.create_random_name('dts', 24),
+            identity=self.create_random_name('identity', 24),
+            other_identity=self.create_random_name('identity', 24),
+            location='northcentralus')
+        self.cmd(
+            'durabletask scheduler create -g {rg} -n {scheduler} -l {location} --sku-name Consumption')
+        first = self.cmd('identity create -g {rg} -n {identity} -l {location}').get_output_in_json()
+        second = self.cmd('identity create -g {rg} -n {other_identity} -l {location}').get_output_in_json()
+        self.kwargs.update(identity_id=first['id'], other_identity_id=second['id'])
+        self.cmd(
+            'durabletask scheduler identity assign -g {rg} -n {scheduler} --user-assigned {identity_id}',
+            checks=[self.check('type', 'UserAssigned'), self.check('length(userAssignedIdentities)', 1)])
+        self.cmd(
+            'durabletask scheduler identity assign -g {rg} -n {scheduler} --user-assigned {other_identity_id}',
+            checks=[self.check('type', 'UserAssigned'), self.check('length(userAssignedIdentities)', 2)])
+        assigned = self.cmd('durabletask scheduler identity show -g {rg} -n {scheduler}').get_output_in_json()
+        self.assertEqual(
+            {resource_id.lower() for resource_id in assigned['userAssignedIdentities']},
+            {first['id'].lower(), second['id'].lower()})
+        self.cmd(
+            'durabletask scheduler identity remove -g {rg} -n {scheduler} --mi-user-assigned {identity_id}',
+            checks=[self.check('type', 'UserAssigned'), self.check('length(userAssignedIdentities)', 1)])
+        remaining = self.cmd('durabletask scheduler identity show -g {rg} -n {scheduler}').get_output_in_json()
+        self.assertEqual(
+            {resource_id.lower() for resource_id in remaining['userAssignedIdentities']},
+            {second['id'].lower()})
+        self.cmd(
+            'durabletask scheduler identity remove -g {rg} -n {scheduler} --user-assigned {other_identity_id}',
+            checks=[self.check('type', 'None')])
+        self.cmd('durabletask scheduler identity show -g {rg} -n {scheduler}', checks=[
+            self.check('type', 'None'),
+        ])
+        self.cmd('identity show -g {rg} -n {identity}', checks=[self.check('id', '{identity_id}')])
+        self.cmd('identity show -g {rg} -n {other_identity}', checks=[self.check('id', '{other_identity_id}')])
+        self.cmd('identity delete -g {rg} -n {identity}')
+        self.cmd('identity delete -g {rg} -n {other_identity}')
+        self.cmd('durabletask scheduler delete -g {rg} -n {scheduler} --yes')
 
     @ResourceGroupPreparer(name_prefix='clitest-durabletask-', random_name_length=40, location='northcentralus')
     def test_durabletask_taskqueue_lifecycle_recorded(self):
@@ -205,18 +310,31 @@ class DurabletaskLifecycleScenario(ScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='clitest-durabletask-', random_name_length=40, location='northcentralus')
     def test_durabletask_failover_lifecycle_live(self):
-        """Requires a working failover deployment; the service currently leaves failed operations polling."""
+        """Exercise cross-region failover when the service can provision the configuration."""
         self.kwargs.update(
             scheduler=self.create_random_name('dts', 24),
             partner=self.create_random_name('partner', 24),
-            location='northcentralus', partner_location='southcentralus')
+            hub=self.create_random_name('hub', 24),
+            location='northcentralus', partner_location='westus2')
         self.cmd(
             'durabletask scheduler create -g {rg} -n {scheduler} -l {location} '
-            '--sku-name Dedicated --sku-capacity 1')
-        partner = self.cmd(
+            '--sku-name Dedicated --sku-capacity 1 --no-wait')
+        self.cmd(
             'durabletask scheduler create -g {rg} -n {partner} -l {partner_location} '
-            '--sku-name Dedicated --sku-capacity 1').get_output_in_json()
+            '--sku-name Dedicated --sku-capacity 1 --no-wait')
+        self.cmd(
+            'durabletask scheduler wait -g {rg} -n {scheduler} --created --interval 10 --timeout 900')
+        self.cmd(
+            'durabletask scheduler wait -g {rg} -n {partner} --created --interval 10 --timeout 900')
+        partner = self.cmd(
+            'durabletask scheduler show -g {rg} -n {partner}', checks=[
+                self.check('location', '{partner_location}'),
+                self.check('properties.provisioningState', 'Succeeded'),
+            ]).get_output_in_json()
         self.kwargs['partner_id'] = partner['id']
+        self.cmd('durabletask taskhub create -g {rg} -s {scheduler} -n {hub}', checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+        ])
         self.cmd(
             'durabletask scheduler failover-instance create -g {rg} -s {scheduler} '
             '--partner-scheduler-resource-id {partner_id} --no-wait')

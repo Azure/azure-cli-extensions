@@ -10,6 +10,7 @@ from .aaz.latest.durabletask.scheduler import Restart as _SchedulerRestart
 from .aaz.latest.durabletask.scheduler.identity import Assign as _IdentityAssign
 from .aaz.latest.durabletask.scheduler.identity import Remove as _IdentityRemove
 from .aaz.latest.durabletask.taskhub import Show as _TaskHubShow
+from azure.cli.core.aaz import has_value
 from azure.cli.core.azclierror import ValidationError, ResourceNotFoundError
 from azure.core.exceptions import HttpResponseError
 
@@ -116,7 +117,27 @@ class RemoveIdentity(_IdentityRemove):
     """Remove managed identities from a Durabletask scheduler."""
 
     def post_instance_update(self, instance):
-        """Avoid sending sku capacity that does not apply to the scheduler's SKU."""
+        """Remove only the requested identities and preserve unrelated scheduler settings."""
+        if has_value(self.ctx.args.mi_user_assigned):
+            requested = self.ctx.args.mi_user_assigned.to_serialized_data()
+            identities = {}
+            has_system = False
+            if has_value(instance):
+                if has_value(instance.user_assigned_identities):
+                    identities = instance.user_assigned_identities.to_serialized_data()
+                if has_value(instance.type):
+                    has_system = "systemassigned" in instance.type.to_serialized_data().lower()
+            requested_ids = {resource_id.lower() for resource_id in requested}
+            remaining = {
+                resource_id: {} for resource_id in identities
+                if resource_id.lower() not in requested_ids
+            } if requested else {}
+            identity = {"type": "SystemAssigned" if has_system else "None"}
+            if remaining:
+                identity["type"] = "SystemAssigned,UserAssigned" if has_system else "UserAssigned"
+                identity["user_assigned_identities"] = remaining
+            # AAZ otherwise treats a single removal ID as "remove all".
+            self.ctx.vars.instance.identity = identity
         _unset_unused_sku_capacity(self.ctx.vars.instance)
 
 

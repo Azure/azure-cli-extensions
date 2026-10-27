@@ -115,14 +115,20 @@ and real CLI commands without mocking ARM operations. Its recordings are stored 
 The recorded scenarios cover scheduler and managed identity lifecycles, task hubs, retention policies,
 task queue throughput changes, restart, and Function App attachment. Attachment checks the actual app
 settings written to a disposable Function App; no running function host or storage keys are needed.
+Task hubs, retention policies, and scheduler identities also have independent lifecycle scenarios:
+task hubs exercise idempotent creation and deletion, retention policies exercise replacement of
+state-specific periods, and identity coverage verifies that adding or removing one identity preserves
+other assignments.
 Customer-managed encryption uses a disposable Key Vault and RSA key, granting the existing Durable
 Task Scheduler enterprise application crypto access scoped only to that vault. It exercises encryption
 configuration and automatic key rotation without installing or modifying a tenant-wide application.
 
-The failover scenario is explicitly `live_only`: the attempted live deployment reported a failed
-failover configuration while its ARM operation continued polling. It remains available for running
-against a deployment with functioning failover support, with a bounded wait. No successful failover
-recording is claimed or fabricated.
+The failover scenario is explicitly `live_only`: attempts with a `northcentralus` primary and a
+`westus2` partner reported a failed failover configuration while the ARM operation remained accepted.
+`recordings/diagnostics/failover_westus2_failed.yaml` preserves a sanitized real failure trace, including
+the successfully provisioned schedulers and primary task hub. This is diagnostic evidence, not a
+passing playback fixture. The scenario remains available against a deployment with functioning
+failover support, with bounded waits. No successful failover recording is claimed or fabricated.
 
 To re-record, sign in and select a subscription in your local CLI configuration, then run only the
 desired scenario with `--live`, for example:
@@ -131,16 +137,22 @@ desired scenario with `--live`, for example:
 az login
 az account set --subscription "<test-subscription>"
 azdev test --series --live test_durabletask_scheduler_lifecycle_recorded
+azdev test --series --live test_durabletask_taskhub_lifecycle_recorded
+azdev test --series --live test_durabletask_retention_policy_lifecycle_recorded
+azdev test --series --live test_durabletask_identity_lifecycle_recorded
 azdev test --series --live test_durabletask_taskqueue_lifecycle_recorded
 azdev test --series --live test_durabletask_attach_functionapp_recorded
 azdev test --series --live test_durabletask_encryption_lifecycle_recorded
 ```
 
+The failover scenario can be retried separately with
+`azdev test --series --live test_durabletask_failover_lifecycle_live`.
+
 Recording provisions billable resources in temporary resource groups, primarily in `northcentralus`.
 The preparers request deletion of the groups after the test, including on failure; verify cleanup if
 a service operation fails or remains in progress. The Key Vault has purge
 protection and seven-day soft-delete retention, so its deleted name remains reserved until retention
-expires. Failover additionally provisions a partner scheduler in `southcentralus`. Do not configure
+expires. Failover additionally provisions a partner scheduler in `westus2`. Do not configure
 the preparers to reuse a persistent resource group unless you intend to manage its cleanup yourself.
 
 Review recordings before committing them. The test SDK removes authentication headers, subscription

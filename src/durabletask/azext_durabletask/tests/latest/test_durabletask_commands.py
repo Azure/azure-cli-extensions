@@ -227,6 +227,35 @@ class DurabletaskCommandTests(unittest.TestCase):
         self.assertEqual(body['identity']['type'], 'None')
         self.assertNotIn('capacity', body['properties']['sku'])
 
+    def test_durabletask_identity_selective_removal(self):
+        other_id = IDENTITY_ID.replace('test-identity', 'other-identity')
+        existing_ids = {IDENTITY_ID.lower(): {}, other_id.lower(): {}}
+        for arguments, identity_type, expected in (
+            (f'--user-assigned {IDENTITY_ID}', 'UserAssigned', {
+                'type': 'UserAssigned', 'userAssignedIdentities': {other_id.lower(): {}},
+            }),
+            (f'--mi-user-assigned {IDENTITY_ID.upper()} {other_id}', 'UserAssigned', {'type': 'None'}),
+            (f'--user-assigned {IDENTITY_ID}', 'SystemAssigned,UserAssigned', {
+                'type': 'SystemAssigned,UserAssigned', 'userAssignedIdentities': {other_id.lower(): {}},
+            }),
+            ('--user-assigned', 'SystemAssigned,UserAssigned', {'type': 'SystemAssigned'}),
+            (f'--user-assigned {IDENTITY_ID}-missing', 'UserAssigned', {
+                'type': 'UserAssigned', 'userAssignedIdentities': existing_ids,
+            }),
+            ('', 'UserAssigned', {'type': 'UserAssigned', 'userAssignedIdentities': existing_ids}),
+        ):
+            with self.subTest(arguments=arguments, identity_type=identity_type):
+                scheduler = self._scheduler(identity={
+                    'type': identity_type, 'userAssignedIdentities': copy.deepcopy(existing_ids),
+                })
+                updated = self._scheduler(identity=expected)
+                self._cmd(
+                    'az durabletask scheduler identity remove -g test-rg -n test-scheduler ' + arguments,
+                    (200, scheduler), (200, updated))
+                body = json.loads(self.requests[1].body)
+                self.assertEqual(body['identity'], expected)
+                self.assertNotIn('capacity', body['properties']['sku'])
+
     def test_durabletask_taskhub_lifecycle(self):
         path = SCHEDULER_PATH + '/taskHubs/test-hub'
         hub = self._child('/taskHubs/test-hub')
