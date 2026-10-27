@@ -8,6 +8,7 @@ import json
 import unittest
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
+from urllib.parse import urlunsplit
 
 from requests.structures import CaseInsensitiveDict
 
@@ -92,7 +93,8 @@ class DurabletaskCommandTests(unittest.TestCase):
     def _assert_request(self, index, method, path, body=None, api_version='2026-07-01-preview'):
         request = self.requests[index]
         self.assertEqual(request.method, method)
-        self.assertEqual(request.url, f'https://management.azure.com{path}?api-version={api_version}')
+        expected_url = urlunsplit(('https', 'management.azure.com', path, f'api-version={api_version}', ''))
+        self.assertEqual(request.url, expected_url)
         if body is not None:
             self.assertEqual(json.loads(request.body), body)
 
