@@ -20,7 +20,9 @@ az extension update --name edge-action
 
 Use `az edge-action --help` or append `--help` to a command for its available options.
 
-## Edge Action management
+## Commands
+
+### Edge Action management
 
 ```bash
 # Create an edge action
@@ -32,14 +34,14 @@ az edge-action list --resource-group myResourceGroup
 # Show edge action details
 az edge-action show --resource-group myResourceGroup --name myEdgeAction
 
-# Update tags
+# Update edge action
 az edge-action update --resource-group myResourceGroup --name myEdgeAction --tags env=prod
 
 # Delete an edge action
 az edge-action delete --resource-group myResourceGroup --name myEdgeAction
 ```
 
-## Version management
+### Version management
 
 ```bash
 # Create a version
@@ -73,7 +75,7 @@ It returns `file` and `message` fields. Without this option, it returns `name` a
 base64-encoded `content`. With `--no-wait`, it does not wait for or save the download.
 Invalid download content and file-write errors are reported.
 
-## Execution filters
+### Execution filters
 
 Replace the resource ID placeholders below with an existing version's resource ID.
 
@@ -106,6 +108,14 @@ For example, use `--set execution_filter_identifier_header_value=enabled` or
 `--remove tags.purpose`, not `properties.executionFilterIdentifierHeaderValue`.
 Generic options remain subject to the resource schema and service validation;
 `--add` requires a list property, and this resource has no writable list properties.
+
+## Features
+
+- Full lifecycle management of Azure Front Door Edge Actions
+- Version control for Edge Action code
+- JavaScript and zip file deployment support
+- Execution filter management for selective Edge Action execution
+
 
 ## Development
 
