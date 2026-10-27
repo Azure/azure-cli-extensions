@@ -32,6 +32,26 @@ az horizondb cluster pool --help
 Local source edits take effect on the next command invocation. The generated
 pool commands are under `horizondb cluster pool`, not `horizondb pool`.
 
+## Create a cluster with a default pool
+
+`az horizondb cluster create` creates the cluster and polls every 30 seconds for
+up to one hour until its provisioning state is `Succeeded`. Only then does it
+create a child pool named `defaultpool` and wait for pool provisioning to finish.
+Progress messages indicate when the command is waiting for the cluster and when
+it starts creating the default pool. All five compute and availability arguments
+are required:
+
+```powershell
+az horizondb cluster create --resource-group example-resource-group --cluster-name example-cluster --location eastus2 --version 17 --geo-redundancy Enabled --compute-processor AMD --compute-generation 3 --v-cores 2 --node-count 1 --high-availability-mode Disabled
+```
+
+For one node, high availability must be `Disabled`. For two through sixteen
+nodes, use `AnyZone` or `ZoneRedundant`. The pool request does not include a
+parameter group. The command returns the cluster after both requests succeed.
+If cluster provisioning fails or times out, the command reports the error and
+does not create the pool. If pool creation fails, the command reports the error
+and leaves the cluster in place; it does not roll back cluster creation.
+
 ## Included Features
 
 ### HorizonDB Cluster Management
