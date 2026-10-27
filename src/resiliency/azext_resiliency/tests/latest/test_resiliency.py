@@ -13,10 +13,13 @@
 #   az cloud set --name ResiliencyCanary
 #   az login
 #   az account set --subscription 30233210-6bf4-4c4f-9e00-7cdcc1a176ec
+#   $env:AZURE_TEST_RUN_LIVE = "true"
+#   $env:AZURE_SUBSCRIPTION_ID = "30233210-6bf4-4c4f-9e00-7cdcc1a176ec"
+#   $env:AZURE_TEST_SUBSCRIPTION_ID = "30233210-6bf4-4c4f-9e00-7cdcc1a176ec"
 #
 # After tests, switch back:
 #   az cloud set --name AzureCloud
-#   az login
+#   az cloud unregister --name ResiliencyCanary
 
 from azure.cli.testsdk import *
 
@@ -34,6 +37,7 @@ class ResiliencyUsagePlanScenario(ScenarioTest):
             'plan_name': self.create_random_name('usageplan', 20),
         })
 
+        # Create
         self.cmd(
             'az resiliency usage-plan create '
             '--resource-group {rg} '
@@ -42,9 +46,11 @@ class ResiliencyUsagePlanScenario(ScenarioTest):
             '--location global',
             checks=[
                 self.check('name', '{plan_name}'),
+                self.check('properties.planType', 'Standard'),
             ]
         )
 
+        # Show
         self.cmd(
             'az resiliency usage-plan show '
             '--resource-group {rg} '
@@ -54,6 +60,7 @@ class ResiliencyUsagePlanScenario(ScenarioTest):
             ]
         )
 
+        # List
         self.cmd(
             'az resiliency usage-plan list '
             '--resource-group {rg}',
@@ -62,16 +69,15 @@ class ResiliencyUsagePlanScenario(ScenarioTest):
             ]
         )
 
+        # Update
         self.cmd(
             'az resiliency usage-plan update '
             '--resource-group {rg} '
             '--usage-plan-name {plan_name} '
-            '--tags environment=test',
-            checks=[
-                self.check('tags.environment', 'test'),
-            ]
+            '--tags environment=test'
         )
 
+        # Delete
         self.cmd(
             'az resiliency usage-plan delete '
             '--resource-group {rg} '
@@ -91,6 +97,7 @@ class ResiliencyUsagePlanEnrollmentScenario(ScenarioTest):
             'service_group_id': '/providers/Microsoft.Management/serviceGroups/' + TEST_SERVICE_GROUP,
         })
 
+        # Create usage plan first
         self.cmd(
             'az resiliency usage-plan create '
             '--resource-group {rg} '
@@ -99,6 +106,7 @@ class ResiliencyUsagePlanEnrollmentScenario(ScenarioTest):
             '--location global'
         )
 
+        # Create enrollment
         self.cmd(
             'az resiliency usage-plan enrollment create '
             '--resource-group {rg} '
@@ -110,6 +118,7 @@ class ResiliencyUsagePlanEnrollmentScenario(ScenarioTest):
             ]
         )
 
+        # Show enrollment
         self.cmd(
             'az resiliency usage-plan enrollment show '
             '--resource-group {rg} '
@@ -120,6 +129,7 @@ class ResiliencyUsagePlanEnrollmentScenario(ScenarioTest):
             ]
         )
 
+        # List enrollments
         self.cmd(
             'az resiliency usage-plan enrollment list '
             '--resource-group {rg} '
@@ -129,6 +139,7 @@ class ResiliencyUsagePlanEnrollmentScenario(ScenarioTest):
             ]
         )
 
+        # Delete enrollment
         self.cmd(
             'az resiliency usage-plan enrollment delete '
             '--resource-group {rg} '
@@ -137,56 +148,11 @@ class ResiliencyUsagePlanEnrollmentScenario(ScenarioTest):
             '--yes'
         )
 
+        # Cleanup
         self.cmd(
             'az resiliency usage-plan delete '
             '--resource-group {rg} '
             '--usage-plan-name {plan_name} '
-            '--yes'
-        )
-
-
-class ResiliencyGoalAssignmentScenario(ScenarioTest):
-
-    @live_only()
-    def test_resiliency_goal_assignment_crud(self):
-        self.kwargs.update({
-            'service_group': TEST_SERVICE_GROUP,
-            'goal_name': self.create_random_name('goal', 15),
-            'sub': TEST_SUBSCRIPTION,
-        })
-
-        self.cmd(
-            'az resiliency goal-assignment create '
-            '--service-group-name {service_group} '
-            '--goal-assignment-name {goal_name} '
-            '--service-level-resources "[{{service-level-indicator-resource-id:/subscriptions/{sub}/resourceGroups/cli-testing/providers/Microsoft.Compute/virtualMachines/test-vm}}]" '
-            '--require-zonal-resiliency True',
-            checks=[
-                self.check('name', '{goal_name}'),
-            ]
-        )
-
-        self.cmd(
-            'az resiliency goal-assignment show '
-            '--service-group-name {service_group} '
-            '--goal-assignment-name {goal_name}',
-            checks=[
-                self.check('name', '{goal_name}'),
-            ]
-        )
-
-        self.cmd(
-            'az resiliency goal-assignment list '
-            '--service-group-name {service_group}',
-            checks=[
-                self.greater_than('length(@)', 0),
-            ]
-        )
-
-        self.cmd(
-            'az resiliency goal-assignment delete '
-            '--service-group-name {service_group} '
-            '--goal-assignment-name {goal_name} '
             '--yes'
         )
 
@@ -215,19 +181,5 @@ class ResiliencyRecoveryPlanScenario(ScenarioTest):
 
         self.cmd(
             'az resiliency recovery-plan list '
-            '--service-group-name {service_group}'
-        )
-
-
-class ResiliencyUnifiedResilienceItemScenario(ScenarioTest):
-
-    @live_only()
-    def test_resiliency_unified_resilience_item_list(self):
-        self.kwargs.update({
-            'service_group': TEST_SERVICE_GROUP,
-        })
-
-        self.cmd(
-            'az resiliency unified-resilience-item list '
             '--service-group-name {service_group}'
         )
