@@ -3,11 +3,16 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, protected-access
+import shlex
+from types import SimpleNamespace
 import unittest
 from unittest import mock
 
+import pytest
+
 from knack.util import CLIError
 
+from azext_vm_repair import custom
 from azext_vm_repair.custom import restore
 from azext_vm_repair.exceptions import AzCommandError
 from azext_vm_repair.repair_utils import _clean_up_resources
@@ -37,6 +42,8 @@ class FakeCommandHelper:
 
     def init_return_dict(self):
         self.return_dict = {'status': self.status, 'message': self.message}
+        if not self.is_status_success():
+            self.return_dict['error_message'] = self.error_message
         return self.return_dict
 
 
@@ -180,6 +187,99 @@ class RestoreNoCleanupTest(unittest.TestCase):
         self.assertIn('Do not repeat the disk swap', result['message'])
         self.assertEqual(mock_az.call_count, 2)
         delete.assert_called_once()
+
+
+@pytest.fixture(params=['repair_and_restore', 'repair_button'])
+def combined_repair(request, monkeypatch):
+    helpers = []
+
+    def helper(*args):
+        command = FakeCommandHelper(*args)
+        helpers.append(command)
+        return command
+
+    monkeypatch.setattr(custom, 'command_helper', helper)
+    monkeypatch.setattr(custom, '_enrich_source_resource_context', mock.Mock())
+    monkeypatch.setattr(custom, '_enrich_repair_controller_context', mock.Mock())
+    monkeypatch.setattr(custom, '_check_existing_rg', mock.Mock(return_value=False))
+    monkeypatch.setattr(custom, 'create', mock.Mock(return_value={
+        'repair_vm_name': 'repair-vm', 'copied_disk_name': 'fixed-disk',
+        'repair_resource_group': 'repair-rg'}))
+    monkeypatch.setattr(custom, 'run', mock.Mock(return_value={'script_status': 'SUCCESS'}))
+    monkeypatch.setattr(custom, 'get_vm_by_aaz', mock.Mock(return_value={
+        'storageProfile': {'osDisk': {'name': 'source-osdisk', 'managedDisk': {}}}}))
+    monkeypatch.setattr(custom, '_fetch_disk_info', mock.Mock(
+        return_value=(None, None, None, None, 'fixed-disk-id')))
+    call_az = mock.Mock()
+    cleanup = mock.Mock()
+    monkeypatch.setattr(custom, '_call_az_command', call_az)
+    monkeypatch.setattr(custom, '_clean_up_resources', cleanup)
+
+    def invoke(**kwargs):
+        if request.param == 'repair_button':
+            kwargs['button_command'] = 'fstab'
+        return getattr(custom, request.param)(mock.MagicMock(), 'source-vm', 'source-rg', **kwargs)
+
+    return SimpleNamespace(invoke=invoke, helpers=helpers, call_az=call_az, cleanup=cleanup)
+
+
+@pytest.mark.parametrize('platform', ['nt', 'posix'])
+@pytest.mark.parametrize('terminator', ['', '\n', '\r\n'], ids=['no-terminator', 'LF', 'CRLF'])
+def test_combined_repair_restores_tsv_id(combined_repair, platform, terminator):
+    combined_repair.call_az.side_effect = [REPAIR_VM_ID + terminator, '', '']
+
+    with mock.patch('azext_vm_repair.repair_utils.os.name', platform):
+        result = combined_repair.invoke(no_cleanup=True)
+
+    assert result['status'] == 'SUCCESS'
+    assert combined_repair.call_az.call_count == 3
+    detach = shlex.split(combined_repair.call_az.call_args_list[1].args[0])
+    assert detach[detach.index('--vm-name') + 1] == 'repair-vm'
+    update = shlex.split(combined_repair.call_az.call_args_list[2].args[0])
+    assert update[:3] == ['az', 'vm', 'update']
+    combined_repair.cleanup.assert_called_once_with(
+        'repair-rg', confirm=False, skip_cleanup=True, raise_on_failure=True)
+
+
+@pytest.mark.parametrize('failure_stage', ['detach', 'update', 'cleanup'])
+def test_combined_repair_propagates_restore_failure(combined_repair, failure_stage):
+    error = AzCommandError('{} failed'.format(failure_stage))
+    if failure_stage == 'cleanup':
+        combined_repair.call_az.side_effect = [REPAIR_VM_ID + '\n', '', '']
+        combined_repair.cleanup.side_effect = error
+    else:
+        combined_repair.call_az.side_effect = [REPAIR_VM_ID + '\n'] + (
+            [error] if failure_stage == 'detach' else ['', error])
+
+    result = combined_repair.invoke()
+
+    assert result['status'] == 'ERROR'
+    assert result['error_message'] == str(error)
+    assert result is combined_repair.helpers[1].return_dict
+    assert combined_repair.helpers[0].status == 'ERROR'
+    assert combined_repair.helpers[0].message == result['message']
+    assert combined_repair.helpers[0].error_message == str(error)
+    assert 'The repair disk was restored' not in result['message']
+    if failure_stage == 'cleanup':
+        assert 'Do not repeat the disk swap' in result['message']
+        combined_repair.cleanup.assert_called_once()
+    else:
+        combined_repair.cleanup.assert_not_called()
+        assert combined_repair.call_az.call_count == (2 if failure_stage == 'detach' else 3)
+
+
+@pytest.mark.parametrize('control', ['\n', '\t'], ids=['embedded-LF', 'embedded-tab'])
+def test_combined_repair_rejects_embedded_controls(combined_repair, control):
+    combined_repair.call_az.return_value = REPAIR_VM_ID.replace('repair-vm', 'repair' + control + 'vm') + '\n'
+
+    with mock.patch('azext_vm_repair.repair_utils.os.name', 'nt'):
+        result = combined_repair.invoke()
+
+    assert result['status'] == 'ERROR'
+    assert 'unsupported character' in result['error_message']
+    assert 'No disk detach was attempted' in result['message']
+    combined_repair.call_az.assert_called_once()
+    combined_repair.cleanup.assert_not_called()
 
 
 if __name__ == '__main__':

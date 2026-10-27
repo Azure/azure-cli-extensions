@@ -1259,9 +1259,15 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     show_vm_id = 'az vm show -g {g} -n {n} --query id -o tsv' \
         .format(g=_legacy_value(repair_group_name), n=_legacy_value(repair_vm_name))
 
-    repair_vm_id = _call_az_command(show_vm_id)
+    repair_vm_id = _call_az_command(show_vm_id).rstrip('\r\n')
 
-    restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True, no_cleanup=no_cleanup)
+    restore_out = restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True, no_cleanup=no_cleanup)
+    if restore_out['status'] != 'SUCCESS':
+        command.set_status_error()
+        command.message = restore_out['message']
+        command.error_message = restore_out.get('error_message', '')
+        command.return_dict = restore_out
+        return restore_out
 
     # Set the success message
     repair_vm_fate = 'the repair resources were kept' if no_cleanup else 'the repair VM was then deleted'
@@ -1355,9 +1361,15 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
     show_vm_id = 'az vm show -g {g} -n {n} --query id -o tsv' \
         .format(g=_legacy_value(repair_group_name), n=_legacy_value(repair_vm_name))
 
-    repair_vm_id = _call_az_command(show_vm_id)
+    repair_vm_id = _call_az_command(show_vm_id).rstrip('\r\n')
 
-    restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True, no_cleanup=no_cleanup)
+    restore_out = restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True, no_cleanup=no_cleanup)
+    if restore_out['status'] != 'SUCCESS':
+        command.set_status_error()
+        command.message = restore_out['message']
+        command.error_message = restore_out.get('error_message', '')
+        command.return_dict = restore_out
+        return restore_out
 
     repair_vm_fate = 'the repair resources were kept' if no_cleanup else 'the repair VM was then deleted'
     command.message = 'script has been applied to the source VM. A new repair VM \'{n}\' was created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
