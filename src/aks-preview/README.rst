@@ -42,6 +42,25 @@ for base installation. Optional overrides can be supplied with ``--config`` or
 ``--config-file`` (alias ``--config-settings-file``). Installation does not
 configure a Kata node pool or install Pod Snapshot Restore.
 
+Live lifecycle scenario
+-----------------------
+
+Use a dedicated, eligible cluster without an existing Agent Sandbox Helm release
+or extension, with both Agent Sandbox and Pod Snapshot profiles unset. Install
+the development ``aks-preview`` build and the ``k8s-extension`` dependency in
+the test environment, then run::
+
+    export AZURE_CLI_TEST_AGENT_SANDBOX_RESOURCE_GROUP=<resource-group>
+    export AZURE_CLI_TEST_AGENT_SANDBOX_CLUSTER=<cluster-name>
+    export AZURE_CLI_TEST_AGENT_SANDBOX_SUBSCRIPTION=<subscription-id>
+    azdev test test_agent_sandbox_extension_lifecycle --live --series
+
+The scenario performs fresh create, show/list, a configuration update from one
+to two controller replicas, and delete with an absence check. Cleanup attempts
+to delete the test extension even on failure; it does not delete the cluster.
+Service authorization failures fail the live test rather than being reported
+as validated. The scenario is skipped in playback and when its target is unset.
+
 Dependency between aks-preview and azure-cli/acs (azure-cli-core)
 =================================================================
 
