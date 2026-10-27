@@ -2,10 +2,6 @@
 
 Release History
 ===============
-1.9.5
-+++++++++++++++++++
-* Fix `k8s-extension delete` reporting success when the initial extension lookup fails with authorization or service errors. Only HTTP 404 is treated as already deleted.
-
 1.9.4
 +++++++++++++++++++
 * Microsoft.ChaosStudio: create the workspace operator role with a per-subscription role ID and name so installs in more than one subscription of a tenant no longer fail with RoleDefinitionWithSameNameExists. Existing roles named 'Chaos Studio Kubernetes Operator' are still reused, and explicit roles may have any name.

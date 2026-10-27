@@ -408,9 +408,7 @@ def delete_k8s_extension(
         extension = client.get(
             resource_group_name, cluster_rp, cluster_type, cluster_name, name
         )
-    except HttpResponseError as ex:
-        if ex.status_code != 404:
-            raise
+    except HttpResponseError:
         logger.warning(
             "No extension with name '%s' found on cluster '%s', so nothing to delete",
             name,
