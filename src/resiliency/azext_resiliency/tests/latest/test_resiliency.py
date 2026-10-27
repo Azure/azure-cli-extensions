@@ -38,6 +38,9 @@ class ResiliencyUsagePlanScenario(ScenarioTest):
             checks=[
                 self.check('name', '{plan_name}'),
                 self.check('properties.planType', 'Standard'),
+                self.check('properties.provisioningState', 'Succeeded'),
+                self.exists('id'),
+                self.exists('systemData'),
             ]
         )
 
@@ -48,6 +51,8 @@ class ResiliencyUsagePlanScenario(ScenarioTest):
             '--usage-plan-name {plan_name}',
             checks=[
                 self.check('name', '{plan_name}'),
+                self.check('resourceGroup', TEST_RESOURCE_GROUP),
+                self.exists('properties.planType'),
             ]
         )
 
@@ -105,6 +110,8 @@ class ResiliencyUsagePlanEnrollmentScenario(ScenarioTest):
             '--service-group-id {service_group_id}',
             checks=[
                 self.check('name', '{enrollment_name}'),
+                self.exists('id'),
+                self.exists('properties'),
             ]
         )
 
@@ -156,7 +163,13 @@ class ResiliencyDrillScenario(ScenarioTest):
 
         self.cmd(
             'az resiliency drill list '
-            '--service-group-name {service_group}'
+            '--service-group-name {service_group}',
+            checks=[
+                self.greater_than('length(@)', 0),
+                self.exists('[0].name'),
+                self.exists('[0].properties'),
+                self.check('[0].type', 'microsoft.azureresiliencemanagement/drills'),
+            ]
         )
 
 
@@ -169,5 +182,11 @@ class ResiliencyRecoveryPlanScenario(ScenarioTest):
 
         self.cmd(
             'az resiliency recovery-plan list '
-            '--service-group-name {service_group}'
+            '--service-group-name {service_group}',
+            checks=[
+                self.greater_than('length(@)', 0),
+                self.exists('[0].name'),
+                self.exists('[0].properties.provisioningState'),
+                self.check('[0].type', 'microsoft.azureresiliencemanagement/recoveryplans'),
+            ]
         )
