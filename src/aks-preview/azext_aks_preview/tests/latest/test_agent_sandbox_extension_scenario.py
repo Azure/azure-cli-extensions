@@ -22,7 +22,7 @@ class AgentSandboxExtensionScenarioTest(ScenarioTest):
         self.kwargs.update(
             rg=resource_group,
             cluster=cluster,
-            extension="aks-managed-agent-sandbox",
+            extension="agent-sandbox",
             subscription=os.environ.get("AZURE_CLI_TEST_AGENT_SANDBOX_SUBSCRIPTION")
             or self.get_subscription_id(),
         )

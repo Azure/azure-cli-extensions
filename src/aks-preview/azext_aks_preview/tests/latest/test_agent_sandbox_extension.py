@@ -19,7 +19,7 @@ from azext_aks_preview._helpers import raise_validation_error_if_extension_type_
 
 class AgentSandboxExtensionTestCase(unittest.TestCase):
     extension_type = "Microsoft.AgentSandbox"
-    extension_name = "aks-managed-agent-sandbox"
+    extension_name = "agent-sandbox"
     namespace = "agent-sandbox-system"
     settings = {"replicaCount": "2", "controller.sandboxWarmPoolConcurrentWorkers": "2"}
 

@@ -21,10 +21,10 @@ In a build containing Agent Sandbox support, install the ``k8s-extension`` CLI
 dependency and manage the extension on an existing, eligible AKS cluster::
 
     az extension add --name k8s-extension
-    az aks extension create -g MyResourceGroup --cluster-name MyCluster --name aks-managed-agent-sandbox --extension-type Microsoft.AgentSandbox --scope cluster --release-namespace agent-sandbox-system
-    az aks extension update -g MyResourceGroup --cluster-name MyCluster --name aks-managed-agent-sandbox --config replicaCount=2 controller.sandboxWarmPoolConcurrentWorkers=2
-    az aks extension show -g MyResourceGroup --cluster-name MyCluster --name aks-managed-agent-sandbox
-    az aks extension delete -g MyResourceGroup --cluster-name MyCluster --name aks-managed-agent-sandbox
+    az aks extension create -g MyResourceGroup --cluster-name MyCluster --name agent-sandbox --extension-type Microsoft.AgentSandbox --scope cluster --release-namespace agent-sandbox-system
+    az aks extension update -g MyResourceGroup --cluster-name MyCluster --name agent-sandbox --config replicaCount=2 controller.sandboxWarmPoolConcurrentWorkers=2
+    az aks extension show -g MyResourceGroup --cluster-name MyCluster --name agent-sandbox
+    az aks extension delete -g MyResourceGroup --cluster-name MyCluster --name agent-sandbox
 
 These commands delegate to ``k8s-extension`` for ``managedClusters`` and call
 ``Microsoft.KubernetesConfiguration/extensions`` (ClusterConfig), which drives
@@ -34,6 +34,9 @@ ClusterConfig registration must permit direct customer installation and
 configuration updates; preview subscription, region, Kubernetes compatibility,
 identity, and Azure RBAC requirements still apply. Adding the type to the CLI
 allowlist does not grant access or change the registration.
+
+Use a customer-managed instance name such as ``agent-sandbox``. Names containing
+``aks-managed`` are reserved for authorized service clients.
 
 Do not use this path for an instance owned by ``agentSandboxProfile``.
 Disabling an existing profile requests deletion, not an ownership handoff;
