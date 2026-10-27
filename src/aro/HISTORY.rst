@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.15
+Pending
 ++++++
 * Switch to the 2026-10-01 API version for `az aro hcp`.
 * Add the `az aro hcp identity-role-sets list` command.
