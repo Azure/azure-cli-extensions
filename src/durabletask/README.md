@@ -107,15 +107,48 @@ azdev style durabletask --pep8
 azdev cmdcov durabletask
 ```
 
-The tests run offline without an Azure login, subscription, or provisioned resources. They follow the
-repository's `ScenarioTest` help-test and `unittest` patterns. Lifecycle tests invoke the CLI with mocked
-HTTP responses while exercising its actual argument parsing, AAZ request serialization, response
-deserialization, pagination, long-running-operation polling, and error handling. They cover schedulers,
-identities, task hubs, task queues, retention policies, encryption, failover instances, and restart.
-Additional unit tests cover scheduler attachment, identity and settings preservation, validation,
-retention-policy construction, and table output.
+The default test run replays checked-in ARM recordings without an Azure login or provisioned resources.
+`test_durabletask_scenario.py` uses `ScenarioTest`, `ResourceGroupPreparer`, randomized resource names,
+and real CLI commands without mocking ARM operations. Its recordings are stored in
+`azext_durabletask/tests/latest/recordings/`.
 
-No service recordings are required or fabricated. These are client-side regression tests, not a
-substitute for live service validation of regional availability, SKU restrictions, customer-managed key
-access, or failover behavior. Do not use `--live` to turn the mocked tests into service tests; their
-HTTP responses remain mocked.
+The recorded scenarios cover scheduler and managed identity lifecycles, task hubs, retention policies,
+task queue throughput changes, restart, and Function App attachment. Attachment checks the actual app
+settings written to a disposable Function App; no running function host or storage keys are needed.
+Customer-managed encryption uses a disposable Key Vault and RSA key, granting the existing Durable
+Task Scheduler enterprise application crypto access scoped only to that vault. It exercises encryption
+configuration and automatic key rotation without installing or modifying a tenant-wide application.
+
+The failover scenario is explicitly `live_only`: the attempted live deployment reported a failed
+failover configuration while its ARM operation continued polling. It remains available for running
+against a deployment with functioning failover support, with a bounded wait. No successful failover
+recording is claimed or fabricated.
+
+To re-record, sign in and select a subscription in your local CLI configuration, then run only the
+desired scenario with `--live`, for example:
+
+```text
+az login
+az account set --subscription "<test-subscription>"
+azdev test --series --live test_durabletask_scheduler_lifecycle_recorded
+azdev test --series --live test_durabletask_taskqueue_lifecycle_recorded
+azdev test --series --live test_durabletask_attach_functionapp_recorded
+azdev test --series --live test_durabletask_encryption_lifecycle_recorded
+```
+
+Recording provisions billable resources in temporary resource groups, primarily in `northcentralus`.
+The preparers request deletion of the groups after the test, including on failure; verify cleanup if
+a service operation fails or remains in progress. The Key Vault has purge
+protection and seven-day soft-delete retention, so its deleted name remains reserved until retention
+expires. Failover additionally provisions a partner scheduler in `southcentralus`. Do not configure
+the preparers to reuse a persistent resource group unless you intend to manage its cleanup yourself.
+
+Review recordings before committing them. The test SDK removes authentication headers, subscription
+IDs, and email addresses; the extension's recording processor additionally removes account/identity
+metadata, tenant IDs in dashboard links, generated scheduler hostnames, and signed operation-link
+parameters. Run the tests again without `--live` to verify playback, then run
+`azdev scan --confidence-level MEDIUM -d src/durabletask -r` before submitting.
+
+The `unittest` request/serialization regressions and custom-logic tests remain complementary coverage
+for boundary values, error propagation, settings preservation, retention-policy construction, and table
+output. Their HTTP responses remain mocked even when `--live` is specified.
