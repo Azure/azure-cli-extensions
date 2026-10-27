@@ -1,0 +1,53 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --service-group-name
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Management/serviceGroups/azcmdlet-testing/providers/Microsoft.AzureResilienceManagement/recoveryPlans?api-version=2026-10-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Management/serviceGroups/azcmdlet-testing/providers/Microsoft.AzureResilienceManagement/recoveryPlans/cli-rp-0908003450","name":"cli-rp-0908003450","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-07T19:04:54.2500888Z","lastModifiedBy":"073b560e-d40a-4dcb-92f3-9ccf8a1a47d0","lastModifiedByType":"Application","lastModifiedAt":"2026-10-27T18:26:05.3797024Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/krt_eap/providers/Microsoft.ManagedIdentity/userAssignedIdentities/msrc134373":{"principalId":"49d5840a-c3e6-4ecd-a666-c67d1c39d04e","clientId":"9aae0928-2d68-4c9a-9b77-469488c4a52a"}}},"properties":{"provisioningState":"Succeeded","planType":"Regional","planState":"Ready","planDescription":"CLI
+        live test plan","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"1a06d914-68ca-423c-aac1-fbe4bc7b4a36","orderId":0,"description":"DefaultGroup"},"id":"/providers/Microsoft.Management/serviceGroups/azcmdlet-testing/providers/Microsoft.AzureResilienceManagement/recoveryPlans/cli-rp-0908003450/recoveryGroups/1a06d914-68ca-423c-aac1-fbe4bc7b4a36","name":"1a06d914-68ca-423c-aac1-fbe4bc7b4a36","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"latestValidationStatus":{"lastExecutedAt":"2026-10-27T18:26:05.0830152Z","operationStatus":"Succeeded","errorDetails":{"code":"Success","message":"","target":"/providers/Microsoft.Management/serviceGroups/azcmdlet-testing/providers/Microsoft.AzureResilienceManagement/recoveryPlans/cli-rp-0908003450"}}}},{"id":"/providers/Microsoft.Management/serviceGroups/azcmdlet-testing/providers/Microsoft.AzureResilienceManagement/recoveryPlans/rp-coverage-01","name":"rp-coverage-01","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-10T16:56:36.4208469Z","lastModifiedBy":"073b560e-d40a-4dcb-92f3-9ccf8a1a47d0","lastModifiedByType":"Application","lastModifiedAt":"2026-10-27T18:27:38.8075814Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-resiliency-canary/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-resilience-canary":{"principalId":"453d186a-d642-48fb-81f5-160db21c6315","clientId":"3df84130-9902-4a9f-80f7-68b9d8fcce91"}}},"properties":{"provisioningState":"Succeeded","planType":"Regional","planState":"Warning","planDescription":"Coverage
+        test recovery plan","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"b8ae0f3c-9dd8-4541-a67e-3d681bc35340","orderId":0,"description":"Default
+        recovery group"},"id":"/providers/Microsoft.Management/serviceGroups/azcmdlet-testing/providers/Microsoft.AzureResilienceManagement/recoveryPlans/rp-coverage-01/recoveryGroups/b8ae0f3c-9dd8-4541-a67e-3d681bc35340","name":"b8ae0f3c-9dd8-4541-a67e-3d681bc35340","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"latestValidationStatus":{"lastExecutedAt":"2026-10-27T18:27:38.3993203Z","operationStatus":"ValidationFailed","errorDetails":{"code":"RHRORecoveryResourceSyncFailed","message":"","target":"/providers/Microsoft.Management/serviceGroups/azcmdlet-testing/providers/Microsoft.AzureResilienceManagement/recoveryPlans/rp-coverage-01"}}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3533'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:03:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: E6B65D6DDC104A65BC47557476CA7FA7 Ref B: PNQ231110906031 Ref C: 2026-10-27T19:03:33Z'
+    status:
+      code: 200
+      message: OK
+version: 1

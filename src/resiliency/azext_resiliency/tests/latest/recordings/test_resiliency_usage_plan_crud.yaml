@@ -1,0 +1,801 @@
+interactions:
+- request:
+    body: '{"location": "global", "properties": {"planType": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency usage-plan create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '62'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --usage-plan-name --plan-type --location
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001","name":"usageplan000001","type":"microsoft.azureresiliencemanagement/usageplans","location":"global","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-27T19:03:36.521952Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-27T19:03:36.521952Z"},"properties":{"planType":"Standard","provisioningState":"Accepted"}}'
+    headers:
+      accept-ranges:
+      - bytes
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/327fee94-dc55-4da8-b0b2-6b0504ddeb41*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790?api-version=2026-10-01&t=639287246174438290&c=MIIIJzCCBw-gAwIBAgIRAKCxVbScFDiCR8oT6qcGYJMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA5MTkwMDU4MzJaFw0yNjEyMTQwNjU4MzJaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzFNlTnLezYuVV9JBgdhqA91jRJUtR4AjUkUKP5Nk7STlDt0_Hwx2OHYvMcuSX2B7klrS1nxF26zm4lnQKcCJTslJYfDrx756nLb5iGS6OS0koE0rze5-sUiu_IHHt28tpGv_9lvJvRWPDZc1uYCzrGyBpz6HvBzVgl3BeyWo9RTZYJhgBVNIATJuDRUzovVt8XczDob4euvsqOVr7rBx6wvKf79ASaeXB6PbT19HGywTrd9Xkd33sWfzQu5ZuHtSgX3i1sp_4BVE8VTuCkqIku5kzbulG3jvlSrsOmn680vsH3sS1APY1L7SymeuyNuVIv20HZmQukmjreOzZu-iGQIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7SRzDdTHXndOcavyYsWupdx4MecwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS80MS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQA5ody_Abz9ik5_3WVrjOb7e5cyPkeuDRHrpQ3VO0TeurG5LwTtQ-Yu-lE3ow2Qq4IbIIP6kpzWMQ_woGCp96pGdwvp7vLu4SYc-Rp-CKqLpJtXBRQ01RDbqBZWPwrrgrfMjTaopq1rEEHOBBqt2X4fPXlf91DULpbYJikwKVt4rSQPFgvzjtIpRSeHkIIw8oA95SBfgvs-CIisoc1h-1J1s6jmYw8Kqgqc-NoVLrvf4qRHrd8_0YK2nmtl5XnHD8a50gNVozHfx52l7NfwV_tYfwIO82lHrNxrpLkb7gSAAoAkma6s2Tjh23fpSj-E9OFOFMeuCwnaykbAggIZp9hc&s=uVhcQJVxJ4K306gQmYfiRNQvNrA6bM20jSLvgumF1t0VPb_EaNqFEh5DdEyzzP7L21h-ICylmT4jyivxPW6MZMDfSqqujW7rUrvXGczxiMnrSP232gZFoWNWNg096bfAtqYtSn11kJbbTrDR0Zg32Ybmnt_NRCM3gi5YdPkTRSgtxPK7DERqwmv1Ix-bb0qktdtJ1BX_XNqSK7uXh9IaekcQvcEqbZX-MDqKgUnElIj83ynx_QFjJoQYhI1TwvIVR8kC-nEuvhoEKTJsGNJ_7O2SEVcR7A6E-7MbTVdz7y-gAZ6rCwrwN3zeN2cAAdg97AwcG5KyRf3qy9eyhBL5fA&h=WO755tWN5NE8nfG8xKj-uS2QDxVGZVhLgB4jGt4jNjw
+      cache-control:
+      - no-cache
+      content-length:
+      - '551'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:03:37 GMT
+      etag:
+      - '"90050018-0000-2300-0000-6ae0f5890000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20261027T190336Z-17f789cd77778jxlhC1SJCtppc00000008dg00000000qdfr
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2ba0a8c3-d479-41b5-90a9-3f5441586e99/westus3/f62dc3db-8e7c-4a55-ab32-26c5648140cb
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 2093C0DAD0A24944AE52ADBC682D90C3 Ref B: PNQ231110909029 Ref C: 2026-10-27T19:03:33Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency usage-plan create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --usage-plan-name --plan-type --location
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/327fee94-dc55-4da8-b0b2-6b0504ddeb41*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790?api-version=2026-10-01&t=639287246174438290&c=MIIIJzCCBw-gAwIBAgIRAKCxVbScFDiCR8oT6qcGYJMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA5MTkwMDU4MzJaFw0yNjEyMTQwNjU4MzJaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzFNlTnLezYuVV9JBgdhqA91jRJUtR4AjUkUKP5Nk7STlDt0_Hwx2OHYvMcuSX2B7klrS1nxF26zm4lnQKcCJTslJYfDrx756nLb5iGS6OS0koE0rze5-sUiu_IHHt28tpGv_9lvJvRWPDZc1uYCzrGyBpz6HvBzVgl3BeyWo9RTZYJhgBVNIATJuDRUzovVt8XczDob4euvsqOVr7rBx6wvKf79ASaeXB6PbT19HGywTrd9Xkd33sWfzQu5ZuHtSgX3i1sp_4BVE8VTuCkqIku5kzbulG3jvlSrsOmn680vsH3sS1APY1L7SymeuyNuVIv20HZmQukmjreOzZu-iGQIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7SRzDdTHXndOcavyYsWupdx4MecwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS80MS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQA5ody_Abz9ik5_3WVrjOb7e5cyPkeuDRHrpQ3VO0TeurG5LwTtQ-Yu-lE3ow2Qq4IbIIP6kpzWMQ_woGCp96pGdwvp7vLu4SYc-Rp-CKqLpJtXBRQ01RDbqBZWPwrrgrfMjTaopq1rEEHOBBqt2X4fPXlf91DULpbYJikwKVt4rSQPFgvzjtIpRSeHkIIw8oA95SBfgvs-CIisoc1h-1J1s6jmYw8Kqgqc-NoVLrvf4qRHrd8_0YK2nmtl5XnHD8a50gNVozHfx52l7NfwV_tYfwIO82lHrNxrpLkb7gSAAoAkma6s2Tjh23fpSj-E9OFOFMeuCwnaykbAggIZp9hc&s=uVhcQJVxJ4K306gQmYfiRNQvNrA6bM20jSLvgumF1t0VPb_EaNqFEh5DdEyzzP7L21h-ICylmT4jyivxPW6MZMDfSqqujW7rUrvXGczxiMnrSP232gZFoWNWNg096bfAtqYtSn11kJbbTrDR0Zg32Ybmnt_NRCM3gi5YdPkTRSgtxPK7DERqwmv1Ix-bb0qktdtJ1BX_XNqSK7uXh9IaekcQvcEqbZX-MDqKgUnElIj83ynx_QFjJoQYhI1TwvIVR8kC-nEuvhoEKTJsGNJ_7O2SEVcR7A6E-7MbTVdz7y-gAZ6rCwrwN3zeN2cAAdg97AwcG5KyRf3qy9eyhBL5fA&h=WO755tWN5NE8nfG8xKj-uS2QDxVGZVhLgB4jGt4jNjw
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/327fee94-dc55-4da8-b0b2-6b0504ddeb41*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790","name":"327fee94-dc55-4da8-b0b2-6b0504ddeb41*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001","status":"Accepted","startTime":"2026-10-27T19:03:36.7456432Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '533'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:03:38 GMT
+      etag:
+      - '"7900786d-0000-0700-0000-6ae0f5890000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 814269282D344129BBDC6A98F449108C Ref B: PNQ231110907025 Ref C: 2026-10-27T19:03:38Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency usage-plan create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --usage-plan-name --plan-type --location
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/327fee94-dc55-4da8-b0b2-6b0504ddeb41*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790?api-version=2026-10-01&t=639287246174438290&c=MIIIJzCCBw-gAwIBAgIRAKCxVbScFDiCR8oT6qcGYJMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA5MTkwMDU4MzJaFw0yNjEyMTQwNjU4MzJaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzFNlTnLezYuVV9JBgdhqA91jRJUtR4AjUkUKP5Nk7STlDt0_Hwx2OHYvMcuSX2B7klrS1nxF26zm4lnQKcCJTslJYfDrx756nLb5iGS6OS0koE0rze5-sUiu_IHHt28tpGv_9lvJvRWPDZc1uYCzrGyBpz6HvBzVgl3BeyWo9RTZYJhgBVNIATJuDRUzovVt8XczDob4euvsqOVr7rBx6wvKf79ASaeXB6PbT19HGywTrd9Xkd33sWfzQu5ZuHtSgX3i1sp_4BVE8VTuCkqIku5kzbulG3jvlSrsOmn680vsH3sS1APY1L7SymeuyNuVIv20HZmQukmjreOzZu-iGQIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7SRzDdTHXndOcavyYsWupdx4MecwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS80MS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQA5ody_Abz9ik5_3WVrjOb7e5cyPkeuDRHrpQ3VO0TeurG5LwTtQ-Yu-lE3ow2Qq4IbIIP6kpzWMQ_woGCp96pGdwvp7vLu4SYc-Rp-CKqLpJtXBRQ01RDbqBZWPwrrgrfMjTaopq1rEEHOBBqt2X4fPXlf91DULpbYJikwKVt4rSQPFgvzjtIpRSeHkIIw8oA95SBfgvs-CIisoc1h-1J1s6jmYw8Kqgqc-NoVLrvf4qRHrd8_0YK2nmtl5XnHD8a50gNVozHfx52l7NfwV_tYfwIO82lHrNxrpLkb7gSAAoAkma6s2Tjh23fpSj-E9OFOFMeuCwnaykbAggIZp9hc&s=uVhcQJVxJ4K306gQmYfiRNQvNrA6bM20jSLvgumF1t0VPb_EaNqFEh5DdEyzzP7L21h-ICylmT4jyivxPW6MZMDfSqqujW7rUrvXGczxiMnrSP232gZFoWNWNg096bfAtqYtSn11kJbbTrDR0Zg32Ybmnt_NRCM3gi5YdPkTRSgtxPK7DERqwmv1Ix-bb0qktdtJ1BX_XNqSK7uXh9IaekcQvcEqbZX-MDqKgUnElIj83ynx_QFjJoQYhI1TwvIVR8kC-nEuvhoEKTJsGNJ_7O2SEVcR7A6E-7MbTVdz7y-gAZ6rCwrwN3zeN2cAAdg97AwcG5KyRf3qy9eyhBL5fA&h=WO755tWN5NE8nfG8xKj-uS2QDxVGZVhLgB4jGt4jNjw
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/327fee94-dc55-4da8-b0b2-6b0504ddeb41*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790","name":"327fee94-dc55-4da8-b0b2-6b0504ddeb41*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001","status":"Succeeded","startTime":"2026-10-27T19:03:36.7456432Z","endTime":"2026-10-27T19:03:51.6060735Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '593'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:04:10 GMT
+      etag:
+      - '"6b00996b-0000-0800-0000-6ae0f5a00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 70DBED4A3F404379879F61824862D9C9 Ref B: PNQ231110906060 Ref C: 2026-10-27T19:04:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency usage-plan create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --usage-plan-name --plan-type --location
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001","name":"usageplan000001","type":"microsoft.azureresiliencemanagement/usageplans","location":"global","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-27T19:03:36.521952Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-27T19:03:36.521952Z"},"properties":{"planType":"Standard","provisioningState":"Succeeded","errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '582'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:04:12 GMT
+      etag:
+      - '"90052c18-0000-2300-0000-6ae0f5990000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 81BF74D27F764F7796177717B7DA9270 Ref B: PNQ231110907029 Ref C: 2026-10-27T19:04:12Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency usage-plan show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --usage-plan-name
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001","name":"usageplan000001","type":"microsoft.azureresiliencemanagement/usageplans","location":"global","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-27T19:03:36.521952Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-27T19:03:36.521952Z"},"properties":{"planType":"Standard","provisioningState":"Succeeded","errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '582'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:04:13 GMT
+      etag:
+      - '"90052c18-0000-2300-0000-6ae0f5990000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16498'
+      x-msedge-ref:
+      - 'Ref A: A2A7CEC324D54D70886B49E5AA502BA8 Ref B: PNQ231110907062 Ref C: 2026-10-27T19:04:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency usage-plan list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans?api-version=2026-10-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplanl3cnutxuygz","name":"usageplanl3cnutxuygz","type":"microsoft.azureresiliencemanagement/usageplans","location":"global","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-27T17:54:21.7437777Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-27T17:55:36.6714762Z"},"properties":{"planType":"Standard","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan4j3turr7smt","name":"usageplan4j3turr7smt","type":"microsoft.azureresiliencemanagement/usageplans","location":"global","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-27T19:03:36.4287528Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-27T19:03:36.4287528Z"},"properties":{"planType":"Standard","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001","name":"usageplan000001","type":"microsoft.azureresiliencemanagement/usageplans","location":"global","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-27T19:03:36.521952Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-27T19:03:36.521952Z"},"properties":{"planType":"Standard","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1724'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:04:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 334c7157-02a9-4af1-af70-aba45b5114de
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: FA66DCF1100D45F1B23518DC4831C939 Ref B: PNQ231110906029 Ref C: 2026-10-27T19:04:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency usage-plan update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --usage-plan-name --tags
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001","name":"usageplan000001","type":"microsoft.azureresiliencemanagement/usageplans","location":"global","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-27T19:03:36.521952Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-27T19:03:36.521952Z"},"properties":{"planType":"Standard","provisioningState":"Succeeded","errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '582'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:04:17 GMT
+      etag:
+      - '"90052c18-0000-2300-0000-6ae0f5990000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: EF35180022004D6299F327ADC1287DFE Ref B: PNQ231110907034 Ref C: 2026-10-27T19:04:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "global", "properties": {"planType": "Standard"}, "tags":
+      {"environment": "test"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency usage-plan update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '95'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --usage-plan-name --tags
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001","name":"usageplan000001","type":"microsoft.azureresiliencemanagement/usageplans","location":"global","tags":{"environment":"test"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-27T19:03:36.521952Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-27T19:04:18.7509137Z"},"properties":{"provisioningState":"Accepted","planType":"Standard"}}'
+    headers:
+      accept-ranges:
+      - bytes
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/0b1c0023-3b05-405b-95b1-12bbfaa3425b*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790?api-version=2026-10-01&t=639287246596259083&c=MIIIJzCCBw-gAwIBAgIRAKCxVbScFDiCR8oT6qcGYJMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA5MTkwMDU4MzJaFw0yNjEyMTQwNjU4MzJaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzFNlTnLezYuVV9JBgdhqA91jRJUtR4AjUkUKP5Nk7STlDt0_Hwx2OHYvMcuSX2B7klrS1nxF26zm4lnQKcCJTslJYfDrx756nLb5iGS6OS0koE0rze5-sUiu_IHHt28tpGv_9lvJvRWPDZc1uYCzrGyBpz6HvBzVgl3BeyWo9RTZYJhgBVNIATJuDRUzovVt8XczDob4euvsqOVr7rBx6wvKf79ASaeXB6PbT19HGywTrd9Xkd33sWfzQu5ZuHtSgX3i1sp_4BVE8VTuCkqIku5kzbulG3jvlSrsOmn680vsH3sS1APY1L7SymeuyNuVIv20HZmQukmjreOzZu-iGQIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7SRzDdTHXndOcavyYsWupdx4MecwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS80MS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQA5ody_Abz9ik5_3WVrjOb7e5cyPkeuDRHrpQ3VO0TeurG5LwTtQ-Yu-lE3ow2Qq4IbIIP6kpzWMQ_woGCp96pGdwvp7vLu4SYc-Rp-CKqLpJtXBRQ01RDbqBZWPwrrgrfMjTaopq1rEEHOBBqt2X4fPXlf91DULpbYJikwKVt4rSQPFgvzjtIpRSeHkIIw8oA95SBfgvs-CIisoc1h-1J1s6jmYw8Kqgqc-NoVLrvf4qRHrd8_0YK2nmtl5XnHD8a50gNVozHfx52l7NfwV_tYfwIO82lHrNxrpLkb7gSAAoAkma6s2Tjh23fpSj-E9OFOFMeuCwnaykbAggIZp9hc&s=r2nRA7OOLm1r0a6EFcspOIbttQ3XzHExjTnXtRSg0hhfhhS6cyJVYd8UyfKkSMq4pzqPoMnZzmsHcwRp6oA_lQVx0D5Mb2RzURYPgsC6eXCZZYlxFe2mR0EiDSTksGiY-rIOGEgaE8uDw2QT0TfESiRsxJIecGAUsi_U-ggiNn9SGSOqLltNNCPvaMPDz8GX7oeGsvin5wTAg-q38s7uaMyGjO3f-ae9aC6e-DNGJibg8TYiOkyMaMGIGdezhoGjGkRLqGxHK0its475HXAqCvMjXUI95Vqy56m5acwkkf6O-SnesLXjWvaIPjkFAQB0O3BhECXk5IMnNxe9bY2sFA&h=A67KCBRCfWcOiJD25dCaezf_MOME3WCt_hE2xffU4YA
+      cache-control:
+      - no-cache
+      content-length:
+      - '582'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:04:19 GMT
+      etag:
+      - '"90054c19-0000-2300-0000-6ae0f5b30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20261027T190418Z-15d4cb44b97l94mrhC1BY17ezc0000000bug00000000r343
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2ba0a8c3-d479-41b5-90a9-3f5441586e99/westus3/82ebcb48-f4d8-4451-ba30-cfb5de168ed7
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: D713F390715C4262A7A07E4F73F28D9F Ref B: PNQ231110909031 Ref C: 2026-10-27T19:04:18Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency usage-plan update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --usage-plan-name --tags
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/0b1c0023-3b05-405b-95b1-12bbfaa3425b*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790?api-version=2026-10-01&t=639287246596259083&c=MIIIJzCCBw-gAwIBAgIRAKCxVbScFDiCR8oT6qcGYJMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA5MTkwMDU4MzJaFw0yNjEyMTQwNjU4MzJaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzFNlTnLezYuVV9JBgdhqA91jRJUtR4AjUkUKP5Nk7STlDt0_Hwx2OHYvMcuSX2B7klrS1nxF26zm4lnQKcCJTslJYfDrx756nLb5iGS6OS0koE0rze5-sUiu_IHHt28tpGv_9lvJvRWPDZc1uYCzrGyBpz6HvBzVgl3BeyWo9RTZYJhgBVNIATJuDRUzovVt8XczDob4euvsqOVr7rBx6wvKf79ASaeXB6PbT19HGywTrd9Xkd33sWfzQu5ZuHtSgX3i1sp_4BVE8VTuCkqIku5kzbulG3jvlSrsOmn680vsH3sS1APY1L7SymeuyNuVIv20HZmQukmjreOzZu-iGQIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7SRzDdTHXndOcavyYsWupdx4MecwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS80MS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQA5ody_Abz9ik5_3WVrjOb7e5cyPkeuDRHrpQ3VO0TeurG5LwTtQ-Yu-lE3ow2Qq4IbIIP6kpzWMQ_woGCp96pGdwvp7vLu4SYc-Rp-CKqLpJtXBRQ01RDbqBZWPwrrgrfMjTaopq1rEEHOBBqt2X4fPXlf91DULpbYJikwKVt4rSQPFgvzjtIpRSeHkIIw8oA95SBfgvs-CIisoc1h-1J1s6jmYw8Kqgqc-NoVLrvf4qRHrd8_0YK2nmtl5XnHD8a50gNVozHfx52l7NfwV_tYfwIO82lHrNxrpLkb7gSAAoAkma6s2Tjh23fpSj-E9OFOFMeuCwnaykbAggIZp9hc&s=r2nRA7OOLm1r0a6EFcspOIbttQ3XzHExjTnXtRSg0hhfhhS6cyJVYd8UyfKkSMq4pzqPoMnZzmsHcwRp6oA_lQVx0D5Mb2RzURYPgsC6eXCZZYlxFe2mR0EiDSTksGiY-rIOGEgaE8uDw2QT0TfESiRsxJIecGAUsi_U-ggiNn9SGSOqLltNNCPvaMPDz8GX7oeGsvin5wTAg-q38s7uaMyGjO3f-ae9aC6e-DNGJibg8TYiOkyMaMGIGdezhoGjGkRLqGxHK0its475HXAqCvMjXUI95Vqy56m5acwkkf6O-SnesLXjWvaIPjkFAQB0O3BhECXk5IMnNxe9bY2sFA&h=A67KCBRCfWcOiJD25dCaezf_MOME3WCt_hE2xffU4YA
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/0b1c0023-3b05-405b-95b1-12bbfaa3425b*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790","name":"0b1c0023-3b05-405b-95b1-12bbfaa3425b*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001","status":"Accepted","startTime":"2026-10-27T19:04:18.9468212Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '533'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:04:21 GMT
+      etag:
+      - '"7900e171-0000-0700-0000-6ae0f5b20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: C445D661096F4E66AF7A6230077DE770 Ref B: PNQ231110909042 Ref C: 2026-10-27T19:04:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency usage-plan update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --usage-plan-name --tags
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/0b1c0023-3b05-405b-95b1-12bbfaa3425b*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790?api-version=2026-10-01&t=639287246596259083&c=MIIIJzCCBw-gAwIBAgIRAKCxVbScFDiCR8oT6qcGYJMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA5MTkwMDU4MzJaFw0yNjEyMTQwNjU4MzJaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzFNlTnLezYuVV9JBgdhqA91jRJUtR4AjUkUKP5Nk7STlDt0_Hwx2OHYvMcuSX2B7klrS1nxF26zm4lnQKcCJTslJYfDrx756nLb5iGS6OS0koE0rze5-sUiu_IHHt28tpGv_9lvJvRWPDZc1uYCzrGyBpz6HvBzVgl3BeyWo9RTZYJhgBVNIATJuDRUzovVt8XczDob4euvsqOVr7rBx6wvKf79ASaeXB6PbT19HGywTrd9Xkd33sWfzQu5ZuHtSgX3i1sp_4BVE8VTuCkqIku5kzbulG3jvlSrsOmn680vsH3sS1APY1L7SymeuyNuVIv20HZmQukmjreOzZu-iGQIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7SRzDdTHXndOcavyYsWupdx4MecwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS80MS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQA5ody_Abz9ik5_3WVrjOb7e5cyPkeuDRHrpQ3VO0TeurG5LwTtQ-Yu-lE3ow2Qq4IbIIP6kpzWMQ_woGCp96pGdwvp7vLu4SYc-Rp-CKqLpJtXBRQ01RDbqBZWPwrrgrfMjTaopq1rEEHOBBqt2X4fPXlf91DULpbYJikwKVt4rSQPFgvzjtIpRSeHkIIw8oA95SBfgvs-CIisoc1h-1J1s6jmYw8Kqgqc-NoVLrvf4qRHrd8_0YK2nmtl5XnHD8a50gNVozHfx52l7NfwV_tYfwIO82lHrNxrpLkb7gSAAoAkma6s2Tjh23fpSj-E9OFOFMeuCwnaykbAggIZp9hc&s=r2nRA7OOLm1r0a6EFcspOIbttQ3XzHExjTnXtRSg0hhfhhS6cyJVYd8UyfKkSMq4pzqPoMnZzmsHcwRp6oA_lQVx0D5Mb2RzURYPgsC6eXCZZYlxFe2mR0EiDSTksGiY-rIOGEgaE8uDw2QT0TfESiRsxJIecGAUsi_U-ggiNn9SGSOqLltNNCPvaMPDz8GX7oeGsvin5wTAg-q38s7uaMyGjO3f-ae9aC6e-DNGJibg8TYiOkyMaMGIGdezhoGjGkRLqGxHK0its475HXAqCvMjXUI95Vqy56m5acwkkf6O-SnesLXjWvaIPjkFAQB0O3BhECXk5IMnNxe9bY2sFA&h=A67KCBRCfWcOiJD25dCaezf_MOME3WCt_hE2xffU4YA
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/0b1c0023-3b05-405b-95b1-12bbfaa3425b*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790","name":"0b1c0023-3b05-405b-95b1-12bbfaa3425b*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001","status":"Succeeded","startTime":"2026-10-27T19:04:18.9468212Z","endTime":"2026-10-27T19:04:26.8514179Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '593'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:04:52 GMT
+      etag:
+      - '"3a066e18-0000-0200-0000-6ae0f5bf0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 233A1080C2144EF7AB1BC8F108AB54B8 Ref B: PNQ231110907062 Ref C: 2026-10-27T19:04:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency usage-plan update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --usage-plan-name --tags
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001","name":"usageplan000001","type":"microsoft.azureresiliencemanagement/usageplans","location":"global","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-27T19:03:36.521952Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-27T19:04:18.7509137Z"},"properties":{"planType":"Standard","provisioningState":"Succeeded","errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '583'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:04:54 GMT
+      etag:
+      - '"90059c19-0000-2300-0000-6ae0f5bb0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A43AB2797AE740C9A91B81B290BA851B Ref B: PNQ231110907029 Ref C: 2026-10-27T19:04:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency usage-plan delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --usage-plan-name --yes
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001?api-version=2026-10-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      accept-ranges:
+      - bytes
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/f9be9065-9ebc-4528-84f5-4fe807c31530*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790?api-version=2026-10-01&t=639287246976598764&c=MIIIJzCCBw-gAwIBAgIRAKCxVbScFDiCR8oT6qcGYJMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA5MTkwMDU4MzJaFw0yNjEyMTQwNjU4MzJaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzFNlTnLezYuVV9JBgdhqA91jRJUtR4AjUkUKP5Nk7STlDt0_Hwx2OHYvMcuSX2B7klrS1nxF26zm4lnQKcCJTslJYfDrx756nLb5iGS6OS0koE0rze5-sUiu_IHHt28tpGv_9lvJvRWPDZc1uYCzrGyBpz6HvBzVgl3BeyWo9RTZYJhgBVNIATJuDRUzovVt8XczDob4euvsqOVr7rBx6wvKf79ASaeXB6PbT19HGywTrd9Xkd33sWfzQu5ZuHtSgX3i1sp_4BVE8VTuCkqIku5kzbulG3jvlSrsOmn680vsH3sS1APY1L7SymeuyNuVIv20HZmQukmjreOzZu-iGQIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7SRzDdTHXndOcavyYsWupdx4MecwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS80MS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQA5ody_Abz9ik5_3WVrjOb7e5cyPkeuDRHrpQ3VO0TeurG5LwTtQ-Yu-lE3ow2Qq4IbIIP6kpzWMQ_woGCp96pGdwvp7vLu4SYc-Rp-CKqLpJtXBRQ01RDbqBZWPwrrgrfMjTaopq1rEEHOBBqt2X4fPXlf91DULpbYJikwKVt4rSQPFgvzjtIpRSeHkIIw8oA95SBfgvs-CIisoc1h-1J1s6jmYw8Kqgqc-NoVLrvf4qRHrd8_0YK2nmtl5XnHD8a50gNVozHfx52l7NfwV_tYfwIO82lHrNxrpLkb7gSAAoAkma6s2Tjh23fpSj-E9OFOFMeuCwnaykbAggIZp9hc&s=Vl8ANyKhbIfeJeF7ZNdsXhS40HwCdcXMC-Rih7WyCdlNzJnRAu99du6odmHFl3QixC6TohchUuugRA9hp-bcTXK9AhzqC3MEBgXWOqND2jQJ1SSkjf-RzkeQ3rYLASbr3VfIJFLMHFOE5zT197mFPMZXWmoLOn7wtoC6U4M0XizhWIz5IX6BNhOdkL1ZcODqZoEmAzvzI2NUlAEdnfBnFRYdohaKUOVuqf1D_RAqtvDLD2cuesjkQ3Zp97BBVtJf1TuIpbmumZUmuo-gxdpq2ARPyhImPvGBOneywNypDqPSCxKJmjn-Ggq6f8yVW8JPdW551-s1i777amlthLVhuw&h=uQoLo4MZZmucrxMJoU2l9FEsHpil0Z-0IJMAabdDVlI
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:04:57 GMT
+      etag:
+      - '"9005691a-0000-2300-0000-6ae0f5d90000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/f9be9065-9ebc-4528-84f5-4fe807c31530*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790?api-version=2026-10-01&t=639287246976598764&c=MIIIJzCCBw-gAwIBAgIRAKCxVbScFDiCR8oT6qcGYJMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA5MTkwMDU4MzJaFw0yNjEyMTQwNjU4MzJaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzFNlTnLezYuVV9JBgdhqA91jRJUtR4AjUkUKP5Nk7STlDt0_Hwx2OHYvMcuSX2B7klrS1nxF26zm4lnQKcCJTslJYfDrx756nLb5iGS6OS0koE0rze5-sUiu_IHHt28tpGv_9lvJvRWPDZc1uYCzrGyBpz6HvBzVgl3BeyWo9RTZYJhgBVNIATJuDRUzovVt8XczDob4euvsqOVr7rBx6wvKf79ASaeXB6PbT19HGywTrd9Xkd33sWfzQu5ZuHtSgX3i1sp_4BVE8VTuCkqIku5kzbulG3jvlSrsOmn680vsH3sS1APY1L7SymeuyNuVIv20HZmQukmjreOzZu-iGQIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7SRzDdTHXndOcavyYsWupdx4MecwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS80MS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQA5ody_Abz9ik5_3WVrjOb7e5cyPkeuDRHrpQ3VO0TeurG5LwTtQ-Yu-lE3ow2Qq4IbIIP6kpzWMQ_woGCp96pGdwvp7vLu4SYc-Rp-CKqLpJtXBRQ01RDbqBZWPwrrgrfMjTaopq1rEEHOBBqt2X4fPXlf91DULpbYJikwKVt4rSQPFgvzjtIpRSeHkIIw8oA95SBfgvs-CIisoc1h-1J1s6jmYw8Kqgqc-NoVLrvf4qRHrd8_0YK2nmtl5XnHD8a50gNVozHfx52l7NfwV_tYfwIO82lHrNxrpLkb7gSAAoAkma6s2Tjh23fpSj-E9OFOFMeuCwnaykbAggIZp9hc&s=qY3InjnAhPnLsDNhY-9VwfGu03eMvz-eoMZ5AM6NfS3hUBp50A4H50i8VgfZPNtPZ1-4yExIYYxN0CPAzzOr97Tvggq3gS3_xUFVf5Xu_cdcEI3Vqfjodc6MQhfjAw0qGu_FhzgTX9tAVC80TsR44STfMKfb2gEoRpn8uIaHeCurWhntvzPy8psekwG8qcbK8B9m0ZRfuo6qMkVZxoU2X_WGjzZaWjBzgmcs78IYU-0iU7yLcouZkO7tEVrJ_Smpqxg37any9iS453euAA8gTpotlGSQUoCanHCZcp-5zZKvBXp1lD0Le_S5iPZ93OhMUlK8B2pUQsDLXgewTbnOHQ&h=uQoLo4MZZmucrxMJoU2l9FEsHpil0Z-0IJMAabdDVlI
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20261027T190456Z-167458995c65hmtchC1SJCv0ds00000008v00000000025dg
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2ba0a8c3-d479-41b5-90a9-3f5441586e99/westus3/6de3bdaf-9f58-4939-97d3-072c9d285fd8
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 7988B0B2336549BEA16589555BC3941F Ref B: PNQ231110907036 Ref C: 2026-10-27T19:04:55Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency usage-plan delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --usage-plan-name --yes
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/f9be9065-9ebc-4528-84f5-4fe807c31530*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790?api-version=2026-10-01&t=639287246976598764&c=MIIIJzCCBw-gAwIBAgIRAKCxVbScFDiCR8oT6qcGYJMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA5MTkwMDU4MzJaFw0yNjEyMTQwNjU4MzJaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzFNlTnLezYuVV9JBgdhqA91jRJUtR4AjUkUKP5Nk7STlDt0_Hwx2OHYvMcuSX2B7klrS1nxF26zm4lnQKcCJTslJYfDrx756nLb5iGS6OS0koE0rze5-sUiu_IHHt28tpGv_9lvJvRWPDZc1uYCzrGyBpz6HvBzVgl3BeyWo9RTZYJhgBVNIATJuDRUzovVt8XczDob4euvsqOVr7rBx6wvKf79ASaeXB6PbT19HGywTrd9Xkd33sWfzQu5ZuHtSgX3i1sp_4BVE8VTuCkqIku5kzbulG3jvlSrsOmn680vsH3sS1APY1L7SymeuyNuVIv20HZmQukmjreOzZu-iGQIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7SRzDdTHXndOcavyYsWupdx4MecwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS80MS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQA5ody_Abz9ik5_3WVrjOb7e5cyPkeuDRHrpQ3VO0TeurG5LwTtQ-Yu-lE3ow2Qq4IbIIP6kpzWMQ_woGCp96pGdwvp7vLu4SYc-Rp-CKqLpJtXBRQ01RDbqBZWPwrrgrfMjTaopq1rEEHOBBqt2X4fPXlf91DULpbYJikwKVt4rSQPFgvzjtIpRSeHkIIw8oA95SBfgvs-CIisoc1h-1J1s6jmYw8Kqgqc-NoVLrvf4qRHrd8_0YK2nmtl5XnHD8a50gNVozHfx52l7NfwV_tYfwIO82lHrNxrpLkb7gSAAoAkma6s2Tjh23fpSj-E9OFOFMeuCwnaykbAggIZp9hc&s=Vl8ANyKhbIfeJeF7ZNdsXhS40HwCdcXMC-Rih7WyCdlNzJnRAu99du6odmHFl3QixC6TohchUuugRA9hp-bcTXK9AhzqC3MEBgXWOqND2jQJ1SSkjf-RzkeQ3rYLASbr3VfIJFLMHFOE5zT197mFPMZXWmoLOn7wtoC6U4M0XizhWIz5IX6BNhOdkL1ZcODqZoEmAzvzI2NUlAEdnfBnFRYdohaKUOVuqf1D_RAqtvDLD2cuesjkQ3Zp97BBVtJf1TuIpbmumZUmuo-gxdpq2ARPyhImPvGBOneywNypDqPSCxKJmjn-Ggq6f8yVW8JPdW551-s1i777amlthLVhuw&h=uQoLo4MZZmucrxMJoU2l9FEsHpil0Z-0IJMAabdDVlI
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/f9be9065-9ebc-4528-84f5-4fe807c31530*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790","name":"f9be9065-9ebc-4528-84f5-4fe807c31530*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001","status":"Deleting","startTime":"2026-10-27T19:04:57.0180537Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/westus/operationStatuses/f9be9065-9ebc-4528-84f5-4fe807c31530*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790?api-version=2026-10-01&t=639287246986425973&c=MIIIJzCCBw-gAwIBAgIRAIj-jhYgLbfUUbx2jC_SNIowDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA5MjMwNTA1MjdaFw0yNjEyMTgxMTA1MjdaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyeA8ekCN9dx_H_hpaGg0NqW7Rpf7WElPTivJEXFiEUUmlDxXmilSjXjGSNwDU0ErGMVo0Chf6Fmy72cNUM_kQuAJ3NolMdTWbVSxzJ0bLkgC1JhpgihlZ7PTw21un2NfJugcLOiZe7Kj4RKErCelQjBHkTD6U7w-ceLspcQ6mCRX6luV9c8WVX31YmRIb8GZPdRP_V9JDXRW7c_yDsOqMreuRXF6cf4xlPIvaO7P34tP2C1k1rv1J8qH9if8Mn5WsckL0oLpC0ocM9YaA6z-85bY5baDtaCriWIXdPlrZ890yWcz2NnQ_2rw4WifBW1WvMk321JJpfzXuNkkYpOA9QIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUVpuFQHfLHlrFfGMCLWc2_DZNu1cwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzYxL2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS82MS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzYxL2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzYxL2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBJa_KUCNG-f7XUiiUuDBrvYZS2Z8FofSyp6uKYLKfF9mxmD4Zy0ksWftADl_qfVGCbq-dpyuVfUjgpc2tr6XAn80Z4GKb2k0wYYO4voOJXoWOqPEpYw8SLA6tzu7AhC3bAAVZM3m-LhotavMCbONvJphXH30312kxl4AvbUBnY3wVpwm-kbibwU1os1qVnTsOCPQT_zhENQC_xt5NIu63Vv2qZzhXb7rH10GKhkqHyYSBF99cYRho7mW4CGR-b_vV4wYatAQm1AdLWZ0WH6UMh8HMgnuEVnJ1HOdWVxuk6BK5g016SXjAJk66KjOH36fAl01_LmtwI5nli8nTadkb3&s=IF0FbIqIn9gv1ydEVx0o6YjSMnrsRLuVeWAbeLIkglh5lPuW7e94aGnf8uggAxeWf5hD_21JQhJgEl6q3Ife2-6oomarknYhCRC8k0bzg5vraTnMyNgW6zlD86ZvC3jhDfZs-eALqHE8_59WQ3ryuWNp_jaX2YsWN6EbtQDpHfiVkqND6e9YyhO1Q9kYkYWsEvWrzopEyzHGHC3W97gHfjteQDgp4ZCpyYBVgyYwjdZEWM4BeoHBExxS1mE_0iEZm91MgqVGvUP6rhlXY3Eyf7TigzlGUe0iPn3k-RLCxXAVpZ2eyENQTWctU5eUjlhIv4vv7fBbKJYx1Eo_vt65dw&h=k6dNJI-XB56SW_9yLvFXlHYOXMwZI5JBCU3YdyzcHRc
+      cache-control:
+      - no-cache
+      content-length:
+      - '533'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:04:58 GMT
+      etag:
+      - '"7900bb76-0000-0700-0000-6ae0f5d90000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/westus/operationStatuses/f9be9065-9ebc-4528-84f5-4fe807c31530*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790?api-version=2026-10-01&t=639287246986582150&c=MIIIJzCCBw-gAwIBAgIRAIj-jhYgLbfUUbx2jC_SNIowDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA5MjMwNTA1MjdaFw0yNjEyMTgxMTA1MjdaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyeA8ekCN9dx_H_hpaGg0NqW7Rpf7WElPTivJEXFiEUUmlDxXmilSjXjGSNwDU0ErGMVo0Chf6Fmy72cNUM_kQuAJ3NolMdTWbVSxzJ0bLkgC1JhpgihlZ7PTw21un2NfJugcLOiZe7Kj4RKErCelQjBHkTD6U7w-ceLspcQ6mCRX6luV9c8WVX31YmRIb8GZPdRP_V9JDXRW7c_yDsOqMreuRXF6cf4xlPIvaO7P34tP2C1k1rv1J8qH9if8Mn5WsckL0oLpC0ocM9YaA6z-85bY5baDtaCriWIXdPlrZ890yWcz2NnQ_2rw4WifBW1WvMk321JJpfzXuNkkYpOA9QIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUVpuFQHfLHlrFfGMCLWc2_DZNu1cwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzYxL2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS82MS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzYxL2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzYxL2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBJa_KUCNG-f7XUiiUuDBrvYZS2Z8FofSyp6uKYLKfF9mxmD4Zy0ksWftADl_qfVGCbq-dpyuVfUjgpc2tr6XAn80Z4GKb2k0wYYO4voOJXoWOqPEpYw8SLA6tzu7AhC3bAAVZM3m-LhotavMCbONvJphXH30312kxl4AvbUBnY3wVpwm-kbibwU1os1qVnTsOCPQT_zhENQC_xt5NIu63Vv2qZzhXb7rH10GKhkqHyYSBF99cYRho7mW4CGR-b_vV4wYatAQm1AdLWZ0WH6UMh8HMgnuEVnJ1HOdWVxuk6BK5g016SXjAJk66KjOH36fAl01_LmtwI5nli8nTadkb3&s=rrnbFD1k1kNIOPdyoamtyHEjVLCwjPAdm3_D2TuwPMGcfGe-iXyc1GJqkGwyuMsG1ooayFmeQOnhAyxfZjNE2ZI2gWYuX1UTVCQB8IdqAlV2ziTCT0t6Ng5kSNDQGtqr8xTpxCWwvCdtKjp1uJWuqB4vwjLmUsCXg0CznFARLPoaaP2YrbKIFemVMQt2Y68nv1vTiGwzaoJUC6t4ajgSQ4NjnTOe0Od30qs1u2nphLAp5EpY6Ex70W7zkMmlcExweVfpK8bTDqygBC1lBU2MO4XOUnEo7zMB9WF_2Tv0Po8RhzPNhJps02kqF_Xo2lHp2Ied14SVbyHq0rbxB2AZBg&h=xIcgJ4IOrnmnXwFhFJA202q7liwfRbTuQCmEnT6PswE
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 6DAF00FA637F40D495CC2A02963124CC Ref B: PNQ231110907034 Ref C: 2026-10-27T19:04:58Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency usage-plan delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --usage-plan-name --yes
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/f9be9065-9ebc-4528-84f5-4fe807c31530*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790?api-version=2026-10-01&t=639287246976598764&c=MIIIJzCCBw-gAwIBAgIRAKCxVbScFDiCR8oT6qcGYJMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA5MTkwMDU4MzJaFw0yNjEyMTQwNjU4MzJaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzFNlTnLezYuVV9JBgdhqA91jRJUtR4AjUkUKP5Nk7STlDt0_Hwx2OHYvMcuSX2B7klrS1nxF26zm4lnQKcCJTslJYfDrx756nLb5iGS6OS0koE0rze5-sUiu_IHHt28tpGv_9lvJvRWPDZc1uYCzrGyBpz6HvBzVgl3BeyWo9RTZYJhgBVNIATJuDRUzovVt8XczDob4euvsqOVr7rBx6wvKf79ASaeXB6PbT19HGywTrd9Xkd33sWfzQu5ZuHtSgX3i1sp_4BVE8VTuCkqIku5kzbulG3jvlSrsOmn680vsH3sS1APY1L7SymeuyNuVIv20HZmQukmjreOzZu-iGQIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7SRzDdTHXndOcavyYsWupdx4MecwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS80MS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQA5ody_Abz9ik5_3WVrjOb7e5cyPkeuDRHrpQ3VO0TeurG5LwTtQ-Yu-lE3ow2Qq4IbIIP6kpzWMQ_woGCp96pGdwvp7vLu4SYc-Rp-CKqLpJtXBRQ01RDbqBZWPwrrgrfMjTaopq1rEEHOBBqt2X4fPXlf91DULpbYJikwKVt4rSQPFgvzjtIpRSeHkIIw8oA95SBfgvs-CIisoc1h-1J1s6jmYw8Kqgqc-NoVLrvf4qRHrd8_0YK2nmtl5XnHD8a50gNVozHfx52l7NfwV_tYfwIO82lHrNxrpLkb7gSAAoAkma6s2Tjh23fpSj-E9OFOFMeuCwnaykbAggIZp9hc&s=Vl8ANyKhbIfeJeF7ZNdsXhS40HwCdcXMC-Rih7WyCdlNzJnRAu99du6odmHFl3QixC6TohchUuugRA9hp-bcTXK9AhzqC3MEBgXWOqND2jQJ1SSkjf-RzkeQ3rYLASbr3VfIJFLMHFOE5zT197mFPMZXWmoLOn7wtoC6U4M0XizhWIz5IX6BNhOdkL1ZcODqZoEmAzvzI2NUlAEdnfBnFRYdohaKUOVuqf1D_RAqtvDLD2cuesjkQ3Zp97BBVtJf1TuIpbmumZUmuo-gxdpq2ARPyhImPvGBOneywNypDqPSCxKJmjn-Ggq6f8yVW8JPdW551-s1i777amlthLVhuw&h=uQoLo4MZZmucrxMJoU2l9FEsHpil0Z-0IJMAabdDVlI
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/f9be9065-9ebc-4528-84f5-4fe807c31530*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790","name":"f9be9065-9ebc-4528-84f5-4fe807c31530*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001","status":"Succeeded","startTime":"2026-10-27T19:04:57.0180537Z","endTime":"2026-10-27T19:05:07.1132726Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '593'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:05:29 GMT
+      etag:
+      - '"6b00d8a9-0000-0800-0000-6ae0f5e60000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: 901CE0E8610C4A97AACF819DCB15BC65 Ref B: PNQ231110908042 Ref C: 2026-10-27T19:05:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency usage-plan delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --usage-plan-name --yes
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/f9be9065-9ebc-4528-84f5-4fe807c31530*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790?api-version=2026-10-01&t=639287246976598764&c=MIIIJzCCBw-gAwIBAgIRAKCxVbScFDiCR8oT6qcGYJMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV0NVUyBDQSAwMTAeFw0yNjA5MTkwMDU4MzJaFw0yNjEyMTQwNjU4MzJaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzFNlTnLezYuVV9JBgdhqA91jRJUtR4AjUkUKP5Nk7STlDt0_Hwx2OHYvMcuSX2B7klrS1nxF26zm4lnQKcCJTslJYfDrx756nLb5iGS6OS0koE0rze5-sUiu_IHHt28tpGv_9lvJvRWPDZc1uYCzrGyBpz6HvBzVgl3BeyWo9RTZYJhgBVNIATJuDRUzovVt8XczDob4euvsqOVr7rBx6wvKf79ASaeXB6PbT19HGywTrd9Xkd33sWfzQu5ZuHtSgX3i1sp_4BVE8VTuCkqIku5kzbulG3jvlSrsOmn680vsH3sS1APY1L7SymeuyNuVIv20HZmQukmjreOzZu-iGQIDAQABo4IFJDCCBSAwgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7SRzDdTHXndOcavyYsWupdx4MecwHwYDVR0jBBgwFoAUFNI34PbWfX7djbq6ZasElCXglh0wggH7BgNVHR8EggHyMIIB7jB7oHmgd4Z1aHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMH2ge6B5hndodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NybHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS80MS9jdXJyZW50LmNybDBsoGqgaIZmaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIGBoH-gfYZ7aHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzQxL2N1cnJlbnQuY3JsMIICAAYIKwYBBQUHAQEEggHyMIIB7jB-BggrBgEFBQcwAoZyaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMIGABggrBgEFBQcwAoZ0aHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwbwYIKwYBBQUHMAKGY2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB4BggrBgEFBQcwAoZsaHR0cDovL2NjbWV3ZXN0Y2VudHJhbHVzcGtpLndlc3RjZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdGNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQA5ody_Abz9ik5_3WVrjOb7e5cyPkeuDRHrpQ3VO0TeurG5LwTtQ-Yu-lE3ow2Qq4IbIIP6kpzWMQ_woGCp96pGdwvp7vLu4SYc-Rp-CKqLpJtXBRQ01RDbqBZWPwrrgrfMjTaopq1rEEHOBBqt2X4fPXlf91DULpbYJikwKVt4rSQPFgvzjtIpRSeHkIIw8oA95SBfgvs-CIisoc1h-1J1s6jmYw8Kqgqc-NoVLrvf4qRHrd8_0YK2nmtl5XnHD8a50gNVozHfx52l7NfwV_tYfwIO82lHrNxrpLkb7gSAAoAkma6s2Tjh23fpSj-E9OFOFMeuCwnaykbAggIZp9hc&s=qY3InjnAhPnLsDNhY-9VwfGu03eMvz-eoMZ5AM6NfS3hUBp50A4H50i8VgfZPNtPZ1-4yExIYYxN0CPAzzOr97Tvggq3gS3_xUFVf5Xu_cdcEI3Vqfjodc6MQhfjAw0qGu_FhzgTX9tAVC80TsR44STfMKfb2gEoRpn8uIaHeCurWhntvzPy8psekwG8qcbK8B9m0ZRfuo6qMkVZxoU2X_WGjzZaWjBzgmcs78IYU-0iU7yLcouZkO7tEVrJ_Smpqxg37any9iS453euAA8gTpotlGSQUoCanHCZcp-5zZKvBXp1lD0Le_S5iPZ93OhMUlK8B2pUQsDLXgewTbnOHQ&h=uQoLo4MZZmucrxMJoU2l9FEsHpil0Z-0IJMAabdDVlI
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/WESTUS/operationStatuses/f9be9065-9ebc-4528-84f5-4fe807c31530*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790","name":"f9be9065-9ebc-4528-84f5-4fe807c31530*BEA793958BB25A60A632FD296350D797369E21B9695B6C28BD6F6BE9273A5790","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-testing/providers/Microsoft.AzureResilienceManagement/usagePlans/usageplan000001","status":"Succeeded","startTime":"2026-10-27T19:04:57.0180537Z","endTime":"2026-10-27T19:05:07.1132726Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '593'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 19:05:31 GMT
+      etag:
+      - '"6b00d8a9-0000-0800-0000-6ae0f5e60000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-msedge-ref:
+      - 'Ref A: B8C48F411E77477D88AE976434A4026B Ref B: PNQ231110909042 Ref C: 2026-10-27T19:05:30Z'
+    status:
+      code: 200
+      message: OK
+version: 1
