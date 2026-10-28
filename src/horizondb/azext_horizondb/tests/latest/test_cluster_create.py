@@ -12,8 +12,11 @@ from azure.cli.core import get_default_cli
 from azure.cli.core.aaz import AAZCommand
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azext_horizondb import HorizonDBCommandsLoader
+from azext_horizondb.aaz.latest.horizondb.cluster import custom as cluster_custom
+from azext_horizondb.aaz.latest.horizondb.cluster.custom import ClusterCreate
 from azext_horizondb.aaz.latest.horizondb.cluster.pool import Create as PoolCreate
-from azext_horizondb.custom import ClusterCreate, PoolCreate as CustomPoolCreate, PoolUpdate
+from azext_horizondb.aaz.latest.horizondb.cluster.pool import custom as pool_custom
+from azext_horizondb.aaz.latest.horizondb.cluster.pool.custom import PoolCreate as CustomPoolCreate, PoolUpdate
 
 
 class ClusterCreateTests(TestCase):
@@ -42,7 +45,7 @@ class ClusterCreateTests(TestCase):
         }
         self.pool_update_args.update(pool_name='my-pool', node_count=3)
         self.cluster = {'name': 'test-cluster', 'location': 'japaneast'}
-        show_cluster = patch('azext_horizondb.custom._ClusterShow')
+        show_cluster = patch.object(cluster_custom, '_ClusterShow')
         self.show_cluster = show_cluster.start().return_value
         self.addCleanup(show_cluster.stop)
         self.show_cluster.return_value = dict(self.cluster, provisioningState='Succeeded')
@@ -90,10 +93,10 @@ class ClusterCreateTests(TestCase):
 
         poller = object()
         with patch.object(self.command, 'ClustersCreateOrReplace') as cluster_operation, \
-                patch('azext_horizondb.custom.PoolCreate') as pool_command, \
-                patch('azext_horizondb.custom.LongRunningOperation') as wait, \
+                patch.object(cluster_custom, 'PoolCreate') as pool_command, \
+                patch.object(cluster_custom, 'LongRunningOperation') as wait, \
                 patch('time.sleep') as sleep, \
-                patch('azext_horizondb.custom.logger') as logger:
+                patch.object(cluster_custom, 'logger') as logger:
             cluster_operation.return_value.side_effect = create_cluster
             pool_command.return_value.side_effect = create_pool
             result = self.command(command_args=self.args)
@@ -108,7 +111,7 @@ class ClusterCreateTests(TestCase):
 
     def test_cluster_failure_does_not_create_pool(self):
         with patch.object(self.command, 'ClustersCreateOrReplace') as cluster_operation, \
-                patch('azext_horizondb.custom.PoolCreate') as pool_command:
+                patch.object(cluster_custom, 'PoolCreate') as pool_command:
             cluster_operation.return_value.side_effect = CLIError('cluster failed')
             with self.assertRaisesRegex(CLIError, 'cluster failed'):
                 self.command(command_args=self.args)
@@ -118,7 +121,7 @@ class ClusterCreateTests(TestCase):
     def test_failed_cluster_provisioning_does_not_create_pool(self):
         self.show_cluster.return_value = dict(self.cluster, provisioningState='Failed')
         with patch.object(self.command, 'ClustersCreateOrReplace'), \
-                patch('azext_horizondb.custom.PoolCreate') as pool_command:
+                patch.object(cluster_custom, 'PoolCreate') as pool_command:
             with self.assertRaisesRegex(CLIError, 'operation failed'):
                 self.command(command_args=self.args)
         pool_command.assert_not_called()
@@ -128,15 +131,15 @@ class ClusterCreateTests(TestCase):
         error.status_code = 403
         self.show_cluster.side_effect = error
         with patch.object(self.command, 'ClustersCreateOrReplace'), \
-                patch('azext_horizondb.custom.PoolCreate') as pool_command:
+                patch.object(cluster_custom, 'PoolCreate') as pool_command:
             with self.assertRaisesRegex(HttpResponseError, 'Access denied'):
                 self.command(command_args=self.args)
         pool_command.assert_not_called()
 
     def test_cluster_provisioning_timeout_does_not_create_pool(self):
         with patch.object(self.command, 'ClustersCreateOrReplace'), \
-                patch('azext_horizondb.custom.PoolCreate') as pool_command, \
-                patch('azext_horizondb.custom.WaitCommandOperation.wait',
+                patch.object(cluster_custom, 'PoolCreate') as pool_command, \
+                patch.object(cluster_custom.WaitCommandOperation, 'wait',
                       return_value=CLIError('Wait operation timed-out')) as wait:
             with self.assertRaisesRegex(CLIError, 'timed-out'):
                 self.command(command_args=self.args)
@@ -145,8 +148,8 @@ class ClusterCreateTests(TestCase):
 
     def test_pool_failure_is_reported(self):
         with patch.object(self.command, 'ClustersCreateOrReplace'), \
-                patch('azext_horizondb.custom.PoolCreate'), \
-                patch('azext_horizondb.custom.LongRunningOperation') as wait:
+                patch.object(cluster_custom, 'PoolCreate'), \
+                patch.object(cluster_custom, 'LongRunningOperation') as wait:
             wait.return_value.side_effect = CLIError('pool failed')
             with self.assertRaisesRegex(CLIError, 'pool failed'):
                 self.command(command_args=self.args)
@@ -176,8 +179,8 @@ class ClusterCreateTests(TestCase):
         for mode in ['AnyZone', 'ZoneRedundant']:
             with self.subTest(mode=mode), \
                     patch.object(self.command, 'ClustersCreateOrReplace'), \
-                    patch('azext_horizondb.custom.PoolCreate') as pool_command, \
-                    patch('azext_horizondb.custom.LongRunningOperation'), \
+                    patch.object(cluster_custom, 'PoolCreate') as pool_command, \
+                    patch.object(cluster_custom, 'LongRunningOperation'), \
                     patch.object(self.command, '_output'):
                 args = dict(self.args, node_count=16, high_availability_mode=mode,
                             compute_processor='Intel', v_cores=192)
@@ -226,7 +229,7 @@ class ClusterCreateTests(TestCase):
             return updated_pool
 
         with patch.object(command, 'PoolsUpdate') as update, \
-                patch('azext_horizondb.custom._PoolShow') as show:
+                patch.object(pool_custom, '_PoolShow') as show:
             update.return_value.return_value = polling
             show.return_value.side_effect = show_pool
             result = command(command_args=self.pool_update_args).result()
@@ -240,7 +243,7 @@ class ClusterCreateTests(TestCase):
         command = PoolUpdate(cli_ctx=self.command.cli_ctx)
         polling = Mock()
         with patch.object(command, 'PoolsUpdate') as update, \
-                patch('azext_horizondb.custom._PoolShow') as show:
+                patch.object(pool_custom, '_PoolShow') as show:
             update.return_value.return_value = polling
             result = command(command_args=dict(self.pool_update_args, no_wait=True))
         self.assertIsNone(result)
@@ -252,7 +255,7 @@ class ClusterCreateTests(TestCase):
         polling = Mock()
         polling.run.side_effect = HttpResponseError('Update failed')
         with patch.object(command, 'PoolsUpdate') as update, \
-                patch('azext_horizondb.custom._PoolShow') as show:
+                patch.object(pool_custom, '_PoolShow') as show:
             update.return_value.return_value = polling
             with self.assertRaisesRegex(HttpResponseError, 'Update failed'):
                 command(command_args=self.pool_update_args).result()
@@ -263,7 +266,7 @@ class ClusterCreateTests(TestCase):
         polling = Mock()
         polling.resource.return_value = None
         with patch.object(command, 'PoolsUpdate') as update, \
-                patch('azext_horizondb.custom._PoolShow') as show:
+                patch.object(pool_custom, '_PoolShow') as show:
             update.return_value.return_value = polling
             show.return_value.side_effect = HttpResponseError('Cannot read updated pool')
             with self.assertRaisesRegex(HttpResponseError, 'Cannot read updated pool'):

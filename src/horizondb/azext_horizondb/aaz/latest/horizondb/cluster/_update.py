@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Update an existing HorizonDB cluster.
 
     :example: Rotate the customer-managed key used by a HorizonDB cluster
-        az horizondb cluster update --resource-group example-resource-group --cluster-name example-cluster -retention-days 14
+        az horizondb cluster update --resource-group example-resource-group --cluster-name example-cluster --backup-retention-days 14
     """
 
     _aaz_info = {
