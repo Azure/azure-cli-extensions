@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a DependencyOfRelationship
+
+    :example: Delete a Service Group dependency
+        az relationship dependency-of-by-service-group delete --service-group-name sourceSG --name myDependency --yes
     """
 
     _aaz_info = {

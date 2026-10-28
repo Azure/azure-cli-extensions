@@ -86,6 +86,8 @@ class RelationshipCommandTest(unittest.TestCase):
             'relationship service-group-member update',
             'relationship dependency-of-by-service-group create',
             'relationship dependency-of-by-service-group update',
+            'relationship dependency-of-by-service-group show',
+            'relationship dependency-of-by-service-group delete',
         ):
             with self.subTest(command=name):
                 examples = self.commands[name].AZ_HELP['examples']
@@ -237,7 +239,12 @@ class RelationshipCommandTest(unittest.TestCase):
                 tenant_arg = 'source_tenant' if group == 'service-group-member' else 'target_tenant'
                 tenant_property = 'sourceTenant' if group == 'service-group-member' else 'targetTenant'
                 resource_id = SERVICE_GROUP if group == 'service-group-member' else TARGET
-                command, client = self._command(group, 'update', no_wait=True, **{tenant_arg: TENANT})
+                endpoint_arg = 'source_id' if group == 'service-group-member' else 'target_id'
+                changed_id = '/providers/Microsoft.Management/serviceGroups/changedSG'
+                self.assertNotEqual(changed_id, resource_id)
+                command, client = self._command(
+                    group, 'update', no_wait=True, **{tenant_arg: TENANT, endpoint_arg: changed_id}
+                )
                 instance = {
                     'id': RESOURCE_URI + '/providers/Microsoft.Relationships/example/test',
                     'name': 'test.relationship-1',
@@ -257,7 +264,7 @@ class RelationshipCommandTest(unittest.TestCase):
                 self.assertEqual([request.method for request in requests], ['GET', 'PUT'])
                 self.assertEqual(requests[0].url, requests[1].url)
                 self.assertEqual(json.loads(requests[1].body), {
-                    'properties': {property_name: resource_id, tenant_property: TENANT},
+                    'properties': {property_name: changed_id, tenant_property: TENANT},
                 })
                 self.assertTrue(client.build_lro_polling.call_args.args[0].to_serialized_data())
 

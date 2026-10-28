@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a DependencyOfRelationship
+
+    :example: Show a Service Group dependency
+        az relationship dependency-of-by-service-group show --service-group-name sourceSG --name myDependency
     """
 
     _aaz_info = {
