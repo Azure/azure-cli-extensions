@@ -2,10 +2,19 @@
 
 Release History
 ===============
+3.0.0b8
++++++++++++++++
+* Evaluate conditional inputs independently for step inputs and each workload's
+  overrides, preserving defined required and optional fields until a matching
+  condition applies.
+* Avoid duplicate required errors and preserve allowed inherited values when
+  excluding conditional fields from saved parameters.
+
 3.0.0b7
 +++++++++++++++
-* Validate optional JSON Schema Draft-07 conditions offline in the runbook
-  and execution parameter editors without rendering schema keywords as inputs.
+* Support inline conditional input rules in runbook and execution parameter
+  editors: const-based conditions select required inputs and exclude fields
+  marked false from controls, validation, and saved parameters.
 * Report conditional validation errors before preparing the upload command,
   while allowing incomplete parameters to be saved as a draft.
 

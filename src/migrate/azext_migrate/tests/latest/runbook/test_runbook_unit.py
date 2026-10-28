@@ -1840,7 +1840,7 @@ class ConfigureRendererTests(unittest.TestCase):
         html_text = configure_renderer.render(root, None, {"runbook": "r"})
         self.assertNotIn('__RUNBOOK_DATA__', html_text)
         self.assertNotIn('__SCHEMA_VALIDATOR__', html_text)
-        self.assertIn('var RunbookSchema=', html_text)
+        self.assertNotIn('RunbookSchema', html_text)
         self.assertNotIn('</script><b>x', html_text)
         self.assertIn('\\u003c', html_text)
         self.assertIn('s-1', html_text)

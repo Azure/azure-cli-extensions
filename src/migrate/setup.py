@@ -7,7 +7,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "3.0.0b7"
+VERSION = "3.0.0b8"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -41,7 +41,5 @@ setup(
         'azext_metadata.json',
         'runbook/visualize/templates/*.tmpl',
         'runbook/configure/templates/*.tmpl',
-        'runbook/configure/vendor/*.js',
-        'runbook/configure/vendor/LICENSE',
     ]}
 )
