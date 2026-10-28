@@ -60,7 +60,8 @@ before `az validate` runs, so the file's content would be checked instead of the
 - **Commands from extensions that aren't installed** are checked against published command metadata,
   downloaded from the Azure CLI metadata stores and cached for 12 hours. This needs network access; with
   `--offline` or no network, such commands come back `unchecked`. Published metadata records parameter
-  names, required parameters, choices and number types, but not whether a parameter takes a value.
+  names, required parameters, choices and number types, but not whether a parameter without a type takes
+  a value.
 - **Core commands that an extension changes** (for example, a preview extension that adds parameters) are
   checked against both: an error that the extension resolves is reported as a `RequiresExtension` warning
   instead.

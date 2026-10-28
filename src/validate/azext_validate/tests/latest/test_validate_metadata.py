@@ -24,11 +24,17 @@ _EXT_URL = _extmeta.META_BASE_URL
 _GRAPH = {'module_name': 'resource-graph', 'name': 'resource-graph', 'commands': {'graph query': {
     'name': 'graph query', 'parameters': [
         {'name': 'graph_query', 'options': ['--graph-query', '--q', '-q'], 'required': True},
-        {'name': 'first', 'options': ['--first'], 'type': 'int'}]}, 'graph build': {
+        {'name': 'first', 'options': ['--first'], 'type': 'int'},
+        {'name': 'skip_token', 'options': ['--skip-token'], 'type': 'string'},
+        {'name': 'mode', 'options': ['--mode'], 'choices': ['Fast', 'Full']},
+        {'name': 'allow_partial', 'options': ['--allow-partial'], 'type': 'bool', 'nargs': '?',
+         'choices': ['false', 'true']},
+        {'name': 'include_hidden', 'options': ['--include-hidden'], 'type': 'bool'}]}, 'graph build': {
     'name': 'graph build', 'parameters': [
         {'name': 'registry_name', 'options': ['--registry', '-r'], 'required': True},
         {'name': 'tag', 'options': ['--tag', '-t']},
         {'name': 'no_push', 'options': ['--no-push']},
+        {'name': 'quiet', 'options': ['--quiet'], 'type': 'bool'},
         {'name': 'source_location', 'required': True}]}, 'graph old': {
     'name': 'graph old', 'deprecate_info': {'target': 'graph old', 'redirect': 'graph query'}, 'parameters': [
         {'name': 'graph_query', 'options': ['--graph-query', '-q'], 'required': True}]}}, 'sub_groups': {}}
@@ -37,6 +43,10 @@ _AKS_PREVIEW = {'module_name': 'aks-preview', 'name': 'aks-preview', 'commands':
         {'name': 'resource_group_name', 'options': ['--resource-group', '-g'], 'required': True},
         {'name': 'name', 'options': ['--name', '-n'], 'required': True},
         {'name': 'node_count', 'options': ['--node-count', '-c'], 'type': 'int'},
+        {'name': 'preview_count', 'options': ['--preview-count', '-j'], 'type': 'int',
+         'options_deprecate_info': [{'target': '--preview-cnt', 'redirect': '--preview-count'}]},
+        {'name': 'preview_tier', 'options': ['--preview-tier', '--tier-preview'], 'choices': ['Basic', 'Premium'],
+         'options_deprecate_info': [{'target': '--tier-preview', 'redirect': '--preview-tier'}]},
         {'name': 'enable_preview_feature', 'options': ['--enable-preview-feature']}]}}, 'sub_groups': {}}
 _INDEX = {'graph': {'query': 'resource-graph', 'build': 'resource-graph', 'old': 'resource-graph'},
           'aks': {'create': 'aks-preview'}}
@@ -106,6 +116,37 @@ class TestUninstalledExtensions(MetadataTestBase):
         self.assertEqual(r['status'], 'invalid')
         self.assertEqual([e['code'] for e in r['errors']], ['InvalidValue'])
 
+    def test_overlay_checks_values_of_extension_only_options(self):
+        # Core rejects options only the extension has, so it can't check their values; metadata's verdict stands.
+        for command, code, param in (('az aks create -g rg -n a --preview-count', 'MissingValue', '--preview-count'),
+                                     ('az aks create -g rg -n a -j abc', 'InvalidValue', '--preview-count'),
+                                     ('az aks create -g rg -n a -jabc', 'InvalidValue', '--preview-count'),
+                                     ('az aks create -g rg -n a -jabc --enable-preview-feature', 'InvalidValue',
+                                      '--preview-count'),
+                                     ('az aks create -g rg -n a --enable-preview-feature -jabc', 'InvalidValue',
+                                      '--preview-count'),
+                                     ('az aks create -g rg -n a --preview-cnt abc', 'InvalidValue', '--preview-count'),
+                                     ('az aks create -g rg -n a --preview-t Gold', 'InvalidChoice', '--preview-tier')):
+            _, r = self.one(command)
+            self.assertEqual((r['status'], r['source'], r['requiresExtension']), ('invalid', 'core', 'aks-preview'),
+                             command)
+            self.assertEqual([(e['code'], e['parameter']) for e in r['errors']], [(code, param)], command)
+            self.assertEqual([w['code'] for w in r['warnings']], ['RequiresExtension'])
+        _, r = self.one('az aks create -g rg -n a -j 3 --preview-tier premium')
+        self.assertEqual((r['status'], r['requiresExtension']), ('valid', 'aks-preview'))
+        # A deprecated name may also be listed in options; its abbreviation is still unique.
+        _, r = self.one('az aks create -g rg -n a --tier-p Basic')
+        self.assertEqual((r['status'], r['requiresExtension']), ('valid', 'aks-preview'))
+        # An option neither knows stays an error, even where metadata may read it as a missing value.
+        _, r = self.one('az aks create -g rg -n a --preview-count --bogus')
+        self.assertEqual([(e['code'], e.get('parameter') or e.get('parameters')) for e in r['errors']],
+                         [('UnrecognizedArgument', ['--bogus']), ('MissingValue', '--preview-count')])
+        self.assertEqual(r['warnings'][0]['parameters'], ['--preview-count'])
+        # argparse counts option strings, so a prefix of two names of one parameter is ambiguous.
+        _, r = self.one('az aks create -g rg -n a --preview-c 3')
+        self.assertEqual([(e['code'], e.get('parameters')) for e in r['errors']],
+                         [('UnrecognizedArgument', ['--preview-c'])])
+
     def test_installed_extension_not_rechecked(self):
         with mock.patch.object(_validator.Validator, 'installed_extensions', return_value={'resource-graph': '2.1.0'}):
             _, r = self.one("az graph query -q 'x'")
@@ -118,11 +159,37 @@ class TestUninstalledExtensions(MetadataTestBase):
         self.assertEqual((r['status'], r['source']), ('invalid', 'extension:resource-graph'))
         self.assertEqual([(e['code'], e['parameter']) for e in r['errors']], [('InvalidValue', '--first')])
 
+    def test_typed_option_needs_value(self):
+        # Metadata shows these options take a value, so a missing one is reported the way core reports it.
+        _, core = self.one('az vm create -g rg -n vm --image x --count')
+        self.assertEqual([(e['code'], e['parameter']) for e in core['errors']], [('MissingValue', '--count')])
+        for command, param in (("az graph query -q 'x' --first", '--first'),
+                               ("az graph query -q 'x' --skip-token", '--skip-token'),
+                               ("az graph query -q 'x' --mode", '--mode')):
+            _, r = self.one(command)
+            self.assertEqual((r['status'], r['source']), ('invalid', 'extension:resource-graph'), command)
+            self.assertEqual([(e['code'], e['parameter']) for e in r['errors']], [('MissingValue', param)])
+            self.assertEqual(r['errors'][0]['message'], core['errors'][0]['message'].replace('--count', param))
+        _, core = self.one('az group create -n rg -l')
+        _, r = self.one('az graph query -q')
+        self.assertEqual([e['code'] for e in r['errors']], [e['code'] for e in core['errors']])
+        self.assertEqual(r['errors'][0]['parameter'], '--graph-query')
+
+    def test_flags_need_no_value(self):
+        for command in ("az graph query -q 'x' --allow-partial", "az graph query -q 'x' --allow-partial false",
+                        "az graph query -q 'x' --include-hidden", "az graph query --include-hidden -q 'x'",
+                        'az graph build -r reg --no-push .'):
+            _, r = self.one(command)
+            self.assertEqual((r['status'], r['source']), ('valid', 'extension:resource-graph'), command)
+
     def test_flag_before_positional(self):
         # Metadata doesn't say --no-push is a flag, so it may take the positional '.' as its value.
         _, r = self.one('az graph build -r reg -t app:v1 --no-push .')
         self.assertEqual(r['status'], 'valid', r)
         self.assertIn('MetadataLimits', [i['code'] for i in r['info']])
+        # A bool option without nargs may be a flag too.
+        _, r = self.one('az graph build -r reg --quiet .')
+        self.assertEqual(r['status'], 'valid', r)
         # Without an option that might be a flag, a missing positional is still reported.
         _, r = self.one('az graph build -r reg')
         self.assertEqual([(e['code'], e['parameters']) for e in r['errors']],

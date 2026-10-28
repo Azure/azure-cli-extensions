@@ -62,6 +62,7 @@ class Outcome:  # pylint: disable=too-many-instance-attributes
         # extension that isn't installed can provide it (internal; not in the output).
         self.blocked_unknown = False
         self.failed_extensions = []   # installed extensions that failed to load during a blocked load (internal)
+        self.known_options = frozenset()  # option strings of the parsed command's parser (internal)
 
     def fail(self, finding):
         self.status = 'invalid'
@@ -905,6 +906,7 @@ def parse_command(inner, args, loader_factory=None):  # pylint: disable=too-many
         finally:
             out.blocked.extend(guard.violations)
             out.parameters = _used_parameters(cmd_parser or parser, args)
+            out.known_options = frozenset(getattr(cmd_parser or parser, '_option_string_actions', {}))
             _placeholder_info(out, parser, cmd_parser)
     if out.status is None:
         out.status = 'valid'

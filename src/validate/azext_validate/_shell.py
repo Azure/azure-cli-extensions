@@ -761,6 +761,38 @@ def scan(text, dialect=BASH, line=1, column=1, nested=False, _result=None):
     return result
 
 
+def _offset(text, line, column):
+    """The index in text of a 1-based line and column, as the lexer counts them."""
+    pos = 0
+    for _ in range(max(line, 1) - 1):
+        nl = text.find('\n', pos)
+        if nl == -1:
+            return len(text)
+        pos = nl + 1
+    return min(pos + max(column, 1) - 1, len(text))
+
+
+def scan_before_error(text, error, dialect=BASH):
+    """Scan the complete commands before a syntax error: the text up to the last command separator
+    (newline, ';', '&&', '|' and so on) before the error. Returns an empty result if there are none."""
+    end = _offset(text, error.line, error.column)
+    for _ in range(16):
+        try:
+            items = _lex(text[:end], dialect)
+            seps = [i for i in items if isinstance(i, Operator) and i.op != 'call']
+            if not seps:
+                return ScanResult()
+            cut = _offset(text, seps[-1].line, seps[-1].column)
+            return scan(text[:cut], dialect)
+        except ShellSyntaxError as ex:
+            # An error in the shorter text, e.g. the unclosed '$(' around the first error, which is
+            # reported just after its opener: move before it.
+            end = min(_offset(text, ex.line, ex.column), end - 1)
+            if end <= 0:
+                break
+    return ScanResult()
+
+
 def _command_words(words, dialect):
     """Strip assignments, keywords and wrappers so the first word is the program run."""
     i = 0

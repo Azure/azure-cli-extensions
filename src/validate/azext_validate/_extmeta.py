@@ -288,6 +288,13 @@ def _choice_type(choices):
     return choice
 
 
+def _may_be_flag(param):
+    """Published metadata doesn't say which options take a value. A type other than bool, choices, nargs,
+    an id_part or being required shows that one does; any other option may be a flag."""
+    return param.get('type') in (None, 'bool') and not any(
+        param.get(k) for k in ('required', 'id_part', 'nargs', 'choices'))
+
+
 def _argument(param, cli_ctx=None):
     from knack.arguments import CLICommandArgument
     from knack.deprecation import Deprecated
@@ -299,7 +306,9 @@ def _argument(param, cli_ctx=None):
     if param['name'] == 'yes':
         kwargs['action'] = 'store_true'
     else:
-        kwargs['nargs'] = param.get('nargs', '?') if options else param.get('nargs', None)
+        # An option that may be a flag takes an optional value; one that needs a value is reported
+        # as MissingValue without it, as core does.
+        kwargs['nargs'] = param.get('nargs') or ('?' if options and _may_be_flag(param) else None)
         if choices:
             kwargs['choices'] = choices
             kwargs['type'] = _choice_type(choices)

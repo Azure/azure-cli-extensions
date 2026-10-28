@@ -9,7 +9,8 @@ import time
 
 from . import _sandbox, _shell
 from ._engine import (Finding, Outcome, InnerCli, build_args, parse_command, PlaceholderArg)
-from ._extmeta import MetadataStore, MetadataUnavailable, metadata_loader_factory, _extensions_under
+from ._extmeta import (MetadataStore, MetadataUnavailable, metadata_loader_factory, _extensions_under, _may_be_flag,
+                       _core_injected_options)
 
 SCHEMA_VERSION = '1.0'
 _UNKNOWN_CODES = ('UnknownCommand', 'MissingSubcommand')
@@ -42,9 +43,9 @@ def _run_parallel(fn, items, timeout):
 
 
 def _relax_flag_positionals(out, meta, args):
-    """Published metadata doesn't say which options are flags, so each is built to take an optional
-    value, and a flag just before a positional argument takes it. If that may have happened, don't
-    report the positional as missing."""
+    """Published metadata doesn't say which options are flags, so an option that may be one is built to
+    take an optional value, and a flag just before a positional argument takes it. If that may have
+    happened, don't report the positional as missing."""
     if not isinstance(meta, dict) or out.status != 'invalid':
         return
     params = [p for p in meta.get('parameters') or [] if isinstance(p, dict) and p.get('name')]
@@ -53,9 +54,7 @@ def _relax_flag_positionals(out, meta, args):
     for p in params:
         opts = [o for o in p.get('options') or [] if isinstance(o, str)]
         all_options.update(opts)
-        # Flags are never required, have no type, choices or nargs, and don't identify a resource.
-        takes_value = any(p.get(k) for k in ('required', 'id_part', 'nargs', 'choices', 'type'))
-        if opts and p['name'] != 'yes' and not takes_value:
+        if opts and p['name'] != 'yes' and _may_be_flag(p):
             maybe_flag.update(opts)
 
     def resolve(token):
@@ -90,6 +89,57 @@ def _relax_flag_positionals(out, meta, args):
         out.info.append(Finding('MetadataLimits', 'A positional argument may have been read as the value of a '
                                 'flag, because published metadata does not say which parameters are flags; it was '
                                 'not reported as missing.'))
+
+
+def _option_groups(meta, name):
+    """The option names of each parameter of a metadata command, including deprecated names and the
+    options core adds to it."""
+    if not isinstance(meta, dict):
+        return []
+    params = [p for p in meta.get('parameters') or [] if isinstance(p, dict) and p.get('name')]
+    groups = []
+    for p in params:
+        opts = [o for o in p.get('options') or [] if isinstance(o, str)]
+        opts += [d['target'] for d in p.get('options_deprecate_info') or []
+                 if isinstance(d, dict) and isinstance(d.get('target'), str) and d['target'] not in opts]
+        if opts:
+            groups.append(opts)
+    for opt in sorted(_core_injected_options(name or '', params)):
+        if not any(opt in g for g in groups):
+            groups.append([opt])
+    return groups
+
+
+def _match_option(token, groups):
+    """The option group a token names: an exact option, or a '--' prefix of exactly one option string (as
+    argparse counts them, so a prefix of two names of one parameter is ambiguous). None otherwise."""
+    for g in groups:
+        if token in g:
+            return g
+    hits = [g for g in groups for o in g if token.startswith('--') and o.startswith(token)]
+    return hits[0] if len(hits) == 1 else None
+
+
+def _extension_only_value_errors(meta_out, groups, resolved, args, local):
+    """Value errors metadata reports for options that core rejects and only the extension accepts. Core
+    can't check those values, so metadata's verdict on them stands."""
+    names, rejected = set(), False
+    for code, token in resolved:
+        if code != 'UnrecognizedArgument':
+            continue
+        rejected = True
+        if token:
+            names.update(_match_option(token, groups) or [])
+    if rejected:
+        # Core doesn't name a token such as '-jabc' (it may be a value); argparse reads it as '-j abc'.
+        for a in args:
+            if isinstance(a, str) and not isinstance(a, PlaceholderArg) and len(a) > 2 and \
+                    a[0] == '-' and a[1].isalpha() and a[:2] not in local.known_options:
+                names.update(_match_option(a[:2], groups) or [])
+    seen = _atoms(local.errors)
+    return [e for e in meta_out.errors
+            if e['code'] in ('MissingValue', 'InvalidValue', 'InvalidChoice') and e.get('parameter') in names and
+            (e['code'], e['parameter']) not in seen]
 
 
 def _drop_incomplete_subcommand_lists(local, kind, value):
@@ -149,15 +199,12 @@ class Validator:  # pylint: disable=too-many-instance-attributes
             scan = _shell.scan(text, dialect)
             syntax_error = None
         except _shell.ShellSyntaxError as ex:
-            # The shell runs the commands before the error, so check those and report the error.
+            # Check the complete commands before the error, and report the error for the rest. (Neither
+            # shell would run a command on a line it can't parse, but the error makes the result invalid.)
             syntax_error = Outcome().fail(Finding(
                 'ShellSyntax', 'The {} text can\'t be parsed: {}.'.format(dialect, ex.reason),
                 line=ex.line, column=ex.column))
-            prefix = '\n'.join(text.splitlines()[:max(ex.line - 1, 0)])
-            try:
-                scan = _shell.scan(prefix, dialect) if prefix.strip() else _shell.ScanResult()
-            except _shell.ShellSyntaxError:
-                scan = _shell.ScanResult()
+            scan = _shell.scan_before_error(text, ex, dialect)
             if not scan.invocations:
                 return [(idx, ex.line, ex.column, syntax_error, notes)]
             syntax_error = (idx, ex.line, ex.column, syntax_error, None)
@@ -367,15 +414,20 @@ class Validator:  # pylint: disable=too-many-instance-attributes
         meta_out.requires_extension = ext
         meta_out.extension_name = None
         limits = Finding('MetadataLimits', 'Checked against published metadata for {} {}, which records parameter '
-                         'names, required parameters, choices and number types, but not whether a parameter takes a '
-                         'value.'.format(ext, version), extension=ext, version=version)
+                         'names, required parameters, choices and number types, but not whether a parameter '
+                         'without a type takes a value.'.format(ext, version), extension=ext, version=version)
         if overlay:
             # Start from core's verdict and drop only the errors the extension provably resolves:
             # names, choices and required parameters. Value errors come from core's own type checks and
-            # actions, which metadata can't reproduce, so they always stand.
+            # actions, which metadata can't reproduce, so they always stand; so do metadata's value errors
+            # on options that only the extension has.
             resolvable = {'UnrecognizedArgument', 'InvalidChoice', 'MissingRequiredArgument', 'AmbiguousArgument'}
             meta_atoms = _atoms(meta_out.errors)
-            resolved = {a for a in _atoms(local.errors) if a[0] in resolvable and a not in meta_atoms}
+            groups = _option_groups(commands.get(meta_out.command_name), meta_out.command_name)
+            # An option core doesn't know is resolved only if it's one of the extension's options: metadata may
+            # not report a token itself (e.g. one that may be the missing value of the option before it).
+            resolved = {a for a in _atoms(local.errors) if a[0] in resolvable and a not in meta_atoms and
+                        not (a[0] == 'UnrecognizedArgument' and a[1] and _match_option(a[1], groups) is None)}
             if not resolved:
                 return local
             remaining = []
@@ -396,6 +448,7 @@ class Validator:  # pylint: disable=too-many-instance-attributes
                             e['suggestionsByParameter'] = kept
                 remaining.append(e)
             params = sorted({p for _, p in resolved if p})
+            remaining.extend(_extension_only_value_errors(meta_out, groups, resolved, build_args(inv.words), local))
             local.errors = remaining
             local.status = 'invalid' if remaining else 'valid'
             local.requires_extension = ext

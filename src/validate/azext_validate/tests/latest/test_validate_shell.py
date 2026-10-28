@@ -86,6 +86,14 @@ class TestScan(unittest.TestCase):
             _shell.scan('az group list\naz group create -n "rg -l westus', 'bash')
         self.assertEqual((cm.exception.line, cm.exception.column), (2, 20))
 
+    def test_scan_before_error_inside_substitution(self):
+        # The error inside "$(...)" is reported after the '(' opener; recovery still stops at the last ';'.
+        text = 'az group list; echo "$(az vm list; az x -n "y)"'
+        with self.assertRaises(_shell.ShellSyntaxError) as cm:
+            _shell.scan(text, 'bash')
+        found = _shell.scan_before_error(text, cm.exception, 'bash')
+        self.assertEqual([[w.text for w in i.words] for i in found.invocations], [['group', 'list']])
+
 
 class TestScripts(ValidateTestBase):
     def setUp(self):
@@ -126,6 +134,21 @@ class TestScripts(ValidateTestBase):
         self.assertEqual([r['status'] for r in doc['results']], ['valid', 'invalid'])
         err = doc['results'][1]['errors'][0]
         self.assertEqual((err['code'], err['line'], err['column']), ('ShellSyntax', 2, 20))
+
+    def test_syntax_error_keeps_complete_commands_on_its_line(self):
+        secret = 'Sup3rS3cretVa1ue'
+        for shell, text in (('bash', 'az group list; az group create -n "unterminated ' + secret),
+                            ('bash', 'az group list && az group create -n "unterminated ' + secret),
+                            ('powershell', "az group list; az group create -n 'unterminated " + secret)):
+            for mode in ('--script', '--command'):
+                code, doc, out = run_validate(mode, text, shell=shell)
+                self.assertEqual(code, 0)
+                self.assertEqual([(r['status'], r.get('commandName')) for r in doc['results']],
+                                 [('valid', 'group list'), ('invalid', None)], (shell, mode, text))
+                err = doc['results'][1]['errors'][0]
+                self.assertEqual((err['code'], err['line'], err['column']),
+                                 ('ShellSyntax', 1, text.index('unterminated')))
+                self.assertNotIn(secret, out)
 
     def test_no_az_commands(self):
         doc = self.script('echo hello\nls -la', 'bash')
