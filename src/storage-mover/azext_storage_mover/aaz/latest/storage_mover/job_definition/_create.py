@@ -89,7 +89,7 @@ class Create(AAZCommand):
             required=True,
             enum={"Additive": "Additive", "Mirror": "Mirror"},
         )
-        _args_schema.cross_tenant_endpoint_resource_id = AAZResourceIdArg(
+        _args_schema.cross_tenant_endpoint_resource_id = AAZStrArg(
             options=["--cross-tenant-ep-id", "--cross-tenant-endpoint-resource-id"],
             arg_group="Properties",
             help="Full ARM resource ID of the cross-tenant (foreign) endpoint. On the source-tenant copy this is the TARGET endpoint; on the target-tenant copy this is the SOURCE endpoint.",

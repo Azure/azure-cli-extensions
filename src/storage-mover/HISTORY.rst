@@ -8,6 +8,7 @@ Release History
 * Updated to the 2026-05-01 GA API version.
 * Added `job-definition reconcile-job`.
 * Added cross-tenant endpoint settings and create-only cross-tenant job definition parameters.
+* Fixed partner resource metadata incorrectly requiring auxiliary partner-subscription authentication.
 * Added hourly schedules with `repeat-interval`, synchronization fields, and `OnPremToCloudAgentLess` jobs.
 * Added `NFSv4_1`, `FSX-EFS`, and `FSX-SMB` endpoint options.
 

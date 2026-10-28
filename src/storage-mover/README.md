@@ -82,6 +82,36 @@ are sanitized in recordings.
 Prerequisite Storage requests use an explicit stable API version so playback does
 not depend on the Azure CLI Storage SDK version.
 
+New feature scenarios stay in `test_storage_mover.py`, with the same split between
+recorded service scenarios and offline request checks as Az.StorageMover:
+
+| Coverage | Scenario |
+| --- | --- |
+| Recorded | Blob cross-tenant enablement, allow-list replacement, omission/preservation, disablement, and clearing |
+| Recorded | NFS `FSX-EFS` and SMB `FSX-SMB` endpoint create, update, and show |
+| Recorded | Cross-tenant CloudToCloud job create, show, update, and delete against a real partner endpoint |
+| Recorded | Azure SMB file share with `--endpoint-kind Source` in the existing endpoint scenario |
+| Offline CLI request checks | Azure SMB cross-tenant settings; FSX source values and `NFSv4_1`; hourly schedules; synchronization fields; agentless jobs with connections; bodyless reconciliation |
+
+The offline scenarios execute real CLI argument parsing and serialization with
+mocked HTTP responses; they are not live recordings. The service currently
+rejects Azure SMB cross-tenant settings and `NFSv4_1`, does not echo mount
+`sourceType`, and has not confirmed the remaining synchronization/reconcile
+flows. These checks do not claim successful data transfers.
+
+To re-record the cross-tenant job scenario, provision a source storage account
+and container, and a partner-tenant Storage Mover Target endpoint. Enable
+cross-tenant transfer on the partner endpoint and allow the source storage
+account. Set `SM_XT_SOURCE_STORAGE_ACCOUNT_ID`, `SM_XT_SOURCE_CONTAINER_NAME`,
+`SM_XT_PARTNER_TENANT`, `SM_XT_PARTNER_STORAGE_ACCOUNT_ID`, and
+`SM_XT_PARTNER_ENDPOINT_ID`. Recording skips this scenario if any variable is
+missing; playback uses sanitized placeholders and needs no partner login.
+The test creates only its disposable host mover and children; it does not
+modify or delete these pre-provisioned prerequisites.
+
+Partner allow-list and endpoint IDs are metadata resolved by Storage Mover,
+not resources that require the caller to obtain auxiliary partner-tenant tokens.
+
 Registered-agent scenarios are skipped until a disposable registered agent is
 available. Scenarios that depend on shared multi-cloud or private-link
 infrastructure retain their existing live-only restrictions.

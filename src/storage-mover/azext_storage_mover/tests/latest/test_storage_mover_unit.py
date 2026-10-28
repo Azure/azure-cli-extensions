@@ -47,6 +47,29 @@ PARTNER_ENDPOINT_ID = (
 
 class StorageMoverRecordingProcessorTest(unittest.TestCase):
 
+    def test_cross_tenant_recording_keeps_distinct_subscriptions(self):
+        from vcr.request import Request
+        from azext_storage_mover.tests.latest.test_storage_mover import StorageMoverSubscriptionIdReplacer
+        subscription_id = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        account_id = STORAGE_ACCOUNT_ID.replace(SUBSCRIPTION_ID, subscription_id)
+        properties = {"storageAccountResourceId": account_id, "allowedStorageAccounts": [PARTNER_STORAGE_ACCOUNT_ID]}
+        processor = StorageMoverSubscriptionIdReplacer(subscription_id)
+        request = processor.process_request(Request(
+            "PUT", "https://management.azure.com" + account_id,
+            json.dumps(properties).encode(), {"Content-Type": "application/json"},
+        ))
+        self.assertIn(SUBSCRIPTION_ID, request.uri)
+        request_body = json.loads(request.body)
+        self.assertEqual(request_body["storageAccountResourceId"], STORAGE_ACCOUNT_ID)
+        self.assertEqual(request_body["allowedStorageAccounts"], [PARTNER_STORAGE_ACCOUNT_ID])
+        response = processor.process_response({
+            "headers": {"content-type": ["application/json"], "location": [request.uri]},
+            "body": {"string": json.dumps(properties)},
+        })
+        response_body = json.loads(response["body"]["string"])
+        self.assertEqual(response_body["storageAccountResourceId"], STORAGE_ACCOUNT_ID)
+        self.assertEqual(response_body["allowedStorageAccounts"], [PARTNER_STORAGE_ACCOUNT_ID])
+
     def test_tenant_is_sanitized_in_body_and_operation_identifier(self):
         from azext_storage_mover.tests.latest.test_storage_mover import StorageMoverTenantIdReplacer
         tenant_id = "11111111-1111-1111-1111-111111111111"
@@ -163,6 +186,46 @@ class StorageMoverEndpointCustomTest(unittest.TestCase):
 
 
 class StorageMoverApiContractTest(unittest.TestCase):
+
+    def test_cross_tenant_references_do_not_require_partner_login(self):
+        for argument, required in [
+            ("azure_storage_blob_container", {"blob_container_name": "container"}),
+            ("azure_storage_smb_file_share", {"file_share_name": "share"}),
+        ]:
+            for command_class in [EndpointCreate, EndpointUpdate]:
+                with self.subTest(argument=argument, command=command_class.__name__):
+                    command = command_class(cli_ctx=DummyCli())
+                    AAZCommand._handler(command, {
+                        "endpoint_name": "endpoint", "resource_group": "resource-group",
+                        "storage_mover_name": "storage-mover", "subscription": SUBSCRIPTION_ID,
+                        argument: dict(required, storage_account_resource_id=STORAGE_ACCOUNT_ID,
+                                       allowed_storage_accounts=[PARTNER_STORAGE_ACCOUNT_ID])
+                        if command_class == EndpointCreate else {
+                            "allowed_storage_accounts": [PARTNER_STORAGE_ACCOUNT_ID],
+                        },
+                    })
+                    self.assertIsNone(command.ctx.aux_subscriptions)
+        command = JobDefinitionCreate(cli_ctx=DummyCli())
+        AAZCommand._handler(command, {
+            "job_definition_name": "job", "project_name": "project",
+            "resource_group": "resource-group", "storage_mover_name": "storage-mover",
+            "subscription": SUBSCRIPTION_ID, "copy_mode": "Additive",
+            "source_name": "source", "target_name": "target", "is_cross_tenant_job": True,
+            "cross_tenant_endpoint_tenant_id": "22222222-2222-2222-2222-222222222222",
+            "cross_tenant_endpoint_resource_id": PARTNER_ENDPOINT_ID,
+        })
+        self.assertIsNone(command.ctx.aux_subscriptions)
+
+    def test_storage_account_references_still_require_their_subscription(self):
+        command = EndpointCreate(cli_ctx=DummyCli())
+        AAZCommand._handler(command, {
+            "endpoint_name": "endpoint", "resource_group": "resource-group",
+            "storage_mover_name": "storage-mover", "subscription": SUBSCRIPTION_ID,
+            "azure_storage_blob_container": {
+                "blob_container_name": "container", "storage_account_resource_id": PARTNER_STORAGE_ACCOUNT_ID,
+            },
+        })
+        self.assertEqual(command.ctx.aux_subscriptions, ["11111111-1111-1111-1111-111111111111"])
 
     def _invoke(self, command_class, args, responses):
         command = command_class(cli_ctx=DummyCli())

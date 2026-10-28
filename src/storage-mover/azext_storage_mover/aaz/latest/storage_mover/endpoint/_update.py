@@ -113,7 +113,7 @@ class Update(AAZCommand):
         )
 
         allowed_storage_accounts = cls._args_schema.azure_storage_blob_container.allowed_storage_accounts
-        allowed_storage_accounts.Element = AAZResourceIdArg(
+        allowed_storage_accounts.Element = AAZStrArg(
             nullable=True,
         )
 
@@ -130,7 +130,7 @@ class Update(AAZCommand):
         )
 
         allowed_storage_accounts = cls._args_schema.azure_storage_smb_file_share.allowed_storage_accounts
-        allowed_storage_accounts.Element = AAZResourceIdArg(
+        allowed_storage_accounts.Element = AAZStrArg(
             nullable=True,
         )
 

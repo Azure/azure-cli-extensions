@@ -154,7 +154,7 @@ class Create(AAZCommand):
         )
 
         allowed_storage_accounts = cls._args_schema.azure_storage_blob_container.allowed_storage_accounts
-        allowed_storage_accounts.Element = AAZResourceIdArg()
+        allowed_storage_accounts.Element = AAZStrArg()
 
         azure_storage_nfs_file_share = cls._args_schema.azure_storage_nfs_file_share
         azure_storage_nfs_file_share.file_share_name = AAZStrArg(
@@ -190,7 +190,7 @@ class Create(AAZCommand):
         )
 
         allowed_storage_accounts = cls._args_schema.azure_storage_smb_file_share.allowed_storage_accounts
-        allowed_storage_accounts.Element = AAZResourceIdArg()
+        allowed_storage_accounts.Element = AAZStrArg()
 
         nfs_mount = cls._args_schema.nfs_mount
         nfs_mount.export = AAZStrArg(
