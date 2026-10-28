@@ -6,16 +6,16 @@
 from .aaz.latest.durabletask.scheduler import Create as _SchedulerCreate
 from .aaz.latest.durabletask.scheduler import Update as _SchedulerUpdate
 from .aaz.latest.durabletask.scheduler import Show as _SchedulerShow
+from .aaz.latest.durabletask.scheduler import Restart as _SchedulerRestart
 from .aaz.latest.durabletask.scheduler.identity import Assign as _IdentityAssign
 from .aaz.latest.durabletask.scheduler.identity import Remove as _IdentityRemove
 from .aaz.latest.durabletask.taskhub import Show as _TaskHubShow
+from azure.cli.core.aaz import has_value
 from azure.cli.core.azclierror import ValidationError, ResourceNotFoundError
 from azure.core.exceptions import HttpResponseError
 
 import logging
 logger = logging.getLogger(__name__)
-
-API_VERSION = "2026-05-01-preview"
 
 RESOURCE_TYPE_MAP = {
     "microsoft.web/sites": "functionapp",
@@ -79,6 +79,18 @@ class UpdateScheduler(_SchedulerUpdate):
             sku.capacity = None
 
 
+class RestartScheduler(_SchedulerRestart):
+    """Preserve the restart response while using the generated operation."""
+
+    def _handler(self, command_args):
+        super()._handler(command_args)
+        return {
+            "schedulerName": self.ctx.args.scheduler_name.to_serialized_data(),
+            "resourceGroupName": self.ctx.args.resource_group.to_serialized_data(),
+            "status": "Restart initiated",
+        }
+
+
 def _unset_unused_sku_capacity(scheduler_instance):
     """Drop the sku capacity from the scheduler payload when unset or 0.
 
@@ -105,7 +117,27 @@ class RemoveIdentity(_IdentityRemove):
     """Remove managed identities from a Durabletask scheduler."""
 
     def post_instance_update(self, instance):
-        """Avoid sending sku capacity that does not apply to the scheduler's SKU."""
+        """Remove only the requested identities and preserve unrelated scheduler settings."""
+        if has_value(self.ctx.args.mi_user_assigned):
+            requested = self.ctx.args.mi_user_assigned.to_serialized_data()
+            identities = {}
+            has_system = False
+            if has_value(instance):
+                if has_value(instance.user_assigned_identities):
+                    identities = instance.user_assigned_identities.to_serialized_data()
+                if has_value(instance.type):
+                    has_system = "systemassigned" in instance.type.to_serialized_data().lower()
+            requested_ids = {resource_id.lower() for resource_id in requested}
+            remaining = {
+                resource_id: {} for resource_id in identities
+                if resource_id.lower() not in requested_ids
+            } if requested else {}
+            identity = {"type": "SystemAssigned" if has_system else "None"}
+            if remaining:
+                identity["type"] = "SystemAssigned,UserAssigned" if has_system else "UserAssigned"
+                identity["user_assigned_identities"] = remaining
+            # AAZ otherwise treats a single removal ID as "remove all".
+            self.ctx.vars.instance.identity = identity
         _unset_unused_sku_capacity(self.ctx.vars.instance)
 
 
@@ -577,37 +609,3 @@ def attach_scheduler(cmd, resource_group_name, scheduler_name, task_hub_name,  #
         result["identityResourceId"] = identity
         result["identityClientId"] = client_id
     return result
-
-
-def restart_scheduler(cmd, resource_group_name, scheduler_name):
-    """Restart a Durable Task scheduler by calling POST /restart on the resource."""
-    from azure.cli.core.util import send_raw_request
-
-    cli_ctx = cmd.cli_ctx
-
-    # Retrieve the scheduler to validate it exists and get its resource ID.
-    logger.info("Retrieving scheduler '%s' in resource group '%s'...",
-                scheduler_name, resource_group_name)
-    scheduler = _SchedulerShow(cli_ctx=cli_ctx)(command_args={
-        "resource_group": resource_group_name,
-        "name": scheduler_name,
-    })
-    scheduler_id = scheduler.get("id")
-    if not scheduler_id:
-        raise ResourceNotFoundError(
-            f"Scheduler '{scheduler_name}' not found in resource group "
-            f"'{resource_group_name}'. Please verify the name and resource group."
-        )
-
-    arm_endpoint = cli_ctx.cloud.endpoints.resource_manager.rstrip('/')
-    url = f"{arm_endpoint}{scheduler_id}/restart?api-version={API_VERSION}"
-
-    logger.info("Restarting scheduler '%s'...", scheduler_name)
-    send_raw_request(cli_ctx, 'POST', url)
-    logger.info("Scheduler '%s' restart initiated successfully.", scheduler_name)
-
-    return {
-        "schedulerName": scheduler_name,
-        "resourceGroupName": resource_group_name,
-        "status": "Restart initiated",
-    }
