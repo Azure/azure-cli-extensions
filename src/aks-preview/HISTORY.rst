@@ -11,6 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+22.0.0b15
++++++++++
+* `az aks nodepool add/update`: Reject explicit `--gpu-driver None` combined with `--enable-managed-gpu true`, `--gpu-mig-strategy` or `--gpu-mig-profiles` instead of silently overriding the driver setting. Managed GPU and MIG require AKS driver installation.
 * `az aks create` and `az aks update`: Reject `--enable-azure-monitor-logs` on clusters using service principal authentication, since the Azure Monitor profile onboards with managed identity only.
 * `az aks update`: Reject `--enable-azure-monitor-logs` when Azure Monitor logs is already enabled on the cluster, matching `az aks enable-addons -a monitoring`. Run `--disable-azure-monitor-logs` first to change the configuration.
 * `az aks update`: `--disable-azure-monitor-logs` now removes the data collection rule association and resets the Container Insights settings (syslog port, Prometheus scraping and container network logs) back to their defaults, and asks for confirmation when OpenTelemetry logs and traces are enabled.
@@ -40,6 +44,11 @@ Pending
 * `az aks nodepool add/update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the node pool.
 * `az aks nodepool scale`: extend `--use-patch-api` to VirtualMachines node pools so they also scale via the dedicated PATCH agent pool API.
 * `az aks nodepool manual-scale add/update/delete`: add `--use-patch-api` to manage the manual scale profiles of a VirtualMachines node pool via the dedicated PATCH agent pool API instead of the default PUT API.
+
+22.0.0b14
++++++++++
+* Bump API version to 2026-08-02-preview.
+* `az aks bastion`: Use the new cluster API connectivity profile while preserving managed Bastion enable, update, disable, and tunnel behavior.
 
 22.0.0b13
 +++++++++

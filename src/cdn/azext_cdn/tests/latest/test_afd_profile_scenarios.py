@@ -10,8 +10,10 @@ from .afdx_scenario_mixin import CdnAfdScenarioMixin
 
 
 class CdnAfdProfileScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
-    @ResourceGroupPreparer(additional_tags={'owner': 'jingnanxu'})
+    @ResourceGroupPreparer(additional_tags={'owner': 'zhefeng'})
     def test_afd_profile_crud(self, resource_group):
+        self.name_replacer.register_name_pair(
+            'https://brazilus.management.azure.com', 'https://management.azure.com')
         list_checks = [JMESPathCheck('length(@)', 0)]
         self.afd_profile_list_cmd(resource_group, checks=list_checks)
 

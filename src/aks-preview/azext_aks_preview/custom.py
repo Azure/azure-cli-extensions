@@ -6533,9 +6533,11 @@ def aks_bastion_tunnel(cmd, client, resource_group_name, name, bastion=None, por
         nrg = mc.node_resource_group
 
         # Use managed bastion if not explicitly provided
-        if not bastion and mc.network_profile and mc.network_profile.bastion_profile and mc.network_profile.bastion_profile.enabled:
-            logger.info("using managed bastion with id: %s", mc.network_profile.bastion_profile.bastion_id)
-            bastion = mc.network_profile.bastion_profile.bastion_id
+        connectivity_profile = mc.network_profile.cluster_api_connectivity_profile if mc.network_profile else None
+        managed_bastion = connectivity_profile.bastion if connectivity_profile else None
+        if not bastion and managed_bastion and managed_bastion.enabled:
+            logger.info("using managed bastion with id: %s", managed_bastion.bastion_id)
+            bastion = managed_bastion.bastion_id
 
         bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg], subscription_id)
         port = aks_bastion_get_local_port(port)
