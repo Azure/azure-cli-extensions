@@ -46,6 +46,20 @@ class PoolUpdate(_PoolUpdate):
     _arguments_schema = None
     _args_schema = None
 
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        for name, options in {
+            'parameter_group_apply_method': [
+                '--parameter-group-apply-method', '--param-group-apply-method', '--param-group-apply',
+            ],
+            'parameter_group_resource_id': ['--parameter-group-resource-id', '--param-group-id'],
+        }.items():
+            argument = getattr(args_schema, name)
+            argument._options = options  # pylint: disable=protected-access
+            argument._help['name'] = ' '.join(options)  # pylint: disable=protected-access
+        return args_schema
+
     def _output(self, *args, **kwargs):
         command_args = {
             name: getattr(self.ctx.args, name).to_serialized_data()
