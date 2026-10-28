@@ -12,7 +12,7 @@ manifest = '''
   "datasourceType": "Microsoft.DocumentDB/databaseAccounts",
   "allowedRestoreModes": [ "RecoveryPointBased" ],
   "allowedRestoreTargetTypes": [ "AlternateLocation" ],
-  "itemLevelRecoveryEnabled": false,
+  "itemLevelRecoveryEnabled": true,
   "addBackupDatasourceParametersList": false,
   "backupConfigurationRequired": false,
   "addDataStoreParametersList": false,
