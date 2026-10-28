@@ -23,7 +23,7 @@ class RelationshipRecordingProcessor(RecordingProcessor):
     @staticmethod
     def _sanitize_poll_url(url):
         parts = urlsplit(url)
-        if '/operationstatuses/' not in parts.path.lower():
+        if not any(route in parts.path.lower() for route in ('/operationstatuses/', '/operationresults/')):
             return url
         query = [
             (key, 'sanitized' if key in {'t', 'c', 's', 'h'} else value)

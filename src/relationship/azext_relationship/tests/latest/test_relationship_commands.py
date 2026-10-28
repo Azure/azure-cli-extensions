@@ -398,24 +398,26 @@ class RelationshipRecordingTest(unittest.TestCase):
 
     def test_signed_polling_query_values_are_sanitized(self):
         processor = test_relationship_scenario.RelationshipRecordingProcessor()
-        original = (
-            ARM + '/providers/Microsoft.Relationships/locations/eastus/operationStatuses/op'
-            '?api-version=2026-08-01&t=private-t&c=private-c&s=private-s&h=private-h'
-        )
-        request = SimpleNamespace(uri=original)
-        processor.process_request(request)
-        query = parse_qs(urlsplit(request.uri).query)
-        self.assertEqual(query, {
-            'api-version': [VERSION],
-            't': ['sanitized'], 'c': ['sanitized'], 's': ['sanitized'], 'h': ['sanitized'],
-        })
-        self.assertEqual(urlsplit(request.uri).path, urlsplit(original).path)
-        response = {'headers': {'Location': [original], 'Azure-AsyncOperation': [original]}}
-        processor.process_response(response)
-        self.assertEqual(response['headers']['Location'], [request.uri])
-        self.assertEqual(response['headers']['Azure-AsyncOperation'], [request.uri])
-        processor.process_request(request)
-        self.assertEqual(response['headers']['Location'], [request.uri])
+        for route in ('operationStatuses', 'operationResults', 'operationresults'):
+            with self.subTest(route=route):
+                original = (
+                    ARM + f'/providers/Microsoft.Relationships/locations/eastus/{route}/op'
+                    '?api-version=2026-08-01&t=private-t&c=private-c&s=private-s&h=private-h'
+                )
+                request = SimpleNamespace(uri=original)
+                processor.process_request(request)
+                query = parse_qs(urlsplit(request.uri).query)
+                self.assertEqual(query, {
+                    'api-version': [VERSION],
+                    't': ['sanitized'], 'c': ['sanitized'], 's': ['sanitized'], 'h': ['sanitized'],
+                })
+                self.assertEqual(urlsplit(request.uri).path, urlsplit(original).path)
+                response = {'headers': {'Location': [original], 'Azure-AsyncOperation': [original]}}
+                processor.process_response(response)
+                self.assertEqual(response['headers']['Location'], [request.uri])
+                self.assertEqual(response['headers']['Azure-AsyncOperation'], [request.uri])
+                processor.process_request(request)
+                self.assertEqual(response['headers']['Location'], [request.uri])
 
     def test_normal_request_urls_are_not_modified(self):
         url = ARM + '/subscriptions/example/providers/Microsoft.Relationships/contains?api-version=' + VERSION
