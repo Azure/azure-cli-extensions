@@ -197,7 +197,9 @@ helps['aks create'] = f"""
         - name: --enable-azure-monitor-logs
           type: bool
           short-summary: Enable Azure Monitor logs for the cluster.
-          long-summary: This is equivalent to using "--enable-addons monitoring". Turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
+          long-summary: |
+            Enables Log Analytics monitoring for the cluster through the Azure Monitor profile. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+            Requires the cluster to use a managed identity; clusters created with service principal authentication are not supported.
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -303,7 +305,7 @@ helps['aks create'] = f"""
             operating system, addons, and managed containerized components
             (https://aka.ms/aks/components/docs). See Enable cluster-wide FIPS
             (https://aka.ms/aks/fips) for more details.
-            Requires Kubernetes version 1.34 or later and the
+            Requires Kubernetes version 1.35 or later and the
             Microsoft.ContainerService/EnableFIPSPreview feature to be registered
             on the subscription. All node pools must be FIPS-enabled; this command
             enables FIPS on the default node pool during cluster creation. Some
@@ -338,6 +340,16 @@ helps['aks create'] = f"""
         - name: --ampls-resource-id
           type: string
           short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
+        - name: --syslog-port
+          type: int
+          short-summary: Host port used by the Azure Monitor agent to collect syslog. Defaults to 28330 when unset.
+          long-summary: Applies to the Azure Monitor profile, configured with --enable-azure-monitor-logs. Distinct from --enable-syslog, which toggles syslog collection itself.
+        - name: --enable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Enable Prometheus metrics scraping by the Azure Monitor agent. Applies to the Azure Monitor profile.
+        - name: --disable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Disable Prometheus metrics scraping by the Azure Monitor agent. Applies to the Azure Monitor profile.
         - name: --enable-cluster-autoscaler
           type: bool
           short-summary: Enable cluster autoscaler, default value is false.
@@ -459,6 +471,10 @@ helps['aks create'] = f"""
         - name: --enable-workload-identity
           type: bool
           short-summary: (PREVIEW) Enable workload identity addon.
+        - name: --enable-disk-driver
+          type: bool
+          short-summary: Enable AzureDisk CSI Driver.
+          long-summary: The AzureDisk CSI Driver is enabled by default, but the property is left out of the create request unless this flag is given. Pass it to set the property explicitly, which is required by features that validate storageProfile.diskCSIDriver.enabled on the request body.
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
@@ -790,7 +806,13 @@ helps['aks create'] = f"""
               Provides scaled and performance-guaranteed control plane capacity for AKS clusters.
               Enables customers to select a control plane scaling size that delivers higher API server throughput,
               increased etcd capacity, and faster pod scheduling rates. Available values are 'H2', 'H4', and 'H8'.
+        - name: --enable-upgrade-gate
+          type: bool
+          short-summary: Enable upgrade gate for the cluster. Agent pool upgrades wait for health signal validation and abort if unhealthy signals are observed.
+          long-summary: This is a cluster-wide opt-in that applies to all agent pools in the cluster; an agent pool cannot opt out of it. Health signals are HealthSignal custom resources published by monitoring components running in the cluster. Force upgrade (--enable-force-upgrade) overrides the gate. For more information, see https://aka.ms/aks/upgrade-gate.
     examples:
+        - name: Create a kubernetes cluster with upgrade gate enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-upgrade-gate
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
         - name: Create a Kubernetes cluster with a specific version.
@@ -869,6 +891,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs-traces --enable-addons monitoring
         - name: Create a kubernetes cluster with Azure Monitor logs enabled (shorthand)
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-logs
+        - name: Create a kubernetes cluster with Azure Monitor logs, Prometheus scraping disabled and a custom syslog port
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-logs --disable-prometheus-metrics-scraping --syslog-port 28331
         - name: Create a kubernetes cluster with OpenTelemetry metrics on custom port
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --opentelemetry-metrics-port-http 8888 --enable-azure-monitor-metrics
         - name: Create a kubernetes cluster with OpenTelemetry logs and traces on custom ports
@@ -1116,6 +1140,14 @@ helps['aks update'] = """
         - name: --upgrade-override-until
           type: string
           short-summary: Until when the cluster upgradeSettings overrides are effective. It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --force-upgrade is set to true and --upgrade-override-until is not set, by default it will be set to 3 days from now.
+        - name: --enable-upgrade-gate
+          type: bool
+          short-summary: Enable upgrade gate for the cluster. Agent pool upgrades wait for health signal validation and abort if unhealthy signals are observed.
+          long-summary: This is a cluster-wide opt-in that applies to all agent pools in the cluster; an agent pool cannot opt out of it. Health signals are HealthSignal custom resources published by monitoring components running in the cluster. Force upgrade (--enable-force-upgrade) overrides the gate. For more information, see https://aka.ms/aks/upgrade-gate.
+        - name: --disable-upgrade-gate
+          type: bool
+          short-summary: Disable upgrade gate for the cluster.
+          long-summary: Agent pools that explicitly enabled upgrade gate keep their own setting and remain gated.
         - name: --enable-managed-identity
           type: bool
           short-summary: Update current cluster to managed identity to manage cluster resource group.
@@ -1143,11 +1175,16 @@ helps['aks update'] = """
         - name: --enable-azure-monitor-logs
           type: bool
           short-summary: Enable Azure Monitor logs for the cluster.
-          long-summary: This is equivalent to using "az aks enable-addons -a monitoring". Enables Log Analytics monitoring for the cluster. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
+          long-summary: |
+            Enables Log Analytics monitoring for the cluster through the Azure Monitor profile. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+            Requires the cluster to use a managed identity; clusters using service principal authentication are not supported.
+            Fails if Azure Monitor logs is already enabled on the cluster, or if the cluster was onboarded with legacy (non-managed-identity) authentication. To change the configuration, run "az aks update --disable-azure-monitor-logs" first.
         - name: --disable-azure-monitor-logs
           type: bool
           short-summary: Disable Azure Monitor logs for the cluster.
-          long-summary: This is equivalent to using "az aks disable-addons -a monitoring". Disables Log Analytics monitoring for the cluster.
+          long-summary: |
+            Disables Log Analytics monitoring for the cluster, removes the data collection rule association, and resets the Container Insights settings (syslog port, Prometheus scraping and container network logs) back to their defaults. The workspace is left recorded on the profile but is unused while disabled, and is replaced on the next enable.
+            If OpenTelemetry logs and traces are enabled they are disabled as well, and confirmation is requested first unless "--yes" is specified.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
@@ -1166,6 +1203,16 @@ helps['aks update'] = """
         - name: --ampls-resource-id
           type: string
           short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
+        - name: --syslog-port
+          type: int
+          short-summary: Host port used by the Azure Monitor agent to collect syslog. Defaults to 28330 when unset.
+          long-summary: Applies to the Azure Monitor profile, configured with --enable-azure-monitor-logs. Distinct from --enable-syslog, which toggles syslog collection itself.
+        - name: --enable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Enable Prometheus metrics scraping by the Azure Monitor agent. Applies to the Azure Monitor profile.
+        - name: --disable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Disable Prometheus metrics scraping by the Azure Monitor agent. Applies to the Azure Monitor profile.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
@@ -1334,7 +1381,7 @@ helps['aks update'] = """
             operating system, addons, and managed containerized components
             (https://aka.ms/aks/components/docs). See Enable cluster-wide FIPS
             (https://aka.ms/aks/fips) for more details.
-            Requires Kubernetes version 1.34 or later and the
+            Requires Kubernetes version 1.35 or later and the
             Microsoft.ContainerService/EnableFIPSPreview feature to be registered
             on the subscription. Existing node pools must already be FIPS-enabled
             before enabling this cluster-level setting, and future node pools must
@@ -1651,6 +1698,8 @@ helps['aks update'] = """
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
+      - name: Enable upgrade gate for a kubernetes cluster.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-upgrade-gate
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
       - name: Disable cluster-autoscaler for an existing cluster
@@ -1715,6 +1764,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --safeguards-excluded-ns ns1,ns2
       - name: Enable Azure Monitor logs for a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-logs
+      - name: Re-enable Prometheus scraping and change the syslog port on a cluster with Azure Monitor logs enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-prometheus-metrics-scraping --syslog-port 29000
       - name: Enable Azure Backup for a kubernetes cluster (default Week strategy). Requires the 'dataprotection' extension.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-backup --yes
       - name: Enable Azure Backup with a custom strategy using an existing vault and policy
@@ -2632,6 +2683,10 @@ helps['aks nodepool add'] = """
         - name: --gpu-mig-strategy
           type: string
           short-summary: Specify the MIG (Multi-Instance GPU) strategy for managed MIG support. Valid values are "Single" and "Mixed". When not specified, managed MIG is disabled.
+        - name: --gpu-mig-profiles
+          type: string array
+          short-summary: Space-separated ordered list of MIG partition profiles. Valid values are "MIG1g", "MIG2g", "MIG3g", "MIG4g", and "MIG7g".
+          long-summary: Duplicate profiles are allowed and meaningful. "Single" accepts one profile; "Mixed" accepts an ordered profile layout. This option cannot be used with --gpu-instance-profile. The service validates the VM size and profile layout.
         - name: --ssh-access
           type: string
           short-summary: Configure SSH setting for the node pool. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
@@ -2693,6 +2748,14 @@ helps['aks nodepool add'] = """
         - name: --final-soak-duration
           type: int
           short-summary: Wait time (in minutes) after all old nodes are drained before removing them. Default is 60 minutes. Only for blue-green upgrades.
+        - name: --enable-upgrade-gate
+          type: bool
+          short-summary: Enable upgrade gate for the node pool. Upgrades of this node pool wait for health signal validation and abort if unhealthy signals are observed.
+          long-summary: When the cluster-level upgrade gate is enabled, a new node pool inherits it by default. Health signals are HealthSignal custom resources published by monitoring components running in the cluster. Force upgrade (--enable-force-upgrade) overrides the gate. For more information, see https://aka.ms/aks/upgrade-gate.
+        - name: --disable-upgrade-gate
+          type: bool
+          short-summary: Disable upgrade gate for the node pool.
+          long-summary: Rejected by the service when the cluster-level upgrade gate is enabled, since a node pool cannot opt out of a cluster-wide opt-in.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -2718,6 +2781,10 @@ helps['aks nodepool add'] = """
           text: az aks nodepool add -g MyResourceGroup -n managedsystem1 --cluster-name MyManagedCluster --mode ManagedSystem
         - name: Create a node pool with blue-green upgrade strategy and default parameters
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --upgrade-strategy BlueGreen
+        - name: Create a node pool with an ordered mixed MIG profile layout
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --enable-managed-gpu --gpu-mig-strategy Mixed --gpu-mig-profiles MIG1g MIG2g MIG2g MIG2g
+        - name: Create a node pool with upgrade gate enabled
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --enable-upgrade-gate
 """
 
 helps['aks nodepool scale'] = """
@@ -2797,6 +2864,10 @@ helps['aks nodepool update'] = """
     short-summary: Update a node pool properties.
     long-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count.  When called with no optional arguments this attempts to move the node pool to its goal state without changing the current node pool configuration. This can be used to move out of a non succeeded state.
     parameters:
+        - name: --gpu-mig-profiles
+          type: string array
+          short-summary: Space-separated ordered list of MIG partition profiles. Valid values are "MIG1g", "MIG2g", "MIG3g", "MIG4g", and "MIG7g".
+          long-summary: Duplicate profiles are allowed and meaningful. The service rejects changes to this immutable property. This option cannot be used with --gpu-instance-profile.
         - name: --enable-cluster-autoscaler -e
           type: bool
           short-summary: Enable cluster autoscaler. For VMSS pools, enables autoscaler on the pool. For VirtualMachines pools, converts all manual scale profiles to autoscale profiles using the same min/max counts.
@@ -2929,9 +3000,23 @@ helps['aks nodepool update'] = """
         - name: --crg-id
           type: string
           short-summary: The Capacity Reservation Group (CRG) ID used to associate the existing nodepool with the existing Capacity Reservation Group resource.
+        - name: --enable-upgrade-gate
+          type: bool
+          short-summary: Enable upgrade gate for the node pool. Upgrades of this node pool wait for health signal validation and abort if unhealthy signals are observed.
+          long-summary: Health signals are HealthSignal custom resources published by monitoring components running in the cluster. Force upgrade (--enable-force-upgrade) overrides the gate. For more information, see https://aka.ms/aks/upgrade-gate.
+        - name: --disable-upgrade-gate
+          type: bool
+          short-summary: Disable upgrade gate for the node pool.
+          long-summary: Rejected by the service when the cluster-level upgrade gate is enabled, since a node pool cannot opt out of a cluster-wide opt-in. Use 'az aks update --disable-upgrade-gate' instead.
+        - name: --node-public-ip-prefix-ids
+          type: string
+          short-summary: Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs (IPv4 and/or IPv6).
+          long-summary: At most one IPv4 and one IPv6 prefix may be specified. On an existing node pool this adds or replaces the assigned prefixes; an accepted change rolls the pool so existing nodes are recreated with the new public IPs. Requires the NodePublicIPv6PrefixPreview feature flag.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
+      - name: Enable upgrade gate for a node pool.
+        text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --enable-upgrade-gate
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks nodepool update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Disable cluster-autoscaler for an existing cluster
@@ -2948,6 +3033,8 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --zones auto
       - name: Update a node pool with blue-green upgrade settings
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --drain-batch-size 50% --drain-timeout-bg 5 --batch-soak-duration 10 --final-soak-duration 10
+      - name: Add an IPv6 public IP prefix to an existing dual-stack node pool (grows the assigned prefixes; existing nodes are recreated with the new public IPs)
+        text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-public-ip-prefix-ids "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Network/publicIPPrefixes/<v4prefix>,/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Network/publicIPPrefixes/<v6prefix>"
       - name: Update a nodepool with a Capacity Reservation Group(CRG) ID.
         text: az aks nodepool update -g MyResourceGroup -n MyNodePool --cluster-name MyMC --node-vm-size VMSize --crg-id "/subscriptions/SubID/resourceGroups/ResourceGroupName/providers/Microsoft.Compute/CapacityReservationGroups/MyCRGID"
 """

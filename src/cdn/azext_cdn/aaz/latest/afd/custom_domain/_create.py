@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-04-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/customdomains/{}", "2026-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/customdomains/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -192,6 +192,17 @@ class Create(AAZCommand):
             help="TLS protocol version that will be used for Https",
             enum={"TLS10": "TLS10", "TLS12": "TLS12", "TLS13": "TLS13"},
         )
+        _args_schema.server_tls_group_policy = AAZStrArg(
+            options=["--tls-group-policy", "--server-tls-group-policy"],
+            arg_group="TlsSettings",
+            help="Server TLS group policy that will be used for Https.",
+            enum={"Custom": "Custom", "Enhanced": "Enhanced", "Standard": "Standard"},
+        )
+        _args_schema.server_tls_groups = AAZListArg(
+            options=["--server-tls-groups"],
+            arg_group="TlsSettings",
+            help="Server TLS groups that will be used for Https when serverTlsGroupPolicy is Custom.",
+        )
 
         customized_cipher_suite_set = cls._args_schema.customized_cipher_suite_set
         customized_cipher_suite_set.cipher_suite_set_for_tls12 = AAZListArg(
@@ -211,6 +222,11 @@ class Create(AAZCommand):
         cipher_suite_set_for_tls13 = cls._args_schema.customized_cipher_suite_set.cipher_suite_set_for_tls13
         cipher_suite_set_for_tls13.Element = AAZStrArg(
             enum={"TLS_AES_128_GCM_SHA256": "TLS_AES_128_GCM_SHA256", "TLS_AES_256_GCM_SHA384": "TLS_AES_256_GCM_SHA384"},
+        )
+
+        server_tls_groups = cls._args_schema.server_tls_groups
+        server_tls_groups.Element = AAZStrArg(
+            enum={"SecP256r1MLKEM768": "SecP256r1MLKEM768", "SecP384r1MLKEM1024": "SecP384r1MLKEM1024", "X25519": "X25519", "X25519MLKEM768": "X25519MLKEM768", "prime256v1": "prime256v1", "secp384r1": "secp384r1", "secp521r1": "secp521r1"},
         )
         return cls._args_schema
 
@@ -317,7 +333,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -401,6 +417,8 @@ class Create(AAZCommand):
                 tls_settings.set_prop("customizedCipherSuiteSet", AAZObjectType, ".customized_cipher_suite_set")
                 tls_settings.set_prop("minimumTlsVersion", AAZStrType, ".minimum_tls_version")
                 tls_settings.set_prop("secret", AAZObjectType)
+                tls_settings.set_prop("serverTlsGroupPolicy", AAZStrType, ".server_tls_group_policy")
+                tls_settings.set_prop("serverTlsGroups", AAZListType, ".server_tls_groups")
 
             customized_cipher_suite_set = _builder.get(".properties.tlsSettings.customizedCipherSuiteSet")
             if customized_cipher_suite_set is not None:
@@ -418,6 +436,10 @@ class Create(AAZCommand):
             secret = _builder.get(".properties.tlsSettings.secret")
             if secret is not None:
                 secret.set_prop("id", AAZStrType, ".secret")
+
+            server_tls_groups = _builder.get(".properties.tlsSettings.serverTlsGroups")
+            if server_tls_groups is not None:
+                server_tls_groups.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -586,6 +608,12 @@ class _CreateHelper:
         )
         tls_settings.secret = AAZObjectType()
         cls._build_schema_resource_reference_read(tls_settings.secret)
+        tls_settings.server_tls_group_policy = AAZStrType(
+            serialized_name="serverTlsGroupPolicy",
+        )
+        tls_settings.server_tls_groups = AAZListType(
+            serialized_name="serverTlsGroups",
+        )
 
         customized_cipher_suite_set = _schema_afd_domain_read.properties.tls_settings.customized_cipher_suite_set
         customized_cipher_suite_set.cipher_suite_set_for_tls12 = AAZListType(
@@ -600,6 +628,9 @@ class _CreateHelper:
 
         cipher_suite_set_for_tls13 = _schema_afd_domain_read.properties.tls_settings.customized_cipher_suite_set.cipher_suite_set_for_tls13
         cipher_suite_set_for_tls13.Element = AAZStrType()
+
+        server_tls_groups = _schema_afd_domain_read.properties.tls_settings.server_tls_groups
+        server_tls_groups.Element = AAZStrType()
 
         validation_properties = _schema_afd_domain_read.properties.validation_properties
         validation_properties.expiration_date = AAZStrType(

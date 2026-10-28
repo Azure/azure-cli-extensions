@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-04-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}", "2026-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -246,7 +246,7 @@ class Create(AAZCommand):
             options=["invocation-point"],
             help="Defines at which point in the request processing pipeline the edge action will be invoked.",
             required=True,
-            enum={"ClientRequest": "ClientRequest", "OriginRequest": "OriginRequest"},
+            enum={"ClientRequest": "ClientRequest", "ClientResponse": "ClientResponse", "OriginRequest": "OriginRequest"},
         )
 
         modify_request_header = cls._args_schema.rules.Element.actions.Element.modify_request_header
@@ -1345,7 +1345,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
