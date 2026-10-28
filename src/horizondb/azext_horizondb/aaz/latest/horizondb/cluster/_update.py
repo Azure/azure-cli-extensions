@@ -16,9 +16,9 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a HorizonDB cluster.
+    """Update an existing HorizonDB cluster.
 
-    :example: Create a HorizonDB cluster with customer-managed key data encryption
+    :example: Rotate the customer-managed key used by a HorizonDB cluster
         az horizondb cluster update --resource-group example-resource-group --cluster-name example-cluster -retention-days 14
     """
 
@@ -29,12 +29,11 @@ class Update(AAZCommand):
         ]
     }
 
-    AZ_SUPPORT_GENERIC_UPDATE = True
+    AZ_SUPPORT_NO_WAIT = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -68,8 +67,7 @@ class Update(AAZCommand):
         _args_schema.backup_retention_days = AAZIntArg(
             options=["--backup-retention-days"],
             arg_group="Backup",
-            help="The number of days that automatic backups are retained. The service defaults to 7 days when this property is omitted.",
-            nullable=True,
+            help="The number of days that automatic backups are retained.",
             fmt=AAZIntArgFormat(
                 maximum=35,
                 minimum=1,
@@ -84,8 +82,7 @@ class Update(AAZCommand):
         _args_schema.public_access = AAZStrArg(
             options=["--public-access"],
             arg_group="Network",
-            help="Specifies whether public access is enabled for the cluster. The service defaults to Disabled when this property is omitted.",
-            nullable=True,
+            help="Specifies whether public access is enabled for the cluster. Omission preserves the current value.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
@@ -96,64 +93,44 @@ class Update(AAZCommand):
             options=["--ai-model-management"],
             arg_group="Properties",
             help="Specifies whether AI Model Management is enabled for the cluster.",
-            nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.data_encryption = AAZObjectArg(
             options=["--data-encryption"],
             arg_group="Properties",
-            help="The data encryption configuration for the cluster. When omitted during initial cluster creation, the service uses SystemManaged encryption. When supplied during initial cluster creation, type is required. For PUT updates of an existing cluster, type may be omitted; if provided, it must match the existing encryption type. The encryption type is selected at cluster creation; switching between SystemManaged and AzureKeyVault after creation is not supported.",
-            nullable=True,
+            help="The data encryption configuration to update for the cluster. Omitted properties preserve their current values. Updates can modify settings within the existing encryption type, but switching between SystemManaged and AzureKeyVault after cluster creation is not supported.",
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Properties",
+            help="Resource tags.",
         )
 
         data_encryption = cls._args_schema.data_encryption
         data_encryption.primary_key_uri = AAZStrArg(
             options=["primary-key-uri"],
-            help="The versionless Azure Key Vault key URI used to encrypt the cluster's primary storage. Key version paths are not supported. During initial cluster creation, this property can be provided together with primaryUserAssignedIdentityId. For updates to an existing cluster through PUT or PATCH, this property and primaryUserAssignedIdentityId cannot both change in the same request; the first update must complete before submitting a separate update for the other property.",
-            nullable=True,
+            help="The versionless Azure Key Vault key URI used to encrypt the cluster's primary storage. Key version paths are not supported. This property and primaryUserAssignedIdentityId cannot both change in the same update; the first update must complete before submitting a separate update for the other property.",
             fmt=AAZStrArgFormat(
                 pattern="^https://[A-Za-z0-9-]+[.]vault([.]azure[.]net|[.]usgovcloudapi[.]net|[.]azure[.]cn)/keys/[A-Za-z0-9-]+/?$",
             ),
         )
         data_encryption.primary_user_assigned_identity_id = AAZResourceIdArg(
             options=["primary-user-assigned-identity-id"],
-            help="The Azure resource ID of the user-assigned managed identity used to access the primary encryption key. The identity must also be assigned to the Cluster through its top-level identity property. During initial cluster creation, this property can be provided together with primaryKeyUri. For updates to an existing cluster through PUT or PATCH, this property and primaryKeyUri cannot both change in the same request; the first update must complete before submitting a separate update for the other property.",
-            nullable=True,
-            fmt=AAZResourceIdArgFormat(
-                template="/subscriptions/{}/resourceGroups/{}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}",
-            ),
+            help="The Azure resource ID of the user-assigned managed identity used to access the primary encryption key. The identity must also be assigned to the Cluster through its top-level identity property. This property and primaryKeyUri cannot both change in the same update; the first update must complete before submitting a separate update for the other property.",
         )
         data_encryption.type = AAZStrArg(
             options=["type"],
-            help="The type of data encryption used by the cluster. When the data encryption configuration is supplied during initial cluster creation, this property is required. For PUT updates of an existing cluster, this property may be omitted; if provided, it must match the existing encryption type. This value is selected at cluster creation and cannot later be changed from SystemManaged to AzureKeyVault or from AzureKeyVault to SystemManaged.",
-            nullable=True,
+            help="The existing data encryption type used by the cluster. PATCH is a sparse update, so this property may be omitted. If provided, it must match the existing encryption type. This value cannot be changed from SystemManaged to AzureKeyVault or from AzureKeyVault to SystemManaged after cluster creation.",
             enum={"AzureKeyVault": "AzureKeyVault", "SystemManaged": "SystemManaged"},
         )
 
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-            nullable=True,
-        )
-
         tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ClustersGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        self.ClustersCreateOrReplace(ctx=self.ctx)()
+        yield self.ClustersUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -164,26 +141,34 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ClustersGet(AAZHttpOperation):
+    class ClustersUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
@@ -196,7 +181,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "GET"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -234,10 +219,51 @@ class Update(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("identity", AAZIdentityObjectType)
+            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("aiModelManagement", AAZStrType, ".ai_model_management")
+                properties.set_prop("backup", AAZObjectType)
+                properties.set_prop("dataEncryption", AAZObjectType, ".data_encryption")
+                properties.set_prop("network", AAZObjectType)
+
+            backup = _builder.get(".properties.backup")
+            if backup is not None:
+                backup.set_prop("retentionDays", AAZIntType, ".backup_retention_days")
+
+            data_encryption = _builder.get(".properties.dataEncryption")
+            if data_encryption is not None:
+                data_encryption.set_prop("primaryKeyUri", AAZStrType, ".primary_key_uri")
+                data_encryption.set_prop("primaryUserAssignedIdentityId", AAZStrType, ".primary_user_assigned_identity_id")
+                data_encryption.set_prop("type", AAZStrType, ".type")
+
+            network = _builder.get(".properties.network")
+            if network is not None:
+                network.set_prop("publicAccess", AAZStrType, ".public_access")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -401,294 +427,6 @@ class Update(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
-
-    class ClustersCreateOrReplace(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HorizonDb/clusters/{clusterName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "PUT"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "clusterName", self.ctx.args.cluster_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2026-10-01-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.identity = AAZIdentityObjectType()
-            _schema_on_200_201.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200_201.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.properties = AAZObjectType()
-            _schema_on_200_201.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.tags = AAZDictType()
-            _schema_on_200_201.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            identity = cls._schema_on_200_201.identity
-            identity.type = AAZStrType(
-                flags={"required": True},
-            )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200_201.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType(
-                nullable=True,
-            )
-
-            _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-                flags={"read_only": True},
-            )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200_201.properties
-            properties.ai_model_management = AAZStrType(
-                serialized_name="aiModelManagement",
-            )
-            properties.backup = AAZObjectType()
-            properties.creation_mode = AAZStrType(
-                serialized_name="creationMode",
-            )
-            properties.creation_source_cluster_location = AAZStrType(
-                serialized_name="creationSourceClusterLocation",
-            )
-            properties.creation_source_cluster_resource_id = AAZStrType(
-                serialized_name="creationSourceClusterResourceId",
-            )
-            properties.data_encryption = AAZObjectType(
-                serialized_name="dataEncryption",
-            )
-            properties.network = AAZObjectType()
-            properties.point_in_time_utc = AAZStrType(
-                serialized_name="pointInTimeUtc",
-            )
-            properties.postgre_sql_version = AAZStrType(
-                serialized_name="postgreSqlVersion",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.read_write_pool = AAZObjectType(
-                serialized_name="readWritePool",
-                flags={"read_only": True},
-            )
-            properties.state = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            backup = cls._schema_on_200_201.properties.backup
-            backup.earliest_restore_point_utc = AAZStrType(
-                serialized_name="earliestRestorePointUtc",
-                flags={"read_only": True},
-            )
-            backup.geo_redundancy = AAZStrType(
-                serialized_name="geoRedundancy",
-                flags={"required": True},
-            )
-            backup.retention_days = AAZIntType(
-                serialized_name="retentionDays",
-            )
-
-            data_encryption = cls._schema_on_200_201.properties.data_encryption
-            data_encryption.primary_encryption_key_current_version = AAZStrType(
-                serialized_name="primaryEncryptionKeyCurrentVersion",
-                flags={"read_only": True},
-            )
-            data_encryption.primary_encryption_key_status = AAZStrType(
-                serialized_name="primaryEncryptionKeyStatus",
-                flags={"read_only": True},
-            )
-            data_encryption.primary_key_uri = AAZStrType(
-                serialized_name="primaryKeyUri",
-            )
-            data_encryption.primary_user_assigned_identity_id = AAZStrType(
-                serialized_name="primaryUserAssignedIdentityId",
-            )
-            data_encryption.type = AAZStrType()
-
-            network = cls._schema_on_200_201.properties.network
-            network.public_access = AAZStrType(
-                serialized_name="publicAccess",
-            )
-
-            read_write_pool = cls._schema_on_200_201.properties.read_write_pool
-            read_write_pool.designated_pool_resource_id = AAZStrType(
-                serialized_name="designatedPoolResourceId",
-                flags={"read_only": True},
-            )
-
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
-            )
-            _builder.set_prop("identity", AAZIdentityObjectType)
-            _builder.set_prop("properties", AAZObjectType)
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("aiModelManagement", AAZStrType, ".ai_model_management")
-                properties.set_prop("backup", AAZObjectType)
-                properties.set_prop("dataEncryption", AAZObjectType, ".data_encryption")
-                properties.set_prop("network", AAZObjectType)
-
-            backup = _builder.get(".properties.backup")
-            if backup is not None:
-                backup.set_prop("retentionDays", AAZIntType, ".backup_retention_days")
-
-            data_encryption = _builder.get(".properties.dataEncryption")
-            if data_encryption is not None:
-                data_encryption.set_prop("primaryKeyUri", AAZStrType, ".primary_key_uri")
-                data_encryption.set_prop("primaryUserAssignedIdentityId", AAZStrType, ".primary_user_assigned_identity_id")
-                data_encryption.set_prop("type", AAZStrType, ".type")
-
-            network = _builder.get(".properties.network")
-            if network is not None:
-                network.set_prop("publicAccess", AAZStrType, ".public_access")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
-            return _instance_value
-
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
-            )
 
 
 class _UpdateHelper:

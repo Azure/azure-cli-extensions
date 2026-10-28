@@ -18,7 +18,7 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a HorizonDB pool.
 
-    :example: Create a minimum provisioned HorizonDB pool
+    :example: Associate a HorizonDB pool with a parameter group immediately
         az horizondb cluster pool update --resource-group example-resource-group --cluster-name example-cluster --pool-name example-pool-01 --node-count 2
     """
 
@@ -30,8 +30,6 @@ class Update(AAZCommand):
     }
 
     AZ_SUPPORT_NO_WAIT = True
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -80,7 +78,7 @@ class Update(AAZCommand):
         _args_schema.compute_generation = AAZIntArg(
             options=["--compute-generation"],
             arg_group="ComputeModel",
-            help="The compute generation for the compute model.",
+            help="The compute generation for the compute model. Omission preserves the current compute generation.",
             fmt=AAZIntArgFormat(
                 minimum=1,
             ),
@@ -88,13 +86,13 @@ class Update(AAZCommand):
         _args_schema.compute_processor = AAZStrArg(
             options=["--compute-processor"],
             arg_group="ComputeModel",
-            help="The processor type for the compute model.",
+            help="The processor type for the compute model. Omission preserves the current processor type.",
             enum={"AMD": "AMD", "Intel": "Intel"},
         )
         _args_schema.v_cores = AAZIntArg(
             options=["--v-cores"],
             arg_group="ComputeModel",
-            help="The number of vCores. Allowed values are 1 through 192.",
+            help="The number of provisioned vCores. Allowed values are 2 through 192. This property applies only to a Provisioned compute model. Omission preserves the current value.",
             fmt=AAZIntArgFormat(
                 maximum=192,
                 minimum=2,
@@ -107,7 +105,7 @@ class Update(AAZCommand):
         _args_schema.high_availability_mode = AAZStrArg(
             options=["--high-availability-mode"],
             arg_group="HighAvailability",
-            help="The high-availability mode. Disabled is required when nodeCount is 1. AnyZone or ZoneRedundant is required when nodeCount is 2 through 16.",
+            help="The high-availability mode. Omission preserves the current mode before the service validates it with the effective nodeCount.",
             enum={"AnyZone": "AnyZone", "Disabled": "Disabled", "ZoneRedundant": "ZoneRedundant"},
         )
 
@@ -123,7 +121,7 @@ class Update(AAZCommand):
         _args_schema.parameter_group_resource_id = AAZResourceIdArg(
             options=["--parameter-group-resource-id"],
             arg_group="ParameterGroup",
-            help="The Azure resource ID of the associated parameter group. Initial pool creation in this API version requires the corresponding Microsoft.HorizonDb/locations/parameterGroups resource. For an existing pool, PUT can specify either the corresponding default group or a customer-created Microsoft.HorizonDb/parameterGroups resource.",
+            help="The Azure resource ID of the corresponding default or customer-created parameter group to associate with the existing pool.",
         )
 
         # define Arg Group "Properties"
@@ -132,49 +130,17 @@ class Update(AAZCommand):
         _args_schema.node_count = AAZIntArg(
             options=["--node-count"],
             arg_group="Properties",
-            help="The required number of nodes to allocate and assign to the pool. Allowed values are 1 through 16. To deallocate runtime compute without changing the configured node count, stop the pool.",
+            help="The number of nodes to allocate and assign to the pool. Allowed values are 1 through 16. Omission preserves the current configured value. To deallocate runtime compute without changing the configured node count, stop the pool.",
             fmt=AAZIntArgFormat(
                 maximum=16,
                 minimum=1,
             ),
         )
-        _args_schema.scheduled_maintenance = AAZObjectArg(
-            options=["--scheduled-maintenance"],
-            arg_group="Properties",
-            help="The scheduled maintenance configuration for the pool. The properties available depend on the selected maintenance management type.",
-            nullable=True,
-        )
-
-        scheduled_maintenance = cls._args_schema.scheduled_maintenance
-        scheduled_maintenance.system = AAZObjectArg(
-            options=["system"],
-            blank={},
-        )
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-            nullable=True,
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.PoolsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        yield self.PoolsCreateOrReplace(ctx=self.ctx)()
+        yield self.PoolsUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -185,26 +151,34 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class PoolsGet(AAZHttpOperation):
+    class PoolsUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
@@ -217,7 +191,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "GET"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -259,10 +233,46 @@ class Update(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType)
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("computeModel", AAZObjectType)
+                properties.set_prop("highAvailability", AAZObjectType)
+                properties.set_prop("nodeCount", AAZIntType, ".node_count")
+                properties.set_prop("parameterGroup", AAZObjectType)
+
+            compute_model = _builder.get(".properties.computeModel")
+            if compute_model is not None:
+                compute_model.set_prop("computeGeneration", AAZIntType, ".compute_generation")
+                compute_model.set_prop("computeProcessor", AAZStrType, ".compute_processor")
+                compute_model.set_prop("vCores", AAZIntType, ".v_cores")
+
+            high_availability = _builder.get(".properties.highAvailability")
+            if high_availability is not None:
+                high_availability.set_prop("mode", AAZStrType, ".high_availability_mode")
+
+            parameter_group = _builder.get(".properties.parameterGroup")
+            if parameter_group is not None:
+                parameter_group.set_prop("applyMethod", AAZStrType, ".parameter_group_apply_method")
+                parameter_group.set_prop("parameterGroupResourceId", AAZStrType, ".parameter_group_resource_id")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -392,286 +402,6 @@ class Update(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
-
-    class PoolsCreateOrReplace(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HorizonDb/clusters/{clusterName}/pools/{poolName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "PUT"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "clusterName", self.ctx.args.cluster_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "poolName", self.ctx.args.pool_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2026-10-01-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.properties = AAZObjectType()
-            _schema_on_200_201.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.tags = AAZDictType()
-            _schema_on_200_201.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200_201.properties
-            properties.compute_model = AAZObjectType(
-                serialized_name="computeModel",
-                flags={"required": True},
-            )
-            properties.high_availability = AAZObjectType(
-                serialized_name="highAvailability",
-                flags={"required": True},
-            )
-            properties.node_count = AAZIntType(
-                serialized_name="nodeCount",
-                flags={"required": True},
-            )
-            properties.parameter_group = AAZObjectType(
-                serialized_name="parameterGroup",
-                flags={"required": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.scheduled_maintenance = AAZObjectType(
-                serialized_name="scheduledMaintenance",
-            )
-            properties.state = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            compute_model = cls._schema_on_200_201.properties.compute_model
-            compute_model.compute_generation = AAZIntType(
-                serialized_name="computeGeneration",
-                flags={"required": True},
-            )
-            compute_model.compute_processor = AAZStrType(
-                serialized_name="computeProcessor",
-                flags={"required": True},
-            )
-            compute_model.type = AAZStrType(
-                flags={"required": True},
-            )
-            compute_model.v_cores = AAZIntType(
-                serialized_name="vCores",
-                flags={"required": True},
-            )
-
-            high_availability = cls._schema_on_200_201.properties.high_availability
-            high_availability.mode = AAZStrType(
-                flags={"required": True},
-            )
-
-            parameter_group = cls._schema_on_200_201.properties.parameter_group
-            parameter_group.apply_method = AAZStrType(
-                serialized_name="applyMethod",
-                flags={"required": True},
-            )
-            parameter_group.parameter_group_resource_id = AAZStrType(
-                serialized_name="parameterGroupResourceId",
-                flags={"required": True},
-            )
-            parameter_group.sync_status = AAZStrType(
-                serialized_name="syncStatus",
-                flags={"read_only": True},
-            )
-
-            scheduled_maintenance = cls._schema_on_200_201.properties.scheduled_maintenance
-            scheduled_maintenance.maintenance_management_type = AAZStrType(
-                serialized_name="maintenanceManagementType",
-                flags={"required": True},
-            )
-
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
-            )
-            _builder.set_prop("properties", AAZObjectType)
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("computeModel", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("highAvailability", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("nodeCount", AAZIntType, ".node_count", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("parameterGroup", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("scheduledMaintenance", AAZObjectType, ".scheduled_maintenance")
-
-            compute_model = _builder.get(".properties.computeModel")
-            if compute_model is not None:
-                compute_model.set_prop("computeGeneration", AAZIntType, ".compute_generation", typ_kwargs={"flags": {"required": True}})
-                compute_model.set_prop("computeProcessor", AAZStrType, ".compute_processor", typ_kwargs={"flags": {"required": True}})
-                compute_model.set_prop("vCores", AAZIntType, ".v_cores", typ_kwargs={"flags": {"required": True}})
-
-            high_availability = _builder.get(".properties.highAvailability")
-            if high_availability is not None:
-                high_availability.set_prop("mode", AAZStrType, ".high_availability_mode", typ_kwargs={"flags": {"required": True}})
-
-            parameter_group = _builder.get(".properties.parameterGroup")
-            if parameter_group is not None:
-                parameter_group.set_prop("applyMethod", AAZStrType, ".parameter_group_apply_method", typ_kwargs={"flags": {"required": True}})
-                parameter_group.set_prop("parameterGroupResourceId", AAZStrType, ".parameter_group_resource_id", typ_kwargs={"flags": {"required": True}})
-
-            scheduled_maintenance = _builder.get(".properties.scheduledMaintenance")
-            if scheduled_maintenance is not None:
-                scheduled_maintenance.set_const("maintenanceManagementType", "System", AAZStrType, ".system", typ_kwargs={"flags": {"required": True}})
-                scheduled_maintenance.discriminate_by("maintenanceManagementType", "System")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
-            return _instance_value
-
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
-            )
 
 
 class _UpdateHelper:

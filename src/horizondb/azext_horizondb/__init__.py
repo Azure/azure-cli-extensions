@@ -17,8 +17,10 @@ class HorizonDBCommandsLoader(AzCommandsLoader):
             aaz_pkg_name=aaz.__name__,
             args=args
         )
-        from .custom import ClusterCreate
+        from .custom import ClusterCreate, PoolCreate, PoolUpdate
         self.command_table['horizondb cluster create'] = ClusterCreate(loader=self)
+        self.command_table['horizondb cluster pool create'] = PoolCreate(loader=self)
+        self.command_table['horizondb cluster pool update'] = PoolUpdate(loader=self)
         return self.command_table
 
     def load_arguments(self, command):

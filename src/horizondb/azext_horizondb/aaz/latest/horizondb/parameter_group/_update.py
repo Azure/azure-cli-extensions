@@ -16,9 +16,9 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a new HorizonDB parameter group or replaces an existing parameter group.
+    """Update an existing HorizonDB parameter group. Each connected pool's applyMethod setting controls whether dynamic parameter changes become effective immediately or remain pending until a customer-initiated pool Restart. Static parameter changes always remain pending until a customer-initiated pool Restart. Stop followed by Start and scheduled maintenance do not apply pending changes. The operation fails with a conflict while a previous update to this parameter group is still being processed.
 
-    :example: Create or replace a HorizonDB parameter group for a PostgreSQL version
+    :example: Update a HorizonDB parameter group
         az horizondb parameter-group update --resource-group example-resource-group --parameter-group-name production-parameters --tags "{environment:production}" --parameters "[{name:application_name,value:horizondb-production},{name:autovacuum,value:off},{name:wal_receiver_timeout,value:45000},{name:work_mem,value:8192},{name:xmlbinary,value:base64}]" --description Parameters for production transactional workloads
     """
 
@@ -30,8 +30,6 @@ class Update(AAZCommand):
     }
 
     AZ_SUPPORT_NO_WAIT = True
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -70,7 +68,6 @@ class Update(AAZCommand):
             options=["--description"],
             arg_group="Properties",
             help="Description of the parameter group. The maximum length is 1024 characters.",
-            nullable=True,
             fmt=AAZStrArgFormat(
                 max_length=1024,
             ),
@@ -79,50 +76,33 @@ class Update(AAZCommand):
             options=["--parameters"],
             arg_group="Properties",
             help="Parameters in the parameter group.",
-            nullable=True,
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Properties",
+            help="Resource tags.",
         )
 
         parameters = cls._args_schema.parameters
-        parameters.Element = AAZObjectArg(
-            nullable=True,
-        )
+        parameters.Element = AAZObjectArg()
 
         _element = cls._args_schema.parameters.Element
         _element.name = AAZStrArg(
             options=["name"],
             help="The name of the parameter.",
-            nullable=True,
         )
         _element.value = AAZStrArg(
             options=["value"],
             help="The value of the configuration.",
-            nullable=True,
-        )
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-            nullable=True,
         )
 
         tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ParameterGroupsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        yield self.ParameterGroupsCreateOrReplace(ctx=self.ctx)()
+        yield self.ParameterGroupsUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -133,26 +113,34 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ParameterGroupsGet(AAZHttpOperation):
+    class ParameterGroupsUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
@@ -165,7 +153,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "GET"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -203,10 +191,43 @@ class Update(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("parameters", AAZListType, ".parameters")
+
+            parameters = _builder.get(".properties.parameters")
+            if parameters is not None:
+                parameters.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.parameters[]")
+            if _elements is not None:
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("value", AAZStrType, ".value")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -322,254 +343,6 @@ class Update(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
-
-    class ParameterGroupsCreateOrReplace(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HorizonDb/parameterGroups/{parameterGroupName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "PUT"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "parameterGroupName", self.ctx.args.parameter_group_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2026-10-01-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200_201.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.properties = AAZObjectType()
-            _schema_on_200_201.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.tags = AAZDictType()
-            _schema_on_200_201.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200_201.properties
-            properties.description = AAZStrType()
-            properties.parameters = AAZListType()
-            properties.postgre_sql_version = AAZStrType(
-                serialized_name="postgreSqlVersion",
-                flags={"required": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            parameters = cls._schema_on_200_201.properties.parameters
-            parameters.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.parameters.Element
-            _element.allowed_values = AAZStrType(
-                serialized_name="allowedValues",
-                flags={"read_only": True},
-            )
-            _element.data_type = AAZStrType(
-                serialized_name="dataType",
-                flags={"read_only": True},
-            )
-            _element.default_value = AAZStrType(
-                serialized_name="defaultValue",
-                flags={"read_only": True},
-            )
-            _element.description = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.documentation_link = AAZStrType(
-                serialized_name="documentationLink",
-                flags={"read_only": True},
-            )
-            _element.is_dynamic = AAZBoolType(
-                serialized_name="isDynamic",
-                flags={"read_only": True},
-            )
-            _element.is_read_only = AAZBoolType(
-                serialized_name="isReadOnly",
-                flags={"read_only": True},
-            )
-            _element.name = AAZStrType()
-            _element.unit = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.value = AAZStrType()
-            _element.value_source = AAZStrType(
-                serialized_name="valueSource",
-                flags={"read_only": True},
-            )
-
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
-            )
-            _builder.set_prop("properties", AAZObjectType)
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("parameters", AAZListType, ".parameters")
-
-            parameters = _builder.get(".properties.parameters")
-            if parameters is not None:
-                parameters.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.parameters[]")
-            if _elements is not None:
-                _elements.set_prop("name", AAZStrType, ".name")
-                _elements.set_prop("value", AAZStrType, ".value")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
-            return _instance_value
-
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
-            )
 
 
 class _UpdateHelper:
