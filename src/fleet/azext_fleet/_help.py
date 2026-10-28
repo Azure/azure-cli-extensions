@@ -709,6 +709,10 @@ helps['fleet identitybindingprofile'] = """
 helps['fleet identitybindingprofile create'] = """
     type: command
     short-summary: Create or update an identity binding profile.
+    long-summary: |
+        Running create against an existing profile replaces the whole profile. Any optional
+        argument that is omitted is cleared, including --allowed-subjects-from-file, which
+        removes existing subject restrictions. Pass every setting you want to keep.
     parameters:
         - name: --member-selector --selector -s
           type: string
@@ -725,7 +729,8 @@ helps['fleet identitybindingprofile create'] = """
               selector supporting 'matchLabels' (an array of "key=value" strings) and/or
               'matchExpressions'. Use the built-in 'kubernetes.io/metadata.name' label to target
               specific namespaces by name. When omitted, authorization falls back to
-              ClusterRole/ClusterRoleBinding evaluation on the member clusters.
+              ClusterRole/ClusterRoleBinding evaluation on the member clusters, and any subjects
+              already set on an existing profile are removed.
     examples:
         - name: Create an identity binding profile for members labelled env=production.
           text: |-
