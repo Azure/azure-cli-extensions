@@ -38,11 +38,11 @@ pool commands are under `horizondb cluster pool`, not `horizondb pool`.
 up to one hour until its provisioning state is `Succeeded`. Only then does it
 create a child pool named `defaultpool` and wait for pool provisioning to finish.
 Progress messages indicate when the command is waiting for the cluster and when
-it starts creating the default pool. All five compute and availability arguments
-are required:
+it starts creating the default pool. All five pool compute and availability
+arguments use a `--pool-` prefix and are required:
 
 ```powershell
-az horizondb cluster create --resource-group example-resource-group --cluster-name example-cluster --location eastus2 --version 17 --geo-redundancy Enabled --compute-processor AMD --compute-generation 3 --v-cores 2 --node-count 1 --high-availability-mode Disabled
+az horizondb cluster create --resource-group example-resource-group --cluster-name example-cluster --location eastus2 --version 17 --geo-redundancy Enabled --pool-compute-processor AMD --pool-compute-generation 3 --pool-v-cores 2 --pool-node-count 1 --pool-high-availability-mode Disabled
 ```
 
 For one node, high availability must be `Disabled`. For two through sixteen

@@ -57,12 +57,30 @@ class ClusterCreateTests(TestCase):
         self.assertIsInstance(table['horizondb cluster pool create'], CustomPoolCreate)
         self.assertIsInstance(table['horizondb cluster pool update'], PoolUpdate)
 
-    def test_creates_default_pool_after_cluster_and_preserves_output(self):
+    def test_only_cluster_create_prefixes_pool_arguments(self):
+        expected_options = {
+            'compute_generation': ['--pool-compute-generation', '--pool-compute-gen'],
+            'compute_processor': ['--pool-compute-processor', '--pool-compute-proc'],
+            'v_cores': ['--pool-v-cores'],
+            'node_count': ['--pool-node-count'],
+            'high_availability_mode': ['--pool-high-availability-mode', '--pool-ha-mode'],
+        }
+        for command_type in [ClusterCreate, CustomPoolCreate, PoolUpdate]:
+            command = command_type(cli_ctx=self.command.cli_ctx)
+            command.load_arguments()
+            for name, options in expected_options.items():
+                with self.subTest(command=command_type.__name__, argument=name):
+                    if command_type is not ClusterCreate:
+                        options = [options[0].replace('--pool-', '--', 1)]
+                    self.assertEqual(command.arguments[name].type.settings['options_list'], options)
+
+    def test_creates_default_pool_then_gets_current_cluster(self):
         events = []
         schema_builder = self.command.ClustersCreateOrReplace._build_schema_on_200_201
         not_found = ResourceNotFoundError('Cluster is not visible yet')
         not_found.status_code = 404
-        states = iter([not_found, 'Creating', 'Succeeded'])
+        states = iter([not_found, 'Creating', 'Succeeded', 'final-get'])
+        updated_cluster = dict(self.cluster, provisioningState='Succeeded')
 
         def show_cluster(command_args):
             self.assertEqual(command_args, {
@@ -72,6 +90,8 @@ class ClusterCreateTests(TestCase):
             events.append(state if isinstance(state, str) else 'not-found')
             if isinstance(state, ResourceNotFoundError):
                 raise state
+            if state == 'final-get':
+                return updated_cluster
             return dict(self.cluster, provisioningState=state)
 
         self.show_cluster.side_effect = show_cluster
@@ -99,15 +119,18 @@ class ClusterCreateTests(TestCase):
                 patch.object(cluster_custom, 'logger') as logger:
             cluster_operation.return_value.side_effect = create_cluster
             pool_command.return_value.side_effect = create_pool
+            wait.return_value.side_effect = lambda _: events.append('pool-complete')
             result = self.command(command_args=self.args)
 
-        self.assertEqual(events, ['cluster', 'not-found', 'Creating', 'Succeeded', 'pool'])
+        self.assertEqual(events, [
+            'cluster', 'not-found', 'Creating', 'Succeeded', 'pool', 'pool-complete', 'final-get',
+        ])
         self.assertEqual(sleep.call_count, 2)
         self.assertEqual(logger.warning.call_args_list[-1].args, (
             "Creating default pool 'defaultpool' for cluster '%s'...", 'test-cluster'
         ))
         wait.return_value.assert_called_once_with(poller)
-        self.assertEqual(result, self.cluster)
+        self.assertEqual(result, updated_cluster)
 
     def test_cluster_failure_does_not_create_pool(self):
         with patch.object(self.command, 'ClustersCreateOrReplace') as cluster_operation, \
@@ -153,13 +176,27 @@ class ClusterCreateTests(TestCase):
             wait.return_value.side_effect = CLIError('pool failed')
             with self.assertRaisesRegex(CLIError, 'pool failed'):
                 self.command(command_args=self.args)
+        self.show_cluster.assert_called_once()
+
+    def test_cluster_create_reports_final_get_failure(self):
+        self.show_cluster.side_effect = [
+            dict(self.cluster, provisioningState='Succeeded'),
+            HttpResponseError('Cannot read completed cluster'),
+        ]
+        with patch.object(self.command, 'ClustersCreateOrReplace'), \
+                patch.object(cluster_custom, 'PoolCreate'), \
+                patch.object(cluster_custom, 'LongRunningOperation') as wait:
+            with self.assertRaisesRegex(HttpResponseError, 'Cannot read completed cluster'):
+                self.command(command_args=self.args)
+        wait.return_value.assert_called_once()
+        self.assertEqual(self.show_cluster.call_count, 2)
 
     def test_invalid_pool_configuration_prevents_cluster_creation(self):
         for node_count, mode in [(1, 'AnyZone'), (1, 'ZoneRedundant'), (2, 'Disabled')]:
             with self.subTest(node_count=node_count, mode=mode), \
                     patch.object(self.command, 'ClustersCreateOrReplace') as cluster_operation:
                 args = dict(self.args, node_count=node_count, high_availability_mode=mode)
-                with self.assertRaises(InvalidArgumentValueError):
+                with self.assertRaisesRegex(InvalidArgumentValueError, '--pool-high-availability-mode'):
                     self.command(command_args=args)
                 cluster_operation.assert_not_called()
 

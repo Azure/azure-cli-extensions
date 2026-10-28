@@ -20,13 +20,13 @@ from .pool.custom import PoolCreate
 logger = get_logger(__name__)
 
 
-_POOL_ARGUMENTS = (
-    'compute_generation',
-    'compute_processor',
-    'v_cores',
-    'high_availability_mode',
-    'node_count',
-)
+_POOL_ARGUMENTS = {
+    'compute_generation': ['--pool-compute-generation', '--pool-compute-gen'],
+    'compute_processor': ['--pool-compute-processor', '--pool-compute-proc'],
+    'v_cores': ['--pool-v-cores'],
+    'high_availability_mode': ['--pool-high-availability-mode', '--pool-ha-mode'],
+    'node_count': ['--pool-node-count'],
+}
 
 
 class ClusterCreate(_ClusterCreate):
@@ -34,14 +34,14 @@ class ClusterCreate(_ClusterCreate):
         'type': 'command',
         'short-summary': 'Create a HorizonDB cluster and its default pool.',
         'long-summary': 'Waits for cluster provisioning before creating defaultpool, '
-                        'then waits for pool provisioning and returns the cluster. '
+                        'then waits for pool provisioning and retrieves the cluster to return its current state. '
                         'If pool creation fails, the cluster is not deleted.',
         'examples': [{
             'name': 'Create a HorizonDB cluster with a single-node default pool',
             'text': 'az horizondb cluster create --resource-group example-resource-group '
                     '--cluster-name example-cluster --location eastus2 --version 17 '
-                    '--geo-redundancy Enabled --compute-processor AMD --compute-generation 3 '
-                    '--v-cores 2 --node-count 1 --high-availability-mode Disabled',
+                    '--geo-redundancy Enabled --pool-compute-processor AMD --pool-compute-generation 3 '
+                    '--pool-v-cores 2 --pool-node-count 1 --pool-high-availability-mode Disabled',
         }],
     }
 
@@ -52,8 +52,10 @@ class ClusterCreate(_ClusterCreate):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         pool_schema = _PoolCreate.get_arguments_schema()
-        for name in _POOL_ARGUMENTS:
+        for name, options in _POOL_ARGUMENTS.items():
             argument = deepcopy(getattr(pool_schema, name))
+            argument._options = list(options)  # pylint: disable=protected-access
+            argument._help['name'] = ' '.join(options)  # pylint: disable=protected-access
             argument._required = True  # pylint: disable=protected-access
             setattr(args_schema, name, argument)
         args_schema.v_cores._help['short-summary'] = (  # pylint: disable=protected-access
@@ -67,12 +69,21 @@ class ClusterCreate(_ClusterCreate):
         mode = args.high_availability_mode.to_serialized_data()
         if node_count == 1 and mode != 'Disabled':
             raise InvalidArgumentValueError(
-                '--high-availability-mode must be Disabled when --node-count is 1.'
+                '--pool-high-availability-mode must be Disabled when --pool-node-count is 1.'
             )
         if node_count > 1 and mode == 'Disabled':
             raise InvalidArgumentValueError(
-                '--high-availability-mode must be AnyZone or ZoneRedundant when --node-count is greater than 1.'
+                '--pool-high-availability-mode must be AnyZone or ZoneRedundant '
+                'when --pool-node-count is greater than 1.'
             )
+
+    def _output(self, *args, **kwargs):
+        command_args = {
+            name: getattr(self.ctx.args, name).to_serialized_data()
+            for name in ['cluster_name', 'resource_group']
+        }
+        command_args['subscription'] = self.ctx.subscription_id
+        return _ClusterShow(cli_ctx=self.cli_ctx)(command_args=command_args)
 
     def post_operations(self):
         args = self.ctx.args
