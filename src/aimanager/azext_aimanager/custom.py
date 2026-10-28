@@ -17,6 +17,7 @@ from azext_aimanager._client_factory import CUSTOM_MGMT_AIMANAGER
 from azext_aimanager._helpers import (
     get_custom_headers,
     parse_key_value_list,
+    convert_kubelogin_devicecode,
     print_or_merge_credentials,
 )
 from azext_aimanager._roleassignments import assign_caller_roles, warn_roles_skipped_no_wait
@@ -188,6 +189,7 @@ def _write_kubeconfig(credential_results, path, overwrite_existing, context_name
     try:
         kubeconfig = credential_results.kubeconfigs[0].value.decode(encoding='UTF-8')
         print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
+        convert_kubelogin_devicecode(path, kubeconfig)
     except (IndexError, ValueError) as exc:
         raise CLIError(
             "Failed to extract the kubeconfig from the service response. "

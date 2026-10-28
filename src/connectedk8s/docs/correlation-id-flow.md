@@ -47,16 +47,18 @@ correlation_id = utils.ensure_correlation_id(cmd, log_prefix="Arc proxy")
 
 ```python
 # _utils.py
-headers = cmd.cli_ctx.data.setdefault("headers", {})       # ① grab or create header bag
+headers = cmd.cli_ctx.data.setdefault("headers", {})  # ① grab or create header bag
 existing = headers.get(consts.Correlation_Request_Id_Header)  # ② already set?
 if existing:
-    correlation_id = str(existing)                          # ③a reuse (idempotent)
+    correlation_id = str(existing)  # ③a reuse (idempotent)
 else:
-    correlation_id = str(uuid.uuid4())                      # ③b MINT NEW UUID
-    headers[consts.Correlation_Request_Id_Header] = correlation_id  # ④ stamp on shared bag
-telemetry.set_debug_info(...)                               # ⑤ log to az-cli telemetry
-logger.warning("%s session correlationId: %s", ...)         # ⑥ surface to user terminal
-return correlation_id                                       # ⑦ return for in-process plumbing
+    correlation_id = str(uuid.uuid4())  # ③b MINT NEW UUID
+    headers[consts.Correlation_Request_Id_Header] = (
+        correlation_id  # ④ stamp on shared bag
+    )
+telemetry.set_debug_info(...)  # ⑤ log to az-cli telemetry
+logger.warning("%s session correlationId: %s", ...)  # ⑥ surface to user terminal
+return correlation_id  # ⑦ return for in-process plumbing
 ```
 
 After this returns, **two things** are now true:
@@ -77,8 +79,9 @@ WARNING: cli.azext_connectedk8s._utils: Arc proxy session correlationId: a9112c3
 ```python
 # custom.py
 client_side_proxy_main(
-    cmd, ...,
-    correlation_id=correlation_id,     # ← NEW kwarg
+    cmd,
+    ...,
+    correlation_id=correlation_id,  # ← NEW kwarg
 )
 ```
 
@@ -91,8 +94,9 @@ client_side_proxy_main(
 ```python
 # custom.py
 hc_expiry, at_expiry, clientproxy_process = client_side_proxy(
-    cmd, ...,
-    correlation_id=correlation_id,     # ← threaded through
+    cmd,
+    ...,
+    correlation_id=correlation_id,  # ← threaded through
 )
 ```
 
@@ -105,9 +109,12 @@ Inside `client_side_proxy`, line **4061**:
 ```python
 # custom.py
 client_side_proxy_input = _proxylogic.get_cluster_user_credentials(
-    cmd, client,
-    resource_group_name, cluster_name, auth_method,
-    correlation_id=correlation_id,    # ← threaded through
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    auth_method,
+    correlation_id=correlation_id,  # ← threaded through
 )
 ```
 
@@ -120,12 +127,14 @@ client_side_proxy_input = _proxylogic.get_cluster_user_credentials(
 sdk_kwargs: dict[str, Any] = {}
 if correlation_id:
     sdk_kwargs["headers"] = {
-        consts.Correlation_Request_Id_Header: correlation_id,    # ← stamp on SDK call
+        consts.Correlation_Request_Id_Header: correlation_id,  # ← stamp on SDK call
     }
 
 result = client.list_cluster_user_credential(
-    resource_group_name, cluster_name, list_prop,
-    **sdk_kwargs,                                                # ← header lands here
+    resource_group_name,
+    cluster_name,
+    list_prop,
+    **sdk_kwargs,  # ← header lands here
 )
 ```
 
@@ -157,9 +166,11 @@ After arcProxy.exe is spawned and listening on `localhost:47011` (the existing f
 ```python
 # custom.py
 _proxylogic.post_register_to_proxy(
-    data, token, ...,
+    data,
+    token,
+    ...,
     clientproxy_process=clientproxy_process,
-    correlation_id=correlation_id,     # ← threaded through
+    correlation_id=correlation_id,  # ← threaded through
 )
 ```
 
@@ -168,9 +179,13 @@ _proxylogic.post_register_to_proxy(
 ```python
 # _proxylogic.py
 response = clientproxyutils.make_api_call_with_retries(
-    "post", uri, data, tls_verify, ...,
+    "post",
+    uri,
+    data,
+    tls_verify,
+    ...,
     clientproxy_process,
-    correlation_id=correlation_id,    # ← into the HTTP helper
+    correlation_id=correlation_id,  # ← into the HTTP helper
 )
 ```
 
@@ -181,13 +196,17 @@ response = clientproxyutils.make_api_call_with_retries(
 ```python
 # clientproxyhelper/_utils.py
 headers = (
-    {consts.Correlation_Request_Id_Header: correlation_id}    # ← build header dict
-    if correlation_id else None
+    {consts.Correlation_Request_Id_Header: correlation_id}  # ← build header dict
+    if correlation_id
+    else None
 )
 for i in range(consts.API_CALL_RETRIES):
     response = requests.request(
-        method, uri, json=data, verify=tls_verify,
-        headers=headers,                                      # ← stamp on POST to arcProxy
+        method,
+        uri,
+        json=data,
+        verify=tls_verify,
+        headers=headers,  # ← stamp on POST to arcProxy
     )
 ```
 
@@ -218,8 +237,8 @@ Back in **`custom.py :: client_side_proxy_main`**, after the initial registratio
 ```python
 # custom.py (inside the while True loop, line 4023)
 flag, new_hc_expiry, new_at_expiry = client_side_proxy_main(
-    ...,                       # recursive-ish refresh path
-    correlation_id=correlation_id,    # ← same id reused for the LIFE of the session
+    ...,  # recursive-ish refresh path
+    correlation_id=correlation_id,  # ← same id reused for the LIFE of the session
 )
 ```
 

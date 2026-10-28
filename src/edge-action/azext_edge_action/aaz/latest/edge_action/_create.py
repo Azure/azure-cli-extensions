@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "edge-action create",
 )
 class Create(AAZCommand):
-    """Create EdgeAction resource
+    """Create an EdgeAction
 
     :example: CreateEdgeAction
         az edge-action create --resource-group testrg --edge-action-name edgeAction1 --location global --sku "{name:Standard,tier:Standard}"
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/edgeactions/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/edgeactions/{}", "2026-10-01"],
         ]
     }
 
@@ -178,7 +178,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }

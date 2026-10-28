@@ -205,7 +205,7 @@ class Show(AAZCommand):
             _element.amount = AAZFloatType(
                 flags={"required": True},
             )
-            _element.counter_key = AAZListType(
+            _element.counter_key = AAZObjectType(
                 serialized_name="counterKey",
                 flags={"required": True},
             )
@@ -223,37 +223,46 @@ class Show(AAZCommand):
             )
 
             counter_key = cls._schema_on_200.properties.rules.Element.counter_key
-            counter_key.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.rules.Element.counter_key.Element
-            _element.attribute = AAZStrType()
-            _element.type = AAZStrType(
+            counter_key.attribute = AAZStrType(
+                flags={"read_only": True},
+            )
+            counter_key.type = AAZStrType(
                 flags={"required": True},
             )
 
             match = cls._schema_on_200.properties.rules.Element.match
-            match["foundry.caller.agent.id"] = AAZListType()
-            match["foundry.caller.identity.oid"] = AAZListType()
-            match["foundry.caller.session.id"] = AAZListType()
-            match["foundry.project.id"] = AAZListType()
+            match.agent_resource_ids = AAZListType(
+                serialized_name="agentResourceIds",
+            )
+            match.identity_object_ids = AAZListType(
+                serialized_name="identityObjectIds",
+            )
+            match.project_ids = AAZListType(
+                serialized_name="projectIds",
+            )
+            match.session_ids = AAZListType(
+                serialized_name="sessionIds",
+            )
 
-            foundry_caller_agent_id = match["foundry.caller.agent.id"]
-            foundry_caller_agent_id.Element = AAZStrType()
+            agent_resource_ids = cls._schema_on_200.properties.rules.Element.match.agent_resource_ids
+            agent_resource_ids.Element = AAZStrType()
 
-            foundry_caller_identity_oid = match["foundry.caller.identity.oid"]
-            foundry_caller_identity_oid.Element = AAZStrType()
+            identity_object_ids = cls._schema_on_200.properties.rules.Element.match.identity_object_ids
+            identity_object_ids.Element = AAZStrType()
 
-            foundry_caller_session_id = match["foundry.caller.session.id"]
-            foundry_caller_session_id.Element = AAZStrType()
+            project_ids = cls._schema_on_200.properties.rules.Element.match.project_ids
+            project_ids.Element = AAZStrType()
 
-            foundry_project_id = match["foundry.project.id"]
-            foundry_project_id.Element = AAZStrType()
+            session_ids = cls._schema_on_200.properties.rules.Element.match.session_ids
+            session_ids.Element = AAZStrType()
 
             thresholds = cls._schema_on_200.properties.rules.Element.thresholds
             thresholds.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.rules.Element.thresholds.Element
-            _element.action = AAZStrType()
+            _element.action = AAZStrType(
+                flags={"required": True},
+            )
             _element.type = AAZStrType(
                 flags={"required": True},
             )

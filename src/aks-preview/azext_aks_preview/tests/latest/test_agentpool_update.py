@@ -4,14 +4,15 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from azext_aks_preview import ContainerServiceCommandsLoader, register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolModels
-from azext_aks_preview.custom import aks_agentpool_update
+from azext_aks_preview.custom import aks_agentpool_add, aks_agentpool_update
 from azext_aks_preview.tests.latest.mocks import MockCLI, MockCmd, MockClient
 from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode
+from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
 from azure.cli.core.parser import AzCliCommandParser
 
 
@@ -117,6 +118,34 @@ class TestAgentPoolUpdateGPUProfile(unittest.TestCase):
                 submitted = self._update(self._pool(profile), enable_managed_gpu=enabled)
                 self.assertEqual(submitted.gpu_profile.nvidia.management_mode, mode)
 
+    def test_conflicting_gpu_driver_is_rejected_before_submission(self):
+        for handler in (aks_agentpool_add, aks_agentpool_update):
+            for options in (
+                {"enable_managed_gpu": True},
+                {"gpu_mig_strategy": "Single"},
+                {"gpu_mig_strategy": "Mixed"},
+                {"gpu_mig_profiles": ["MIG3g"]},
+                {
+                    "enable_managed_gpu": True,
+                    "gpu_mig_strategy": "Mixed",
+                    "gpu_mig_profiles": ["MIG1g", "MIG2g", "MIG2g", "MIG2g"],
+                },
+            ):
+                with self.subTest(command=handler.__name__, options=options):
+                    self.client.get = Mock(return_value=self._pool(None))
+                    self.client.begin_create_or_update = Mock()
+                    with patch(
+                        "azext_aks_preview.agentpool_decorator.cf_agent_pools",
+                        return_value=Mock(list=Mock(return_value=[])),
+                    ), self.assertRaisesRegex(
+                        MutuallyExclusiveArgumentError, "--gpu-driver None cannot be used with"
+                    ):
+                        handler(
+                            self.cmd, self.client, "test-rg", "test-cluster", "gpunp",
+                            gpu_driver="None", no_wait=True, **options
+                        )
+                    self.client.begin_create_or_update.assert_not_called()
+
     def test_managed_gpu_command_argument_preserves_three_states(self):
         cli_ctx = self.cmd.cli_ctx
         parser = AzCliCommandParser(cli_ctx=cli_ctx)
@@ -150,3 +179,39 @@ class TestAgentPoolUpdateGPUProfile(unittest.TestCase):
                 parsed = parser.parse_args(args + flags)
                 self.assertIs(parsed.enable_managed_gpu, expected)
                 self.assertTrue(parsed.enable_cluster_autoscaler)
+
+    def test_gpu_mig_profiles_argument_preserves_order_and_duplicates(self):
+        cli_ctx = self.cmd.cli_ctx
+        parser = AzCliCommandParser(cli_ctx=cli_ctx)
+        command_name = "aks nodepool update"
+        cli_ctx.invocation = Mock(parser=parser, data={"command_string": command_name})
+        cli_ctx.local_context = Mock(is_on=False)
+        loader = ContainerServiceCommandsLoader(cli_ctx)
+        loader.load_command_table(command_name.split())
+        command = loader.command_table[command_name]
+        command.load_arguments()
+        loader.load_arguments(command_name)
+        loader._apply_parameter_info(command_name, command)  # pylint: disable=protected-access
+        loader.command_table = {command_name: command}
+        parser.load_command_table(loader)
+
+        args = command_name.split()
+        for name, value in (
+            ("resource_group_name", "test-rg"),
+            ("cluster_name", "test-cluster"),
+            ("nodepool_name", "gpunp"),
+        ):
+            args.extend([command.arguments[name].options_list[0], value])
+
+        parsed = parser.parse_args(args)
+        self.assertIsNone(parsed.gpu_mig_profiles)
+
+        profiles = ["MIG1g", "MIG2g", "MIG2g", "MIG2g"]
+        parsed = parser.parse_args(args + ["--gpu-mig-profiles", *profiles])
+        self.assertEqual(parsed.gpu_mig_profiles, profiles)
+
+        with patch(
+            "azure.cli.core.command_recommender.CommandRecommender.provide_recommendations",
+            return_value=[],
+        ), self.assertRaises(SystemExit):
+            parser.parse_args(args + ["--gpu-mig-profiles", "MIG5g"])
