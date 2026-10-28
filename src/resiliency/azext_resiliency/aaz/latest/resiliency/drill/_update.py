@@ -118,7 +118,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.sli_monitoring_properties = AAZObjectArg(
-            options=["--sli-monitoring-properties"],
+            options=["--sli-monitoring-properties", "--sli-properties"],
             arg_group="Properties",
             help="SLI monitoring properties of the Drill.",
             nullable=True,

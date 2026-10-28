@@ -71,7 +71,7 @@ class ValidateForReprotect(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.reprotect_request_properties = AAZObjectArg(
-            options=["--reprotect-request-properties"],
+            options=["--reprotect-request-properties", "--reprotect-properties"],
             arg_group="Body",
             help="Additional properties for Reprotect.",
         )

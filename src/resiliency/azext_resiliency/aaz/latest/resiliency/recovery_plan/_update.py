@@ -79,7 +79,7 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.recovery_groups_setting = AAZObjectArg(
-            options=["--recovery-groups-setting"],
+            options=["--recovery-groups-setting", "--recovery-groups"],
             arg_group="Properties",
             help="Settings for the recovery orchestration groups associated with the recovery orchestration plan.",
         )

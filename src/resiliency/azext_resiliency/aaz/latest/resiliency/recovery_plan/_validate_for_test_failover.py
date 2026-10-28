@@ -78,7 +78,7 @@ class ValidateForTestFailover(AAZCommand):
             enum={"FromSpecificLocations": "FromSpecificLocations"},
         )
         _args_schema.failover_request_properties = AAZObjectArg(
-            options=["--failover-request-properties"],
+            options=["--failover-request-properties", "--failover-properties"],
             arg_group="Body",
             help="Additional properties for Failover.",
         )

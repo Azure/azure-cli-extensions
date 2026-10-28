@@ -53,7 +53,7 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.unified_resilience_item_name = AAZStrArg(
-            options=["--unified-resilience-item-name"],
+            options=["--unified-resilience-item-name", "--item-name"],
             help="The name of the unified resilience item.",
             required=True,
             fmt=AAZStrArgFormat(

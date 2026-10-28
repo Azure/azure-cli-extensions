@@ -71,7 +71,7 @@ class ValidateForExecution(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.validate_for_execution_properties = AAZObjectArg(
-            options=["--validate-for-execution-properties"],
+            options=["--validate-for-execution-properties", "--execution-properties"],
             arg_group="Body",
             help="Additional properties for Validate for execute.",
         )

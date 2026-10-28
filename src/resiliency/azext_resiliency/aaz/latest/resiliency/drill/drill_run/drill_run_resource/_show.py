@@ -61,7 +61,7 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.drill_run_resource_name = AAZStrArg(
-            options=["--drill-run-resource-name"],
+            options=["--drill-run-resource-name", "--run-resource-name"],
             help="The unique name (GUID) of the recovery job resource.",
             required=True,
             fmt=AAZStrArgFormat(

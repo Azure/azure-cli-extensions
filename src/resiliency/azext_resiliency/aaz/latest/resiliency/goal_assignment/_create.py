@@ -69,12 +69,12 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.require_zonal_resiliency = AAZBoolArg(
-            options=["--require-zonal-resiliency"],
+            options=["--require-zonal-resiliency", "--require-zonal"],
             arg_group="Properties",
             help="Whether zonal resiliency is required for this goal assignment.",
         )
         _args_schema.service_level_resources = AAZListArg(
-            options=["--service-level-resources"],
+            options=["--service-level-resources", "--service-resources"],
             arg_group="Properties",
             help="List of service level resources.",
         )

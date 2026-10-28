@@ -53,7 +53,7 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.recovery_job_resource_name = AAZStrArg(
-            options=["--recovery-job-resource-name"],
+            options=["--recovery-job-resource-name", "--job-resource-name"],
             help="The unique name (GUID) of the recovery job resource.",
             required=True,
             fmt=AAZStrArgFormat(
