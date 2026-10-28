@@ -11,6 +11,7 @@ import re
 import shlex
 import timeit
 import traceback
+from urllib.parse import unquote
 import requests
 
 from knack.log import get_logger
@@ -485,7 +486,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             blob_service_client = get_unmanaged_blob_service_client(
                 cmd, resource_group_name, storage_account.account_name)
             source_blob_client = get_unmanaged_blob_client(
-                blob_service_client, storage_account.container, storage_account.blob)
+                blob_service_client, storage_account.container, unquote(storage_account.blob))
 
             # Create a snapshot of the unmanaged OS disk.
             logger.info('Creating snapshot of OS disk...')

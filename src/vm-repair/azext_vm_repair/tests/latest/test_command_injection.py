@@ -24,13 +24,16 @@ import pytest
 import requests
 
 from azure.cli.core import get_default_cli
+from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from azure.cli.core.aaz._client import AAZMgmtClient
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.core.exceptions import HttpResponseError
 from azure.core.pipeline import PipelineContext, PipelineResponse
 from azure.core.pipeline.policies import ContentDecodePolicy, SansIOHTTPPolicy
 from azure.core.pipeline.transport import RequestsTransportResponse
+from azure.storage.blob import BlobServiceClient
 
+from azext_vm_repair import storage_utils
 from azext_vm_repair._validators import _validate_resource_group_name, validate_vm_password
 from azext_vm_repair.custom import create, reset_nic, restore, run
 from azext_vm_repair.exceptions import AzCommandError
@@ -639,6 +642,36 @@ def test_unmanaged_create_preserves_uri_and_vm_state(unmanaged_create, existing_
         state.repair['properties']['storageProfile']['osDisk']
     assert state.writes[0][1]['properties']['networkProfile'] == state.repair['properties']['networkProfile']
     assert state.writes[0][1]['tags'] == state.repair['tags']
+
+
+@pytest.mark.parametrize('source_name,expected_source_name', [
+    ('os%20disk.vhd', 'os%20disk.vhd'),
+    ('os%25disk.vhd', 'os%25disk.vhd'),
+    ('os%2520disk.vhd', 'os%2520disk.vhd'),
+    ('os+disk.vhd', 'os%2Bdisk.vhd'),
+])
+def test_unmanaged_create_blob_urls_decode_only_source_once(
+        unmanaged_create, source_name, expected_source_name):
+    state = unmanaged_create
+    endpoint = 'https://acct.blob.core.windows.net'
+    source_uri = endpoint + '/vhds/' + source_name
+    state.source['properties']['storageProfile']['osDisk']['vhd']['uri'] = source_uri
+    state.get_blob_service.return_value = BlobServiceClient(endpoint)
+
+    with mock.patch.multiple(
+            'azext_vm_repair.custom',
+            StorageResourceIdentifier=StorageResourceIdentifier,
+            get_unmanaged_blob_client=storage_utils.get_unmanaged_blob_client):
+        result = create(state.cmd, 'source-vm', 'source-rg', repair_password=state.password,
+                        repair_username='repairuser', repair_vm_name='repair-vm', repair_group_name='repair-rg',
+                        copy_disk_name='copy%20disk', disable_trusted_launch=True)
+
+    assert result['status'] == 'SUCCESS', result
+    source_blob = state.create_snapshot.call_args.args[0]
+    destination_blob, snapshot_uri = state.start_copy.call_args.args
+    assert source_blob.url == endpoint + '/vhds/' + expected_source_name
+    assert destination_blob.url == endpoint + '/vhds/copy%2520disk.vhd'
+    assert snapshot_uri == source_uri + '?snapshot=' + state.snapshot_timestamp
 
 
 def test_unmanaged_create_attach_failure_cleans_up(unmanaged_create):
