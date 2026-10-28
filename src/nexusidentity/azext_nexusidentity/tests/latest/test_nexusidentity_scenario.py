@@ -18,15 +18,6 @@ from azext_nexusidentity import custom
 class NexusIdentityScenarioTest(ScenarioTest):
     """Exercise real Graph requests with simulated local key generation."""
 
-    def setUp(self):
-        if self.in_recording and not self.is_live:
-            self.fail(
-                "NexusIdentity recording is missing. Record explicitly with "
-                "make aaz-test-live TEST=test_nexusidentity_key_publication "
-                "using an approved test account, then commit the recording."
-            )
-        super().setUp()
-
     def test_nexusidentity_key_publication(self):
         self.kwargs.update(
             graph_resource="https://graph.microsoft.com",

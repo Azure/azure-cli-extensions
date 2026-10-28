@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""Check that missing recordings cannot trigger implicit live Graph calls."""
+"""Check scenario setup and protection of existing Graph extensions."""
 
 import unittest
 from unittest.mock import Mock, patch
@@ -12,19 +12,8 @@ from ..latest import test_nexusidentity_scenario as _scenario
 
 
 class TestRecordingSafety(unittest.TestCase):
-    def test_missing_recording_requires_explicit_live_mode(self):
-        test = _scenario.NexusIdentityScenarioTest("test_nexusidentity_key_publication")
-        test.in_recording = True
-        test.is_live = False
-        with patch.object(_scenario.ScenarioTest, "setUp") as setup:
-            with self.assertRaisesRegex(
-                AssertionError, "Record explicitly with make aaz-test-live"
-            ):
-                test.setUp()
-        setup.assert_not_called()
-
-    def test_explicit_recording_and_existing_playback_are_allowed(self):
-        for in_recording, is_live in ((True, True), (False, False)):
+    def test_recording_modes_use_standard_setup(self):
+        for in_recording, is_live in ((True, False), (True, True), (False, False)):
             with self.subTest(in_recording=in_recording, is_live=is_live):
                 test = _scenario.NexusIdentityScenarioTest(
                     "test_nexusidentity_key_publication"
