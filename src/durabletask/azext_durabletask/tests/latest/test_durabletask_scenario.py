@@ -6,7 +6,7 @@
 import time
 from unittest.mock import patch
 
-from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, live_only
+from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.core.exceptions import HttpResponseError
 
 from azext_durabletask._scheduler import _get_caller_object_id
@@ -22,6 +22,15 @@ def _patch_playback(test):
     ):
         patcher.start()
         test.addCleanup(patcher.stop)
+
+
+def _delete_failover_instance(test):
+    try:
+        test.cmd('durabletask scheduler failover-instance delete -g {rg} -s {scheduler} --yes')
+    except HttpResponseError as error:
+        if error.status_code == 404:
+            return
+        raise
 
 
 class DurabletaskLifecycleScenario(ScenarioTest):
@@ -307,15 +316,14 @@ class DurabletaskLifecycleScenario(ScenarioTest):
             '--scheduler-name {scheduler} --yes')
         self.cmd('durabletask scheduler delete -g {rg} -n {scheduler} --yes')
 
-    @live_only()
-    @ResourceGroupPreparer(name_prefix='clitest-durabletask-', random_name_length=40, location='northcentralus')
-    def test_durabletask_failover_lifecycle_live(self):
-        """Exercise cross-region failover when the service can provision the configuration."""
+    @ResourceGroupPreparer(name_prefix='clitest-durabletask-', random_name_length=40, location='eastasia')
+    def test_durabletask_failover_lifecycle_recorded(self):
+        """Configure replication and promote each region in turn."""
         self.kwargs.update(
             scheduler=self.create_random_name('dts', 24),
             partner=self.create_random_name('partner', 24),
             hub=self.create_random_name('hub', 24),
-            location='northcentralus', partner_location='westus2')
+            location='eastasia', partner_location='southeastasia')
         self.cmd(
             'durabletask scheduler create -g {rg} -n {scheduler} -l {location} '
             '--sku-name Dedicated --sku-capacity 1 --no-wait')
@@ -335,42 +343,47 @@ class DurabletaskLifecycleScenario(ScenarioTest):
         self.cmd('durabletask taskhub create -g {rg} -s {scheduler} -n {hub}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
         ])
+        self.addCleanup(_delete_failover_instance, self)
         self.cmd(
             'durabletask scheduler failover-instance create -g {rg} -s {scheduler} '
-            '--partner-scheduler-resource-id {partner_id} --no-wait')
-
-        def delete_failover():
-            self.cmd('durabletask scheduler failover-instance delete -g {rg} -s {scheduler} --yes --no-wait')
-            self.cmd(
-                'durabletask scheduler failover-instance wait -g {rg} -s {scheduler} '
-                '--deleted --interval 10 --timeout 600')
-
-        self.addCleanup(delete_failover)
-        self.cmd(
-            'durabletask scheduler failover-instance wait -g {rg} -s {scheduler} '
-            '--created --interval 10 --timeout 600')
+            '--partner-scheduler-resource-id {partner_id}', checks=[
+                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('properties.partnerSchedulerLocation', '{partner_location}'),
+            ])
         self.cmd('durabletask scheduler failover-instance show -g {rg} -s {scheduler}', checks=[
             self.check('properties.partnerSchedulerResourceId', '{partner_id}'),
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('properties.replicationRole', 'Primary'),
+        ])
+        self.cmd('durabletask scheduler failover-instance show -g {rg} -s {partner}', checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('properties.replicationRole', 'Secondary'),
         ])
         self.cmd(
             'durabletask scheduler failover-instance update -g {rg} -s {scheduler} '
-            '--pid {partner_id} --no-wait')
+            '--pid {partner_id}', checks=[
+                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('properties.partnerSchedulerResourceId', '{partner_id}'),
+            ])
+        self.cmd('durabletask scheduler failover-instance failover -g {rg} -s {partner}')
         self.cmd(
             'durabletask scheduler failover-instance wait -g {rg} -s {scheduler} '
-            '--updated --interval 10 --timeout 600')
-        self.cmd('durabletask scheduler failover-instance failover -g {rg} -s {scheduler} --no-wait')
-        self.cmd(
-            'durabletask scheduler failover-instance wait -g {rg} -s {scheduler} '
-            '--updated --interval 10 --timeout 600')
+            '--custom "properties.replicationRole==\'Secondary\'" --interval 10 --timeout 600')
+        self.cmd('durabletask scheduler failover-instance show -g {rg} -s {partner}', checks=[
+            self.check('properties.replicationRole', 'Primary'),
+        ])
         self.cmd(
             'durabletask scheduler failover-instance force-failover-allow-data-loss '
-            '-g {rg} -s {scheduler} --no-wait')
+            '-g {rg} -s {scheduler}')
         self.cmd(
             'durabletask scheduler failover-instance wait -g {rg} -s {scheduler} '
-            '--updated --interval 10 --timeout 600')
+            '--custom "properties.replicationRole==\'Primary\'" --interval 10 --timeout 600')
         self.cmd(
             'durabletask scheduler failover-instance show -g {rg} -s {scheduler}',
-            checks=[self.check('properties.provisioningState', 'Succeeded')])
+            checks=[
+                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('properties.replicationRole', 'Primary'),
+            ])
 
     @ResourceGroupPreparer(name_prefix='clitest-durabletask-', random_name_length=40, location='northcentralus')
     def test_durabletask_attach_functionapp_recorded(self):
