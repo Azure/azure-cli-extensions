@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.0.0b2
+++++++
+* Migrate all Agent Fabric commands and waits to API version ``2026-11-03-preview``.
+* Add nested MCP matching conditions, TLS Inspect/Bypass rules, and optional URL rule actions.
+* Support resource names up to 256 characters and conditional AKS attach with ``--if-none-match``.
+* Preserve ACI, AKS, and Agent Fabric Sandbox member response details.
+* Make the generated cluster association PATCH target ID optional while preserving the CLI's GET-then-PATCH behavior.
+
 1.0.0b1
 ++++++
 * Initial preview release for Azure Agent Fabric using API version ``2026-10-07-preview``.

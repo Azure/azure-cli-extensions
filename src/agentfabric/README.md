@@ -3,13 +3,15 @@
 This extension manages Azure Agent Fabric resources, AKS cluster enrollment,
 child members, and independent Policy Group peer resources. It uses the
 `Microsoft.NetworkSecurity` resource provider API version
-`2026-10-07-preview`.
+`2026-11-03-preview` across all commands and waits.
 
-The commands are generated from the public contract merged into `RPSaaSMaster`
-by [Azure/azure-rest-api-specs-pr#30665](https://github.com/Azure/azure-rest-api-specs-pr/pull/30665)
-at commit `a52c4fc4ac8cd197d38a1072704853f485cafb6c`:
-[2026-10-07-preview/agentFabric.json](https://github.com/Azure/azure-rest-api-specs-pr/blob/a52c4fc4ac8cd197d38a1072704853f485cafb6c/specification/networksecurity/resource-manager/Microsoft.NetworkSecurity/agentFabric/preview/2026-10-07-preview/agentFabric.json).
+The commands are generated from the contract merged into `RPSaaSMaster`
+by [Azure/azure-rest-api-specs-pr#31028](https://github.com/Azure/azure-rest-api-specs-pr/pull/31028)
+at commit `76fc915fccfbf04b016d79a2184bc0cc44fb530a`:
+[2026-11-03-preview/agentFabric.json](https://github.com/Azure/azure-rest-api-specs-pr/blob/76fc915fccfbf04b016d79a2184bc0cc44fb530a/specification/networksecurity/resource-manager/Microsoft.NetworkSecurity/agentFabric/preview/2026-11-03-preview/agentFabric.json).
 This pins the API contract, not the version deployed in an Azure region.
+Fabric, member, cluster association, and Policy Group resource names accept
+3 to 256 ASCII letters, digits, or hyphens.
 
 ## Resource hierarchy
 
@@ -69,6 +71,9 @@ this extension. The Agent Fabric Sandbox creation scenario is retired for now,
 including metadata-only creation without a workload. Existing members can
 still be shown, listed, and waited on.
 
+Read commands preserve ACI, AKS, and Agent Fabric Sandbox workload details,
+including workload IDs, AKS endpoints, and optional agent identity metadata.
+
 ```bash
 az agentfabric member show \
   --resource-group myResourceGroup \
@@ -122,8 +127,11 @@ location and tags. This differs from the earlier proxy-resource contract.
 `aks update` first reads the enrollment to obtain its immutable target ID,
 then PATCHes tags, SKU, or `--workload-cluster-gateway-ip`. Users do not need to
 resupply the target ID. `aks wait` observes ARM provisioning state, not
-Kubernetes readiness. Attach does not currently send `If-None-Match`; it uses
-the API's create-or-replace PUT semantics rather than a create-only guarantee.
+Kubernetes readiness. The November PATCH schema makes the target ID optional;
+the CLI retains its existing read-before-PATCH behavior and hides the target
+ID argument on update. Attach uses create-or-replace PUT by default. Supply
+`--if-none-match '*'` to require a new association; the service returns HTTP
+412 when that precondition is not met.
 
 ## Egress trust bundles
 
@@ -162,6 +170,20 @@ az agentfabric policy-group show \
 
 Policy Group ARM IDs end with `/policyGroups/{name}`.
 
+`policy-group create --network-security-policies` supports the November
+nested policy contract: MCP `matching-conditions.destinations` can match
+server FQDNs, protocol versions, tool requests/responses, and prompt
+requests/responses. Legacy MCP `tools` remain supported, but both `tools`
+and rule `action` are optional. TLS inspection supports `default-action`
+(`Inspect` or `Bypass`) and one rule with one FQDN destination. A TLS rule
+without an action inherits the policy default; the default is `Inspect`
+when omitted. URL filtering rule actions are also optional.
+
+Policy changes use the create-or-replace PUT (`create`); `policy-group update`
+remains a tags-only PATCH. These schema options do not establish service
+readiness or enforcement; service validation and compatibility rules still
+apply.
+
 Long-running create, attach, update, detach, and delete operations support
 `--no-wait`. Use the corresponding `wait` command to wait for provisioning to
 reach a target state.
@@ -179,7 +201,7 @@ azdev test agentfabric
 ```
 
 `AZURE_TEST_AGENTFABRIC_LOCATION` selects the service region (default:
-`centraluseuap`). The committed live recordings cover Fabric and
+`centraluseuap`). The committed October API recordings cover Fabric and
 Policy Group CRUD/wait, existing Member show/list/wait,
 resource-group lists, and egress trust bundle singleton and collection reads.
 They also cover AKS attach/show/list/update/detach
@@ -193,13 +215,22 @@ It skips live execution when that prerequisite is not supplied. Existing
 workload response schemas are additionally unit-tested.
 Signed operation-status URL values are scrubbed from recordings.
 
+Playback reuses those original October responses with a replay-only processor
+that maps the November Agent Fabric API query version to the recorded October
+version. Recordings, live requests, other providers, and other API versions
+are not rewritten. This is backward-compatibility coverage, not live November
+service evidence. Unit tests independently assert the actual November request
+versions (including inherited custom commands and all waits), new policy
+payloads and responses, resource-name boundaries, and tags-only Policy Group
+PATCH behavior.
+
 The AKS lifecycle provisions an Entra-enabled cluster; managed identity alone
 does not satisfy its authentication prerequisite. It cleans up the association,
 AKS, and Fabric before group teardown. Its AKS prerequisite client is pinned
 to the recorded `2026-06-01` Container Service API so changes to the core CLI's
 default AKS API version do not invalidate playback. Agent Fabric requests
-continue to use `2026-10-07-preview`; request matching and recorded responses
-are unchanged.
+use `2026-11-03-preview`; only playback matching normalizes that version to the
+unchanged October recordings.
 
 The egress trust bundle collection scenario runs in ordinary playback. Its
 successful live recording verifies that LIST returns the `default` bundle with
@@ -214,6 +245,7 @@ command first checks that its new cluster does not exist, and the association
 and Fabric deleted waits verify that their resources are gone. Attach, show,
 list, upgrade, and detach succeeded in that recorded lifecycle. The successful
 egress reads do not imply GA or availability in every region; the API remains
-`2026-10-07-preview`.
+`2026-11-03-preview`. The committed recordings demonstrate only the earlier
+October service contract.
 
 Failed-run recordings are not committed as successful playback fixtures.

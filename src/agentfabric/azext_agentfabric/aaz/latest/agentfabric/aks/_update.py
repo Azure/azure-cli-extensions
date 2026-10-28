@@ -17,16 +17,19 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Patch an Agent Fabric compute association.
 
-    Patch tags, SKU, or workload cluster gateway IP. The existing immutable target resource ID is required by ARM linked authorization and must match the stored association.
+    Patch tags, SKU, or workload cluster gateway IP. In API version 2026-11-03-preview, the target resource ID is optional in the PATCH schema. When supplied, it must match the immutable target resource ID stored on the association.
 
     :example: Patch a compute association
         az agentfabric aks update --resource-group rgnetworksecurity --fabric-name testAIFabric --association-name testAssociation --cluster-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgaks/providers/Microsoft.ContainerService/managedClusters/testAksCluster --sku Premium --gateway-ip 10.0.0.4 --tags "{env:prod}"
+
+    :example: Patch an association SKU without resubmitting its target resource ID
+        az agentfabric aks update --resource-group rgnetworksecurity --fabric-name testAIFabric --association-name testAssociation --sku Premium
     """
 
     _aaz_info = {
-        "version": "2026-10-07-preview",
+        "version": "2026-11-03-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/clusterassociations/{}", "2026-10-07-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/clusterassociations/{}", "2026-11-03-preview"],
         ]
     }
 
@@ -53,7 +56,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^[a-zA-Z0-9-]{3,256}$",
             ),
         )
         _args_schema.association_name = AAZStrArg(
@@ -62,7 +65,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^[a-zA-Z0-9-]{3,256}$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -75,8 +78,7 @@ class Update(AAZCommand):
         _args_schema.cluster_resource_id = AAZResourceIdArg(
             options=["--cluster-resource-id"],
             arg_group="Properties",
-            help="The existing AKS managed cluster or ACI SandboxGroup. This value is required so Azure Resource Manager can perform linked authorization and must match the immutable clusterResourceId already stored on the association.",
-            required=True,
+            help="The existing AKS managed cluster or ACI SandboxGroup. Optional in the 2026-11-03-preview PATCH schema; when supplied, must match the immutable clusterResourceId stored on the association.",
         )
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
@@ -184,7 +186,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-10-07-preview",
+                    "api-version", "2026-11-03-preview",
                     required=True,
                 ),
             }
@@ -214,7 +216,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("clusterResourceId", AAZStrType, ".cluster_resource_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("clusterResourceId", AAZStrType, ".cluster_resource_id")
                 properties.set_prop("sku", AAZStrType, ".sku")
                 properties.set_prop("workloadClusterGatewayIp", AAZStrType, ".workload_cluster_gateway_ip")
 

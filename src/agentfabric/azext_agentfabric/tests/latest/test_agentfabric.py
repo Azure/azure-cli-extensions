@@ -6,6 +6,7 @@
 # --------------------------------------------------------------------------------------------
 
 import importlib
+import inspect
 import shlex
 import unittest
 from unittest.mock import MagicMock
@@ -14,6 +15,8 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.aaz._command import AAZCommandCtx
 from azext_agentfabric.custom import AksAttach, AksUpdate
 
+
+API_VERSION = "2026-11-03-preview"
 
 COMMANDS = (
     ("agentfabric create", "azext_agentfabric.aaz.latest.agentfabric._create", "Create"),
@@ -107,7 +110,7 @@ REQUEST_SHAPES = (
         "AgentFabricsCreateOrUpdate",
         "PUT",
         "/Microsoft.NetworkSecurity/agentFabrics/{agentFabricName}",
-        "2026-10-07-preview",
+        API_VERSION,
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric._update",
@@ -115,7 +118,7 @@ REQUEST_SHAPES = (
         "AgentFabricsUpdate",
         "PATCH",
         "/Microsoft.NetworkSecurity/agentFabrics/{agentFabricName}",
-        "2026-10-07-preview",
+        API_VERSION,
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric._delete",
@@ -123,7 +126,7 @@ REQUEST_SHAPES = (
         "AgentFabricsDelete",
         "DELETE",
         "/Microsoft.NetworkSecurity/agentFabrics/{agentFabricName}",
-        "2026-10-07-preview",
+        API_VERSION,
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.aks._attach",
@@ -131,7 +134,7 @@ REQUEST_SHAPES = (
         "ClusterAssociationsCreateOrUpdate",
         "PUT",
         "/agentFabrics/{agentFabricName}/clusterAssociations/{clusterAssociationName}",
-        "2026-10-07-preview",
+        API_VERSION,
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.aks._show",
@@ -139,7 +142,7 @@ REQUEST_SHAPES = (
         "ClusterAssociationsGet",
         "GET",
         "/agentFabrics/{agentFabricName}/clusterAssociations/{clusterAssociationName}",
-        "2026-10-07-preview",
+        API_VERSION,
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.aks._list",
@@ -147,7 +150,7 @@ REQUEST_SHAPES = (
         "ClusterAssociationsListByParent",
         "GET",
         "/agentFabrics/{agentFabricName}/clusterAssociations",
-        "2026-10-07-preview",
+        API_VERSION,
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.aks._update",
@@ -155,7 +158,7 @@ REQUEST_SHAPES = (
         "ClusterAssociationsUpdate",
         "PATCH",
         "/agentFabrics/{agentFabricName}/clusterAssociations/{clusterAssociationName}",
-        "2026-10-07-preview",
+        API_VERSION,
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.aks._detach",
@@ -163,7 +166,7 @@ REQUEST_SHAPES = (
         "ClusterAssociationsDelete",
         "DELETE",
         "/agentFabrics/{agentFabricName}/clusterAssociations/{clusterAssociationName}",
-        "2026-10-07-preview",
+        API_VERSION,
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.policy_group._create",
@@ -171,7 +174,7 @@ REQUEST_SHAPES = (
         "PolicyGroupsCreateOrUpdate",
         "PUT",
         "/Microsoft.NetworkSecurity/policyGroups/{policyGroupName}",
-        "2026-10-07-preview",
+        API_VERSION,
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.policy_group._update",
@@ -179,7 +182,7 @@ REQUEST_SHAPES = (
         "PolicyGroupsUpdate",
         "PATCH",
         "/Microsoft.NetworkSecurity/policyGroups/{policyGroupName}",
-        "2026-10-07-preview",
+        API_VERSION,
     ),
     (
         "azext_agentfabric.aaz.latest.agentfabric.policy_group._delete",
@@ -187,7 +190,7 @@ REQUEST_SHAPES = (
         "PolicyGroupsDelete",
         "DELETE",
         "/Microsoft.NetworkSecurity/policyGroups/{policyGroupName}",
-        "2026-10-07-preview",
+        API_VERSION,
     ),
 )
 
@@ -268,16 +271,27 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
                 command,
             )
 
-    def test_all_operations_use_latest_public_api(self):
+    def test_all_operations_use_november_api(self):
         from azure.cli.core.aaz import AAZHttpOperation
-        for command, module_name, class_name in COMMANDS:
+        waits = tuple(
+            (command, "azext_agentfabric.aaz.latest." +
+             command.rsplit(" ", 1)[0].replace(" ", ".").replace("-", "_") + "._wait",
+             "Wait")
+            for command in HELP_ONLY_COMMANDS
+        )
+        for command, module_name, class_name in (*COMMANDS, *waits):
             command_class = getattr(importlib.import_module(module_name), class_name)
-            for operation_class in vars(command_class).values():
-                if not isinstance(operation_class, type) or not issubclass(operation_class, AAZHttpOperation):
-                    continue
+            for resource in command_class._aaz_info["resources"]:
+                self.assertEqual(resource[2], API_VERSION, command)
+            operations = [
+                cls for _, cls in inspect.getmembers(command_class, inspect.isclass)
+                if issubclass(cls, AAZHttpOperation)
+            ]
+            self.assertTrue(operations, command)
+            for operation_class in operations:
                 operation = operation_class(ctx=MagicMock())
                 operation.client.format_url.side_effect = lambda url, **_: url
-                self.assertEqual(operation.query_parameters, {"api-version": "2026-10-07-preview"}, command)
+                self.assertEqual(operation.query_parameters, {"api-version": API_VERSION}, command)
                 self.assertIn("/Microsoft.NetworkSecurity/", operation.url, command)
                 self.assertNotIn("Private.NetworkSecurity", operation.url, command)
                 self.assertFalse(operation.url.startswith("https://"), command)
@@ -317,13 +331,14 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
             attach_schema.sku.enum.items,
             {"Premium": "Premium", "Standard": "Standard"},
         )
-        self.assertFalse(hasattr(attach_schema, "if_none_match"))
+        self.assertFalse(attach_schema.if_none_match._required)
+        self.assertEqual(attach_schema.if_none_match.enum.items, {"*": "*"})
 
         update_module = importlib.import_module(
             "azext_agentfabric.aaz.latest.agentfabric.aks._update"
         )
         update_schema = update_module.Update._build_arguments_schema()
-        self.assertTrue(update_schema.cluster_resource_id._required)
+        self.assertFalse(update_schema.cluster_resource_id._required)
         self.assertFalse(hasattr(update_schema, "if_none_match"))
         self.assertTrue(hasattr(update_schema, "sku"))
         self.assertTrue(hasattr(update_schema, "workload_cluster_gateway_ip"))
@@ -377,6 +392,11 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
             "tags": {"env": "test"},
             "properties": {"clusterResourceId": cluster_id, "sku": "Premium"},
         })
+        self.assertNotIn("If-None-Match", attach.header_parameters)
+        conditional = self._operation(
+            Attach, "ClusterAssociationsCreateOrUpdate", dict(arguments, location="eastus", if_none_match="*")
+        )
+        self.assertEqual(conditional.header_parameters["If-None-Match"], "*")
         update = self._operation(
             Update, "ClusterAssociationsUpdate",
             dict(arguments, workload_cluster_gateway_ip="10.0.0.4"),
@@ -389,6 +409,10 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
                 "workloadClusterGatewayIp": "10.0.0.4",
             },
         })
+        without_target = self._operation(Update, "ClusterAssociationsUpdate", {
+            "fabric_name": "fabric", "association_name": "association", "resource_group": "rg", "sku": "Premium",
+        })
+        self.assertEqual(without_target.content, {"properties": {"sku": "Premium"}})
         session = MagicMock()
         session.http_response.status_code = 202
         update.client.send_request.return_value = session
@@ -511,3 +535,140 @@ class AgentfabricGeneratedCommandTest(unittest.TestCase):
                     set(sandbox.endpoints.Element._fields),
                     {"name", "service_port", "protocol", "target_port"},
                 )
+            for workload_data in (
+                {"type": "ACI", "resourceId": "/containers/aci", "workloadId": "aci-id",
+                 "agentIdentity": {"agentId": "agent", "blueprintId": "blueprint", "tenantId": "tenant"}},
+                {"type": "AKS", "clusterAssociationId": "/associations/aks", "clusterResourceId": "/clusters/aks",
+                 "workloadId": "aks-id", "workload": {
+                     "apiVersion": "apps/v1", "kind": "Deployment", "name": "agent", "namespace": "default"},
+                 "endpoints": [{"name": "https", "servicePort": 443, "targetPort": 8443, "protocol": "TCP"}]},
+                {"type": "AgentFabricSandbox", "domain": "example.test", "workloadId": "sandbox-id",
+                 "image": {"uri": "example.test/image:v1"}, "resources": {"cpu": "1", "memory": "1Gi"},
+                 "agentIdentity": {"agentId": "agent", "blueprintId": "blueprint", "tenantId": "tenant"},
+                 "endpoints": [{"name": "https", "servicePort": 443, "targetPort": 8443, "protocol": "TCP"}]},
+            ):
+                with self.subTest(response=name, workload_type=workload_data["type"]):
+                    self._assert_response_preserved(response_schema, {"properties": {"workload": workload_data}})
+
+    def _assert_response_preserved(self, schema, payload):
+        from azure.cli.core.aaz import AAZCommand
+        ctx = AAZCommandCtx(MagicMock(), AksUpdate._build_arguments_schema(), {})
+        ctx.set_var("instance", payload, schema_builder=lambda: schema)
+        self.assertEqual(AAZCommand.deserialize_output(ctx.vars.instance, client_flatten=False), payload)
+
+    def test_resource_name_length_boundaries(self):
+        from azure.cli.core import get_default_cli
+        from azext_agentfabric import AgentfabricCommandsLoader
+        commands = AgentfabricCommandsLoader(cli_ctx=get_default_cli()).load_command_table(None)
+        checked = 0
+        for command, command_class in commands.items():
+            if not command.startswith("agentfabric "):
+                continue
+            schema = command_class._build_arguments_schema()
+            for field in ("name", "fabric_name", "association_name", "member_name"):
+                if not hasattr(schema, field):
+                    continue
+                with self.subTest(command=command, field=field):
+                    pattern = getattr(schema, field)._fmt._compiled_pattern
+                    for length in (3, 24, 25, 256):
+                        self.assertIsNotNone(pattern.fullmatch("a" * length))
+                    for value in ("aa", "a" * 257, "bad_name"):
+                        self.assertIsNone(pattern.fullmatch(value))
+                    checked += 1
+        self.assertGreaterEqual(checked, 23)
+
+    def test_november_policy_payloads_and_responses(self):
+        from azext_agentfabric.aaz.latest.agentfabric.policy_group import Create, List, Show, Update, Wait
+        source = {"workload_id_patterns": {"patterns": ["spiffe://example.test/*"]}}
+        matching = {"match_type": "ExactMatch", "match_case": "CaseSensitive", "values": ["safe"]}
+        policies = [
+            {"mcp": {
+                "default_action": "Deny", "source": source, "destination": {"fqdns": {"fqdns": ["mcp.example.test"]}},
+                "rules": [{
+                    "name": "matching-rule", "priority": 1,
+                    "matching_conditions": {"destinations": {
+                        "server_fqdns": ["mcp.example.test"], "protocol_versions": matching,
+                        "tool_matching": {
+                            "methods": ["Call"], "names": matching,
+                            "call_arguments": dict(matching, path="$.repoName"), "response_contents": matching,
+                        },
+                        "prompt_matching": {
+                            "methods": ["Get"], "names": matching,
+                            "arguments": dict(matching, path="$.repoName"), "response_contents": matching,
+                        },
+                    }},
+                }],
+            }},
+            {"tls_inspection": {
+                "source": source, "certificate": {"azure_managed_ca": {}}, "default_action": "Inspect",
+                "rules": [{"name": "bypass-rule", "priority": 1, "action": "Bypass",
+                           "destinations": [{"fqdns": {"fqdns": ["private.example.test"]}}]}],
+            }},
+            {"url_filtering": {
+                "default_action": "Deny", "source": source,
+                "rules": [{"name": "url-rule", "priority": 1, "hostname": "example.test", "paths": ["/safe"]}],
+            }},
+        ]
+        operation = self._operation(Create, "PolicyGroupsCreateOrUpdate", {
+            "name": "policy", "resource_group": "rg", "location": "eastus", "network_security_policies": policies,
+        })
+        body = operation.content["properties"]["networkSecurityPolicies"]
+        wire_matching = {"matchType": "ExactMatch", "matchCase": "CaseSensitive", "values": ["safe"]}
+        self.assertEqual([policy["type"] for policy in body], ["Mcp", "TlsInspection", "UrlFiltering"])
+        mcp_rule = body[0]["rules"][0]
+        self.assertNotIn("action", mcp_rule)
+        self.assertNotIn("tools", mcp_rule)
+        self.assertEqual(mcp_rule["matchingConditions"]["destinations"], {
+            "serverFqdns": ["mcp.example.test"], "protocolVersions": wire_matching,
+            "toolMatching": {
+                "methods": ["Call"], "names": wire_matching,
+                "callArguments": dict(wire_matching, path="$.repoName"), "responseContents": wire_matching,
+            },
+            "promptMatching": {
+                "methods": ["Get"], "names": wire_matching,
+                "arguments": dict(wire_matching, path="$.repoName"), "responseContents": wire_matching,
+            },
+        })
+        self.assertEqual(body[1]["defaultAction"], "Inspect")
+        self.assertEqual(body[1]["rules"], [{
+            "name": "bypass-rule", "priority": 1, "action": "Bypass",
+            "destinations": [{"type": "Fqdns", "fqdns": ["private.example.test"]}],
+        }])
+        self.assertNotIn("action", body[2]["rules"][0])
+        schemas = (
+            Create.PolicyGroupsCreateOrUpdate._build_schema_on_200_201(),
+            Show.PolicyGroupsGet._build_schema_on_200(),
+            List.PolicyGroupsListByResourceGroup._build_schema_on_200().value.Element,
+            List.PolicyGroupsListBySubscription._build_schema_on_200().value.Element,
+            Update.PolicyGroupsUpdate._build_schema_on_200(),
+            Wait.PolicyGroupsGet._build_schema_on_200(),
+        )
+        for index, schema in enumerate(schemas):
+            with self.subTest(response=index):
+                self._assert_response_preserved(schema, {"properties": {"networkSecurityPolicies": body}})
+        patch = self._operation(Update, "PolicyGroupsUpdate", {
+            "name": "policy", "resource_group": "rg", "tags": {"env": "test"},
+        })
+        self.assertEqual(patch.content, {"tags": {"env": "test"}})
+        self.assertFalse(hasattr(Update._build_arguments_schema(), "network_security_policies"))
+
+    def test_optional_policy_rule_actions_and_legacy_mcp_tools(self):
+        from azext_agentfabric.aaz.latest.agentfabric.policy_group import Create
+        schema = Create._build_arguments_schema().network_security_policies.Element
+        self.assertFalse(schema.mcp.rules.Element.tools._required)
+        self.assertFalse(schema.mcp.rules.Element.action._required)
+        self.assertFalse(schema.url_filtering.rules.Element.action._required)
+        self.assertFalse(schema.tls_inspection.rules.Element.action._required)
+        self.assertEqual(schema.tls_inspection.default_action.enum.items, {"Bypass": "Bypass", "Inspect": "Inspect"})
+        self.assertEqual(schema.tls_inspection.rules._fmt._max_length, 1)
+        operation = self._operation(Create, "PolicyGroupsCreateOrUpdate", {
+            "name": "policy", "resource_group": "rg", "location": "eastus",
+            "network_security_policies": [{"mcp": {
+                "default_action": "Deny", "source": {"workload_id_patterns": {"patterns": ["*"]}},
+                "destination": {"fqdns": {"fqdns": ["mcp.example.test"]}},
+                "rules": [{"name": "legacy", "priority": 1, "tools": ["safe"], "action": "Allow"}],
+            }}],
+        })
+        self.assertEqual(operation.content["properties"]["networkSecurityPolicies"][0]["rules"], [
+            {"name": "legacy", "priority": 1, "tools": ["safe"], "action": "Allow"},
+        ])

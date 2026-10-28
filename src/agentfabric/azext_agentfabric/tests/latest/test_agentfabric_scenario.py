@@ -8,6 +8,7 @@ import re
 import unittest
 from contextlib import ExitStack
 from unittest.mock import patch
+from urllib.parse import urlsplit
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
@@ -17,6 +18,45 @@ from azure.mgmt.core.tools import parse_resource_id
 
 
 LOCATION = os.environ.get("AZURE_TEST_AGENTFABRIC_LOCATION", "centraluseuap")
+
+
+class OctoberContractReplayProcessor(RecordingProcessor):
+    """Reuse October lifecycle evidence without rewriting recordings or live requests."""
+
+    def process_request(self, request):
+        url = urlsplit(request.uri)
+        if (url.netloc.lower() == "management.azure.com" and
+                "/providers/microsoft.networksecurity/" in url.path.lower()):
+            request.uri = re.sub(
+                r"([?&]api-version=)2026-11-03-preview(?=&|$)",
+                r"\g<1>2026-10-07-preview", request.uri,
+            )
+        return request
+
+
+class OctoberContractReplayProcessorTest(unittest.TestCase):
+
+    def test_only_november_network_security_requests_are_normalized(self):
+        from types import SimpleNamespace
+        prefix = "https://management.azure.com/subscriptions/sub/providers/"
+        processor = OctoberContractReplayProcessor()
+        for path, version, expected in (
+            ("Microsoft.NetworkSecurity/agentFabrics", "2026-11-03-preview", "2026-10-07-preview"),
+            ("Microsoft.NetworkSecurity/agentFabrics", "2026-10-07-preview", "2026-10-07-preview"),
+            ("Microsoft.NetworkSecurity/agentFabrics", "2026-12-01-preview", "2026-12-01-preview"),
+            ("Microsoft.ContainerService/managedClusters", "2026-06-01", "2026-06-01"),
+        ):
+            request = SimpleNamespace(uri=f"{prefix}{path}?api-version={version}&other=value")
+            self.assertEqual(processor.process_request(request).uri, f"{prefix}{path}?api-version={expected}&other=value")
+        request = SimpleNamespace(
+            uri="https://example.test/providers/Microsoft.NetworkSecurity/agentFabrics?api-version=2026-11-03-preview")
+        original_uri = request.uri
+        self.assertEqual(processor.process_request(request).uri, original_uri)
+
+    def test_normalization_is_playback_only(self):
+        scenario = AgentfabricResourceScenario("test_agentfabric_member_read")
+        self.assertTrue(any(isinstance(p, OctoberContractReplayProcessor) for p in scenario.replay_processors))
+        self.assertFalse(any(isinstance(p, OctoberContractReplayProcessor) for p in scenario.recording_processors))
 
 
 class OperationStatusSignatureReplacer(RecordingProcessor):
@@ -82,7 +122,10 @@ class AksPrerequisiteClientTest(unittest.TestCase):
 class AgentfabricResourceScenario(ScenarioTest):
 
     def __init__(self, method_name):
-        super().__init__(method_name, recording_processors=[OperationStatusSignatureReplacer()])
+        super().__init__(
+            method_name, recording_processors=[OperationStatusSignatureReplacer()],
+            replay_processors=[OctoberContractReplayProcessor()],
+        )
 
     @ResourceGroupPreparer(name_prefix="clitestaf", location=LOCATION)
     def test_agentfabric_fabric_lifecycle(self, resource_group):
