@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the current status of an async operation.
+
+    :example: OperationStatus_Get_MaximumSet
+        az resiliency operation-status show --location eastus --operation-id 12345678-1234-1234-1234-123456789012
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Reprotect(AAZCommand):
     """This initiates a new Reprotect operation on this Drill Run.
+
+    :example: DrillRuns_Reprotect_MaximumSet
+        az resiliency drill drill-run reprotect --service-group-name sampleServiceGroupName --operation-id qmn --drill-name drill1 --drill-run-name ca92602e-53bf-43d2-ae62-d3fc940474b3
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Resume(AAZCommand):
     """This unblocks a Failover workflow that is paused after the Fault stage, to proceed to the Failover stage.
+
+    :example: DrillRuns_Resume_MaximumSet
+        az resiliency drill drill-run resume --service-group-name sampleServiceGroupName --operation-id qmn --drill-name drill1 --drill-run-name ca92602e-53bf-43d2-ae62-d3fc940474b3
     """
 
     _aaz_info = {

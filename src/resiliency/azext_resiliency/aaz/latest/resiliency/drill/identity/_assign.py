@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Assign(AAZCommand):
     """Assign the user or system managed identities.
+
+    :example: Drills_Create_MaximumSet
+        az resiliency drill identity assign --service-group-name sampleServiceGroupName --drill-name drill1
     """
 
     _aaz_info = {

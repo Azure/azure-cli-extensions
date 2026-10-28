@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create an Enrollment.
+
+    :example: Enrollments_CreateOrUpdate_MaximumSet
+        az resiliency usage-plan enrollment create --resource-group MyResourceGroup --usage-plan-name myUsagePlan --enrollment-name sg1-enrollment --service-group-id /providers/Microsoft.Management/serviceGroups/sg1
     """
 
     _aaz_info = {

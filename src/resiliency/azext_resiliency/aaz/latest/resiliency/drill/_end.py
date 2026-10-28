@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class End(AAZCommand):
     """This ends the currently running instance of the Drill.
+
+    :example: Drills_End_MaximumSet
+        az resiliency drill end --service-group-name sampleServiceGroupName --operation-id qmn --drill-name drill1 --attestation Success --attestation-notes ycnqvrgduotohgycsapckhixwqwgp
     """
 
     _aaz_info = {

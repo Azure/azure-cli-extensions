@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ValidateForOperation(AAZCommand):
     """This action checks if the recovery orchestration plan is eligible for operations like failover and reprotect, ensuring it meets the necessary criteria.
+
+    :example: RecoveryPlanActions_ValidateForOperation_MaximumSet
+        az resiliency recovery-plan validate-for-operation --service-group-name sampleServiceGroupName --operation-id qmn --recovery-plan-name samplePlanName --operation-name Failover
     """
 
     _aaz_info = {

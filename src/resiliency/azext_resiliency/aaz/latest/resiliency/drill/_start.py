@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Start(AAZCommand):
     """This starts a new running instance of the Drill.
+
+    :example: Drills_Start_MaximumSet
+        az resiliency drill start --service-group-name sampleServiceGroupName --operation-id qmn --drill-name drill1 --mode Failover
     """
 
     _aaz_info = {

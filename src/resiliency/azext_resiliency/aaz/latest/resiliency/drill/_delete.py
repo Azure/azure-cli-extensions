@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a Drill
+
+    :example: Drills_Delete_MaximumSet
+        az resiliency drill delete --service-group-name sampleServiceGroupName --drill-name drill1
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Resume(AAZCommand):
     """This action resumes the ongoing recovery orchestration job that was paused for required user intervention.
+
+    :example: RecoveryJobs_Resume_MaximumSet
+        az resiliency recovery-plan recovery-job resume --service-group-name sampleServiceGroupName --operation-id qmn --recovery-plan-name samplePlanName --recovery-job-name c56888ef-9ced-4001-a6d4-7145a0309bdb --description Resuming the recovery job after user verification
     """
 
     _aaz_info = {

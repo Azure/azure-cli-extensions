@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class CheckReadiness(AAZCommand):
     """This action performs the necessary readiness check on the recovery orchestration plan to ensure it is in the desired state and eligible for all recovery actions, including all protected resources.
+
+    :example: RecoveryPlanActions_CheckReadiness_MaximumSet
+        az resiliency recovery-plan check-readiness --service-group-name sampleServiceGroupName --operation-id qmn --recovery-plan-name samplePlanName
     """
 
     _aaz_info = {

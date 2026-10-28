@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a UsagePlan
+
+    :example: UsagePlans_CreateOrUpdate_MaximumSet
+        az resiliency usage-plan create --resource-group MyResourceGroup --usage-plan-name myUsagePlan --plan-type Standard --location global --tags "{environment:production}"
     """
 
     _aaz_info = {

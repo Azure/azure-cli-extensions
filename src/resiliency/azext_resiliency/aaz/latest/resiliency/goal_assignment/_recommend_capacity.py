@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class RecommendCapacity(AAZCommand):
     """Recommends capacity improvements for resources under the goal assignment's scope. Returns AI-powered capacity assessments and recommendations.
+
+    :example: GoalAssignments_RecommendCapacity_MaximumSet
+        az resiliency goal-assignment recommend-capacity --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --resource-ids "[/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Compute/virtualMachines/vm1,/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.Storage/storageAccounts/sa1]"
     """
 
     _aaz_info = {

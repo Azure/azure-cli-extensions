@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a goal assignment.
+
+    :example: GoalAssignments_CreateOrUpdate_MaximumSet
+        az resiliency goal-assignment update --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --service-level-resources "[{service-level-indicator-resource-id:/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/MyVirtualMachine}]" --require-zonal-resiliency True
+
+    :example: GoalAssignments_CreateOrUpdate_MinimumSet
+        az resiliency goal-assignment update --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --service-level-resources "[{service-level-indicator-resource-id:/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/MyVirtualMachine}]" --require-zonal-resiliency True --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --require-zonal-resiliency True
     """
 
     _aaz_info = {

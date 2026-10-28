@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListReportDownloadUrl(AAZCommand):
     """This returns a short-lived, read-only URL to download the report for this Drill Run. The URL expires at the returned expiryTimestamp and grants access to that single report only.
+
+    :example: DrillRuns_ListReportDownloadUrl_MaximumSet
+        az resiliency drill drill-run list-report-download-url --service-group-name sampleServiceGroupName --operation-id 3f2b1c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d --drill-name drill1 --drill-run-name ca92602e-53bf-43d2-ae62-d3fc940474b3 --format Html
     """
 
     _aaz_info = {

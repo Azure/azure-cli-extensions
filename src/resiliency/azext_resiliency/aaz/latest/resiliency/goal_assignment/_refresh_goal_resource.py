@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class RefreshGoalResource(AAZCommand):
     """Refreshes the goal resources under a goal assignment. This operation scans for new resources under the scope of the assignment.
+
+    :example: GoalAssignments_RefreshGoalResources_MaximumSet
+        az resiliency goal-assignment refresh-goal-resource --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class FailOver(AAZCommand):
     """This initiates a new Failover operation on this Drill Run.
+
+    :example: DrillRuns_FailOver_MaximumSet
+        az resiliency drill drill-run fail-over --service-group-name sampleServiceGroupName --operation-id qmn --drill-name drill1 --drill-run-name ca92602e-53bf-43d2-ae62-d3fc940474b3 --failover-properties "{failover-direction:FromSpecificLocations,failover-request-properties:{source-locations:[westus]}}" --auto-failover Enable
     """
 
     _aaz_info = {

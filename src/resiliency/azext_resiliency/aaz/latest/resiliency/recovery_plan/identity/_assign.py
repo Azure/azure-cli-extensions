@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Assign(AAZCommand):
     """Assign the user or system managed identities.
+
+    :example: RecoveryPlans_CreateOrUpdate_MaximumSet
+        az resiliency recovery-plan identity assign --service-group-name sampleServiceGroupName --recovery-plan-name samplePlanName
     """
 
     _aaz_info = {

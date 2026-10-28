@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get an Enrollment.
+
+    :example: Enrollments_Get_MaximumSet
+        az resiliency usage-plan enrollment show --resource-group MyResourceGroup --usage-plan-name myUsagePlan --enrollment-name sg1-enrollment
     """
 
     _aaz_info = {

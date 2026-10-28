@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a RecoveryPlan
+
+    :example: RecoveryPlans_Delete_MaximumSet
+        az resiliency recovery-plan delete --service-group-name sampleServiceGroupName --recovery-plan-name samplePlanName
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class FailoverCommit(AAZCommand):
     """This action triggers the failover commit operation on the recovery orchestration plan for the qualified resources.
+
+    :example: RecoveryPlanActions_FailoverCommit_MaximumSet
+        az resiliency recovery-plan failover-commit --service-group-name sampleServiceGroupName --operation-id qmn --recovery-plan-name samplePlanName
     """
 
     _aaz_info = {

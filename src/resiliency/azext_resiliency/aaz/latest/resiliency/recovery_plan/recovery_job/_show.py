@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a RecoveryJob
+
+    :example: RecoveryJobs_Get_MaximumSet
+        az resiliency recovery-plan recovery-job show --service-group-name sampleServiceGroupName --recovery-plan-name samplePlanName --recovery-job-name c56888ef-9ced-4001-a6d4-7145a0309bdb
     """
 
     _aaz_info = {

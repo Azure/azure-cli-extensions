@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List RecoveryPlan resources by tenant
+
+    :example: RecoveryPlans_List_MaximumSet
+        az resiliency recovery-plan list --service-group-name sampleServiceGroupName --skip-token jfpmvvhtt --top 44
     """
 
     _aaz_info = {

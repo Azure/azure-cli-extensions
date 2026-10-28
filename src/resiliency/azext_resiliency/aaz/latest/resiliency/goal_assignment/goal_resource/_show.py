@@ -16,6 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a goal resource.
+
+    :example: GoalResources_Get_Complete_Example
+        az resiliency goal-assignment goal-resource show --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --goal-resource-name primary-vm
+
+    :example: GoalResources_Get_MaximumSet
+        az resiliency goal-assignment goal-resource show --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --goal-resource-name primary-vm --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --goal-resource-name primary-vm
+
+    :example: GoalResources_Get_MinimumSet
+        az resiliency goal-assignment goal-resource show --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --goal-resource-name primary-vm --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --goal-resource-name primary-vm --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --goal-resource-name primary-vm
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a Drill
+
+    :example: Drills_Get_MaximumSet
+        az resiliency drill show --service-group-name sampleServiceGroupName --drill-name drill1
     """
 
     _aaz_info = {

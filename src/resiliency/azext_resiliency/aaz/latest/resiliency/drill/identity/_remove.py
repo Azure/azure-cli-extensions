@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Remove(AAZCommand):
     """Remove the user or system managed identities.
+
+    :example: Drills_Create_MaximumSet
+        az resiliency drill identity remove --service-group-name sampleServiceGroupName --drill-name drill1
     """
 
     _aaz_info = {

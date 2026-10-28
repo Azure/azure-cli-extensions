@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Retry(AAZCommand):
     """This action retries the ongoing recovery orchestration job for resources that failed in previous attempts.
+
+    :example: RecoveryJobs_Retry_MaximumSet
+        az resiliency recovery-plan recovery-job retry --service-group-name sampleServiceGroupName --operation-id qmn --recovery-plan-name samplePlanName --recovery-job-name c56888ef-9ced-4001-a6d4-7145a0309bdb
     """
 
     _aaz_info = {

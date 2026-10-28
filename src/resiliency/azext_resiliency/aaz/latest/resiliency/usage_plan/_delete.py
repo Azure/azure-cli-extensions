@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a UsagePlan
+
+    :example: UsagePlans_Delete_MaximumSet
+        az resiliency usage-plan delete --resource-group MyResourceGroup --usage-plan-name myUsagePlan
     """
 
     _aaz_info = {

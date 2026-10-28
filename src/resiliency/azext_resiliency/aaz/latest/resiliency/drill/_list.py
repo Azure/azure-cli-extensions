@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List Drill resources by tenant
+
+    :example: Drills_List_MaximumSet
+        az resiliency drill list --service-group-name sampleServiceGroupName --skip-token xntbyoswztnmvitj --top 69
     """
 
     _aaz_info = {

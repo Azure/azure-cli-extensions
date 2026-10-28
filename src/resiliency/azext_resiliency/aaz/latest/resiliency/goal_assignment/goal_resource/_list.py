@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List goal resources under a goal assignment.
+
+    :example: GoalResources_List_MaximumSet
+        az resiliency goal-assignment goal-resource list --service-group-name production-sg --skip-token xntbyoswztnmvitj --top 69 --goal-assignment-name zonal-resiliency-goal
     """
 
     _aaz_info = {

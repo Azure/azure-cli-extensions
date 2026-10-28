@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List Enrollments by Usage Plan.
+
+    :example: Enrollments_List_MaximumSet
+        az resiliency usage-plan enrollment list --resource-group MyResourceGroup --usage-plan-name myUsagePlan
     """
 
     _aaz_info = {

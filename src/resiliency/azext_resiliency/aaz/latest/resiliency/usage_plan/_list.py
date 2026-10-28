@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List UsagePlan resources by subscription ID
+
+    :example: UsagePlans_ListBySubscription_MaximumSet
+        az resiliency usage-plan list
+
+    :example: UsagePlans_ListByResourceGroup_MaximumSet
+        az resiliency usage-plan list --resource-group MyResourceGroup
     """
 
     _aaz_info = {

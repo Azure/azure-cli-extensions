@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete an Enrollment.
+
+    :example: Enrollments_Delete_MaximumSet
+        az resiliency usage-plan enrollment delete --resource-group MyResourceGroup --usage-plan-name myUsagePlan --enrollment-name sg1-enrollment
     """
 
     _aaz_info = {

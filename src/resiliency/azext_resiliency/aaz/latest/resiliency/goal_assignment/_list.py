@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List goal assignments in a service group.
+
+    :example: GoalAssignments_List_MaximumSet
+        az resiliency goal-assignment list --service-group-name production-sg --skip-token xntbyoswztnmvitj --top 69
+
+    :example: GoalAssignments_List_MinimumSet
+        az resiliency goal-assignment list --service-group-name production-sg --skip-token xntbyoswztnmvitj --top 69 --service-group-name production-sg
     """
 
     _aaz_info = {

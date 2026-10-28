@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a UsagePlan
+
+    :example: UsagePlans_CreateOrUpdate_MaximumSet
+        az resiliency usage-plan update --resource-group MyResourceGroup --usage-plan-name myUsagePlan --plan-type Standard --tags "{environment:production}"
     """
 
     _aaz_info = {

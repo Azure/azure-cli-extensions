@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a RecoveryResource
+
+    :example: RecoveryResources_Get_CrossZoneVMRecovery
+        az resiliency recovery-plan recovery-resource show --service-group-name sampleServiceGroupName --recovery-plan-name samplePlanName --recovery-resource-name 12345678-9012-3456-7890-123456789012
+
+    :example: RecoveryResources_Get_MaximumSet
+        az resiliency recovery-plan recovery-resource show --service-group-name sampleServiceGroupName --recovery-plan-name samplePlanName --recovery-resource-name 12345678-9012-3456-7890-123456789012 --service-group-name sampleServiceGroupName --recovery-plan-name samplePlanName --recovery-resource-name 12345678-9012-3456-7890-123456789012
     """
 
     _aaz_info = {

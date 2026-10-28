@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ValidateForExecution(AAZCommand):
     """This returns eligible resource to be faulted or failed over.
+
+    :example: Drills_ValidateForExecution_MaximumSet
+        az resiliency drill validate-for-execution --service-group-name sampleServiceGroupName --operation-id qmn --drill-name drill1 --validate-for-execution-properties "{source-locations:[eastus2-az1]}"
     """
 
     _aaz_info = {

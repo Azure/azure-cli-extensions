@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class TestFailover(AAZCommand):
     """This action triggers the test failover operation on the recovery orchestration plan for the qualified resources.
+
+    :example: RecoveryPlanActions_TestFailover_MaximumSet
+        az resiliency recovery-plan test-failover --service-group-name sampleServiceGroupName --operation-id qmn --recovery-plan-name samplePlanName --failover-direction FromSpecificLocations --failover-request-properties "{source-locations:[westus],selected-resource-ids:[/providers/Microsoft.Management/serviceGroups/sampleServiceGroupName/providers/Microsoft.AzureResilienceManagement/recoveryPlans/samplePlanName/recoveryResources/12345678-9012-3456-7890-123456789012],execution-configurations:{user-consent:Allowed}}"
     """
 
     _aaz_info = {

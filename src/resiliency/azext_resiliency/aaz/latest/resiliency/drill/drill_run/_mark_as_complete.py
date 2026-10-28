@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class MarkAsComplete(AAZCommand):
     """This enables the user to mark this stage as complete, disabling further retries on it.
+
+    :example: DrillRuns_MarkAsComplete_MaximumSet
+        az resiliency drill drill-run mark-as-complete --service-group-name sampleServiceGroupName --operation-id qmn --drill-name drill1 --drill-run-name ca92602e-53bf-43d2-ae62-d3fc940474b3 --drill-run-stage FaultInjection
     """
 
     _aaz_info = {

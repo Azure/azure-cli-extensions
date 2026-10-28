@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a UsagePlan
+
+    :example: UsagePlans_Get_MaximumSet
+        az resiliency usage-plan show --resource-group MyResourceGroup --usage-plan-name myUsagePlan
     """
 
     _aaz_info = {

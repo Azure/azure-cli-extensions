@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List RecoveryResource resources by RecoveryPlan
+
+    :example: RecoveryResources_List_MaximumSet
+        az resiliency recovery-plan recovery-resource list --service-group-name sampleServiceGroupName --recovery-plan-name plan1
     """
 
     _aaz_info = {

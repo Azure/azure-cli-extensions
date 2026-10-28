@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class GenerateReport(AAZCommand):
     """This generates, or regenerates, the report for this Drill Run. The action is idempotent and is safe to call at any time: a call that arrives while a generation is already running joins it, and a call made after a failed attempt retries it. A report that has been finalized is never regenerated.
+
+    :example: DrillRuns_GenerateReport_MaximumSet
+        az resiliency drill drill-run generate-report --service-group-name sampleServiceGroupName --operation-id qmn --drill-name drill1 --drill-run-name ca92602e-53bf-43d2-ae62-d3fc940474b3
     """
 
     _aaz_info = {

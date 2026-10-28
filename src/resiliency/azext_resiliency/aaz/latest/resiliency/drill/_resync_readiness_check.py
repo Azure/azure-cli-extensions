@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ResyncReadinessCheck(AAZCommand):
     """This triggers detection of any drifts from the desired state of Resources and RBAC.
+
+    :example: Drills_ResyncReadinessCheck_MaximumSet
+        az resiliency drill resync-readiness-check --service-group-name sampleServiceGroupName --operation-id qmn --drill-name drill1
     """
 
     _aaz_info = {

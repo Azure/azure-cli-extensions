@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Show the details of managed identities.
+
+    :example: Drills_Get_MaximumSet
+        az resiliency drill identity show --service-group-name sampleServiceGroupName --drill-name drill1
     """
 
     _aaz_info = {

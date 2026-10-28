@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a goal assignment.
+
+    :example: GoalAssignments_Get_MaximumSet
+        az resiliency goal-assignment show --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class AddNote(AAZCommand):
     """This enables the user to add notes on this Drill Run.
+
+    :example: DrillRuns_AddNotes_MaximumSet
+        az resiliency drill drill-run add-note --service-group-name sampleServiceGroupName --operation-id qmn --drill-name drill1 --drill-run-name ca92602e-53bf-43d2-ae62-d3fc940474b3 --notes wubqjajveatmwcglo
     """
 
     _aaz_info = {

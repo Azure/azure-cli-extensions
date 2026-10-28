@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class UpdateGoalResource(AAZCommand):
     """Updates goal resources under a goal assignment.
+
+    :example: GoalAssignments_UpdateGoalResources_MaximumSet
+        az resiliency goal-assignment update-goal-resource --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --resources "[{resource-arm-id:/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/MyVirtualMachine,zonal-resiliency:{goal-participation:Excluded,attestation-status:ManuallyAttested}},{resource-arm-id:/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/MyVirtualMachine1,zonal-resiliency:{goal-participation:Excluded,attestation-status:ManuallyAttested}}]"
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a UnifiedResilienceItem
+
+    :example: UnifiedResilienceItems_Get_MaximumSet
+        az resiliency unified-resilience-item show --service-group-name sg1 --unified-resilience-item-name uri1
     """
 
     _aaz_info = {

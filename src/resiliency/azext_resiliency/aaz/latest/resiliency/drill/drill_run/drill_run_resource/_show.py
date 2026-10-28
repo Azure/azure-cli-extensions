@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a DrillRunResource
+
+    :example: DrillRunResources_Get_MaximumSet
+        az resiliency drill drill-run drill-run-resource show --service-group-name sampleServiceGroupName --drill-name drill1 --drill-run-name ca92602e-53bf-43d2-ae62-d3fc940474b3 --drill-run-resource-name 56f942da-a30e-43c0-b5f0-1c22e44f2d94
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Remove(AAZCommand):
     """Remove the user or system managed identities.
+
+    :example: RecoveryPlans_CreateOrUpdate_MaximumSet
+        az resiliency recovery-plan identity remove --service-group-name sampleServiceGroupName --recovery-plan-name samplePlanName
     """
 
     _aaz_info = {

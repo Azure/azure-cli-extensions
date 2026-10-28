@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Finalize(AAZCommand):
     """This action finalizes the recovery orchestration plan, ensuring all necessary configurations are in place.
+
+    :example: RecoveryPlanActions_Finalize_MaximumSet
+        az resiliency recovery-plan finalize --service-group-name sampleServiceGroupName --operation-id qmn --recovery-plan-name samplePlanName
     """
 
     _aaz_info = {

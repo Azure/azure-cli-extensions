@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ValidateForTestFailoverCleanup(AAZCommand):
     """This action checks if the recovery orchestration plan is eligible for test failover cleanup operation, ensuring it meets the necessary criteria and provides a list of qualified and unqualified resources.
+
+    :example: RecoveryPlanActions_ValidateForTestFailoverCleanup_MaximumSet
+        az resiliency recovery-plan validate-for-test-failover-cleanup --service-group-name sampleServiceGroupName --operation-id qmn --recovery-plan-name samplePlanName
     """
 
     _aaz_info = {

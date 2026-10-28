@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List DrillRunResource resources by DrillRun
+
+    :example: DrillRunResources_List_MaximumSet
+        az resiliency drill drill-run drill-run-resource list --service-group-name sampleServiceGroupName --drill-name drill1 --drill-run-name ca92602e-53bf-43d2-ae62-d3fc940474b3
     """
 
     _aaz_info = {

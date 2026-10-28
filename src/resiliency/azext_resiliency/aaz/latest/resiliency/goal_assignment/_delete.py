@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a goal assignment.
+
+    :example: GoalAssignments_Delete_MaximumSet
+        az resiliency goal-assignment delete --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal
     """
 
     _aaz_info = {

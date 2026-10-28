@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class TestFailoverCleanup(AAZCommand):
     """This action triggers the test failover cleanup operation on the recovery orchestration plan for the qualified resources.
+
+    :example: RecoveryPlanActions_TestFailoverCleanup_MaximumSet
+        az resiliency recovery-plan test-failover-cleanup --service-group-name sampleServiceGroupName --operation-id qmn --recovery-plan-name samplePlanName --comments Test failover clean-up comments
     """
 
     _aaz_info = {
