@@ -3,14 +3,21 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
+import json
 import os
 import re
+import shlex
 import unittest
+from pathlib import Path
+from types import SimpleNamespace
 from unittest import mock
+
+import pytest
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
 from azext_vm_repair import repair_utils
+from azext_vm_repair._validators import validate_run
 from azext_vm_repair.custom import _build_repo_params, _parse_preview_url, list_scripts, run
 from azext_vm_repair.repair_utils import REPAIR_MAP_URL, check_extension_version
 
@@ -201,6 +208,93 @@ class AcceptedPreviewUrlsResolveToARawMapTest(unittest.TestCase):
                 self.assertEqual(('SomeUser', 'my-branch'), _parse_preview_url(url))
                 repair_utils._set_repair_map_url(url)
                 self.assertEqual(self.EXPECTED_RAW, repair_utils.REPAIR_MAP_URL)
+
+
+@pytest.mark.parametrize('is_linux,absolute_path', [
+    (True, False),
+    (False, False),
+    (False, True),
+], ids=['relative-shell', 'relative-powershell', 'absolute-powershell'])
+def test_custom_script_file_resolves_from_validated_caller_directory(tmp_path, monkeypatch, is_linux, absolute_path):
+    script = tmp_path / ('custom script.sh' if is_linux else 'custom script.ps1')
+    script.write_text('echo caller-script\n', encoding='utf-8')
+    monkeypatch.chdir(tmp_path)
+    namespace = SimpleNamespace(
+        vm_name='source-vm', resource_group_name='source-rg', run_id=None,
+        repair_vm_id=None, run_on_repair=False, parameters=None,
+        custom_script_file=str(script) if absolute_path else script.name)
+    source_vm = {
+        'id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/source-rg/providers/Microsoft.Compute/virtualMachines/source-vm',
+        'storageProfile': {'osDisk': {'osType': 'Linux' if is_linux else 'Windows'}},
+    }
+    with mock.patch('azext_vm_repair._validators.check_extension_version'), \
+            mock.patch('azext_vm_repair._validators._validate_and_get_vm', return_value=source_vm):
+        validate_run(None, namespace)
+
+    response = {'value': [{'message': '[stdout]\ncaller-script\n[stderr]\n'}]} if is_linux else {
+        'value': [{'message': 'caller-script'}, {'message': ''}]}
+    driver = 'linux-run-driver.sh' if is_linux else 'win-run-driver.ps1'
+    with mock.patch.object(repair_utils, '_call_az_command', return_value=json.dumps(response)) as call_az:
+        stdout, stderr = repair_utils._invoke_run_command(
+            driver, namespace.vm_name, namespace.resource_group_name, is_linux,
+            additional_custom_scripts=[namespace.custom_script_file])
+
+    tokens = shlex.split(call_az.call_args.args[0])
+    scripts_index = tokens.index('--scripts') + 1
+    assert tokens[scripts_index:scripts_index + 2] == [
+        '@' + os.path.join(os.path.dirname(repair_utils.__file__), 'scripts', driver),
+        '@' + str(script),
+    ]
+    assert tokens[tokens.index('--command-id') + 1] == ('RunShellScript' if is_linux else 'RunPowerShellScript')
+    assert namespace.run_id == 'no-op'
+    assert (stdout, stderr) == ('caller-script', '')
+    assert os.getcwd() == str(tmp_path)
+
+
+@pytest.mark.parametrize('absolute_path', [False, True], ids=['relative', 'absolute'])
+def test_posix_custom_script_preserves_parent_traversal(tmp_path, monkeypatch, absolute_path):
+    monkeypatch.chdir(tmp_path)
+    relative_script = os.path.join('link', '..', 'custom script.sh')
+    absolute_script = os.path.join(str(tmp_path), relative_script)
+    script = absolute_script if absolute_path else relative_script
+    response = json.dumps({'value': [{'message': '[stdout]\ncaller-script\n[stderr]\n'}]})
+
+    with mock.patch.object(repair_utils.os, 'name', 'posix'), \
+            mock.patch.object(repair_utils, '_call_az_command', return_value=response) as call_az:
+        repair_utils._invoke_run_command(
+            'linux-run-driver.sh', 'source-vm', 'source-rg', True,
+            additional_custom_scripts=[script])
+
+    tokens = shlex.split(call_az.call_args.args[0])
+    assert tokens[tokens.index('--scripts') + 2] == '@' + absolute_script
+
+
+@pytest.mark.skipif(os.name == 'nt', reason='requires native POSIX symlink traversal')
+def test_posix_custom_script_reads_the_validated_symlink_parent_path(tmp_path, monkeypatch):
+    caller = tmp_path / 'caller'
+    target = tmp_path / 'target'
+    nested = target / 'nested'
+    caller.mkdir()
+    nested.mkdir(parents=True)
+    (caller / 'custom script.sh').write_text('different-file', encoding='utf-8')
+    (target / 'custom script.sh').write_text('validated-file', encoding='utf-8')
+    (caller / 'link').symlink_to(nested, target_is_directory=True)
+    monkeypatch.chdir(caller)
+    script = os.path.join('link', '..', 'custom script.sh')
+    assert Path(script).read_text(encoding='utf-8') == 'validated-file'
+
+    def read_custom_script(command):
+        tokens = shlex.split(command)
+        file_argument = tokens[tokens.index('--scripts') + 2]
+        content = Path(file_argument[1:]).read_text(encoding='utf-8')
+        return json.dumps({'value': [{'message': '[stdout]\n{}\n[stderr]\n'.format(content)}]})
+
+    with mock.patch.object(repair_utils, '_call_az_command', side_effect=read_custom_script):
+        stdout, stderr = repair_utils._invoke_run_command(
+            'linux-run-driver.sh', 'source-vm', 'source-rg', True,
+            additional_custom_scripts=[script])
+
+    assert (stdout, stderr) == ('validated-file', '')
 
 
 if __name__ == '__main__':
