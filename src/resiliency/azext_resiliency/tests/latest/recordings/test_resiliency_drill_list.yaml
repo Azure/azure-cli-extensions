@@ -1,0 +1,76 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency drill list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --service-group-name
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Management/serviceGroups/azcmdlet-testing/providers/Microsoft.AzureResilienceManagement/drills?api-version=2026-10-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Management/serviceGroups/azcmdlet-testing/providers/Microsoft.AzureResilienceManagement/drills/cli-test-0907201901","name":"cli-test-0907201901","type":"microsoft.azureresiliencemanagement/drills","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-07T14:49:28.5296206Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-07T14:49:28.5296206Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/krt_eap/providers/Microsoft.ManagedIdentity/userAssignedIdentities/msrc134373":{"principalId":"49d5840a-c3e6-4ecd-a666-c67d1c39d04e","clientId":"9aae0928-2d68-4c9a-9b77-469488c4a52a"}}},"properties":{"drillType":"Zonal","provisioningState":"Failed","drillAssetProperties":{"subscription":"5417152a-174b-4748-876a-b4e6628d9eb7","region":"eastus2euap"},"chaosResourceProperties":{"identity":{"type":"UserAssigned","userAssignedIdentity":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/krt_eap/providers/Microsoft.ManagedIdentity/userAssignedIdentities/msrc134373"},"chaosResourceIdentityForFaults":{"type":"UserAssigned","userAssignedIdentity":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/krt_eap/providers/Microsoft.ManagedIdentity/userAssignedIdentities/msrc134373"}},"rbacSetupMode":"AutomatedCustomRole","errorDetails":{"code":"RHBLUserErrorNotEnrolled","message":"This
+        Service Group is not enrolled in any usage plan. Create an Enrollment first."}}},{"id":"/providers/Microsoft.Management/serviceGroups/azcmdlet-testing/providers/Microsoft.AzureResilienceManagement/drills/cli-test-0907215933","name":"cli-test-0907215933","type":"microsoft.azureresiliencemanagement/drills","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-07T16:29:39.3294068Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-07T16:29:39.3294068Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/krt_eap/providers/Microsoft.ManagedIdentity/userAssignedIdentities/msrc134373":{"principalId":"49d5840a-c3e6-4ecd-a666-c67d1c39d04e","clientId":"9aae0928-2d68-4c9a-9b77-469488c4a52a"}}},"properties":{"drillType":"Zonal","provisioningState":"Failed","drillAssetProperties":{"subscription":"5417152a-174b-4748-876a-b4e6628d9eb7","region":"eastus2euap"},"chaosResourceProperties":{"identity":{"type":"UserAssigned","userAssignedIdentity":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/krt_eap/providers/Microsoft.ManagedIdentity/userAssignedIdentities/msrc134373"},"chaosResourceIdentityForFaults":{"type":"UserAssigned","userAssignedIdentity":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/krt_eap/providers/Microsoft.ManagedIdentity/userAssignedIdentities/msrc134373"}},"rbacSetupMode":"AutomatedCustomRole","attentionReason":{},"errorDetails":{"code":"RHUBCloudInternalError","message":"Object
+        reference not set to an instance of an object."}}},{"id":"/providers/Microsoft.Management/serviceGroups/azcmdlet-testing/providers/Microsoft.AzureResilienceManagement/drills/cli-test-0907221710","name":"cli-test-0907221710","type":"microsoft.azureresiliencemanagement/drills","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-07T16:48:35.658914Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-07T16:48:35.658914Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/krt_eap/providers/Microsoft.ManagedIdentity/userAssignedIdentities/msrc134373":{"principalId":"49d5840a-c3e6-4ecd-a666-c67d1c39d04e","clientId":"9aae0928-2d68-4c9a-9b77-469488c4a52a"}}},"properties":{"drillType":"Zonal","provisioningState":"Failed","drillAssetProperties":{"subscription":"5417152a-174b-4748-876a-b4e6628d9eb7","region":"eastus2euap","resourceGroup":"krt_eap"},"chaosResourceProperties":{"identity":{"type":"UserAssigned","userAssignedIdentity":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/krt_eap/providers/Microsoft.ManagedIdentity/userAssignedIdentities/msrc134373"},"chaosResourceIdentityForFaults":{"type":"UserAssigned","userAssignedIdentity":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/krt_eap/providers/Microsoft.ManagedIdentity/userAssignedIdentities/msrc134373"}},"rbacSetupMode":"AutomatedCustomRole","attentionReason":{},"errorDetails":{"code":"RHUBCloudInternalError","message":"Object
+        reference not set to an instance of an object."}}},{"id":"/providers/Microsoft.Management/serviceGroups/azcmdlet-testing/providers/Microsoft.AzureResilienceManagement/drills/drill-coverage","name":"drill-coverage","type":"microsoft.azureresiliencemanagement/drills","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-10T16:44:58.2364022Z","lastModifiedBy":"f627c7b1-8359-441b-a17d-ff0d8e75ee3e","lastModifiedByType":"Application","lastModifiedAt":"2026-09-30T14:19:02.3856425Z"},"properties":{"drillType":"Zonal","vmsPresent":"Absent","provisioningState":"Succeeded","serviceGroupId":"/providers/Microsoft.Management/serviceGroups/azcmdlet-testing","recoveryPlanProperties":{"identity":{"type":"UserAssigned","userAssignedIdentity":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-resiliency-canary/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-resilience-canary"}},"drillAssetProperties":{"subscription":"30233210-6bf4-4c4f-9e00-7cdcc1a176ec","region":"eastus2","resourceGroup":"rg-resiliency-canary"},"chaosResourceProperties":{"identity":{"type":"UserAssigned","userAssignedIdentity":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-resiliency-canary/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-resilience-canary"},"chaosResourceIdentityForFaults":{"type":"UserAssigned","userAssignedIdentity":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-resiliency-canary/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami-resilience-canary"},"chaosResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resiliency-canary/providers/Microsoft.Chaos/workspaces/131f018e-bc1e-2d2d-4dbd-92d2e4e70bf3"},"executionState":"NotRunning","executionReadinessState":"NeedsAttention","rbacSetupMode":"Manual","attentionReason":{"drillRbacOnChaosResource":"Set","rbacNeededForDrillOnChaosResource":["Please
+        ensure the user Triggering ths operation is part of Role: ''DrillAssetsAdmin'';
+        OR has the following privileges on the Input Subscription:; Microsoft.Resources/subscriptions/RGs/write;
+        Microsoft.Automation/automationAccounts/write; Microsoft.Automation/automationAccounts/runbooks/write;
+        Microsoft.Chaos/experiments/write; Microsoft.Authorization/roleAssignments/write;   ;
+        If assigning RBAC out of band, assign the Drill MSI the Role: ''DrillAssetsOperator''
+        on the input Subscription during Drill-PUT."],"rbacNeededForDrillOnRecoveryPlan":["Please
+        ensure the user Triggering ths operation is part of Role: DrillAdmin,OR has
+        the following privileges on the Input Subscription:,Microsoft.AzureResilienceManagement/drills/write,Microsoft.AzureResilienceManagement/recoveryPlans/read,Microsoft.AzureResilienceManagement/drills/drillRuns/write,Microsoft.AzureResilienceManagement/drills/write,Microsoft.AzureResilienceManagement/drills/drillRuns/drillRunResources/write,Microsoft.AzureResilienceManagement/drills/drillRuns/drillRunChildJobs/write,Microsoft.Resiliency/drills/*/action,Microsoft.Authorization/roleAssignments/write,  ,If
+        assigning RBAC out of band, assign the Drill MSI the Role: ''RecoveryOperator''
+        on the Service Group."],"chaosResourceCreationFailureReasons":[],"runbookFaultRbacOnTargets":"Set","chaosResource":"Exists","drillUserMsi":"NotExists","chaosResourceUserMsi":"NotExists","includedResourceInDrill":"NotExists","drillRbacOnMonitoringResources":"NotSet","drillMonitoringResources":"Exists","monitoringRbacOnDrillResources":"NotSet","rbacNeededForDrillOnDrillMonitoringResources":["Please
+        ensure the user Triggering ths operation is part of Role: DrillAdmin on the
+        subscription for monitoring in drill:,Microsoft.Authorization/roleAssignments/write,  ,If
+        assigning RBAC out of band, assign the Drill MSI the Role: ''MonitoringMetricsPublisher''
+        on the log analytics workspace and data collection rules in drill.monitoringProperties."],"rbacNeededForDrillOnDrillResources":["Please
+        ensure the user Triggering ths operation is part of Role: DrillAdmin on the
+        subscription for monitoring in drill:,Microsoft.Authorization/roleAssignments/write,  ,If
+        assigning RBAC out of band, assign the Drill MSI the Role: ''MonitoringReader''
+        on the each resources in drill."]},"systemMetadata":{"initialConfig":"Pending"},"lastRunProperties":{"lastRunState":"NotStarted","lastRunDuration":"PT0S"},"lastSyncTime":"2026-09-30T14:19:01.5911424Z","lastResyncReadinessCheckTime":"2026-09-30T14:19:01.5911425Z","monitoringProperties":{"logAnalyticsWorkspaceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resiliency-canary/providers/Microsoft.OperationalInsights/workspaces/DrillLogAnalyticsWorkspace","rawMetricsDataCollectionRuleId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resiliency-canary/providers/Microsoft.Insights/dataCollectionRules/DataCollectionRuleRawMetricsName","serviceGroupMetricsDataCollectionRuleId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resiliency-canary/providers/Microsoft.Insights/dataCollectionRules/DataCollectionRuleHealthName","dataCollectionEndpointId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resiliency-canary/providers/Microsoft.Insights/dataCollectionEndpoints/DrillDataCollectionEndpoint"},"errorDetails":{"code":"RHUBUserErrorServiceGroupHasNoMembers","message":"The
+        Service Group does not contain any member resources. This includes resources
+        under child service groups, subscriptions, or resource groups that belong
+        to this Service Group. [Resolution] Please add subscriptions, resource groups,
+        or resources to the Service Group and retry the operation. If the issue persists,
+        contact support for further assistance."}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '10423'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Oct 2026 07:47:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 1CC6215E45E34242ABF1AA62430BEDCB Ref B: PNQ231110908023 Ref C: 2026-10-28T07:47:22Z'
+    status:
+      code: 200
+      message: OK
+version: 1
