@@ -79,7 +79,7 @@ class Create(AAZCommand):
             default=False,
         )
         _args_schema.error_blob_managed_identity = AAZObjectArg(
-            options=["--error-blob-id", "--error-blob-managed-identity"],
+            options=["--error-blob-id", "--error-blob-identity", "--error-blob-managed-identity"],
             arg_group="Properties",
             help="User-assigned managed identity that has access to errorBlobUri storage blob. Use an empty object in case of system-assigned identity. Make sure managed identity has been given access to blob's container with 'Storage Blob Data Contributor' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged",
         )
@@ -89,7 +89,7 @@ class Create(AAZCommand):
             help="Specifies the Azure storage blob where script error stream will be uploaded. Use a SAS URI with read, append, create, write access OR use managed identity to provide the VM access to the blob. Refer errorBlobManagedIdentity parameter.",
         )
         _args_schema.output_blob_managed_identity = AAZObjectArg(
-            options=["--output-blob-id", "--output-blob-managed-identity"],
+            options=["--output-blob-id", "--output-blob-identity", "--output-blob-managed-identity"],
             arg_group="Properties",
             help="User-assigned managed identity that has access to outputBlobUri storage blob. Use an empty object in case of system-assigned identity. Make sure managed identity has been given access to blob's container with 'Storage Blob Data Contributor' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged",
         )
@@ -109,15 +109,23 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The parameters used by the script.",
         )
-        _args_schema.run_as_password = AAZStrArg(
+        _args_schema.run_as_password = AAZPasswordArg(
             options=["--run-as-password"],
             arg_group="Properties",
             help="Specifies the user account password on the machine when executing the run command.",
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
         )
         _args_schema.run_as_user = AAZStrArg(
             options=["--run-as-user"],
             arg_group="Properties",
             help="Specifies the user account on the machine when executing the run command.",
+        )
+        _args_schema.source = AAZObjectArg(
+            options=["--source"],
+            arg_group="Properties",
+            help="The source of the run command script.",
         )
         _args_schema.timeout_in_seconds = AAZIntArg(
             options=["--timeout-in-seconds"],
@@ -142,6 +150,25 @@ class Create(AAZCommand):
         protected_parameters = cls._args_schema.protected_parameters
         protected_parameters.Element = AAZObjectArg()
         cls._build_args_runcommandinputparameter_create_or_update_create(protected_parameters.Element)
+
+        source = cls._args_schema.source
+        source.command_id = AAZStrArg(
+            options=["command-id"],
+            help="Specifies the commandId of predefined built-in script.",
+        )
+        source.script = AAZStrArg(
+            options=["script"],
+            help="Specifies the script content to be executed on the machine.",
+        )
+        source.script_uri = AAZStrArg(
+            options=["script-uri"],
+            help="Specifies the script download location. It can be either SAS URI of an Azure storage blob with read access or public URI.",
+        )
+        source.script_uri_managed_identity = AAZObjectArg(
+            options=["script-uri-managed-identity"],
+            help="User-assigned managed identity that has access to scriptUri in case of Azure storage blob. Use an empty object in case of system-assigned identity. Make sure the Azure storage blob exists, and managed identity has been given access to blob's container with 'Storage Blob Data Reader' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged.",
+        )
+        cls._build_args_runcommandmanagedidentity_create_or_update_create(source.script_uri_managed_identity)
 
         # define Arg Group "Resource"
 
@@ -246,7 +273,12 @@ class Create(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        pass
+        args = self.ctx.args
+        # --source (3.0.0 syntax) feeds the flattened Source args the request body is built from
+        if has_value(args.source):
+            for key in ("command_id", "script", "script_uri", "script_uri_managed_identity"):
+                if has_value(args.source[key]) and not has_value(args[key]):
+                    args[key] = args.source[key].to_serialized_data()
 
     @register_callback
     def post_operations(self):
@@ -362,7 +394,7 @@ class Create(AAZCommand):
                 properties.set_prop("outputBlobUri", AAZStrType, ".output_blob_uri")
                 properties.set_prop("parameters", AAZListType, ".parameters")
                 properties.set_prop("protectedParameters", AAZListType, ".protected_parameters")
-                properties.set_prop("runAsPassword", AAZStrType, ".run_as_password")
+                properties.set_prop("runAsPassword", AAZStrType, ".run_as_password", typ_kwargs={"flags": {"secret": True}})
                 properties.set_prop("runAsUser", AAZStrType, ".run_as_user")
                 properties.set_prop("source", AAZObjectType)
                 properties.set_prop("timeoutInSeconds", AAZIntType, ".timeout_in_seconds")
@@ -464,6 +496,7 @@ class Create(AAZCommand):
             )
             properties.run_as_password = AAZStrType(
                 serialized_name="runAsPassword",
+                flags={"secret": True},
             )
             properties.run_as_user = AAZStrType(
                 serialized_name="runAsUser",

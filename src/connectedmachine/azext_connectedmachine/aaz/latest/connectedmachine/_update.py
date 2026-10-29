@@ -133,13 +133,13 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.parent_cluster_resource_id = AAZResourceIdArg(
-            options=["--parent-cluster-resource-id"],
+            options=["--parent-cluster-id", "--parent-cluster-resource-id"],
             arg_group="Properties",
             help="The resource id of the parent cluster (Azure HCI) this machine is assigned to, if any.",
             nullable=True,
         )
         _args_schema.private_link_scope_resource_id = AAZResourceIdArg(
-            options=["--private-link-scope-resource-id"],
+            options=["--private-link-scope-id", "--private-link-scope-resource-id"],
             arg_group="Properties",
             help="The resource id of the private link scope this machine is assigned to, if any.",
             nullable=True,
@@ -413,10 +413,24 @@ class Update(AAZCommand):
             help="Resource tags.",
             nullable=True,
         )
+        _args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="Resource",
+            help="Identity for the resource.",
+            nullable=True,
+        )
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg(
             nullable=True,
+        )
+
+        identity = cls._args_schema.identity
+        identity.type = AAZStrArg(
+            options=["type"],
+            help="The identity type.",
+            nullable=True,
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
         )
         return cls._args_schema
 
@@ -2052,10 +2066,14 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZIdentityObjectType)
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
             _builder.set_prop("kind", AAZStrType, ".kind")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("type", AAZStrType, ".type")
 
             properties = _builder.get(".properties")
             if properties is not None:

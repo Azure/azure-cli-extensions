@@ -82,6 +82,9 @@ class Reconcile(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
+        # the reconcile LRO can finish without a response body
+        if not hasattr(self.ctx.vars, "instance"):
+            return None
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 

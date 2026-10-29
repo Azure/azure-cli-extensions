@@ -60,11 +60,6 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.license_details = AAZObjectArg(
-            options=["--license-details"],
-            arg_group="Properties",
-            help="Describes the properties of a License.",
-        )
         _args_schema.license_type = AAZStrArg(
             options=["--license-type"],
             arg_group="Properties",
@@ -77,40 +72,48 @@ class Create(AAZCommand):
             help="Describes the tenant id.",
         )
 
-        license_details = cls._args_schema.license_details
-        license_details.edition = AAZStrArg(
-            options=["edition"],
+        # define Arg Group "LicenseDetails"
+
+        _args_schema = cls._args_schema
+        _args_schema.edition = AAZStrArg(
+            options=["--edition"],
+            arg_group="LicenseDetails",
             help="Describes the edition of the license. The values are either Standard or Datacenter.",
             enum={"Datacenter": "Datacenter", "Standard": "Standard"},
         )
-        license_details.processors = AAZIntArg(
-            options=["processors"],
+        _args_schema.processors = AAZIntArg(
+            options=["--processors"],
+            arg_group="LicenseDetails",
             help="Describes the number of processors.",
         )
-        license_details.state = AAZStrArg(
-            options=["state"],
+        _args_schema.state = AAZStrArg(
+            options=["--state"],
+            arg_group="LicenseDetails",
             help="Describes the state of the license.",
             enum={"Activated": "Activated", "Deactivated": "Deactivated"},
         )
-        license_details.target = AAZStrArg(
-            options=["target"],
+        _args_schema.target = AAZStrArg(
+            options=["--target"],
+            arg_group="LicenseDetails",
             help="Describes the license target server.",
             enum={"Windows Server 2012": "Windows Server 2012", "Windows Server 2012 R2": "Windows Server 2012 R2", "Windows Server 2016": "Windows Server 2016"},
         )
-        license_details.type = AAZStrArg(
-            options=["type"],
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
+            arg_group="LicenseDetails",
             help="Describes the license core type (pCore or vCore).",
             enum={"pCore": "pCore", "vCore": "vCore"},
         )
-        license_details.volume_license_details = AAZListArg(
-            options=["volume-license-details"],
+        _args_schema.volume_license_details = AAZListArg(
+            options=["--volume-license-details"],
+            arg_group="LicenseDetails",
             help="A list of volume license details.",
         )
 
-        volume_license_details = cls._args_schema.license_details.volume_license_details
+        volume_license_details = cls._args_schema.volume_license_details
         volume_license_details.Element = AAZObjectArg()
 
-        _element = cls._args_schema.license_details.volume_license_details.Element
+        _element = cls._args_schema.volume_license_details.Element
         _element.invoice_id = AAZStrArg(
             options=["invoice-id"],
             help="The invoice id for the volume license.",
@@ -254,7 +257,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("licenseDetails", AAZObjectType, ".license_details")
+                properties.set_prop("licenseDetails", AAZObjectType)
                 properties.set_prop("licenseType", AAZStrType, ".license_type")
                 properties.set_prop("tenantId", AAZStrType, ".tenant_id")
 

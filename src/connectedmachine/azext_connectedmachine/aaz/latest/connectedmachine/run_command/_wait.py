@@ -220,6 +220,7 @@ class Wait(AAZWaitCommand):
             )
             properties.run_as_password = AAZStrType(
                 serialized_name="runAsPassword",
+                flags={"secret": True},
             )
             properties.run_as_user = AAZStrType(
                 serialized_name="runAsUser",
