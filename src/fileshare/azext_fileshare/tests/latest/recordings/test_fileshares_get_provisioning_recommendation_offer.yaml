@@ -1,0 +1,105 @@
+interactions:
+- request:
+    body: '{"properties": {"provisionedStorageGiB": 1024}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fileshare get-provisioning-recommendation
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '47'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --provisioned-storage-gib
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26300-SP0)
+    method: POST
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FileShares/locations/eastus2euap/getProvisioningRecommendation?api-version=2026-09-01
+  response:
+    body:
+      string: '{"properties":{"provisionedIOPerSec":4024,"provisionedThroughputMiBPerSec":203,"availableRedundancyOptions":["Local","Zone"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 29 Oct 2026 03:25:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=496ae77e-6ca8-4a1f-924c-83b8c9661760/eastus2euap/b37e288c-02fd-4f96-b32e-6588fcbabf0f
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 600ED1DFD45E461D9DD235AA559FCB1E Ref B: SN4AA2022302047 Ref C: 2026-10-29T03:25:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"mediaTier": "SSD", "protocol": "NFS", "provisionedStorageGiB":
+      1024}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fileshare get-provisioning-recommendation
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '86'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --provisioned-storage-gib --protocol --media-tier
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26300-SP0)
+    method: POST
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FileShares/locations/eastus2euap/getProvisioningRecommendation?api-version=2026-09-01
+  response:
+    body:
+      string: '{"properties":{"provisionedIOPerSec":4024,"provisionedThroughputMiBPerSec":203,"availableRedundancyOptions":["Local","Zone"]}}'
+    headers:
+      content-length:
+      - '126'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 29 Oct 2026 03:25:24 GMT
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=496ae77e-6ca8-4a1f-924c-83b8c9661760/eastus2euap/bce0e7e4-a6da-4665-9aec-d6b3c28c7009
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: E2A1698A8E8C4EDD886CEC4DDD38E943 Ref B: SN4AA2022301049 Ref C: 2026-10-29T03:25:24Z'
+    status:
+      code: 200
+      message: OK
+version: 1
