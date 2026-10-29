@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-07-15",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2026-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2026-09-01"],
         ]
     }
 
@@ -57,81 +57,14 @@ class Create(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "LicenseDetails"
-
-        _args_schema = cls._args_schema
-        _args_schema.edition = AAZStrArg(
-            options=["--edition"],
-            arg_group="LicenseDetails",
-            help="Describes the edition of the license. The values are either Standard or Datacenter.",
-            enum={"Datacenter": "Datacenter", "Standard": "Standard"},
-        )
-        _args_schema.processors = AAZIntArg(
-            options=["--processors"],
-            arg_group="LicenseDetails",
-            help="Describes the number of processors.",
-        )
-        _args_schema.state = AAZStrArg(
-            options=["--state"],
-            arg_group="LicenseDetails",
-            help="Describes the state of the license.",
-            enum={"Activated": "Activated", "Deactivated": "Deactivated"},
-        )
-        _args_schema.target = AAZStrArg(
-            options=["--target"],
-            arg_group="LicenseDetails",
-            help="Describes the license target server.",
-            enum={"Windows Server 2012": "Windows Server 2012", "Windows Server 2012 R2": "Windows Server 2012 R2", "Windows Server 2016": "Windows Server 2016"},
-        )
-        _args_schema.type = AAZStrArg(
-            options=["--type"],
-            arg_group="LicenseDetails",
-            help="Describes the license core type (pCore or vCore).",
-            enum={"pCore": "pCore", "vCore": "vCore"},
-        )
-        _args_schema.volume_license_details = AAZListArg(
-            options=["--volume-license-details"],
-            arg_group="LicenseDetails",
-            help="A list of volume license details.",
-        )
-
-        volume_license_details = cls._args_schema.volume_license_details
-        volume_license_details.Element = AAZObjectArg()
-
-        _element = cls._args_schema.volume_license_details.Element
-        _element.invoice_id = AAZStrArg(
-            options=["invoice-id"],
-            help="The invoice id for the volume license.",
-        )
-        _element.program_year = AAZStrArg(
-            options=["program-year"],
-            help="Describes the program year the volume license is for.",
-            enum={"Year 1": "Year 1", "Year 2": "Year 2", "Year 3": "Year 3"},
-        )
-
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Parameters",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Parameters",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
-
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.license_details = AAZObjectArg(
+            options=["--license-details"],
+            arg_group="Properties",
+            help="Describes the properties of a License.",
+        )
         _args_schema.license_type = AAZStrArg(
             options=["--license-type"],
             arg_group="Properties",
@@ -143,6 +76,70 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Describes the tenant id.",
         )
+
+        license_details = cls._args_schema.license_details
+        license_details.edition = AAZStrArg(
+            options=["edition"],
+            help="Describes the edition of the license. The values are either Standard or Datacenter.",
+            enum={"Datacenter": "Datacenter", "Standard": "Standard"},
+        )
+        license_details.processors = AAZIntArg(
+            options=["processors"],
+            help="Describes the number of processors.",
+        )
+        license_details.state = AAZStrArg(
+            options=["state"],
+            help="Describes the state of the license.",
+            enum={"Activated": "Activated", "Deactivated": "Deactivated"},
+        )
+        license_details.target = AAZStrArg(
+            options=["target"],
+            help="Describes the license target server.",
+            enum={"Windows Server 2012": "Windows Server 2012", "Windows Server 2012 R2": "Windows Server 2012 R2", "Windows Server 2016": "Windows Server 2016"},
+        )
+        license_details.type = AAZStrArg(
+            options=["type"],
+            help="Describes the license core type (pCore or vCore).",
+            enum={"pCore": "pCore", "vCore": "vCore"},
+        )
+        license_details.volume_license_details = AAZListArg(
+            options=["volume-license-details"],
+            help="A list of volume license details.",
+        )
+
+        volume_license_details = cls._args_schema.license_details.volume_license_details
+        volume_license_details.Element = AAZObjectArg()
+
+        _element = cls._args_schema.license_details.volume_license_details.Element
+        _element.invoice_id = AAZStrArg(
+            options=["invoice-id"],
+            help="The invoice id for the volume license.",
+        )
+        _element.program_year = AAZStrArg(
+            options=["program-year"],
+            help="Describes the program year the volume license is for.",
+            enum={"Year 1": "Year 1", "Year 2": "Year 2", "Year 3": "Year 3"},
+        )
+
+        # define Arg Group "Resource"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Resource",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Resource",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -226,7 +223,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-15",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
@@ -257,7 +254,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("licenseDetails", AAZObjectType)
+                properties.set_prop("licenseDetails", AAZObjectType, ".license_details")
                 properties.set_prop("licenseType", AAZStrType, ".license_type")
                 properties.set_prop("tenantId", AAZStrType, ".tenant_id")
 

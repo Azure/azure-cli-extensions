@@ -23,9 +23,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-07-15",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2026-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2026-09-01"],
         ]
     }
 
@@ -62,7 +62,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.PrivateLinkScopesDelete(ctx=self.ctx)()
+        yield self.HybridComputePrivateLinkScopesDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +73,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class PrivateLinkScopesDelete(AAZHttpOperation):
+    class HybridComputePrivateLinkScopesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -146,7 +146,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-15",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }

@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-07-15",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.hybridcompute/locations/{}/publishers/{}/extensiontypes", "2026-07-15"],
+            ["mgmt-plane", "/providers/microsoft.hybridcompute/locations/{}/publishers/{}/extensiontypes", "2026-09-01"],
         ]
     }
 
@@ -57,7 +57,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ExtensionTypeList(ctx=self.ctx)()
+        self.ExtensionTypeOperationGroupList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +73,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class ExtensionTypeList(AAZHttpOperation):
+    class ExtensionTypeOperationGroupList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -117,7 +117,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-15",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }

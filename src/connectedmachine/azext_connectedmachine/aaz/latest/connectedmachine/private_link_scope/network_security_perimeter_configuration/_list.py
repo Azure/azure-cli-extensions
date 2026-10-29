@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-07-15",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/networksecurityperimeterconfigurations", "2026-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/networksecurityperimeterconfigurations", "2026-09-01"],
         ]
     }
 
@@ -124,7 +124,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-15",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
@@ -237,7 +237,7 @@ class List(AAZCommand):
 
             access_rules = cls._schema_on_200.value.Element.properties.profile.access_rules
             access_rules.Element = AAZObjectType()
-            _ListHelper._build_schema_access_rule_read(access_rules.Element)
+            _ListHelper._build_schema_accessrule_read(access_rules.Element)
 
             enabled_log_categories = cls._schema_on_200.value.Element.properties.profile.enabled_log_categories
             enabled_log_categories.Element = AAZStrType()
@@ -275,7 +275,7 @@ class List(AAZCommand):
 
             suggested_access_rules = cls._schema_on_200.value.Element.properties.provisioning_issues.Element.properties.suggested_access_rules
             suggested_access_rules.Element = AAZObjectType()
-            _ListHelper._build_schema_access_rule_read(suggested_access_rules.Element)
+            _ListHelper._build_schema_accessrule_read(suggested_access_rules.Element)
 
             suggested_resource_ids = cls._schema_on_200.value.Element.properties.provisioning_issues.Element.properties.suggested_resource_ids
             suggested_resource_ids.Element = AAZStrType()
@@ -315,26 +315,26 @@ class List(AAZCommand):
 class _ListHelper:
     """Helper class for List"""
 
-    _schema_access_rule_read = None
+    _schema_accessrule_read = None
 
     @classmethod
-    def _build_schema_access_rule_read(cls, _schema):
-        if cls._schema_access_rule_read is not None:
-            _schema.name = cls._schema_access_rule_read.name
-            _schema.properties = cls._schema_access_rule_read.properties
+    def _build_schema_accessrule_read(cls, _schema):
+        if cls._schema_accessrule_read is not None:
+            _schema.name = cls._schema_accessrule_read.name
+            _schema.properties = cls._schema_accessrule_read.properties
             return
 
-        cls._schema_access_rule_read = _schema_access_rule_read = AAZObjectType()
+        cls._schema_accessrule_read = _schema_accessrule_read = AAZObjectType()
 
-        access_rule_read = _schema_access_rule_read
-        access_rule_read.name = AAZStrType(
+        accessrule_read = _schema_accessrule_read
+        accessrule_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        access_rule_read.properties = AAZObjectType(
+        accessrule_read.properties = AAZObjectType(
             flags={"client_flatten": True, "read_only": True},
         )
 
-        properties = _schema_access_rule_read.properties
+        properties = _schema_accessrule_read.properties
         properties.address_prefixes = AAZListType(
             serialized_name="addressPrefixes",
             flags={"read_only": True},
@@ -343,11 +343,11 @@ class _ListHelper:
             flags={"read_only": True},
         )
 
-        address_prefixes = _schema_access_rule_read.properties.address_prefixes
+        address_prefixes = _schema_accessrule_read.properties.address_prefixes
         address_prefixes.Element = AAZStrType()
 
-        _schema.name = cls._schema_access_rule_read.name
-        _schema.properties = cls._schema_access_rule_read.properties
+        _schema.name = cls._schema_accessrule_read.name
+        _schema.properties = cls._schema_accessrule_read.properties
 
 
 __all__ = ["List"]
