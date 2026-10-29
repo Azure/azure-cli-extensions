@@ -29,3 +29,10 @@ def load_arguments(self, _):
                    required=False)
         c.argument('github_repository', help="Fullname of your Github repository (e.g. Azure/azure-cli)",
                    required=False)
+
+    with self.argument_context('functionapp scale config always-ready delete') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Name of the function app.')
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'],
+                   help='Name of resource group.')
+        c.argument('setting_names', options_list=['--setting-names'], nargs='+',
+                   help='Space-separated list of always-ready setting names to delete.')
