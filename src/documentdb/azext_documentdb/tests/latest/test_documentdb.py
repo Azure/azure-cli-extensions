@@ -479,6 +479,14 @@ class DocumentdbScenario(ScenarioTest):
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_documentdb_restore_cmk', location='eastus2')
     def test_documentdb_mongocluster_restore_cmk(self, resource_group):
+        self._test_restore_cmk(entra_only=False)
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_restore_entra_cmk', location='eastus2')
+    def test_documentdb_mongocluster_restore_entra_cmk(self, resource_group):
+        self._test_restore_cmk(entra_only=True)
+
+    def _test_restore_cmk(self, entra_only):
         self._base_kwargs()
         self.kwargs.update({
             'restored': self.create_random_name('cli-mc-rst', 20),
@@ -487,7 +495,8 @@ class DocumentdbScenario(ScenarioTest):
             'key': 'cli-mc-restore-key',
         })
 
-        self._create_cluster(storage_type='PremiumSSD')
+        if not entra_only:
+            self._create_cluster(storage_type='PremiumSSD')
 
         mi = self.cmd('identity create -g {rg} -n {mi} -l {loc}').get_output_in_json()
         self.kwargs['mi_id'] = mi['id'].replace('/resourcegroups/', '/resourceGroups/')
@@ -505,6 +514,82 @@ class DocumentdbScenario(ScenarioTest):
             'keyvault key create --vault-name {kv} -n {key} --kty RSA'
         ).get_output_in_json()
         self.kwargs['key_url'] = key['key']['kid'].rsplit('/', 1)[0]
+
+        encryption_checks = [
+            self.check(
+                'properties.encryption.customerManagedKeyEncryption.'
+                'keyEncryptionKeyIdentity.identityType',
+                'UserAssignedIdentity',
+            ),
+            self.check(
+                'properties.encryption.customerManagedKeyEncryption.'
+                'keyEncryptionKeyIdentity.userAssignedIdentityResourceId',
+                '{mi_id}',
+            ),
+            self.check(
+                'properties.encryption.customerManagedKeyEncryption.keyEncryptionKeyUrl',
+                '{key_url}',
+            ),
+        ]
+        auth_checks = [
+            self.check(
+                'properties.authConfig.allowedModes[0]',
+                'MicrosoftEntraID' if entra_only else 'NativeAuth',
+            ),
+            self.check('length(properties.authConfig.allowedModes)', 1),
+        ]
+        if entra_only:
+            auth_checks.extend([
+                self.not_exists('properties.administrator.userName'),
+                self.not_exists('properties.administrator.password'),
+            ])
+            # Seed the encrypted Entra-only source via REST because generated
+            # create still requires native credentials. Restore uses the CLI.
+            self.kwargs['subscription_id'] = self.get_subscription_id()
+            self.kwargs['source_body'] = json.dumps({
+                'location': self.kwargs['loc'],
+                'identity': {
+                    'type': 'UserAssigned',
+                    'userAssignedIdentities': {self.kwargs['mi_id']: {}},
+                },
+                'properties': {
+                    'authConfig': {'allowedModes': ['MicrosoftEntraID']},
+                    'compute': {'tier': 'M30'},
+                    'storage': {'sizeGb': 128, 'type': 'PremiumSSD'},
+                    'sharding': {'shardCount': 1},
+                    'highAvailability': {'targetMode': 'Disabled'},
+                    'encryption': {
+                        'customerManagedKeyEncryption': {
+                            'keyEncryptionKeyIdentity': {
+                                'identityType': 'UserAssignedIdentity',
+                                'userAssignedIdentityResourceId': self.kwargs['mi_id'],
+                            },
+                            'keyEncryptionKeyUrl': self.kwargs['key_url'],
+                        },
+                    },
+                },
+            })
+            self.cmd(
+                'rest --method put --url /subscriptions/{subscription_id}/resourceGroups/{rg}/'
+                'providers/Microsoft.DocumentDB/mongoClusters/{cluster}?api-version=2026-06-15-preview '
+                "--body '{source_body}'"
+            )
+            self.cmd(
+                'documentdb mongocluster wait -n {cluster} -g {rg} '
+                '--custom "properties.provisioningState==\'Succeeded\'" '
+                '--interval 60 --timeout 14400'
+            )
+            self.cmd(
+                'documentdb mongocluster show -n {cluster} -g {rg}',
+                checks=[
+                    self.check('properties.provisioningState', 'Succeeded'),
+                    self.check('identity.type', 'UserAssigned'),
+                    self.exists('identity.userAssignedIdentities."{mi_id}"'),
+                    self.check('identity.userAssignedIdentities."{mi_id}".principalId', '{mi_principal}'),
+                ] + encryption_checks + auth_checks,
+            )
+        else:
+            auth_checks.append(self.check('properties.administrator.userName', '{admin}'))
 
         enc = {
             'customer-managed-key-encryption': {
@@ -525,10 +610,11 @@ class DocumentdbScenario(ScenarioTest):
 
         try:
             self._wait_for_restore_point()
+            administrator_args = '' if entra_only else '--admin-user {admin} --password {password} '
             self._cmd_retry(
                 'documentdb mongocluster restore -n {restored} -g {rg} --location {loc} '
                 '--source-cluster {cluster} --restore-time {restore_time} '
-                '--admin-user {admin} --password {password} '
+                + administrator_args +
                 '--user-assigned {mi_id} --encryption @{enc_file} --no-wait'
             )
             self.cmd(
@@ -541,25 +627,7 @@ class DocumentdbScenario(ScenarioTest):
                 checks=[
                     self.check('name', '{restored}'),
                     self.check('properties.provisioningState', 'Succeeded'),
-                    self.check(
-                        'properties.encryption.customerManagedKeyEncryption.'
-                        'keyEncryptionKeyIdentity.identityType',
-                        'UserAssignedIdentity',
-                    ),
-                    self.check(
-                        'properties.encryption.customerManagedKeyEncryption.'
-                        'keyEncryptionKeyIdentity.userAssignedIdentityResourceId',
-                        '{mi_id}',
-                    ),
-                    self.check(
-                        'properties.encryption.customerManagedKeyEncryption.'
-                        'keyEncryptionKeyUrl',
-                        '{key_url}',
-                    ),
-                    self.check('properties.authConfig.allowedModes[0]', 'NativeAuth'),
-                    self.check('length(properties.authConfig.allowedModes)', 1),
-                    self.check('properties.administrator.userName', '{admin}'),
-                ],
+                ] + encryption_checks + auth_checks,
             )
         finally:
             if os.path.exists(enc_file):
