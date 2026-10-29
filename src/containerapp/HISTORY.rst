@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* Resolve Docker with Azure CLI's safe executable lookup before invoking it from local build and patch flows
 
 1.3.0b5
 ++++++
