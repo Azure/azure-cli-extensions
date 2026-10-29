@@ -315,7 +315,7 @@ class ChaosStudioTests(unittest.TestCase):
         self.run_install()
         events = []
         poller = MagicMock()
-        poller.result.side_effect = lambda: events.append("completed")
+        poller.result.side_effect = lambda: events.append("completed") if "completed" not in events else None
         with patch.object(self.partner, "Delete", side_effect=lambda *_: events.append("pre")), \
                 patch.object(self.partner, "PostDelete", side_effect=lambda *_: events.append("post")), \
                 patch("azext_k8s_extension.custom.ExtensionFactory", return_value=self.partner), \
@@ -325,6 +325,24 @@ class ChaosStudioTests(unittest.TestCase):
             custom.delete_k8s_extension(self.cmd, self.client, "rg", "cluster", "chaos",
                                         "managedClusters", yes=True)
         self.assertEqual(events, ["pre", "completed", "post"])
+
+    def test_failed_delete_poller_404_never_runs_namespace_cleanup(self):
+        self.run_install()
+        self.cmd.cli_ctx = MagicMock(data={"command": "k8s-extension delete"})
+        failure = HttpResponseError("operation monitor not found")
+        failure.status_code = 404
+        poller = MagicMock()
+        poller.done.return_value = True
+        poller.result.side_effect = failure
+        with patch.object(self.partner, "Delete"), \
+                patch.object(self.partner, "PostDelete") as post, \
+                patch("azext_k8s_extension.custom.ExtensionFactory", return_value=self.partner), \
+                patch.object(self.client, "begin_delete", create=True, return_value=poller):
+            with self.assertRaises(HttpResponseError) as raised:
+                custom.delete_k8s_extension(self.cmd, self.client, "rg", "cluster", "chaos",
+                                           "managedClusters", yes=True)
+            self.assertIs(raised.exception, failure)
+            post.assert_not_called()
 
     def test_failed_no_wait_and_force_delete_never_run_namespace_cleanup(self):
         self.run_install()

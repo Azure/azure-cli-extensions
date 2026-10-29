@@ -442,6 +442,8 @@ def delete_k8s_extension(
             )
         else:
             LongRunningOperation(cmd.cli_ctx)(result)
+            # The progress helper can suppress 404 failures for delete commands.
+            result.result()
             extension_class.PostDelete(
                 cmd, resource_group_name, cluster_name, extension.name or name, extension
             )
