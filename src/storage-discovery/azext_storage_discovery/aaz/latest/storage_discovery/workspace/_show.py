@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagediscovery/storagediscoveryworkspaces/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagediscovery/storagediscoveryworkspaces/{}", "2026-10-01-preview"],
         ]
     }
 
@@ -125,7 +125,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }
@@ -178,6 +178,7 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.capabilities = AAZObjectType()
             properties.description = AAZStrType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -189,6 +190,40 @@ class Show(AAZCommand):
             properties.sku = AAZStrType()
             properties.workspace_roots = AAZListType(
                 serialized_name="workspaceRoots",
+                flags={"required": True},
+            )
+
+            capabilities = cls._schema_on_200.properties.capabilities
+            capabilities.azure_blob_storage = AAZObjectType(
+                serialized_name="azureBlobStorage",
+                flags={"required": True},
+            )
+
+            azure_blob_storage = cls._schema_on_200.properties.capabilities.azure_blob_storage
+            azure_blob_storage.capacity_details = AAZObjectType(
+                serialized_name="capacityDetails",
+                flags={"required": True},
+            )
+            azure_blob_storage.prefix_configurations = AAZListType(
+                serialized_name="prefixConfigurations",
+            )
+
+            capacity_details = cls._schema_on_200.properties.capabilities.azure_blob_storage.capacity_details
+            capacity_details.status = AAZStrType(
+                flags={"required": True},
+            )
+
+            prefix_configurations = cls._schema_on_200.properties.capabilities.azure_blob_storage.prefix_configurations
+            prefix_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.capabilities.azure_blob_storage.prefix_configurations.Element
+            _element.container_name = AAZStrType(
+                serialized_name="containerName",
+                flags={"required": True},
+            )
+            _element.prefix = AAZStrType()
+            _element.storage_account_name = AAZStrType(
+                serialized_name="storageAccountName",
                 flags={"required": True},
             )
 
