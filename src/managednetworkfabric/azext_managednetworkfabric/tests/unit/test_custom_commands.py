@@ -204,7 +204,9 @@ class TestFabricResyncPasswordCommand(CustomCommandTestClass, unittest.TestCase)
         self.cmd = ResyncPasswordCommand.__new__(ResyncPasswordCommand)
 
 
-class TestBootstrapDeviceResyncPasswordCommand(CustomCommandTestClass, unittest.TestCase):
+class TestBootstrapDeviceResyncPasswordCommand(
+    CustomCommandTestClass, unittest.TestCase
+):
     """Tests for bootstrapdevice resync-password custom command."""
 
     def setUp(self):

@@ -12,7 +12,7 @@ from .config import CONFIG
 
 def call_scenario1(test):
     """Verify configuration refresh, polling, and the final operation result."""
-    step_refresh_configuration(
+    step_refresh_config(
         test,
         checks=[
             test.check("status", "Succeeded"),
@@ -22,18 +22,18 @@ def call_scenario1(test):
     test.assertTrue(test.cassette.all_played)
 
 
-def step_refresh_configuration(test, checks=None):
+def step_refresh_config(test, checks=None):
     """Refresh the configured bootstrap device's configuration."""
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric bootstrapdevice refresh-configuration "
+        "az networkfabric bootstrapdevice refresh-config "
         "--resource-name {name} --resource-group {rg}",
         checks=checks,
     )
 
 
-class GA_BootstrapDeviceRefreshConfigurationScenarioTest1(ScenarioTest):
+class GA_BootstrapDeviceRefreshConfigScenarioTest1(ScenarioTest):
     """Bootstrap device configuration refresh scenario."""
 
     def __init__(self, *args, **kwargs):
@@ -46,6 +46,6 @@ class GA_BootstrapDeviceRefreshConfigurationScenarioTest1(ScenarioTest):
         )
         self.vcr.match_on = (*self.vcr.match_on, "body")
 
-    def test_GA_bootstrapdevice_refresh_configuration_scenario1(self):
+    def test_GA_bootstrapdevice_refresh_config_scenario1(self):
         """Replay the bootstrap device configuration refresh mock recording."""
         call_scenario1(self)

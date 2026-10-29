@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkfabric bootstrapdevice refresh-configuration",
+    "networkfabric bootstrapdevice refresh-config",
 )
-class RefreshConfiguration(AAZCommand):
+class RefreshConfig(AAZCommand):
     """Refreshes the configuration of Network Bootstrap Device.
 
     :example: Run refresh configuration on the Boostrap Device
-        az networkfabric bootstrapdevice refresh-configuration --resource-group "example-rg" --resource-name "example-device"
+        az networkfabric bootstrapdevice refresh-config --resource-group "example-rg" --resource-name "example-device"
     """
 
     _aaz_info = {
@@ -177,7 +177,7 @@ class RefreshConfiguration(AAZCommand):
                 serialized_name="endTime",
             )
             _schema_on_200.error = AAZObjectType()
-            _RefreshConfigurationHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _RefreshConfigHelper._build_schema_error_detail_read(_schema_on_200.error)
             _schema_on_200.id = AAZStrType(
                 nullable=True,
             )
@@ -200,13 +200,13 @@ class RefreshConfiguration(AAZCommand):
 
             operations = cls._schema_on_200.operations
             operations.Element = AAZObjectType()
-            _RefreshConfigurationHelper._build_schema_operation_status_result_read(operations.Element)
+            _RefreshConfigHelper._build_schema_operation_status_result_read(operations.Element)
 
             return cls._schema_on_200
 
 
-class _RefreshConfigurationHelper:
-    """Helper class for RefreshConfiguration"""
+class _RefreshConfigHelper:
+    """Helper class for RefreshConfig"""
 
     _schema_error_detail_read = None
 
@@ -320,4 +320,4 @@ class _RefreshConfigurationHelper:
         _schema.status = cls._schema_operation_status_result_read.status
 
 
-__all__ = ["RefreshConfiguration"]
+__all__ = ["RefreshConfig"]
