@@ -6,12 +6,19 @@
 import base64
 from io import BytesIO
 import os
+from unittest.mock import patch
 import zipfile
 from azure.cli.testsdk import ResourceGroupPreparer, JMESPathCheck, ScenarioTest
 
 from .recording_processors import EdgeActionRecordingProcessor
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+
+
+def _patch_playback_polling(test):
+    patcher = patch('azure.cli.core.aaz._poller.AAZBasePolling._delay', return_value=None)
+    patcher.start()
+    test.addCleanup(patcher.stop)
 
 
 class EdgeActionScenarioTest(ScenarioTest):
@@ -21,6 +28,7 @@ class EdgeActionScenarioTest(ScenarioTest):
             method_name,
             recording_processors=[EdgeActionRecordingProcessor()],
             replay_processors=[EdgeActionRecordingProcessor()],
+            replay_patches=[_patch_playback_polling],
         )
         self.vcr.match_on = (*self.vcr.match_on, 'body')
 
@@ -269,12 +277,13 @@ class EdgeActionScenarioTest(ScenarioTest):
             resource_group, edge_action_name, test_content))
 
         # Verify v1 is default before swap
+        validation_checks = [JMESPathCheck('validationStatus != `null`', True)]
         self.cmd('edge-action version show -g {} --edge-action-name {} -n v1'.format(
             resource_group, edge_action_name),
-            checks=[JMESPathCheck('isDefaultVersion', 'True')])
+            checks=validation_checks + [JMESPathCheck('isDefaultVersion', 'True')])
         self.cmd('edge-action version show -g {} --edge-action-name {} -n v2'.format(
             resource_group, edge_action_name),
-            checks=[JMESPathCheck('isDefaultVersion', 'False')])
+            checks=validation_checks + [JMESPathCheck('isDefaultVersion', 'False')])
 
         # Swap default to v2
         self.cmd('edge-action version swap-default -g {} --edge-action-name {} --version v2'.format(
@@ -283,10 +292,10 @@ class EdgeActionScenarioTest(ScenarioTest):
         # Verify v2 is now default after swap
         self.cmd('edge-action version show -g {} --edge-action-name {} -n v1'.format(
             resource_group, edge_action_name),
-            checks=[JMESPathCheck('isDefaultVersion', 'False')])
+            checks=validation_checks + [JMESPathCheck('isDefaultVersion', 'False')])
         self.cmd('edge-action version show -g {} --edge-action-name {} -n v2'.format(
             resource_group, edge_action_name),
-            checks=[JMESPathCheck('isDefaultVersion', 'True')])
+            checks=validation_checks + [JMESPathCheck('isDefaultVersion', 'True')])
 
         # Clean up
         self.cmd('edge-action version delete -g {} --edge-action-name {} -n v1 -y'.format(
