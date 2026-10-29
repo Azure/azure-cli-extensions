@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.0.0b7
++++++++
+* Resolve Windows ssh-keygen from supported system installation paths.
+* Support native OpenSSH installation discovery from 32-bit Azure CLI on 64-bit Windows.
+* Stop processing when SSH key generation fails.
+
 1.0.0b6
 +++++++
 * Resolves installation issue caused by Graphs Python SDK package where a long path error occured. To fix this - SDK support was removed and replaced with httpclient.
