@@ -1463,6 +1463,7 @@ def aks_create(
     defender_config=None,
     enable_disk_driver=False,
     disable_disk_driver=False,
+    enable_quick_attach_detach=False,
     disable_file_driver=False,
     enable_blob_driver=None,
     disable_snapshot_controller=False,

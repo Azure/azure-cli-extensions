@@ -3364,6 +3364,91 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertIsNone(ctx_5.get_disk_driver())
 
+        # quick attach detach on create sets the nested property and enables
+        # the driver, even without --enable-disk-driver
+        ctx_6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_quick_attach_detach": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        ground_truth_disk_csi_driver_6 = (
+            self.models.ManagedClusterStorageProfileDiskCSIDriver(
+                enabled=True,
+                quick_attach_detach=self.models.ManagedClusterStorageProfileDiskCSIDriverQuickAttachDetach(
+                    enabled=True,
+                ),
+            )
+        )
+        self.assertEqual(ctx_6.get_disk_driver(), ground_truth_disk_csi_driver_6)
+
+        ctx_7 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_disk_driver": True,
+                    "enable_quick_attach_detach": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_7.get_disk_driver(), ground_truth_disk_csi_driver_6)
+
+        # fail on mutually exclusive enable_quick_attach_detach and disable_disk_driver
+        ctx_8 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_disk_driver": True,
+                    "enable_quick_attach_detach": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_8.get_disk_driver()
+
+    def test_get_enable_quick_attach_detach(self):
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertFalse(ctx_1.get_enable_quick_attach_detach())
+
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_quick_attach_detach": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertTrue(ctx_2.get_enable_quick_attach_detach())
+
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_quick_attach_detach": True,
+                    "disable_disk_driver": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_3.get_enable_quick_attach_detach()
+
     def test_get_enable_apiserver_vnet_integration(self):
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,

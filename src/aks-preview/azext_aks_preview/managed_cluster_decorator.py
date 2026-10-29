@@ -2247,6 +2247,18 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
         return bool(disable_node_hardening)
 
+    def get_enable_quick_attach_detach(self) -> bool:
+        """Obtain the value of enable_quick_attach_detach.
+
+        :return: bool
+        """
+        enable_quick_attach_detach = self.raw_param.get("enable_quick_attach_detach", False)
+        if enable_quick_attach_detach and self.raw_param.get("disable_disk_driver", False):
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-quick-attach-detach and --disable-disk-driver at the same time."
+            )
+        return bool(enable_quick_attach_detach)
+
     def get_disk_driver(self) -> Optional[ManagedClusterStorageProfileDiskCSIDriver]:
         """Obtain the value of storage_profile.disk_csi_driver
 
@@ -2254,8 +2266,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         enable_disk_driver = self.raw_param.get("enable_disk_driver")
         disable_disk_driver = self.raw_param.get("disable_disk_driver")
+        enable_quick_attach_detach = self.get_enable_quick_attach_detach()
 
-        if not enable_disk_driver and not disable_disk_driver:
+        if not enable_disk_driver and not disable_disk_driver and not enable_quick_attach_detach:
             return None
         profile = self.models.ManagedClusterStorageProfileDiskCSIDriver()  # pylint: disable=no-member
 
@@ -2270,6 +2283,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 profile.enabled = False
             else:
                 profile.enabled = True
+            if enable_quick_attach_detach:
+                profile.quick_attach_detach = (
+                    self.models.ManagedClusterStorageProfileDiskCSIDriverQuickAttachDetach(  # pylint: disable=no-member
+                        enabled=True
+                    )
+                )
 
         if self.decorator_mode == DecoratorMode.UPDATE:
             if enable_disk_driver:
