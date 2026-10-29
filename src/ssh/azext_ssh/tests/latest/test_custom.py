@@ -3,14 +3,21 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import io
+import os
+import stat
+import tempfile
 import unittest
 from unittest import mock
+from azext_ssh import SshCommandsLoader
 from azext_ssh import custom
 from azext_ssh import rdp_utils
 from azext_ssh import ssh_utils
 from azext_ssh import ssh_info
 
 from azure.cli.core import azclierror
+from azure.cli.core import AzCommandsLoader
+from azure.cli.core import get_default_cli
+from azure.cli.core.parser import AzCliCommandParser
 
 
 class SshCustomCommandTest(unittest.TestCase):
@@ -190,7 +197,8 @@ class SshCustomCommandTest(unittest.TestCase):
         custom.ssh_cert(cmd, "cert", "pubkey", "ssh/folder")
 
         mock_get_keys.assert_called_once_with('/pubkey/path', None, None, '/client/path')
-        mock_write_cert.assert_called_once_with(cmd, 'pubkey', '/cert/path', '/client/path')
+        mock_write_cert.assert_called_once_with(cmd, 'pubkey', '/cert/path', '/client/path',
+                                                skip_cert_file_permissions=False)
 
     def test_assert_args_invalid_resource_type(self):
         self.assertRaises(azclierror.InvalidArgumentValueError, custom._assert_args, 'rg', 'vm', 'ip', "Microsoft.Network", 'cert', 'user')
@@ -376,7 +384,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_check_files.assert_called_once_with("publicfile", "privatefile", None, "/client/folder")
         mock_ip.assert_not_called()
         mock_get_mod_exp.assert_called_once_with("public")
-        mock_write_cert.assert_called_once_with("certificate", "public-aadcert.pub")
+        mock_write_cert.assert_called_once_with("certificate", "public-aadcert.pub", skip_cert_file_permissions=False)
         mock_op.assert_called_once_with(op_info, False, True)
 
     @mock.patch('azext_ssh.custom._check_or_create_public_private_files')
@@ -482,10 +490,150 @@ class SshCustomCommandTest(unittest.TestCase):
 
         mock_check_files.assert_called_once_with("publicfile", "privatefile", None, "client")
         mock_get_mod_exp.assert_called_once_with("public")
-        mock_write_cert.assert_called_once_with("certificate", "public-aadcert.pub")
+        mock_write_cert.assert_called_once_with("certificate", "public-aadcert.pub", skip_cert_file_permissions=False)
         mock_get_proxy.assert_called_once_with('proxy')
         mock_get_relay_info.assert_called_once_with(cmd, 'rg', 'vm', 'Microsoft.HybridCompute/machines', 3600, 'port', False)
         mock_op.assert_called_once_with(op_info, False, True)
 
     if __name__ == '__main__':
         unittest.main()
+
+
+class SshCertPermissionsTest(unittest.TestCase):
+
+    def setUp(self):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        self.cert_path = os.path.join(folder.name, 'certificate.pub')
+        self.public_key_file = os.path.join(folder.name, 'id_rsa.pub')
+        with open(self.public_key_file, 'w', encoding='utf-8') as public_key:
+            public_key.write('test public key')
+        self.certificate = 'ssh-rsa-cert-v01@openssh.com certificate'
+        self.cmd = mock.Mock()
+
+        for target, kwargs in (
+                ('azext_ssh.custom._prepare_jwk_data', {'return_value': {}}),
+                ('azure.cli.core._profile.Profile', {}),
+                ('azext_ssh.ssh_utils.get_ssh_cert_principals', {'return_value': ['username']}),
+                ('azext_ssh.ssh_utils.get_certificate_start_and_end_times',
+                 {'return_value': ('start', 'end')})):
+            patcher = mock.patch(target, **kwargs)
+            patched = patcher.start()
+            self.addCleanup(patcher.stop)
+            if target == 'azure.cli.core._profile.Profile':
+                patched.return_value.get_msal_token.return_value = ('username', 'certificate')
+
+    def assert_certificate_written(self):
+        with open(self.cert_path, 'r', encoding='utf-8') as certificate:
+            self.assertEqual(certificate.read(), self.certificate)
+
+    @mock.patch('azext_ssh.custom.print_styled_text')
+    @mock.patch('azext_ssh.custom.oschmod.set_mode')
+    def test_ssh_cert_skip_permissions(self, mock_mode, mock_print):
+        mock_mode.side_effect = AttributeError("'NoneType' object has no attribute 'GetAceCount'")
+        with mock.patch('azext_ssh.custom._write_cert_file', wraps=custom._write_cert_file) as writer:
+            with self.assertLogs(custom.logger, level='WARNING') as logs:
+                custom.ssh_cert(self.cmd, self.cert_path, self.public_key_file,
+                                skip_cert_file_permissions=True)
+        writer.assert_called_once_with('certificate', self.cert_path, skip_cert_file_permissions=True)
+        mock_mode.assert_not_called()
+        self.assert_certificate_written()
+        self.assertIn('permissions were not adjusted', ' '.join(logs.output))
+        mock_print.assert_called_once()
+
+    @mock.patch('azext_ssh.custom.oschmod.set_mode')
+    def test_write_cert_file_skip_permissions(self, mock_mode):
+        mock_mode.side_effect = AttributeError("'NoneType' object has no attribute 'GetAceCount'")
+        with self.assertLogs(custom.logger, level='WARNING'):
+            result = custom._write_cert_file('certificate', self.cert_path, skip_cert_file_permissions=True)
+        self.assertEqual(result, self.cert_path)
+        self.assert_certificate_written()
+        mock_mode.assert_not_called()
+
+    @mock.patch('azext_ssh.custom.print_styled_text')
+    @mock.patch('azext_ssh.custom.oschmod.set_mode')
+    def test_ssh_cert_permission_errors_preserved_with_retry_guidance(self, mock_mode, mock_print):
+        for error in (AttributeError("'NoneType' object has no attribute 'GetAceCount'"),
+                      PermissionError('ACL unavailable')):
+            with self.subTest(error=type(error).__name__):
+                mock_mode.reset_mock()
+                mock_mode.side_effect = error
+                with self.assertLogs(custom.logger, level='WARNING') as logs:
+                    with self.assertRaises(type(error)) as raised:
+                        custom.ssh_cert(self.cmd, self.cert_path, self.public_key_file)
+                self.assertIs(raised.exception, error)
+                self.assert_certificate_written()
+                mock_mode.assert_called_once_with(self.cert_path, 0o644)
+                self.assertIn('--skip-cert-file-permissions', ' '.join(logs.output))
+                mock_print.assert_not_called()
+
+    @mock.patch('azext_ssh.custom.print_styled_text')
+    @mock.patch('azext_ssh.custom.oschmod.set_mode', wraps=custom.oschmod.set_mode)
+    def test_ssh_cert_default_permissions(self, mock_mode, mock_print):
+        with mock.patch('azext_ssh.custom._write_cert_file', wraps=custom._write_cert_file) as writer:
+            custom.ssh_cert(self.cmd, self.cert_path, self.public_key_file)
+        writer.assert_called_once_with('certificate', self.cert_path, skip_cert_file_permissions=False)
+        self.assert_certificate_written()
+        mock_mode.assert_called_once_with(self.cert_path, 0o644)
+        if os.name != 'nt':
+            self.assertEqual(stat.S_IMODE(os.stat(self.cert_path).st_mode), 0o644)
+        mock_print.assert_called_once()
+
+    @mock.patch('azext_ssh.custom.print_styled_text')
+    @mock.patch('azext_ssh.custom.oschmod.set_mode')
+    def test_ssh_cert_write_error_not_skipped(self, mock_mode, mock_print):
+        destination = os.path.dirname(self.cert_path)
+        for skip in (False, True):
+            with self.subTest(skip=skip):
+                with self.assertRaises(OSError):
+                    custom.ssh_cert(self.cmd, destination, self.public_key_file,
+                                    skip_cert_file_permissions=skip)
+                mock_mode.assert_not_called()
+                mock_print.assert_not_called()
+
+    @mock.patch('azext_ssh.custom.print_styled_text')
+    @mock.patch('azext_ssh.custom.oschmod.set_mode')
+    def test_ssh_cert_cli_argument_and_help(self, mock_mode, mock_print):
+        cli_ctx = get_default_cli()
+        command_name = 'ssh cert'
+        parser = AzCliCommandParser(cli_ctx=cli_ctx)
+        cli_ctx.invocation = mock.Mock(parser=parser, data={'command_string': command_name})
+        loader = SshCommandsLoader(cli_ctx)
+        loader.load_command_table(command_name.split())
+        command = loader.command_table[command_name]
+        AzCommandsLoader.load_arguments(loader, command_name)
+        loader.load_arguments(command_name)
+        loader._apply_parameter_info(command_name, command)
+        loader.command_table = {command_name: command}
+        parser.load_command_table(loader)
+
+        self.assertIn('skip_cert_file_permissions', command.arguments)
+        arguments = ['ssh', 'cert', '--public-key-file', self.public_key_file, '--file', self.cert_path]
+        self.assertFalse(parser.parse_args(arguments).skip_cert_file_permissions)
+        parsed = parser.parse_args(arguments + ['--skip-cert-file-permissions'])
+        self.assertTrue(parsed.skip_cert_file_permissions)
+        self.assertTrue(parser.parse_args(arguments + ['--skip-cert-perms']).skip_cert_file_permissions)
+        option_help = command.arguments['skip_cert_file_permissions'].type.settings['help']
+        self.assertIn('Skip', option_help)
+        self.assertIn('permissions', option_help)
+        self.assertIn('ACL', option_help)
+        from knack.help_files import helps
+        self.assertIn('--skip-cert-file-permissions', helps['ssh cert'])
+
+        mock_mode.side_effect = AttributeError("'NoneType' object has no attribute 'GetAceCount'")
+        with self.assertLogs(custom.logger, level='WARNING'):
+            command({'cmd': self.cmd, 'cert_path': parsed.cert_path, 'public_key_file': parsed.public_key_file,
+                     'skip_cert_file_permissions': parsed.skip_cert_file_permissions})
+        self.assert_certificate_written()
+        mock_mode.assert_not_called()
+        mock_print.assert_called_once()
+
+        for other_command in ('ssh vm', 'ssh config', 'ssh arc'):
+            cli_ctx.invocation.data['command_string'] = other_command
+            other_loader = SshCommandsLoader(cli_ctx)
+            other_loader.load_command_table(other_command.split())
+            other = other_loader.command_table[other_command]
+            other.load_arguments()
+            other_loader.load_arguments(other_command)
+            other_loader._apply_parameter_info(other_command, other)
+            self.assertNotIn('skip_cert_file_permissions', other.arguments)
