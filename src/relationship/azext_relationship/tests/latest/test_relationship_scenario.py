@@ -3,42 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import logging
 import os
-import time
 import unittest
-from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
-from azure.core.exceptions import HttpResponseError
 from azure.cli.testsdk import ScenarioTest
-from azure.cli.testsdk.scenario_tests import RecordingProcessor
 from azure.cli.testsdk.scenario_tests.const import MOCKED_TENANT_ID
-
-
-logger = logging.getLogger(__name__)
-
-
-class RelationshipRecordingProcessor(RecordingProcessor):
-
-    @staticmethod
-    def _sanitize_poll_url(url):
-        parts = urlsplit(url)
-        if not any(route in parts.path.lower() for route in ('/operationstatuses/', '/operationresults/')):
-            return url
-        query = [
-            (key, 'sanitized' if key in {'t', 'c', 's', 'h'} else value)
-            for key, value in parse_qsl(parts.query, keep_blank_values=True)
-        ]
-        return urlunsplit(parts._replace(query=urlencode(query)))
-
-    def process_request(self, request):
-        request.uri = self._sanitize_poll_url(request.uri)
-        return request
-
-    def process_response(self, response):
-        for header in ('location', 'azure-asyncoperation'):
-            self.replace_header_fn(response, header, self._sanitize_poll_url)
-        return response
 
 
 class RelationshipScenarioTest(ScenarioTest):
@@ -48,75 +17,24 @@ class RelationshipScenarioTest(ScenarioTest):
         'x-ms-operation-identifier',
     ]
 
-    def _create_service_group_dependency(self, command):
-        try:
-            return self.cmd(command)
-        except HttpResponseError as error:
-            if (
-                error.status_code != 403
-                or error.error is None
-                or error.error.code != 'AuthorizationFailed'
-            ):
-                raise
-            correlation_id = (
-                error.response.headers.get('x-ms-correlation-request-id')
-                if error.response is not None else None
-            )
-            logger.warning(
-                'Service Group dependency creation failed authorization. '
-                'Correlation ID: %s. Waiting %s seconds for permission propagation '
-                'and retrying the same request once. Original error: %s',
-                correlation_id, 300 if self.is_live else 0, error
-            )
-            if self.is_live:
-                time.sleep(300)
-        return self.cmd(command)
+    def _service_group(self, variable, recorded_name):
+        """Return the Service Group to use, mapping a live one to a stable recorded name."""
+        recorded = f'/providers/Microsoft.Management/serviceGroups/{recorded_name}'
+        configured = os.environ.get(variable)
+        if configured:
+            self.name_replacer.register_name_pair(configured, recorded)
+        return configured if self.is_live and configured else recorded
 
     def setUp(self):
         super().setUp()
-        if self.in_recording and not self.is_live:
-            self.fail('Missing recording. Set AZURE_TEST_RUN_LIVE=true to explicitly record against Azure.')
-        dedicated = self._testMethodName == 'test_dependency_of_by_service_group_crud'
-        variable = (
-            'AZURE_RELATIONSHIP_TEST_DEPENDENCY_SG'
-            if dedicated else 'AZURE_RELATIONSHIP_TEST_TARGET_SG'
-        )
-        fixture_name = 'clitestdependencysg' if dedicated else 'clitestsharedsg'
-        configured = os.environ.get(variable)
-        self.service_group_id = (
-            configured if self.is_live
-            else f'/providers/Microsoft.Management/serviceGroups/{fixture_name}'
-        )
-        tests_not_requiring_target_sg = {
-            'test_dependency_of_same_source_target',
-            'test_sgm_invalid_source',
-            'test_sgm_nonexistent_sg',
-            'test_contains_list',
-        }
-        if (
-            self.is_live
-            and self._testMethodName not in tests_not_requiring_target_sg
-            and not configured
-        ):
-            self.skipTest(
-                f'Set {variable} to run live tests that require a pre-existing Service Group.'
-            )
-        if self.is_live and dedicated and (
-            configured.rstrip('/').lower()
-            == os.environ.get('AZURE_RELATIONSHIP_TEST_TARGET_SG', '').rstrip('/').lower()
-        ):
-            self.fail('The dependency lifecycle requires a separate Service Group, not the shared fixture.')
         for value, replacement in (
-            (configured, f'/providers/Microsoft.Management/serviceGroups/{fixture_name}'),
             (os.environ.get('AZURE_TENANT_ID'), MOCKED_TENANT_ID),
             (os.environ.get('AZURE_RELATIONSHIP_TEST_PRINCIPAL_ID'), '11111111-1111-1111-1111-111111111111'),
             (os.environ.get('AZURE_RELATIONSHIP_TEST_USER'), 'example@example.com'),
         ):
             if value:
                 self.name_replacer.register_name_pair(value, replacement)
-        processor = RelationshipRecordingProcessor()
-        self.recording_processors.append(processor)
-        self.replay_processors.append(processor)
+        self.service_group_id = self._service_group('AZURE_RELATIONSHIP_TEST_TARGET_SG', 'clitestsharedsg')
 
     def test_dependency_of_crud(self):
         """Full CRUD lifecycle for a dependencyOf relationship (RG → ServiceGroup)."""
@@ -369,6 +287,10 @@ class RelationshipScenarioTest(ScenarioTest):
     def test_dependency_of_by_service_group_crud(self):
         rg_name = self.create_random_name('rg-sg-dep-', 20)
         rel_name = self.create_random_name('sgdep', 16)
+        # A dedicated Service Group keeps this lifecycle isolated from the shared fixture.
+        self.service_group_id = self._service_group(
+            'AZURE_RELATIONSHIP_TEST_DEPENDENCY_SG', 'clitestdependencysg'
+        )
         sg_name = self.service_group_id.rstrip('/').rsplit('/', 1)[-1]
         scope = f'--service-group-name "{sg_name}"'
         created = False
@@ -377,7 +299,7 @@ class RelationshipScenarioTest(ScenarioTest):
             target_id = self.cmd(
                 f'az identity create --resource-group {rg_name} --name relationshipTarget'
             ).get_output_in_json()['id']
-            self._create_service_group_dependency(
+            self.cmd(
                 f'az relationship dependency-of-by-service-group create {scope} '
                 f'--name {rel_name} --target-id "{target_id}" --no-wait'
             )

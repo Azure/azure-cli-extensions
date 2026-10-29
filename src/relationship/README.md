@@ -157,8 +157,7 @@ The second pass uses Git history and is not covered by the first invocation.
 Examples for generated commands must be defined in their AAZ models; handwritten
 help entries alone do not populate the generated command metadata.
 
-All scenarios support offline playback from the checked-in recordings. A missing
-recording fails rather than implicitly accessing Azure.
+All scenarios support offline playback from the checked-in recordings.
 
 To re-record, explicitly set `AZURE_TEST_RUN_LIVE=true` and configure:
 
@@ -173,8 +172,9 @@ Provision fresh child Service Groups directly under the authorized root, await
 their provisioning operations, and allow at least five minutes after the dedicated
 fixture is ready before starting the suite. Both fixtures require permission to
 manage relationships, such as their automatically provisioned Service Group
-Administrator assignments. The dedicated scenario rejects reuse of the shared
-fixture. Remove run-created Service Groups and grants after recording.
+Administrator assignments. Use a different Service Group for the dependency
+lifecycle than for the shared fixture. Remove run-created Service Groups and grants
+after recording.
 
 Resource-side
 relationship permissions must also be available on the test subscription and its
@@ -183,12 +183,5 @@ to the test identity once at the test subscription scope before running the suit
 the scenarios do not assign roles individually. Allow new assignments to propagate
 before starting the tests. No role changes on the root Service Group are required.
 Live scenarios create temporary resource groups and, where needed, managed identities.
-The Service Group-scoped dependency lifecycle test retries its
-initial create once after an additional 300 seconds if ARM returns HTTP 403 with
-`AuthorizationFailed`. It logs the original error and correlation ID, and retries
-the identical command against the same fixture. A second failure is not suppressed.
-Playback consumes a recorded retry without sleeping. Other errors and operations
-are not retried. This fixture-propagation handling does not change generated CLI
-commands. Recording processors normalize fixture and caller identifiers and redact
-signed polling query values; correlation IDs are kept separately as investigation
-evidence rather than included in the checked-in cassettes.
+Scenarios do not retry commands. Recordings normalize fixture and caller identifiers
+through the test framework's name replacer.
