@@ -30,7 +30,7 @@ class ResyncPasswordCommand(_ResyncPasswordCommand):
         try:
             return poller.result()
         except HttpResponseError as e:
-            ErrorFormat.handle_lro_error(e)
+            return ErrorFormat.handle_lro_error(e)
 
     def _output(self, *args, **kwargs):
         return ErrorFormat._output(self, *args, **kwargs)
