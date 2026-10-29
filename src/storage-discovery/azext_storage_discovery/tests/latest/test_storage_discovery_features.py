@@ -3,27 +3,15 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import base64
 from copy import deepcopy
-import json
 from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
 
-from azure.cli.core import get_default_cli
 from azure.cli.core.aaz._command_ctx import AAZCommandCtx
-from azure.core.exceptions import HttpResponseError
 from azure.core.pipeline.policies import ContentDecodePolicy
-from azure.core.pipeline.transport import RequestsTransportResponse
-from requests import Response
 
-from azext_storage_discovery import StorageDiscoveryCommandsLoader
 from azext_storage_discovery.aaz.latest.storage_discovery.workspace import Create, List, Show
-from azext_storage_discovery.aaz.latest.storage_discovery.workspace.report import (
-    List as ReportList,
-    Show as ReportShow,
-)
-from azext_storage_discovery.custom import ReportGenerateReport as GenerateReport, WorkspaceQuery as Query
 
 
 class StorageDiscoveryFeaturesTest(unittest.TestCase):
@@ -55,22 +43,6 @@ class StorageDiscoveryFeaturesTest(unittest.TestCase):
                 }],
             },
         }
-        self.report = {
-            "name": "testreport",
-            "type": "Microsoft.StorageDiscovery/storageDiscoveryWorkspaces/reports",
-            "properties": {"provisioningState": "Succeeded"},
-        }
-        self.query_payload = {"queries": [{"name": "capacity", "query": "CapacityHourly | take 1"}]}
-        self.encoded_query = base64.b64encode(json.dumps(self.query_payload).encode("utf-8")).decode("ascii")
-        self.results = {
-            "results": [
-                {
-                    "columns": [{"name": "account", "type": "string"}],
-                    "rows": [["accountone"]],
-                },
-                {"errorCode": "Failed: Bad Query"},
-            ],
-        }
 
     def command(self, command_type, **arguments):
         with patch("azure.cli.core.aaz._command_ctx.Profile"):
@@ -78,7 +50,6 @@ class StorageDiscoveryFeaturesTest(unittest.TestCase):
                 cli_ctx=Mock(),
                 schema=command_type.get_arguments_schema(),
                 command_args={"subscription": self.subscription, **arguments},
-                no_wait_arg="no_wait" if command_type.AZ_SUPPORT_NO_WAIT else None,
             )
         ctx.format_args()
         ctx.get_http_client = Mock(return_value=self.client)
@@ -160,114 +131,3 @@ class StorageDiscoveryFeaturesTest(unittest.TestCase):
                 )
                 values, _ = command._output()
                 self.assertEqual(values[0]["properties"]["capabilities"], self.capabilities)
-
-    def test_report_list_routes_both_scopes_and_exposes_next_link(self):
-        for resource_group in (None, "testrg"):
-            with self.subTest(resource_group=resource_group):
-                arguments = {"resource_group": resource_group} if resource_group else {}
-                command = self.command(
-                    ReportList, storage_discovery_workspace_name="testworkspace", **arguments,
-                )
-                next_link = f"https://management.azure.com{self.workspace_path}/reports?skiptoken=next"
-                self.client.send_request.return_value = self.session({
-                    "value": [self.report], "nextLink": next_link,
-                })
-                command._execute_operations()
-                scope = f"/resourceGroups/{resource_group}" if resource_group else ""
-                self.assert_request(
-                    "GET",
-                    f"/subscriptions/{self.subscription}{scope}/providers/"
-                    "Microsoft.StorageDiscovery/storageDiscoveryWorkspaces/testworkspace/reports",
-                )
-                values, actual_next_link = command._output()
-                self.assertEqual(values, [self.report])
-                self.assertEqual(actual_next_link, next_link)
-
-                command.ctx.next_link = next_link
-                self.client.send_request.return_value = self.session({"value": []})
-                command._execute_operations()
-                arguments = self.client._request.call_args.args
-                self.assertEqual(arguments[0], "GET")
-                self.assertEqual(arguments[1], next_link.split("?")[0])
-                self.assertEqual(arguments[2], {"skiptoken": ["next"]})
-                self.assertEqual(command._output()[0], [])
-
-    def test_report_show_returns_named_report(self):
-        command = self.command(
-            ReportShow, resource_group="testrg",
-            storage_discovery_workspace_name="testworkspace", discovery_resource_name="testreport",
-        )
-        self.client.send_request.return_value = self.session(self.report)
-        command._execute_operations()
-        self.assert_request("GET", self.workspace_path + "/reports/testreport")
-        self.assertEqual(command._output(), self.report)
-
-    def test_query_actions_send_encoded_queries_and_return_results(self):
-        for command_type, suffix in (
-            (Query, "/report"),
-            (GenerateReport, "/reports/testreport/generateReport"),
-        ):
-            for status in (200, 202):
-                with self.subTest(command=command_type.__name__, status=status):
-                    arguments = {"discovery_resource_name": "testreport"} if command_type is GenerateReport else {}
-                    command = self.command(
-                        command_type, resource_group="testrg",
-                        storage_discovery_workspace_name="testworkspace",
-                        queries=[self.encoded_query], **arguments,
-                    )
-                    self.client.send_request.return_value = self.session({}, status=status)
-                    polling = Mock()
-
-                    def build_polling(no_wait, initial_session, on_success, on_error, **kwargs):
-                        self.assertFalse(no_wait)
-                        self.assertEqual(initial_session.http_response.status_code, status)
-                        self.assertEqual(kwargs["lro_options"], {"final-state-via": "location"})
-                        polling.run.side_effect = lambda: on_success(self.session(self.results))
-                        return polling
-
-                    self.client.build_lro_polling.side_effect = build_polling
-                    poller = command.build_lro_poller(command._execute_operations, command._output)
-                    self.assertEqual(poller.result(timeout=5), self.results)
-                    polling.run.assert_called_once()
-                    self.assert_request("POST", self.workspace_path + suffix, {"queries": [self.encoded_query]})
-                    sent_query = self.client._request.call_args.args[4]["queries"][0]
-                    self.assertEqual(json.loads(base64.b64decode(sent_query)), self.query_payload)
-
-    def test_query_actions_do_not_expose_no_wait(self):
-        loader = StorageDiscoveryCommandsLoader(cli_ctx=get_default_cli())
-        loader.load_command_table([])
-        for command_name, command_type in (
-            ("storage-discovery workspace query", Query),
-            ("storage-discovery workspace report generate-report", GenerateReport),
-        ):
-            with self.subTest(command=command_type.__name__):
-                command = loader.command_table[command_name]
-                self.assertIsInstance(command, command_type)
-                self.assertFalse(command.supports_no_wait)
-                arguments = dict(command._cli_arguments_loader())
-                self.assertNotIn("no_wait", arguments)
-
-    def test_query_actions_propagate_http_errors(self):
-        for command_type, operation_type in (
-            (Query, Query.StorageDiscoveryWorkspacesReport),
-            (GenerateReport, GenerateReport.ReportGenerateReport),
-        ):
-            with self.subTest(command=command_type.__name__):
-                arguments = {"discovery_resource_name": "testreport"} if command_type is GenerateReport else {}
-                command = self.command(
-                    command_type, resource_group="testrg", storage_discovery_workspace_name="testworkspace",
-                    queries=[self.encoded_query], **arguments,
-                )
-                operation = operation_type(command.ctx)
-                response = Response()
-                response.status_code = 400
-                response.reason = "Bad Request"
-                response.headers["Content-Type"] = "application/json"
-                response._content = json.dumps({
-                    "error": {"code": "InvalidQuery", "message": "Invalid query"},
-                }).encode("utf-8")
-                session = self.session({}, status=400)
-                session.http_response = RequestsTransportResponse(None, response)
-                self.client.send_request.return_value = session
-                with self.assertRaisesRegex(HttpResponseError, "Invalid query"):
-                    operation()

@@ -12,11 +12,7 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    from .custom import ReportGenerateReport, WorkspaceQuery, WorkspaceUpdate
+    from .custom import WorkspaceUpdate
 
     with self.command_group('storage-discovery workspace'):
-        self.command_table['storage-discovery workspace query'] = WorkspaceQuery(loader=self)
         self.command_table['storage-discovery workspace update'] = WorkspaceUpdate(loader=self)
-
-    with self.command_group('storage-discovery workspace report'):
-        self.command_table['storage-discovery workspace report generate-report'] = ReportGenerateReport(loader=self)
