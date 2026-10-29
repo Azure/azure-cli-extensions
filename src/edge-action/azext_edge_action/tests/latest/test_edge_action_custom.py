@@ -264,12 +264,25 @@ class EdgeActionCustomTests(unittest.TestCase):
             "properties": {"provisioningState": "Succeeded", "deploymentType": "file",
                            "isDefaultVersion": "False", "validationStatus": "Succeeded"},
         }
-        for group, first in (("", root), ("version", version), ("execution-filter", self.filter_resource())):
-            with self.subTest(group=group):
+        cases = (
+            ("", root, None),
+            ("", root, "rg"),
+            ("version", version, "rg"),
+            ("execution-filter", self.filter_resource(), "rg"),
+        )
+        for group, first, resource_group in cases:
+            with self.subTest(group=group, resource_group=resource_group):
                 name = " ".join(part for part in ("edge-action", group, "list") if part)
-                args = ["-g", "rg"]
+                args = ["-g", resource_group] if resource_group else []
                 if group:
                     args.extend(["--edge-action-name", "action"])
+                path = f"/subscriptions/{SUBSCRIPTION}"
+                if resource_group:
+                    path += f"/resourceGroups/{resource_group}"
+                path += "/providers/Microsoft.Cdn/edgeActions"
+                if group:
+                    path += "/action/" + {"version": "versions", "execution-filter": "executionFilters"}[group]
+                url = "https://management.azure.com" + path + "?api-version=2026-10-01"
                 second = deepcopy(first)
                 second.update(id=first["id"] + "2", name=first["name"] + "2")
 
@@ -287,7 +300,14 @@ class EdgeActionCustomTests(unittest.TestCase):
                 ]
                 with self.http_responses(responses) as requests:
                     self.assertEqual([item["name"] for item in items()], [first["name"], second["name"]])
+                    self.assertEqual(requests[0].method, "GET")
+                    self.assertEqual(requests[0].url, url)
+                    self.assertEqual(len(requests), 2)
                     self.assertEqual(requests[-1].url, RESULT_URL)
+                with self.http_responses([(200, {"value": []}, {})]) as requests:
+                    self.assertEqual(items(), [])
+                    self.assertEqual(len(requests), 1)
+                    self.assertEqual(requests[0].url, url)
                 with self.http_responses([]), self.assertRaises(InvalidArgumentValueError):
                     items("--max-items", "0")
                 for limit in (1, 2):

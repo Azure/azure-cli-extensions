@@ -42,8 +42,12 @@ class EdgeActionScenarioTest(ScenarioTest):
             JMESPathCheck('sku.name', 'Standard'),
             JMESPathCheck('sku.tier', 'Standard'),
         ]
-        self.cmd('edge-action create -g {} -n {} --sku name=Standard tier=Standard --location global'.format(
-            resource_group, edge_action_name), checks=create_checks)
+        created = self.cmd('edge-action create -g {} -n {} --sku name=Standard tier=Standard --location global'.format(
+            resource_group, edge_action_name), checks=create_checks).get_output_in_json()
+
+        self.cmd('edge-action list', checks=[
+            JMESPathCheck("contains([].id, '{}')".format(created['id']), True),
+        ])
 
         # Test show edge action
         self.cmd('edge-action show -g {} -n {}'.format(resource_group, edge_action_name), checks=create_checks)
