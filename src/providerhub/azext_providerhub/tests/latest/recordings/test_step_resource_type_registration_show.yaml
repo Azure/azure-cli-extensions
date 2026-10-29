@@ -5,7 +5,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - providerhub resource-type-registration show
       Connection:
@@ -13,21 +13,22 @@ interactions:
       ParameterSetName:
       - --provider-namespace --resource-type
       User-Agent:
-      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourcetypeRegistrations/extensionresourcetype?api-version=2024-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourcetypeRegistrations/extensionresourcetype?api-version=2026-02-01-preview
   response:
     body:
-      string: '{"properties":{"name":"extensionresourcetype","routingType":"Default","regionality":"Regional","endpoints":[{"kind":"Managed","apiVersions":["2019-01-01"],"locations":["WestUS"]}],"defaultApiVersion":"2019-01-01","enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/extensionresourcetype","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"extensionresourcetype","kind":"Managed","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-05-31T03:23:33.5645757Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T23:30:16.4751488Z"}}'
+      string: '{"properties":{"name":"extensionresourcetype","routingType":"ProxyOnly,
+        Extension","regionality":"Regional","endpoints":[{"kind":"Managed","apiVersions":["2019-01-01"],"locations":["WestUS"]}],"defaultApiVersion":"2019-01-01","throttlingRules":[{"action":"Private.VPTest/extensionresourcetype/write","metrics":[{"type":"NumberOfRequests","bucketSize":"XSmall"}]},{"action":"Private.VPTest/extensionresourcetype/read","metrics":[{"type":"NumberOfRequests","bucketSize":"XSmall"}]},{"action":"Private.VPTest/extensionresourcetype/delete","metrics":[{"type":"NumberOfRequests","bucketSize":"XSmall"}]}],"enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]},"superScaleEnabled":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/extensionresourcetype","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"extensionresourcetype","kind":"Managed","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-09-16T22:08:06.6941914Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-16T22:09:32.9259116Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '949'
+      - '1343'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jun 2024 23:33:07 GMT
+      - Wed, 16 Sep 2026 22:13:12 GMT
       expires:
       - '-1'
       pragma:
@@ -39,9 +40,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/4245872d-dcbb-44a8-8465-33d276a4bf3f
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a8b084de-bd0c-4bcd-a642-71b9016ddd0a/southcentralus/0383b542-3a88-4a48-a8f1-6e8ecf44ad64
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: 75F23A1BC40B4DF2A82EC9A82A12C190 Ref B: DM2AA1091214045 Ref C: 2024-06-04T23:33:07Z'
+      - 'Ref A: D6A56229A6174E63B16E0BC566BEC3B8 Ref B: SN4AA2022301035 Ref C: 2026-09-16T22:13:13Z'
     status:
       code: 200
       message: OK

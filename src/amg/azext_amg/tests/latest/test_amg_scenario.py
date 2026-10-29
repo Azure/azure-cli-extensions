@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import copy
 import os
 import tempfile
 import time
@@ -23,6 +24,12 @@ class AmgScenarioTest(ScenarioTest):
         super().__init__(method_name, recording_processors=[
             ApiKeyServiceAccountTokenReplacer()
         ])
+
+    def setUp(self):
+        super().setUp()
+        endpoint_cache = unittest.mock.patch.dict('azext_amg.custom.grafana_endpoints', {}, clear=True)
+        endpoint_cache.start()
+        self.addCleanup(endpoint_cache.stop)
 
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
@@ -179,7 +186,7 @@ class AmgScenarioTest(ScenarioTest):
 
             # Test Data Source
             self.kwargs.update({
-                'definition': test_data_source,
+                'definition': copy.deepcopy(test_data_source),
                 'definition_name': test_data_source["name"]
             })
 
@@ -204,7 +211,7 @@ class AmgScenarioTest(ScenarioTest):
             slug = definition_name.lower().replace(' ', '-')
 
             self.kwargs.update({
-                'definition': test_dashboard,
+                'definition': copy.deepcopy(test_dashboard),
                 'definition_name': definition_name,
                 'definition_slug': slug,
             })
@@ -212,7 +219,7 @@ class AmgScenarioTest(ScenarioTest):
             response_create = self.cmd('grafana dashboard create -g {rg} -n {name} --definition "{definition}" --title "{definition_name}"', checks=[
                 self.check("[slug]", "['{definition_slug}']")]).get_output_in_json()
 
-            test_definition_update = test_dashboard
+            test_definition_update = copy.deepcopy(test_dashboard)
             test_definition_update["dashboard"]["uid"] = response_create["uid"]
             test_definition_update["dashboard"]["id"] = response_create["id"]
             test_definition_update["dashboard"]["version"] = response_create["version"]
@@ -264,7 +271,7 @@ class AmgScenarioTest(ScenarioTest):
 
             definition_name = test_dashboard_v2["spec"]["title"]
             self.kwargs.update({
-                'definition': test_dashboard_v2,
+                'definition': copy.deepcopy(test_dashboard_v2),
                 'definition_name': definition_name,
             })
 
@@ -322,7 +329,8 @@ class AmgScenarioTest(ScenarioTest):
             amg1 = self.cmd('grafana create -g {rg} -n {name} -l {location}').get_output_in_json()
             amg2 = self.cmd('grafana create -g {rg} -n {name2} -l {location}').get_output_in_json()
             # Ensure RBAC changes are propagated
-            time.sleep(120)
+            if self.in_recording:
+                time.sleep(120)
 
             # set up folder
             self.kwargs.update({
@@ -334,7 +342,7 @@ class AmgScenarioTest(ScenarioTest):
 
             # set up data source
             self.kwargs.update({
-                'dataSourceDefinition': test_data_source,
+                'dataSourceDefinition': copy.deepcopy(test_data_source),
                 'dataSourceName': test_data_source["name"]
             })
             self.cmd('grafana data-source create -g {rg} -n {name} --definition "{dataSourceDefinition}"')
@@ -344,7 +352,7 @@ class AmgScenarioTest(ScenarioTest):
             slug = dashboard_title.lower().replace(' ', '-')
 
             self.kwargs.update({
-                'dashboardDefinition': test_dashboard,
+                'dashboardDefinition': copy.deepcopy(test_dashboard),
                 'dashboardTitle': dashboard_title,
                 'dashboardTitle2': dashboard_title + '2',
                 'dashboardSlug': slug,

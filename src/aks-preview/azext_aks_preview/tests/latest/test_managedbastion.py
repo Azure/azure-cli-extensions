@@ -10,15 +10,14 @@ from unittest.mock import MagicMock, patch
 from knack.util import CLIError
 
 from azext_aks_preview.managedbastion import update_managed_bastion_profile
+from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks import models
 
 
 class TestUpdateManagedBastionProfile(unittest.TestCase):
     def setUp(self):
         self.cmd = MagicMock()
         def get_model(model_name, **_):
-            if model_name == "NetworkProfile":
-                return lambda: SimpleNamespace(bastion_profile=None)
-            return lambda: SimpleNamespace(enabled=None)
+            return getattr(models, model_name)
 
         self.cmd.get_models.side_effect = get_model
         self.client = MagicMock()
@@ -47,7 +46,7 @@ class TestUpdateManagedBastionProfile(unittest.TestCase):
             )
 
         self.assertEqual(result, "result")
-        profile = instance.network_profile.bastion_profile
+        profile = instance.network_profile.cluster_api_connectivity_profile.bastion
         self.assertTrue(profile.enabled)
         self.assertEqual(profile.sku, "Standard")
         self.assertEqual(
@@ -55,6 +54,19 @@ class TestUpdateManagedBastionProfile(unittest.TestCase):
             "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Network/publicIPAddresses/ip",
         )
         self.assertEqual(profile.scale_units, 2)
+        self.assertEqual(
+            instance.network_profile.as_dict(),
+            {
+                "clusterAPIConnectivityProfile": {
+                    "bastion": {
+                        "enabled": True,
+                        "sku": "Standard",
+                        "publicIpAddressId": "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Network/publicIPAddresses/ip",
+                        "scaleUnits": 2,
+                    }
+                }
+            },
+        )
         self.client.get.assert_called_once_with("rg", "cluster", headers=self.headers)
         mock_sdk_no_wait.assert_called_once_with(
             True,
@@ -67,8 +79,10 @@ class TestUpdateManagedBastionProfile(unittest.TestCase):
 
     def test_enable_rejects_already_enabled_profile(self):
         self.client.get.return_value = SimpleNamespace(
-            network_profile=SimpleNamespace(
-                bastion_profile=SimpleNamespace(enabled=True)
+            network_profile=models.ContainerServiceNetworkProfile(
+                cluster_api_connectivity_profile=models.ClusterAPIConnectivityProfile(
+                    bastion=models.BastionProfile(enabled=True)
+                )
             )
         )
 
@@ -86,8 +100,10 @@ class TestUpdateManagedBastionProfile(unittest.TestCase):
 
     def test_update_requires_enabled_profile(self):
         self.client.get.return_value = SimpleNamespace(
-            network_profile=SimpleNamespace(
-                bastion_profile=SimpleNamespace(enabled=False)
+            network_profile=models.ContainerServiceNetworkProfile(
+                cluster_api_connectivity_profile=models.ClusterAPIConnectivityProfile(
+                    bastion=models.BastionProfile(enabled=False)
+                )
             )
         )
 
@@ -104,14 +120,20 @@ class TestUpdateManagedBastionProfile(unittest.TestCase):
         self.client.begin_create_or_update.assert_not_called()
 
     def test_update_preserves_unspecified_fields(self):
-        profile = SimpleNamespace(
+        profile = models.BastionProfile(
             enabled=True,
             sku="standard",
             public_ip_address_id="public-ip-id",
             scale_units=2,
         )
         instance = SimpleNamespace(
-            network_profile=SimpleNamespace(bastion_profile=profile)
+            network_profile=models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                cluster_api_connectivity_profile=models.ClusterAPIConnectivityProfile(
+                    bastion=profile,
+                    cloud_shell=models.CloudShellProfile(mode="Managed"),
+                ),
+            )
         )
         self.client.get.return_value = instance
 
@@ -130,16 +152,20 @@ class TestUpdateManagedBastionProfile(unittest.TestCase):
         self.assertEqual(profile.sku, "standard")
         self.assertEqual(profile.public_ip_address_id, "public-ip-id")
         self.assertEqual(profile.scale_units, 4)
+        self.assertEqual(instance.network_profile.network_plugin, "azure")
+        self.assertEqual(instance.network_profile.cluster_api_connectivity_profile.cloud_shell.mode, "Managed")
 
     def test_disable_preserves_profile_configuration(self):
-        profile = SimpleNamespace(
+        profile = models.BastionProfile(
             enabled=True,
             sku="premium",
             public_ip_address_id="public-ip-id",
             scale_units=4,
         )
         self.client.get.return_value = SimpleNamespace(
-            network_profile=SimpleNamespace(bastion_profile=profile)
+            network_profile=models.ContainerServiceNetworkProfile(
+                cluster_api_connectivity_profile=models.ClusterAPIConnectivityProfile(bastion=profile)
+            )
         )
 
         with patch("azext_aks_preview.managedbastion.sdk_no_wait"):
@@ -155,6 +181,18 @@ class TestUpdateManagedBastionProfile(unittest.TestCase):
         self.assertEqual(profile.sku, "premium")
         self.assertEqual(profile.public_ip_address_id, "public-ip-id")
         self.assertEqual(profile.scale_units, 4)
+
+    def test_enable_creates_missing_connectivity_profile(self):
+        instance = SimpleNamespace(network_profile=models.ContainerServiceNetworkProfile(network_plugin="azure"))
+        self.client.get.return_value = instance
+
+        with patch("azext_aks_preview.managedbastion.sdk_no_wait"):
+            update_managed_bastion_profile(
+                self.cmd, self.client, "rg", "cluster", enabled=True, enabling=True
+            )
+
+        self.assertTrue(instance.network_profile.cluster_api_connectivity_profile.bastion.enabled)
+        self.assertEqual(instance.network_profile.network_plugin, "azure")
 
 
 if __name__ == "__main__":

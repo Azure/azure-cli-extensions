@@ -33,6 +33,11 @@ The output includes secrets that you must protect. Be sure that you do not inclu
 --cluster-name mycluster --cluster-type managedClusters --name myextension \
 --extension-type Contoso.AzureVoteKubernetesAppTest --scope cluster --release-train stable \
 --plan-name testplan --plan-product kubernetest_apps_demo_offer --plan-publisher test_test_mix3pptest0011614206850774
+      - name: Create a Flux extension on a Fleet
+        text: |-
+          az {consts.EXTENSION_NAME} create --resource-group my-resource-group \
+--cluster-name fleet-1 --cluster-type fleets --name flux \
+--extension-type microsoft.flux --scope cluster
 """
 
 helps[f'{consts.EXTENSION_NAME} list'] = f"""

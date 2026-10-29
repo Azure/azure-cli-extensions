@@ -1,3 +1,16 @@
+## 2026-11-14
+
+### Azure Machine Learning CLI (v2) v 2.45.2
+
+- Update the Azure Machine Learning SDK dependency version for alignment.
+ 
+## 2026-11-01
+
+### Azure Machine Learning CLI (v2) v 2.45.1
+
+- Improve SSH connection argument handling and endpoint validation for jobs and compute instances.
+- Honor repeatable `az ml job connect-ssh --ssh-args` options.
+
 ## 2026-09-10
 
 ### Azure Machine Learning CLI (v2) v 2.45.0

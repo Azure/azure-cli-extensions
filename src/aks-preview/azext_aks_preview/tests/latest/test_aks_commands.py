@@ -32,7 +32,12 @@ from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.core.exceptions import HttpResponseError
 from knack.util import CLIError
-from azext_aks_preview.azurecontainerstorage._consts import (CONST_ACSTOR_EXT_INSTALLATION_NAME, CONST_ACSTOR_K8S_EXTENSION_NAME)
+from azext_aks_preview.azurecontainerstorage._consts import (
+    CONST_ACSTOR_EXT_INSTALLATION_NAME,
+    CONST_ACSTOR_K8S_EXTENSION_NAME,
+    CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAME,
+    CONST_DISTRIBUTED_ACCELERATOR_K8S_EXTENSION_NAME,
+)
 
 from .test_localdns_profile import assert_dns_overrides_equal, vnetDnsOverridesExpected, kubeDnsOverridesExpected, vnetDnsOverridesExpectedDefault, kubeDnsOverridesExpectedDefault
 
@@ -3714,6 +3719,47 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert operation_show["status"] == "Succeeded"
         assert operation_show["error"] is None
         assert operation_show["name"] == operation_id
+
+        # list historical operations on the cluster
+        list_cmd = (
+            "aks operation list "
+            "--resource-group={resource_group} --name={name} "
+            "-o json"
+        )
+        cluster_operations = self.cmd(list_cmd).get_output_in_json()
+        assert isinstance(cluster_operations, list)
+        assert any(op["name"] == operation_id for op in cluster_operations)
+
+        # list active operations on the cluster (filtered client-side)
+        list_cluster_active_cmd = (
+            "aks operation list "
+            "--resource-group={resource_group} --name={name} "
+            "--active-only -o json"
+        )
+        cluster_active_operations = self.cmd(list_cluster_active_cmd).get_output_in_json()
+        assert isinstance(cluster_active_operations, list)
+        assert all(
+            op["status"] not in ["Succeeded", "Failed", "Canceled"]
+            for op in cluster_active_operations
+        )
+
+        # list historical operations on the node pool
+        list_by_nodepool_cmd = (
+            "aks operation list "
+            "--resource-group={resource_group} --name={name} "
+            "--nodepool-name=nodepool1 -o json"
+        )
+        nodepool_operations = self.cmd(list_by_nodepool_cmd).get_output_in_json()
+        assert isinstance(nodepool_operations, list)
+
+        # list active operations on the node pool
+        list_active_cmd = (
+            "aks operation list "
+            "--resource-group={resource_group} --name={name} "
+            "--nodepool-name=nodepool1 --active-only -o json"
+        )
+        active_operations = self.cmd(list_active_cmd).get_output_in_json()
+        assert isinstance(active_operations, list)
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -8115,7 +8161,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
-    # FIPS mode at the cluster level is gated by EnableFIPSPreview AFEC and requires K8s 1.34+,
+    # FIPS mode at the cluster level is gated by EnableFIPSPreview AFEC and requires K8s 1.35+,
     # so this scenario is live-only until the preview is broadly available.
     @live_only()
     @AllowLargeResponse()
@@ -8128,7 +8174,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
         k8s_version = self._get_version_at_least(
-            location=resource_group_location, min_version="1.34.0"
+            location=resource_group_location, min_version="1.35.0"
         )
         self.kwargs.update(
             {
@@ -8168,7 +8214,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
         k8s_version = self._get_version_at_least(
-            location=resource_group_location, min_version="1.34.0"
+            location=resource_group_location, min_version="1.35.0"
         )
         self.kwargs.update(
             {
@@ -16999,6 +17045,153 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @live_only()
     @AllowLargeResponse(99999)
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="uksouth"
+    )
+    def test_aks_create_with_azurecontainerstorage_distributedaccelerator(self, resource_group, resource_group_location):
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name("cliakstest", 16)
+
+        node_vm_size = "Standard_D4s_v4"
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "ssh_key_value": self.generate_ssh_keys(),
+                "node_vm_size": node_vm_size,
+            }
+        )
+
+        # add k8s-extension extension for azurecontainerstorage operations.
+        self.cmd("extension add --name k8s-extension")
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} "
+            "--node-count 3 --enable-managed-identity "
+            "--enable-azure-container-storage distributedAccelerator --output=json"
+        )
+
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # Verify that the distributed accelerator extension is installed
+        extension_list_cmd = "k8s-extension list --resource-group={resource_group} --cluster-name={name} --cluster-type managedClusters"
+        extensions = self.cmd(extension_list_cmd).get_output_in_json()
+
+        # Check if distributed accelerator extension exists
+        dacs_extension_found = False
+        for extension in extensions:
+            if extension.get("name") == CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAME:
+                dacs_extension_found = True
+                # Additional checks on the extension properties
+                assert extension.get("provisioningState") == "Succeeded", "Extension provisioning failed"
+                assert extension.get("extensionType") == CONST_DISTRIBUTED_ACCELERATOR_K8S_EXTENSION_NAME, "Wrong extension type"
+                break
+
+        assert dacs_extension_found, "Distributed accelerator extension not found"
+
+        # delete
+        cmd = (
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
+        )
+        self.cmd(
+            cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
+    @live_only()
+    @AllowLargeResponse(99999)
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='ukwest')
+    def test_aks_update_with_azurecontainerstorage_distributedaccelerator(self, resource_group, resource_group_location):
+
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_vm_size = 'Standard_D4s_v4'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+        })
+
+        # add k8s-extension extension for azurecontainerstorage operations.
+        self.cmd('extension add --name k8s-extension')
+
+        # create: without enable-azure-container-storage
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --node-count 3 --enable-managed-identity --output=json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # update: enable distributed accelerator
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
+                     '--enable-azure-container-storage distributedAccelerator'
+
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # Verify that the distributed accelerator extension is installed
+        extension_list_cmd = "k8s-extension list --resource-group={resource_group} --cluster-name={name} --cluster-type managedClusters"
+        extensions = self.cmd(extension_list_cmd).get_output_in_json()
+
+        # Check if distributed accelerator extension exists
+        dacs_extension_found = False
+        for extension in extensions:
+            if extension.get("name") == CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAME:
+                dacs_extension_found = True
+                # Additional checks on the extension properties
+                assert extension.get("provisioningState") == "Succeeded", "Extension provisioning failed"
+                assert extension.get("extensionType") == CONST_DISTRIBUTED_ACCELERATOR_K8S_EXTENSION_NAME, "Wrong extension type"
+                break
+
+        assert dacs_extension_found, "Distributed accelerator extension not found"
+
+        # Sleep for 5 mins before next operation,
+        # since update operations take
+        # some time to finish.
+        time.sleep(10 * 60)
+
+        # update: disable distributed accelerator
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
+                     '--disable-azure-container-storage distributedAccelerator'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # Verify that the distributed accelerator extension doesn't exist anymore
+        extension_list_cmd = "k8s-extension list --resource-group={resource_group} --cluster-name={name} --cluster-type managedClusters"
+        extensions = self.cmd(extension_list_cmd).get_output_in_json()
+
+        # Check if distributed accelerator extension still exists
+        dacs_extension_found = False
+        for extension in extensions:
+            if extension.get("name") == CONST_DISTRIBUTED_ACCELERATOR_EXT_INSTALLATION_NAME:
+                dacs_extension_found = True
+                break
+
+        assert not dacs_extension_found, "Distributed accelerator extension still exists after disable operation"
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @live_only()
+    @AllowLargeResponse(99999)
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='uksouth')
     def test_aks_update_with_azurecontainerstorage_with_ephemeral_disk(self, resource_group, resource_group_location):
 
@@ -22573,7 +22766,7 @@ spec:
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
-    def test_aks_nodepool_scale_with_patch_api(
+    def test_aks_nodepool_scale_vmss_with_patch_api(
         self, resource_group, resource_group_location
     ):
         """Scale a VMSS node pool using the preview PATCH agent pool API (--use-patch-api)."""
@@ -22619,6 +22812,135 @@ spec:
                 self.check("count", 1),
             ],
         )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_nodepool_scale_vms_with_patch_api(
+        self, resource_group, resource_group_location
+    ):
+        """Scale a VirtualMachines node pool using the preview PATCH agent pool API (--use-patch-api)."""
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create a VirtualMachines node pool cluster with two nodes
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--vm-set-type=VirtualMachines --vm-sizes=Standard_D2s_v5 --node-count=2 "
+            "--ssh-key-value={ssh_key_value} "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].type", "VirtualMachines"),
+                self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].count", "2"),
+            ],
+        )
+
+        # scale the VirtualMachines pool up via the PATCH agent pool API
+        self.cmd(
+            "aks nodepool scale --resource-group={resource_group} --cluster-name={name} "
+            "--name=nodepool1 -c 3 --use-patch-api",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("virtualMachinesProfile.scale.manual[0].count", "3"),
+            ],
+        )
+
+        # scale the VirtualMachines pool back down via the PATCH agent pool API
+        self.cmd(
+            "aks nodepool scale --resource-group={resource_group} --cluster-name={name} "
+            "--name=nodepool1 -c 2 --use-patch-api",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("virtualMachinesProfile.scale.manual[0].count", "2"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_nodepool_manual_scale_update_with_patch_api(
+        self, resource_group, resource_group_location
+    ):
+        """Add, update, and delete VirtualMachines node pool manual scale profiles via the preview PATCH agent pool API (--use-patch-api)."""
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create a VirtualMachines node pool cluster with two nodes
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--vm-set-type=VirtualMachines --vm-sizes=Standard_D2s_v5 --node-count=2 "
+            "--ssh-key-value={ssh_key_value} "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].type", "VirtualMachines"),
+                self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].count", "2"),
+            ],
+        )
+
+        # add a second manual scale profile via the PATCH agent pool API
+        self.cmd(
+            "aks nodepool manual-scale add --resource-group={resource_group} --cluster-name={name} "
+            "--name=nodepool1 --vm-sizes=Standard_D4s_v5 --node-count=2 --use-patch-api",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("virtualMachinesProfile.scale.manual[1].size", "Standard_D4s_v5"),
+                self.check("virtualMachinesProfile.scale.manual[1].count", "2"),
+            ],
+        )
+
+        # update the second manual scale profile via the PATCH agent pool API
+        self.cmd(
+            "aks nodepool manual-scale update --resource-group={resource_group} --cluster-name={name} "
+            "--name=nodepool1 --current-vm-sizes=Standard_D4s_v5 --vm-sizes=Standard_D8s_v5 --node-count=5 --use-patch-api",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("virtualMachinesProfile.scale.manual[1].size", "Standard_D8s_v5"),
+                self.check("virtualMachinesProfile.scale.manual[1].count", "5"),
+            ],
+        )
+
+        # delete the second manual scale profile via the PATCH agent pool API
+        np = self.cmd(
+            "aks nodepool manual-scale delete --resource-group={resource_group} --cluster-name={name} "
+            "--name=nodepool1 --current-vm-sizes=Standard_D8s_v5 --use-patch-api",
+        ).get_output_in_json()
+        assert len(np["virtualMachinesProfile"]["scale"]["manual"]) == 1
 
         # delete
         self.cmd(
@@ -25062,9 +25384,9 @@ spec:
             "ManagedBastion",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.bastionProfile.enabled", True),
-                self.check("networkProfile.bastionProfile.sku", "Standard"),
-                self.check("networkProfile.bastionProfile.scaleUnits", 2),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.enabled", True),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.sku", "Standard"),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.scaleUnits", 2),
             ],
         )
 
@@ -25078,9 +25400,9 @@ spec:
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.bastionProfile.enabled", True),
-                self.check("networkProfile.bastionProfile.sku", "Premium"),
-                self.check("networkProfile.bastionProfile.scaleUnits", 4),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.enabled", True),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.sku", "Premium"),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.scaleUnits", 4),
             ],
         )
 
@@ -25093,7 +25415,7 @@ spec:
             disable_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.bastionProfile.enabled", False),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.enabled", False),
             ],
         )
 
@@ -25156,10 +25478,10 @@ spec:
             "ManagedBastion",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.bastionProfile.enabled", True),
-                self.check("networkProfile.bastionProfile.sku", "Standard"),
-                self.check("networkProfile.bastionProfile.scaleUnits", 2),
-                self.check("networkProfile.bastionProfile.publicIpAddressId", pip_id)
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.enabled", True),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.sku", "Standard"),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.scaleUnits", 2),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.publicIpAddressId", pip_id)
             ],
         )
 
@@ -25172,7 +25494,7 @@ spec:
             disable_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.bastionProfile.enabled", False),
+                self.check("networkProfile.clusterApiConnectivityProfile.bastion.enabled", False),
             ],
         )
 

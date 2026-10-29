@@ -30,13 +30,14 @@ must have a system-assigned identity or exactly one user-assigned identity.
 The extension platform owns the subscriber identity and federation; the CLI
 never creates, modifies or deletes them.
 
-The partner targets the ``dev`` train, chart candidate ``0.1.6``, namespace
-``chaos-infrastructure``, with automatic upgrades disabled. This source requires
-the coordinated chart's ``subscriber.enabled`` switch and platform Workload
-Identity support. Publication and extension-type registration of that chart
-remain release dependencies; a version number alone doesn't establish support.
-The CLI checks cluster/train registration before workspace or extension writes.
-Older charts aren't supported by this staged flow. ``chaos-workspace-id`` is required.
+The partner installs into namespace ``chaos-infrastructure`` with automatic
+upgrades disabled, and leaves the release train to the extension service default
+(``stable``) unless ``--release-train`` is passed. ``--version`` is passed through
+to the extension service; when it's omitted on create, the CLI asks the service
+for the latest version registered for the cluster and release train. The CLI checks cluster/train registration
+before workspace or extension writes, and update keeps the installed version
+unless ``--version`` is passed. The chart must support the ``subscriber.enabled``
+switch and platform Workload Identity. ``chaos-workspace-id`` is required.
 
 One create command installs with the subscriber stopped, waits for completion,
 reads ``aksAssignedIdentity.principalId`` and ``tenantId``, and reconciles the workspace
@@ -76,8 +77,6 @@ configuration, replacing resource placeholders with your own values:
         --extension-type Microsoft.ChaosStudio \
         --scope cluster \
         --release-namespace chaos-infrastructure \
-        --release-train dev \
-        --version 0.1.6 \
         --configuration-settings \
             "chaos-workspace-id=/subscriptions/<subscription-id>/resourceGroups/<workspace-group>/providers/Microsoft.Chaos/workspaces/<workspace-name>" \
             "experiments.stressToolsImage=PLACEHOLDER.invalid/never-pulled:0"

@@ -7,7 +7,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "3.0.0b5"
+VERSION = "3.0.0b6"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -40,5 +40,6 @@ setup(
     package_data={'azext_migrate': [
         'azext_metadata.json',
         'runbook/visualize/templates/*.tmpl',
+        'runbook/configure/templates/*.tmpl',
     ]}
 )

@@ -120,7 +120,7 @@ def _get_ml_client(
     registry_name=None,
     debug=False,
     cli_ctx=None,
-    **kwargs,
+    **kwargs,  # pylint: disable=unused-argument
 ) -> MLClient:
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
 

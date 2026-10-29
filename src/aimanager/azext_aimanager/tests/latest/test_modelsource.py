@@ -12,7 +12,7 @@ from azure.core.exceptions import ResourceNotFoundError
 
 from azext_aimanager import custom
 from azext_aimanager._validators import validate_model_source_name
-from azext_aimanager.vendored_sdks.v2026_05_02_preview import models
+from azext_aimanager.vendored_sdks.v2026_09_02_preview import models
 
 
 class MockCmd:
@@ -37,13 +37,6 @@ class TestModelSource(unittest.TestCase):
         source = custom._construct_modelsource(self.cmd, "HuggingFace", None, "hf_token")
 
         self.assertEqual(source.properties.credential.inline.value, "hf_token")
-
-    def test_add_rejects_existing_source(self):
-        self.client.get.return_value = object()
-
-        with self.assertRaises(ClientRequestError):
-            custom.add_modelsource(
-                self.cmd, self.client, "rg", "manager", "source", "HuggingFace")
 
     def test_update_rejects_missing_source(self):
         self.client.get.side_effect = ResourceNotFoundError()

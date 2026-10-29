@@ -1,0 +1,811 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --compute-count --cpu-auto-scaling
+        --data-storage-size-in-tbs --store-auto-scaling --tags
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914?api-version=2026-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914","name":"testRegression0914","type":"oracle.database/autonomousdatabases","location":"eastus","tags":{"reproduction":"adg-disabled"},"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2026-09-14T14:48:24.8731533Z","lastModifiedBy":"857ad006-4380-4712-ba4c-22f7c64d84e7","lastModifiedByType":"Application","lastModifiedAt":"2026-09-22T03:45:08.5907204Z"},"properties":{"dataBaseType":"Regular","actualUsedDataStorageSizeInTbs":0.007810771465301514,"allocatedStorageSizeInTbs":0.0087890625,"whitelistedIps":null,"apexDetails":null,"autonomousDatabaseId":null,"autonomousMaintenanceScheduleType":"Regular","availableUpgradeVersions":null,"characterSet":"AL32UTF8","computeCount":2,"computeModel":"ECPU","connectionStrings":{"allConnectionStrings":{},"dedicated":null,"high":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_testregression0914_high.adb.oraclecloud.com","low":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_testregression0914_low.adb.oraclecloud.com","medium":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_testregression0914_medium.adb.oraclecloud.com","profiles":[{"consumerGroup":"High","displayName":"testregression0914_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Medium","displayName":"testregression0914_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Low","displayName":"testregression0914_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tp","displayName":"testregression0914_tp","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tpurgent","displayName":"testregression0914_tpurgent","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"High","displayName":"testregression0914_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Medium","displayName":"testregression0914_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Low","displayName":"testregression0914_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tp","displayName":"testregression0914_tp","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tpurgent","displayName":"testregression0914_tpurgent","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"}]},"connectionUrls":{"apexUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/ords/apex","databaseTransformsUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/odi/?sso=true","graphStudioUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/graphstudio/?sso=true","machineLearningNotebookUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/oml/?sso=true","mongoDbUrl":null,"ordsUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/ords/","sqlDevWebUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/ords/sql-developer"},"cpuCoreCount":null,"customerContacts":null,"dataSafeStatus":null,"dataStorageSizeInGbs":40,"dataStorageSizeInTbs":null,"databaseEdition":null,"dbVersion":"19c","dbWorkload":"OLTP","displayName":"testRegression0914","zone":null,"inMemoryAreaInGbs":null,"nextLongTermBackupTimeStamp":null,"longTermBackupSchedule":null,"isAutoScalingEnabled":true,"isAutoScalingForStorageEnabled":false,"peerDbIds":[],"isLocalDataGuardEnabled":false,"isRemoteDataGuardEnabled":false,"localDisasterRecoveryType":"BackupBased","timeDisasterRecoveryRoleChanged":null,"remoteDisasterRecoveryConfiguration":null,"localStandbyDb":{"lagTimeInSeconds":null,"lifecycleState":"Standby","lifecycleDetails":null,"timeDataGuardRoleChanged":null,"timeDisasterRecoveryRoleChanged":null},"failedDataRecoveryInSeconds":null,"isMtlsConnectionRequired":false,"isPreview":null,"licenseModel":"LicenseIncluded","lifecycleDetails":null,"provisioningState":"Succeeded","localAdgAutoFailoverMaxDataLossLimit":null,"memoryPerOracleComputeUnitInGbs":null,"ncharacterSet":"AL16UTF16","ociUrl":"https://cloud.oracle.com/db/adbs/ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqafzv63uxgo7ludoy67k3tfntnaa65rhjwcpmy5rb3f64a?region=us-ashburn-1&tenant=orpsandbox3&compartmentId=ocid1.compartment.oc1..aaaaaaaauaai2yet56ac2mh6qvfqlsleivrdjvykrj2s7htenpgbtjkamqxq","resourceAnchorId":null,"networkAnchorId":null,"openMode":"ReadWrite","operationsInsightsStatus":null,"permissionLevel":null,"privateEndpoint":"lnqbh6k3.adb.us-ashburn-1.oraclecloud.com","privateEndpointIp":"10.0.1.51","privateEndpointLabel":"lnqbh6k3","provisionableCpus":null,"lifecycleState":"Available","role":null,"scheduledOperationsList":null,"serviceConsoleUrl":null,"sqlWebDeveloperUrl":null,"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse/subnets/default2","supportedRegionsToCloneTo":["germanynorth","germanywestcentral"],"timeCreated":"2026-09-14T14:59:00.734Z","timeDataGuardRoleChanged":null,"timeDeletionOfFreeAutonomousDatabase":null,"timeLocalDataGuardEnabled":"Mon
+        Sep 14 14:59:15 UTC 2026","timeMaintenanceBegin":"2026-09-27T20:00:00Z","timeMaintenanceEnd":"2026-09-27T22:00:00Z","timeOfLastFailover":null,"timeOfLastRefresh":null,"timeOfLastRefreshPoint":null,"timeOfLastSwitchover":null,"timeReclamationOfFreeAutonomousDatabase":null,"usedDataStorageSizeInGbs":null,"usedDataStorageSizeInTbs":null,"vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse","ocid":"ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqafzv63uxgo7ludoy67k3tfntnaa65rhjwcpmy5rb3f64a","backupRetentionPeriodInDays":60,"backupDestination":"OCI"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9073'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Sep 2026 03:49:37 GMT
+      etag:
+      - '"dd00f5e5-0000-0100-0000-6ab1f9c40000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 07924A30C1AD4999B4572CE9D42BE8B3 Ref B: BY1AA1072317034 Ref C: 2026-09-22T03:49:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"autonomousMaintenanceScheduleType":
+      "Regular", "backupDestination": "OCI", "backupRetentionPeriodInDays": 60, "characterSet":
+      "AL32UTF8", "computeCount": 3.0, "computeModel": "ECPU", "dataStorageSizeInGbs":
+      40, "dataStorageSizeInTbs": 2, "dbVersion": "19c", "dbWorkload": "OLTP", "displayName":
+      "testRegression0914", "isAutoScalingEnabled": false, "isAutoScalingForStorageEnabled":
+      true, "isLocalDataGuardEnabled": false, "isMtlsConnectionRequired": false, "licenseModel":
+      "LicenseIncluded", "ncharacterSet": "AL16UTF16", "openMode": "ReadWrite", "privateEndpointIp":
+      "10.0.1.51", "privateEndpointLabel": "lnqbh6k3", "subnetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse/subnets/default2",
+      "vnetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse",
+      "dataBaseType": "Regular"}, "tags": {"reproduction": "adg-disabled", "Environment":
+      "Prod", "Owner": "DBTeam"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1104'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --compute-count --cpu-auto-scaling
+        --data-storage-size-in-tbs --store-auto-scaling --tags
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914?api-version=2026-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914","name":"testRegression0914","type":"oracle.database/autonomousdatabases","location":"eastus","tags":{"reproduction":"adg-disabled","Environment":"Prod","Owner":"DBTeam"},"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2026-09-14T14:48:24.8731533Z","lastModifiedBy":"mihret.kidane@oracle.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-22T03:49:38.6619013Z"},"properties":{"actualUsedDataStorageSizeInTbs":0.007810771465301514,"allocatedStorageSizeInTbs":0.0087890625,"peerDbIds":[],"isRemoteDataGuardEnabled":false,"provisioningState":"Accepted","ociUrl":"https://cloud.oracle.com/db/adbs/ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqafzv63uxgo7ludoy67k3tfntnaa65rhjwcpmy5rb3f64a?region=us-ashburn-1&tenant=orpsandbox3&compartmentId=ocid1.compartment.oc1..aaaaaaaauaai2yet56ac2mh6qvfqlsleivrdjvykrj2s7htenpgbtjkamqxq","privateEndpoint":"lnqbh6k3.adb.us-ashburn-1.oraclecloud.com","supportedRegionsToCloneTo":["germanynorth","germanywestcentral"],"timeCreated":"2026-09-14T14:59:00.734Z","timeLocalDataGuardEnabled":"Mon
+        Sep 14 14:59:15 UTC 2026","timeMaintenanceBegin":"2026-09-27T20:00:00Z","timeMaintenanceEnd":"2026-09-27T22:00:00Z","autonomousMaintenanceScheduleType":"Regular","backupDestination":"OCI","backupRetentionPeriodInDays":60,"characterSet":"AL32UTF8","computeCount":3.0,"computeModel":"ECPU","dataStorageSizeInGbs":40,"dataStorageSizeInTbs":2,"dbVersion":"19c","dbWorkload":"OLTP","displayName":"testRegression0914","isAutoScalingEnabled":false,"isAutoScalingForStorageEnabled":true,"isLocalDataGuardEnabled":false,"isMtlsConnectionRequired":false,"licenseModel":"LicenseIncluded","ncharacterSet":"AL16UTF16","openMode":"ReadWrite","privateEndpointIp":"10.0.1.51","privateEndpointLabel":"lnqbh6k3","subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse/subnets/default2","vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse","dataBaseType":"Regular"}}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/18eed6f9-ad70-4b6b-b77e-09b4772a7bc7*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462?api-version=2026-06-01&t=639256457815681350&c=MIIHlTCCBn2gAwIBAgIRAN0yZzL8aR42UZysboj3ciowDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVVTMiBDQSAwMTAeFw0yNjA4MTQwMDQwMTRaFw0yNzAyMDkwNjQwMTRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzoSOkVR7MNj87TdZrq2tsL7eEWBZ1UxYUjlHs2t1x6Xn31o-6e5yM1I79Xw17HpG_ZRC01sH0DmLucuBF6EGQR50aTJ6mx22HrEe4YQhQiTieYabApNFEW7C1Z3sqhwTVaWGvV9-nw9anTx1HztS5s2jjMeJoebstq-wBIvYIOyM7hj12vYY5vdXTn9Sask3V8S3KBxdPpOFhQ5pKF6CgT-fQ9-scbzgeKeWuPXZTO0EeH02xAsj1c-lki5VGv0RewzD2beJxGO1-CxJFOfH9H3UnlZMKLg6kT-aBTn6RuYVuLJoMYYC-eHbYtahA3x5r3yutNG8gegIMlLlcdTGAQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7naFfTwmNksX70OjHOYQPsR55KIwHwYDVR0jBBgwFoAU_Ow-26p8H4IeBbihBvlD5wKzCrkwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NybHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS8zOS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZWVhc3R1czJwa2kuZWFzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyaWNhMDEvMzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY2FjZXJ0cy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAJrRoJWjIzsymA0Vpio4e2hRDOWlG5PpWmWos3Gflt8XcQwRsU-vvdeWk-uT-wHYn52846N5Ue5cbvM8NV-labOA852VL2mtuHnz7bkkRfWTlP-tB-JYDS8l0yGcTENq-UNlakbleLgtfD-Qr09l853jhegiUP3vJKLXMCFF1C2maSNhwZg1MlrEswNSPzRH0Xj9q0-487lH42RncuRXCIqd8ljf1_8v-IXMl6WtDdQDYjQE_s-OHN0BNXt0t4wTd5ikeG6NCH2SHC2wB-PchAiE5P4oHK6Vx3M0q3TEexP11Up6I9ksnpNBw256ZKPa0pX3urxLa215fDhtScA9RzA&s=cYpAga9SOniO7oq9xClux3JupEvr1ASGcd46qE1YMW0rk-9o9GVPw_U9Pt8QYqwUEhPwI-BLRYrHouYR3jNEcRFiisxvfH625C5QGpwrsPZqyxOycySv-ghLkBqYo1l1FkHSeO-5C095Nfzrb5TWcIwv7Cg7cxCb2qYl4sc1G1H_ifFcKBleJiBo007i0-y2FElFds5l7h1FdJLJVaA9MKqubs57tWXKOtYss6tvtUcLfq7HuaXqdkbY6T2SaiZz6zm80Jq-kdzskZii86vyU9Q4dHgxEz-Lo1_5372GnMDS_wEDzxTJhVWH1fUAuu-SQLv58i5pIzicBsJ1oYfIMA&h=egI476eSUNMnjYF5j-QshStG73FESWBlBLVfv4fFNhE
+      cache-control:
+      - no-cache
+      content-length:
+      - '2289'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Sep 2026 03:49:40 GMT
+      etag:
+      - '"dd00eaea-0000-0100-0000-6ab1fad50000"'
+      expires:
+      - '-1'
+      opc-request-id:
+      - oci-A52C4D5649CB538-202609220349/368CA83D39EE4129D2FAB16A494144B6/41F6DD2E29487E3DBA29BCDCE2CE763D
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Origin,Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/eastus/6350c360-e11f-44e2-a2b5-3302ace4711b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 3C72A058C09848779207C5B5C0A38F9D Ref B: BY1AA1072317042 Ref C: 2026-09-22T03:49:38Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --compute-count --cpu-auto-scaling
+        --data-storage-size-in-tbs --store-auto-scaling --tags
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/18eed6f9-ad70-4b6b-b77e-09b4772a7bc7*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462?api-version=2026-06-01&t=639256457815681350&c=MIIHlTCCBn2gAwIBAgIRAN0yZzL8aR42UZysboj3ciowDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVVTMiBDQSAwMTAeFw0yNjA4MTQwMDQwMTRaFw0yNzAyMDkwNjQwMTRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzoSOkVR7MNj87TdZrq2tsL7eEWBZ1UxYUjlHs2t1x6Xn31o-6e5yM1I79Xw17HpG_ZRC01sH0DmLucuBF6EGQR50aTJ6mx22HrEe4YQhQiTieYabApNFEW7C1Z3sqhwTVaWGvV9-nw9anTx1HztS5s2jjMeJoebstq-wBIvYIOyM7hj12vYY5vdXTn9Sask3V8S3KBxdPpOFhQ5pKF6CgT-fQ9-scbzgeKeWuPXZTO0EeH02xAsj1c-lki5VGv0RewzD2beJxGO1-CxJFOfH9H3UnlZMKLg6kT-aBTn6RuYVuLJoMYYC-eHbYtahA3x5r3yutNG8gegIMlLlcdTGAQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7naFfTwmNksX70OjHOYQPsR55KIwHwYDVR0jBBgwFoAU_Ow-26p8H4IeBbihBvlD5wKzCrkwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NybHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS8zOS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZWVhc3R1czJwa2kuZWFzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyaWNhMDEvMzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY2FjZXJ0cy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAJrRoJWjIzsymA0Vpio4e2hRDOWlG5PpWmWos3Gflt8XcQwRsU-vvdeWk-uT-wHYn52846N5Ue5cbvM8NV-labOA852VL2mtuHnz7bkkRfWTlP-tB-JYDS8l0yGcTENq-UNlakbleLgtfD-Qr09l853jhegiUP3vJKLXMCFF1C2maSNhwZg1MlrEswNSPzRH0Xj9q0-487lH42RncuRXCIqd8ljf1_8v-IXMl6WtDdQDYjQE_s-OHN0BNXt0t4wTd5ikeG6NCH2SHC2wB-PchAiE5P4oHK6Vx3M0q3TEexP11Up6I9ksnpNBw256ZKPa0pX3urxLa215fDhtScA9RzA&s=cYpAga9SOniO7oq9xClux3JupEvr1ASGcd46qE1YMW0rk-9o9GVPw_U9Pt8QYqwUEhPwI-BLRYrHouYR3jNEcRFiisxvfH625C5QGpwrsPZqyxOycySv-ghLkBqYo1l1FkHSeO-5C095Nfzrb5TWcIwv7Cg7cxCb2qYl4sc1G1H_ifFcKBleJiBo007i0-y2FElFds5l7h1FdJLJVaA9MKqubs57tWXKOtYss6tvtUcLfq7HuaXqdkbY6T2SaiZz6zm80Jq-kdzskZii86vyU9Q4dHgxEz-Lo1_5372GnMDS_wEDzxTJhVWH1fUAuu-SQLv58i5pIzicBsJ1oYfIMA&h=egI476eSUNMnjYF5j-QshStG73FESWBlBLVfv4fFNhE
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/18eed6f9-ad70-4b6b-b77e-09b4772a7bc7*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","name":"18eed6f9-ad70-4b6b-b77e-09b4772a7bc7*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914","status":"Accepted","startTime":"2026-09-22T03:49:41.0345118Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '565'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Sep 2026 03:49:42 GMT
+      etag:
+      - '"33043f60-0000-0100-0000-6ab1fad50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/westus/387d32cf-02d7-4fca-9797-23cdee6b9352
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 9DE1324D98B74347BF247E002FBDCDE3 Ref B: BY1AA1072320060 Ref C: 2026-09-22T03:49:42Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --compute-count --cpu-auto-scaling
+        --data-storage-size-in-tbs --store-auto-scaling --tags
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/18eed6f9-ad70-4b6b-b77e-09b4772a7bc7*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462?api-version=2026-06-01&t=639256457815681350&c=MIIHlTCCBn2gAwIBAgIRAN0yZzL8aR42UZysboj3ciowDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVVTMiBDQSAwMTAeFw0yNjA4MTQwMDQwMTRaFw0yNzAyMDkwNjQwMTRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzoSOkVR7MNj87TdZrq2tsL7eEWBZ1UxYUjlHs2t1x6Xn31o-6e5yM1I79Xw17HpG_ZRC01sH0DmLucuBF6EGQR50aTJ6mx22HrEe4YQhQiTieYabApNFEW7C1Z3sqhwTVaWGvV9-nw9anTx1HztS5s2jjMeJoebstq-wBIvYIOyM7hj12vYY5vdXTn9Sask3V8S3KBxdPpOFhQ5pKF6CgT-fQ9-scbzgeKeWuPXZTO0EeH02xAsj1c-lki5VGv0RewzD2beJxGO1-CxJFOfH9H3UnlZMKLg6kT-aBTn6RuYVuLJoMYYC-eHbYtahA3x5r3yutNG8gegIMlLlcdTGAQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7naFfTwmNksX70OjHOYQPsR55KIwHwYDVR0jBBgwFoAU_Ow-26p8H4IeBbihBvlD5wKzCrkwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NybHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS8zOS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZWVhc3R1czJwa2kuZWFzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyaWNhMDEvMzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY2FjZXJ0cy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAJrRoJWjIzsymA0Vpio4e2hRDOWlG5PpWmWos3Gflt8XcQwRsU-vvdeWk-uT-wHYn52846N5Ue5cbvM8NV-labOA852VL2mtuHnz7bkkRfWTlP-tB-JYDS8l0yGcTENq-UNlakbleLgtfD-Qr09l853jhegiUP3vJKLXMCFF1C2maSNhwZg1MlrEswNSPzRH0Xj9q0-487lH42RncuRXCIqd8ljf1_8v-IXMl6WtDdQDYjQE_s-OHN0BNXt0t4wTd5ikeG6NCH2SHC2wB-PchAiE5P4oHK6Vx3M0q3TEexP11Up6I9ksnpNBw256ZKPa0pX3urxLa215fDhtScA9RzA&s=cYpAga9SOniO7oq9xClux3JupEvr1ASGcd46qE1YMW0rk-9o9GVPw_U9Pt8QYqwUEhPwI-BLRYrHouYR3jNEcRFiisxvfH625C5QGpwrsPZqyxOycySv-ghLkBqYo1l1FkHSeO-5C095Nfzrb5TWcIwv7Cg7cxCb2qYl4sc1G1H_ifFcKBleJiBo007i0-y2FElFds5l7h1FdJLJVaA9MKqubs57tWXKOtYss6tvtUcLfq7HuaXqdkbY6T2SaiZz6zm80Jq-kdzskZii86vyU9Q4dHgxEz-Lo1_5372GnMDS_wEDzxTJhVWH1fUAuu-SQLv58i5pIzicBsJ1oYfIMA&h=egI476eSUNMnjYF5j-QshStG73FESWBlBLVfv4fFNhE
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/18eed6f9-ad70-4b6b-b77e-09b4772a7bc7*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","name":"18eed6f9-ad70-4b6b-b77e-09b4772a7bc7*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914","status":"Accepted","startTime":"2026-09-22T03:49:41.0345118Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '565'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Sep 2026 03:50:13 GMT
+      etag:
+      - '"33043f60-0000-0100-0000-6ab1fad50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/westus/7119f7a8-62f2-4e48-bd2f-a81b6d4d5edb
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 89D1B3FAB788469ABEDF9AD27D93F879 Ref B: SJC211051201023 Ref C: 2026-09-22T03:50:13Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --compute-count --cpu-auto-scaling
+        --data-storage-size-in-tbs --store-auto-scaling --tags
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/18eed6f9-ad70-4b6b-b77e-09b4772a7bc7*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462?api-version=2026-06-01&t=639256457815681350&c=MIIHlTCCBn2gAwIBAgIRAN0yZzL8aR42UZysboj3ciowDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVVTMiBDQSAwMTAeFw0yNjA4MTQwMDQwMTRaFw0yNzAyMDkwNjQwMTRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzoSOkVR7MNj87TdZrq2tsL7eEWBZ1UxYUjlHs2t1x6Xn31o-6e5yM1I79Xw17HpG_ZRC01sH0DmLucuBF6EGQR50aTJ6mx22HrEe4YQhQiTieYabApNFEW7C1Z3sqhwTVaWGvV9-nw9anTx1HztS5s2jjMeJoebstq-wBIvYIOyM7hj12vYY5vdXTn9Sask3V8S3KBxdPpOFhQ5pKF6CgT-fQ9-scbzgeKeWuPXZTO0EeH02xAsj1c-lki5VGv0RewzD2beJxGO1-CxJFOfH9H3UnlZMKLg6kT-aBTn6RuYVuLJoMYYC-eHbYtahA3x5r3yutNG8gegIMlLlcdTGAQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7naFfTwmNksX70OjHOYQPsR55KIwHwYDVR0jBBgwFoAU_Ow-26p8H4IeBbihBvlD5wKzCrkwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NybHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS8zOS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZWVhc3R1czJwa2kuZWFzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyaWNhMDEvMzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY2FjZXJ0cy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAJrRoJWjIzsymA0Vpio4e2hRDOWlG5PpWmWos3Gflt8XcQwRsU-vvdeWk-uT-wHYn52846N5Ue5cbvM8NV-labOA852VL2mtuHnz7bkkRfWTlP-tB-JYDS8l0yGcTENq-UNlakbleLgtfD-Qr09l853jhegiUP3vJKLXMCFF1C2maSNhwZg1MlrEswNSPzRH0Xj9q0-487lH42RncuRXCIqd8ljf1_8v-IXMl6WtDdQDYjQE_s-OHN0BNXt0t4wTd5ikeG6NCH2SHC2wB-PchAiE5P4oHK6Vx3M0q3TEexP11Up6I9ksnpNBw256ZKPa0pX3urxLa215fDhtScA9RzA&s=cYpAga9SOniO7oq9xClux3JupEvr1ASGcd46qE1YMW0rk-9o9GVPw_U9Pt8QYqwUEhPwI-BLRYrHouYR3jNEcRFiisxvfH625C5QGpwrsPZqyxOycySv-ghLkBqYo1l1FkHSeO-5C095Nfzrb5TWcIwv7Cg7cxCb2qYl4sc1G1H_ifFcKBleJiBo007i0-y2FElFds5l7h1FdJLJVaA9MKqubs57tWXKOtYss6tvtUcLfq7HuaXqdkbY6T2SaiZz6zm80Jq-kdzskZii86vyU9Q4dHgxEz-Lo1_5372GnMDS_wEDzxTJhVWH1fUAuu-SQLv58i5pIzicBsJ1oYfIMA&h=egI476eSUNMnjYF5j-QshStG73FESWBlBLVfv4fFNhE
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/18eed6f9-ad70-4b6b-b77e-09b4772a7bc7*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","name":"18eed6f9-ad70-4b6b-b77e-09b4772a7bc7*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914","status":"Accepted","startTime":"2026-09-22T03:49:41.0345118Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '565'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Sep 2026 03:50:45 GMT
+      etag:
+      - '"33043f60-0000-0100-0000-6ab1fad50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/westus/70a09bd7-e803-43cc-84f0-9a235148cba2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: FD18CE72CFDE4811A6A895E762CCAF49 Ref B: BY1AA1072317052 Ref C: 2026-09-22T03:50:45Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --compute-count --cpu-auto-scaling
+        --data-storage-size-in-tbs --store-auto-scaling --tags
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/18eed6f9-ad70-4b6b-b77e-09b4772a7bc7*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462?api-version=2026-06-01&t=639256457815681350&c=MIIHlTCCBn2gAwIBAgIRAN0yZzL8aR42UZysboj3ciowDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVVTMiBDQSAwMTAeFw0yNjA4MTQwMDQwMTRaFw0yNzAyMDkwNjQwMTRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzoSOkVR7MNj87TdZrq2tsL7eEWBZ1UxYUjlHs2t1x6Xn31o-6e5yM1I79Xw17HpG_ZRC01sH0DmLucuBF6EGQR50aTJ6mx22HrEe4YQhQiTieYabApNFEW7C1Z3sqhwTVaWGvV9-nw9anTx1HztS5s2jjMeJoebstq-wBIvYIOyM7hj12vYY5vdXTn9Sask3V8S3KBxdPpOFhQ5pKF6CgT-fQ9-scbzgeKeWuPXZTO0EeH02xAsj1c-lki5VGv0RewzD2beJxGO1-CxJFOfH9H3UnlZMKLg6kT-aBTn6RuYVuLJoMYYC-eHbYtahA3x5r3yutNG8gegIMlLlcdTGAQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQU7naFfTwmNksX70OjHOYQPsR55KIwHwYDVR0jBBgwFoAU_Ow-26p8H4IeBbihBvlD5wKzCrkwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NybHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS8zOS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzM5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZWVhc3R1czJwa2kuZWFzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyaWNhMDEvMzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY2FjZXJ0cy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAJrRoJWjIzsymA0Vpio4e2hRDOWlG5PpWmWos3Gflt8XcQwRsU-vvdeWk-uT-wHYn52846N5Ue5cbvM8NV-labOA852VL2mtuHnz7bkkRfWTlP-tB-JYDS8l0yGcTENq-UNlakbleLgtfD-Qr09l853jhegiUP3vJKLXMCFF1C2maSNhwZg1MlrEswNSPzRH0Xj9q0-487lH42RncuRXCIqd8ljf1_8v-IXMl6WtDdQDYjQE_s-OHN0BNXt0t4wTd5ikeG6NCH2SHC2wB-PchAiE5P4oHK6Vx3M0q3TEexP11Up6I9ksnpNBw256ZKPa0pX3urxLa215fDhtScA9RzA&s=cYpAga9SOniO7oq9xClux3JupEvr1ASGcd46qE1YMW0rk-9o9GVPw_U9Pt8QYqwUEhPwI-BLRYrHouYR3jNEcRFiisxvfH625C5QGpwrsPZqyxOycySv-ghLkBqYo1l1FkHSeO-5C095Nfzrb5TWcIwv7Cg7cxCb2qYl4sc1G1H_ifFcKBleJiBo007i0-y2FElFds5l7h1FdJLJVaA9MKqubs57tWXKOtYss6tvtUcLfq7HuaXqdkbY6T2SaiZz6zm80Jq-kdzskZii86vyU9Q4dHgxEz-Lo1_5372GnMDS_wEDzxTJhVWH1fUAuu-SQLv58i5pIzicBsJ1oYfIMA&h=egI476eSUNMnjYF5j-QshStG73FESWBlBLVfv4fFNhE
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/18eed6f9-ad70-4b6b-b77e-09b4772a7bc7*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","name":"18eed6f9-ad70-4b6b-b77e-09b4772a7bc7*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914","status":"Succeeded","startTime":"2026-09-22T03:49:41.0345118Z","endTime":"2026-09-22T03:50:36.9081136Z","percentComplete":100.0,"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '649'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Sep 2026 03:51:16 GMT
+      etag:
+      - '"8b02df17-0000-0300-0000-6ab1fb250000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/westus/25cf9f61-cab5-4227-92b2-44bfd3841966
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 4DA5F4222FE841F58AC932F5B0F3DAEE Ref B: SJC211051203031 Ref C: 2026-09-22T03:51:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --compute-count --cpu-auto-scaling
+        --data-storage-size-in-tbs --store-auto-scaling --tags
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914?api-version=2026-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914","name":"testRegression0914","type":"oracle.database/autonomousdatabases","location":"eastus","tags":{"reproduction":"adg-disabled","Environment":"Prod","Owner":"DBTeam"},"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2026-09-14T14:48:24.8731533Z","lastModifiedBy":"857ad006-4380-4712-ba4c-22f7c64d84e7","lastModifiedByType":"Application","lastModifiedAt":"2026-09-22T03:50:37.4407409Z"},"properties":{"dataBaseType":"Regular","actualUsedDataStorageSizeInTbs":0.007810771465301514,"allocatedStorageSizeInTbs":0.0087890625,"whitelistedIps":null,"apexDetails":null,"autonomousDatabaseId":null,"autonomousMaintenanceScheduleType":"Regular","availableUpgradeVersions":null,"characterSet":"AL32UTF8","computeCount":3,"computeModel":"ECPU","connectionStrings":{"allConnectionStrings":{},"dedicated":null,"high":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_testregression0914_high.adb.oraclecloud.com","low":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_testregression0914_low.adb.oraclecloud.com","medium":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_testregression0914_medium.adb.oraclecloud.com","profiles":[{"consumerGroup":"High","displayName":"testregression0914_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Medium","displayName":"testregression0914_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Low","displayName":"testregression0914_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tp","displayName":"testregression0914_tp","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tpurgent","displayName":"testregression0914_tpurgent","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"High","displayName":"testregression0914_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Medium","displayName":"testregression0914_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Low","displayName":"testregression0914_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tp","displayName":"testregression0914_tp","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tpurgent","displayName":"testregression0914_tpurgent","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"}]},"connectionUrls":{"apexUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/ords/apex","databaseTransformsUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/odi/?sso=true","graphStudioUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/graphstudio/?sso=true","machineLearningNotebookUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/oml/?sso=true","mongoDbUrl":null,"ordsUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/ords/","sqlDevWebUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/ords/sql-developer"},"cpuCoreCount":null,"customerContacts":null,"dataSafeStatus":null,"dataStorageSizeInGbs":2048,"dataStorageSizeInTbs":2,"databaseEdition":null,"dbVersion":"19c","dbWorkload":"OLTP","displayName":"testRegression0914","zone":null,"inMemoryAreaInGbs":null,"nextLongTermBackupTimeStamp":null,"longTermBackupSchedule":null,"isAutoScalingEnabled":false,"isAutoScalingForStorageEnabled":true,"peerDbIds":[],"isLocalDataGuardEnabled":false,"isRemoteDataGuardEnabled":false,"localDisasterRecoveryType":"BackupBased","timeDisasterRecoveryRoleChanged":null,"remoteDisasterRecoveryConfiguration":null,"localStandbyDb":{"lagTimeInSeconds":null,"lifecycleState":"Standby","lifecycleDetails":null,"timeDataGuardRoleChanged":null,"timeDisasterRecoveryRoleChanged":null},"failedDataRecoveryInSeconds":null,"isMtlsConnectionRequired":false,"isPreview":null,"licenseModel":"LicenseIncluded","lifecycleDetails":null,"provisioningState":"Succeeded","localAdgAutoFailoverMaxDataLossLimit":null,"memoryPerOracleComputeUnitInGbs":null,"ncharacterSet":"AL16UTF16","ociUrl":"https://cloud.oracle.com/db/adbs/ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqafzv63uxgo7ludoy67k3tfntnaa65rhjwcpmy5rb3f64a?region=us-ashburn-1&tenant=orpsandbox3&compartmentId=ocid1.compartment.oc1..aaaaaaaauaai2yet56ac2mh6qvfqlsleivrdjvykrj2s7htenpgbtjkamqxq","resourceAnchorId":null,"networkAnchorId":null,"openMode":"ReadWrite","operationsInsightsStatus":null,"permissionLevel":null,"privateEndpoint":"lnqbh6k3.adb.us-ashburn-1.oraclecloud.com","privateEndpointIp":"10.0.1.51","privateEndpointLabel":"lnqbh6k3","provisionableCpus":null,"lifecycleState":"Available","role":null,"scheduledOperationsList":null,"serviceConsoleUrl":null,"sqlWebDeveloperUrl":null,"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse/subnets/default2","supportedRegionsToCloneTo":["germanynorth","germanywestcentral"],"timeCreated":"2026-09-14T14:59:00.734Z","timeDataGuardRoleChanged":null,"timeDeletionOfFreeAutonomousDatabase":null,"timeLocalDataGuardEnabled":"Mon
+        Sep 14 14:59:15 UTC 2026","timeMaintenanceBegin":"2026-09-27T20:00:00Z","timeMaintenanceEnd":"2026-09-27T22:00:00Z","timeOfLastFailover":null,"timeOfLastRefresh":null,"timeOfLastRefreshPoint":null,"timeOfLastSwitchover":null,"timeReclamationOfFreeAutonomousDatabase":null,"usedDataStorageSizeInGbs":null,"usedDataStorageSizeInTbs":null,"vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse","ocid":"ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqafzv63uxgo7ludoy67k3tfntnaa65rhjwcpmy5rb3f64a","backupRetentionPeriodInDays":60,"backupDestination":"OCI"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9110'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Sep 2026 03:51:17 GMT
+      etag:
+      - '"dd0001ec-0000-0100-0000-6ab1fb0d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 081A21F09AAC49E29B9FA9A2FCD05252 Ref B: SJC211051203023 Ref C: 2026-09-22T03:51:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --is-auto-scaling-enabled --storage-tbs
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914?api-version=2026-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914","name":"testRegression0914","type":"oracle.database/autonomousdatabases","location":"eastus","tags":{"reproduction":"adg-disabled","Environment":"Prod","Owner":"DBTeam"},"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2026-09-14T14:48:24.8731533Z","lastModifiedBy":"857ad006-4380-4712-ba4c-22f7c64d84e7","lastModifiedByType":"Application","lastModifiedAt":"2026-09-22T03:50:37.4407409Z"},"properties":{"dataBaseType":"Regular","actualUsedDataStorageSizeInTbs":0.007810771465301514,"allocatedStorageSizeInTbs":0.0087890625,"whitelistedIps":null,"apexDetails":null,"autonomousDatabaseId":null,"autonomousMaintenanceScheduleType":"Regular","availableUpgradeVersions":null,"characterSet":"AL32UTF8","computeCount":3,"computeModel":"ECPU","connectionStrings":{"allConnectionStrings":{},"dedicated":null,"high":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_testregression0914_high.adb.oraclecloud.com","low":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_testregression0914_low.adb.oraclecloud.com","medium":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_testregression0914_medium.adb.oraclecloud.com","profiles":[{"consumerGroup":"High","displayName":"testregression0914_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Medium","displayName":"testregression0914_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Low","displayName":"testregression0914_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tp","displayName":"testregression0914_tp","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tpurgent","displayName":"testregression0914_tpurgent","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"High","displayName":"testregression0914_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Medium","displayName":"testregression0914_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Low","displayName":"testregression0914_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tp","displayName":"testregression0914_tp","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tpurgent","displayName":"testregression0914_tpurgent","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"}]},"connectionUrls":{"apexUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/ords/apex","databaseTransformsUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/odi/?sso=true","graphStudioUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/graphstudio/?sso=true","machineLearningNotebookUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/oml/?sso=true","mongoDbUrl":null,"ordsUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/ords/","sqlDevWebUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/ords/sql-developer"},"cpuCoreCount":null,"customerContacts":null,"dataSafeStatus":null,"dataStorageSizeInGbs":2048,"dataStorageSizeInTbs":2,"databaseEdition":null,"dbVersion":"19c","dbWorkload":"OLTP","displayName":"testRegression0914","zone":null,"inMemoryAreaInGbs":null,"nextLongTermBackupTimeStamp":null,"longTermBackupSchedule":null,"isAutoScalingEnabled":false,"isAutoScalingForStorageEnabled":true,"peerDbIds":[],"isLocalDataGuardEnabled":false,"isRemoteDataGuardEnabled":false,"localDisasterRecoveryType":"BackupBased","timeDisasterRecoveryRoleChanged":null,"remoteDisasterRecoveryConfiguration":null,"localStandbyDb":{"lagTimeInSeconds":null,"lifecycleState":"Standby","lifecycleDetails":null,"timeDataGuardRoleChanged":null,"timeDisasterRecoveryRoleChanged":null},"failedDataRecoveryInSeconds":null,"isMtlsConnectionRequired":false,"isPreview":null,"licenseModel":"LicenseIncluded","lifecycleDetails":null,"provisioningState":"Succeeded","localAdgAutoFailoverMaxDataLossLimit":null,"memoryPerOracleComputeUnitInGbs":null,"ncharacterSet":"AL16UTF16","ociUrl":"https://cloud.oracle.com/db/adbs/ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqafzv63uxgo7ludoy67k3tfntnaa65rhjwcpmy5rb3f64a?region=us-ashburn-1&tenant=orpsandbox3&compartmentId=ocid1.compartment.oc1..aaaaaaaauaai2yet56ac2mh6qvfqlsleivrdjvykrj2s7htenpgbtjkamqxq","resourceAnchorId":null,"networkAnchorId":null,"openMode":"ReadWrite","operationsInsightsStatus":null,"permissionLevel":null,"privateEndpoint":"lnqbh6k3.adb.us-ashburn-1.oraclecloud.com","privateEndpointIp":"10.0.1.51","privateEndpointLabel":"lnqbh6k3","provisionableCpus":null,"lifecycleState":"Available","role":null,"scheduledOperationsList":null,"serviceConsoleUrl":null,"sqlWebDeveloperUrl":null,"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse/subnets/default2","supportedRegionsToCloneTo":["germanynorth","germanywestcentral"],"timeCreated":"2026-09-14T14:59:00.734Z","timeDataGuardRoleChanged":null,"timeDeletionOfFreeAutonomousDatabase":null,"timeLocalDataGuardEnabled":"Mon
+        Sep 14 14:59:15 UTC 2026","timeMaintenanceBegin":"2026-09-27T20:00:00Z","timeMaintenanceEnd":"2026-09-27T22:00:00Z","timeOfLastFailover":null,"timeOfLastRefresh":null,"timeOfLastRefreshPoint":null,"timeOfLastSwitchover":null,"timeReclamationOfFreeAutonomousDatabase":null,"usedDataStorageSizeInGbs":null,"usedDataStorageSizeInTbs":null,"vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse","ocid":"ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqafzv63uxgo7ludoy67k3tfntnaa65rhjwcpmy5rb3f64a","backupRetentionPeriodInDays":60,"backupDestination":"OCI"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9110'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Sep 2026 03:51:19 GMT
+      etag:
+      - '"dd0001ec-0000-0100-0000-6ab1fb0d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 76A0622AA3364CF3AE8507C54E334597 Ref B: BY1AA1072316042 Ref C: 2026-09-22T03:51:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"autonomousMaintenanceScheduleType":
+      "Regular", "backupDestination": "OCI", "backupRetentionPeriodInDays": 60, "characterSet":
+      "AL32UTF8", "computeCount": 3.0, "computeModel": "ECPU", "dataStorageSizeInGbs":
+      2048, "dataStorageSizeInTbs": 2, "dbVersion": "19c", "dbWorkload": "OLTP", "displayName":
+      "testRegression0914", "isAutoScalingEnabled": true, "isAutoScalingForStorageEnabled":
+      true, "isLocalDataGuardEnabled": false, "isMtlsConnectionRequired": false, "licenseModel":
+      "LicenseIncluded", "ncharacterSet": "AL16UTF16", "openMode": "ReadWrite", "privateEndpointIp":
+      "10.0.1.51", "privateEndpointLabel": "lnqbh6k3", "subnetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse/subnets/default2",
+      "vnetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse",
+      "dataBaseType": "Regular"}, "tags": {"reproduction": "adg-disabled", "Environment":
+      "Prod", "Owner": "DBTeam"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1105'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --is-auto-scaling-enabled --storage-tbs
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914?api-version=2026-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914","name":"testRegression0914","type":"oracle.database/autonomousdatabases","location":"eastus","tags":{"reproduction":"adg-disabled","Environment":"Prod","Owner":"DBTeam"},"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2026-09-14T14:48:24.8731533Z","lastModifiedBy":"mihret.kidane@oracle.com","lastModifiedByType":"User","lastModifiedAt":"2026-09-22T03:51:20.9569725Z"},"properties":{"actualUsedDataStorageSizeInTbs":0.007810771465301514,"allocatedStorageSizeInTbs":0.0087890625,"peerDbIds":[],"isRemoteDataGuardEnabled":false,"provisioningState":"Accepted","ociUrl":"https://cloud.oracle.com/db/adbs/ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqafzv63uxgo7ludoy67k3tfntnaa65rhjwcpmy5rb3f64a?region=us-ashburn-1&tenant=orpsandbox3&compartmentId=ocid1.compartment.oc1..aaaaaaaauaai2yet56ac2mh6qvfqlsleivrdjvykrj2s7htenpgbtjkamqxq","privateEndpoint":"lnqbh6k3.adb.us-ashburn-1.oraclecloud.com","supportedRegionsToCloneTo":["germanynorth","germanywestcentral"],"timeCreated":"2026-09-14T14:59:00.734Z","timeLocalDataGuardEnabled":"Mon
+        Sep 14 14:59:15 UTC 2026","timeMaintenanceBegin":"2026-09-27T20:00:00Z","timeMaintenanceEnd":"2026-09-27T22:00:00Z","autonomousMaintenanceScheduleType":"Regular","backupDestination":"OCI","backupRetentionPeriodInDays":60,"characterSet":"AL32UTF8","computeCount":3.0,"computeModel":"ECPU","dataStorageSizeInGbs":2048,"dataStorageSizeInTbs":2,"dbVersion":"19c","dbWorkload":"OLTP","displayName":"testRegression0914","isAutoScalingEnabled":true,"isAutoScalingForStorageEnabled":true,"isLocalDataGuardEnabled":false,"isMtlsConnectionRequired":false,"licenseModel":"LicenseIncluded","ncharacterSet":"AL16UTF16","openMode":"ReadWrite","privateEndpointIp":"10.0.1.51","privateEndpointLabel":"lnqbh6k3","subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse/subnets/default2","vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse","dataBaseType":"Regular"}}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/699ed67d-1ba5-47c3-bee5-360989b967e3*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462?api-version=2026-06-01&t=639256458837071795&c=MIIHwzCCBqugAwIBAgIQO9vjerLJyzCAZGOG8qnuujANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDEypDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBDVVMgQ0EgMDEwHhcNMjYwOTE3MTkyNzU0WhcNMjYxMjEzMDEyNzU0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOH7XcOFB9oBlttbwx8AirjT-trX0XvGg-qTsZnfCNKSBKRmEGUNPWfYKFgDpx0AZwfOinDzB58zssD8uZb2jeDqfJuiR1vqsOBWntnOkwx0IgWzw_pbET-L7lO_ZYW2-ec3c5ZewHiy0Jr51TL2zNtCadpjfB2g2RkKJY_5Zgyqgccwx0LvPgj81bdByhSFWtd49llL8NuFYWjo3Fk7HmsitrM-T8Z3xgac37X6nC2PTsQFiO6h917Etzgh-KBeYYfZiOTF9hHnetiX5px_9XecvBma56vHFyzqoF4VpkESo5tWkT_beymCu5gy2ngynn3SNDYyVgZXGrEn4V_OKM0CAwEAAaOCBMIwggS-MIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0OBBYEFLXKU9erjRhgRqjwHfGKduIH8QgZMB8GA1UdIwQYMBaAFPzkWgovhQ7nRLkHc3jg1EQHohkRMIIBygYDVR0fBIIBwTCCAb0wb6BtoGuGaWh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDBxoG-gbYZraHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvODEvY3VycmVudC5jcmwwYKBeoFyGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDB1oHOgcYZvaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxLzgxL2N1cnJlbnQuY3JsMIIBzwYIKwYBBQUHAQEEggHBMIIBvTByBggrBgEFBQcwAoZmaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHQGCCsGAQUFBzAChmhodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMGwGCCsGAQUFBzAChmBodHRwOi8vY2NtZWNlbnRyYWx1c3BraS5jZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lY2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAEdUznjVdYbUtxHD93flzOpv9itmdLU-P-i-amvvUBn1ESE_kJadN1MNgEM7wepiASPBur_kdjFJFZ5QdmL9EfoQmFlXLFS-v1qgMBh2uK-7Kx5nCPVe7MfrPZyaDtWWZoKQ1ku_7opeRh0t5mG0O3vQdmu-gxm9jX2bOhHTHW_uA9yYnskYrIv0kyqah1mv5zf85_XKMRSd592hVfIL4O9kUoKFjYKYWROv0MDSHRzOr2h9LjtoXGtDVpaGhgXaw6SQLRfR9piqIFxVYxpsgwP30Cdlvv9Vz-bZEpoPLRZc4_cpvPp6ZaWJSQgQNnoHo1QDfwAPoEEjmUxvRB06lrI&s=L7SUQ2ycA9syD2anSHCWQfhBy30lVbc-ilLWlk2xQP-kPrv_-eRPbJQlLMPKkY5-SSB6L-SlBW_gcYRHQMQve6W68Ti21kpAot4uhJheEfoo141Pyn-U5eaEgw9CDMH2XyRItjYmyT_l8d0d-S7rKgszVw2PeKrMLSG5mZfqBwegi6bF5IkFGNUT1Ge9_C9GLl7C9ug0KnhH7p_t4Mx6c1KhOsJs3nPSuH5UqFKQFzh497W4wfN31ye-AJ9KIw54OnR-F2nh3p1WQzv7LdDB7xg9q1R40OJYrVZN7BHa3_HKWs_CqOUykRbT5smFqtcpxxxQWo0UnvpjEhjm0CvItg&h=qjlKR2u5gxu41AeK_1RULA5_ILKZ9HIvW-peTCaZi1M
+      cache-control:
+      - no-cache
+      content-length:
+      - '2290'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Sep 2026 03:51:23 GMT
+      etag:
+      - '"dd00c2ec-0000-0100-0000-6ab1fb3b0000"'
+      expires:
+      - '-1'
+      opc-request-id:
+      - oci-0BF2F4EAC46A2BA-202609220351/B6F6414B9D26D54F39FBB16A49414470/225291B7AB31DF8F77F4F8D2C881C4CB
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Origin,Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/westus/e64e634d-1cb6-46a0-931d-df5fd94b8826
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 2A1749F3E9B545868A8E0E53F1722647 Ref B: BY1AA1072319036 Ref C: 2026-09-22T03:51:20Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --is-auto-scaling-enabled --storage-tbs
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/699ed67d-1ba5-47c3-bee5-360989b967e3*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462?api-version=2026-06-01&t=639256458837071795&c=MIIHwzCCBqugAwIBAgIQO9vjerLJyzCAZGOG8qnuujANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDEypDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBDVVMgQ0EgMDEwHhcNMjYwOTE3MTkyNzU0WhcNMjYxMjEzMDEyNzU0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOH7XcOFB9oBlttbwx8AirjT-trX0XvGg-qTsZnfCNKSBKRmEGUNPWfYKFgDpx0AZwfOinDzB58zssD8uZb2jeDqfJuiR1vqsOBWntnOkwx0IgWzw_pbET-L7lO_ZYW2-ec3c5ZewHiy0Jr51TL2zNtCadpjfB2g2RkKJY_5Zgyqgccwx0LvPgj81bdByhSFWtd49llL8NuFYWjo3Fk7HmsitrM-T8Z3xgac37X6nC2PTsQFiO6h917Etzgh-KBeYYfZiOTF9hHnetiX5px_9XecvBma56vHFyzqoF4VpkESo5tWkT_beymCu5gy2ngynn3SNDYyVgZXGrEn4V_OKM0CAwEAAaOCBMIwggS-MIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0OBBYEFLXKU9erjRhgRqjwHfGKduIH8QgZMB8GA1UdIwQYMBaAFPzkWgovhQ7nRLkHc3jg1EQHohkRMIIBygYDVR0fBIIBwTCCAb0wb6BtoGuGaWh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDBxoG-gbYZraHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvODEvY3VycmVudC5jcmwwYKBeoFyGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDB1oHOgcYZvaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxLzgxL2N1cnJlbnQuY3JsMIIBzwYIKwYBBQUHAQEEggHBMIIBvTByBggrBgEFBQcwAoZmaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHQGCCsGAQUFBzAChmhodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMGwGCCsGAQUFBzAChmBodHRwOi8vY2NtZWNlbnRyYWx1c3BraS5jZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lY2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAEdUznjVdYbUtxHD93flzOpv9itmdLU-P-i-amvvUBn1ESE_kJadN1MNgEM7wepiASPBur_kdjFJFZ5QdmL9EfoQmFlXLFS-v1qgMBh2uK-7Kx5nCPVe7MfrPZyaDtWWZoKQ1ku_7opeRh0t5mG0O3vQdmu-gxm9jX2bOhHTHW_uA9yYnskYrIv0kyqah1mv5zf85_XKMRSd592hVfIL4O9kUoKFjYKYWROv0MDSHRzOr2h9LjtoXGtDVpaGhgXaw6SQLRfR9piqIFxVYxpsgwP30Cdlvv9Vz-bZEpoPLRZc4_cpvPp6ZaWJSQgQNnoHo1QDfwAPoEEjmUxvRB06lrI&s=L7SUQ2ycA9syD2anSHCWQfhBy30lVbc-ilLWlk2xQP-kPrv_-eRPbJQlLMPKkY5-SSB6L-SlBW_gcYRHQMQve6W68Ti21kpAot4uhJheEfoo141Pyn-U5eaEgw9CDMH2XyRItjYmyT_l8d0d-S7rKgszVw2PeKrMLSG5mZfqBwegi6bF5IkFGNUT1Ge9_C9GLl7C9ug0KnhH7p_t4Mx6c1KhOsJs3nPSuH5UqFKQFzh497W4wfN31ye-AJ9KIw54OnR-F2nh3p1WQzv7LdDB7xg9q1R40OJYrVZN7BHa3_HKWs_CqOUykRbT5smFqtcpxxxQWo0UnvpjEhjm0CvItg&h=qjlKR2u5gxu41AeK_1RULA5_ILKZ9HIvW-peTCaZi1M
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/699ed67d-1ba5-47c3-bee5-360989b967e3*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","name":"699ed67d-1ba5-47c3-bee5-360989b967e3*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914","status":"Accepted","startTime":"2026-09-22T03:51:23.099564Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '564'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Sep 2026 03:51:24 GMT
+      etag:
+      - '"33045f70-0000-0100-0000-6ab1fb3b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/westus/6d77b601-b167-438e-ada4-641991a2fb51
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 0A03FC9A854C44DBA254F5F577CFEEE6 Ref B: SJC211051201051 Ref C: 2026-09-22T03:51:24Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --is-auto-scaling-enabled --storage-tbs
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/699ed67d-1ba5-47c3-bee5-360989b967e3*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462?api-version=2026-06-01&t=639256458837071795&c=MIIHwzCCBqugAwIBAgIQO9vjerLJyzCAZGOG8qnuujANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDEypDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBDVVMgQ0EgMDEwHhcNMjYwOTE3MTkyNzU0WhcNMjYxMjEzMDEyNzU0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOH7XcOFB9oBlttbwx8AirjT-trX0XvGg-qTsZnfCNKSBKRmEGUNPWfYKFgDpx0AZwfOinDzB58zssD8uZb2jeDqfJuiR1vqsOBWntnOkwx0IgWzw_pbET-L7lO_ZYW2-ec3c5ZewHiy0Jr51TL2zNtCadpjfB2g2RkKJY_5Zgyqgccwx0LvPgj81bdByhSFWtd49llL8NuFYWjo3Fk7HmsitrM-T8Z3xgac37X6nC2PTsQFiO6h917Etzgh-KBeYYfZiOTF9hHnetiX5px_9XecvBma56vHFyzqoF4VpkESo5tWkT_beymCu5gy2ngynn3SNDYyVgZXGrEn4V_OKM0CAwEAAaOCBMIwggS-MIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0OBBYEFLXKU9erjRhgRqjwHfGKduIH8QgZMB8GA1UdIwQYMBaAFPzkWgovhQ7nRLkHc3jg1EQHohkRMIIBygYDVR0fBIIBwTCCAb0wb6BtoGuGaWh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDBxoG-gbYZraHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvODEvY3VycmVudC5jcmwwYKBeoFyGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDB1oHOgcYZvaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxLzgxL2N1cnJlbnQuY3JsMIIBzwYIKwYBBQUHAQEEggHBMIIBvTByBggrBgEFBQcwAoZmaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHQGCCsGAQUFBzAChmhodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMGwGCCsGAQUFBzAChmBodHRwOi8vY2NtZWNlbnRyYWx1c3BraS5jZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lY2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAEdUznjVdYbUtxHD93flzOpv9itmdLU-P-i-amvvUBn1ESE_kJadN1MNgEM7wepiASPBur_kdjFJFZ5QdmL9EfoQmFlXLFS-v1qgMBh2uK-7Kx5nCPVe7MfrPZyaDtWWZoKQ1ku_7opeRh0t5mG0O3vQdmu-gxm9jX2bOhHTHW_uA9yYnskYrIv0kyqah1mv5zf85_XKMRSd592hVfIL4O9kUoKFjYKYWROv0MDSHRzOr2h9LjtoXGtDVpaGhgXaw6SQLRfR9piqIFxVYxpsgwP30Cdlvv9Vz-bZEpoPLRZc4_cpvPp6ZaWJSQgQNnoHo1QDfwAPoEEjmUxvRB06lrI&s=L7SUQ2ycA9syD2anSHCWQfhBy30lVbc-ilLWlk2xQP-kPrv_-eRPbJQlLMPKkY5-SSB6L-SlBW_gcYRHQMQve6W68Ti21kpAot4uhJheEfoo141Pyn-U5eaEgw9CDMH2XyRItjYmyT_l8d0d-S7rKgszVw2PeKrMLSG5mZfqBwegi6bF5IkFGNUT1Ge9_C9GLl7C9ug0KnhH7p_t4Mx6c1KhOsJs3nPSuH5UqFKQFzh497W4wfN31ye-AJ9KIw54OnR-F2nh3p1WQzv7LdDB7xg9q1R40OJYrVZN7BHa3_HKWs_CqOUykRbT5smFqtcpxxxQWo0UnvpjEhjm0CvItg&h=qjlKR2u5gxu41AeK_1RULA5_ILKZ9HIvW-peTCaZi1M
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/699ed67d-1ba5-47c3-bee5-360989b967e3*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","name":"699ed67d-1ba5-47c3-bee5-360989b967e3*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914","status":"Accepted","startTime":"2026-09-22T03:51:23.099564Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '564'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Sep 2026 03:51:56 GMT
+      etag:
+      - '"33045f70-0000-0100-0000-6ab1fb3b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/westus/068044ba-8d58-4e11-95e2-5defd4a5ec23
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: F13BBC4128604E78AEE4CA9F5B9C8F79 Ref B: BY1AA1072317054 Ref C: 2026-09-22T03:51:56Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --is-auto-scaling-enabled --storage-tbs
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/699ed67d-1ba5-47c3-bee5-360989b967e3*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462?api-version=2026-06-01&t=639256458837071795&c=MIIHwzCCBqugAwIBAgIQO9vjerLJyzCAZGOG8qnuujANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDEypDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBDVVMgQ0EgMDEwHhcNMjYwOTE3MTkyNzU0WhcNMjYxMjEzMDEyNzU0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOH7XcOFB9oBlttbwx8AirjT-trX0XvGg-qTsZnfCNKSBKRmEGUNPWfYKFgDpx0AZwfOinDzB58zssD8uZb2jeDqfJuiR1vqsOBWntnOkwx0IgWzw_pbET-L7lO_ZYW2-ec3c5ZewHiy0Jr51TL2zNtCadpjfB2g2RkKJY_5Zgyqgccwx0LvPgj81bdByhSFWtd49llL8NuFYWjo3Fk7HmsitrM-T8Z3xgac37X6nC2PTsQFiO6h917Etzgh-KBeYYfZiOTF9hHnetiX5px_9XecvBma56vHFyzqoF4VpkESo5tWkT_beymCu5gy2ngynn3SNDYyVgZXGrEn4V_OKM0CAwEAAaOCBMIwggS-MIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0OBBYEFLXKU9erjRhgRqjwHfGKduIH8QgZMB8GA1UdIwQYMBaAFPzkWgovhQ7nRLkHc3jg1EQHohkRMIIBygYDVR0fBIIBwTCCAb0wb6BtoGuGaWh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDBxoG-gbYZraHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvODEvY3VycmVudC5jcmwwYKBeoFyGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDB1oHOgcYZvaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxLzgxL2N1cnJlbnQuY3JsMIIBzwYIKwYBBQUHAQEEggHBMIIBvTByBggrBgEFBQcwAoZmaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHQGCCsGAQUFBzAChmhodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMGwGCCsGAQUFBzAChmBodHRwOi8vY2NtZWNlbnRyYWx1c3BraS5jZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lY2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAEdUznjVdYbUtxHD93flzOpv9itmdLU-P-i-amvvUBn1ESE_kJadN1MNgEM7wepiASPBur_kdjFJFZ5QdmL9EfoQmFlXLFS-v1qgMBh2uK-7Kx5nCPVe7MfrPZyaDtWWZoKQ1ku_7opeRh0t5mG0O3vQdmu-gxm9jX2bOhHTHW_uA9yYnskYrIv0kyqah1mv5zf85_XKMRSd592hVfIL4O9kUoKFjYKYWROv0MDSHRzOr2h9LjtoXGtDVpaGhgXaw6SQLRfR9piqIFxVYxpsgwP30Cdlvv9Vz-bZEpoPLRZc4_cpvPp6ZaWJSQgQNnoHo1QDfwAPoEEjmUxvRB06lrI&s=L7SUQ2ycA9syD2anSHCWQfhBy30lVbc-ilLWlk2xQP-kPrv_-eRPbJQlLMPKkY5-SSB6L-SlBW_gcYRHQMQve6W68Ti21kpAot4uhJheEfoo141Pyn-U5eaEgw9CDMH2XyRItjYmyT_l8d0d-S7rKgszVw2PeKrMLSG5mZfqBwegi6bF5IkFGNUT1Ge9_C9GLl7C9ug0KnhH7p_t4Mx6c1KhOsJs3nPSuH5UqFKQFzh497W4wfN31ye-AJ9KIw54OnR-F2nh3p1WQzv7LdDB7xg9q1R40OJYrVZN7BHa3_HKWs_CqOUykRbT5smFqtcpxxxQWo0UnvpjEhjm0CvItg&h=qjlKR2u5gxu41AeK_1RULA5_ILKZ9HIvW-peTCaZi1M
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/699ed67d-1ba5-47c3-bee5-360989b967e3*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","name":"699ed67d-1ba5-47c3-bee5-360989b967e3*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914","status":"Accepted","startTime":"2026-09-22T03:51:23.099564Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '564'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Sep 2026 03:52:27 GMT
+      etag:
+      - '"33045f70-0000-0100-0000-6ab1fb3b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/westus/ed94d4fb-555d-4d19-8f57-9d6293ae3965
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: DF063A824EC94EA09B58BF1B257CD90B Ref B: SJC211051204009 Ref C: 2026-09-22T03:52:27Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --is-auto-scaling-enabled --storage-tbs
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/699ed67d-1ba5-47c3-bee5-360989b967e3*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462?api-version=2026-06-01&t=639256458837071795&c=MIIHwzCCBqugAwIBAgIQO9vjerLJyzCAZGOG8qnuujANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDEypDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBDVVMgQ0EgMDEwHhcNMjYwOTE3MTkyNzU0WhcNMjYxMjEzMDEyNzU0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOH7XcOFB9oBlttbwx8AirjT-trX0XvGg-qTsZnfCNKSBKRmEGUNPWfYKFgDpx0AZwfOinDzB58zssD8uZb2jeDqfJuiR1vqsOBWntnOkwx0IgWzw_pbET-L7lO_ZYW2-ec3c5ZewHiy0Jr51TL2zNtCadpjfB2g2RkKJY_5Zgyqgccwx0LvPgj81bdByhSFWtd49llL8NuFYWjo3Fk7HmsitrM-T8Z3xgac37X6nC2PTsQFiO6h917Etzgh-KBeYYfZiOTF9hHnetiX5px_9XecvBma56vHFyzqoF4VpkESo5tWkT_beymCu5gy2ngynn3SNDYyVgZXGrEn4V_OKM0CAwEAAaOCBMIwggS-MIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0OBBYEFLXKU9erjRhgRqjwHfGKduIH8QgZMB8GA1UdIwQYMBaAFPzkWgovhQ7nRLkHc3jg1EQHohkRMIIBygYDVR0fBIIBwTCCAb0wb6BtoGuGaWh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDBxoG-gbYZraHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvODEvY3VycmVudC5jcmwwYKBeoFyGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDB1oHOgcYZvaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxLzgxL2N1cnJlbnQuY3JsMIIBzwYIKwYBBQUHAQEEggHBMIIBvTByBggrBgEFBQcwAoZmaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHQGCCsGAQUFBzAChmhodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMGwGCCsGAQUFBzAChmBodHRwOi8vY2NtZWNlbnRyYWx1c3BraS5jZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lY2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAEdUznjVdYbUtxHD93flzOpv9itmdLU-P-i-amvvUBn1ESE_kJadN1MNgEM7wepiASPBur_kdjFJFZ5QdmL9EfoQmFlXLFS-v1qgMBh2uK-7Kx5nCPVe7MfrPZyaDtWWZoKQ1ku_7opeRh0t5mG0O3vQdmu-gxm9jX2bOhHTHW_uA9yYnskYrIv0kyqah1mv5zf85_XKMRSd592hVfIL4O9kUoKFjYKYWROv0MDSHRzOr2h9LjtoXGtDVpaGhgXaw6SQLRfR9piqIFxVYxpsgwP30Cdlvv9Vz-bZEpoPLRZc4_cpvPp6ZaWJSQgQNnoHo1QDfwAPoEEjmUxvRB06lrI&s=L7SUQ2ycA9syD2anSHCWQfhBy30lVbc-ilLWlk2xQP-kPrv_-eRPbJQlLMPKkY5-SSB6L-SlBW_gcYRHQMQve6W68Ti21kpAot4uhJheEfoo141Pyn-U5eaEgw9CDMH2XyRItjYmyT_l8d0d-S7rKgszVw2PeKrMLSG5mZfqBwegi6bF5IkFGNUT1Ge9_C9GLl7C9ug0KnhH7p_t4Mx6c1KhOsJs3nPSuH5UqFKQFzh497W4wfN31ye-AJ9KIw54OnR-F2nh3p1WQzv7LdDB7xg9q1R40OJYrVZN7BHa3_HKWs_CqOUykRbT5smFqtcpxxxQWo0UnvpjEhjm0CvItg&h=qjlKR2u5gxu41AeK_1RULA5_ILKZ9HIvW-peTCaZi1M
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Oracle.Database/locations/EASTUS/operationStatuses/699ed67d-1ba5-47c3-bee5-360989b967e3*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","name":"699ed67d-1ba5-47c3-bee5-360989b967e3*E476590411185E455985BD67A6A33844828D738A7AEBC054CF19EB981B5D5462","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914","status":"Succeeded","startTime":"2026-09-22T03:51:23.099564Z","endTime":"2026-09-22T03:52:09.0878505Z","percentComplete":100.0,"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '648'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Sep 2026 03:52:58 GMT
+      etag:
+      - '"02008a21-0000-4d00-0000-6ab1fb890000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=359af50e-f985-4028-adf5-034a840f32d6,objectId=a9fc9ef3-cabe-4802-90cf-9c9d376bc4e5/westus/2e9f9636-5765-495e-8f73-dd57eefe18d7
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: C4FAA89600FF4734B6F20F9E7DB8E011 Ref B: BY1AA1072318036 Ref C: 2026-09-22T03:52:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --autonomousdatabasename --is-auto-scaling-enabled --storage-tbs
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.6.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914?api-version=2026-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Oracle.Database/autonomousDatabases/testRegression0914","name":"testRegression0914","type":"oracle.database/autonomousdatabases","location":"eastus","tags":{"reproduction":"adg-disabled","Environment":"Prod","Owner":"DBTeam"},"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2026-09-14T14:48:24.8731533Z","lastModifiedBy":"857ad006-4380-4712-ba4c-22f7c64d84e7","lastModifiedByType":"Application","lastModifiedAt":"2026-09-22T03:52:09.717115Z"},"properties":{"dataBaseType":"Regular","actualUsedDataStorageSizeInTbs":0.007810771465301514,"allocatedStorageSizeInTbs":0.0087890625,"whitelistedIps":null,"apexDetails":null,"autonomousDatabaseId":null,"autonomousMaintenanceScheduleType":"Regular","availableUpgradeVersions":null,"characterSet":"AL32UTF8","computeCount":3,"computeModel":"ECPU","connectionStrings":{"allConnectionStrings":{},"dedicated":null,"high":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_testregression0914_high.adb.oraclecloud.com","low":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_testregression0914_low.adb.oraclecloud.com","medium":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_testregression0914_medium.adb.oraclecloud.com","profiles":[{"consumerGroup":"High","displayName":"testregression0914_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Medium","displayName":"testregression0914_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Low","displayName":"testregression0914_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tp","displayName":"testregression0914_tp","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tpurgent","displayName":"testregression0914_tpurgent","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"High","displayName":"testregression0914_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Medium","displayName":"testregression0914_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Low","displayName":"testregression0914_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tp","displayName":"testregression0914_tp","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tpurgent","displayName":"testregression0914_tpurgent","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=lnqbh6k3.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_testregression0914_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"}]},"connectionUrls":{"apexUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/ords/apex","databaseTransformsUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/odi/?sso=true","graphStudioUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/graphstudio/?sso=true","machineLearningNotebookUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/oml/?sso=true","mongoDbUrl":null,"ordsUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/ords/","sqlDevWebUrl":"https://lnqbh6k3.adb.us-ashburn-1.oraclecloudapps.com/ords/sql-developer"},"cpuCoreCount":null,"customerContacts":null,"dataSafeStatus":null,"dataStorageSizeInGbs":2048,"dataStorageSizeInTbs":2,"databaseEdition":null,"dbVersion":"19c","dbWorkload":"OLTP","displayName":"testRegression0914","zone":null,"inMemoryAreaInGbs":null,"nextLongTermBackupTimeStamp":null,"longTermBackupSchedule":null,"isAutoScalingEnabled":true,"isAutoScalingForStorageEnabled":true,"peerDbIds":[],"isLocalDataGuardEnabled":false,"isRemoteDataGuardEnabled":false,"localDisasterRecoveryType":"BackupBased","timeDisasterRecoveryRoleChanged":null,"remoteDisasterRecoveryConfiguration":null,"localStandbyDb":{"lagTimeInSeconds":null,"lifecycleState":"Standby","lifecycleDetails":null,"timeDataGuardRoleChanged":null,"timeDisasterRecoveryRoleChanged":null},"failedDataRecoveryInSeconds":null,"isMtlsConnectionRequired":false,"isPreview":null,"licenseModel":"LicenseIncluded","lifecycleDetails":null,"provisioningState":"Succeeded","localAdgAutoFailoverMaxDataLossLimit":null,"memoryPerOracleComputeUnitInGbs":null,"ncharacterSet":"AL16UTF16","ociUrl":"https://cloud.oracle.com/db/adbs/ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqafzv63uxgo7ludoy67k3tfntnaa65rhjwcpmy5rb3f64a?region=us-ashburn-1&tenant=orpsandbox3&compartmentId=ocid1.compartment.oc1..aaaaaaaauaai2yet56ac2mh6qvfqlsleivrdjvykrj2s7htenpgbtjkamqxq","resourceAnchorId":null,"networkAnchorId":null,"openMode":"ReadWrite","operationsInsightsStatus":null,"permissionLevel":null,"privateEndpoint":"lnqbh6k3.adb.us-ashburn-1.oraclecloud.com","privateEndpointIp":"10.0.1.51","privateEndpointLabel":"lnqbh6k3","provisionableCpus":null,"lifecycleState":"Available","role":null,"scheduledOperationsList":null,"serviceConsoleUrl":null,"sqlWebDeveloperUrl":null,"subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse/subnets/default2","supportedRegionsToCloneTo":["germanynorth","germanywestcentral"],"timeCreated":"2026-09-14T14:59:00.734Z","timeDataGuardRoleChanged":null,"timeDeletionOfFreeAutonomousDatabase":null,"timeLocalDataGuardEnabled":"Mon
+        Sep 14 14:59:15 UTC 2026","timeMaintenanceBegin":"2026-09-27T20:00:00Z","timeMaintenanceEnd":"2026-09-27T22:00:00Z","timeOfLastFailover":null,"timeOfLastRefresh":null,"timeOfLastRefreshPoint":null,"timeOfLastSwitchover":null,"timeReclamationOfFreeAutonomousDatabase":null,"usedDataStorageSizeInGbs":null,"usedDataStorageSizeInTbs":null,"vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRgMihr/providers/Microsoft.Network/virtualNetworks/testVnetReuse","ocid":"ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqafzv63uxgo7ludoy67k3tfntnaa65rhjwcpmy5rb3f64a","backupRetentionPeriodInDays":60,"backupDestination":"OCI"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 22 Sep 2026 03:52:59 GMT
+      etag:
+      - '"dd006ced-0000-0100-0000-6ab1fb690000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 4B3E0B31CFD144239BCEC16F1C48657E Ref B: SJC211051203031 Ref C: 2026-09-22T03:53:00Z'
+    status:
+      code: 200
+      message: OK
+version: 1

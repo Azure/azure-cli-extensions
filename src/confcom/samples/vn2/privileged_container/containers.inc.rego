@@ -352,6 +352,10 @@
         "CAP_SYS_TTY_CONFIG",
         "CAP_WAKE_ALARM"
       ]
-    }
+    },
+    "signals": [
+      9,
+      15
+    ]
   }
 ]

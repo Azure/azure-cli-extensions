@@ -13,16 +13,15 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "durabletask scheduler transparent-data-encryption show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get a Transparent Data Encryption
     """
 
     _aaz_info = {
-        "version": "2026-05-01-preview",
+        "version": "2026-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/transparentdataencryptions/default", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/transparentdataencryptions/default", "2026-07-01-preview"],
         ]
     }
 
@@ -121,7 +120,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-07-01-preview",
                     required=True,
                 ),
             }
@@ -170,6 +169,9 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.auto_rotation_enabled = AAZBoolType(
+                serialized_name="autoRotationEnabled",
+            )
             properties.key_source = AAZStrType(
                 serialized_name="keySource",
                 flags={"required": True},

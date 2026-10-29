@@ -6,7 +6,6 @@
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
-    InvalidArgumentValueError,
 )
 
 
@@ -15,20 +14,6 @@ def validate_generate(namespace):
     if not getattr(namespace, 'wave_name', None):
         raise RequiredArgumentMissingError(
             "--wave-name is required to generate a runbook.")
-
-
-def validate_step_approve(namespace):
-    """Enforce the ``execution step approve`` parameter-set rules.
-
-    ``--entities`` (per-entity approval) and ``--all-ready`` (approve every
-    ready entity) are mutually exclusive. Both apply only to Partial
-    approval steps; the service rejects them for Full/non-approval steps.
-    """
-    entities = getattr(namespace, 'entities', None)
-    all_ready = getattr(namespace, 'all_ready', None)
-    if entities and all_ready:
-        raise InvalidArgumentValueError(
-            "--entities and --all-ready cannot be used together.")
 
 
 def validate_step_complete(namespace):

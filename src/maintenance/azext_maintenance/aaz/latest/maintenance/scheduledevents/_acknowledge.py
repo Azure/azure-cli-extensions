@@ -13,11 +13,14 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "maintenance scheduledevents acknowledge",
+    is_preview=True,
 )
 class Acknowledge(AAZCommand):
-    """Acknowledge a single Scheduled Events
+    """Acknowledge a single ScheduledEvents Id.
 
-    :example: Acknowledge a single Scheduled Events on a VirtualMachine
+    Approves the event on ScheduledEvents resource before timeout when it is safe to proceed. Supported resource types are VirtualMachines, VirtualMachineScaleSets, AvailabilitySets.
+
+    :example: Acknowledge a single Scheduled Events on a VirtualMachines
         az maintenance scheduledevents acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachines" --resource-name {VMname} --scheduled-events-id {scheduledEventsId} --subscription {subscriptionId}
         az maintenance scheduledevents acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/virtualMachines/{resourceName}/providers/microsoft.maintenance/scheduledevents/{scheduledEventsId}
 
@@ -25,7 +28,7 @@ class Acknowledge(AAZCommand):
         az maintenance scheduledevents acknowledge --resource-group {resourceGroup} --resource-type "virtualMachineScaleSets" --resource-name {VMSSname} --scheduled-events-id {scheduledEventsId} --subscription {subscriptionId}
         az maintenance scheduledevents acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/virtualMachineScaleSets/{resourceName}/providers/microsoft.maintenance/scheduledevents/{scheduledEventsId}
 
-    :example: Acknowledge a single Scheduled Events on a AvailabilitySet
+    :example: Acknowledge a single Scheduled Events on a AvailabilitySets
         az maintenance scheduledevents acknowledge--resource-group {resourceGroupName} --resource-type "availabilitySets"--resource-name {AVSetname} --scheduled-events-id {scheduledEventsId} --subscription {subscriptionId}
         az maintenance scheduledevents acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/AvalabilitySets/{resourceName}/providers/microsoft.maintenance/scheduledevents/{scheduledEventsId}
     """
@@ -54,31 +57,36 @@ class Acknowledge(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="ResourceGroupName",
             required=True,
+            is_preview=True,
         )
         _args_schema.resource_name = AAZStrArg(
-            options=["--resource-name"],
+            options=["-n", "--name", "--resource-name"],
             help="Resource Name",
             required=True,
+            is_preview=True,
             id_part="name",
         )
         _args_schema.resource_type = AAZStrArg(
             options=["--resource-type"],
-            help="Resource type",
+            help="Resource Type",
             required=True,
+            is_preview=True,
             id_part="type",
         )
         _args_schema.scheduled_events_id = AAZStrArg(
             options=["--scheduled-events-id"],
-            help="Scheduled Events Id. This is a GUID-formatted string (e.g. 00000000-0000-0000-0000-000000000000)",
+            help="ScheduledEvents Id. This is a GUID-formatted string (e.g. 00000000-0000-0000-0000-000000000000)",
             required=True,
+            is_preview=True,
             id_part="child_name_1",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ScheduledEventsOperationGroupAcknowledge(ctx=self.ctx)()
+        self.ScheduledEventOperationGroupAcknowledge(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -93,7 +101,7 @@ class Acknowledge(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class ScheduledEventsOperationGroupAcknowledge(AAZHttpOperation):
+    class ScheduledEventOperationGroupAcknowledge(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -107,7 +115,7 @@ class Acknowledge(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Compute/{resourceType}/{resourceName}/providers/Microsoft.Maintenance/scheduledevents/{scheduledEventsId}/acknowledge",
+                "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Compute/{resourceType}/{resourceName}/providers/Microsoft.Maintenance/scheduledevents/{scheduledEventId}/acknowledge",
                 **self.url_parameters
             )
 
@@ -135,7 +143,7 @@ class Acknowledge(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "scheduledEventsId", self.ctx.args.scheduled_events_id,
+                    "scheduledEventId", self.ctx.args.scheduled_events_id,
                     required=True,
                 ),
                 **self.serialize_url_param(

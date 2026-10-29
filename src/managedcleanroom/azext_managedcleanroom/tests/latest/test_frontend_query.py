@@ -18,6 +18,7 @@ from azext_managedcleanroom._frontend_custom import (
     frontend_collaboration_query_run,
     frontend_collaboration_query_vote,
     frontend_collaboration_query_runhistory_list,
+    frontend_collaboration_query_cancel_run,
     frontend_collaboration_query_runresult_show
 )
 
@@ -26,6 +27,24 @@ class TestFrontendQuery(unittest.TestCase):
     """Test cases for query commands"""
 
     # Query CRUD Tests
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_cancel_run_success(self, mock_get_client):
+        """Test cancelling a query run"""
+        mock_client = Mock()
+        mock_client.collaboration.analytics_queries_document_id_runs_run_id_cancel_post.return_value = {
+            "id": "run-1", "status": "cancelled"
+        }
+        mock_get_client.return_value = mock_client
+
+        result = frontend_collaboration_query_cancel_run(
+            cmd=Mock(), collaboration_id="collab-1", document_id="query-1", run_id="run-1"
+        )
+
+        self.assertEqual(result["status"], "cancelled")
+        mock_client.collaboration.analytics_queries_document_id_runs_run_id_cancel_post.assert_called_once_with(
+            "collab-1", "query-1", "run-1"
+        )
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_list_queries_success(self, mock_get_client):
@@ -122,10 +141,10 @@ class TestFrontendQuery(unittest.TestCase):
         # Mock the client and its method chain
         mock_client = Mock()
         mock_client.collaboration.analytics_queries_document_id_run_post.return_value = {
-            "runId": "generated-run-id-123",
-            "queryId": "test-query-123",
-            "status": "running",
-            "startTime": "2024-01-01T00:00:00Z"}
+            "id": "generated-run-id-123",
+            "status": "submitted",
+            "dryRun": False,
+            "optimizationUsed": False}
         mock_get_client.return_value = mock_client
 
         # Execute
@@ -136,8 +155,8 @@ class TestFrontendQuery(unittest.TestCase):
         )
 
         # Verify
-        self.assertEqual(result["runId"], "generated-run-id-123")
-        self.assertEqual(result["status"], "running")
+        self.assertEqual(result["id"], "generated-run-id-123")
+        self.assertEqual(result["status"], "submitted")
         # Verify the body with auto-generated runId was passed
         mock_client.collaboration.analytics_queries_document_id_run_post.assert_called_once()
         call_args = mock_client.collaboration.analytics_queries_document_id_run_post.call_args
@@ -148,6 +167,8 @@ class TestFrontendQuery(unittest.TestCase):
         self.assertIn("body", call_args[1])
         self.assertIn("runId", call_args[1]["body"])
         self.assertEqual(call_args[1]["body"]["runId"], "generated-run-id-123")
+        # scaleSku is omitted so the service default applies
+        self.assertNotIn("scaleSku", call_args[1]["body"])
 
     # Query Voting Tests
 
@@ -204,15 +225,16 @@ class TestFrontendQuery(unittest.TestCase):
         mock_client = Mock()
         mock_client.collaboration.analytics_queries_document_id_runs_get.return_value = [
             {
-                "runId": "run-1",
                 "queryId": "test-query-123",
-                "status": "completed",
-                "startTime": "2024-01-01T00:00:00Z"},
-            {
-                "runId": "run-2",
-                "queryId": "test-query-123",
-                "status": "completed",
-                "startTime": "2024-01-02T00:00:00Z"}]
+                "latestRun": {
+                    "runId": "run-2",
+                    "startTime": "2024-01-02T00:00:00Z",
+                    "endTime": "2024-01-02T00:05:00Z",
+                    "isSuccessful": True},
+                "runs": [
+                    {"runId": "run-1", "isSuccessful": True},
+                    {"runId": "run-2", "isSuccessful": True}],
+                "summary": {"totalRuns": 2, "successfulRuns": 2}}]
         mock_get_client.return_value = mock_client
 
         # Execute
@@ -223,9 +245,10 @@ class TestFrontendQuery(unittest.TestCase):
         )
 
         # Verify
-        self.assertEqual(len(result), 2)
-        self.assertEqual(result[0]["runId"], "run-1")
-        self.assertEqual(result[1]["runId"], "run-2")
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["queryId"], "test-query-123")
+        self.assertEqual(result[0]["latestRun"]["runId"], "run-2")
+        self.assertEqual([r["runId"] for r in result[0]["runs"]], ["run-1", "run-2"])
         mock_client.collaboration.analytics_queries_document_id_runs_get.assert_called_once_with(
             "test-collab-123", "test-query-123")
 
@@ -234,13 +257,12 @@ class TestFrontendQuery(unittest.TestCase):
         """Test showing specific query run details"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.analytics_runs_job_id_get.return_value = {
-            "runId": "test-job-123",
-            "queryId": "test-query-123",
-            "status": "completed",
-            "startTime": "2024-01-01T00:00:00Z",
-            "endTime": "2024-01-01T00:05:00Z",
-            "results": {"rowCount": 1000}
+        mock_client.collaboration.analytics_runs_run_id_get.return_value = {
+            "id": "test-run-123",
+            "status": {
+                "applicationState": {"state": "COMPLETED"},
+                "terminationTime": "2024-01-01T00:05:00Z"},
+            "events": []
         }
         mock_get_client.return_value = mock_client
 
@@ -248,15 +270,14 @@ class TestFrontendQuery(unittest.TestCase):
         result = frontend_collaboration_query_runresult_show(
             cmd=Mock(),
             collaboration_id="test-collab-123",
-            job_id="test-job-123"
+            run_id="test-run-123"
         )
 
         # Verify
-        self.assertEqual(result["runId"], "test-job-123")
-        self.assertEqual(result["queryId"], "test-query-123")
-        self.assertEqual(result["status"], "completed")
-        mock_client.collaboration.analytics_runs_job_id_get.assert_called_once_with(
-            "test-collab-123", "test-job-123")
+        self.assertEqual(result["id"], "test-run-123")
+        self.assertEqual(result["status"]["applicationState"]["state"], "COMPLETED")
+        mock_client.collaboration.analytics_runs_run_id_get.assert_called_once_with(
+            "test-collab-123", "test-run-123")
 
     # Query Publish with Parameters Tests
 
@@ -564,7 +585,7 @@ class TestFrontendQuery(unittest.TestCase):
         # Mock the client
         mock_client = Mock()
         mock_client.collaboration.analytics_queries_document_id_run_post.return_value = {
-            "runId": "generated-run-id-456", "status": "running"}
+            "id": "generated-run-id-456", "status": "submitted"}
         mock_get_client.return_value = mock_client
 
         # Execute with parameters
@@ -580,7 +601,7 @@ class TestFrontendQuery(unittest.TestCase):
         )
 
         # Verify
-        self.assertEqual(result["runId"], "generated-run-id-456")
+        self.assertEqual(result["id"], "generated-run-id-456")
 
         # Verify body was constructed with parameters
         call_args = mock_client.collaboration.analytics_queries_document_id_run_post.call_args
@@ -623,7 +644,7 @@ class TestFrontendQuery(unittest.TestCase):
         # Mock the client
         mock_client = Mock()
         mock_client.collaboration.analytics_queries_document_id_run_post.return_value = {
-            "runId": "generated-run-id-789", "status": "running"}
+            "id": "generated-run-id-789", "status": "submitted"}
         mock_get_client.return_value = mock_client
 
         # Execute with only dry_run parameter
@@ -639,7 +660,7 @@ class TestFrontendQuery(unittest.TestCase):
         )
 
         # Verify
-        self.assertEqual(result["status"], "running")
+        self.assertEqual(result["status"], "submitted")
 
         # Verify only dry_run is in body (not False boolean values)
         call_args = mock_client.collaboration.analytics_queries_document_id_run_post.call_args
@@ -648,6 +669,70 @@ class TestFrontendQuery(unittest.TestCase):
         self.assertNotIn("startDate", body)
         self.assertNotIn("endDate", body)
         self.assertNotIn("useOptimizer", body)
+        self.assertNotIn("scaleSku", body)
+
+    @patch('uuid.uuid4')
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_run_query_with_scale_sku(self, mock_get_client, mock_uuid4):
+        """Test that --scale-sku is sent as scaleSku for each supported size"""
+        mock_uuid4.return_value = "generated-run-id-sku"
+        for sku in ("small", "medium", "large"):
+            with self.subTest(scale_sku=sku):
+                mock_client = Mock()
+                mock_client.collaboration.analytics_queries_document_id_run_post.return_value = {
+                    "id": "generated-run-id-sku",
+                    "status": "submitted"}
+                mock_get_client.return_value = mock_client
+
+                result = frontend_collaboration_query_run(
+                    cmd=Mock(),
+                    collaboration_id="test-collab-123",
+                    document_id="test-query-123",
+                    scale_sku=sku
+                )
+
+                self.assertEqual(result["id"], "generated-run-id-sku")
+                body = mock_client.collaboration.analytics_queries_document_id_run_post.call_args[1]["body"]
+                self.assertEqual(body["scaleSku"], sku)
+                self.assertEqual(body["runId"], "generated-run-id-sku")
+                self.assertNotIn("dryRun", body)
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_run_query_scale_sku_with_body_is_rejected(self, mock_get_client):
+        """Test that --scale-sku cannot be combined with --body"""
+        from azure.cli.core.util import CLIError
+
+        mock_get_client.return_value = Mock()
+
+        with self.assertRaises(CLIError) as context:
+            frontend_collaboration_query_run(
+                cmd=Mock(),
+                collaboration_id="test-collab-123",
+                document_id="test-query-123",
+                body={"scaleSku": "small"},
+                scale_sku="large"
+            )
+
+        self.assertIn(
+            "Cannot use --body together with individual parameters", str(context.exception))
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_run_query_scale_sku_in_body_is_forwarded(self, mock_get_client):
+        """Test that scaleSku supplied through --body is passed through unchanged"""
+        mock_client = Mock()
+        mock_client.collaboration.analytics_queries_document_id_run_post.return_value = {
+            "id": "run-from-body", "status": "submitted"}
+        mock_get_client.return_value = mock_client
+
+        frontend_collaboration_query_run(
+            cmd=Mock(),
+            collaboration_id="test-collab-123",
+            document_id="test-query-123",
+            body='{"runId": "run-from-body", "scaleSku": "medium"}'
+        )
+
+        body = mock_client.collaboration.analytics_queries_document_id_run_post.call_args[1]["body"]
+        self.assertEqual(body, {"runId": "run-from-body", "scaleSku": "medium"})
 
 
 if __name__ == '__main__':

@@ -14,13 +14,17 @@ from azure.cli.core.aaz import *
 @register_client("AAZMicrosoftOperationalinsightsDataPlaneClient_log_analytics")
 class AAZMicrosoftOperationalinsightsDataPlaneClient(AAZBaseClient):
     _CLOUD_HOST_TEMPLATES = {
+        CloudNameEnum.AzureChinaCloud: "https://api.loganalytics.azure.cn",
         CloudNameEnum.AzureCloud: "https://api.loganalytics.io",
+        CloudNameEnum.AzureUSGovernment: "https://api.loganalytics.us",
     }
     _CLOUD_HOST_METADATA_INDEX = "logAnalyticsResourceId"
 
-    _AAD_CREDENTIAL_SCOPES = [
-        "https://api.loganalytics.io/.default",
-    ]
+    _AAD_CREDENTIAL_SCOPES = {
+        CloudNameEnum.AzureChinaCloud: ["https://api.loganalytics.azure.cn/.default"],
+        CloudNameEnum.AzureCloud: ["https://api.loganalytics.io/.default"],
+        CloudNameEnum.AzureUSGovernment: ["https://api.loganalytics.us/.default"],
+    }
 
     @classmethod
     def _build_base_url(cls, ctx, **kwargs):
@@ -31,9 +35,13 @@ class AAZMicrosoftOperationalinsightsDataPlaneClient(AAZBaseClient):
 
     @classmethod
     def _build_configuration(cls, ctx, credential, **kwargs):
+        credential_scopes = cls._AAD_CREDENTIAL_SCOPES.get(ctx.cli_ctx.cloud.name)
+        if not credential_scopes:
+            endpoint = cls._build_base_url(ctx, **kwargs)
+            credential_scopes = [f"{endpoint.rstrip('/')}/.default"]
         return AAZClientConfiguration(
             credential=credential,
-            credential_scopes=cls._AAD_CREDENTIAL_SCOPES,
+            credential_scopes=credential_scopes,
             **kwargs
         )
 

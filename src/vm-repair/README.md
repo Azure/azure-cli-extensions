@@ -36,17 +36,37 @@ The table below lists only what is available today. Combinations that are not li
 |---|---|---|---|
 | NVMe boot readiness detection (read-only) | Windows | `win-detect-nvme-readiness` | Available |
 | NVMe boot readiness detection (read-only) | Linux | `linux-detect-nvme-readiness` | Available |
-| NVMe boot-driver recovery | Windows | — | Not available yet |
+| NVMe boot-driver recovery | Windows | `win-enable-nvme-boot-driver` | Available for Generation 2 offline recovery |
 | NVMe boot-driver recovery | Linux | — | Not available yet |
 
-Both detectors run against the source VM's OS disk attached to a repair VM, so they require
-`--run-on-repair`. Neither one modifies the attached source OS disk. Both write a log and an evidence
-bundle on the repair VM itself, under the Public desktop on Windows and under `/tmp` on Linux.
+The detectors and Windows recovery script run against the source VM's OS disk attached to a repair VM,
+so they require `--run-on-repair`. The detectors do not modify the attached source OS disk. They write a
+log and an evidence bundle on the repair VM itself, under the Public desktop on Windows and under `/tmp`
+on Linux.
 
-```
+```powershell
 az vm repair create -g MyResourceGroup -n MyBrokenVM --verbose
+
+# Detect readiness and generation. Stop unless the signature is NVME_REPAIR_APPLICABLE.
 az vm repair run -g MyResourceGroup -n MyBrokenVM --run-id win-detect-nvme-readiness --run-on-repair --verbose
+
+# Report the exact recovery changes without writing.
+az vm repair run -g MyResourceGroup -n MyBrokenVM --run-id win-enable-nvme-boot-driver --run-on-repair --verbose
+
+# Apply the recovery after reviewing the detector evidence and report.
+az vm repair run -g MyResourceGroup -n MyBrokenVM --run-id win-enable-nvme-boot-driver --run-on-repair --parameters Mode=Repair --verbose
 ```
+
+`Mode=Report` is the recovery default, makes no configuration changes, and creates no recovery evidence
+or backup directory. Continue to `Mode=Repair` only when the Windows detector returns
+`NVME_REPAIR_APPLICABLE` for a Generation 2 guest. Stop when it
+returns `GEN1_TO_GEN2_CONVERSION_REQUIRED`, `STORNVME_DRIVER_MISSING`, or evidence that cannot identify
+the target safely. `GEN1_TO_GEN2_CONVERSION_REQUIRED` requires a separate in-guest disk conversion
+followed by an Azure Trusted Launch upgrade; it is not performed by a repair-library run ID. Repair
+creates a timestamped registry-backup directory and prints the full backup path only when values need
+changing; `NoChangeNeeded` creates no backup. If rollback is needed, run the same script with
+`--parameters Mode=Rollback BackupFile=<full-path-emitted-by-Repair>`. Use `--no-cleanup` when restoring
+the source VM if the repair VM and its detector evidence or rollback files must be retained.
 
 When the source VM uses the NVMe disk controller, `az vm repair create` pins the repair VM to SCSI if
 the repair VM size supports it, so that repair scripts which select disks by the SCSI model string can

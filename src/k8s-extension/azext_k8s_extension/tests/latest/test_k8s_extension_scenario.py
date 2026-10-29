@@ -60,3 +60,44 @@ class K8sExtensionScenarioTest(ScenarioTest):
                 found_extension = True
                 break
         self.assertFalse(found_extension)
+
+    @record_only()
+    def test_k8s_extension_fleet(self):
+        self.kwargs.update({
+            'name': 'cli-test-flux',
+            'rg': 'britania-flux-test',
+            'cluster_name': 'cli-test-fleet-hub',
+            'cluster_type': 'fleets',
+            'extension_type': 'microsoft.flux',
+        })
+
+        self.cmd(
+            'k8s-extension create -g {rg} -n {name} -c {cluster_name} '
+            '--cluster-type {cluster_type} --extension-type {extension_type} '
+            '--scope cluster --no-wait'
+        )
+
+        self.cmd(
+            'k8s-extension show -g {rg} -n {name} -c {cluster_name} '
+            '--cluster-type {cluster_type}',
+            checks=[
+                self.check('name', '{name}'),
+                self.check('extensionType', '{extension_type}'),
+                self.check('resourceGroup', '{rg}'),
+            ]
+        )
+
+        installed_exts = self.cmd(
+            'k8s-extension list -g {rg} -c {cluster_name} '
+            '--cluster-type {cluster_type}'
+        ).get_output_in_json()
+        self.assertTrue(any(
+            item['name'] == self.kwargs['name']
+            and item['extensionType'] == self.kwargs['extension_type']
+            for item in installed_exts
+        ))
+
+        self.cmd(
+            'k8s-extension delete -g {rg} -n {name} -c {cluster_name} '
+            '--cluster-type {cluster_type} --force --no-wait -y'
+        )
