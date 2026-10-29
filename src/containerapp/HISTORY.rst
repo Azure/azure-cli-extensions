@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* [BREAKING CHANGE] 'az containerapp env create': Change default value of '--logs-destination' from 'log-analytics' to 'azure-monitor'
 
 1.3.0b5
 ++++++
