@@ -5,6 +5,7 @@ Release History
 3.1.0
 +++++
 * Upgrade to stable API version 2026-09-01.
+* Add `az connectedmachine application add/delete/list/show/update/wait` and `az connectedmachine application instance show` to manage VM applications on Arc-enabled servers.
 * `az connectedmachine update`: `--identity-key-store` accepts the new `TpmTransition` value.
 * `az connectedmachine private-link-scope network-security-perimeter-configuration reconcile`: Support `--no-wait`; use `az connectedmachine private-link-scope network-security-perimeter-configuration wait` to wait for completion.
 
