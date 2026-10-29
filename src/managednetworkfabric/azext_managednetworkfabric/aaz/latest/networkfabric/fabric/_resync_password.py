@@ -18,7 +18,7 @@ class ResyncPassword(AAZCommand):
     """Updates the Terminal Server and all Network Devices to use the latest passwords. Does not generate new passwords.  Allows devices to be brought back in sync after a partially successful password rotation.
 
     :example: Updates the Terminal Server and all Network Devices to use the latest passwords
-        az networkfabric fabric resync-password --resource-group example-rg --resource-name example-fabric
+        az networkfabric fabric resync-password --resource-group "example-rg" --resource-name "example-fabric"
     """
 
     _aaz_info = {

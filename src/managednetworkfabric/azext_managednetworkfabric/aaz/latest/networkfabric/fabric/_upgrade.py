@@ -18,7 +18,7 @@ class Upgrade(AAZCommand):
     """Upgrades the version of the underlying resources in the given Network Fabric instance.
 
     :example: Upgrade the Network Fabric
-        az networkfabric fabric upgrade --resource-group example-rg --resource-name example-fabric --version 3.x.x --action Start
+        az networkfabric fabric upgrade --resource-group "example-rg" --resource-name "example-fabric" --version "3.x.x" --action "Start"
     """
 
     _aaz_info = {

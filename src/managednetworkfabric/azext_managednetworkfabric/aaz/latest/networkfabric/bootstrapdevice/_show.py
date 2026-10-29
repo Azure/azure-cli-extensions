@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get a Network Bootstrap Device resource details.
 
     :example: Show the Bootstrap Device resource
-        az networkfabric bootstrapdevice show --resource-group example-rg --resource-name example-device
+        az networkfabric bootstrapdevice show --resource-group "example-rg" --resource-name "example-device"
     """
 
     _aaz_info = {
