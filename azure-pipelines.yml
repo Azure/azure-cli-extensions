@@ -119,6 +119,13 @@ jobs:
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
         WHEELS_OUTPUT_DIR: $(Build.ArtifactStagingDirectory)/wheels-$(python.version)
 
+    - bash: |
+        set -ev
+        source ./env/bin/activate
+        python -m pytest tests/e2e/packaging/test_packaging_lifecycle.py -k ml_metadata -q
+      displayName: 'Validate ML extension metadata compatibility'
+      condition: and(succeeded(), eq(variables['python.version'], '3.12'))
+
     - task: PublishPipelineArtifact@1
       displayName: 'Publish wheels artifacts from tests'
       inputs:
