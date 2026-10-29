@@ -166,7 +166,7 @@ class TestFabricRotateCertificateCommand(CustomCommandTestClass, unittest.TestCa
         from azext_managednetworkfabric.aaz.latest.networkfabric.fabric import (
             RotateCertificate as _RotateCertificateCommand,
         )
-        from azext_managednetworkfabric.custom.fabric_rotate_certificate import (
+        from azext_managednetworkfabric.operations.fabric_rotate_certificate import (
             RotateCertificateCommand,
         )
 
@@ -181,7 +181,7 @@ class TestDeviceResyncPasswordCommand(CustomCommandTestClass, unittest.TestCase)
         from azext_managednetworkfabric.aaz.latest.networkfabric.device import (
             ResyncPassword as _ResyncPasswordCommand,
         )
-        from azext_managednetworkfabric.custom.device_resync_password import (
+        from azext_managednetworkfabric.operations.device_resync_password import (
             ResyncPasswordCommand,
         )
 
@@ -196,7 +196,22 @@ class TestFabricResyncPasswordCommand(CustomCommandTestClass, unittest.TestCase)
         from azext_managednetworkfabric.aaz.latest.networkfabric.fabric import (
             ResyncPassword as _ResyncPasswordCommand,
         )
-        from azext_managednetworkfabric.custom.fabric_resync_password import (
+        from azext_managednetworkfabric.operations.fabric_resync_password import (
+            ResyncPasswordCommand,
+        )
+
+        self.base_class = _ResyncPasswordCommand
+        self.cmd = ResyncPasswordCommand.__new__(ResyncPasswordCommand)
+
+
+class TestBootstrapDeviceResyncPasswordCommand(CustomCommandTestClass, unittest.TestCase):
+    """Tests for bootstrapdevice resync-password custom command."""
+
+    def setUp(self):
+        from azext_managednetworkfabric.aaz.latest.networkfabric.bootstrapdevice import (
+            ResyncPassword as _ResyncPasswordCommand,
+        )
+        from azext_managednetworkfabric.operations.bootstrapdevice_resync_password import (
             ResyncPasswordCommand,
         )
 
