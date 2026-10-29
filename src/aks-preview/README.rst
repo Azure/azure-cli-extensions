@@ -14,6 +14,56 @@ Install this extension using the following CLI command `az extension add --name 
 
 Remove this extension using the following CLI command `az extension remove --name aks-preview`.
 
+Agent Sandbox preview
+=====================
+
+In a build containing Agent Sandbox support, install the ``k8s-extension`` CLI
+dependency and manage the extension on an existing, eligible AKS cluster::
+
+    az extension add --name k8s-extension
+    az aks extension create -g MyResourceGroup --cluster-name MyCluster --name agent-sandbox --extension-type Microsoft.AgentSandbox --scope cluster --release-namespace agent-sandbox-system
+    az aks extension update -g MyResourceGroup --cluster-name MyCluster --name agent-sandbox --config replicaCount=2 controller.sandboxWarmPoolConcurrentWorkers=2
+    az aks extension show -g MyResourceGroup --cluster-name MyCluster --name agent-sandbox
+    az aks extension delete -g MyResourceGroup --cluster-name MyCluster --name agent-sandbox
+
+These commands delegate to ``k8s-extension`` for ``managedClusters`` and call
+``Microsoft.KubernetesConfiguration/extensions`` (ClusterConfig), which drives
+Extension Manager and Helm. They do not set ``agentSandboxProfile`` or invoke
+its ``Microsoft.ContainerService/AgentSandboxPreview`` AFEC validation.
+ClusterConfig registration must permit direct customer installation and
+configuration updates; preview subscription, region, Kubernetes compatibility,
+identity, and Azure RBAC requirements still apply. Adding the type to the CLI
+allowlist does not grant access or change the registration.
+
+Use a customer-managed instance name such as ``agent-sandbox``. Names containing
+``aks-managed`` are reserved for authorized service clients.
+
+Do not use this path for an instance owned by ``agentSandboxProfile``.
+Disabling an existing profile requests deletion, not an ownership handoff;
+migration requires a separately coordinated procedure. The chart has defaults
+for base installation. Optional overrides can be supplied with ``--config`` or
+``--config-file`` (alias ``--config-settings-file``). Installation does not
+configure a Kata node pool or install Pod Snapshot Restore.
+
+Live lifecycle scenario
+-----------------------
+
+Use a dedicated, eligible cluster without an existing Agent Sandbox Helm release
+or extension, with both Agent Sandbox and Pod Snapshot profiles unset. Install
+the development ``aks-preview`` build and the ``k8s-extension`` dependency in
+the test environment, then run::
+
+    export AZURE_CLI_TEST_AGENT_SANDBOX_RESOURCE_GROUP=<resource-group>
+    export AZURE_CLI_TEST_AGENT_SANDBOX_CLUSTER=<cluster-name>
+    export AZURE_CLI_TEST_AGENT_SANDBOX_SUBSCRIPTION=<subscription-id>
+    azdev test test_agent_sandbox_extension_lifecycle --live --series
+
+The scenario performs fresh create, show/list, a configuration update from one
+to two controller replicas, and delete with an absence check. Cleanup attempts
+to delete the test extension even on failure; it does not delete the cluster.
+Service authorization failures fail the live test rather than being reported
+as validated. The scenario is skipped in playback and when its target is unset.
+
 Dependency between aks-preview and azure-cli/acs (azure-cli-core)
 =================================================================
 
