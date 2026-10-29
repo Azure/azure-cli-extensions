@@ -4,12 +4,14 @@
 #
 # --------------------------------------------------------------------------------------------
 
+import argparse
 import unittest
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 from azure.cli.core.aaz._arg_action import AAZAnyTypeArgAction
 
+from azext_elastic_san.aaz.latest.elastic_san.volume import Delete as VolumeDelete
 from azext_elastic_san.custom import (
     ElasticSanCreate,
     ElasticSanUpdate,
@@ -22,6 +24,39 @@ from azext_elastic_san.custom import (
     _add_legacy_managed_by_output,
     _normalize_managed_by_argument,
 )
+
+
+class VolumeDeleteQueryTest(unittest.TestCase):
+    def _query_parameters(self, cli_args):
+        schema = VolumeDelete._build_arguments_schema()
+        delete_type = schema.delete_type
+        parser = argparse.ArgumentParser()
+        parser.add_argument(
+            *delete_type._options,
+            dest="delete_type",
+            action=delete_type._build_cmd_action(),
+        )
+        namespace = parser.parse_args(cli_args)
+        args = schema._ValueCls(schema, schema.process_data({}))
+        if namespace.delete_type is not None:
+            namespace.delete_type.apply(args, "delete_type")
+
+        operation = object.__new__(VolumeDelete.VolumesDelete)
+        operation.ctx = SimpleNamespace(args=args)
+        self.assertEqual(operation.method, "DELETE")
+        return operation.query_parameters
+
+    def test_delete_type_permanent_maps_to_query_parameter(self):
+        self.assertEqual(
+            self._query_parameters(["--delete-type", "permanent"]),
+            {"deleteType": "permanent", "api-version": "2026-05-01-preview"},
+        )
+
+    def test_omitted_delete_type_is_not_sent(self):
+        self.assertEqual(
+            self._query_parameters([]),
+            {"api-version": "2026-05-01-preview"},
+        )
 
 
 class ElasticSanUpdateCompatTest(unittest.TestCase):
@@ -117,8 +152,6 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
         is_san = command_type is ElasticSanUpdate
         get_type = command.ElasticSansGet if is_san else command.VolumeGroupsGet
         update_type = command.ElasticSansUpdate if is_san else command.VolumeGroupsUpdate
-        if is_san and ("sku" in args_data or "availability_zones" in args_data):
-            update_type = command.ElasticSanReplace
         events = []
         bodies = []
 
@@ -134,9 +167,14 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
             bodies.append(operation.content)
 
         command.post_operations = Mock()
-        with patch.object(get_type, "__call__", get_instance), \
-                patch.object(update_type, "__call__", send_update):
-            list(command._execute_operations())
+        with patch.object(get_type, "__call__", get_instance):
+            if is_san:
+                with patch.object(command.ElasticSanReplace, "__call__", send_update), \
+                        patch.object(command.ElasticSansUpdate, "__call__", send_update):
+                    list(command._execute_operations())
+            else:
+                with patch.object(update_type, "__call__", send_update):
+                    list(command._execute_operations())
         command.post_operations.assert_called_once()
         return events, bodies[0]
 
@@ -183,6 +221,49 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
         self.assertEqual(body["properties"]["sku"]["name"], "Premium_ZRS")
         self.assertEqual(body["properties"]["baseSizeTiB"], 25)
         self.assertEqual(body["tags"], {"keep": "original", "added": "value"})
+
+    def test_san_generic_sku_update_selects_put(self):
+        events, body = self._execute_update(
+            ElasticSanUpdate,
+            {},
+            {
+                "location": "eastus2euap",
+                "tags": {"keep": "original"},
+                "properties": {
+                    "sku": {"name": "Premium_LRS", "tier": "Premium"},
+                    "availabilityZones": ["1"],
+                    "baseSizeTiB": 23,
+                    "extendedCapacitySizeTiB": 14,
+                    "version": "V1",
+                },
+            },
+            [("set", ["sku.name=Premium_ZRS"])],
+        )
+        self.assertEqual(events, ["GET", "PUT"])
+        self.assertEqual(body["properties"]["sku"]["name"], "Premium_ZRS")
+        self.assertEqual(body["properties"]["availabilityZones"], ["1"])
+
+    def test_san_generic_availability_zone_update_selects_put(self):
+        events, body = self._execute_update(
+            ElasticSanUpdate,
+            {},
+            {
+                "location": "eastus2euap",
+                "tags": {"keep": "original"},
+                "properties": {
+                    "sku": {"name": "Premium_LRS", "tier": "Premium"},
+                    "availabilityZones": ["1"],
+                    "baseSizeTiB": 23,
+                    "extendedCapacitySizeTiB": 14,
+                    "version": "V1",
+                },
+            },
+            [("add", ["availability_zones", "2"])],
+            force_string=True,
+        )
+        self.assertEqual(events, ["GET", "PUT"])
+        self.assertEqual(body["properties"]["availabilityZones"], ["1", "2"])
+        self.assertEqual(body["properties"]["sku"]["name"], "Premium_LRS")
 
     def test_volume_group_patch_supports_add_set_and_remove(self):
         events, body = self._execute_update(
@@ -367,19 +448,79 @@ class VolumeManagedByCompatTest(unittest.TestCase):
             [{"resourceIds": ["/resource/legacy"]}],
         )
 
-    def test_current_managed_by_array_remains_unchanged(self):
+    def test_managed_by_shorthand_create_serializes_client_and_resource_ids(self):
+        resource_ids = [
+            "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Test/items/one",
+            "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Test/items/two",
+        ]
+        shorthand = AAZAnyTypeArgAction.decode_str(
+            "[{client-id:client-one,version:1,resource-ids:["
+            f"{resource_ids[0]},{resource_ids[1]}]}}]"
+        )
         args_schema = VolumeCreate._build_arguments_schema()
-        args_data = args_schema.process_data({
-            "managed_by": [{"client_id": "client", "resource_ids": ["/subscriptions/sub/resourceGroups/rg/providers/test/type/name"]}]
-        })
-        args = args_schema._ValueCls(args_schema, args_data)
-
+        args = args_schema._ValueCls(
+            args_schema,
+            args_schema.process_data({
+                "elastic_san_name": "test-san",
+                "resource_group": "test-rg",
+                "volume_group_name": "test-group",
+                "volume_name": "test-volume",
+                "size_gib": 1,
+                "managed_by": shorthand,
+            }),
+        )
         _normalize_managed_by_argument(args)
 
-        self.assertEqual(
-            args.managed_by.to_serialized_data(),
-            [{"client_id": "client", "resource_ids": ["/subscriptions/sub/resourceGroups/rg/providers/test/type/name"]}],
+        operation = object.__new__(VolumeCreate.VolumesCreate)
+        operation.ctx = SimpleNamespace(args=args)
+        managed_by = operation.content["properties"]["managedBy"]
+
+        self.assertEqual(managed_by[0]["clientId"], "client-one")
+        self.assertEqual(managed_by[0]["resourceIds"], resource_ids)
+        self.assertEqual(managed_by[0]["version"], 1)
+
+    def test_managed_by_shorthand_update_serializes_client_and_resource_ids(self):
+        resource_ids = [
+            "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Test/items/one",
+            "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Test/items/two",
+        ]
+        shorthand = AAZAnyTypeArgAction.decode_str(
+            "[{client-id:client-two,version:2,resource-ids:["
+            f"{resource_ids[0]},{resource_ids[1]}]}}]"
         )
+        args_schema = VolumeUpdate._build_arguments_schema()
+        args = args_schema._ValueCls(args_schema, args_schema.process_data({
+            "elastic_san_name": "test-san",
+            "resource_group": "test-rg",
+            "volume_group_name": "test-group",
+            "volume_name": "test-volume",
+            "size_gib": 1,
+            "managed_by": shorthand,
+        }))
+        _normalize_managed_by_argument(args)
+
+        instance_schema = VolumeUpdate.VolumesGet._build_schema_on_200()
+        instance = instance_schema._ValueCls(
+            instance_schema,
+            instance_schema.process_data({
+                "id": "/subscriptions/sub/resourceGroups/test-rg/providers/Microsoft.ElasticSan/elasticSans/test-san/volumeGroups/test-group/volumes/test-volume",
+                "name": "test-volume",
+                "properties": {"managedBy": [], "sizeGiB": 1},
+            }),
+        )
+        command = object.__new__(VolumeUpdate)
+        command.ctx = SimpleNamespace(args=args, vars=SimpleNamespace(instance=instance))
+        update_operation = object.__new__(VolumeUpdate.InstanceUpdateByJson)
+        update_operation.ctx = command.ctx
+        command.ctx.vars.instance = update_operation._update_instance(instance)
+
+        operation = object.__new__(VolumeUpdate.VolumesCreate)
+        operation.ctx = command.ctx
+        managed_by = operation.content["properties"]["managedBy"]
+
+        self.assertEqual(managed_by[0]["clientId"], "client-two")
+        self.assertEqual(managed_by[0]["resourceIds"], resource_ids)
+        self.assertEqual(managed_by[0]["version"], 2)
 
     def test_output_keeps_new_shape_and_adds_first_resource_alias(self):
         output = {

@@ -56,6 +56,9 @@ def _configure_managed_by_argument(args_schema):
     from azure.cli.core.aaz import AAZAnyTypeArg
     from azure.cli.core.aaz._field_value import AAZAnyValue
 
+    current_arg = args_schema._fields["managed_by"]
+    typed_arg = getattr(current_arg, "_managed_by_typed_arg", current_arg)
+
     class ManagedByAnyValue(AAZAnyValue):
         def __getitem__(self, key):
             return ManagedByAnyValue(self._schema, self._data[key])
@@ -63,11 +66,17 @@ def _configure_managed_by_argument(args_schema):
     class ManagedByAnyArg(AAZAnyTypeArg):
         _ValueCls = ManagedByAnyValue
 
-    args_schema._fields["managed_by"] = ManagedByAnyArg(
+        def __init__(self, typed_arg, **kwargs):
+            super().__init__(**kwargs)
+            self._managed_by_typed_arg = typed_arg
+
+    managed_by_arg = ManagedByAnyArg(
+        typed_arg=typed_arg,
         options=["--managed-by"],
         arg_group="Properties",
         help="Managed-by information. Accepts the current array format or the legacy single-resource object.",
     )
+    args_schema._fields["managed_by"] = managed_by_arg
 
 
 def _normalize_managed_by_argument(args):
@@ -77,22 +86,67 @@ def _normalize_managed_by_argument(args):
     if not has_value(args.managed_by):
         return
 
+    def normalize_item(item):
+        if not isinstance(item, dict):
+            raise InvalidArgumentValueError(
+                "Each --managed-by array element must be an object."
+            )
+
+        aliases = {
+            "client-id": "client_id",
+            "clientId": "client_id",
+            "client_id": "client_id",
+            "resource-ids": "resource_ids",
+            "resourceIds": "resource_ids",
+            "resource_ids": "resource_ids",
+            "version": "version",
+        }
+        normalized = {}
+        for key, value in item.items():
+            if key in ("resource-id", "resourceId", "resource_id"):
+                if "resource_ids" in normalized:
+                    raise InvalidArgumentValueError(
+                        "Specify either resource-id or resource-ids in each --managed-by object, not both."
+                    )
+                normalized["resource_ids"] = [value]
+                continue
+            normalized[aliases.get(key, key)] = value
+        return normalized
+
     managed_by = args.managed_by.to_serialized_data()
     if isinstance(managed_by, dict):
-        resource_id = next(
-            (managed_by[key] for key in ("resource_id", "resourceId", "resource-id") if key in managed_by),
-            None,
-        )
-        if resource_id is not None:
-            managed_by = [{"resource_ids": [resource_id]}]
-        else:
-            managed_by = [managed_by]
-    elif not isinstance(managed_by, list):
+        managed_by = [normalize_item(managed_by)]
+    elif isinstance(managed_by, list):
+        managed_by = [normalize_item(item) for item in managed_by]
+    else:
         raise InvalidArgumentValueError(
             "--managed-by must be an object in the legacy format or a list in the current format."
         )
 
+    typed_arg = args._schema._fields["managed_by"]._managed_by_typed_arg
+    try:
+        typed_arg.process_data(managed_by)
+    except (TypeError, ValueError, KeyError) as ex:
+        raise InvalidArgumentValueError(f"Invalid --managed-by value: {ex}") from ex
+
     args.managed_by = managed_by
+
+
+def _generic_update_targets_put_only_san_property(generic_update_args):
+    import re
+
+    if not isinstance(generic_update_args, dict):
+        return False
+
+    for _, values in generic_update_args.get("actions", []):
+        for value in values:
+            path = re.split(r"[=\s]", str(value), maxsplit=1)[0]
+            path_parts = [part for part in re.split(r"[.\[\]]+", path) if part]
+            if path_parts and path_parts[0].lower() == "properties":
+                path_parts = path_parts[1:]
+            if path_parts and path_parts[0].lower() in ("sku", "availabilityzones", "availability_zones"):
+                return True
+    return False
 
 
 def _add_legacy_managed_by_output(result):
@@ -403,7 +457,8 @@ class ElasticSanUpdate(_ElasticSanUpdate):
         payload = _ElasticSanUpdate.ElasticSansUpdate(ctx=self.ctx).content
         _merge_update_payload(self.ctx.vars.instance, payload)
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        if has_value(args.sku) or has_value(args.availability_zones):
+        if (has_value(args.sku) or has_value(args.availability_zones) or
+                _generic_update_targets_put_only_san_property(self.ctx.generic_update_args)):
             yield self.ElasticSanReplace(ctx=self.ctx)()
         else:
             yield self.ElasticSansUpdate(ctx=self.ctx)()

@@ -416,12 +416,12 @@ class ElasticSanScenario(ScenarioTest):
         self.cmd('az elastic-san volume-group create -e {san_name} -n {vg_name} -g {rg} '
                  '--encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi '
                  '--network-acls {{virtual-network-rules:[{{id:{subnet_id},action:Allow}}]}} '
-                 '--delete-retention-policy-state Enabled --delete-retention-period-days 7')
+                 '--delete-retention-policy {{policy-state:Enabled,retention-period-days:7}}')
         self.cmd('az elastic-san volume-group create -e {san_name} -n {vg2_name} -g {rg} '
                  '--encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi '
                  '--network-acls {{virtual-network-rules:[{{id:{subnet_id},action:Allow}}]}} '
                  '--enforce-data-integrity-check-for-iscsi true '
-                 '--delete-retention-policy-state Enabled --delete-retention-period-days 7')
+                 '--delete-retention-policy {{policy-state:Enabled,retention-period-days:7}}')
         self.cmd('az elastic-san volume-group list -g {rg} -e {san_name}', checks=[JMESPathCheck('length(@)', 2)])
         # soft delete
         self.cmd('az elastic-san volume-group delete -g {rg} -e {san_name} -n {vg2_name} -y')
