@@ -57,8 +57,8 @@ class Wait(AAZWaitCommand):
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][-a-zA-Z0-9]*[a-zA-Z0-9]$",
-                max_length=128,
+                pattern="^[a-zA-Z0-9](?:[a-zA-Z0-9_.-]{0,78}[a-zA-Z0-9_])?$",
+                max_length=80,
                 min_length=1,
             ),
         )

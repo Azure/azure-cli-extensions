@@ -61,8 +61,8 @@ class Create(AAZCommand):
             help="The name of the HorizonDB pool firewall rule.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][-a-zA-Z0-9]*[a-zA-Z0-9]$",
-                max_length=128,
+                pattern="^[a-zA-Z0-9](?:[a-zA-Z0-9_.-]{0,78}[a-zA-Z0-9_])?$",
+                max_length=80,
                 min_length=1,
             ),
         )
