@@ -198,7 +198,7 @@ def _has_only_known_crd_ownership_failures(log_lines: list[str]) -> bool:
             return False
         index = result_indices[0]
         if log_lines[index] == failure:
-            if log_lines[index + 1 : index + 3] != ownership_lines:
+            if log_lines[index + 1: index + 3] != ownership_lines:
                 return False
             verified_failures.add(failure)
 
