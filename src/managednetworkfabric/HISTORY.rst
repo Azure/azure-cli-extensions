@@ -10,7 +10,7 @@ Release History
 *  - `refresh-config`
 *  - `resync-password`
 *  - `update-admin-state`
-* Adds the new command `update-admin-state` for command group `bootstrapinterface `.
+* Adds the new command `update-admin-state` for command group `bootstrapinterface`.
 * Updates and refreshes all the command examples for consistency and structure.
 
 10.0.0b3
