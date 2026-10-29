@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get the Network Bootstrap Interface resource details.
 
     :example: Show the Bootstrap Interface resource
-        az networkfabric bootstrapinterface show --resource-group example-rg --network-bootstrap-device-name example-device --resource-name example-interface
+        az networkfabric bootstrapinterface show --resource-group "example-rg" --network-bootstrap-device-name "example-device" --resource-name "example-interface"
     """
 
     _aaz_info = {
@@ -229,6 +229,9 @@ class Show(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.serial_number = AAZStrType(
+                serialized_name="serialNumber",
             )
 
             system_data = cls._schema_on_200.system_data

@@ -3,6 +3,16 @@
 Release History
 ===============
 
+10.0.0b4
+++++++++
+* Adds the following new commands for command group `bootstrapdevice`:
+*  - `reboot`
+*  - `refresh-config`
+*  - `resync-password`
+*  - `update-admin-state`
+* Adds the new command `update-admin-state` for command group `bootstrapinterface `.
+* Updates and refreshes all the command examples for consistency and structure.
+
 10.0.0b3
 ++++++++
 * Adding breaking change notices for the following items that will be included in the upcoming 2026-07-15-preview CLI (10.0.x).

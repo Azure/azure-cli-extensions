@@ -1,0 +1,68 @@
+# Synthetic playback fixture, not a live-service recording.
+# Contract: NetworkBootstrapDevices_UpdateAdministrativeState, API 2026-01-15-preview.
+interactions:
+- request:
+    body: '{"resourceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/Fab3LabNF-5-1/providers/microsoft.managednetworkfabric/networkfabrics/nffab3-5-1"],"state":"Enable"}'
+    headers:
+      Accept:
+      - application/json
+      CommandName:
+      - networkfabric bootstrapdevice update-admin-state
+      ParameterSetName:
+      - --resource-name --resource-group --state --resource-ids
+      Content-Type:
+      - application/json
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device/updateAdministrativeState?api-version=2026-01-15-preview
+  response:
+    body:
+      string: ''
+    headers:
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus2euap/operationStatuses/00000000-0000-0000-0000-000000000004?api-version=2026-01-15-preview
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      CommandName:
+      - networkfabric bootstrapdevice update-admin-state
+      ParameterSetName:
+      - --resource-name --resource-group --state --resource-ids
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus2euap/operationStatuses/00000000-0000-0000-0000-000000000004?api-version=2026-01-15-preview
+  response:
+    body:
+      string: '{"status":"InProgress","percentComplete":50}'
+    headers:
+      content-type:
+      - application/json
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus2euap/operationStatuses/00000000-0000-0000-0000-000000000004?api-version=2026-01-15-preview
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      CommandName:
+      - networkfabric bootstrapdevice update-admin-state
+      ParameterSetName:
+      - --resource-name --resource-group --state --resource-ids
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus2euap/operationStatuses/00000000-0000-0000-0000-000000000004?api-version=2026-01-15-preview
+  response:
+    body:
+      string: '{"status":"Succeeded","percentComplete":100,"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Fab3LabNF-5-1/providers/Microsoft.ManagedNetworkFabric/networkBootstrapDevices/example-device"}'
+    headers:
+      content-type:
+      - application/json
+    status:
+      code: 200
+      message: OK
+version: 1

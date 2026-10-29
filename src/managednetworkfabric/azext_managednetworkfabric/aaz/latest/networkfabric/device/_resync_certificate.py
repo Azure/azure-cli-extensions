@@ -18,7 +18,7 @@ class ResyncCertificate(AAZCommand):
     """Updates the Network Device to use the latest certificates. Does not generate new certificates. Allows network devices missed during a previous certificate rotation to be brought back into sync.
 
     :example: Updates the Network Device to use the latest certificates
-        az networkfabric device resync-certificate --resource-group example-rg --resource-name example-device
+        az networkfabric device resync-certificate --resource-group "example-rg" --resource-name "example-device"
     """
 
     _aaz_info = {

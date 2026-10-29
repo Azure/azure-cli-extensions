@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update certain properties of the Network Interface resource.
 
     :example: Update Network Interface
-        az networkfabric interface update -g "example-rg" --network-device-name "example-device" --resource-name "example-interface" --additional-description "additional description"
+        az networkfabric interface update --resource-group "example-rg" --network-device-name "example-device" --resource-name "example-interface" --additional-description "additional description"
     """
 
     _aaz_info = {
