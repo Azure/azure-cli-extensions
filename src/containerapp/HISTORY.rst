@@ -5,6 +5,10 @@ Release History
 upcoming
 ++++++
 
+1.3.1b1
+++++++
+* `az containerapp up`: Fix app recreation after a failed existence lookup and preserve ingress settings on image-only updates
+
 1.3.0b5
 ++++++
 * 'az containerapp env storage set': Support Azure Files authentication with an Azure Key Vault secret or managed identity

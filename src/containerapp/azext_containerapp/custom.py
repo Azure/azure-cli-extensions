@@ -23,6 +23,7 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
     InvalidArgumentValueError,
     ResourceNotFoundError,
+    HTTPError,
     ArgumentUsageError,
     MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -49,6 +50,7 @@ from azure.cli.command_modules.containerapp._models import (
     RegistryCredentials as RegistryCredentialsModel,
 )
 from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
+from azure.core.exceptions import HttpResponseError
 
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
@@ -1348,7 +1350,6 @@ def containerapp_up(cmd,
                             _get_registry_details, _get_registry_details_without_get_creds, _create_github_action, _set_up_defaults, up_output,
                             check_env_name_on_rg, get_token, _has_dockerfile, _validate_azml_args, _is_azml_app, _validate_azml_env_and_create_if_needed, _set_azml_env_vars)
     from azure.cli.command_modules.containerapp._github_oauth import cache_github_token
-    HELLOWORLD = "mcr.microsoft.com/k8se/quickstart"
     ACA_AZML_MCR = "mcr.microsoft.com/k8se/aca-foundry-model-host"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
@@ -1381,14 +1382,6 @@ def containerapp_up(cmd,
 
     image = _reformat_image(source, repo, image)
     token = get_token(cmd, repo, token)
-
-    if image and HELLOWORLD in image.lower():
-        ingress = "external" if not ingress else ingress
-        target_port = 80 if not target_port else target_port
-
-    if image and ACA_AZML_MCR in image.lower():
-        ingress = "external" if not ingress else ingress
-        target_port = 8000 if not target_port else target_port
 
     if image:
         if ingress and not target_port and target_port != 0:
@@ -1453,17 +1446,28 @@ def containerapp_up(cmd,
     up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
 
 
-def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None, force_single_container_updates=False, registry_identity=None, system_assigned=None, user_assigned=None, revisions_mode=None, target_label=None, cpu=None, memory=None, kind=None):
-    containerapp_def = None
+def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass, environment_type=None, force_single_container_updates=False, registry_identity=None, system_assigned=None, user_assigned=None, revisions_mode=None, target_label=None, cpu=None, memory=None, kind=None, apply_image_defaults=True):
     try:
         containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except:
-        pass
-
-    if containerapp_def:
+    except (HTTPError, HttpResponseError) as ex:
+        if ex.response is None or ex.response.status_code != 404:
+            raise
+    else:
+        if not containerapp_def:
+            raise CLIInternalError(f"Containerapp lookup for '{name}' returned an empty response.")
+        logger.warning(f"Updating Containerapp {name} in resource group {resource_group_name}")
         return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port,
                                          registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name, force_single_container_updates=force_single_container_updates,
                                          registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned, revisions_mode=revisions_mode, target_label=target_label)
+
+    if apply_image_defaults and image and "mcr.microsoft.com/k8se/quickstart" in image.lower():
+        ingress = "external" if not ingress else ingress
+        target_port = 80 if not target_port else target_port
+    if apply_image_defaults and image and "mcr.microsoft.com/k8se/aca-foundry-model-host" in image.lower():
+        ingress = "external" if not ingress else ingress
+        target_port = 8000 if not target_port else target_port
+
+    logger.warning(f"Creating Containerapp {name} in resource group {resource_group_name}")
     return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, environment_type=environment_type,
                                registry_identity=registry_identity, system_assigned=system_assigned, user_assigned=user_assigned, revisions_mode=revisions_mode, target_label=target_label, cpu=cpu, memory=memory, kind=kind)
 
