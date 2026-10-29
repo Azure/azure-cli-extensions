@@ -44,6 +44,8 @@ Pending
 * `az aks nodepool add/update`: Add `--enable-upgrade-gate` and `--disable-upgrade-gate` to enable or disable health-aware upgrade gating for the node pool.
 * `az aks nodepool scale`: extend `--use-patch-api` to VirtualMachines node pools so they also scale via the dedicated PATCH agent pool API.
 * `az aks nodepool manual-scale add/update/delete`: add `--use-patch-api` to manage the manual scale profiles of a VirtualMachines node pool via the dedicated PATCH agent pool API instead of the default PUT API.
+* `az aks create/update`: `--kms-infrastructure-encryption` now only accepts `Enabled`, since infrastructure encryption for Kubernetes resource objects cannot be turned off once it has been turned on.
+* `az aks create/update`: Document that an unversioned `--azure-keyvault-kms-key-id` selects the new KMS experience with automatic key version rotation, while a versioned key identifier selects the legacy KMS experience.
 
 22.0.0b14
 +++++++++

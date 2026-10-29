@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 import semver
 from azext_aks_preview._consts import (
     CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+    CONST_KMS_INFRASTRUCTURE_ENCRYPTION_ENABLED,
     CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
     CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
@@ -1838,13 +1839,29 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # read the original value passed by the command
         return self.raw_param.get("service_account_image_pull_default_managed_identity_id")
 
-    def get_kms_infrastructure_encryption(self) -> str:
+    def get_kms_infrastructure_encryption(self) -> Union[str, None]:
         """Obtain the value of kms_infrastructure_encryption.
 
-        :return: str
+        Encryption at rest of Kubernetes resource objects using service-managed keys can only be
+        turned on. Starting with API version 2026-07-02-preview, "Enabled" is the only value
+        accepted by the service, so an explicit request to disable it raises an
+        InvalidArgumentValueError.
+
+        :return: string or None
         """
         # read the original value passed by the command
         kms_infrastructure_encryption = self.raw_param.get("kms_infrastructure_encryption")
+
+        if (
+            kms_infrastructure_encryption and
+            kms_infrastructure_encryption != CONST_KMS_INFRASTRUCTURE_ENCRYPTION_ENABLED
+        ):
+            raise InvalidArgumentValueError(
+                "--kms-infrastructure-encryption only accepts "
+                f"'{CONST_KMS_INFRASTRUCTURE_ENCRYPTION_ENABLED}'. Encryption at rest of Kubernetes "
+                "resource objects using service-managed keys cannot be turned off once it has been "
+                "turned on."
+            )
 
         # Try to read the property value corresponding to the parameter from the `mc` object.
         if kms_infrastructure_encryption is None and self.mc:
@@ -2027,7 +2044,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         # validation
         if enable_validation:
-            is_pmk_enabled = self.get_kms_infrastructure_encryption() == "Enabled"
+            is_pmk_enabled = (
+                self.get_kms_infrastructure_encryption() == CONST_KMS_INFRASTRUCTURE_ENCRYPTION_ENABLED
+            )
             is_cmk_enabled = self._get_enable_azure_keyvault_kms(enable_validation=False)
             if key_vault_resource_id and not is_cmk_enabled:
                 raise RequiredArgumentMissingError(
@@ -5253,7 +5272,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         self._ensure_mc(mc)
 
         kms_infrastructure_encryption = self.context.get_kms_infrastructure_encryption()
-        if kms_infrastructure_encryption and kms_infrastructure_encryption != "Disabled":
+        if kms_infrastructure_encryption:
             if mc.security_profile is None:
                 mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
 
