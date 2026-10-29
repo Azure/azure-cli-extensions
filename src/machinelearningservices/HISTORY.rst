@@ -5,6 +5,7 @@ Release History
 
 Unreleased
 ++++++++++
+* Prevent access-token JSON from being written to the SSH transport and verbose SSH logs for ``az ml compute connect-ssh`` and ``az ml job connect-ssh``.
 * Improve SSH connection argument handling and endpoint validation for jobs and compute instances.
 * Honor repeatable ``az ml job connect-ssh --ssh-args`` options.
 
