@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "edge-action version deploy-version-code",
 )
 class DeployVersionCode(AAZCommand):
-    """A long-running operation to deploy versioncode to EdgeActionVersion resource.
+    """Deploy the version code for an edge action version
 
     :example: DeployEdgeActionVersionCode
-        az edge-action version deploy-version-code --resource-group testrg --edge-action-name edgeAction1 --version version2 --name version2 --content UEsDBBQAAAAIAI1NzkQAAAAABQAAAA==
+        az edge-action version deploy-version-code --resource-group testrg --edge-action-name edgeAction1 --version version2 --name version2 --content UEsDBBQAAAAIAAAAIVyxoxB+JwAAACkAAAAIAAAAaW5kZXguanNLK81LLsnMz1PISMxLyUkt0kgtS80r0VSoVihKLSktylMA860VagFQSwECFAAUAAAACAAAACFcsaMQficAAAApAAAACAAAAAAAAAAAAAAAgAEAAAAAaW5kZXguanNQSwUGAAAAAAEAAQA2AAAATQAAAAAA
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/edgeactions/{}/versions/{}/deployversioncode", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/edgeactions/{}/versions/{}/deployversioncode", "2026-10-01"],
         ]
     }
 
@@ -171,7 +171,7 @@ class DeployVersionCode(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
@@ -219,26 +219,71 @@ class DeployVersionCode(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.deployment_type = AAZStrType(
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.deployment_type = AAZStrType(
                 serialized_name="deploymentType",
                 flags={"required": True},
             )
-            _schema_on_200.is_default_version = AAZStrType(
+            properties.is_default_version = AAZStrType(
                 serialized_name="isDefaultVersion",
                 flags={"required": True},
             )
-            _schema_on_200.last_package_update_time = AAZStrType(
+            properties.last_package_update_time = AAZStrType(
                 serialized_name="lastPackageUpdateTime",
                 flags={"read_only": True},
             )
-            _schema_on_200.provisioning_state = AAZStrType(
+            properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            _schema_on_200.validation_status = AAZStrType(
+            properties.validation_status = AAZStrType(
                 serialized_name="validationStatus",
                 flags={"read_only": True},
             )
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 

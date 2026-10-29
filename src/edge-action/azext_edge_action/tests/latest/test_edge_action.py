@@ -4,14 +4,25 @@
 # --------------------------------------------------------------------------------------------
 
 import base64
+from io import BytesIO
 import os
+import zipfile
 from azure.cli.testsdk import ResourceGroupPreparer, JMESPathCheck, ScenarioTest
 
+from .recording_processors import EdgeActionRecordingProcessor
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class EdgeActionScenarioTest(ScenarioTest):
+
+    def __init__(self, method_name):
+        super().__init__(
+            method_name,
+            recording_processors=[EdgeActionRecordingProcessor()],
+            replay_processors=[EdgeActionRecordingProcessor()],
+        )
+        self.vcr.match_on = (*self.vcr.match_on, 'body')
 
     @ResourceGroupPreparer(name_prefix='clitests', location='eastus', additional_tags={'owner': 'edgeaction'})
     def test_edge_action_crud(self, resource_group):
@@ -25,25 +36,29 @@ class EdgeActionScenarioTest(ScenarioTest):
         # Test create edge action
         create_checks = [
             JMESPathCheck('name', edge_action_name),
-            JMESPathCheck('resourceGroup', resource_group)
+            JMESPathCheck('resourceGroup', resource_group),
+            JMESPathCheck('location', 'global'),
+            JMESPathCheck('provisioningState', 'Succeeded'),
+            JMESPathCheck('sku.name', 'Standard'),
+            JMESPathCheck('sku.tier', 'Standard'),
         ]
         self.cmd('edge-action create -g {} -n {} --sku name=Standard tier=Standard --location global'.format(
             resource_group, edge_action_name), checks=create_checks)
 
         # Test show edge action
-        show_checks = [
-            JMESPathCheck('name', edge_action_name),
-            JMESPathCheck('resourceGroup', resource_group)
-        ]
-        self.cmd('edge-action show -g {} -n {}'.format(resource_group, edge_action_name), checks=show_checks)
+        self.cmd('edge-action show -g {} -n {}'.format(resource_group, edge_action_name), checks=create_checks)
 
         # Test list edge actions (should contain 1 item now)
         list_checks = [JMESPathCheck('length(@)', 1)]
         self.cmd('edge-action list -g {}'.format(resource_group), checks=list_checks)
 
         # Test update edge action
-        self.cmd('edge-action update -g {} -n {} --tags test=value'.format(
-            resource_group, edge_action_name))
+        for tags, expected in [('test=value', {'test': 'value'}), ('"{{}}"', {})]:
+            update_checks = create_checks + [JMESPathCheck('tags', expected)]
+            self.cmd('edge-action update -g {} -n {} --sku name=Standard tier=Standard --tags {}'.format(
+                resource_group, edge_action_name, tags), checks=update_checks)
+            self.cmd('edge-action show -g {} -n {}'.format(
+                resource_group, edge_action_name), checks=update_checks)
 
         # Test delete edge action
         self.cmd('edge-action delete -g {} -n {} -y'.format(resource_group, edge_action_name))
@@ -63,15 +78,26 @@ class EdgeActionScenarioTest(ScenarioTest):
             resource_group, edge_action_name))
 
         # Test create version
+        # The service makes the first version default even when False is requested.
         create_version_checks = [
-            JMESPathCheck('name', version_name)
+            JMESPathCheck('name', version_name),
+            JMESPathCheck('deploymentType', 'file'),
+            JMESPathCheck('isDefaultVersion', 'True'),
+            JMESPathCheck('provisioningState', 'Succeeded'),
         ]
         self.cmd('edge-action version create -g {} --edge-action-name {} -n {} --deployment-type file --location global --is-default-version False'.format(
             resource_group, edge_action_name, version_name), checks=create_version_checks)
 
         # Test show version
         self.cmd('edge-action version show -g {} --edge-action-name {} -n {}'.format(
-            resource_group, edge_action_name, version_name))
+            resource_group, edge_action_name, version_name), checks=create_version_checks)
+
+        for tags, expected in [('purpose=updated', {'purpose': 'updated'}), ('"{{}}"', {})]:
+            update_checks = create_version_checks + [JMESPathCheck('tags', expected)]
+            self.cmd('edge-action version update -g {} --edge-action-name {} -n {} --tags {}'.format(
+                resource_group, edge_action_name, version_name, tags), checks=update_checks)
+            self.cmd('edge-action version show -g {} --edge-action-name {} -n {}'.format(
+                resource_group, edge_action_name, version_name), checks=update_checks)
 
         # Test list versions
         list_version_checks = [JMESPathCheck('length(@)', 1)]
@@ -102,7 +128,12 @@ class EdgeActionScenarioTest(ScenarioTest):
 
         # Test deploy with file path using custom deploy-from-file command (file mode)
         self.cmd('edge-action version deploy-from-file -g {} --edge-action-name {} --version {} --file-path "{}" --deployment-type file'.format(
-            resource_group, edge_action_name, version_name, test_file))
+            resource_group, edge_action_name, version_name, test_file), checks=[
+                JMESPathCheck('name', version_name),
+                JMESPathCheck('deploymentType', 'file'),
+                JMESPathCheck('provisioningState', 'Succeeded'),
+                JMESPathCheck('validationStatus', 'Succeeded'),
+        ])
 
         # Clean up
         self.cmd('edge-action version delete -g {} --edge-action-name {} -n {} -y'.format(
@@ -126,7 +157,12 @@ class EdgeActionScenarioTest(ScenarioTest):
 
         # Test deploy with zip file path using custom deploy-from-file command (auto-detects zip)
         self.cmd('edge-action version deploy-from-file -g {} --edge-action-name {} --version {} --file-path "{}"'.format(
-            resource_group, edge_action_name, version_name, test_zip))
+            resource_group, edge_action_name, version_name, test_zip), checks=[
+                JMESPathCheck('name', version_name),
+                JMESPathCheck('deploymentType', 'zip'),
+                JMESPathCheck('provisioningState', 'Succeeded'),
+                JMESPathCheck('validationStatus', 'Succeeded'),
+        ])
 
         # Clean up
         self.cmd('edge-action version delete -g {} --edge-action-name {} -n {} -y'.format(
@@ -148,7 +184,12 @@ class EdgeActionScenarioTest(ScenarioTest):
         # Test deploy with base64 content
         test_content = base64.b64encode(b'function handler(event) { return event; }').decode('utf-8')
         self.cmd('edge-action version deploy-version-code -g {} --edge-action-name {} --version {} --name testcode --content "{}"'.format(
-            resource_group, edge_action_name, version_name, test_content))
+            resource_group, edge_action_name, version_name, test_content), checks=[
+                JMESPathCheck('name', version_name),
+                JMESPathCheck('deploymentType', 'file'),
+                JMESPathCheck('provisioningState', 'Succeeded'),
+                JMESPathCheck('validationStatus', 'Succeeded'),
+        ])
 
         # Clean up
         self.cmd('edge-action version delete -g {} --edge-action-name {} -n {} -y'.format(
@@ -175,11 +216,17 @@ class EdgeActionScenarioTest(ScenarioTest):
         # Test get-version-code command (this tests the fix for Unsupported Media Type error)
         result = self.cmd('edge-action version get-version-code -g {} --edge-action-name {} --version {}'.format(
             resource_group, edge_action_name, version_name)).get_output_in_json()
-        
         # Verify the response contains expected fields
         self.assertIsNotNone(result)
-        self.assertIn('content', result)
-        self.assertIn('name', result)
+        self.assertTrue(result['name'])
+        decoded = base64.b64decode(result['content'], validate=True)
+        expected = base64.b64decode(test_content)
+        # The service may package a file deployment as a ZIP on retrieval.
+        if zipfile.is_zipfile(BytesIO(decoded)):
+            with zipfile.ZipFile(BytesIO(decoded)) as archive:
+                self.assertIn(expected, [archive.read(item) for item in archive.infolist() if not item.is_dir()])
+        else:
+            self.assertEqual(decoded, expected)
 
         # Clean up
         self.cmd('edge-action version delete -g {} --edge-action-name {} -n {} -y'.format(
@@ -246,21 +293,28 @@ class EdgeActionScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(additional_tags={'owner': 'edgeaction'})
     def test_edge_action_execution_filter_crud(self, resource_group):
-        """Test Edge Action Execution Filter create, show, list, and delete operations"""
+        """Test execution-filter CRUD and the customized update arguments."""
         edge_action_name = self.create_random_name(prefix='edgeaction', length=20)
-        version_name = 'v1'
         filter_name = self.create_random_name(prefix='filter', length=15)
+        header_name = 'x-test-header'
+        header_value = 'test-value'
 
-        # Create edge action and version first
         self.cmd('edge-action create -g {} -n {} --sku name=Standard tier=Standard --location global'.format(
             resource_group, edge_action_name))
-        self.cmd('edge-action version create -g {} --edge-action-name {} -n {} --deployment-type file --location global --is-default-version True'.format(
-            resource_group, edge_action_name, version_name))
-
-        # Deploy code to version (required for execution filter creation)
         test_content = base64.b64encode(b'function handler(event) { return event; }').decode('utf-8')
-        self.cmd('edge-action version deploy-version-code -g {} --edge-action-name {} --version {} --name testcode --content "{}"'.format(
-            resource_group, edge_action_name, version_name, test_content))
+        versions = {}
+        for version_name, is_default in [('v1', 'True'), ('v2', 'False')]:
+            versions[version_name] = self.cmd(
+                'edge-action version create -g {} --edge-action-name {} -n {} '
+                '--deployment-type file --location global --is-default-version {}'.format(
+                    resource_group, edge_action_name, version_name, is_default)).get_output_in_json()
+            self.cmd(
+                'edge-action version deploy-version-code -g {} --edge-action-name {} '
+                '--version {} --name testcode --content "{}"'.format(
+                    resource_group, edge_action_name, version_name, test_content), checks=[
+                        JMESPathCheck('provisioningState', 'Succeeded'),
+                        JMESPathCheck('validationStatus', 'Succeeded'),
+                ])
 
         # Test list execution filters (should be empty initially)
         list_checks = [JMESPathCheck('length(@)', 0)]
@@ -268,18 +322,55 @@ class EdgeActionScenarioTest(ScenarioTest):
             resource_group, edge_action_name), checks=list_checks)
 
         # Test create execution filter with all required parameters
-        create_checks = [
-            JMESPathCheck('name', filter_name)
-        ]
-        self.cmd('edge-action execution-filter create -g {} --edge-action-name {} -n {} --location global --version-id {} --execution-filter-identifier-header-name "x-test-header" --execution-filter-identifier-header-value "test-value"'.format(
-            resource_group, edge_action_name, filter_name, version_name), checks=create_checks)
+        expected = {
+            'name': filter_name,
+            'versionId': versions['v1']['id'],
+            'executionFilterIdentifierHeaderName': header_name,
+            'executionFilterIdentifierHeaderValue': header_value,
+            'provisioningState': 'Succeeded',
+            'location': 'global',
+        }
+        create_checks = [JMESPathCheck(field, value) for field, value in expected.items()]
+        self.cmd(
+            'edge-action execution-filter create -g {} --edge-action-name {} -n {} '
+            '--location global --version-id {} --execution-filter-identifier-header-name {} '
+            '--execution-filter-identifier-header-value {}'.format(
+                resource_group, edge_action_name, filter_name, versions['v1']['id'],
+                header_name, header_value), checks=create_checks)
 
-        # Test show execution filter
-        show_checks = [
-            JMESPathCheck('name', filter_name)
+        show_command = 'edge-action execution-filter show -g {} --edge-action-name {} -n {}'.format(
+            resource_group, edge_action_name, filter_name)
+        update_command = 'edge-action execution-filter update -g {} --edge-action-name {} -n {}'.format(
+            resource_group, edge_action_name, filter_name)
+        self.cmd(show_command, checks=create_checks)
+        updates = [
+            ('--tags purpose=updated', {'tags': {'purpose': 'updated'}}),
+            ('--execution-filter-identifier-header-name ' + header_name + '-updated',
+             {'executionFilterIdentifierHeaderName': header_name + '-updated'}),
+            ('--execution-filter-identifier-header-value ' + header_value + '-updated',
+             {'executionFilterIdentifierHeaderValue': header_value + '-updated'}),
+            ('--version-id ' + versions['v2']['id'], {'versionId': versions['v2']['id']}),
+            ('--version-id {} --execution-filter-identifier-header-name {} '
+             '--execution-filter-identifier-header-value {} --tags purpose=combined'.format(
+                 versions['v1']['id'], header_name + '-combined', header_value + '-combined'), {
+                     'versionId': versions['v1']['id'],
+                     'executionFilterIdentifierHeaderName': header_name + '-combined',
+                     'executionFilterIdentifierHeaderValue': header_value + '-combined',
+                     'tags': {'purpose': 'combined'},
+             }),
+            ('--tags "{{}}"', {'tags': {}}),
+            ('--execution-filter-identifier-header-value named-value '
+             '--set execution_filter_identifier_header_value=true tags.number=123 --force-string', {
+                 'executionFilterIdentifierHeaderValue': 'true',
+                 'tags': {'number': '123'},
+             }),
+            ('--remove tags.number', {'tags': {}}),
         ]
-        self.cmd('edge-action execution-filter show -g {} --edge-action-name {} -n {}'.format(
-            resource_group, edge_action_name, filter_name), checks=show_checks)
+        for options, changed_fields in updates:
+            expected.update(changed_fields)
+            update_checks = [JMESPathCheck(field, value) for field, value in expected.items()]
+            self.cmd('{} {}'.format(update_command, options), checks=update_checks)
+            self.cmd(show_command, checks=update_checks)
 
         # Test list execution filters (should contain 1 item now)
         list_checks = [JMESPathCheck('length(@)', 1)]
@@ -290,8 +381,8 @@ class EdgeActionScenarioTest(ScenarioTest):
         self.cmd('edge-action execution-filter delete -g {} --edge-action-name {} -n {} -y'.format(
             resource_group, edge_action_name, filter_name))
 
-        # Clean up
-        self.cmd('edge-action version delete -g {} --edge-action-name {} -n {} -y'.format(
-            resource_group, edge_action_name, version_name))
+        # Delete the non-default version before the default version.
+        for version_name in ('v2', 'v1'):
+            self.cmd('edge-action version delete -g {} --edge-action-name {} -n {} -y'.format(
+                resource_group, edge_action_name, version_name))
         self.cmd('edge-action delete -g {} -n {} -y'.format(resource_group, edge_action_name))
-

@@ -8,6 +8,15 @@ tenant, slot, environment variables or app settings are stored. `az login`,
 `az account set` and inherited `--subscription` determine Azure authentication
 and subscription on each deployed operation.
 
+Local managed-connection creation can also create Azure resources without a
+deployed app. It reads Azure scope from the selected project's
+`local.settings.json` (`WORKFLOWS_SUBSCRIPTION_ID`,
+`WORKFLOWS_RESOURCE_GROUP_NAME`, `WORKFLOWS_LOCATION_NAME`), with per-command
+`--subscription`, `--resource-group`, and `--location` overrides. This does not
+extend the context schema, switch the default account, or save cloud coordinates
+in a local context. See the [local managed-connection guide](../README.md#managed-connections-for-local-projects)
+for required settings, development-key handling and retained-resource limits.
+
 Local `context create` defaults to port 7071 when `--port` is omitted; explicit
 ports must be integers from 1 through 65535. This works through the CLI parser,
 not only direct command calls. Stored-context validation remains strict:

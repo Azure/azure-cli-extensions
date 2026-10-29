@@ -3,6 +3,20 @@
 Release History
 ===============
 
+1.0.0b2
++++++++
+
+* Create Azure managed API connections for local projects selected by path or
+  saved context. Resolve Azure scope from local.settings.json with explicit
+  command overrides, without changing the default account or context schema.
+* Store seven-day development keys only in protected local settings and reference
+  them from connections.json. Preserve deployed identity/access-policy behavior
+  and the deployed-only legacy command. Keys are not automatically renewed.
+* Guard local publication with bounded strict inputs, Git tracking/ignore checks,
+  private staging, snapshot conflict detection and individual atomic replacements.
+  Failures retain Azure state and can leave partial local updates; no multi-file
+  transaction, unsafe rollback or automatic mutation retry is claimed.
+
 1.0.0b1
 +++++++
 

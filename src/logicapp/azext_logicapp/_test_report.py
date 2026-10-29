@@ -9,7 +9,7 @@ import re
 import uuid
 from collections import OrderedDict
 
-VERSION = "1.0.0b1"
+VERSION = "1.0.0b2"
 SCHEMA = "2.0"
 _V1_PRODUCERS = ("0.1.17", "0.1.18", "0.1.19", "0.1.20", "0.1.21", "1.0.0b1")
 _V2_PRODUCERS = ("0.1.22", "0.1.23", "0.1.24", "0.1.25", "0.1.26", "1.0.0b1", VERSION)

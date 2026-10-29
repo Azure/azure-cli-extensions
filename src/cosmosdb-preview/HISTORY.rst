@@ -2,6 +2,10 @@
 Release History
 ===============
 
+1.7.2
+++++++
+* Fix ``az cosmosdb sql container update`` to preserve existing computed properties when updating indexing policies or other container settings.
+
 1.7.1
 ++++++
 * Fix SQL container, MongoDB collection, and Gremlin graph restore without a timestamp to pass the database resource ID by keyword, supporting the core CLI Cosmos DB SDK.
