@@ -252,27 +252,35 @@ class OperationTokenReplacerTest(unittest.TestCase):
         "Microsoft.DocumentDB/locations/example/mongoClusterAzureAsyncOperation/op"
         "?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED"
     )
+    _RESULT_URL = _URL.replace("mongoClusterAzureAsyncOperation", "mongoClusterOperationResults")
+    _SANITIZED_RESULT_URL = _SANITIZED_URL.replace(
+        "mongoClusterAzureAsyncOperation", "mongoClusterOperationResults",
+    )
 
     def test_request_tokens_are_redacted_without_changing_operation_or_api(self):
-        processor = MongoClusterOperationTokenReplacer()
-        request = Request("GET", self._URL, None, {})
-        self.assertEqual(self._SANITIZED_URL, processor.process_request(request).uri)
+        for url, sanitized in (
+                (self._URL, self._SANITIZED_URL),
+                (self._RESULT_URL, self._SANITIZED_RESULT_URL)):
+            with self.subTest(url=url):
+                processor = MongoClusterOperationTokenReplacer()
+                request = Request("GET", url, None, {})
+                self.assertEqual(sanitized, processor.process_request(request).uri)
 
     def test_response_headers_and_echoed_body_url_are_redacted(self):
         processor = MongoClusterOperationTokenReplacer()
         response = {
             "headers": {
                 "Azure-AsyncOperation": [self._URL],
-                "Location": [self._URL],
+                "Location": [self._RESULT_URL],
                 "content-type": ["application/json"],
             },
-            "body": {"string": '{"name": "' + self._URL + '"}'},
+            "body": {"string": '{"name": "' + self._RESULT_URL + '"}'},
         }
         result = processor.process_response(response)
         self.assertEqual([self._SANITIZED_URL], result["headers"]["Azure-AsyncOperation"])
-        self.assertEqual([self._SANITIZED_URL], result["headers"]["Location"])
+        self.assertEqual([self._SANITIZED_RESULT_URL], result["headers"]["Location"])
         self.assertEqual(
-            '{"name": "' + self._SANITIZED_URL + '"}', result["body"]["string"],
+            '{"name": "' + self._SANITIZED_RESULT_URL + '"}', result["body"]["string"],
         )
 
     def test_previously_registered_request_url_is_redacted_in_response_body(self):
@@ -290,7 +298,8 @@ class OperationTokenReplacerTest(unittest.TestCase):
     def test_other_endpoints_and_already_sanitized_urls_are_unchanged(self):
         for url in (
                 self._URL.replace("/mongoClusterAzureAsyncOperation/", "/otherOperation/"),
-                self._SANITIZED_URL):
+                self._SANITIZED_URL,
+                self._SANITIZED_RESULT_URL):
             with self.subTest(url=url):
                 processor = MongoClusterOperationTokenReplacer()
                 self.assertEqual(url, processor.process_request(Request("GET", url, None, {})).uri)

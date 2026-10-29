@@ -19,7 +19,8 @@ class MongoClusterOperationTokenReplacer(GeneralNameReplacer):
 
     def _register_url(self, url):
         parts = urlsplit(url)
-        if '/mongoClusterAzureAsyncOperation/' not in parts.path:
+        if not any(path in parts.path for path in (
+                '/mongoClusterAzureAsyncOperation/', '/mongoClusterOperationResults/')):
             return
         query = '&'.join(
             pair.split('=', 1)[0] + '=REDACTED'
