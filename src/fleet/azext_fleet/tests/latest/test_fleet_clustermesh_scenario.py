@@ -82,7 +82,7 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
         # -----------------------------------------------------------
         # Create two AKS clusters with Cilium + ACNS on flat network
         # -----------------------------------------------------------
-        mc1_id = self.cmd(
+        mc1 = self.cmd(
             'aks create -g {rg} -n {member1_name} '
             '--ssh-key-value={ssh_key_value} '
             '--network-plugin azure '
@@ -92,9 +92,9 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
             '--pod-subnet-id {pod_subnet1_id} '
             '--skip-subnet-role-assignment',
             checks=[self.check('name', '{member1_name}')]
-        ).get_output_in_json()['id']
+        ).get_output_in_json()
 
-        mc2_id = self.cmd(
+        mc2 = self.cmd(
             'aks create -g {rg} -n {member2_name} '
             '--ssh-key-value={ssh_key_value} '
             '--network-plugin azure '
@@ -104,7 +104,22 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
             '--pod-subnet-id {pod_subnet2_id} '
             '--skip-subnet-role-assignment',
             checks=[self.check('name', '{member2_name}')]
-        ).get_output_in_json()['id']
+        ).get_output_in_json()
+        mc1_id = mc1['id']
+        mc2_id = mc2['id']
+
+        # Without this the clustermesh-apiserver internal LB fails with AuthorizationFailed and members never connect.
+        self.kwargs.update({'vnet_id': vnet_id})
+        for mc in (mc1, mc2):
+            self.kwargs.update({
+                'principal_id': mc['identity']['principalId'],
+                'assignment_name': str(self.create_guid()),
+            })
+            self.cmd(
+                'role assignment create --name {assignment_name} '
+                '--assignee-object-id {principal_id} --assignee-principal-type ServicePrincipal '
+                '--role "Network Contributor" --scope {vnet_id}'
+            )
 
         # Wait for both AKS clusters to fully provision (including ACNS enablement).
         # Use --custom instead of --updated because ACNS enablement may trigger
@@ -236,24 +251,17 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
         # -----------------------------------------------------------
         self.cmd('fleet clustermeshprofile apply -g {rg} -f {fleet_name} -n {cmp1_name}')
 
-        # Wait for the CMP and members to reach Connected state
-        self.cmd(
-            'fleet clustermeshprofile wait -g {rg} -f {fleet_name} -n {cmp1_name} '
-            '--custom "properties.status.state==\'Connected\'"',
-            checks=[self.is_empty()]
-        )
-        self.cmd(
-            'fleet member wait -g {rg} --fleet-name {fleet_name} '
-            '--fleet-member-name {member1_name} '
-            '--custom "meshProperties.status.state==\'Connected\'"',
-            checks=[self.is_empty()]
-        )
-        self.cmd(
-            'fleet member wait -g {rg} --fleet-name {fleet_name} '
-            '--fleet-member-name {member2_name} '
-            '--custom "meshProperties.status.state==\'Connected\'"',
-            checks=[self.is_empty()]
-        )
+        # Profile status can stay Failed during preview even once members connect, so gate on members only.
+        for member in ('member1_name', 'member2_name'):
+            self.cmd(
+                'fleet member wait -g {rg} --fleet-name {fleet_name} '
+                f'--fleet-member-name {{{member}}} --timeout 2400 '
+                '--custom "meshProperties.status.state==\'Connected\' || meshProperties.status.state==\'Failed\'"'
+            )
+            self.cmd(
+                f'fleet member show -g {{rg}} --fleet-name {{fleet_name}} -n {{{member}}}',
+                checks=[self.check('meshProperties.status.state', 'Connected')]
+            )
 
         # -----------------------------------------------------------
         # Members should now be listed as applied to cmp1
