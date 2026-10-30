@@ -124,7 +124,7 @@ class _ClusterClient:
         self.client = config.new_client_from_config_dict(
             yaml.safe_load(base64.b64decode(configs[0]["value"]).decode("utf-8"))
         )
-        # Same API budget as the chart uninstall hook; cleanup never waits indefinitely.
+        # Keep the installation namespace check bounded.
         self.deadline = time.monotonic() + 210
 
     def close(self):
@@ -133,7 +133,7 @@ class _ClusterClient:
     def request(self, method, path, body=None, allow_not_found=False):
         remaining = self.deadline - time.monotonic()
         if remaining <= 0:
-            raise AzureResponseError("Namespace cleanup exceeded its 210-second API budget.")
+            raise AzureResponseError("Namespace inspection exceeded its 210-second API budget.")
         try:
             return self.client.call_api(
                 path, method, body=body, response_type="object",
@@ -144,96 +144,11 @@ class _ClusterClient:
             if allow_not_found and error.status == 404:
                 return None
             raise AzureResponseError(
-                "Target-cluster {} {} failed; namespace cleanup was not confirmed: {}".format(method, path, error)
+                "Target-cluster {} {} failed; namespace inspection was not confirmed: {}".format(method, path, error)
             ) from error
 
     def namespace(self, name):
         return self.request("GET", "/api/v1/namespaces/" + quote(name, safe=""), allow_not_found=True)
-
-    def wait_deleted(self, name):
-        while self.namespace(name) is not None:
-            time.sleep(1)
-
-    def inventory(self, namespace):
-        # Discover every served version, not just core kinds or kubectl's 'all'.
-        versions = [("/api/" + version, "") for version in self.request("GET", "/api")["versions"]]
-        for group in self.request("GET", "/apis")["groups"]:
-            preferred = group["preferredVersion"]["groupVersion"]
-            ordered = [preferred] + [v["groupVersion"] for v in group["versions"]
-                                     if v["groupVersion"] != preferred]
-            versions.extend(("/apis/" + version, group["name"]) for version in ordered)
-        seen = set()
-        remaining = []
-        for base, group in versions:
-            for resource in self.request("GET", base)["resources"]:
-                key = (group, resource["name"])
-                if not resource["namespaced"] or "/" in resource["name"] or key in seen:
-                    continue
-                seen.add(key)
-                if "list" not in resource["verbs"]:
-                    # Bindings and access reviews are create-only APIs, not stored collections.
-                    if set(resource["verbs"]) == {"create"}:
-                        continue
-                    raise AzureResponseError("Cannot inventory namespaced kind '{}'.".format(key))
-                path = base + "/namespaces/" + quote(namespace, safe="") + "/" + resource["name"]
-                continuation = ""
-                tokens = set()
-                while True:
-                    page = self.request("GET", path + "?" + urlencode({"limit": 100, "continue": continuation}))
-                    for obj in page["items"]:
-                        if not self._namespace_default(group, resource["name"], obj):
-                            remaining.append("{}/{}".format(
-                                resource["name"] + ("." + group if group else ""), obj["metadata"]["name"]
-                            ))
-                    continuation = page.get("metadata", {}).get("continue", "")
-                    if not continuation:
-                        break
-                    if continuation in tokens:
-                        raise AzureResponseError("Repeated Kubernetes inventory continuation token.")
-                    tokens.add(continuation)
-        return sorted(remaining)
-
-    @staticmethod
-    def _namespace_default(group, resource, obj):
-        if resource == "events" and group in ("", "events.k8s.io"):
-            return True
-        metadata = obj["metadata"]
-        if group or (resource, metadata["name"]) not in (
-            ("serviceaccounts", "default"), ("configmaps", "kube-root-ca.crt")
-        ):
-            return False
-        # Namespace controllers inject these into every namespace. AKS can omit
-        # managedFields on the default ServiceAccount; it must still be pristine.
-        managers = {entry["manager"] for entry in metadata.get("managedFields", [])}
-        controller_default = managers == {"kube-controller-manager"}
-        if resource == "serviceaccounts":
-            controller_default = (
-                managers <= {"kube-controller-manager"}
-                and not metadata.get("annotations")
-                and not metadata.get("labels")
-                and not metadata.get("ownerReferences")
-            )
-        else:
-            description = (
-                "Contains a CA bundle that can be used to verify the kube-apiserver when using internal endpoints "
-                "such as the internal service IP or kubernetes.default.svc. "
-                "No other usage is guaranteed across distributions of Kubernetes clusters."
-            )
-            controller_default = (
-                controller_default
-                and not metadata.get("labels")
-                and not metadata.get("ownerReferences")
-                and (metadata.get("annotations") or {}) in (
-                    {}, {"kubernetes.io/description": description},
-                )
-            )
-        return (controller_default
-                and not metadata.get("finalizers")
-                and not obj.get("secrets")
-                and not obj.get("imagePullSecrets")
-                and obj.get("automountServiceAccountToken") is None
-                and not obj.get("binaryData")
-                and (resource != "configmaps" or set(obj.get("data", {})) == {"ca.crt"}))
 
 
 class ChaosStudio(DefaultExtension):
@@ -723,47 +638,13 @@ class ChaosStudio(DefaultExtension):
         )
 
     def PostDelete(self, cmd, resource_group_name, cluster_name, name, extension):
-        """Run only after the extension delete poller confirms completion."""
-        settings = extension.configuration_settings or {}
-        namespace = self._existing_release_namespace(extension, settings)
-        if settings.get(self.NAMESPACE_CREATED_KEY) != "true":
-            logger.warning("Namespace '%s' retained: installation did not record namespace creation.", namespace)
-            return
-        if namespace == "default" or namespace.startswith("kube-"):
-            logger.warning("Namespace '%s' retained: system namespace.", namespace)
-            return
-        arm = self._arm_client_factory(cmd)
-        cluster = self._cluster_client_factory(cmd, arm, resource_group_name, cluster_name)
-        try:
-            current = cluster.namespace(namespace)
-            if current is None:
-                logger.warning("Namespace '%s' is already absent.", namespace)
-                return
-            owner = current["metadata"].get("annotations", {}).get(self.NAMESPACE_OWNER)
-            if owner != namespace + "/" + name:
-                logger.warning("Namespace '%s' retained: missing or foreign creation marker (%s).", namespace, owner)
-                return
-            remaining = cluster.inventory(namespace)
-            if remaining:
-                logger.warning(
-                    "Namespace '%s' retained: resources remain: %s. "
-                    "Stopped ChaosEngines are durable name reservations; their CRD is retained while any remain. "
-                    "Unmarked learned-key/runtime state is never adopted or erased.",
-                    namespace, ", ".join(remaining),
-                )
-                return
-            cluster.request("DELETE", "/api/v1/namespaces/" + quote(namespace, safe=""), {
-                "apiVersion": "v1", "kind": "DeleteOptions",
-                "preconditions": {key: current["metadata"][key] for key in ("uid", "resourceVersion")},
-            }, allow_not_found=True)
-            cluster.wait_deleted(namespace)
-            logger.warning(
-                "Owned namespace '%s' removed. "
-                "Stopped ChaosEngines in other target namespaces and their CRD are not reclaimed.",
-                namespace,
-            )
-        finally:
-            cluster.close()
+        """Report retention after confirmed ARM deletion; do not mutate Kubernetes."""
+        logger.warning(
+            "ARM extension '%s' deletion completed. Its release namespace and any "
+            "remaining Kubernetes resources are retained; automatic namespace removal "
+            "is not performed by the CLI.",
+            name,
+        )
 
     def _reconcile_prerequisites(
         self,

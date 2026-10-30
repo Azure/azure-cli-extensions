@@ -438,7 +438,8 @@ def delete_k8s_extension(
     if isinstance(extension_class, ChaosStudio):
         if no_wait or force:
             logger.warning(
-                "Namespace cleanup was not run: --no-wait/--force does not confirm a completed Helm uninstall."
+                "The CLI retains release namespaces and their remaining Kubernetes resources. "
+                "--no-wait/--force does not run namespace cleanup."
             )
         else:
             LongRunningOperation(cmd.cli_ctx)(result)
