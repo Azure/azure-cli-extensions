@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.2.1
+++++++
+* `az monitor data-collection rule create`: Fix the `SyntaxWarning: "\s" is an invalid escape sequence` printed by `az monitor` commands on Python 3.12+.
+
 1.2.0
 ++++++
 * Update api-version to `2023-03-11` for sub cmds of `az monitor data-collection rule`
