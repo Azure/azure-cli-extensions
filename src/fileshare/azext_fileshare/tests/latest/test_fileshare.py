@@ -65,10 +65,35 @@ class FileShareListScopeFilter(RecordingProcessor):
                                lambda _: str(len(response['body']['string'].encode('utf-8'))))
         return response
 
+def _parse_request_body(body):
+    if body in (None, b'', ''):
+        return None
+    if isinstance(body, bytes):
+        body = body.decode('utf-8')
+    try:
+        return json.loads(body)
+    except ValueError:
+        return body
+
+
+def fileshares_request_body_matcher(r1, r2):
+    """Also matches the bodies of File Shares requests during playback.
+
+    Without this, playback matches only the method and URL, so a test would still pass if an option such as
+    --media-tier or --scale-mode stopped being sent. Other requests (resource groups, networks, Key Vault) carry
+    per-run values such as timestamps and keep the default matching.
+    """
+    if '/providers/microsoft.fileshares/' not in r1.uri.lower():
+        return True
+    return _parse_request_body(r1.body) == _parse_request_body(r2.body)
+
 
 class FilesharesScenario(ScenarioTest):
 
     def setUp(self):
+        # The cassette is opened in super().setUp(), so the matcher must be registered first.
+        self.vcr.register_matcher('fileshares_body', fileshares_request_body_matcher)
+        self.vcr.match_on = tuple(self.vcr.match_on) + ('fileshares_body',)
         super().setUp()
         # Pin the endpoint in both record and playback so recorded request URLs match in CI.
         cloud = deepcopy(AZURE_PUBLIC_CLOUD)
@@ -528,20 +553,78 @@ class FilesharesScenario(ScenarioTest):
     def test_fileshares_hdd_offer(self):
         self.kwargs['location'] = LOCATION
 
-        self.cmd(
+        ssd = self.cmd('fileshare limits-show --location {location}').get_output_in_json()['properties']['limits']
+        hdd = self.cmd(
             'fileshare limits-show --location {location} --protocol NFS --media-tier HDD',
             checks=[
                 self.greater_than('properties.limits.maxProvisionedStorageGiB', 0),
             ]
-        )
-        self.cmd(
+        ).get_output_in_json()['properties']['limits']
+        # HDD has its own, lower performance limits than the default SSD offer.
+        self.assertLess(hdd['minProvisionedIOPerSec'], ssd['minProvisionedIOPerSec'])
+        self.assertLess(hdd['maxProvisionedIOPerSec'], ssd['maxProvisionedIOPerSec'])
+
+        ssd_recommendation = self.cmd(
+            'fileshare get-provisioning-recommendation --location {location} --provisioned-storage-gib 1024'
+        ).get_output_in_json()['properties']
+        hdd_recommendation = self.cmd(
             'fileshare get-provisioning-recommendation --location {location} --provisioned-storage-gib 1024 '
             '--protocol NFS --media-tier HDD',
             checks=[
                 self.greater_than('properties.provisionedIOPerSec', 0),
             ]
-        )
+        ).get_output_in_json()['properties']
+        self.assertLess(hdd_recommendation['provisionedIOPerSec'], ssd_recommendation['provisionedIOPerSec'])
 
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_fileshares_scale', location=LOCATION)
+    def test_fileshares_scale_mode_not_supported_on_hdd(self, resource_group):
+        # Scale mode is served on SSD only. The service rejects HDD with Scale before any HDD availability check,
+        # so this holds whether or not HDD is enabled in the region.
+        self.kwargs.update({
+            'name': self.create_random_name('share', 24),
+            'location': LOCATION,
+        })
+        expected = 'The requested media tier and scale mode are not a supported combination.'
+
+        self._assert_command_fails_with(
+            'fileshare limits-show --location {location} --protocol NFS --media-tier HDD --scale-mode Scale',
+            expected)
+        self._assert_command_fails_with(
+            'fileshare get-provisioning-recommendation --location {location} --provisioned-storage-gib 1024 '
+            '--protocol NFS --media-tier HDD --scale-mode Scale',
+            expected)
+        self._assert_command_fails_with(
+            'fileshare create -g {rg} -n {name} --location {location} --protocol NFS --media-tier HDD '
+            '--scale-mode Scale --redundancy Local --provisioned-storage-gib 1024 --provisioned-iops 1205 '
+            '--provisioned-throughput-mib 81',
+            expected)
+        self.cmd('fileshare show -g {rg} -n {name}', expect_failure=True)
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_fileshares_scale', location=LOCATION)
+    def test_fileshares_scale_mode_requires_feature_registration(self, resource_group):
+        # Scale mode on SSD requires the subscription to be registered for the scale mode preview feature. The test
+        # subscription isn't, so these requests are rejected; re-record this test if the subscription is registered.
+        self.kwargs.update({
+            'name': self.create_random_name('share', 24),
+            'location': LOCATION,
+        })
+        expected = "requires the subscription to be registered for the 'Microsoft.FileShares/AzurePremiumFilesNFSScaleMode' feature"
+
+        self._assert_command_fails_with(
+            'fileshare limits-show --location {location} --protocol NFS --media-tier SSD --scale-mode Scale',
+            expected)
+        self._assert_command_fails_with(
+            'fileshare get-provisioning-recommendation --location {location} --provisioned-storage-gib 1024 '
+            '--protocol NFS --media-tier SSD --scale-mode Scale',
+            expected)
+        self._assert_command_fails_with(
+            'fileshare create -g {rg} -n {name} --location {location} --protocol NFS --media-tier SSD '
+            '--scale-mode Scale --redundancy Local --provisioned-storage-gib 100 --provisioned-iops 3000 '
+            '--provisioned-throughput-mib 125',
+            expected)
+        self.cmd('fileshare show -g {rg} -n {name}', expect_failure=True)
     @unittest.skip(HDD_CREATE_PENDING)
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_fileshares_hdd', location=LOCATION)
