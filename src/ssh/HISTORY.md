@@ -1,5 +1,9 @@
 Release History
 ===============
+2.0.10
+------
+* Raise minimum CLI core version to 2.71.0 to match the AAZ-based compute (VM) commands introduced in 2.0.9
+
 2.0.9
 -----
 * Migrate code from Azure SDK to AAZ based commands for compute operations (VM)
