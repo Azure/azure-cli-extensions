@@ -7,6 +7,7 @@
 
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.extension import get_extension
+from knack.events import EVENT_INVOKER_PRE_PARSE_ARGS
 
 # This is required to populate help for the extension
 import azext_quantum._help  # pylint: disable=unused-import
@@ -18,6 +19,35 @@ ext = get_extension("quantum")
 CLI_REPORTED_VERSION = ext.version if ext else "unknown"
 
 
+def _reject_removed_job_storage_argument(cli_ctx, **kwargs):
+    """Reject the removed job option without echoing its secret-bearing value."""
+    invocation = cli_ctx.invocation
+    if invocation is None or cli_ctx.data.get('completer_active'):
+        return
+    if invocation.data.get('command_string') not in (
+            'quantum job submit', 'quantum run', 'quantum execute'):
+        return
+    # Argparse also accepted these unambiguous abbreviations; --s was ambiguous.
+    # Match only the option name, not prefixes of unrelated options or their values.
+    removed_options = ('--st', '--sto', '--stor', '--stora', '--storag', '--storage')
+    if not any(arg.partition('=')[0] in removed_options for arg in kwargs.get('args', ())):
+        return
+
+    from azure.cli.core.azclierror import UnrecognizedArgumentError
+
+    # These commands have no positional arguments. Reject even after "--" or alongside help,
+    # rather than letting an unknown-argument error echo the value. Workspace options are separate.
+    error = UnrecognizedArgumentError(
+        'The --storage option has been removed.',
+        'Remove --storage from the command. Jobs use storage linked to the Azure Quantum workspace.',
+    )
+    # Use the normal renderer, but not parser.error(), which also receives raw arguments for
+    # recommendations. This protects the error path, not core debug logging before extension load.
+    error.print_error()
+    error.send_telemetry()
+    invocation.parser.exit(2)
+
+
 class QuantumCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
@@ -25,6 +55,10 @@ class QuantumCommandsLoader(AzCommandsLoader):
 
         # Save the CLI context config for use in load_arguments
         self.cli_ctx_config = cli_ctx.config
+
+        # A CLI context can load this extension repeatedly (for example in interactive use).
+        cli_ctx.unregister_event(EVENT_INVOKER_PRE_PARSE_ARGS, _reject_removed_job_storage_argument)
+        cli_ctx.register_event(EVENT_INVOKER_PRE_PARSE_ARGS, _reject_removed_job_storage_argument)
 
     def load_command_table(self, args):
         from azext_quantum.commands import load_command_table
