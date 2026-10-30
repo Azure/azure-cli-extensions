@@ -157,31 +157,28 @@ The second pass uses Git history and is not covered by the first invocation.
 Examples for generated commands must be defined in their AAZ models; handwritten
 help entries alone do not populate the generated command metadata.
 
-All scenarios support offline playback from the checked-in recordings.
+Scenarios that need no Service Group (`test_contains_list`,
+`test_dependency_of_same_source_target`, `test_sgm_invalid_source` and
+`test_sgm_nonexistent_sg`) are recorded and play back offline.
 
-To re-record, explicitly set `AZURE_TEST_RUN_LIVE=true` and configure:
+The remaining scenarios are self-contained but `@live_only`: each creates its own
+Service Group directly under the tenant root, waits for ARM to accept the new
+Service Group's role assignment, and deletes the Service Group afterwards. That
+propagation is slow and variable (from about a minute to more than fifteen), which
+makes these tests too slow and unreliable to record. To run them, sign in as an
+identity that can create Service Groups under the tenant root and run:
 
-- `AZURE_RELATIONSHIP_TEST_TARGET_SG`: the shared Service Group resource ID for the
-  dependency and membership scenarios.
-- `AZURE_RELATIONSHIP_TEST_DEPENDENCY_SG`: a **different**, dedicated Service Group
-  resource ID used only by the Service Group-scoped dependency lifecycle.
-- `AZURE_TENANT_ID`, `AZURE_RELATIONSHIP_TEST_PRINCIPAL_ID`, and
-  `AZURE_RELATIONSHIP_TEST_USER`: the test tenant and caller identifiers to sanitize.
+```
+$env:AZURE_TEST_RUN_LIVE = 'true'
+python -m pytest src/relationship/azext_relationship/tests/latest/test_relationship_scenario.py
+```
 
-Provision fresh child Service Groups directly under the authorized root, await
-their provisioning operations, and allow at least five minutes after the dedicated
-fixture is ready before starting the suite. Both fixtures require permission to
-manage relationships, such as their automatically provisioned Service Group
-Administrator assignments. Use a different Service Group for the dependency
-lifecycle than for the shared fixture. Remove run-created Service Groups and grants
-after recording.
+Resource-side relationship permissions must also be available on the test
+subscription: assign Relationship Administrator to the test identity once at the
+subscription scope before running, and remove it afterwards. Live scenarios create
+temporary resource groups and, where needed, managed identities.
 
-Resource-side
-relationship permissions must also be available on the test subscription and its
-resources. For a dedicated live-test environment, assign Relationship Administrator
-to the test identity once at the test subscription scope before running the suite;
-the scenarios do not assign roles individually. Allow new assignments to propagate
-before starting the tests. No role changes on the root Service Group are required.
-Live scenarios create temporary resource groups and, where needed, managed identities.
-Scenarios do not retry commands. Recordings normalize fixture and caller identifiers
-through the test framework's name replacer.
+Running tests with `AZURE_TEST_RUN_LIVE=true` also rewrites the checked-in
+recordings of the recorded scenarios. Restore them with `git checkout` unless you
+intend to re-record. Set `AZURE_TENANT_ID`, `AZURE_RELATIONSHIP_TEST_PRINCIPAL_ID`
+and `AZURE_RELATIONSHIP_TEST_USER` when re-recording so identifiers are normalized.

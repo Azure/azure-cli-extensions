@@ -3,11 +3,20 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import os
+import time
 import unittest
 
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests.const import MOCKED_TENANT_ID
+
+SERVICE_GROUPS_URL = 'https://management.azure.com/providers/Microsoft.Management/serviceGroups'
+SERVICE_GROUPS_API_VERSION = '2026-08-01'
+# A new Service Group's automatic Service Group Administrator role assignment can take
+# several minutes to propagate in ARM, so relationship calls are polled until accepted.
+PROPAGATION_TIMEOUT_SECONDS = 900
+PROPAGATION_POLL_SECONDS = 30
 
 
 class RelationshipScenarioTest(ScenarioTest):
@@ -16,14 +25,6 @@ class RelationshipScenarioTest(ScenarioTest):
         'cookie', 'set-cookie', 'x-ms-arm-signed-obo-token', 'x-ms-arm-obo-token',
         'x-ms-operation-identifier',
     ]
-
-    def _service_group(self, variable, recorded_name):
-        """Return the Service Group to use, mapping a live one to a stable recorded name."""
-        recorded = f'/providers/Microsoft.Management/serviceGroups/{recorded_name}'
-        configured = os.environ.get(variable)
-        if configured:
-            self.name_replacer.register_name_pair(configured, recorded)
-        return configured if self.is_live and configured else recorded
 
     def setUp(self):
         super().setUp()
@@ -34,12 +35,76 @@ class RelationshipScenarioTest(ScenarioTest):
         ):
             if value:
                 self.name_replacer.register_name_pair(value, replacement)
-        self.service_group_id = self._service_group('AZURE_RELATIONSHIP_TEST_TARGET_SG', 'clitestsharedsg')
 
+    def _wait(self, seconds):
+        time.sleep(seconds)
+
+    def _create_service_group(self):
+        """Create a Service Group under the tenant root and delete it when the test ends."""
+        name = self.create_random_name('clirelsg', 24)
+        tenant_id = self.cmd('account show --query tenantId -o tsv').output.strip()
+        root_id = f'/providers/Microsoft.Management/serviceGroups/{tenant_id}'
+        service_group_id = f'/providers/Microsoft.Management/serviceGroups/{name}'
+        url = f'{SERVICE_GROUPS_URL}/{name}?api-version={SERVICE_GROUPS_API_VERSION}'
+        self.kwargs.update({
+            'sg_url': url,
+            'sg_body': json.dumps({
+                'properties': {'displayName': name, 'parent': {'resourceId': root_id}}
+            }),
+        })
+        self.cmd("az rest --method put --url {sg_url} --body '{sg_body}'")
+        self.addCleanup(self.cmd, 'az rest --method delete --url {sg_url}')
+        for _ in range(PROPAGATION_TIMEOUT_SECONDS // PROPAGATION_POLL_SECONDS):
+            try:
+                state = self.cmd(
+                    'az rest --method get --url {sg_url} --query properties.provisioningState -o tsv'
+                ).output.strip()
+            except Exception as error:  # pylint: disable=broad-except
+                if 'ResourceNotFound' not in str(error):
+                    raise
+                state = 'Creating'
+            if state == 'Succeeded':
+                break
+            self.assertNotIn(state, ('Failed', 'Canceled'))
+            self._wait(PROPAGATION_POLL_SECONDS)
+        else:
+            self.fail(f'Service Group {name} did not finish provisioning.')
+        self._wait_for_permissions(service_group_id)
+        return service_group_id
+
+    def _wait_for_permissions(self, service_group_id):
+        """Poll a throwaway dependency from the subscription to the new Service Group.
+
+        This exercises the same linked write check that the tests depend on, which
+        becomes valid only after the Service Group's role assignment has propagated.
+        """
+        probe = self.create_random_name('clirelprobe', 24)
+        self.kwargs.update({
+            'probe_scope': f'/subscriptions/{self.get_subscription_id()}',
+            'probe_name': probe,
+            'probe_target': service_group_id,
+        })
+        for _ in range(PROPAGATION_TIMEOUT_SECONDS // PROPAGATION_POLL_SECONDS):
+            try:
+                self.cmd(
+                    'az relationship dependency-of create --resource-uri {probe_scope} '
+                    '--name {probe_name} --target-id {probe_target}'
+                )
+            except Exception as error:  # pylint: disable=broad-except
+                if 'AuthorizationFailed' not in str(error):
+                    raise
+                self._wait(PROPAGATION_POLL_SECONDS)
+                continue
+            self.cmd('az relationship dependency-of delete --resource-uri {probe_scope} --name {probe_name} --yes')
+            return
+        self.fail(f'Permissions on {service_group_id} did not propagate in time.')
+
+    @live_only()
     def test_dependency_of_crud(self):
         """Full CRUD lifecycle for a dependencyOf relationship (RG → ServiceGroup)."""
         rg_name = self.create_random_name('rg-dep-', 20)
         rel_name = 'deprel' + self.create_random_name('', 6).replace('-', '')
+        self.service_group_id = self._create_service_group()
         sub_id = self.get_subscription_id()
         rg_uri = f'/subscriptions/{sub_id}/resourceGroups/{rg_name}'
 
@@ -111,9 +176,11 @@ class RelationshipScenarioTest(ScenarioTest):
         finally:
             self.cmd(f'az group delete --name {rg_name} --yes --no-wait')
 
+    @live_only()
     def test_dependency_of_subscription_scope(self):
         """DependencyOf with subscription as the source scope."""
         rel_name = 'depsub' + self.create_random_name('', 6).replace('-', '')
+        self.service_group_id = self._create_service_group()
         sub_id = self.get_subscription_id()
         sub_uri = f'/subscriptions/{sub_id}'
 
@@ -158,10 +225,12 @@ class RelationshipScenarioTest(ScenarioTest):
                 expect_failure=False
             )
 
+    @live_only()
     def test_service_group_member_crud(self):
         """Full CRUD lifecycle for a serviceGroupMember relationship (ServiceGroup → RG)."""
         rg_name = self.create_random_name('rg-sgm-', 20)
         rel_name = 'sgmrel' + self.create_random_name('', 6).replace('-', '')
+        self.service_group_id = self._create_service_group()
         sub_id = self.get_subscription_id()
         rg_uri = f'/subscriptions/{sub_id}/resourceGroups/{rg_name}'
 
@@ -233,9 +302,11 @@ class RelationshipScenarioTest(ScenarioTest):
         finally:
             self.cmd(f'az group delete --name {rg_name} --yes --no-wait')
 
+    @live_only()
     def test_sgm_subscription_scope(self):
         """ServiceGroupMember with subscription as the target scope."""
         rel_name = 'sgmsub' + self.create_random_name('', 6).replace('-', '')
+        self.service_group_id = self._create_service_group()
         sub_id = self.get_subscription_id()
         sub_uri = f'/subscriptions/{sub_id}'
 
@@ -284,13 +355,11 @@ class RelationshipScenarioTest(ScenarioTest):
                 expect_failure=False
             )
 
+    @live_only()
     def test_dependency_of_by_service_group_crud(self):
         rg_name = self.create_random_name('rg-sg-dep-', 20)
         rel_name = self.create_random_name('sgdep', 16)
-        # A dedicated Service Group keeps this lifecycle isolated from the shared fixture.
-        self.service_group_id = self._service_group(
-            'AZURE_RELATIONSHIP_TEST_DEPENDENCY_SG', 'clitestdependencysg'
-        )
+        self.service_group_id = self._create_service_group()
         sg_name = self.service_group_id.rstrip('/').rsplit('/', 1)[-1]
         scope = f'--service-group-name "{sg_name}"'
         created = False
