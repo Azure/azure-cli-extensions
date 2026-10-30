@@ -3,12 +3,13 @@
 Release History
 ===============
 
-1.1.0
+1.1.0b1
 ++++++
-* Support for Azure File Shares API version ``2026-09-01``.
+* Preview release supporting Azure File Shares API version ``2026-09-01``.
 * Add managed identity commands: ``az fileshare identity assign/remove/show``.
 * Add redundancy conversion commands: ``az fileshare start-redundancy-conversion``, ``az fileshare get-redundancy-conversion-status``.
-* Update ``az fileshare create/update`` with encryption (customer-managed key), scale mode, and HDD media tier options.
+* Update ``az fileshare create`` with managed identity, encryption (customer-managed key, infrastructure encryption), scale mode, and HDD media tier options; ``az fileshare update`` with encryption options. Change identities on an existing share with ``az fileshare identity assign/remove``.
+* Add offer options (``--protocol``, ``--media-tier``, ``--scale-mode``) to ``az fileshare limits-show`` and ``az fileshare get-provisioning-recommendation``.
 * Surface file share migration state on ``az fileshare show``.
 * Fix ``az fileshare snapshot create`` sending the create request twice.
 
