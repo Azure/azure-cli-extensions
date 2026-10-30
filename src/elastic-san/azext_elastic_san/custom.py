@@ -96,6 +96,9 @@ def _normalize_managed_by_argument(args):
             "client-id": "client_id",
             "clientId": "client_id",
             "client_id": "client_id",
+            "resource-id": "resource_ids",
+            "resourceId": "resource_ids",
+            "resource_id": "resource_ids",
             "resource-ids": "resource_ids",
             "resourceIds": "resource_ids",
             "resource_ids": "resource_ids",
@@ -103,14 +106,16 @@ def _normalize_managed_by_argument(args):
         }
         normalized = {}
         for key, value in item.items():
-            if key in ("resource-id", "resourceId", "resource_id"):
-                if "resource_ids" in normalized:
+            normalized_key = aliases.get(key, key)
+            if normalized_key in normalized:
+                if normalized_key == "resource_ids":
                     raise InvalidArgumentValueError(
-                        "Specify either resource-id or resource-ids in each --managed-by object, not both."
+                        "Specify only one resource-id or resource-ids alias in each --managed-by object."
                     )
-                normalized["resource_ids"] = [value]
-                continue
-            normalized[aliases.get(key, key)] = value
+                raise InvalidArgumentValueError(
+                    f"Specify only one alias for {normalized_key} in each --managed-by object."
+                )
+            normalized[normalized_key] = [value] if key in ("resource-id", "resourceId", "resource_id") else value
         return normalized
 
     managed_by = args.managed_by.to_serialized_data()
@@ -132,19 +137,19 @@ def _normalize_managed_by_argument(args):
     args.managed_by = managed_by
 
 
-def _generic_update_targets_put_only_san_property(generic_update_args):
+def _generic_update_targets_property(generic_update_args, property_names):
     import re
 
     if not isinstance(generic_update_args, dict):
         return False
 
-    for _, values in generic_update_args.get("actions", []):
-        for value in values:
+    for action, values in generic_update_args.get("actions", []):
+        for value in values if action == "set" else values[:1]:
             path = re.split(r"[=\s]", str(value), maxsplit=1)[0]
             path_parts = [part for part in re.split(r"[.\[\]]+", path) if part]
             if path_parts and path_parts[0].lower() == "properties":
                 path_parts = path_parts[1:]
-            if path_parts and path_parts[0].lower() in ("sku", "availabilityzones", "availability_zones"):
+            if path_parts and path_parts[0].lower() in property_names:
                 return True
     return False
 
@@ -295,7 +300,14 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
 
     def _execute_operations(self):
         from azure.cli.core.aaz import has_value
+        from azure.cli.core.azclierror import InvalidArgumentValueError
 
+        if _generic_update_targets_property(
+                self.ctx.generic_update_args,
+                ("encryptionintransit", "encryption_in_transit", "qualityofservice", "quality_of_service")):
+            raise InvalidArgumentValueError(
+                "Updating encryptionInTransit or qualityOfService is not supported by volume-group update."
+            )
         self.pre_operations()
         self.VolumeGroupsGet(ctx=self.ctx)()
         payload = _VolumeGroupUpdate.VolumeGroupsUpdate(ctx=self.ctx).content
@@ -462,7 +474,8 @@ class ElasticSanUpdate(_ElasticSanUpdate):
             self.ctx.vars.instance.properties.availability_zones = args.availability_zones
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         if (has_value(args.sku) or has_value(args.availability_zones) or
-                _generic_update_targets_put_only_san_property(self.ctx.generic_update_args)):
+                _generic_update_targets_property(
+                    self.ctx.generic_update_args, ("sku", "availabilityzones", "availability_zones"))):
             yield self.ElasticSanReplace(ctx=self.ctx)()
         else:
             yield self.ElasticSansUpdate(ctx=self.ctx)()

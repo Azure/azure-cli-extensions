@@ -20,6 +20,7 @@ The separate `test_elastic_san_v2_scenarios` integration test covers V2 create, 
 `az elastic-san update -n {san_name} -g {rg} --tags "{key1710:bbbb}" --base-size-tib 25 --extended-capacity-size-tib 15`
 `--sku` and `--availability-zones` are also accepted for compatibility. When either is supplied, the command reads the existing resource and uses the API's PUT (create-or-replace) operation because these fields are not part of the PATCH update contract.
 SAN and volume-group updates support `--add`, `--set`, `--remove`, and `--force-string`. Custom code reads the resource, applies explicit options followed by generic updates, and sends writable PATCH fields (or PUT for the legacy SAN options above). This compatibility flow reuses the generated show operations and survives regeneration of the PATCH commands.
+Volume-group generic updates to `encryptionInTransit` and `qualityOfService` are rejected before sending a request because these fields are not supported by the PATCH contract.
 
 ## Volume Group
 ### Create a Volume Group.
@@ -36,6 +37,7 @@ SAN and volume-group updates support `--add`, `--set`, `--remove`, and `--force-
 ## Volume
 ### Create a Volume.
 `az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2`
+Volume create and update accept `--managed-by` as a legacy single-resource object or the current array of objects. Specify each field only once per object: aliases such as `resource-id` and `resource-ids` (including camelCase and snake_case spellings) cannot be combined.
 ### Delete a Volume.
 `az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name}`
 ### List Volumes in a Volume Group.

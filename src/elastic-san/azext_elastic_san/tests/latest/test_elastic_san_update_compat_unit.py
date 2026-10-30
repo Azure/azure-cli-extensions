@@ -10,6 +10,7 @@ from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 from azure.cli.core.aaz._arg_action import AAZAnyTypeArgAction
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 from azext_elastic_san.aaz.latest.elastic_san.volume import Delete as VolumeDelete
 from azext_elastic_san.custom import (
@@ -342,6 +343,26 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
         self.assertEqual(body["identity"]["type"], "None")
         self.assertEqual(body["identity"]["userAssignedIdentities"], {})
 
+    def test_volume_group_rejects_generic_edits_to_unsupported_patch_fields(self):
+        for field, value in (("encryptionInTransit", "true"), ("qualityOfService", "PerformanceCritical"),
+                             ("encryption_in_transit", "true"), ("quality_of_service", "PerformanceCritical")):
+            for path in (field, f"properties.{field}"):
+                for action, values in (("set", [f"{path}={value}"]), ("remove", [path]),
+                                       ("add", [path, value])):
+                    with self.subTest(path=path, action=action):
+                        schema = VolumeGroupUpdate._build_arguments_schema()
+                        command = object.__new__(VolumeGroupUpdate)
+                        command.ctx = SimpleNamespace(
+                            args=schema._ValueCls(schema, schema.process_data({})),
+                            generic_update_args={"actions": [(action, values)], "force_string": False},
+                        )
+                        with patch.object(command.VolumeGroupsGet, "__call__") as get, \
+                                patch.object(command.VolumeGroupsUpdate, "__call__") as update:
+                            with self.assertRaisesRegex(InvalidArgumentValueError, "not supported"):
+                                list(command._execute_operations())
+                        get.assert_not_called()
+                        update.assert_not_called()
+
     def test_volume_group_disabling_system_identity_keeps_user_identity(self):
         _, body = self._execute_update(
             VolumeGroupUpdate,
@@ -436,6 +457,32 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
 
 
 class VolumeManagedByCompatTest(unittest.TestCase):
+    def test_managed_by_rejects_normalized_alias_collisions(self):
+        alias_groups = (
+            (("resource-id", "resourceId", "resource_id"), "/resource/one"),
+            (("resource-ids", "resourceIds", "resource_ids"), ["/resource/two"]),
+            (("client-id", "clientId", "client_id"), "client"),
+        )
+        entries = [(alias, value) for aliases, value in alias_groups for alias in aliases]
+        for first_key, first_value in entries:
+            for second_key, second_value in entries:
+                if first_key == second_key:
+                    continue
+                if first_key.startswith("client") != second_key.startswith("client"):
+                    continue
+                for as_list in (False, True):
+                    for command_type in (VolumeCreate, VolumeUpdate):
+                        with self.subTest(first=first_key, second=second_key, as_list=as_list,
+                                          command=command_type.__name__):
+                            item = {first_key: first_value, second_key: second_value}
+                            schema = command_type._build_arguments_schema()
+                            command = object.__new__(command_type)
+                            command.ctx = SimpleNamespace(args=schema._ValueCls(
+                                schema, schema.process_data({"managed_by": [item] if as_list else item})
+                            ))
+                            with self.assertRaisesRegex(InvalidArgumentValueError, "resource-ids|client_id"):
+                                command.pre_operations()
+
     def test_legacy_managed_by_object_converts_to_single_resource_array(self):
         legacy_managed_by = AAZAnyTypeArgAction.decode_str(
             "{resource-id:/subscriptions/sub/resourceGroups/rg/providers/test/type/name}"
