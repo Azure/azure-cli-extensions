@@ -6,8 +6,12 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPreparer)
+from azure.core.exceptions import HttpResponseError
 import time
 import unittest
+from unittest.mock import patch
+
+from azext_elastic_san.custom import VolumeGroupCreate, VolumeGroupUpdate
 
 
 class ElasticSanScenario(ScenarioTest):
@@ -15,6 +19,18 @@ class ElasticSanScenario(ScenarioTest):
         super().setUp()
         # These recordings use the canary ARM endpoint; keep the override scoped to this test CLI.
         self.cli_ctx.cloud.endpoints.resource_manager = 'https://eastus2euap.management.azure.com/'
+
+    def _volume_group_cmd_with_request_checks(self, command, operation_type, properties, checks=None):
+        make_request = operation_type.make_request
+
+        def checked_make_request(operation):
+            body = operation.content
+            for name, value in properties.items():
+                self.assertEqual(body["properties"][name], value)
+            return make_request(operation)
+
+        with patch.object(operation_type, "make_request", checked_make_request):
+            return self.cmd(command, checks=checks)
 
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan')
     def test_elastic_san_scenarios(self, resource_group):
@@ -78,7 +94,9 @@ class ElasticSanScenario(ScenarioTest):
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.v2.')
     def test_elastic_san_v2_scenarios(self, resource_group):
         self.kwargs.update({
-            "san_name": self.create_random_name('elastic-san', 24)
+            "san_name": self.create_random_name('elastic-san', 24),
+            "vg_name": self.create_random_name('volume-group', 24),
+            "invalid_vg_name": self.create_random_name('volume-group', 24),
         })
         self.cmd('az elastic-san create -n {san_name} -g {rg} -l eastus2euap '
                  '--sku {{name:ElasticSAN_LRS}} --version V2 '
@@ -118,6 +136,39 @@ class ElasticSanScenario(ScenarioTest):
                          JMESPathCheck('totalIops', 110000),
                          JMESPathCheck('totalMBps', 2200),
                          JMESPathCheck('totalSizeTiB', 26)])
+        self._volume_group_cmd_with_request_checks(
+            'az elastic-san volume-group create -e {san_name} -g {rg} -n {vg_name} '
+            '--protocol-type DirectAttach --quality-of-service PerformanceCritical '
+            '--reserved-iops 10000 --reserved-mbps 200',
+            VolumeGroupCreate.VolumeGroupsCreate,
+            {"protocolType": "DirectAttach", "qualityOfService": "PerformanceCritical",
+             "reservedIops": 10000, "reservedMBps": 200},
+            checks=[JMESPathCheck('qualityOfService', 'PerformanceCritical'),
+                    JMESPathCheck('reservedIops', 10000),
+                    JMESPathCheck('reservedMBps', 200)],
+        )
+        self._volume_group_cmd_with_request_checks(
+            'az elastic-san volume-group update -e {san_name} -g {rg} -n {vg_name} '
+            '--reserved-iops 12000 --reserved-mbps 250',
+            VolumeGroupUpdate.VolumeGroupsUpdate,
+            {"reservedIops": 12000, "reservedMBps": 250},
+            checks=[JMESPathCheck('qualityOfService', 'PerformanceCritical'),
+                    JMESPathCheck('reservedIops', 12000),
+                    JMESPathCheck('reservedMBps', 250)],
+        )
+        self.cmd('az elastic-san volume-group show -e {san_name} -g {rg} -n {vg_name}',
+                 checks=[JMESPathCheck('qualityOfService', 'PerformanceCritical'),
+                         JMESPathCheck('reservedIops', 12000),
+                         JMESPathCheck('reservedMBps', 250)])
+        with self.assertRaisesRegex(HttpResponseError, r'(?i)reserv'):
+            self._volume_group_cmd_with_request_checks(
+                'az elastic-san volume-group create -e {san_name} -g {rg} -n {invalid_vg_name} '
+                '--protocol-type Iscsi --quality-of-service GeneralPurpose '
+                '--reserved-iops 10000 --reserved-mbps 200',
+                VolumeGroupCreate.VolumeGroupsCreate,
+                {"qualityOfService": "GeneralPurpose", "reservedIops": 10000, "reservedMBps": 200},
+            )
+        self.cmd('az elastic-san volume-group delete -e {san_name} -g {rg} -n {vg_name} -y')
         self.cmd('az elastic-san delete -n {san_name} -g {rg} -y')
 
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.volumegroup')

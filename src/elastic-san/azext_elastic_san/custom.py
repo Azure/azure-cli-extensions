@@ -456,6 +456,10 @@ class ElasticSanUpdate(_ElasticSanUpdate):
         self.ElasticSansGet(ctx=self.ctx)()
         payload = _ElasticSanUpdate.ElasticSansUpdate(ctx=self.ctx).content
         _merge_update_payload(self.ctx.vars.instance, payload)
+        if has_value(args.sku):
+            self.ctx.vars.instance.properties.sku = args.sku
+        if has_value(args.availability_zones):
+            self.ctx.vars.instance.properties.availability_zones = args.availability_zones
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         if (has_value(args.sku) or has_value(args.availability_zones) or
                 _generic_update_targets_put_only_san_property(self.ctx.generic_update_args)):
@@ -480,14 +484,7 @@ class ElasticSanUpdate(_ElasticSanUpdate):
 
         @property
         def content(self):
-            from azure.cli.core.aaz import has_value
-
-            instance = self.ctx.vars.instance
-            if has_value(self.ctx.args.sku):
-                instance.properties.sku = self.ctx.args.sku
-            if has_value(self.ctx.args.availability_zones):
-                instance.properties.availability_zones = self.ctx.args.availability_zones
-            return self.serialize_content(instance)
+            return self.serialize_content(self.ctx.vars.instance)
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()

@@ -243,6 +243,37 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
         self.assertEqual(body["properties"]["sku"]["name"], "Premium_ZRS")
         self.assertEqual(body["properties"]["availabilityZones"], ["1"])
 
+    def test_san_generic_sku_edit_overrides_explicit_option(self):
+        events, body = self._execute_update(
+            ElasticSanUpdate,
+            {"sku": {"name": "Premium_LRS"}},
+            {
+                "location": "eastus2euap",
+                "properties": {"sku": {"name": "Premium_LRS"}, "baseSizeTiB": 23},
+            },
+            [("set", ["sku.name=Premium_ZRS"])],
+        )
+        self.assertEqual(events, ["GET", "PUT"])
+        self.assertEqual(body["properties"]["sku"]["name"], "Premium_ZRS")
+
+    def test_san_generic_zone_edits_apply_after_explicit_option(self):
+        events, body = self._execute_update(
+            ElasticSanUpdate,
+            {"availability_zones": ["1", "2"]},
+            {
+                "location": "eastus2euap",
+                "properties": {
+                    "sku": {"name": "Premium_LRS"},
+                    "availabilityZones": ["3"],
+                    "baseSizeTiB": 23,
+                },
+            },
+            [("add", ["availabilityZones", "3"]), ("remove", ["availabilityZones", "0"])],
+            force_string=True,
+        )
+        self.assertEqual(events, ["GET", "PUT"])
+        self.assertEqual(body["properties"]["availabilityZones"], ["2", "3"])
+
     def test_san_generic_availability_zone_update_selects_put(self):
         events, body = self._execute_update(
             ElasticSanUpdate,
@@ -355,7 +386,7 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
         self.assertIn("soft-deleted volumes", help_text)
         self.assertNotIn("volume groups", help_text)
 
-    def test_legacy_sku_and_zones_use_full_put_body(self):
+    def test_put_serializer_preserves_instance_without_reapplying_options(self):
         args_schema = ElasticSanUpdate._build_arguments_schema()
         args = args_schema._ValueCls(
             args_schema,
@@ -393,8 +424,8 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
         self.assertEqual(operation.method, "PUT")
         self.assertEqual(body["location"], "eastus2")
         self.assertEqual(body["tags"], {"keep": "tag"})
-        self.assertEqual(body["properties"]["sku"]["name"], "ElasticSAN_LRS")
-        self.assertEqual(body["properties"]["availabilityZones"], ["2"])
+        self.assertEqual(body["properties"]["sku"]["name"], "Premium_LRS")
+        self.assertEqual(body["properties"]["availabilityZones"], ["1"])
         self.assertEqual(body["properties"]["baseSizeTiB"], 23)
         self.assertEqual(body["properties"]["extendedCapacitySizeTiB"], 14)
 
