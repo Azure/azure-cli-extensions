@@ -18,9 +18,8 @@ from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD
 from azure.cli.testsdk import *
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
-# API version 2026-09-01 is exposed only through the canary ARM manifest, which is served
-# by the East US 2 EUAP regional ARM endpoint.
-CANARY_ARM_ENDPOINT = 'https://eastus2euap.management.azure.com'
+# Scenario tests run against the East US 2 EUAP regional ARM endpoint.
+ARM_ENDPOINT = 'https://eastus2euap.management.azure.com'
 LOCATION = 'eastus2euap'
 
 # Built-in roles for customer-managed key: the share's identity uses the key, the signed-in user creates it.
@@ -39,7 +38,7 @@ class FilesharesScenario(ScenarioTest):
         # Pin the endpoint in both record and playback so recorded request URLs match in CI.
         cloud = deepcopy(AZURE_PUBLIC_CLOUD)
         cloud.profile = self.cli_ctx.cloud.profile
-        cloud.endpoints.resource_manager = CANARY_ARM_ENDPOINT
+        cloud.endpoints.resource_manager = ARM_ENDPOINT
         cloud_patch = patch.object(self.cli_ctx, 'cloud', cloud)
         cloud_patch.start()
         self.addCleanup(cloud_patch.stop)
