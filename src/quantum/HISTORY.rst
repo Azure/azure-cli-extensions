@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.0.0b32
+++++++++++++++
+* [BREAKING CHANGE] Removed the ignored ``--storage`` argument from ``az quantum job submit``, ``az quantum execute``, and ``az quantum run``. Remove this argument from scripts; jobs continue to use workspace-linked storage because the backend already supports only that storage. The workspace-level ``--storage-account`` argument is unchanged.
+* Updated the vendored Quantum SDK to remove explicit storage connection-string overrides and their obsolete container helpers, matching the upstream SDK change.
+* Reject the removed job ``--storage`` option with migration guidance without echoing its value in the error message or command-log error entry.
+
 1.0.0b30
 ++++++++++++++
 * Fixed crashes in ``az quantum offerings list -o table`` and ``az quantum workspace create`` when a V2-only provider lacks a legacy marketplace ManagedApplication association.

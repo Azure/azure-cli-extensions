@@ -29,6 +29,7 @@ from ...vendored_sdks.azure_quantum_python._client.models import Usage
 from ...vendored_sdks.azure_quantum_python._client.operations._operations import (
     build_services_quotas_list_workspace_usages_request,
 )
+from ...vendored_sdks.azure_quantum_python.workspace import Workspace as QuantumSdkWorkspace
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -483,6 +484,184 @@ class QuantumWorkspacesUnitTest(unittest.TestCase):
 
         self.assertEqual(test_case.cmd.call_count, 3)
         self.assertEqual(sleep_mock.call_count, 2)
+
+
+class QuantumWorkspaceStorageContractTest(unittest.TestCase):
+
+    @patch('azext_quantum.vendored_sdks.azure_quantum_python.workspace.WorkspaceClient')
+    @patch('azext_quantum.vendored_sdks.azure_quantum_python.workspace.WorkspaceMgmtClient')
+    @patch('azext_quantum.vendored_sdks.azure_quantum_python.workspace.WorkspaceConnectionParams', autospec=True)
+    def test_workspace_accepts_keyword_resource_id(self, connection_params_mock,
+                                                  management_client_mock, data_client_mock):
+        credential = object()
+        resource_id = (
+            '/subscriptions/00000000-0000-0000-0000-000000000001/'
+            'resourceGroups/rg/providers/Microsoft.Quantum/Workspaces/ws'
+        )
+        parameters = connection_params_mock.return_value
+        parameters.default_from_env_vars.return_value = parameters
+        parameters.can_build_resource_id.return_value = True
+        parameters.is_complete.return_value = True
+        parameters._used_connection_string = False
+        parameters.get_credential_or_default.return_value = credential
+        parameters.get_full_user_agent.return_value = 'test-user-agent'
+        parameters.arm_endpoint = 'https://management.azure.com'
+        parameters.location = 'eastus'
+        parameters.subscription_id = '00000000-0000-0000-0000-000000000001'
+        parameters.resource_group = 'rg'
+        parameters.workspace_name = 'ws'
+        parameters.quantum_endpoint = 'https://ws.eastus.quantum.azure.com'
+        parameters.api_version = None
+
+        # Keep real construction and client selection; replace environment/discovery and SDK clients.
+        for inject_client in (False, True):
+            with self.subTest(inject_client=inject_client):
+                connection_params_mock.reset_mock()
+                management_client_mock.reset_mock()
+                data_client_mock.reset_mock()
+                injected_client = Mock()
+                extra_args = {'_mgmt_client': injected_client} if inject_client else {}
+
+                workspace = QuantumSdkWorkspace(
+                    resource_id=resource_id, credential=credential, location='eastus', **extra_args
+                )
+
+                connection_params_mock.assert_called_once_with(
+                    location='eastus', subscription_id=None, resource_group=None,
+                    workspace_name=None, credential=credential, resource_id=resource_id,
+                    quantum_endpoint=None, user_agent=None, workspace_kind=None,
+                )
+                if inject_client:
+                    management_client_mock.assert_not_called()
+                    self.assertIs(workspace._mgmt_client, injected_client)
+                else:
+                    # Removing storage state must not remove management-client initialization.
+                    management_client_mock.assert_called_once_with(
+                        credential=credential, base_url=parameters.arm_endpoint,
+                        user_agent='test-user-agent',
+                    )
+                    self.assertIs(workspace._mgmt_client, management_client_mock.return_value)
+                workspace._mgmt_client.load_workspace_from_arg.assert_not_called()
+                workspace._mgmt_client.load_workspace_from_arm.assert_not_called()
+                data_client_mock.assert_called_once()
+                self.assertIs(workspace._client, data_client_mock.return_value)
+                self.assertNotIn('_storage', vars(workspace))
+                self.assertFalse(hasattr(QuantumSdkWorkspace, 'storage'))
+
+    @patch('azext_quantum.vendored_sdks.azure_quantum_python.workspace.WorkspaceMgmtClient')
+    @patch('azext_quantum.vendored_sdks.azure_quantum_python.workspace.WorkspaceConnectionParams.get_credential_or_default')
+    def test_workspace_rejects_storage_keyword(self, get_credentials_mock, management_client_mock):
+        # Fail if invalid constructor arguments reach authentication or client creation.
+        get_credentials_mock.side_effect = AssertionError('Rejected storage must not request credentials.')
+        management_client_mock.side_effect = AssertionError('Rejected storage must not create a management client.')
+
+        # The keyword itself is unsupported, even when its value is empty or None.
+        for storage in ('legacy-storage', '', None):
+            with self.subTest(storage=storage):
+                with self.assertRaisesRegex(TypeError, 'storage'):
+                    QuantumSdkWorkspace(
+                        subscription_id='sub',
+                        resource_group='rg',
+                        name='ws',
+                        storage=storage,
+                    )
+
+                get_credentials_mock.assert_not_called()
+                management_client_mock.assert_not_called()
+
+    @patch('azext_quantum.vendored_sdks.azure_quantum_python.workspace.WorkspaceMgmtClient')
+    @patch('azext_quantum.vendored_sdks.azure_quantum_python.workspace.WorkspaceConnectionParams.get_credential_or_default')
+    def test_workspace_rejects_fourth_positional_argument(self, get_credentials_mock, management_client_mock):
+        get_credentials_mock.side_effect = AssertionError('Rejected storage must not request credentials.')
+        management_client_mock.side_effect = AssertionError('Rejected storage must not create a management client.')
+
+        # Parameters after name are keyword-only so old storage values cannot bind to resource_id.
+        with self.assertRaisesRegex(TypeError, 'positional'):
+            QuantumSdkWorkspace('sub', 'rg', 'ws', 'legacy-storage')
+
+        get_credentials_mock.assert_not_called()
+        management_client_mock.assert_not_called()
+
+    def test_get_container_uri_uses_linked_storage(self):
+        # Bypass constructor discovery; keep the real container-URI methods under test.
+        workspace = object.__new__(QuantumSdkWorkspace)
+        workspace._connection_params = SimpleNamespace(
+            subscription_id='sub', resource_group='rg', workspace_name='ws'
+        )
+        # Mock only the service boundary that supplies access to workspace-linked storage.
+        storage_client = Mock()
+        expected_uri = 'https://example.com/job-job-123?test-sas'
+        storage_client.get_sas_uri.return_value.sas_uri = expected_uri
+        workspace._client = SimpleNamespace(
+            services=SimpleNamespace(storage=storage_client),
+        )
+
+        result = workspace.get_container_uri(job_id='job-123')
+
+        self.assertEqual(result, expected_uri)
+        storage_client.get_sas_uri.assert_called_once()
+        args, kwargs = storage_client.get_sas_uri.call_args
+        self.assertEqual(args, ('sub', 'rg', 'ws'))
+        self.assertEqual(kwargs['blob_details'].container_name, 'job-job-123')
+        self.assertIsNone(kwargs['blob_details'].blob_name)
+
+    def _get_workspace_with_storage_client(self):
+        # This fixture is for URI routing only; constructor behavior is covered separately above.
+        workspace = object.__new__(QuantumSdkWorkspace)
+        workspace._connection_params = SimpleNamespace(
+            subscription_id='sub', resource_group='rg', workspace_name='ws',
+        )
+        storage_client = Mock()
+        workspace._client = SimpleNamespace(services=SimpleNamespace(storage=storage_client))
+        return workspace, storage_client
+
+    def test_get_container_uri_preserves_container_names(self):
+        cases = (
+            ('explicit name', {'container_name': 'custom-container'}, 'custom-container'),
+            ('explicit name overrides job id',
+             {'container_name': 'custom-container', 'job_id': 'job-123'}, 'custom-container'),
+            ('custom format',
+             {'job_id': '123', 'container_name_format': 'custom-{job_id}'}, 'custom-123'),
+            ('workspace default', {}, 'ws-data'),
+        )
+        for name, options, expected_container in cases:
+            with self.subTest(name=name):
+                workspace, storage_client = self._get_workspace_with_storage_client()
+                expected_uri = f'https://example.com/{expected_container}?test-sas'
+                storage_client.get_sas_uri.return_value.sas_uri = expected_uri
+
+                # Do not mock the helper: explicit names must also reach the linked-storage service.
+                result = workspace.get_container_uri(**options)
+
+                self.assertEqual(result, expected_uri)
+                storage_client.get_sas_uri.assert_called_once()
+                args, kwargs = storage_client.get_sas_uri.call_args
+                self.assertEqual(args, ('sub', 'rg', 'ws'))
+                self.assertEqual(kwargs['blob_details'].container_name, expected_container)
+                self.assertIsNone(kwargs['blob_details'].blob_name)
+
+    def test_get_container_uri_propagates_service_error(self):
+        workspace, storage_client = self._get_workspace_with_storage_client()
+        error = AzureResourceNotFoundError('Linked storage is unavailable.')
+        storage_client.get_sas_uri.side_effect = error
+
+        # A service failure must be surfaced, not trigger a fallback to an arbitrary account.
+        with self.assertRaises(AzureResourceNotFoundError) as raised:
+            workspace.get_container_uri(job_id='job-123')
+
+        self.assertIs(raised.exception, error)
+        storage_client.get_sas_uri.assert_called_once()
+
+    def test_legacy_storage_helpers_are_removed(self):
+        from ...vendored_sdks.azure_quantum_python import storage as sdk_storage
+
+        # Only the Quantum connection-string helpers are removed, not blob upload/download support.
+        for helper in ('create_container', 'create_container_using_client', 'get_container_uri'):
+            with self.subTest(helper=helper):
+                self.assertFalse(hasattr(sdk_storage, helper))
+        for helper in ('upload_blob', 'append_blob', 'download_blob', 'download_blob_properties'):
+            with self.subTest(helper=helper):
+                self.assertTrue(callable(getattr(sdk_storage, helper)))
 
 
 class QuantumWorkspacesScenarioTest(ScenarioTest):

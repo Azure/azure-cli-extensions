@@ -3,7 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import inspect
 import json
+import logging
 import os
 import pytest
 import shlex
@@ -11,8 +13,17 @@ import tempfile
 import time
 import unittest
 import unittest.mock
+import yaml
+from contextlib import ExitStack, redirect_stderr, redirect_stdout
+from copy import deepcopy
 from datetime import datetime
+from functools import partial
+from io import StringIO
+from pathlib import Path
+from types import SimpleNamespace
 from urllib.parse import urlparse, parse_qs
+
+from knack.config import CLIConfig
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
@@ -29,6 +40,8 @@ from ...operations.job import (
     _convert_numeric_params,
     _construct_filter_query,
     _construct_orderby_expression,
+    submit,
+    run,
     ERROR_MSG_INVALID_PRIORITY_ARGUMENT,
     ERROR_MSG_INVALID_ORDER_ARGUMENT,
     ERROR_MSG_MISSING_ORDERBY_ARGUMENT)
@@ -37,6 +50,529 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 # Temporary V2 workspaces only run short simulator jobs in this test; cap the allocation request accordingly.
 TEST_V2_QUOTA_ALLOCATION_MINUTES = 2
+
+
+class QuantumJobsArgumentTest(unittest.TestCase):
+
+    def test_job_handlers_do_not_accept_storage(self):
+        for handler in (submit, run):
+            with self.subTest(handler=handler.__name__):
+                self.assertNotIn('storage', inspect.signature(handler).parameters)
+
+    def test_storage_argument_is_not_registered(self):
+        from azure.cli.core.mock import DummyCli
+        from ... import QuantumCommandsLoader
+
+        loader = QuantumCommandsLoader(cli_ctx=DummyCli())
+        loader.skip_applicability = True
+        loader.load_command_table(None)
+        loader.load_arguments(None)
+
+        for scope, arguments in loader.argument_registry.arguments.items():
+            with self.subTest(scope=scope):
+                self.assertNotIn('storage', arguments)
+
+    def _get_command_parser(self, command_name):
+        from azure.cli.core.mock import DummyCli
+        from azure.cli.core.parser import AzCliCommandParser
+        from ... import QuantumCommandsLoader
+
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        cli = DummyCli()
+        cli.config = CLIConfig(
+            config_dir=directory.name,
+            config_env_var_prefix='QUANTUM_PARSER_TEST',
+            use_local_config=False,
+        )
+        cli.local_context = SimpleNamespace(is_on=False)
+
+        loader = QuantumCommandsLoader(cli_ctx=cli)
+        loader.skip_applicability = True
+        loader.load_command_table(None)
+        loader.command_table = {command_name: loader.command_table[command_name]}
+
+        main_loader = cli.commands_loader
+        main_loader.command_table = loader.command_table
+        main_loader.command_group_table = loader.command_group_table
+        main_loader.cmd_to_loader_map = {command_name: [loader]}
+        cli.invocation = SimpleNamespace(
+            commands_loader=main_loader,
+            data={'command_string': command_name},
+        )
+        main_loader.load_arguments(command_name)
+
+        parser = AzCliCommandParser(cli_ctx=cli, prog='az')
+        parser.load_command_table(main_loader)
+        return parser
+
+    def test_job_commands_parse_without_storage(self):
+        commands = ('quantum job submit', 'quantum run', 'quantum execute')
+        for command_name in commands:
+            with self.subTest(command=command_name):
+                parser = self._get_command_parser(command_name)
+                args = command_name.split()
+                args.extend(['-g', 'test-rg', '-w', 'test-ws', '-t', 'provider.sim'])
+                args.extend(['--job-input-file', 'input.bc', '--job-input-format', 'qir.v1'])
+                parsed = parser.parse_args(args)
+                self.assertEqual(parsed.command, command_name)
+                self.assertEqual(parsed.job_input_file, 'input.bc')
+
+    def test_job_command_help_preserves_summary_and_examples(self):
+        from knack.help_files import helps
+        from ... import _help  # pylint: disable=unused-import
+
+        commands = ('quantum job submit', 'quantum run', 'quantum execute')
+        for command_name in commands:
+            with self.subTest(command=command_name):
+                definition = yaml.safe_load(helps[command_name])
+                self.assertEqual(definition['type'], 'command')
+                self.assertEqual(
+                    definition['long-summary'].strip(),
+                    'Jobs use storage linked to the Azure Quantum workspace. '
+                    'Arbitrary per-job storage accounts are not supported.',
+                )
+                # Examples must remain a separate YAML key, not become summary text.
+                self.assertEqual(len(definition['examples']), 3)
+                for example in definition['examples']:
+                    self.assertTrue(example['name'])
+                    self.assertIn('az ' + command_name, example['text'])
+                    self.assertNotIn('--storage', example['text'])
+
+    @unittest.mock.patch('azure.cli.core.util.show_updates_available')
+    def test_job_command_help_does_not_show_storage(self, updates_mock):
+        from azure.cli.core._help import AzCliHelp
+
+        commands = ('quantum job submit', 'quantum run', 'quantum execute')
+        for command_name in commands:
+            with self.subTest(command=command_name):
+                parser = self._get_command_parser(command_name)
+                command_parser = parser.subparser_map[command_name]
+                help_renderer = AzCliHelp(cli_ctx=parser.cli_ctx)
+                output = StringIO()
+
+                with redirect_stdout(output):
+                    help_renderer.show_help(
+                        'az', command_name.split(), command_parser, is_group=False
+                    )
+
+                help_text = output.getvalue()
+                self.assertIn('--job-input-file', help_text)
+                self.assertIn('--target-id', help_text)
+                self.assertNotIn('--storage', help_text)
+                normalized_help = ' '.join(help_text.split())
+                self.assertIn(
+                    'Jobs use storage linked to the Azure Quantum workspace.', normalized_help
+                )
+                self.assertIn(
+                    'Arbitrary per-job storage accounts are not supported.', normalized_help
+                )
+                self.assertIn('Examples', help_text)
+                self.assertIn('az ' + command_name, normalized_help)
+
+    def test_workspace_create_preserves_required_storage_account(self):
+        # Required workspace storage is separate from the removed per-job override.
+        command_name = 'quantum workspace create'
+        parser = self._get_command_parser(command_name)
+        command = parser.cli_ctx.invocation.commands_loader.command_table[command_name]
+        argument = command.arguments['storage_account']
+        self.assertIn('--storage-account', argument.options_list)
+        self.assertIn('-a', argument.options_list)
+        self.assertTrue(argument.options.get('required', False))
+
+        args = command_name.split() + ['-g', 'test-rg', '-w', 'test-ws', '-l', 'eastus']
+        with self.assertRaises(SystemExit) as raised:
+            parser.parse_args(args)
+        self.assertEqual(raised.exception.code, 2)
+
+        for option in ('--storage-account', '-a'):
+            with self.subTest(option=option):
+                parser = self._get_command_parser(command_name)
+                parsed = parser.parse_args(args + [option, 'teststorage'])
+                self.assertEqual(parsed.storage_account, 'teststorage')
+
+
+class QuantumJobsStorageRejectionTest(unittest.TestCase):
+    """Exercise the invocation hook and real error rendering, not only parser metadata."""
+
+    _COMMANDS = ('quantum job submit', 'quantum run', 'quantum execute')
+    # These were unambiguous aliases of --storage before removal; --s was ambiguous.
+    _STORAGE_OPTIONS = ('--st', '--sto', '--stor', '--stora', '--storag', '--storage')
+    _MARKER = 'FAKE_STORAGE_KEY_NOT_A_REAL_SECRET'
+    _CONNECTION = 'DefaultEndpointsProtocol=https;AccountName=testaccount;AccountKey=' + _MARKER
+    _MESSAGE = 'The --storage option has been removed.'
+    _GUIDANCE = 'Remove --storage from the command. Jobs use storage linked to the Azure Quantum workspace.'
+
+    def setUp(self):
+        from azure.cli.core import MainCommandsLoader
+        from azure.cli.core.azlogging import AzCliLogging
+        from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD
+        from azure.cli.core.parser import AzCliCommandParser
+        from azure.cli.core._help import AzCliHelp
+        from knack.cli import CLI
+        from ... import QuantumCommandsLoader
+
+        class QuantumOnlyLoader(MainCommandsLoader):
+            def load_command_table(self, args):
+                # Only replace command discovery; argument loading, events, and parsing are real.
+                loader = QuantumCommandsLoader(cli_ctx=self.cli_ctx)
+                self.command_table = loader.load_command_table(args)
+                self.command_group_table = loader.command_group_table
+                self.cmd_to_loader_map = {name: [loader] for name in self.command_table}
+                self.loaders = [loader]
+                return self.command_table
+
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        self.config_dir = Path(directory.name).resolve()
+        # Avoid AzCli/DummyCli initialization, which loads global account/session caches.
+        self.cli = CLI(
+            cli_name='az', config_dir=str(self.config_dir),
+            config_env_var_prefix='QUANTUM_REJECTION_TEST',
+            config_cls=partial(CLIConfig, use_local_config=False),
+            logging_cls=AzCliLogging, commands_loader_cls=QuantumOnlyLoader,
+            parser_cls=AzCliCommandParser, help_cls=AzCliHelp,
+        )
+        self.cli.cloud = deepcopy(AZURE_PUBLIC_CLOUD)
+        self.cli.cloud.profile = 'latest'
+        self.cli.local_context = SimpleNamespace(is_on=False)
+        self.cli.refresh_request_id = lambda: None
+        self.cli.data['completer_active'] = False
+        self.cli.config.set_value('core', 'use_command_index', 'false')
+        self.cli.config.set_value('core', 'error_recommendation', 'off')
+        self.cli.config.set_value('core', 'collect_telemetry', 'false')
+        self.cli.enable_color = False
+        self.stack = ExitStack()
+        self.addCleanup(self.stack.close)
+        for target in ('socket.socket.connect', 'socket.getaddrinfo'):
+            self.stack.enter_context(unittest.mock.patch(
+                target, side_effect=AssertionError('Offline test attempted network access.')))
+        self.stack.enter_context(unittest.mock.patch(
+            'azext_quantum._version_check_helper.check_version', return_value=None))
+        self.stack.enter_context(unittest.mock.patch('azure.cli.core.util.show_updates_available'))
+
+    @staticmethod
+    def _job_args(command):
+        return command.split() + [
+            '-g', 'test-rg', '-w', 'test-ws', '-t', 'provider.sim',
+            '--job-input-file', 'input.bc', '--job-input-format', 'qir.v1',
+        ]
+
+    def _invoke(self, args):
+        from azure.cli.core.commands import AzCliCommandInvoker
+
+        stdout, stderr = StringIO(), StringIO()
+        error_logger = logging.getLogger('cli.azure.cli.core.azclierror')
+        handler = logging.StreamHandler(stderr)
+        # Existing pytest/CLI handlers may already be bound to a different stream.
+        with ExitStack() as stack:
+            stack.enter_context(unittest.mock.patch.object(error_logger, 'handlers', [handler]))
+            stack.enter_context(unittest.mock.patch.object(error_logger, 'level', logging.ERROR))
+            stack.enter_context(unittest.mock.patch.object(error_logger, 'propagate', False))
+            stack.enter_context(redirect_stdout(stdout))
+            stack.enter_context(redirect_stderr(stderr))
+            error_type = stack.enter_context(unittest.mock.patch('azure.cli.core.telemetry.set_error_type'))
+            user_fault = stack.enter_context(unittest.mock.patch('azure.cli.core.telemetry.set_user_fault'))
+            # Stop at the service boundary for positive controls; rejected inputs must not reach it.
+            validation = stack.enter_context(unittest.mock.patch.object(AzCliCommandInvoker, '_validation'))
+            dispatch = stack.enter_context(unittest.mock.patch.object(
+                AzCliCommandInvoker, '_run_job', return_value={'id': 'test-job'}))
+            invocation = AzCliCommandInvoker(
+                cli_ctx=self.cli, commands_loader_cls=self.cli.commands_loader_cls,
+                parser_cls=self.cli.parser_cls, help_cls=self.cli.help_cls,
+            )
+            self.cli.invocation = invocation
+            exit_code = 1
+            try:
+                result = invocation.execute(args)
+                exit_code = result.exit_code
+            except SystemExit as error:
+                exit_code = error.code
+            finally:
+                # Match CLI.invoke's post-execute log cleanup, including on SystemExit.
+                self.cli.logging.end_cmd_metadata_logging(exit_code)
+                handler.close()
+
+        command_log = '\n'.join(path.read_text(encoding='utf-8')
+                                for path in (self.config_dir / 'commands').glob('*.log'))
+        return SimpleNamespace(
+            exit_code=exit_code, stdout=stdout.getvalue(), stderr=stderr.getvalue(),
+            command_log=command_log, validation=validation, dispatch=dispatch,
+            error_type=error_type, user_fault=user_fault,
+        )
+
+    def _assert_safe_rejection(self, result, logging_enabled=True):
+        self.assertEqual(result.exit_code, 2)
+        self.assertEqual(result.stdout, '')
+        self.assertEqual(result.stderr.count(self._MESSAGE), 1)
+        self.assertIn(self._GUIDANCE, result.stderr)
+        for output in (result.stdout, result.stderr, result.command_log):
+            self.assertNotIn(self._MARKER, output)
+            self.assertNotIn('AccountKey=', output)
+        if logging_enabled:
+            self.assertIn(self._MESSAGE, result.command_log)
+            self.assertIn('exit code: 2', result.command_log)
+        else:
+            self.assertEqual(result.command_log, '')
+        result.error_type.assert_called_once_with('UnrecognizedArgumentError')
+        result.user_fault.assert_called_once_with(self._MESSAGE)
+        result.validation.assert_not_called()
+        result.dispatch.assert_not_called()
+
+    def test_job_commands_reject_storage_without_echoing_secrets(self):
+        for command in self._COMMANDS:
+            for option in self._STORAGE_OPTIONS:
+                for options in ([option, self._CONNECTION], [option + '=' + self._CONNECTION]):
+                    with self.subTest(command=command, option=option, equals=len(options) == 1):
+                        self._assert_safe_rejection(self._invoke(self._job_args(command) + options))
+
+    def test_storage_from_file_and_verbosity_options(self):
+        path = self.config_dir / 'fake-connection.txt'
+        path.write_text(self._CONNECTION, encoding='utf-8')
+        for value in (self._CONNECTION, '@' + str(path)):
+            for flags in ([], ['--only-show-errors'], ['--verbose']):
+                for option in self._STORAGE_OPTIONS:
+                    for options in ([option, value], [option + '=' + value]):
+                        with self.subTest(option=option, file=value.startswith('@'),
+                                          flags=flags, equals=len(options) == 1):
+                            self._assert_safe_rejection(self._invoke(
+                                self._job_args('quantum job submit') + options + flags))
+
+    def test_storage_rejection_precedes_other_argument_errors(self):
+        for option in self._STORAGE_OPTIONS:
+            for options in (
+                    [option], [option + '='], [option, ''],
+                    [option, self._CONNECTION, '--storage=' + self._CONNECTION + '-second'],
+                    ['--unknown', 'value', option, self._CONNECTION],
+                    ['--help', option, self._CONNECTION],
+                    ['--', option, self._CONNECTION]):
+                with self.subTest(options=options):
+                    # Deliberately omit other required arguments. They must not cause a secret echo.
+                    self._assert_safe_rejection(self._invoke(['quantum', 'job', 'submit'] + options))
+
+    def test_storage_rejection_without_command_file_logging(self):
+        self.cli.config.set_value('logging', 'enable_log_file', 'false')
+        for option in self._STORAGE_OPTIONS:
+            with self.subTest(option=option):
+                self._assert_safe_rejection(self._invoke(
+                    self._job_args('quantum run') + [option, self._CONNECTION]), logging_enabled=False)
+
+    def test_normal_job_commands_and_literal_option_values_are_preserved(self):
+        options_to_test = [[], ['--shots', '10'], ['--sh', '10']]
+        for option in self._STORAGE_OPTIONS:
+            options_to_test.extend(([f'--job-name={option}'], [f'--job-name={option}=value']))
+        for command in self._COMMANDS:
+            for options in options_to_test:
+                with self.subTest(command=command, options=options):
+                    result = self._invoke(self._job_args(command) + options)
+                    self.assertEqual(result.exit_code, 0)
+                    result.validation.assert_called_once()
+                    result.dispatch.assert_called_once()
+                    result.user_fault.assert_not_called()
+
+    def test_workspace_storage_options_are_preserved(self):
+        cases = [
+            (['--storage-account', 'storage'], 'storage'),
+            (['--storage-account=storage'], 'storage'), (['-a', 'storage'], 'storage'),
+        ]
+        for option in self._STORAGE_OPTIONS:
+            cases.extend((([option, 'storage'], 'storage'), ([option + '=storage'], 'storage')))
+        for kind in ('V1', 'V2'):
+            with self.subTest(kind=kind, storage_omitted=True):
+                result = self._invoke([
+                    'quantum', 'workspace', 'create', '-g', 'rg', '-w', 'ws', '-l', 'eastus',
+                    '--workspace-kind', kind,
+                ])
+                self.assertEqual(result.exit_code, 2)
+                self.assertIn('--storage-account', result.stderr)
+                self.assertNotIn(self._MESSAGE, result.stderr)
+                result.validation.assert_not_called()
+                result.dispatch.assert_not_called()
+            for options, expected in cases:
+                with self.subTest(kind=kind, options=options):
+                    result = self._invoke([
+                        'quantum', 'workspace', 'create', '-g', 'rg', '-w', 'ws', '-l', 'eastus',
+                        '--workspace-kind', kind,
+                    ] + options)
+                    self.assertEqual(result.exit_code, 0)
+                    result.dispatch.assert_called_once()
+                    parsed = result.dispatch.call_args.args[0]
+                    self.assertEqual(parsed.storage_account, expected)
+                    result.user_fault.assert_not_called()
+
+    def test_help_is_preserved(self):
+        for command in self._COMMANDS:
+            with self.subTest(command=command):
+                result = self._invoke(command.split() + ['--help'])
+                self.assertEqual(result.exit_code, 0)
+                self.assertIn('--job-input-file', result.stdout)
+                self.assertNotIn('--storage', result.stdout)
+                result.dispatch.assert_not_called()
+                result.user_fault.assert_not_called()
+
+    def test_guard_does_not_accumulate_on_repeated_loader_initialization(self):
+        from knack.events import EVENT_INVOKER_PRE_PARSE_ARGS
+        from ... import QuantumCommandsLoader, _reject_removed_job_storage_argument
+
+        for _ in range(3):
+            QuantumCommandsLoader(cli_ctx=self.cli)
+        self.assertEqual(self.cli._event_handlers[EVENT_INVOKER_PRE_PARSE_ARGS].count(
+            _reject_removed_job_storage_argument), 1)
+        self._assert_safe_rejection(self._invoke(
+            self._job_args('quantum execute') + ['--storage', self._CONNECTION]))
+
+    def test_guard_ignores_non_job_contexts_and_unrelated_option_names(self):
+        from ... import _reject_removed_job_storage_argument
+
+        for command, args, completing in (
+                ('quantum workspace create', ['--storage-account', 'storage'], False),
+                ('quantum workspace create', ['--storage', 'storage'], False),
+                ('quantum workspace create', ['--st', 'storage'], False),
+                ('quantum job submit', ['--storage-account=storage'], False),
+                ('quantum job submit', ['--storage-other=value'], False),
+                ('quantum job submit', ['--store=value'], False),
+                ('quantum job submit', ['--staging=value'], False),
+                ('quantum job submit', ['--s', '10'], False),
+                ('quantum job submit', ['--job-name=--storage'], False),
+                ('quantum job submit', ['--job-name=--st=value'], False),
+                ('quantum job submit', ['--storage', self._CONNECTION], True),
+                ('quantum job submit', ['--st', self._CONNECTION], True),
+                ('quantum job list', ['--st', self._CONNECTION], False),
+                ('quantum job list', ['--storage', self._CONNECTION], False)):
+            with self.subTest(command=command, args=args, completing=completing):
+                parser = unittest.mock.Mock()
+                self.cli.invocation = SimpleNamespace(data={'command_string': command}, parser=parser)
+                self.cli.data['completer_active'] = completing
+                _reject_removed_job_storage_argument(self.cli, args=args)
+                parser.exit.assert_not_called()
+        self.cli.invocation = None
+        _reject_removed_job_storage_argument(self.cli, args=['--storage'])
+
+
+class QuantumJobsOperationsTest(unittest.TestCase):
+
+    @unittest.mock.patch('azext_quantum.operations.job.output')
+    @unittest.mock.patch('azext_quantum.operations.job.wait')
+    @unittest.mock.patch('azext_quantum.operations.job.submit')
+    def test_run_forwards_optional_arguments(self, submit_mock, wait_mock, output_mock):
+        cmd = SimpleNamespace(cli_ctx=object())
+        job_params = {'custom': 'value'}
+        expected_result = {'result': 'finished'}
+        submit_mock.return_value = {'id': 'job-123'}
+        wait_mock.return_value = {'id': 'job-123'}
+        output_mock.return_value = expected_result
+        # Call run() with distinct values
+        result = run(
+            cmd, 'test-rg', 'test-ws', 'provider.sim', 'input.bc', 'qir.v1',
+            job_name='test-job', shots=25, job_params=job_params,
+            target_capability='AdaptiveExecution',
+            job_output_format='custom.results.v1', entry_point='Main',
+        )
+        # Check what was forwarded
+        submit_mock.assert_called_once_with(
+            cmd, 'test-rg', 'test-ws', 'provider.sim', 'input.bc', 'qir.v1',
+            job_name='test-job', shots=25, job_params=job_params,
+            target_capability='AdaptiveExecution',
+            job_output_format='custom.results.v1', entry_point='Main',
+        )
+        wait_mock.assert_called_once_with(cmd, 'job-123', 'test-rg', 'test-ws')
+        output_mock.assert_called_once_with(cmd, 'job-123', 'test-rg', 'test-ws')
+        self.assertIs(result, expected_result)
+
+    @unittest.mock.patch('azext_quantum.operations.job.output')
+    @unittest.mock.patch('azext_quantum.operations.job.wait')
+    @unittest.mock.patch('azext_quantum.operations.job.submit')
+    def test_run_without_optional_arguments(self, submit_mock, wait_mock, output_mock):
+        cmd = SimpleNamespace(cli_ctx=object())
+        expected_result = {'result': 'finished'}
+        submit_mock.return_value = {'id': 'job-123'}
+        wait_mock.return_value = {'id': 'job-123'}
+        output_mock.return_value = expected_result
+        # Omitted options must retain their defaults after removing the storage parameter.
+        result = run(cmd, 'test-rg', 'test-ws', 'provider.sim', 'input.bc', 'qir.v1')
+        # Check what was forwarded
+        submit_mock.assert_called_once_with(
+            cmd, 'test-rg', 'test-ws', 'provider.sim', 'input.bc', 'qir.v1',
+            job_name=None, shots=None, job_params=None,
+            target_capability=None,
+            job_output_format=None, entry_point=None,
+        )
+        wait_mock.assert_called_once_with(cmd, 'job-123', 'test-rg', 'test-ws')
+        output_mock.assert_called_once_with(cmd, 'job-123', 'test-rg', 'test-ws')
+        self.assertIs(result, expected_result)
+
+    def test_submit_uses_workspace_storage(self):
+        from ...operations import job as job_ops
+
+        cmd = SimpleNamespace(cli_ctx=object())
+        info = SimpleNamespace(
+            subscription='sub', resource_group='test-rg', name='test-ws',
+            endpoint='https://test-ws.eastus.quantum.azure.com',
+        )
+        credential = object()
+        job_id = '00000000-0000-0000-0000-000000000001'
+        container_uri = f'https://example.com/job-{job_id}?test-sas'
+        expected_result = {'id': job_id}
+        input_data = b'test-qir-bitcode'
+        job_params = {'custom': 'value'}
+
+        # Exercise real submission logic while replacing files, credentials and service boundaries.
+        with unittest.mock.patch.object(job_ops, 'WorkspaceInfo', return_value=info), \
+                unittest.mock.patch.object(job_ops, 'TargetInfo', return_value=SimpleNamespace(target_id='provider.sim')), \
+                unittest.mock.patch.object(job_ops, 'get_provider', return_value='provider'), \
+                unittest.mock.patch.object(job_ops, '_get_data_credentials', return_value=credential) as get_credentials, \
+                unittest.mock.patch.object(job_ops, 'Workspace') as workspace_factory, \
+                unittest.mock.patch.object(job_ops, 'ContainerClient') as container_factory, \
+                unittest.mock.patch.object(job_ops, 'upload_blob') as upload, \
+                unittest.mock.patch.object(job_ops, 'cf_jobs') as jobs_factory, \
+                unittest.mock.patch.object(job_ops.uuid, 'uuid4', return_value=job_id), \
+                unittest.mock.patch('builtins.open', unittest.mock.mock_open(read_data=input_data)) as open_input:
+            workspace_factory.return_value.get_container_uri.return_value = container_uri
+            jobs_factory.return_value.create.return_value.as_dict.return_value = expected_result
+            upload.return_value = f'https://example.com/job-{job_id}/inputData'
+
+            result = submit(
+                cmd, 'test-rg', 'test-ws', 'provider.sim', 'input.bc', 'qir.v1',
+                job_name='test-job', shots=25, job_params=job_params,
+                target_capability='AdaptiveExecution',
+                job_output_format='custom.results.v1', entry_point='Main',
+            )
+
+            open_input.assert_called_once_with('input.bc', 'rb')
+            get_credentials.assert_called_once_with(cmd.cli_ctx, 'sub')
+            # No storage connection string is passed to the embedded SDK.
+            workspace_factory.assert_called_once_with(
+                resource_id='/subscriptions/sub/resourceGroups/test-rg/providers/Microsoft.Quantum/Workspaces/test-ws',
+                credential=credential,
+            )
+            workspace_factory.return_value.get_container_uri.assert_called_once_with(job_id=job_id)
+            container_factory.from_container_url.assert_called_once_with(container_uri)
+            upload.assert_called_once_with(
+                container_factory.from_container_url.return_value,
+                'inputData', 'qir.v1', None, input_data, return_sas_token=False,
+            )
+            jobs_factory.assert_called_once_with(
+                cmd.cli_ctx, 'sub', 'test-rg', 'test-ws', info.endpoint,
+            )
+            # The submitted payload uses the same workspace-provided container as the upload.
+            jobs_factory.return_value.create.assert_called_once_with(
+                'sub', 'test-rg', 'test-ws', job_id, {
+                    'name': 'test-job',
+                    'containerUri': container_uri,
+                    'inputDataFormat': 'qir.v1',
+                    'outputDataFormat': 'custom.results.v1',
+                    'inputParams': {
+                        'custom': 'value', 'shots': 25,
+                        'targetCapability': 'AdaptiveExecution', 'entryPoint': 'Main',
+                        'arguments': [],
+                    },
+                    'providerId': 'provider',
+                    'target': 'provider.sim',
+                    'metadata': None,
+                    'tags': [],
+                },
+            )
+        self.assertIs(result, expected_result)
 
 
 class QuantumJobsScenarioTest(ScenarioTest):
