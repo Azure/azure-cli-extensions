@@ -16,7 +16,8 @@ logger = get_logger(__name__)
 
 def _get_args_for_endpoint_for_storage_container(endpoint_name, resource_group, storage_mover_name,
                                                  blob_container_name=None, storage_account_resource_id=None,
-                                                 endpoint_kind=None, description=None):
+                                                 endpoint_kind=None, description=None,
+                                                 enable_cross_tenant_transfer=None, allowed_storage_accounts=None):
     args = {
         "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
         "description": description,
@@ -26,29 +27,40 @@ def _get_args_for_endpoint_for_storage_container(endpoint_name, resource_group, 
             "storage_account_resource_id": storage_account_resource_id,
         }
     }
+    if enable_cross_tenant_transfer is not None:
+        args["azure_storage_blob_container"]["enable_cross_tenant_transfer"] = enable_cross_tenant_transfer
+    if allowed_storage_accounts is not None:
+        args["azure_storage_blob_container"]["allowed_storage_accounts"] = allowed_storage_accounts
     return args
 
 
 def endpoint_create_for_storage_container(cmd, endpoint_name, resource_group, storage_mover_name, blob_container_name,
-                                          storage_account_resource_id, endpoint_kind=None, description=None):
+                                          storage_account_resource_id, endpoint_kind=None, description=None,
+                                          enable_cross_tenant_transfer=None, allowed_storage_accounts=None):
     Create_Endpoint = Create(cmd.loader)
     args = _get_args_for_endpoint_for_storage_container(endpoint_name, resource_group, storage_mover_name,
                                                         blob_container_name, storage_account_resource_id,
-                                                        endpoint_kind, description)
+                                                        endpoint_kind, description,
+                                                        enable_cross_tenant_transfer=enable_cross_tenant_transfer,
+                                                        allowed_storage_accounts=allowed_storage_accounts)
     args["mi_system_assigned"] = "True"
     return Create_Endpoint(args)
 
 
-def endpoint_update_for_storage_container(cmd, endpoint_name, resource_group, storage_mover_name, description=None):
+def endpoint_update_for_storage_container(cmd, endpoint_name, resource_group, storage_mover_name, description=None,
+                                          enable_cross_tenant_transfer=None, allowed_storage_accounts=None):
     Update_Endpoint = Update(cmd.loader)
     args = _get_args_for_endpoint_for_storage_container(endpoint_name, resource_group, storage_mover_name,
-                                                        description=description)
+                                                        description=description,
+                                                        enable_cross_tenant_transfer=enable_cross_tenant_transfer,
+                                                        allowed_storage_accounts=allowed_storage_accounts)
     return Update_Endpoint(args)
 
 
 def _get_args_for_endpoint_for_storage_smb_file_share(endpoint_name, resource_group, storage_mover_name,
                                                       file_share_name=None, storage_account_resource_id=None,
-                                                      endpoint_kind=None, description=None):
+                                                      endpoint_kind=None, description=None,
+                                                      enable_cross_tenant_transfer=None, allowed_storage_accounts=None):
     args = {
         "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
         "description": description,
@@ -58,24 +70,34 @@ def _get_args_for_endpoint_for_storage_smb_file_share(endpoint_name, resource_gr
             "storage_account_resource_id": storage_account_resource_id,
         }
     }
+    if enable_cross_tenant_transfer is not None:
+        args["azure_storage_smb_file_share"]["enable_cross_tenant_transfer"] = enable_cross_tenant_transfer
+    if allowed_storage_accounts is not None:
+        args["azure_storage_smb_file_share"]["allowed_storage_accounts"] = allowed_storage_accounts
     return args
 
 
 def endpoint_create_for_storage_smb_file_share(cmd, endpoint_name, resource_group, storage_mover_name,
                                                file_share_name, storage_account_resource_id,
-                                               endpoint_kind=None, description=None):
+                                               endpoint_kind=None, description=None,
+                                               enable_cross_tenant_transfer=None, allowed_storage_accounts=None):
     Create_Endpoint = Create(cmd.loader)
     args = _get_args_for_endpoint_for_storage_smb_file_share(endpoint_name, resource_group, storage_mover_name,
                                                              file_share_name, storage_account_resource_id,
-                                                             endpoint_kind, description)
+                                                             endpoint_kind, description,
+                                                             enable_cross_tenant_transfer=enable_cross_tenant_transfer,
+                                                             allowed_storage_accounts=allowed_storage_accounts)
     return Create_Endpoint(args)
 
 
 def endpoint_update_for_storage_smb_file_share(cmd, endpoint_name, resource_group, storage_mover_name,
-                                               description=None):
+                                               description=None, enable_cross_tenant_transfer=None,
+                                               allowed_storage_accounts=None):
     Update_Endpoint = Update(cmd.loader)
     args = _get_args_for_endpoint_for_storage_smb_file_share(endpoint_name, resource_group, storage_mover_name,
-                                                             description=description)
+                                                             description=description,
+                                                             enable_cross_tenant_transfer=enable_cross_tenant_transfer,
+                                                             allowed_storage_accounts=allowed_storage_accounts)
     return Update_Endpoint(args)
 
 
@@ -147,7 +169,7 @@ def endpoint_update_for_multi_cloud_connector(cmd, endpoint_name, resource_group
 
 def _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_name,
                                    export=None, host=None, nfs_version=None,
-                                   endpoint_kind=None, description=None):
+                                   endpoint_kind=None, description=None, source_type=None):
     args = {
         "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
         "description": description,
@@ -158,26 +180,29 @@ def _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_
             "nfs_version": nfs_version
         }
     }
+    if source_type is not None:
+        args["nfs_mount"]["source_type"] = source_type
     return args
 
 
 def endpoint_create_for_nfs(cmd, endpoint_name, resource_group, storage_mover_name,
-                            export, host, nfs_version=None, endpoint_kind=None, description=None):
+                            export, host, nfs_version=None, endpoint_kind=None, description=None, source_type=None):
     Create_Endpoint = Create(cmd.loader)
     args = _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_name,
-                                          export, host, nfs_version, endpoint_kind, description)
+                                          export, host, nfs_version, endpoint_kind, description, source_type=source_type)
     return Create_Endpoint(args)
 
 
-def endpoint_update_for_nfs(cmd, endpoint_name, resource_group, storage_mover_name, description=None):
+def endpoint_update_for_nfs(cmd, endpoint_name, resource_group, storage_mover_name, description=None, source_type=None):
     Update_Endpoint = Update(cmd.loader)
-    args = _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_name, description=description)
+    args = _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_name,
+                                          description=description, source_type=source_type)
     return Update_Endpoint(args)
 
 
 def _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_name,
                                    host=None, share_name=None, username_uri=None, password_uri=None,
-                                   endpoint_kind=None, description=None):
+                                   endpoint_kind=None, description=None, source_type=None):
     args = {
         "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
         "description": description,
@@ -187,6 +212,8 @@ def _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_
             "share_name": share_name
         }
     }
+    if source_type is not None:
+        args["smb_mount"]["source_type"] = source_type
     if username_uri is not None or password_uri is not None:
         args["smb_mount"]["credentials"] = {
             "username_uri": username_uri,
@@ -197,19 +224,20 @@ def _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_
 
 def endpoint_create_for_smb(cmd, endpoint_name, resource_group, storage_mover_name,
                             host, share_name, username_uri=None, password_uri=None,
-                            endpoint_kind=None, description=None):
+                            endpoint_kind=None, description=None, source_type=None):
     Create_Endpoint = Create(cmd.loader)
     args = _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_name,
                                           host, share_name, username_uri, password_uri,
-                                          endpoint_kind, description)
+                                          endpoint_kind, description, source_type=source_type)
     return Create_Endpoint(args)
 
 
 def endpoint_update_for_smb(cmd, endpoint_name, resource_group, storage_mover_name,
-                            username_uri=None, password_uri=None, description=None):
+                            username_uri=None, password_uri=None, description=None, source_type=None):
     Update_Endpoint = Update(cmd.loader)
     args = _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_name,
-                                          username_uri=username_uri, password_uri=password_uri, description=description)
+                                          username_uri=username_uri, password_uri=password_uri, description=description,
+                                          source_type=source_type)
     return Update_Endpoint(args)
 
 
