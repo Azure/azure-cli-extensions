@@ -246,3 +246,36 @@ def load_arguments(self, _):
         c.argument('selector', action='store_true', options_list=['--selector'],
                    help='Filter by the profile\'s label selector (members that would match after apply) '
                         'instead of currently applied members.')
+
+    with self.argument_context('fleet identitybindingprofile') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Specify name for the identity binding profile.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
+
+    with self.argument_context('fleet identitybindingprofile wait') as c:
+        c.argument('identity_binding_profile_name', options_list=['--identity-binding-profile-name', '--name', '-n'],
+                   help='Specify name for the identity binding profile.')
+
+    with self.argument_context('fleet identitybindingprofile create') as c:
+        c.argument('member_selector', options_list=['--member-selector', '--selector', '-s'],
+                   help='Kubernetes-style label selector for selecting Fleet members, e.g. "env=production".')
+        # Required by the API; defaulted in the signature only so member_selector can come first.
+        c.argument('managed_identity_resource_id', options_list=['--managed-identity-resource-id'],
+                   required=True,
+                   help='The resource ID of the managed identity to use.')
+        # No short form: -f is --fleet-name here, unlike `az aks identity-binding`.
+        c.argument('allowed_subjects_from_file', options_list=['--allowed-subjects-from-file'],
+                   type=file_type, completer=FilesCompleter(),
+                   help='Path to a JSON file containing an array of subjects authorized to use this '
+                        'identity binding for token exchange. Each entry has a required '
+                        '\'namespaceSelector\' and an optional \'serviceAccountSelector\', each a Kubernetes '
+                        'label selector with \'matchLabels\' (an array of "key=value" strings) and/or '
+                        '\'matchExpressions\'. Maximum 100 entries.')
+
+    with self.argument_context('fleet identitybindingprofile apply') as c:
+        c.argument('what_if', action='store_true', options_list=['--what-if'],
+                   help='Show what changes would be made by the apply operation without actually performing it.')
+
+    with self.argument_context('fleet identitybindingprofile list-members') as c:
+        c.argument('selector', action='store_true', options_list=['--selector'],
+                   help='Filter by the profile\'s label selector (members that would match after apply) '
+                        'instead of currently applied members.')

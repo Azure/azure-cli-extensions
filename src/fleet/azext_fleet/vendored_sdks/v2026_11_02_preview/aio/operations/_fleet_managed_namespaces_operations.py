@@ -1,3 +1,4 @@
+# pylint: disable=too-many-lines
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -38,6 +39,8 @@ from ...operations._fleet_managed_namespaces_operations import (
     build_delete_request,
     build_get_request,
     build_list_by_fleet_request,
+    build_list_credentials_request,
+    build_list_member_credentials_request,
     build_update_request,
 )
 from .._configuration import ContainerServiceFleetMgmtClientConfiguration
@@ -841,3 +844,213 @@ class FleetManagedNamespacesOperations:
                 deserialization_callback=get_long_running_output,
             )
         return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    @distributed_trace_async
+    async def list_credentials(
+        self, resource_group_name: str, fleet_name: str, managed_namespace_name: str, **kwargs: Any
+    ) -> _models.FleetManagedNamespaceCredentialResults:
+        """Lists the Fleet hub credentials scoped to the managed namespace.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param fleet_name: The name of the Fleet resource. Required.
+        :type fleet_name: str
+        :param managed_namespace_name: The name of the fleet managed namespace resource. Required.
+        :type managed_namespace_name: str
+        :return: FleetManagedNamespaceCredentialResults or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservicefleet.models.FleetManagedNamespaceCredentialResults
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[_models.FleetManagedNamespaceCredentialResults] = kwargs.pop("cls", None)
+
+        _request = build_list_credentials_request(
+            resource_group_name=resource_group_name,
+            fleet_name=fleet_name,
+            managed_namespace_name=managed_namespace_name,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize("FleetManagedNamespaceCredentialResults", pipeline_response.http_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @overload
+    async def list_member_credentials(
+        self,
+        resource_group_name: str,
+        fleet_name: str,
+        managed_namespace_name: str,
+        body: _models.FleetMemberCredentialRequest,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> _models.FleetMemberManagedNamespaceCredentialResults:
+        """Lists the Fleet member credentials scoped to the managed namespace.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param fleet_name: The name of the Fleet resource. Required.
+        :type fleet_name: str
+        :param managed_namespace_name: The name of the fleet managed namespace resource. Required.
+        :type managed_namespace_name: str
+        :param body: The content of the action request. Required.
+        :type body: ~azure.mgmt.containerservicefleet.models.FleetMemberCredentialRequest
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: FleetMemberManagedNamespaceCredentialResults or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservicefleet.models.FleetMemberManagedNamespaceCredentialResults
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    async def list_member_credentials(
+        self,
+        resource_group_name: str,
+        fleet_name: str,
+        managed_namespace_name: str,
+        body: IO[bytes],
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> _models.FleetMemberManagedNamespaceCredentialResults:
+        """Lists the Fleet member credentials scoped to the managed namespace.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param fleet_name: The name of the Fleet resource. Required.
+        :type fleet_name: str
+        :param managed_namespace_name: The name of the fleet managed namespace resource. Required.
+        :type managed_namespace_name: str
+        :param body: The content of the action request. Required.
+        :type body: IO[bytes]
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: FleetMemberManagedNamespaceCredentialResults or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservicefleet.models.FleetMemberManagedNamespaceCredentialResults
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace_async
+    async def list_member_credentials(
+        self,
+        resource_group_name: str,
+        fleet_name: str,
+        managed_namespace_name: str,
+        body: Union[_models.FleetMemberCredentialRequest, IO[bytes]],
+        **kwargs: Any
+    ) -> _models.FleetMemberManagedNamespaceCredentialResults:
+        """Lists the Fleet member credentials scoped to the managed namespace.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param fleet_name: The name of the Fleet resource. Required.
+        :type fleet_name: str
+        :param managed_namespace_name: The name of the fleet managed namespace resource. Required.
+        :type managed_namespace_name: str
+        :param body: The content of the action request. Is either a FleetMemberCredentialRequest type
+         or a IO[bytes] type. Required.
+        :type body: ~azure.mgmt.containerservicefleet.models.FleetMemberCredentialRequest or IO[bytes]
+        :return: FleetMemberManagedNamespaceCredentialResults or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservicefleet.models.FleetMemberManagedNamespaceCredentialResults
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.FleetMemberManagedNamespaceCredentialResults] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(body, (IOBase, bytes)):
+            _content = body
+        else:
+            _json = self._serialize.body(body, "FleetMemberCredentialRequest")
+
+        _request = build_list_member_credentials_request(
+            resource_group_name=resource_group_name,
+            fleet_name=fleet_name,
+            managed_namespace_name=managed_namespace_name,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            content=_content,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize(
+            "FleetMemberManagedNamespaceCredentialResults", pipeline_response.http_response
+        )
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
