@@ -3,6 +3,19 @@
 Release History
 ===============
 
+1.1.0
++++++
+* `az edge-action list`: Add subscription-wide listing when `--resource-group` is omitted, while preserving resource-group-scoped listing and `--subscription` selection.
+
+1.0.0
++++++
+* GA release of the Edge Action extension.
+* Upgrade Edge Action commands to stable API version `2026-10-01`.
+* Add optional version ID and header name/value arguments to execution-filter updates while preserving omitted fields and generic update options.
+* Preserve `get-version-code --output-directory`/`-d` ZIP downloads across command regeneration and report invalid download content and file-write errors.
+* Preserve `swap-default` polling compatibility across command regeneration.
+* Restore CLI help examples and correct version-update examples to use supported tag updates.
+
 1.0.0b4
 ++++++
 * Fix `swap-default` command failing with `TypeError: 'NoneType' object is not callable` by providing a no-op deserialization callback for the 202 LRO response

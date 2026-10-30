@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "aro hcp cluster create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create an Azure Red Hat OpenShift with hosted control plane cluster
@@ -26,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-09-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.redhatopenshift/hcpopenshiftclusters/{}", "2026-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.redhatopenshift/hcpopenshiftclusters/{}", "2026-10-01"],
         ]
     }
 
@@ -133,7 +132,7 @@ class Create(AAZCommand):
         _args_schema.base_domain_prefix = AAZStrArg(
             options=["--base-domain-prefix"],
             arg_group="DNS",
-            help="BaseDomainPrefix is a prefix used in cluster endpoint DNS names and the names of related Azure resources.",
+            help="BaseDomainPrefix is the base domain prefix for the cluster ingress. It will be used to configure ingress in the cluster through the subdomain \"BaseDomainPrefix.BaseDomain\".",
             fmt=AAZStrArgFormat(
                 pattern="^[a-z]([-a-z0-9]*[a-z0-9])?$",
                 max_length=15,
@@ -154,6 +153,13 @@ class Create(AAZCommand):
             options=["--kms-active-key"],
             arg_group="Etcd Encryption",
             help="The details of the active key.",
+        )
+        _args_schema.key_vault_type = AAZStrArg(
+            options=["--key-vault-type"],
+            arg_group="Etcd Encryption",
+            help="The type of keyvault used for KMS encryption. Defaults to KeyVault when absent.",
+            default="KeyVault",
+            enum={"KeyVault": "KeyVault", "ManagedHSM": "ManagedHSM"},
         )
         _args_schema.kms_vault_name = AAZStrArg(
             options=["--kms-vault-name"],
@@ -205,6 +211,11 @@ class Create(AAZCommand):
             options=["--uami", "--user-assigned-identities"],
             arg_group="Identity",
             help="The identities assigned to this resource by the user.",
+        )
+        _args_schema.container_registry_managed_identity = AAZResourceIdArg(
+            options=["--container-registry-mi", "--container-registry-managed-identity"],
+            arg_group="Identity",
+            help="The user-assigned managed identity used for container registry image pulls.",
         )
 
         user_assigned_identities = cls._args_schema.user_assigned_identities
@@ -498,7 +509,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
@@ -592,6 +603,7 @@ class Create(AAZCommand):
             kms = _builder.get(".properties.etcd.dataEncryption.customerManaged.kms")
             if kms is not None:
                 kms.set_prop("activeKey", AAZObjectType, ".kms_active_key", typ_kwargs={"flags": {"required": True}})
+                kms.set_prop("keyVaultType", AAZStrType, ".key_vault_type")
                 kms.set_prop("vaultName", AAZStrType, ".kms_vault_name", typ_kwargs={"flags": {"required": True}})
                 kms.set_prop("visibility", AAZStrType, ".vault_visibility", typ_kwargs={"flags": {"required": True}})
 
@@ -627,12 +639,17 @@ class Create(AAZCommand):
 
             platform = _builder.get(".properties.platform")
             if platform is not None:
+                platform.set_prop("containerRegistry", AAZObjectType)
                 platform.set_prop("managedResourceGroup", AAZStrType, ".managed_resource_group_name")
                 platform.set_prop("networkSecurityGroupId", AAZStrType, ".nsg", typ_kwargs={"flags": {"required": True}})
                 platform.set_prop("operatorsAuthentication", AAZObjectType, ".operators_authentication", typ_kwargs={"flags": {"required": True}})
                 platform.set_prop("outboundType", AAZStrType, ".outbound_type")
                 platform.set_prop("subnetId", AAZStrType, ".subnet_id", typ_kwargs={"flags": {"required": True}})
                 platform.set_prop("vnetIntegrationSubnetId", AAZStrType, ".vnet_integration_subnet_id", typ_kwargs={"flags": {"required": True}})
+
+            container_registry = _builder.get(".properties.platform.containerRegistry")
+            if container_registry is not None:
+                container_registry.set_prop("managedIdentity", AAZStrType, ".container_registry_managed_identity")
 
             operators_authentication = _builder.get(".properties.platform.operatorsAuthentication")
             if operators_authentication is not None:
@@ -836,6 +853,9 @@ class Create(AAZCommand):
                 serialized_name="activeKey",
                 flags={"required": True},
             )
+            kms.key_vault_type = AAZStrType(
+                serialized_name="keyVaultType",
+            )
             kms.vault_name = AAZStrType(
                 serialized_name="vaultName",
                 flags={"required": True},
@@ -887,6 +907,9 @@ class Create(AAZCommand):
             )
 
             platform = cls._schema_on_200_201.properties.platform
+            platform.container_registry = AAZObjectType(
+                serialized_name="containerRegistry",
+            )
             platform.issuer_url = AAZStrType(
                 serialized_name="issuerUrl",
                 flags={"read_only": True},
@@ -912,6 +935,11 @@ class Create(AAZCommand):
             platform.vnet_integration_subnet_id = AAZStrType(
                 serialized_name="vnetIntegrationSubnetId",
                 flags={"required": True},
+            )
+
+            container_registry = cls._schema_on_200_201.properties.platform.container_registry
+            container_registry.managed_identity = AAZStrType(
+                serialized_name="managedIdentity",
             )
 
             operators_authentication = cls._schema_on_200_201.properties.platform.operators_authentication
@@ -941,7 +969,19 @@ class Create(AAZCommand):
             data_plane_operators.Element = AAZStrType()
 
             status = cls._schema_on_200_201.properties.status
+            status.active_versions = AAZListType(
+                serialized_name="activeVersions",
+                flags={"read_only": True},
+            )
             status.conditions = AAZListType(
+                flags={"read_only": True},
+            )
+
+            active_versions = cls._schema_on_200_201.properties.status.active_versions
+            active_versions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.status.active_versions.Element
+            _element.version = AAZStrType(
                 flags={"read_only": True},
             )
 

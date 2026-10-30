@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "aro hcp cluster update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update an Azure Red Hat OpenShift with hosted control plane cluster
@@ -23,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-09-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.redhatopenshift/hcpopenshiftclusters/{}", "2026-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.redhatopenshift/hcpopenshiftclusters/{}", "2026-10-01"],
         ]
     }
 
@@ -59,6 +58,24 @@ class Update(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+
+        # define Arg Group "Api"
+
+        _args_schema = cls._args_schema
+        _args_schema.authorized_cidrs = AAZListArg(
+            options=["--authorized-cidrs"],
+            arg_group="Api",
+            help="The list of authorized IPv4 CIDR blocks allowed to access the API server. Maximum 500 entries.",
+            nullable=True,
+            fmt=AAZListArgFormat(
+                max_length=500,
+            ),
+        )
+
+        authorized_cidrs = cls._args_schema.authorized_cidrs
+        authorized_cidrs.Element = AAZStrArg(
+            nullable=True,
         )
 
         # define Arg Group "Autoscaling"
@@ -98,6 +115,19 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define Arg Group "Etcd Encryption"
+
+        _args_schema = cls._args_schema
+        _args_schema.kms_active_key_version = AAZStrArg(
+            options=["--kms-active-key-version"],
+            arg_group="Etcd Encryption",
+            help="version contains the version of the key to use.",
+            fmt=AAZStrArgFormat(
+                max_length=255,
+                min_length=1,
+            ),
+        )
+
         # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
@@ -107,6 +137,12 @@ class Update(AAZCommand):
             help="The identities assigned to this resource by the user.",
             nullable=True,
         )
+        _args_schema.container_registry_managed_identity = AAZResourceIdArg(
+            options=["--container-registry-mi", "--container-registry-managed-identity"],
+            arg_group="Identity",
+            help="The user-assigned managed identity used for container registry image pulls.",
+            nullable=True,
+        )
 
         user_assigned_identities = cls._args_schema.user_assigned_identities
         user_assigned_identities.Element = AAZObjectArg(
@@ -114,15 +150,48 @@ class Update(AAZCommand):
             blank={},
         )
 
+        # define Arg Group "Platform"
+
+        _args_schema = cls._args_schema
+        _args_schema.operators_authentication = AAZObjectArg(
+            options=["--operators-authentication"],
+            arg_group="Platform",
+            help="The configuration that the operators of the cluster have to authenticate to Azure",
+        )
+
+        operators_authentication = cls._args_schema.operators_authentication
+        operators_authentication.user_assigned_identities = AAZObjectArg(
+            options=["user-assigned-identities"],
+            help="Represents the information related to Azure User-Assigned managed identities needed to perform Operators authentication based on Azure User-Assigned Managed Identities",
+        )
+
+        user_assigned_identities = cls._args_schema.operators_authentication.user_assigned_identities
+        user_assigned_identities.control_plane_operators = AAZDictArg(
+            options=["control-plane-operators"],
+            help="The set of Azure User-Assigned Managed Identities leveraged for the Control Plane operators of the cluster. The set of required managed identities is dependent on the Cluster's OpenShift version.",
+        )
+        user_assigned_identities.data_plane_operators = AAZDictArg(
+            options=["data-plane-operators"],
+            help="The set of Azure User-Assigned Managed Identities leveraged for the Data Plane operators of the cluster. The set of required managed identities is dependent on the Cluster's OpenShift version.",
+        )
+        user_assigned_identities.service_managed_identity = AAZResourceIdArg(
+            options=["service-managed-identity"],
+            help="Represents the information associated to an Azure User-Assigned Managed Identity whose purpose is to perform service level actions.",
+        )
+
+        control_plane_operators = cls._args_schema.operators_authentication.user_assigned_identities.control_plane_operators
+        control_plane_operators.Element = AAZResourceIdArg(
+            nullable=True,
+        )
+
+        data_plane_operators = cls._args_schema.operators_authentication.user_assigned_identities.data_plane_operators
+        data_plane_operators.Element = AAZResourceIdArg(
+            nullable=True,
+        )
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.etcd = AAZObjectArg(
-            options=["--etcd"],
-            arg_group="Properties",
-            help="Configure ETCD.",
-            nullable=True,
-        )
         _args_schema.image_digest_mirrors = AAZListArg(
             options=["--image-digest-mirrors"],
             arg_group="Properties",
@@ -140,48 +209,6 @@ class Update(AAZCommand):
             fmt=AAZIntArgFormat(
                 maximum=10080,
                 minimum=0,
-            ),
-        )
-        _args_schema.platform = AAZObjectArg(
-            options=["--platform"],
-            arg_group="Properties",
-            help="Azure platform configuration",
-        )
-
-        etcd = cls._args_schema.etcd
-        etcd.data_encryption = AAZObjectArg(
-            options=["data-encryption"],
-            help="ETCD Data Encryption settings. If not specified platform managed keys are used.",
-            nullable=True,
-        )
-
-        data_encryption = cls._args_schema.etcd.data_encryption
-        data_encryption.customer_managed = AAZObjectArg(
-            options=["customer-managed"],
-            help="Specify customer managed encryption key details. Required when keyManagementMode is \"CustomerManaged\".",
-            nullable=True,
-        )
-
-        customer_managed = cls._args_schema.etcd.data_encryption.customer_managed
-        customer_managed.kms = AAZObjectArg(
-            options=["kms"],
-            help="The Key Management Service (KMS) encryption key details.  Required when encryptionType is \"KMS\".",
-            nullable=True,
-        )
-
-        kms = cls._args_schema.etcd.data_encryption.customer_managed.kms
-        kms.active_key = AAZObjectArg(
-            options=["active-key"],
-            help="The details of the active key.",
-        )
-
-        active_key = cls._args_schema.etcd.data_encryption.customer_managed.kms.active_key
-        active_key.version = AAZStrArg(
-            options=["version"],
-            help="version contains the version of the key to use.",
-            fmt=AAZStrArgFormat(
-                max_length=255,
-                min_length=1,
             ),
         )
 
@@ -213,42 +240,6 @@ class Update(AAZCommand):
             fmt=AAZStrArgFormat(
                 max_length=255,
             ),
-        )
-
-        platform = cls._args_schema.platform
-        platform.operators_authentication = AAZObjectArg(
-            options=["operators-authentication"],
-            help="The configuration that the operators of the cluster have to authenticate to Azure",
-        )
-
-        operators_authentication = cls._args_schema.platform.operators_authentication
-        operators_authentication.user_assigned_identities = AAZObjectArg(
-            options=["user-assigned-identities"],
-            help="Represents the information related to Azure User-Assigned managed identities needed to perform Operators authentication based on Azure User-Assigned Managed Identities",
-        )
-
-        user_assigned_identities = cls._args_schema.platform.operators_authentication.user_assigned_identities
-        user_assigned_identities.control_plane_operators = AAZDictArg(
-            options=["control-plane-operators"],
-            help="The set of Azure User-Assigned Managed Identities leveraged for the Control Plane operators of the cluster. The set of required managed identities is dependent on the Cluster's OpenShift version.",
-        )
-        user_assigned_identities.data_plane_operators = AAZDictArg(
-            options=["data-plane-operators"],
-            help="The set of Azure User-Assigned Managed Identities leveraged for the Data Plane operators of the cluster. The set of required managed identities is dependent on the Cluster's OpenShift version.",
-        )
-        user_assigned_identities.service_managed_identity = AAZResourceIdArg(
-            options=["service-managed-identity"],
-            help="Represents the information associated to an Azure User-Assigned Managed Identity whose purpose is to perform service level actions.",
-        )
-
-        control_plane_operators = cls._args_schema.platform.operators_authentication.user_assigned_identities.control_plane_operators
-        control_plane_operators.Element = AAZResourceIdArg(
-            nullable=True,
-        )
-
-        data_plane_operators = cls._args_schema.platform.operators_authentication.user_assigned_identities.data_plane_operators
-        data_plane_operators.Element = AAZResourceIdArg(
-            nullable=True,
         )
 
         # define Arg Group "Resource"
@@ -360,7 +351,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
@@ -459,7 +450,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
@@ -531,12 +522,21 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("api", AAZObjectType)
                 properties.set_prop("autoscaling", AAZObjectType)
-                properties.set_prop("etcd", AAZObjectType, ".etcd")
+                properties.set_prop("etcd", AAZObjectType)
                 properties.set_prop("imageDigestMirrors", AAZListType, ".image_digest_mirrors")
                 properties.set_prop("nodeDrainTimeoutMinutes", AAZIntType, ".node_drain_timeout")
-                properties.set_prop("platform", AAZObjectType, ".platform", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("platform", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("version", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+
+            api = _builder.get(".properties.api")
+            if api is not None:
+                api.set_prop("authorizedCidrs", AAZListType, ".authorized_cidrs")
+
+            authorized_cidrs = _builder.get(".properties.api.authorizedCidrs")
+            if authorized_cidrs is not None:
+                authorized_cidrs.set_elements(AAZStrType, ".")
 
             autoscaling = _builder.get(".properties.autoscaling")
             if autoscaling is not None:
@@ -547,23 +547,23 @@ class Update(AAZCommand):
 
             etcd = _builder.get(".properties.etcd")
             if etcd is not None:
-                etcd.set_prop("dataEncryption", AAZObjectType, ".data_encryption")
+                etcd.set_prop("dataEncryption", AAZObjectType)
 
             data_encryption = _builder.get(".properties.etcd.dataEncryption")
             if data_encryption is not None:
-                data_encryption.set_prop("customerManaged", AAZObjectType, ".customer_managed")
+                data_encryption.set_prop("customerManaged", AAZObjectType)
 
             customer_managed = _builder.get(".properties.etcd.dataEncryption.customerManaged")
             if customer_managed is not None:
-                customer_managed.set_prop("kms", AAZObjectType, ".kms")
+                customer_managed.set_prop("kms", AAZObjectType)
 
             kms = _builder.get(".properties.etcd.dataEncryption.customerManaged.kms")
             if kms is not None:
-                kms.set_prop("activeKey", AAZObjectType, ".active_key", typ_kwargs={"flags": {"required": True}})
+                kms.set_prop("activeKey", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             active_key = _builder.get(".properties.etcd.dataEncryption.customerManaged.kms.activeKey")
             if active_key is not None:
-                active_key.set_prop("version", AAZStrType, ".version", typ_kwargs={"flags": {"required": True}})
+                active_key.set_prop("version", AAZStrType, ".kms_active_key_version", typ_kwargs={"flags": {"required": True}})
 
             image_digest_mirrors = _builder.get(".properties.imageDigestMirrors")
             if image_digest_mirrors is not None:
@@ -580,7 +580,12 @@ class Update(AAZCommand):
 
             platform = _builder.get(".properties.platform")
             if platform is not None:
+                platform.set_prop("containerRegistry", AAZObjectType)
                 platform.set_prop("operatorsAuthentication", AAZObjectType, ".operators_authentication", typ_kwargs={"flags": {"required": True}})
+
+            container_registry = _builder.get(".properties.platform.containerRegistry")
+            if container_registry is not None:
+                container_registry.set_prop("managedIdentity", AAZStrType, ".container_registry_managed_identity")
 
             operators_authentication = _builder.get(".properties.platform.operatorsAuthentication")
             if operators_authentication is not None:
@@ -796,6 +801,9 @@ class _UpdateHelper:
             serialized_name="activeKey",
             flags={"required": True},
         )
+        kms.key_vault_type = AAZStrType(
+            serialized_name="keyVaultType",
+        )
         kms.vault_name = AAZStrType(
             serialized_name="vaultName",
             flags={"required": True},
@@ -847,6 +855,9 @@ class _UpdateHelper:
         )
 
         platform = _schema_hcp_open_shift_cluster_read.properties.platform
+        platform.container_registry = AAZObjectType(
+            serialized_name="containerRegistry",
+        )
         platform.issuer_url = AAZStrType(
             serialized_name="issuerUrl",
             flags={"read_only": True},
@@ -872,6 +883,11 @@ class _UpdateHelper:
         platform.vnet_integration_subnet_id = AAZStrType(
             serialized_name="vnetIntegrationSubnetId",
             flags={"required": True},
+        )
+
+        container_registry = _schema_hcp_open_shift_cluster_read.properties.platform.container_registry
+        container_registry.managed_identity = AAZStrType(
+            serialized_name="managedIdentity",
         )
 
         operators_authentication = _schema_hcp_open_shift_cluster_read.properties.platform.operators_authentication
@@ -901,7 +917,19 @@ class _UpdateHelper:
         data_plane_operators.Element = AAZStrType()
 
         status = _schema_hcp_open_shift_cluster_read.properties.status
+        status.active_versions = AAZListType(
+            serialized_name="activeVersions",
+            flags={"read_only": True},
+        )
         status.conditions = AAZListType(
+            flags={"read_only": True},
+        )
+
+        active_versions = _schema_hcp_open_shift_cluster_read.properties.status.active_versions
+        active_versions.Element = AAZObjectType()
+
+        _element = _schema_hcp_open_shift_cluster_read.properties.status.active_versions.Element
+        _element.version = AAZStrType(
             flags={"read_only": True},
         )
 

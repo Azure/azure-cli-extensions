@@ -163,6 +163,47 @@ az dataprotection backup-instance restore trigger \
     --restore-request-object @esan_restore_request.json
 ```
 
+#### Azure Cosmos DB item-level restore scripts ####
+##### Restore selected databases and containers #####
+```
+# 1) Build restore configuration: select database or database/container names to restore
+az dataprotection backup-instance initialize-restoreconfig \
+    --datasource-type AzureCosmosDB \
+    --resource-identifiers db1/container1 db2 > cosmos_restore_config.json
+
+# 2) Initialize restore request (target-resource-id is the target Cosmos DB account ARM ID)
+az dataprotection backup-instance restore initialize-for-item-recovery \
+    --datasource-type AzureCosmosDB \
+    --source-datastore VaultStore \
+    --restore-location {location} \
+    --recovery-point-id {recovery_point_id} \
+    --target-resource-id {target_cosmosdb_account_id} \
+    --restore-configuration @cosmos_restore_config.json \
+    --mi-system-assigned true > cosmos_restore_request.json
+
+# 3) Grant missing restore permissions to vault MSI
+az dataprotection backup-instance update-msi-permissions \
+    --datasource-type AzureCosmosDB \
+    --operation Restore \
+    --permissions-scope Resource \
+    --resource-group {vault_rg} \
+    --vault-name {vault_name} \
+    --restore-request-object @cosmos_restore_request.json
+
+# 4) Validate and trigger restore
+az dataprotection backup-instance validate-for-restore \
+    --resource-group {vault_rg} \
+    --vault-name {vault_name} \
+    --backup-instance-name {backup_instance_name} \
+    --restore-request-object @cosmos_restore_request.json
+
+az dataprotection backup-instance restore trigger \
+    --resource-group {vault_rg} \
+    --vault-name {vault_name} \
+    --backup-instance-name {backup_instance_name} \
+    --restore-request-object @cosmos_restore_request.json
+```
+
 #### dataprotection backup-vault ####
 ##### Create #####
 ```

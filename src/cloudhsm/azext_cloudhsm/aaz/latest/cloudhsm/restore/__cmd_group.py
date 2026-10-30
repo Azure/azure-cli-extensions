@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "cloudhsm restore",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Restore a backup of a Cloud HSM

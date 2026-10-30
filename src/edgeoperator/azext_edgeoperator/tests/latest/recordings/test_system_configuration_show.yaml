@@ -1,0 +1,27 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      CommandName:
+      - aldo system-configuration show
+      User-Agent:
+      - AZURECLI
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/systemConfiguration/default?api-version=2026-06-01-preview
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/systemConfiguration/default",
+        "name": "default", "type": "Microsoft.EdgeOperator/systemConfiguration", "properties":
+        {"externalDomainSuffix": "example.test", "imageVersion": "1.0.0", "ingressNicPrefixLength":
+        24, "ingressNicIpAddress": "192.0.2.10", "ingressNicDefaultGateway": "192.0.2.1"}}'
+    headers:
+      content-length:
+      - '384'
+      content-type:
+      - application/json; charset=utf-8
+    status:
+      code: 200
+      message: OK
+version: 1
