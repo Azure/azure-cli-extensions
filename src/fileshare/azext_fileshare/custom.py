@@ -41,7 +41,8 @@ class CheckNameAvailability(_CheckNameAvailability):
 class SnapshotCreate(_SnapshotCreate):
 
     def _handler(self, command_args):
-        super()._handler(command_args)
+        # Skip the generated _handler: it already starts the LRO, so calling it here sent the PUT twice.
+        super(_SnapshotCreate, self)._handler(command_args)
         return self.build_lro_poller(self._execute_operations, self._output)
 
     def _output(self, *args, **kwargs):

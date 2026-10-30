@@ -8,11 +8,11 @@
 import base64
 import json
 import time
-import unittest
 from copy import deepcopy
 from unittest.mock import patch
 
 from azure.cli.core._profile import Profile
+from azure.core.exceptions import HttpResponseError
 from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD
 from azure.cli.testsdk import *
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -21,10 +21,6 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 # by the East US 2 EUAP regional ARM endpoint.
 CANARY_ARM_ENDPOINT = 'https://eastus2euap.management.azure.com'
 LOCATION = 'eastus2euap'
-
-# Scenarios whose service rollout is not complete yet. Record them once the rollout lands and remove the skip.
-REDUNDANCY_CONVERSION_PENDING = 'Redundancy conversion is rolling out to canary; record this test once it is deployed.'
-HDD_PENDING = 'NFS file shares on HDD are blocked on SRP support; record this test once it is deployed.'
 
 # Built-in roles for customer-managed key: the share's identity uses the key, the signed-in user creates it.
 KEY_VAULT_CRYPTO_USER_ROLE = 'Key Vault Crypto User'
@@ -280,10 +276,12 @@ class FilesharesScenario(ScenarioTest):
                 self.check('name', '{snap_name}'),
                 self.check('properties.initiatorId', '{initiator}'),
                 self.check('properties.metadata.key1', 'value1'),
+                self.check('properties.metadata.key2', 'value2'),
+                self.exists('properties.snapshotTime'),
             ]
         )
 
-        # Update the snapshot metadata
+        # Update the snapshot metadata (same final-state-via-Location response as create, so verify with show)
         self.cmd(
             'fileshare snapshot update '
             '--resource-group {rg} '
@@ -292,6 +290,14 @@ class FilesharesScenario(ScenarioTest):
             '--metadata key1=updated key3=value3',
             checks=[
                 self.check('name', '{snap_name}'),
+            ]
+        )
+        self.cmd(
+            'fileshare snapshot show '
+            '--resource-group {rg} '
+            '--resource-name {share_name} '
+            '--name {snap_name}',
+            checks=[
                 self.check('properties.metadata.key1', 'updated'),
                 self.check('properties.metadata.key3', 'value3'),
                 self.check('properties.initiatorId', '{initiator}'),
@@ -477,7 +483,6 @@ class FilesharesScenario(ScenarioTest):
         ).get_output_in_json()
         self.assertEqual(no_offer['properties'], explicit_offer['properties'])
 
-    @unittest.skip(HDD_PENDING)
     @AllowLargeResponse()
     def test_fileshares_hdd_offer(self):
         self.kwargs['location'] = LOCATION
@@ -495,6 +500,57 @@ class FilesharesScenario(ScenarioTest):
                 self.greater_than('properties.provisionedIOPerSec', 0),
             ]
         )
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_fileshares_hdd', location=LOCATION)
+    def test_fileshares_hdd_crud(self, resource_group):
+        self.kwargs.update({
+            'name': self.create_random_name('share', 24),
+            'location': LOCATION,
+        })
+
+        # Provision at the service's recommendation for the size, so the values stay inside the HDD guardrails.
+        recommendation = self.cmd(
+            'fileshare get-provisioning-recommendation --location {location} --provisioned-storage-gib 1024 '
+            '--protocol NFS --media-tier HDD'
+        ).get_output_in_json()['properties']
+        self.kwargs.update({
+            'iops': recommendation['provisionedIOPerSec'],
+            'throughput': recommendation['provisionedThroughputMiBPerSec'],
+        })
+
+        self.cmd(
+            'fileshare create '
+            '--resource-group {rg} '
+            '--name {name} '
+            '--location {location} '
+            '--protocol NFS '
+            '--media-tier HDD '
+            '--redundancy Local '
+            '--provisioned-storage-gib 1024 '
+            '--provisioned-iops {iops} '
+            '--provisioned-throughput-mib {throughput}',
+            checks=[
+                self.check('name', '{name}'),
+                self.check('properties.mediaTier', 'HDD'),
+                self.check('properties.protocol', 'NFS'),
+                self.check('properties.provisionedStorageGiB', 1024),
+                self.check('properties.provisionedIOPerSec', '{iops}'),
+                self.check('properties.provisionedThroughputMiBPerSec', '{throughput}'),
+                self.check('properties.provisioningState', 'Succeeded'),
+            ]
+        )
+
+        self.cmd(
+            'fileshare update -g {rg} -n {name} --provisioned-storage-gib 2048',
+            checks=[
+                self.check('properties.provisionedStorageGiB', 2048),
+                self.check('properties.mediaTier', 'HDD'),
+            ]
+        )
+
+        self.cmd('fileshare delete -g {rg} -n {name} --yes')
+        self.cmd('fileshare show -g {rg} -n {name}', expect_failure=True)
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_fileshares_identity', location=LOCATION)
@@ -589,7 +645,7 @@ class FilesharesScenario(ScenarioTest):
         self.kwargs['caller_id'], self.kwargs['caller_type'] = self._get_caller_principal()
 
         vault = self.cmd('keyvault create -g {rg} -n {vault} -l {location} '
-                         '--enable-rbac-authorization true --retention-days 7').get_output_in_json()
+                         '--enable-rbac-authorization true --enable-purge-protection true --retention-days 7').get_output_in_json()
         self.kwargs['vault_id'] = vault['id']
         # Role assignment names are random GUIDs; create_guid records them as stable placeholders for playback.
         with patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
@@ -627,8 +683,8 @@ class FilesharesScenario(ScenarioTest):
         self.assertNotEqual(first_rotation, share['properties']['encryption']['lastKeyRotationTimestamp'])
 
         self.cmd('fileshare delete -g {rg} -n {name} --yes')
+        # Subscription policy requires purge protection, so the vault is soft-deleted and expires after 7 days.
         self.cmd('keyvault delete -n {vault}')
-        self.cmd('keyvault purge -n {vault} -l {location}')
 
     def _customer_managed_key_shorthand(self, key_url):
         return ("{customer-managed-key-encryption:{key-encryption-key-url:'%s',key-encryption-key-identity:"
@@ -658,7 +714,6 @@ class FilesharesScenario(ScenarioTest):
                 if self.in_recording:
                     time.sleep(10)
 
-    @unittest.skip(REDUNDANCY_CONVERSION_PENDING)
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_fileshares_conversion', location=LOCATION)
     def test_fileshares_redundancy_conversion(self, resource_group):
@@ -666,7 +721,7 @@ class FilesharesScenario(ScenarioTest):
             'name': self.create_random_name('share', 24),
             'location': LOCATION,
         })
-        self._create_share()
+        self._create_private_endpoint_only_share()
 
         # Starting a conversion is a synchronous accept; the conversion itself can take days, so it is never awaited.
         self.cmd('fileshare start-redundancy-conversion -g {rg} --resource-name {name} --target-redundancy Zone')
@@ -698,12 +753,12 @@ class FilesharesScenario(ScenarioTest):
             )
 
             # Only one conversion may run at a time.
-            self.cmd('fileshare start-redundancy-conversion -g {rg} --resource-name {name} --target-redundancy Zone',
-                     expect_failure=True)
+            self._assert_command_fails_with(
+                'fileshare start-redundancy-conversion -g {rg} --resource-name {name} --target-redundancy Zone',
+                'already in progress')
 
-        self.cmd('fileshare delete -g {rg} -n {name} --yes')
+        self._delete_private_endpoint_only_share()
 
-    @unittest.skip(REDUNDANCY_CONVERSION_PENDING)
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_fileshares_conversion', location=LOCATION)
     def test_fileshares_redundancy_conversion_to_current_redundancy_fails(self, resource_group):
@@ -711,10 +766,12 @@ class FilesharesScenario(ScenarioTest):
             'name': self.create_random_name('share', 24),
             'location': LOCATION,
         })
-        self._create_share()
+        # The share must pass the private-endpoint check, which runs first, so the target check is what rejects it.
+        self._create_private_endpoint_only_share()
 
-        self.cmd('fileshare start-redundancy-conversion -g {rg} --resource-name {name} --target-redundancy Local',
-                 expect_failure=True)
+        self._assert_command_fails_with(
+            'fileshare start-redundancy-conversion -g {rg} --resource-name {name} --target-redundancy Local',
+            "must differ from the file share's current redundancy")
         self.cmd(
             'fileshare show -g {rg} -n {name}',
             checks=[
@@ -722,4 +779,61 @@ class FilesharesScenario(ScenarioTest):
             ]
         )
 
+        self._delete_private_endpoint_only_share()
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_fileshares_conversion', location=LOCATION)
+    def test_fileshares_redundancy_conversion_requires_private_endpoint(self, resource_group):
+        self.kwargs.update({
+            'name': self.create_random_name('share', 24),
+            'location': LOCATION,
+        })
+        self._create_share()
+
+        self._assert_command_fails_with(
+            'fileshare start-redundancy-conversion -g {rg} --resource-name {name} --target-redundancy Zone',
+            'only supported when the account is secured exclusively via a private endpoint')
+
         self.cmd('fileshare delete -g {rg} -n {name} --yes')
+
+    def _create_private_endpoint_only_share(self):
+        """Creates a share reachable only through a private endpoint, which redundancy conversion requires."""
+        self.kwargs.update({
+            'vnet': self.create_random_name('cli-vnet-', 24),
+            'subnet': self.create_random_name('cli-subnet-', 24),
+            'pe': self.create_random_name('cli-pe-', 24),
+            'pe_connection': self.create_random_name('cli-pec-', 24),
+        })
+        share = self._create_share(extra_args='--public-network-access Disabled')
+        self.kwargs['share_id'] = share['id']
+        self.cmd('network vnet create -n {vnet} -g {rg} -l {location}')
+        self.cmd('network vnet subnet create -g {rg} --vnet-name {vnet} --name {subnet} '
+                 '--address-prefixes 10.0.1.0/24 --default-outbound false')
+        self.cmd('network private-endpoint create -g {rg} -n {pe} --vnet-name {vnet} --subnet {subnet} -l {location} '
+                 '--connection-name {pe_connection} --private-connection-resource-id {share_id} --group-id fileshare')
+        return self.cmd(
+            'fileshare show -g {rg} -n {name}',
+            checks=[
+                self.check('properties.publicNetworkAccess', 'Disabled'),
+                self.check('length(properties.privateEndpointConnections)', 1),
+            ]
+        ).get_output_in_json()
+
+    def _delete_private_endpoint_only_share(self):
+        """Deletes the private endpoint, then the share once its private endpoint connection has been removed."""
+        self.cmd('network private-endpoint delete -g {rg} -n {pe}')
+        for attempt in range(12):
+            try:
+                self.cmd('fileshare delete -g {rg} -n {name} --yes')
+                return
+            except HttpResponseError as ex:
+                if 'private endpoint connections' not in str(ex) or attempt == 11:
+                    raise
+                if self.in_recording:
+                    time.sleep(10)
+
+    def _assert_command_fails_with(self, command, expected_message):
+        """Runs a command that must fail, and checks the service error carries the expected message."""
+        with self.assertRaises(HttpResponseError) as failure:
+            self.cmd(command)
+        self.assertIn(expected_message, str(failure.exception))

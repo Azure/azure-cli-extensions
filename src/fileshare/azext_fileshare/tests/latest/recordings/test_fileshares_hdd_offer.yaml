@@ -1,0 +1,111 @@
+interactions:
+- request:
+    body: '{"properties": {"mediaTier": "HDD", "protocol": "NFS"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fileshare limits-show
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '55'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --protocol --media-tier
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26300-SP0)
+    method: POST
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FileShares/locations/eastus2euap/getLimits?api-version=2026-09-01
+  response:
+    body:
+      string: '{"properties":{"limits":{"maxFileShares":10000,"maxFileShareSnapshots":200,"maxFileShareSubnets":400,"maxFileSharePrivateEndpointConnections":100,"minProvisionedStorageGiB":32,"maxProvisionedStorageGiB":262144,"minProvisionedIOPerSec":500,"maxProvisionedIOPerSec":50000,"minProvisionedThroughputMiBPerSec":60,"maxProvisionedThroughputMiBPerSec":5120},"provisioningConstants":{"baseIOPerSec":1000,"scalarIOPerSec":0.2,"baseThroughputMiBPerSec":60,"scalarThroughputMiBPerSec":0.02,"guardrailIOPerSecScalar":5.0,"guardrailThroughputScalar":5.0}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '543'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Oct 2026 00:53:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=496ae77e-6ca8-4a1f-924c-83b8c9661760/eastus2euap/517e61a9-b59e-42bd-9ef7-56e2cc1b1253
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: D81BBB4B07D74C9EB2582633B1C6B723 Ref B: SN4AA2022305025 Ref C: 2026-10-30T00:53:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"mediaTier": "HDD", "protocol": "NFS", "provisionedStorageGiB":
+      1024}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fileshare get-provisioning-recommendation
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '86'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --provisioned-storage-gib --protocol --media-tier
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26300-SP0)
+    method: POST
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FileShares/locations/eastus2euap/getProvisioningRecommendation?api-version=2026-09-01
+  response:
+    body:
+      string: '{"properties":{"provisionedIOPerSec":1205,"provisionedThroughputMiBPerSec":81,"availableRedundancyOptions":["Local","Zone"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '125'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Oct 2026 00:53:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=496ae77e-6ca8-4a1f-924c-83b8c9661760/eastus2euap/5cbdd5a0-feab-4de5-b1b6-b5ce7cd15c2b
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 0B97DC4DC77C4A6A87AB8068D1BC7CDD Ref B: SN4AA2022304029 Ref C: 2026-10-30T00:53:44Z'
+    status:
+      code: 200
+      message: OK
+version: 1

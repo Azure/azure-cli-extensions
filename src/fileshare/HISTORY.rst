@@ -10,6 +10,7 @@ Release History
 * Add redundancy conversion commands: ``az fileshare start-redundancy-conversion``, ``az fileshare get-redundancy-conversion-status``.
 * Update ``az fileshare create/update`` with encryption (customer-managed key), scale mode, and HDD media tier options.
 * Surface file share migration state on ``az fileshare show``.
+* Fix ``az fileshare snapshot create`` sending the create request twice.
 
 1.0.2
 ++++++
