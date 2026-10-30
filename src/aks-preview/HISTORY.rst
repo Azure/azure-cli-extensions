@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create/update`: Add `--enable-azure-managed-lustre` with node compatibility validation and `az aks update --disable-azure-managed-lustre` to remove the extension resource.
 
 22.0.0b15
 +++++++++
