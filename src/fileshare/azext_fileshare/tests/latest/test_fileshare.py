@@ -8,6 +8,7 @@
 import base64
 import json
 import time
+import unittest
 from copy import deepcopy
 from unittest.mock import patch
 
@@ -25,6 +26,10 @@ LOCATION = 'eastus2euap'
 # Built-in roles for customer-managed key: the share's identity uses the key, the signed-in user creates it.
 KEY_VAULT_CRYPTO_USER_ROLE = 'Key Vault Crypto User'
 KEY_VAULT_CRYPTO_OFFICER_ROLE = 'Key Vault Crypto Officer'
+
+# HDD share creation fails in the storage backend until the partner team enables the feature there.
+# Remove the skip and record test_fileshares_hdd_crud once it is enabled in eastus2euap.
+HDD_CREATE_PENDING = 'HDD file share creation is not yet enabled by the storage backend in eastus2euap.'
 
 
 class FilesharesScenario(ScenarioTest):
@@ -501,6 +506,7 @@ class FilesharesScenario(ScenarioTest):
             ]
         )
 
+    @unittest.skip(HDD_CREATE_PENDING)
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_fileshares_hdd', location=LOCATION)
     def test_fileshares_hdd_crud(self, resource_group):
