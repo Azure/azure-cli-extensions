@@ -1030,7 +1030,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000003/listCredentials?api-version=2026-09-01-preview
   response:
     body:
-      string: '{"username":"acr000003","passwords":[{"name":"password","value":"BCLWOhUEzrsLRBNlHinmc9ee1sPFzepVVoayrISXhHVFTi4SoMLwJQQJ99CJACYeBjFEqg7NAAACAZCRcZq8"},{"name":"password2","value":"3TLvIsBJpK0ueRg4n0i5Ts40jaEGZ29K10hFxEYfD03589lalezkJQQJ99CJACYeBjFEqg7NAAACAZCRZvRf"}]}'
+      string: '{"username":"acr000003","passwords":[{"name":"password","value":"abc123"},{"name":"password2","value":"abc123"}]}'
     headers:
       api-supported-versions:
       - 2026-09-01-preview
@@ -4710,7 +4710,7 @@ interactions:
     body: '{"location": "Brazil South", "identity": null, "properties": {"environmentId":
       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_brazilsouth/providers/Microsoft.App/managedEnvironments/env-brazilsouth",
       "configuration": {"secrets": [{"name": "acr000003azurecrio-443-acr000003", "value":
-      "BCLWOhUEzrsLRBNlHinmc9ee1sPFzepVVoayrISXhHVFTi4SoMLwJQQJ99CJACYeBjFEqg7NAAACAZCRcZq8"}],
+      "abc123"}],
       "activeRevisionsMode": null, "ingress": {"fqdn": null, "external": true, "targetPort":
       80, "transport": "auto", "exposedPort": null, "allowInsecure": false, "traffic":
       null, "customDomains": null, "ipSecurityRestrictions": null, "stickySessions":
@@ -9402,7 +9402,7 @@ interactions:
     body: '{"location": "Brazil South", "identity": null, "properties": {"environmentId":
       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_brazilsouth/providers/Microsoft.App/managedEnvironments/env-brazilsouth",
       "configuration": {"secrets": [{"name": "acr000003azurecrio-acr000003", "value":
-      "BCLWOhUEzrsLRBNlHinmc9ee1sPFzepVVoayrISXhHVFTi4SoMLwJQQJ99CJACYeBjFEqg7NAAACAZCRcZq8"}],
+      "abc123"}],
       "activeRevisionsMode": null, "ingress": {"fqdn": null, "external": true, "targetPort":
       80, "transport": "auto", "exposedPort": null, "allowInsecure": false, "traffic":
       null, "customDomains": null, "ipSecurityRestrictions": null, "stickySessions":
@@ -14709,7 +14709,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/aca000004/listSecrets?api-version=2025-10-02-preview
   response:
     body:
-      string: '{"value":[{"name":"acr000003azurecrio-acr000003","value":"BCLWOhUEzrsLRBNlHinmc9ee1sPFzepVVoayrISXhHVFTi4SoMLwJQQJ99CJACYeBjFEqg7NAAACAZCRcZq8"}]}'
+      string: '{"value":[{"name":"acr000003azurecrio-acr000003","value":"abc123"}]}'
     headers:
       api-supported-versions:
       - 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview, 2023-04-01-preview,
