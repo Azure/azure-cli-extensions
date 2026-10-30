@@ -48,6 +48,7 @@ class FilesharesScenario(ScenarioTest):
     def test_fileshares_crud(self, resource_group):
         self.kwargs.update({
             'name': self.create_random_name('share', 24),
+            'mount': self.create_random_name('mount', 24),
             'location': LOCATION,
             'vnet': self.create_random_name('cli-vnet-', 24),
             'subnet': self.create_random_name('cli-subnet-', 24),
@@ -65,6 +66,7 @@ class FilesharesScenario(ScenarioTest):
             '--resource-group {rg} '
             '--name {name} '
             '--location {location} '
+            '--mount-name {mount} '
             '--protocol NFS '
             '--provisioned-storage-gib 100 '
             '--provisioned-iops 3000 '
@@ -72,16 +74,22 @@ class FilesharesScenario(ScenarioTest):
             '--redundancy Local '
             '--encryption-in-transit-required Enabled '
             '--root-squash AllSquash '
-            '--allowed-subnets {subnet_id}',
+            '--public-network-access Enabled '
+            '--allowed-subnets {subnet_id} '
+            '--tags env=cli',
             checks=[
                 self.check('name', '{name}'),
+                self.check('properties.mountName', '{mount}'),
+                self.exists('properties.hostName'),
                 self.check('properties.protocol', 'NFS'),
                 self.check('properties.provisionedStorageGiB', 100),
                 self.check('properties.provisionedThroughputMiBPerSec', 125),
                 self.check('properties.redundancy', 'Local'),
                 self.check('properties.nfsProtocolProperties.encryptionInTransitRequired', 'Enabled'),
                 self.check('properties.nfsProtocolProperties.rootSquash', 'AllSquash'),
-                self.check('properties.publicAccessProperties.allowedSubnets', [subnet_id])
+                self.check('properties.publicNetworkAccess', 'Enabled'),
+                self.check('properties.publicAccessProperties.allowedSubnets', [subnet_id]),
+                self.check('tags.env', 'cli'),
             ]
         )
 
@@ -113,7 +121,7 @@ class FilesharesScenario(ScenarioTest):
             ]
         )
 
-        # Update the file share
+        # Update one property; the others must be left as they were.
         self.cmd(
             'fileshare update '
             '--resource-group {rg} '
@@ -122,6 +130,42 @@ class FilesharesScenario(ScenarioTest):
             checks=[
                 self.check('name', '{name}'),
                 self.check('properties.provisionedStorageGiB', 200),
+                self.check('properties.provisionedThroughputMiBPerSec', 125),
+                self.check('properties.mountName', '{mount}'),
+                self.check('properties.nfsProtocolProperties.encryptionInTransitRequired', 'Enabled'),
+                self.check('properties.nfsProtocolProperties.rootSquash', 'AllSquash'),
+                self.check('properties.publicNetworkAccess', 'Enabled'),
+                self.check('properties.publicAccessProperties.allowedSubnets', [subnet_id]),
+                self.check('tags.env', 'cli'),
+            ]
+        )
+
+        # Update the network and NFS settings together
+        self.cmd(
+            'fileshare update '
+            '--resource-group {rg} '
+            '--name {name} '
+            '--public-network-access Disabled '
+            '--encryption-in-transit-required Disabled '
+            '--root-squash NoRootSquash '
+            '--tags env=cli-updated',
+            checks=[
+                self.check('properties.publicNetworkAccess', 'Disabled'),
+                self.check('properties.nfsProtocolProperties.encryptionInTransitRequired', 'Disabled'),
+                self.check('properties.nfsProtocolProperties.rootSquash', 'NoRootSquash'),
+                self.check('tags.env', 'cli-updated'),
+                self.check('properties.provisionedStorageGiB', 200),
+            ]
+        )
+        self.cmd(
+            'fileshare show '
+            '--resource-group {rg} '
+            '--name {name}',
+            checks=[
+                self.check('properties.publicNetworkAccess', 'Disabled'),
+                self.check('properties.nfsProtocolProperties.encryptionInTransitRequired', 'Disabled'),
+                self.check('properties.nfsProtocolProperties.rootSquash', 'NoRootSquash'),
+                self.check('properties.provisioningState', 'Succeeded'),
             ]
         )
 
@@ -186,7 +230,6 @@ class FilesharesScenario(ScenarioTest):
             ]
         )
 
-    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_fileshares_snap')
     def test_fileshares_snapshot(self, resource_group):
@@ -194,6 +237,8 @@ class FilesharesScenario(ScenarioTest):
             'share_name': self.create_random_name('share', 24),
             'snap_name': self.create_random_name('snap', 24),
             'location': LOCATION,
+            # initiatorId is free-form text recorded with the snapshot; a constant keeps the test replayable.
+            'initiator': 'azure-cli-test',
         })
 
         # Create file share first
@@ -209,9 +254,6 @@ class FilesharesScenario(ScenarioTest):
             '--redundancy Local'
         )
 
-        logged_in_user = self.cmd('ad signed-in-user show').get_output_in_json()
-        self.kwargs['logged_in_user'] = logged_in_user["id"] if logged_in_user is not None \
-            else "2146abed-b993-4a81-a6af-eda7b4524c5e"
         # Create a snapshot
         self.cmd(
             'fileshare snapshot create '
@@ -219,10 +261,12 @@ class FilesharesScenario(ScenarioTest):
             '--resource-name {share_name} '
             '--name {snap_name} '
             '--metadata key1=value1 key2=value2 '
-            '--initiator-id {logged_in_user}',
+            '--initiator-id {initiator}',
             checks=[
                 self.check('name', '{snap_name}'),
-                self.check('properties.initiatorId', '{logged_in_user}'),
+                self.check('properties.initiatorId', '{initiator}'),
+                self.check('properties.metadata.key1', 'value1'),
+                self.check('properties.metadata.key2', 'value2'),
             ]
         )
 
@@ -234,6 +278,23 @@ class FilesharesScenario(ScenarioTest):
             '--name {snap_name}',
             checks=[
                 self.check('name', '{snap_name}'),
+                self.check('properties.initiatorId', '{initiator}'),
+                self.check('properties.metadata.key1', 'value1'),
+            ]
+        )
+
+        # Update the snapshot metadata
+        self.cmd(
+            'fileshare snapshot update '
+            '--resource-group {rg} '
+            '--resource-name {share_name} '
+            '--name {snap_name} '
+            '--metadata key1=updated key3=value3',
+            checks=[
+                self.check('name', '{snap_name}'),
+                self.check('properties.metadata.key1', 'updated'),
+                self.check('properties.metadata.key3', 'value3'),
+                self.check('properties.initiatorId', '{initiator}'),
             ]
         )
 
@@ -244,6 +305,7 @@ class FilesharesScenario(ScenarioTest):
             '--resource-name {share_name}',
             checks=[
                 self.check('length(@)', 1),
+                self.check('[0].name', '{snap_name}'),
             ]
         )
 
@@ -254,6 +316,13 @@ class FilesharesScenario(ScenarioTest):
             '--resource-name {share_name} '
             '--name {snap_name} '
             '--yes'
+        )
+        self.cmd(
+            'fileshare snapshot show '
+            '--resource-group {rg} '
+            '--resource-name {share_name} '
+            '--name {snap_name}',
+            expect_failure=True
         )
 
         # Cleanup: delete the file share
