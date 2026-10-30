@@ -1,0 +1,140 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - commvault cloud-account storage list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cloud-account-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-commvault-test/providers/Commvault.ContentStore/cloudAccounts/cvmissing000001/storages?api-version=2026-09-30
+  response:
+    body:
+      string: '{"error":{"code":"ParentResourceNotFound","message":"Failed to perform ''read'' on resource(s) of type ''cloudAccounts/storages'', because the parent resource ''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-commvault-test/providers/Commvault.ContentStore/cloudAccounts/cvmissing000001'' could not be found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '327'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Oct 2026 19:25:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 647C8BD1EE6F4135A757FD79018E225B Ref B: SG2AA1070302031 Ref C: 2026-10-26T19:25:28Z'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - commvault cloud-account plan list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cloud-account-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-commvault-test/providers/Commvault.ContentStore/cloudAccounts/cvmissing000001/plans?api-version=2026-09-30
+  response:
+    body:
+      string: '{"error":{"code":"ParentResourceNotFound","message":"Failed to perform ''read'' on resource(s) of type ''cloudAccounts/plans'', because the parent resource ''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-commvault-test/providers/Commvault.ContentStore/cloudAccounts/cvmissing000001'' could not be found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '324'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Oct 2026 19:25:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 371F058BAE304F1BBD058E4E9948E35D Ref B: SG2AA1070303034 Ref C: 2026-10-26T19:25:29Z'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - commvault cloud-account role-mapping list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --cloud-account-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-commvault-test/providers/Commvault.ContentStore/cloudAccounts/cvmissing000001/roleMappings?api-version=2026-09-30
+  response:
+    body:
+      string: '{"error":{"code":"ParentResourceNotFound","message":"Failed to perform ''read'' on resource(s) of type ''cloudAccounts/roleMappings'', because the parent resource ''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-commvault-test/providers/Commvault.ContentStore/cloudAccounts/cvmissing000001'' could not be found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '331'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Oct 2026 19:25:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 9899B5CD90414E269D01FE19F3E35881 Ref B: SG2AA1070303029 Ref C: 2026-10-26T19:25:30Z'
+    status:
+      code: 404
+      message: Not Found
+version: 1
