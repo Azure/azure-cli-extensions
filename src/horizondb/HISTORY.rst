@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.0.0b9
++++++++
+* New api version.
+* Create a `defaultpool` after cluster creation using required compute and high-availability arguments.
+* Wait for cluster provisioning to succeed before creating `defaultpool` and display provisioning progress messages.
+
 1.0.0b8
 +++++++
 * Add support for restoring HorizonDB clusters through `az horizondb restore`.

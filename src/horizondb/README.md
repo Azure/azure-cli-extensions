@@ -10,6 +10,48 @@ Install this extension using the following CLI command:
 az extension add --name horizondb
 ```
 
+## Local development
+
+From the repository root, activate your development virtual environment and
+install this extension from source:
+
+```powershell
+.\venv\Scripts\Activate.ps1
+python -m pip install azdev
+azdev setup -r "$PWD" -e horizondb
+```
+
+Confirm that the extension path points to this checkout and try the generated
+pool command group:
+
+```powershell
+az extension show --name horizondb
+az horizondb cluster pool --help
+```
+
+Local source edits take effect on the next command invocation. The generated
+pool commands are under `horizondb cluster pool`, not `horizondb pool`.
+
+## Create a cluster with a default pool
+
+`az horizondb cluster create` creates the cluster and polls every 30 seconds for
+up to one hour until its provisioning state is `Succeeded`. Only then does it
+create a child pool named `defaultpool` and wait for pool provisioning to finish.
+Progress messages indicate when the command is waiting for the cluster and when
+it starts creating the default pool. All five pool compute and availability
+arguments use a `--pool-` prefix and are required:
+
+```powershell
+az horizondb cluster create --resource-group example-resource-group --cluster-name example-cluster --location eastus2 --version 17 --geo-redundancy Enabled --pool-compute-processor AMD --pool-compute-generation 3 --pool-v-cores 2 --pool-node-count 1 --pool-high-availability-mode Disabled
+```
+
+For one node, high availability must be `Disabled`. For two through sixteen
+nodes, use `AnyZone` or `ZoneRedundant`. The pool request does not include a
+parameter group. The command returns the cluster after both requests succeed.
+If cluster provisioning fails or times out, the command reports the error and
+does not create the pool. If pool creation fails, the command reports the error
+and leaves the cluster in place; it does not roll back cluster creation.
+
 ## Included Features
 
 ### HorizonDB Cluster Management
