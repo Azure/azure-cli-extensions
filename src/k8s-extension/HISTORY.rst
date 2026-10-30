@@ -2,6 +2,16 @@
 
 Release History
 ===============
+1.9.5
++++++++++++++++++++
+* Microsoft.ChaosStudio: intentionally retain release namespaces and their remaining Kubernetes resources on uninstall. Automatic namespace removal and its fenced/recoverable cleanup contract are deferred, not claimed as clean-namespace or GA cleanup acceptance.
+* Microsoft.ChaosStudio: validate and retain immutable legacy-role cleanup IDs before any teardown, and reconcile the built-in assignment after a pending active installation completes successfully.
+* Microsoft.ChaosStudio: assign the built-in Chaos Kubernetes Extension Operator role instead of provisioning or validating custom roles. Create and update add a separate built-in assignment; existing owned legacy assignments stay until uninstall to avoid interrupting authorization during migration. Delete removes both owned assignments but never role definitions.
+* Microsoft.ChaosStudio: require the persisted namespaceLifecycle.createdByInstall assertion as well as the matching namespace marker before post-uninstall namespace removal.
+* Microsoft.ChaosStudio: record namespace creation ownership before bootstrap and preserve it on resumed installs. Callers can't override namespaceLifecycle.createdByInstall.
+* Microsoft.ChaosStudio: require confirmed raw synchronous extension deletion success even when the CLI progress helper suppresses a failed HTTP 404 poller result. An absent ARM extension does not imply namespace absence or resume Kubernetes cleanup.
+* Microsoft.ChaosStudio: the bounded installation namespace check uses AKS user credentials and namespace GET, not the current kube context or admin credentials. Uninstall adds no post-delete credential, inventory, namespace DELETE or finalization operation. Engine-name reclamation and deleting the chaosengines CRD while engines remain aren't implemented.
+
 1.9.4
 +++++++++++++++++++
 * Microsoft.ChaosStudio: create the workspace operator role with a per-subscription role ID and name so installs in more than one subscription of a tenant no longer fail with RoleDefinitionWithSameNameExists. Existing roles named 'Chaos Studio Kubernetes Operator' are still reused, and explicit roles may have any name.

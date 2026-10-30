@@ -5,11 +5,16 @@
 
 # pylint: disable=unused-argument
 
+import base64
 import hashlib
 import json
 import time
 import uuid
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlencode, urlsplit
+
+import yaml
+from kubernetes import config
+from kubernetes.client.exceptions import ApiException
 
 from azure.core.exceptions import AzureError, ResourceNotFoundError
 from azure.core.pipeline.policies import RetryPolicy
@@ -51,6 +56,9 @@ class _ArmClient:
     def delete(self, resource_id, api_version, description):
         return self._request("DELETE", resource_id, api_version, description)
 
+    def post(self, resource_id, api_version, description, query=None):
+        return self._request("POST", resource_id, api_version, description, query=query)
+
     def _request(
         self,
         method,
@@ -59,9 +67,10 @@ class _ArmClient:
         description,
         body=None,
         allow_not_found=False,
+        query=None,
     ):
-        url = "{}{}?api-version={}".format(
-            self.endpoint, resource_id, api_version
+        url = "{}{}?{}".format(
+            self.endpoint, resource_id, urlencode({"api-version": api_version, **(query or {})})
         )
         headers = [
             "User-Agent=chaos-studio-aks-extension",
@@ -100,6 +109,48 @@ class _ArmClient:
             ) from error
 
 
+class _ClusterClient:
+    """Target-cluster user credentials only; never reads the current kube context."""
+
+    def __init__(self, cmd, arm, resource_group, cluster):
+        cluster_id = ChaosStudio._cluster_resource_id(arm.subscription_id, resource_group, cluster)
+        credentials = arm.post(
+            cluster_id + "/listClusterUserCredential", ChaosStudio.AKS_API_VERSION,
+            "AKS user credentials", query={"format": "exec"},
+        )
+        configs = credentials.get("kubeconfigs", [])
+        if len(configs) != 1 or not configs[0].get("value"):
+            raise AzureResponseError("AKS did not return exactly one user kubeconfig.")
+        self.client = config.new_client_from_config_dict(
+            yaml.safe_load(base64.b64decode(configs[0]["value"]).decode("utf-8"))
+        )
+        # Keep the installation namespace check bounded.
+        self.deadline = time.monotonic() + 210
+
+    def close(self):
+        self.client.close()
+
+    def request(self, method, path, body=None, allow_not_found=False):
+        remaining = self.deadline - time.monotonic()
+        if remaining <= 0:
+            raise AzureResponseError("Namespace inspection exceeded its 210-second API budget.")
+        try:
+            return self.client.call_api(
+                path, method, body=body, response_type="object",
+                auth_settings=["BearerToken"], _return_http_data_only=True,
+                _request_timeout=min(30, remaining),
+            )
+        except ApiException as error:
+            if allow_not_found and error.status == 404:
+                return None
+            raise AzureResponseError(
+                "Target-cluster {} {} failed; namespace inspection was not confirmed: {}".format(method, path, error)
+            ) from error
+
+    def namespace(self, name):
+        return self.request("GET", "/api/v1/namespaces/" + quote(name, safe=""), allow_not_found=True)
+
+
 class ChaosStudio(DefaultExtension):
     """Microsoft.ChaosStudio validations, defaults, and prerequisites."""
 
@@ -107,6 +158,8 @@ class ChaosStudio(DefaultExtension):
     DEFAULT_RELEASE_NAMESPACE = "chaos-infrastructure"
     WORKSPACE_ID_KEY = "chaos-workspace-id"
     EXISTING_ROLE_KEY = "chaos-existing-role-definition-id"
+    NAMESPACE_CREATED_KEY = "namespaceLifecycle.createdByInstall"
+    NAMESPACE_OWNER = "chaosstudio.microsoft.com/namespace-created-by"
 
     AKS_API_VERSION = "2024-10-01"
     WORKSPACE_API_VERSION = "2026-08-01-preview"
@@ -122,6 +175,7 @@ class ChaosStudio(DefaultExtension):
         "workspaceManagedIdentity.objectId",
         "workloadIdentity.enabled", "workloadIdentity.clientId", "workloadIdentity.tenantId",
         "IsWorkloadIdentityEnabled", "IdentityClientId", "IdentityTenantId",
+        "namespaceLifecycle.createdByInstall",
         "chaosDaemon.enabled",
     )
     DAEMON_ENABLED_KEY = "chaosDaemon.enabled"
@@ -129,21 +183,8 @@ class ChaosStudio(DefaultExtension):
     SAFEGUARDS_LEVELS = ("Warn", "Enforce")
     SAFEGUARDS_READ_ACTION = "Microsoft.ContainerService/deploymentSafeguards/read"
 
-    # Custom role names and IDs are unique per Microsoft Entra tenant, so the
-    # role the CLI creates carries the subscription ID in both. Roles created by
-    # earlier versions (fixed name and ID) are still recognized and reused.
-    LEGACY_ROLE_NAME = "Chaos Studio Kubernetes Operator"
-    ROLE_NAME_FORMAT = "Chaos Studio Kubernetes Operator ({})"
-    ROLE_DESCRIPTION = (
-        "Allows a Chaos Studio workspace managed identity to operate through "
-        "the chaos-subscriber ServiceAccount on AKS."
-    )
-    ROLE_ACTIONS = ["Microsoft.ContainerService/managedClusters/read"]
-    ROLE_DATA_ACTIONS = [
-        "Microsoft.ContainerService/managedClusters/serviceaccounts/"
-        "impersonate/action",
-        "Microsoft.ContainerService/managedClusters/pods/read",
-    ]
+    BUILTIN_ROLE_GUID = "681440c1-3630-4424-a530-0305ac721cfd"
+    # Keep the old namespace for deterministic legacy assignment/definition IDs.
     ROLE_DEFINITION_GUID = str(
         uuid.uuid5(
             uuid.NAMESPACE_URL,
@@ -157,6 +198,7 @@ class ChaosStudio(DefaultExtension):
 
     def __init__(self):
         self._arm_client_factory = _ArmClient
+        self._cluster_client_factory = _ClusterClient
 
     def Create(
         self,
@@ -289,6 +331,10 @@ class ChaosStudio(DefaultExtension):
         """Bootstrap and activate one extension; persisted ARM state is the resume record."""
         args = (resource_group_name, cluster_rp, cluster_type, cluster_name, name)
         arm = self._arm_client_factory(cmd)
+        if self.EXISTING_ROLE_KEY in extension.configuration_settings:
+            self._legacy_role_id(
+                extension.configuration_settings[self.EXISTING_ROLE_KEY], arm.subscription_id
+            )
         cluster_id = self._cluster_resource_id(arm.subscription_id, resource_group_name, cluster_name)
         extension_id = "{}/providers/Microsoft.KubernetesConfiguration/extensions/{}".format(cluster_id, name)
         workspace_id = extension.configuration_settings["subscriber.workspaceId"]
@@ -313,16 +359,30 @@ class ChaosStudio(DefaultExtension):
                                  "Chaos Studio workspace connection", allow_not_found=True)
             if existing is not None:
                 self._validate_existing(existing, extension, cluster_id)
+                if self.EXISTING_ROLE_KEY in existing.configuration_settings:
+                    self._legacy_role_id(
+                        existing.configuration_settings[self.EXISTING_ROLE_KEY], arm.subscription_id
+                    )
                 stage = self._stage(existing)
                 if stage == "true":
                     self._check_active_connection(existing, connection, workspace_id, cluster_id)
                     if self._state(existing) == "succeeded":
+                        self._reconcile_workspace_role(
+                            arm, workspace_id, self._prerequisite_resource_ids(
+                                arm.subscription_id, resource_group_name, cluster_name, cluster_id
+                            ),
+                        )
                         return existing
                     if self._state(existing) not in ("failed", "canceled", "cancelled"):
                         if no_wait:
                             return existing
                         final = self._wait_existing(cmd, client, args)
                         self._check_active_connection(final, connection, workspace_id, cluster_id)
+                        self._reconcile_workspace_role(
+                            arm, workspace_id, self._prerequisite_resource_ids(
+                                arm.subscription_id, resource_group_name, cluster_name, cluster_id
+                            ),
+                        )
                         return final
                 elif self._state(existing) not in ("succeeded", "failed", "canceled", "cancelled"):
                     existing = self._wait_existing(cmd, client, args)
@@ -336,12 +396,22 @@ class ChaosStudio(DefaultExtension):
                     "A connection already exists without its extension; refusing to adopt its identity."
                 )
 
+            if existing is None:
+                phase = "namespace inspection"
+                cluster = self._cluster_client_factory(cmd, arm, resource_group_name, cluster_name)
+                try:
+                    namespace = self._existing_release_namespace(extension, extension.configuration_settings)
+                    extension.configuration_settings[self.NAMESPACE_CREATED_KEY] = (
+                        "true" if cluster.namespace(namespace) is None else "false"
+                    )
+                finally:
+                    cluster.close()
+
             phase = "workspace permissions"
             settings = dict(extension.configuration_settings or {})
             settings.update(self._reconcile_prerequisites(
                 cmd, resource_group_name, cluster_name, workspace_id,
                 self._existing_release_namespace(extension, settings),
-                settings.get(self.EXISTING_ROLE_KEY),
             ))
             phase = "bootstrap"
             if existing is None or (
@@ -474,6 +544,19 @@ class ChaosStudio(DefaultExtension):
         original_settings = dict(
             getattr(original_extension, "configuration_settings", None) or {}
         )
+        arm = self._arm_client_factory(cmd)
+        for values in (original_settings, supplied_settings):
+            if self.EXISTING_ROLE_KEY in values:
+                self._legacy_role_id(values[self.EXISTING_ROLE_KEY], arm.subscription_id)
+        if self.EXISTING_ROLE_KEY in supplied_settings:
+            if not self._same_resource_id(
+                supplied_settings[self.EXISTING_ROLE_KEY], original_settings.get(self.EXISTING_ROLE_KEY)
+            ):
+                raise InvalidArgumentValueError(
+                    "'chaos-existing-role-definition-id' is immutable legacy cleanup state; "
+                    "it cannot be added or changed on an installed extension."
+                )
+            supplied_settings.pop(self.EXISTING_ROLE_KEY)
         configuration_settings = dict(original_settings)
         configuration_settings.update(supplied_settings)
         release_namespace = self._existing_release_namespace(
@@ -494,7 +577,6 @@ class ChaosStudio(DefaultExtension):
             original_settings,
         )
         if workspace_id is not None:
-            arm = self._arm_client_factory(cmd)
             cluster_id = self._cluster_resource_id(arm.subscription_id, resource_group_name, cluster_name)
             connection = arm.get(
                 "{}/connections/{}".format(workspace_id, self._recommended_connection_name(workspace_id, cluster_id)),
@@ -508,7 +590,6 @@ class ChaosStudio(DefaultExtension):
                     cluster_name,
                     workspace_id,
                     release_namespace,
-                    configuration_settings.get(self.EXISTING_ROLE_KEY),
                 )
             )
 
@@ -556,6 +637,15 @@ class ChaosStudio(DefaultExtension):
             cmd, resource_group_name, cluster_name, existing_role_id
         )
 
+    def PostDelete(self, cmd, resource_group_name, cluster_name, name, extension):
+        """Report retention after confirmed ARM deletion; do not mutate Kubernetes."""
+        logger.warning(
+            "ARM extension '%s' deletion completed. Its release namespace and any "
+            "remaining Kubernetes resources are retained; automatic namespace removal "
+            "is not performed by the CLI.",
+            name,
+        )
+
     def _reconcile_prerequisites(
         self,
         cmd,
@@ -563,7 +653,6 @@ class ChaosStudio(DefaultExtension):
         cluster_name,
         workspace_id,
         release_namespace,
-        existing_role_id=None,
     ):
         arm = self._arm_client_factory(cmd)
         cluster_id = self._cluster_resource_id(
@@ -577,29 +666,31 @@ class ChaosStudio(DefaultExtension):
             "AKS cluster",
         )
         self._validate_cluster(cluster)
-        workspace = arm.get(
-            workspace_id,
-            self.WORKSPACE_API_VERSION,
-            "Chaos Studio workspace",
-        )
-        workspace_principal_id = self._workspace_principal_id(workspace)
-
         resource_ids = self._prerequisite_resource_ids(
             arm.subscription_id,
             resource_group_name,
             cluster_name,
             cluster_id,
         )
-        if existing_role_id is not None:
-            role_definition = arm.get(
-                self._select_role_id(resource_ids, existing_role_id, arm.subscription_id),
-                self.AUTHORIZATION_API_VERSION,
-                "Chaos Studio Kubernetes Operator role definition",
-            )
-        else:
-            role_definition = self._resolve_owned_role_definition(
-                arm, resource_ids, arm.subscription_id
-            )
+        # Read Safeguards before any authorization write so a failed read
+        # leaves nothing behind.
+        daemon_enabled = self._daemon_enabled(arm, cluster_id, release_namespace)
+        workspace_principal_id = self._reconcile_workspace_role(arm, workspace_id, resource_ids)
+
+        return {
+            "workspaceManagedIdentity.objectId": workspace_principal_id,
+            "subscriber.workspaceId": workspace_id,
+            "subscriber.clusterResourceId": cluster_id,
+            self.DAEMON_ENABLED_KEY: daemon_enabled,
+        }
+
+    def _reconcile_workspace_role(self, arm, workspace_id, resource_ids):
+        workspace = arm.get(
+            workspace_id,
+            self.WORKSPACE_API_VERSION,
+            "Chaos Studio workspace",
+        )
+        workspace_principal_id = self._workspace_principal_id(workspace)
         role_assignment = arm.get(
             resource_ids["role_assignment"],
             self.AUTHORIZATION_API_VERSION,
@@ -607,26 +698,11 @@ class ChaosStudio(DefaultExtension):
             allow_not_found=True,
         )
 
-        if role_definition is not None:
-            self._validate_role_definition(
-                role_definition, arm.subscription_id, existing_role_id is not None
-            )
         if role_assignment is not None:
             self._validate_role_assignment(
                 role_assignment,
                 resource_ids["role_definition"],
                 workspace_principal_id,
-            )
-        # Read Safeguards before any authorization write so a failed read
-        # leaves nothing behind.
-        daemon_enabled = self._daemon_enabled(arm, cluster_id, release_namespace)
-
-        if role_definition is None:
-            arm.put(
-                resource_ids["role_definition"],
-                self.AUTHORIZATION_API_VERSION,
-                "Chaos Studio Kubernetes Operator role definition",
-                self._role_definition_body(arm.subscription_id),
             )
         if role_assignment is None:
             arm.put(
@@ -639,12 +715,7 @@ class ChaosStudio(DefaultExtension):
                 ),
             )
 
-        return {
-            "workspaceManagedIdentity.objectId": workspace_principal_id,
-            "subscriber.workspaceId": workspace_id,
-            "subscriber.clusterResourceId": cluster_id,
-            self.DAEMON_ENABLED_KEY: daemon_enabled,
-        }
+        return workspace_principal_id
 
     @classmethod
     def _daemon_enabled(cls, arm, cluster_id, release_namespace):
@@ -830,6 +901,9 @@ class ChaosStudio(DefaultExtension):
         self._stage(extension)
         if self._state(extension) not in ("succeeded", "failed", "canceled", "cancelled"):
             raise InvalidArgumentValueError("Wait for the extension operation before deleting workspace resources.")
+        arm = self._arm_client_factory(cmd)
+        if self.EXISTING_ROLE_KEY in settings:
+            self._legacy_role_id(settings[self.EXISTING_ROLE_KEY], arm.subscription_id)
         workspace_id = settings.get("subscriber.workspaceId")
         managed_keys = (
             "subscriber.workspaceId",
@@ -852,7 +926,6 @@ class ChaosStudio(DefaultExtension):
                 "was not deleted.".format(", ".join(missing))
             )
 
-        arm = self._arm_client_factory(cmd)
         cluster_id = self._cluster_resource_id(
             arm.subscription_id, resource_group_name, cluster_name
         )
@@ -927,23 +1000,24 @@ class ChaosStudio(DefaultExtension):
             cluster_name,
             cluster_id,
         )
+        owned_role_ids = [
+            resource_ids["role_definition"],
+            resource_ids["subscription_role_definition"],
+            resource_ids["legacy_role_definition"],
+        ]
         if existing_role_id is not None:
-            owned_role_ids = [
-                self._select_role_id(resource_ids, existing_role_id, arm.subscription_id)
-            ]
-        else:
-            owned_role_ids = [
-                resource_ids["role_definition"],
-                resource_ids["legacy_role_definition"],
-            ]
-        role_assignment = arm.get(
-            resource_ids["role_assignment"],
-            self.AUTHORIZATION_API_VERSION,
-            "workspace managed identity role assignment",
-            allow_not_found=True,
-        )
+            owned_role_ids.append(self._legacy_role_id(existing_role_id, arm.subscription_id))
+        for key in ("role_assignment", "legacy_role_assignment"):
+            assignment_id = resource_ids[key]
+            role_assignment = arm.get(
+                assignment_id,
+                self.AUTHORIZATION_API_VERSION,
+                "workspace managed identity role assignment",
+                allow_not_found=True,
+            )
 
-        if role_assignment is not None:
+            if role_assignment is None:
+                continue
             properties = role_assignment.get("properties") or {}
             if (
                 any(
@@ -956,7 +1030,7 @@ class ChaosStudio(DefaultExtension):
                 == self.ROLE_ASSIGNMENT_DESCRIPTION
             ):
                 arm.delete(
-                    resource_ids["role_assignment"],
+                    assignment_id,
                     self.AUTHORIZATION_API_VERSION,
                     "workspace managed identity role assignment",
                 )
@@ -964,7 +1038,7 @@ class ChaosStudio(DefaultExtension):
                 logger.warning(
                     "Preserving role assignment '%s' because it is not owned "
                     "by the Microsoft.ChaosStudio extension.",
-                    resource_ids["role_assignment"],
+                    assignment_id,
                 )
 
     @classmethod
@@ -1083,54 +1157,22 @@ class ChaosStudio(DefaultExtension):
         return principal_ids[0]
 
     @classmethod
-    def _select_role_id(cls, resource_ids, existing_role_id, subscription_id):
-        if existing_role_id is not None:
-            prefix = "/subscriptions/{}/providers/Microsoft.Authorization/roleDefinitions/".format(
-                subscription_id
+    def _legacy_role_id(cls, existing_role_id, subscription_id):
+        prefix = "/subscriptions/{}/providers/Microsoft.Authorization/roleDefinitions/".format(
+            subscription_id
+        )
+        if (not isinstance(existing_role_id, str)
+                or not existing_role_id.lower().startswith(prefix.lower())):
+            raise InvalidArgumentValueError(
+                "The existing role definition must be an ARM ID in the cluster subscription."
             )
-            if (not isinstance(existing_role_id, str)
-                    or not existing_role_id.lower().startswith(prefix.lower())):
-                raise InvalidArgumentValueError(
-                    "The existing role definition must be an ARM ID in the cluster subscription."
-                )
-            try:
-                uuid.UUID(existing_role_id[len(prefix):])
-            except ValueError as error:
-                raise InvalidArgumentValueError(
-                    "The existing role definition ID must end in a UUID."
-                ) from error
-            resource_ids["role_definition"] = existing_role_id
-        return resource_ids["role_definition"]
-
-    @classmethod
-    def _resolve_owned_role_definition(cls, arm, resource_ids, subscription_id):
-        """Return the CLI-owned role for this subscription, or None to create one.
-
-        A legacy role (fixed ID) is reused only when it is scoped to exactly this
-        subscription; otherwise it belongs to another subscription in the tenant
-        and the per-subscription role is used instead.
-        """
-        legacy = arm.get(
-            resource_ids["legacy_role_definition"],
-            cls.AUTHORIZATION_API_VERSION,
-            "Chaos Studio Kubernetes Operator role definition",
-            allow_not_found=True,
-        )
-        if legacy is not None and (legacy.get("properties") or {}).get(
-            "assignableScopes"
-        ) == ["/subscriptions/{}".format(subscription_id)]:
-            resource_ids["role_definition"] = resource_ids["legacy_role_definition"]
-            return legacy
-        return arm.get(
-            resource_ids["role_definition"],
-            cls.AUTHORIZATION_API_VERSION,
-            "Chaos Studio Kubernetes Operator role definition",
-            allow_not_found=True,
-        )
-
-    @classmethod
-    def _role_name(cls, subscription_id):
-        return cls.ROLE_NAME_FORMAT.format(subscription_id.lower())
+        try:
+            uuid.UUID(existing_role_id[len(prefix):])
+        except ValueError as error:
+            raise InvalidArgumentValueError(
+                "The existing role definition ID must end in a UUID."
+            ) from error
+        return existing_role_id
 
     @classmethod
     def _role_definition_guid(cls, subscription_id):
@@ -1139,37 +1181,6 @@ class ChaosStudio(DefaultExtension):
                 uuid.UUID(cls.ROLE_DEFINITION_GUID), subscription_id.lower()
             )
         )
-
-    @classmethod
-    def _validate_role_definition(cls, role_definition, subscription_id, explicit=False):
-        # The role is identified by the ID it was read from, not its name.
-        properties = role_definition.get("properties") or {}
-        permissions = properties.get("permissions") or []
-        expected_scope = "/subscriptions/{}".format(subscription_id)
-        compatible = (
-            (explicit or properties.get("description") == cls.ROLE_DESCRIPTION)
-            and properties.get("type") == "CustomRole"
-            and properties.get("assignableScopes") == [expected_scope]
-            and len(permissions) == 1
-            and permissions[0].get("actions") == cls.ROLE_ACTIONS
-            and permissions[0].get("notActions") == []
-            and (
-                permissions[0].get("dataActions") == cls.ROLE_DATA_ACTIONS
-                or (explicit and set(permissions[0].get("dataActions") or []) == set(
-                    cls.ROLE_DATA_ACTIONS
-                    + ["Microsoft.ContainerService/managedClusters/namespaces/read"]
-                ))
-            )
-            and permissions[0].get("notDataActions") == []
-            and not permissions[0].get("condition")
-        )
-        if not compatible:
-            raise InvalidArgumentValueError(
-                "The existing '{}' role definition is incompatible. Remove "
-                "or repair it before retrying; it was not overwritten.".format(
-                    properties.get("roleName") or cls.LEGACY_ROLE_NAME
-                )
-            )
 
     @classmethod
     def _validate_role_assignment(
@@ -1191,27 +1202,6 @@ class ChaosStudio(DefaultExtension):
             )
 
     @classmethod
-    def _role_definition_body(cls, subscription_id):
-        return {
-            "properties": {
-                "roleName": cls._role_name(subscription_id),
-                "description": cls.ROLE_DESCRIPTION,
-                "type": "CustomRole",
-                "permissions": [
-                    {
-                        "actions": cls.ROLE_ACTIONS,
-                        "notActions": [],
-                        "dataActions": cls.ROLE_DATA_ACTIONS,
-                        "notDataActions": [],
-                    }
-                ],
-                "assignableScopes": [
-                    "/subscriptions/{}".format(subscription_id)
-                ],
-            }
-        }
-
-    @classmethod
     def _resolve_release_namespace(cls, release_namespace):
         return release_namespace or cls.DEFAULT_RELEASE_NAMESPACE
 
@@ -1221,9 +1211,12 @@ class ChaosStudio(DefaultExtension):
     ):
         scope = getattr(original_extension, "scope", None)
         cluster_scope = getattr(scope, "cluster", None)
+        scoped_namespace = getattr(cluster_scope, "release_namespace", None)
+        configured_namespace = original_settings.get("namespace")
+        if scoped_namespace and configured_namespace and scoped_namespace != configured_namespace:
+            raise InvalidArgumentValueError("Installed release namespace conflicts with chart namespace.")
         return cls._resolve_release_namespace(
-            getattr(cluster_scope, "release_namespace", None)
-            or original_settings.get("namespace")
+            scoped_namespace or configured_namespace
         )
 
     @classmethod
@@ -1259,12 +1252,18 @@ class ChaosStudio(DefaultExtension):
         )
         return {
             "role_definition": role_definition_format.format(
+                subscription_id, cls.BUILTIN_ROLE_GUID
+            ),
+            "subscription_role_definition": role_definition_format.format(
                 subscription_id, cls._role_definition_guid(subscription_id)
             ),
             "legacy_role_definition": role_definition_format.format(
                 subscription_id, cls.ROLE_DEFINITION_GUID
             ),
             "role_assignment": (
+                "{}/providers/Microsoft.Authorization/roleAssignments/{}"
+            ).format(cluster_id, uuid.uuid5(uuid.UUID(cls.BUILTIN_ROLE_GUID), cluster_id.lower())),
+            "legacy_role_assignment": (
                 "{}/providers/Microsoft.Authorization/roleAssignments/{}"
             ).format(cluster_id, role_assignment_guid),
         }
