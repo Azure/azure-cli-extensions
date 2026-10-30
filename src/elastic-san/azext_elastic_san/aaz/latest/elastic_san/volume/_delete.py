@@ -21,17 +21,20 @@ class Delete(AAZCommand):
     :example: Delete a Volume.
         az elastic-san volume delete -g "rg" -e "san_name" -v "vg_name" -n "volume_name"
 
-    :example: Delete a volume with its snapshot
+    :example: Delete a Volume with its snapshot(s)
         az elastic-san volume delete -g "rg" -e "san_name" -v "vg_name" -n "volume_name" -y --x-ms-delete-snapshots true --x-ms-force-delete true
 
     :example: Delete a deleted volume permanently
         az elastic-san volume delete -g rg_name -e san_name -v volume_group_name -n deleted_volume_name -y --delete-type permanent
+
+    :example: Delete a deleted volume permanently and forcefully with its snapshot(s)
+        az elastic-san volume delete --resource-group resourcegroupname --elastic-san-name elasticsanname --volume-group-name volumegroupname --volume-name volumename --x-ms-delete-snapshots true --x-ms-force-delete true --delete-type permanent
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -97,6 +100,11 @@ class Delete(AAZCommand):
                 max_length=63,
                 min_length=3,
             ),
+        )
+        _args_schema.delete_type = AAZStrArg(
+            options=["--delete-type"],
+            help="Optional. Specifies that the delete operation should be a permanent delete for the soft deleted volume. The value of deleteType can only be 'permanent'.",
+            enum={"permanent": "permanent"},
         )
         return cls._args_schema
 
@@ -194,7 +202,10 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "deleteType", self.ctx.args.delete_type,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

@@ -22,15 +22,13 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}", "2026-05-01-preview"],
         ]
     }
 
     AZ_SUPPORT_NO_WAIT = True
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -69,26 +67,22 @@ class Update(AAZCommand):
             options=["--auto-scale-policy", "--auto-scale-policy-enforcement"],
             arg_group="AutoScaleProperties",
             help="Enable or Disable scale up setting on Elastic San Appliance.",
-            nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled", "None": "None"},
         )
         _args_schema.capacity_unit_scale_up_limit_tib = AAZIntArg(
             options=["--capacity-unit-scale-up", "--capacity-unit-scale-up-limit-tib"],
             arg_group="AutoScaleProperties",
             help="Maximum scale up size on Elastic San appliance in TiB.",
-            nullable=True,
         )
         _args_schema.increase_capacity_unit_by_tib = AAZIntArg(
             options=["--increase-capacity-unit", "--increase-capacity-unit-by-tib"],
             arg_group="AutoScaleProperties",
             help="Unit to increase Capacity Unit on Elastic San appliance in TiB.",
-            nullable=True,
         )
         _args_schema.unused_size_tib = AAZIntArg(
             options=["--unused-size-tib"],
             arg_group="AutoScaleProperties",
             help="Unused size on Elastic San appliance in TiB.",
-            nullable=True,
         )
 
         # define Arg Group "Parameters"
@@ -97,24 +91,15 @@ class Update(AAZCommand):
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Parameters",
-            help="Azure resource tags.",
-            nullable=True,
+            help="Update tags",
         )
 
         tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
+        tags.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.availability_zones = AAZListArg(
-            options=["--availability-zones"],
-            arg_group="Properties",
-            help="Logical zone for Elastic San resource; example: [\"1\"].",
-            nullable=True,
-        )
         _args_schema.base_size_tib = AAZIntArg(
             options=["--base-size-tib"],
             arg_group="Properties",
@@ -128,43 +113,29 @@ class Update(AAZCommand):
         _args_schema.public_network_access = AAZStrArg(
             options=["--public-network-access"],
             arg_group="Properties",
-            help="Allow or disallow public network access to ElasticSan. Value is optional but if passed in, must be 'Enabled' or 'Disabled'.",
-            nullable=True,
+            help="Allow or disallow public network access to ElasticSan Account. Value is optional but if passed in, must be 'Enabled' or 'Disabled'.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
-        _args_schema.sku = AAZObjectArg(
-            options=["--sku"],
+        _args_schema.total_iops = AAZIntArg(
+            options=["--total-iops"],
             arg_group="Properties",
-            help="resource sku",
+            help="Total Provisioned IOPS of the Elastic San appliance. Supported only for ElasticSanVersion V2.",
         )
-
-        availability_zones = cls._args_schema.availability_zones
-        availability_zones.Element = AAZStrArg(
-            nullable=True,
+        _args_schema.total_mbps = AAZIntArg(
+            options=["--total-mbps"],
+            arg_group="Properties",
+            help="Total Provisioned MBps Elastic San appliance. Supported only for ElasticSanVersion V2.",
         )
-
-        sku = cls._args_schema.sku
-        sku.name = AAZStrArg(
-            options=["name"],
-            help="The sku name.",
-            enum={"Premium_LRS": "Premium_LRS", "Premium_ZRS": "Premium_ZRS"},
-        )
-        sku.tier = AAZStrArg(
-            options=["tier"],
-            help="The sku tier.",
-            nullable=True,
-            enum={"Premium": "Premium"},
+        _args_schema.total_size_tib = AAZIntArg(
+            options=["--total-size-tib"],
+            arg_group="Properties",
+            help="Total size of the Elastic San appliance in TiB. Settable only for ElasticSanVersion V2, where it is required; read-only for V1.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ElasticSansGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        yield self.ElasticSansCreate(ctx=self.ctx)()
+        yield self.ElasticSansUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -175,102 +146,11 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ElasticSansGet(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "elasticSanName", self.ctx.args.elastic_san_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2025-09-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_elastic_san_read(cls._schema_on_200)
-
-            return cls._schema_on_200
-
-    class ElasticSansCreate(AAZHttpOperation):
+    class ElasticSansUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -280,16 +160,16 @@ class Update(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200, 201]:
+            if session.http_response.status_code in [200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -306,7 +186,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -334,7 +214,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -356,53 +236,21 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_elastic_san_read(cls._schema_on_200_201)
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
-            )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("autoScaleProperties", AAZObjectType)
-                properties.set_prop("availabilityZones", AAZListType, ".availability_zones")
-                properties.set_prop("baseSizeTiB", AAZIntType, ".base_size_tib", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("extendedCapacitySizeTiB", AAZIntType, ".extended_capacity_size_tib", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("baseSizeTiB", AAZIntType, ".base_size_tib")
+                properties.set_prop("extendedCapacitySizeTiB", AAZIntType, ".extended_capacity_size_tib")
                 properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
-                properties.set_prop("sku", AAZObjectType, ".sku", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("totalIops", AAZIntType, ".total_iops")
+                properties.set_prop("totalMBps", AAZIntType, ".total_mbps")
+                properties.set_prop("totalSizeTiB", AAZIntType, ".total_size_tib")
 
             auto_scale_properties = _builder.get(".properties.autoScaleProperties")
             if auto_scale_properties is not None:
@@ -415,213 +263,199 @@ class Update(AAZCommand):
                 scale_up_properties.set_prop("increaseCapacityUnitByTiB", AAZIntType, ".increase_capacity_unit_by_tib")
                 scale_up_properties.set_prop("unusedSizeTiB", AAZIntType, ".unused_size_tib")
 
-            availability_zones = _builder.get(".properties.availabilityZones")
-            if availability_zones is not None:
-                availability_zones.set_elements(AAZStrType, ".")
-
-            sku = _builder.get(".properties.sku")
-            if sku is not None:
-                sku.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
-                sku.set_prop("tier", AAZStrType, ".tier")
-
             tags = _builder.get(".tags")
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
 
-            return _instance_value
+            return self.serialize_content(_content_value)
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
             )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _UpdateHelper._build_schema_system_data_read(_schema_on_200.system_data)
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.auto_scale_properties = AAZObjectType(
+                serialized_name="autoScaleProperties",
+            )
+            properties.availability_zones = AAZListType(
+                serialized_name="availabilityZones",
+            )
+            properties.base_size_ti_b = AAZIntType(
+                serialized_name="baseSizeTiB",
+            )
+            properties.extended_capacity_size_ti_b = AAZIntType(
+                serialized_name="extendedCapacitySizeTiB",
+            )
+            properties.private_endpoint_connections = AAZListType(
+                serialized_name="privateEndpointConnections",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.public_network_access = AAZStrType(
+                serialized_name="publicNetworkAccess",
+            )
+            properties.sku = AAZObjectType(
+                flags={"required": True},
+            )
+            properties.total_iops = AAZIntType(
+                serialized_name="totalIops",
+            )
+            properties.total_m_bps = AAZIntType(
+                serialized_name="totalMBps",
+            )
+            properties.total_reserved_iops = AAZIntType(
+                serialized_name="totalReservedIops",
+                flags={"read_only": True},
+            )
+            properties.total_reserved_m_bps = AAZIntType(
+                serialized_name="totalReservedMBps",
+                flags={"read_only": True},
+            )
+            properties.total_size_ti_b = AAZIntType(
+                serialized_name="totalSizeTiB",
+            )
+            properties.total_volume_size_gi_b = AAZIntType(
+                serialized_name="totalVolumeSizeGiB",
+                flags={"read_only": True},
+            )
+            properties.used_capacity_gi_b = AAZIntType(
+                serialized_name="usedCapacityGiB",
+                flags={"read_only": True},
+            )
+            properties.version = AAZStrType()
+            properties.volume_group_count = AAZIntType(
+                serialized_name="volumeGroupCount",
+                flags={"read_only": True},
+            )
+
+            auto_scale_properties = cls._schema_on_200.properties.auto_scale_properties
+            auto_scale_properties.scale_up_properties = AAZObjectType(
+                serialized_name="scaleUpProperties",
+            )
+
+            scale_up_properties = cls._schema_on_200.properties.auto_scale_properties.scale_up_properties
+            scale_up_properties.auto_scale_policy_enforcement = AAZStrType(
+                serialized_name="autoScalePolicyEnforcement",
+            )
+            scale_up_properties.capacity_unit_scale_up_limit_ti_b = AAZIntType(
+                serialized_name="capacityUnitScaleUpLimitTiB",
+            )
+            scale_up_properties.increase_capacity_unit_by_ti_b = AAZIntType(
+                serialized_name="increaseCapacityUnitByTiB",
+            )
+            scale_up_properties.unused_size_ti_b = AAZIntType(
+                serialized_name="unusedSizeTiB",
+            )
+
+            availability_zones = cls._schema_on_200.properties.availability_zones
+            availability_zones.Element = AAZStrType()
+
+            private_endpoint_connections = cls._schema_on_200.properties.private_endpoint_connections
+            private_endpoint_connections.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.private_endpoint_connections.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _UpdateHelper._build_schema_system_data_read(_element.system_data)
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties.private_endpoint_connections.Element.properties
+            properties.group_ids = AAZListType(
+                serialized_name="groupIds",
+            )
+            properties.private_endpoint = AAZObjectType(
+                serialized_name="privateEndpoint",
+            )
+            properties.private_link_service_connection_state = AAZObjectType(
+                serialized_name="privateLinkServiceConnectionState",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            group_ids = cls._schema_on_200.properties.private_endpoint_connections.Element.properties.group_ids
+            group_ids.Element = AAZStrType()
+
+            private_endpoint = cls._schema_on_200.properties.private_endpoint_connections.Element.properties.private_endpoint
+            private_endpoint.id = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            private_link_service_connection_state = cls._schema_on_200.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
+            private_link_service_connection_state.actions_required = AAZStrType(
+                serialized_name="actionsRequired",
+            )
+            private_link_service_connection_state.description = AAZStrType()
+            private_link_service_connection_state.status = AAZStrType()
+
+            sku = cls._schema_on_200.properties.sku
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.tier = AAZStrType()
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_elastic_san_read = None
-
-    @classmethod
-    def _build_schema_elastic_san_read(cls, _schema):
-        if cls._schema_elastic_san_read is not None:
-            _schema.id = cls._schema_elastic_san_read.id
-            _schema.location = cls._schema_elastic_san_read.location
-            _schema.name = cls._schema_elastic_san_read.name
-            _schema.properties = cls._schema_elastic_san_read.properties
-            _schema.system_data = cls._schema_elastic_san_read.system_data
-            _schema.tags = cls._schema_elastic_san_read.tags
-            _schema.type = cls._schema_elastic_san_read.type
-            return
-
-        cls._schema_elastic_san_read = _schema_elastic_san_read = AAZObjectType()
-
-        elastic_san_read = _schema_elastic_san_read
-        elastic_san_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        elastic_san_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        elastic_san_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        elastic_san_read.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
-        )
-        elastic_san_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        cls._build_schema_system_data_read(elastic_san_read.system_data)
-        elastic_san_read.tags = AAZDictType()
-        elastic_san_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        properties = _schema_elastic_san_read.properties
-        properties.auto_scale_properties = AAZObjectType(
-            serialized_name="autoScaleProperties",
-        )
-        properties.availability_zones = AAZListType(
-            serialized_name="availabilityZones",
-        )
-        properties.base_size_ti_b = AAZIntType(
-            serialized_name="baseSizeTiB",
-            flags={"required": True},
-        )
-        properties.extended_capacity_size_ti_b = AAZIntType(
-            serialized_name="extendedCapacitySizeTiB",
-            flags={"required": True},
-        )
-        properties.private_endpoint_connections = AAZListType(
-            serialized_name="privateEndpointConnections",
-            flags={"read_only": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.public_network_access = AAZStrType(
-            serialized_name="publicNetworkAccess",
-        )
-        properties.sku = AAZObjectType(
-            flags={"required": True},
-        )
-        properties.total_iops = AAZIntType(
-            serialized_name="totalIops",
-            flags={"read_only": True},
-        )
-        properties.total_m_bps = AAZIntType(
-            serialized_name="totalMBps",
-            flags={"read_only": True},
-        )
-        properties.total_size_ti_b = AAZIntType(
-            serialized_name="totalSizeTiB",
-            flags={"read_only": True},
-        )
-        properties.total_volume_size_gi_b = AAZIntType(
-            serialized_name="totalVolumeSizeGiB",
-            flags={"read_only": True},
-        )
-        properties.volume_group_count = AAZIntType(
-            serialized_name="volumeGroupCount",
-            flags={"read_only": True},
-        )
-
-        auto_scale_properties = _schema_elastic_san_read.properties.auto_scale_properties
-        auto_scale_properties.scale_up_properties = AAZObjectType(
-            serialized_name="scaleUpProperties",
-        )
-
-        scale_up_properties = _schema_elastic_san_read.properties.auto_scale_properties.scale_up_properties
-        scale_up_properties.auto_scale_policy_enforcement = AAZStrType(
-            serialized_name="autoScalePolicyEnforcement",
-        )
-        scale_up_properties.capacity_unit_scale_up_limit_ti_b = AAZIntType(
-            serialized_name="capacityUnitScaleUpLimitTiB",
-        )
-        scale_up_properties.increase_capacity_unit_by_ti_b = AAZIntType(
-            serialized_name="increaseCapacityUnitByTiB",
-        )
-        scale_up_properties.unused_size_ti_b = AAZIntType(
-            serialized_name="unusedSizeTiB",
-        )
-
-        availability_zones = _schema_elastic_san_read.properties.availability_zones
-        availability_zones.Element = AAZStrType()
-
-        private_endpoint_connections = _schema_elastic_san_read.properties.private_endpoint_connections
-        private_endpoint_connections.Element = AAZObjectType()
-
-        _element = _schema_elastic_san_read.properties.private_endpoint_connections.Element
-        _element.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
-        )
-        _element.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        cls._build_schema_system_data_read(_element.system_data)
-        _element.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        properties = _schema_elastic_san_read.properties.private_endpoint_connections.Element.properties
-        properties.group_ids = AAZListType(
-            serialized_name="groupIds",
-        )
-        properties.private_endpoint = AAZObjectType(
-            serialized_name="privateEndpoint",
-        )
-        properties.private_link_service_connection_state = AAZObjectType(
-            serialized_name="privateLinkServiceConnectionState",
-            flags={"required": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-
-        group_ids = _schema_elastic_san_read.properties.private_endpoint_connections.Element.properties.group_ids
-        group_ids.Element = AAZStrType()
-
-        private_endpoint = _schema_elastic_san_read.properties.private_endpoint_connections.Element.properties.private_endpoint
-        private_endpoint.id = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        private_link_service_connection_state = _schema_elastic_san_read.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
-        private_link_service_connection_state.actions_required = AAZStrType(
-            serialized_name="actionsRequired",
-        )
-        private_link_service_connection_state.description = AAZStrType()
-        private_link_service_connection_state.status = AAZStrType()
-
-        sku = _schema_elastic_san_read.properties.sku
-        sku.name = AAZStrType(
-            flags={"required": True},
-        )
-        sku.tier = AAZStrType()
-
-        tags = _schema_elastic_san_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.id = cls._schema_elastic_san_read.id
-        _schema.location = cls._schema_elastic_san_read.location
-        _schema.name = cls._schema_elastic_san_read.name
-        _schema.properties = cls._schema_elastic_san_read.properties
-        _schema.system_data = cls._schema_elastic_san_read.system_data
-        _schema.tags = cls._schema_elastic_san_read.tags
-        _schema.type = cls._schema_elastic_san_read.type
 
     _schema_system_data_read = None
 

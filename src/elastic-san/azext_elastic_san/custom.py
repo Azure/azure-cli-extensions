@@ -10,11 +10,223 @@
 # pylint: disable=protected-access
 
 from knack.log import get_logger
+from azure.cli.core.aaz import AAZGenericInstanceUpdateOperation
 from .aaz.latest.elastic_san.volume_group import Create as _VolumeGroupCreate
+from .aaz.latest.elastic_san.volume_group import List as _VolumeGroupList
+from .aaz.latest.elastic_san.volume_group import Show as _VolumeGroupShow
 from .aaz.latest.elastic_san.volume_group import Update as _VolumeGroupUpdate
 from .aaz.latest.elastic_san import Create as _ElasticSanCreate
+from .aaz.latest.elastic_san import Update as _ElasticSanUpdate
+from .aaz.latest.elastic_san import Show as _ElasticSanShow
+from .aaz.latest.elastic_san.volume import Create as _VolumeCreate
+from .aaz.latest.elastic_san.volume import List as _VolumeList
+from .aaz.latest.elastic_san.volume import Show as _VolumeShow
+from .aaz.latest.elastic_san.volume import Update as _VolumeUpdate
+from .aaz.latest.elastic_san.volume import Wait as _VolumeWait
 
 logger = get_logger(__name__)
+
+
+def _add_short_option(args_schema, field_name, option):
+    arg = args_schema._fields[field_name]
+    if option not in arg._options:
+        arg._options.insert(0, option)
+        arg._help["name"] = " ".join(arg._options)
+
+
+class _InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):  # pylint: disable=too-few-public-methods
+    def __call__(self, *args, **kwargs):
+        self._update_instance_by_generic(self.ctx.vars.instance, self.ctx.generic_update_args)
+
+
+def _merge_update_payload(instance, payload):
+    from azure.cli.core.aaz import AAZObjectType
+
+    for key, value in payload.items():
+        field = instance[key]
+        if isinstance(value, dict) and isinstance(field._schema, AAZObjectType) and key != "identity":
+            if field._data is None:
+                instance[key] = {}
+            _merge_update_payload(instance[key], value)
+        else:
+            instance[key] = value
+
+
+def _configure_managed_by_argument(args_schema):
+    from azure.cli.core.aaz import AAZAnyTypeArg
+    from azure.cli.core.aaz._field_value import AAZAnyValue
+
+    current_arg = args_schema._fields["managed_by"]
+    typed_arg = getattr(current_arg, "_managed_by_typed_arg", current_arg)
+
+    class ManagedByAnyValue(AAZAnyValue):
+        def __getitem__(self, key):
+            return ManagedByAnyValue(self._schema, self._data[key])
+
+    class ManagedByAnyArg(AAZAnyTypeArg):
+        _ValueCls = ManagedByAnyValue
+
+        def __init__(self, typed_arg, **kwargs):
+            super().__init__(**kwargs)
+            self._managed_by_typed_arg = typed_arg
+
+    managed_by_arg = ManagedByAnyArg(
+        typed_arg=typed_arg,
+        options=["--managed-by"],
+        arg_group="Properties",
+        help="Managed-by information. Accepts the current array format or the legacy single-resource object.",
+    )
+    args_schema._fields["managed_by"] = managed_by_arg
+
+
+def _normalize_managed_by_argument(args):
+    from azure.cli.core.aaz import has_value
+    from azure.cli.core.azclierror import InvalidArgumentValueError
+
+    if not has_value(args.managed_by):
+        return
+
+    def normalize_item(item):
+        if not isinstance(item, dict):
+            raise InvalidArgumentValueError(
+                "Each --managed-by array element must be an object."
+            )
+
+        aliases = {
+            "client-id": "client_id",
+            "clientId": "client_id",
+            "client_id": "client_id",
+            "resource-id": "resource_ids",
+            "resourceId": "resource_ids",
+            "resource_id": "resource_ids",
+            "resource-ids": "resource_ids",
+            "resourceIds": "resource_ids",
+            "resource_ids": "resource_ids",
+            "version": "version",
+        }
+        normalized = {}
+        for key, value in item.items():
+            normalized_key = aliases.get(key, key)
+            if normalized_key in normalized:
+                if normalized_key == "resource_ids":
+                    raise InvalidArgumentValueError(
+                        "Specify only one resource-id or resource-ids alias in each --managed-by object."
+                    )
+                raise InvalidArgumentValueError(
+                    f"Specify only one alias for {normalized_key} in each --managed-by object."
+                )
+            normalized[normalized_key] = [value] if key in ("resource-id", "resourceId", "resource_id") else value
+        return normalized
+
+    managed_by = args.managed_by.to_serialized_data()
+    if isinstance(managed_by, dict):
+        managed_by = [normalize_item(managed_by)]
+    elif isinstance(managed_by, list):
+        managed_by = [normalize_item(item) for item in managed_by]
+    else:
+        raise InvalidArgumentValueError(
+            "--managed-by must be an object in the legacy format or a list in the current format."
+        )
+
+    typed_arg = args._schema._fields["managed_by"]._managed_by_typed_arg
+    try:
+        typed_arg.process_data(managed_by)
+    except (TypeError, ValueError, KeyError) as ex:
+        raise InvalidArgumentValueError(f"Invalid --managed-by value: {ex}") from ex
+
+    args.managed_by = managed_by
+
+
+def _generic_update_targets_property(generic_update_args, property_names):
+    import re
+
+    if not isinstance(generic_update_args, dict):
+        return False
+
+    for action, values in generic_update_args.get("actions", []):
+        for value in values if action == "set" else values[:1]:
+            path = re.split(r"[=\s]", str(value), maxsplit=1)[0]
+            path_parts = [part for part in re.split(r"[.\[\]]+", path) if part]
+            if path_parts and path_parts[0].lower() == "properties":
+                path_parts = path_parts[1:]
+            if path_parts and path_parts[0].lower() in property_names:
+                return True
+    return False
+
+
+def _add_legacy_managed_by_output(result):
+    if isinstance(result, tuple):
+        return (_add_legacy_managed_by_output(result[0]), *result[1:])
+    if isinstance(result, list):
+        return [_add_legacy_managed_by_output(item) for item in result]
+    if not isinstance(result, dict):
+        return result
+
+    managed_by = result.get("managedBy")
+    if isinstance(managed_by, list):
+        # The old field, ManagedByResourceId, only supported one resource ID, therefore only the first resource ID is returned to remain backwards compatible.
+        resource_ids = [
+            resource_id
+            for managed_by_item in managed_by
+            if isinstance(managed_by_item, dict)
+            for resource_id in managed_by_item.get("resourceIds", [])
+            if resource_id
+        ]
+        if resource_ids:
+            result["managedByResourceId"] = resource_ids[0]
+
+    for value in result.values():
+        _add_legacy_managed_by_output(value)
+    return result
+
+
+class VolumeCreate(_VolumeCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _configure_managed_by_argument(args_schema)
+        return args_schema
+
+    def pre_operations(self):
+        _normalize_managed_by_argument(self.ctx.args)
+
+    def _output(self, *args, **kwargs):
+        return _add_legacy_managed_by_output(super()._output(*args, **kwargs))
+
+
+class VolumeUpdate(_VolumeUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _configure_managed_by_argument(args_schema)
+        return args_schema
+
+    def pre_operations(self):
+        _normalize_managed_by_argument(self.ctx.args)
+
+    def _output(self, *args, **kwargs):
+        return _add_legacy_managed_by_output(super()._output(*args, **kwargs))
+
+
+class VolumeShow(_VolumeShow):
+    def _output(self, *args, **kwargs):
+        return _add_legacy_managed_by_output(super()._output(*args, **kwargs))
+
+
+class VolumeList(_VolumeList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _add_short_option(args_schema, "x_ms_access_soft_deleted_resources", "-a")
+        return args_schema
+
+    def _output(self, *args, **kwargs):
+        return _add_legacy_managed_by_output(super()._output(*args, **kwargs))
+
+
+class VolumeWait(_VolumeWait):
+    def _output(self, *args, **kwargs):
+        return _add_legacy_managed_by_output(super()._output(*args, **kwargs))
 
 
 class VolumeGroupCreate(_VolumeGroupCreate):
@@ -22,12 +234,19 @@ class VolumeGroupCreate(_VolumeGroupCreate):
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZStrArg, AAZResourceIdArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.identity.user_assigned_identity_id = AAZStrArg(
-            options=["user-assigned-identity"],
-            help="The ARM resource identifier of the User Assigned identity that will be used with this volume group. ",
-            fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
-                                                "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
+        _add_short_option(args_schema, "delete_retention_policy", "-d")
+        identity_id_format = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
+                     "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}"
         )
+        if hasattr(args_schema.identity, "user_assigned_identity_id"):
+            args_schema.identity.user_assigned_identity_id._fmt = identity_id_format
+        else:
+            args_schema.identity.user_assigned_identity_id = AAZStrArg(
+                options=["user-assigned-identity"],
+                help="The ARM resource identifier of the User Assigned identity that will be used with this volume group. ",
+                fmt=identity_id_format,
+            )
         args_schema.identity.user_assigned_identities._registered = False
         args_schema.encryption_properties.identity.user_assigned_identity._fmt = \
             AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
@@ -42,7 +261,7 @@ class VolumeGroupCreate(_VolumeGroupCreate):
             args.identity["user_assigned_identities"] = {
                 uai_id: {}}
             del args.identity.user_assigned_identity_id
-        if has_value(args.EnforceDataIntegrityCheckForIscsi) and args.EnforceDataIntegrityCheckForIscsi:
+        if has_value(args.enforce_data_integrity_check_for_iscsi) and args.enforce_data_integrity_check_for_iscsi:
             logger.warning("CRC protection feature is not supported for Azure VMware solution (AVS) yet. "
                            "Do not enable this flag if you plan to use the volumes within this volume group as "
                            "datastores for AVS, as the datastore creation will fail. For Azure Virtual Machines, "
@@ -64,20 +283,85 @@ class VolumeGroupCreate(_VolumeGroupCreate):
                            "group as datastores for Azure VMware Solution (AVS), as this feature is not supported for "
                            "AVS yet and the datastore creation will fail. "
                            "Learn more: https://go.microsoft.com/fwlink/?LinkId=2294733&id=Microsoft_Azure_ElasticSan")
+
+
+class VolumeGroupList(_VolumeGroupList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _add_short_option(args_schema, "x_ms_access_soft_deleted_resources", "-a")
+        return args_schema
 
 
 class VolumeGroupUpdate(_VolumeGroupUpdate):
+    AZ_SUPPORT_GENERIC_UPDATE = True
+    VolumeGroupsGet = _VolumeGroupShow.VolumeGroupsGet
+    InstanceUpdateByGeneric = _InstanceUpdateByGeneric
+
+    def _execute_operations(self):
+        from azure.cli.core.aaz import has_value
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+
+        if _generic_update_targets_property(
+                self.ctx.generic_update_args,
+                ("encryptionintransit", "encryption_in_transit", "qualityofservice", "quality_of_service")):
+            raise InvalidArgumentValueError(
+                "Updating encryptionInTransit or qualityOfService is not supported by volume-group update."
+            )
+        self.pre_operations()
+        self.VolumeGroupsGet(ctx=self.ctx)()
+        payload = _VolumeGroupUpdate.VolumeGroupsUpdate(ctx=self.ctx).content
+        if str(self.ctx.args.mi_system_assigned).lower() == "false":
+            if has_value(self.ctx.args.user_assigned_identity):
+                identities = {resource_id: {} for resource_id
+                              in self.ctx.args.user_assigned_identity.to_serialized_data()}
+            elif has_value(self.ctx.vars.instance.identity):
+                identities = self.ctx.vars.instance.identity.to_serialized_data().get(
+                    "userAssignedIdentities", {}
+                )
+            else:
+                identities = {}
+            # The generated string argument treats "False" as truthy when serializing identity.
+            payload["identity"] = {
+                "type": "UserAssigned" if identities else "None",
+                "userAssignedIdentities": identities,
+            }
+        _merge_update_payload(self.ctx.vars.instance, payload)
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        yield self.VolumeGroupsUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    class VolumeGroupsUpdate(_VolumeGroupUpdate.VolumeGroupsUpdate):
+        @property
+        def content(self):
+            body = self.serialize_content(self.ctx.vars.instance)
+            for key in ("encryptionInTransit", "qualityOfService"):
+                body.get("properties", {}).pop(key, None)
+            return body
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg, AAZResourceIdArgFormat
+        from azure.cli.core.aaz import AAZObjectArg, AAZResourceIdArgFormat, AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _add_short_option(args_schema, "delete_retention_policy", "-d")
+        if "identity" in args_schema._fields:
+            return args_schema
+        args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="Identity",
+            help="Identity configuration (legacy syntax).",
+        )
+        args_schema.identity.type = AAZStrArg(
+            options=["type"],
+            required=True,
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"},
+        )
         args_schema.identity.user_assigned_identity_id = AAZStrArg(
             options=["user-assigned-identity"],
             help="The ARM resource identifier of the User Assigned identity that will be used with this volume group. ",
             fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
                                                 "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
         )
-        args_schema.identity.user_assigned_identities._registered = False
         args_schema.encryption_properties.identity.user_assigned_identity._fmt = \
             AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
                                             "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
@@ -85,13 +369,35 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
 
     def pre_operations(self):
         from azure.cli.core.aaz import has_value
+        from azure.cli.core.azclierror import InvalidArgumentValueError
         args = self.ctx.args
-        if has_value(args.identity.user_assigned_identity_id):
-            uai_id = str(args.identity.user_assigned_identity_id)
-            args.identity["user_assigned_identities"] = {
-                uai_id: {}}
-            del args.identity.user_assigned_identity_id
-        if has_value(args.EnforceDataIntegrityCheckForIscsi) and args.EnforceDataIntegrityCheckForIscsi:
+        if has_value(args.identity):
+            if has_value(args.mi_system_assigned) or has_value(args.user_assigned_identity):
+                raise InvalidArgumentValueError(
+                    "Use either the legacy --identity option or the new managed identity options, not both."
+                )
+
+            identity_type = args.identity.type
+            if identity_type == "None":
+                # The legacy value removes every identity; the PATCH contract represents
+                # that as no system-assigned identity and an empty user-assigned list.
+                args.mi_system_assigned = "False"
+                args.user_assigned_identity = []
+                return
+
+            user_assigned_ids = []
+            if has_value(args.identity.user_assigned_identity_id):
+                user_assigned_ids.append(str(args.identity.user_assigned_identity_id))
+
+            if identity_type == "UserAssigned" and not user_assigned_ids:
+                raise InvalidArgumentValueError(
+                    "The legacy --identity type UserAssigned requires a user-assigned identity."
+                )
+
+            args.mi_system_assigned = "True" if identity_type == "SystemAssigned" else None
+            args.user_assigned_identity = user_assigned_ids
+
+        if has_value(args.enforce_data_integrity_check_for_iscsi) and args.enforce_data_integrity_check_for_iscsi:
             logger.warning("CRC protection feature is not supported for Azure VMware solution (AVS) yet. "
                            "Do not enable this flag if you plan to use the volumes within this volume group as "
                            "datastores for AVS, as the datastore creation will fail. For Azure Virtual Machines, "
@@ -114,20 +420,98 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
                            "AVS yet and the datastore creation will fail. "
                            "Learn more: https://go.microsoft.com/fwlink/?LinkId=2294733&id=Microsoft_Azure_ElasticSan")
 
-    def pre_instance_update(self, instance):
+
+class ElasticSanUpdate(_ElasticSanUpdate):
+    AZ_SUPPORT_GENERIC_UPDATE = True
+    ElasticSansGet = _ElasticSanShow.ElasticSansGet
+    InstanceUpdateByGeneric = _InstanceUpdateByGeneric
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZArgEnum, AAZListArg, AAZObjectArg, AAZStrArg
+
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        if "availability_zones" not in args_schema._fields:
+            args_schema.availability_zones = AAZListArg(
+                options=["--availability-zones"],
+                arg_group="Properties",
+                help="Logical zone for Elastic San resource; example: [\"1\"].",
+            )
+            args_schema.availability_zones.Element = AAZStrArg()
+        if "sku" not in args_schema._fields:
+            args_schema.sku = AAZObjectArg(
+                options=["--sku"],
+                arg_group="Properties",
+                help="Resource SKU.",
+            )
+            args_schema.sku.name = AAZStrArg(
+                options=["name"],
+                help="The SKU name.",
+                required=True,
+            )
+            args_schema.sku.tier = AAZStrArg(
+                options=["tier"],
+                help="The SKU tier.",
+            )
+        args_schema.sku.name.enum = AAZArgEnum({
+            "ElasticSAN_LRS": "ElasticSAN_LRS",
+            "Premium_LRS": "Premium_LRS",
+            "Premium_ZRS": "Premium_ZRS",
+        })
+        return args_schema
+
+    def _execute_operations(self):
         from azure.cli.core.aaz import has_value
+
         args = self.ctx.args
-        if has_value(instance.identity) and has_value(instance.identity.user_assigned_identities) and \
-                has_value(args.identity) and has_value(args.identity.user_assigned_identities):
-            uai_id_new = list(args.identity.user_assigned_identities.keys())[0]
-            uai_id_old = list(instance.identity.user_assigned_identities.keys())[0]
-            if uai_id_old != uai_id_new:
-                if has_value(instance.properties) and has_value(instance.properties.encryption_properties) and \
-                        has_value(instance.properties.encryption_properties.key_vault_properties) and \
-                        has_value(args.encryption_properties) and not has_value(
-                        args.encryption_properties.key_vault_properties):
-                    args.encryption_properties.key_vault_properties = \
-                        instance.properties.encryption_properties.key_vault_properties
+        self.pre_operations()
+        self.ElasticSansGet(ctx=self.ctx)()
+        payload = _ElasticSanUpdate.ElasticSansUpdate(ctx=self.ctx).content
+        _merge_update_payload(self.ctx.vars.instance, payload)
+        if has_value(args.sku):
+            self.ctx.vars.instance.properties.sku = args.sku
+        if has_value(args.availability_zones):
+            self.ctx.vars.instance.properties.availability_zones = args.availability_zones
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        if (has_value(args.sku) or has_value(args.availability_zones) or
+                _generic_update_targets_property(
+                    self.ctx.generic_update_args, ("sku", "availabilityzones", "availability_zones"))):
+            yield self.ElasticSanReplace(ctx=self.ctx)()
+        else:
+            yield self.ElasticSansUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    class ElasticSansUpdate(_ElasticSanUpdate.ElasticSansUpdate):
+        @property
+        def content(self):
+            body = self.serialize_content(self.ctx.vars.instance)
+            # These resource fields are accepted by PUT, but not by the PATCH contract.
+            for key in ("availabilityZones", "sku", "version"):
+                body.get("properties", {}).pop(key, None)
+            return {key: value for key, value in body.items() if key in ("properties", "tags")}
+
+    class ElasticSanReplace(_ElasticSanUpdate.ElasticSansUpdate):
+        @property
+        def method(self):
+            return "PUT"
+
+        @property
+        def content(self):
+            return self.serialize_content(self.ctx.vars.instance)
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200, 201, 202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            return self.on_error(session.http_response)
 
 
 class ElasticSanCreate(_ElasticSanCreate):
@@ -137,3 +521,28 @@ class ElasticSanCreate(_ElasticSanCreate):
         args_schema.base_size_tib._required = False
         args_schema.extended_capacity_size_tib._required = False
         return args_schema
+
+    def _handler(self, command_args):
+        from azure.cli.core.aaz._arg_action import AAZArgActionOperations
+
+        capacity_args = ("base_size_tib", "extended_capacity_size_tib")
+        self._explicit_capacity_args = {  # pylint: disable=attribute-defined-outside-init
+            name for name in capacity_args
+            if isinstance(command_args.get(name), AAZArgActionOperations)
+        }
+        return super()._handler(command_args)
+
+    def pre_operations(self):
+        from azure.cli.core.aaz import has_value
+
+        args = self.ctx.args
+        if args.version == "V2":
+            explicit_args = getattr(self, "_explicit_capacity_args", set())
+            for name in ("base_size_tib", "extended_capacity_size_tib"):
+                if name not in explicit_args:
+                    del args[name]
+        else:
+            if not has_value(args.base_size_tib):
+                args.base_size_tib = 20
+            if not has_value(args.extended_capacity_size_tib):
+                args.extended_capacity_size_tib = 0
