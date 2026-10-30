@@ -536,6 +536,99 @@ class ChaosStudioTests(unittest.TestCase):
                 self.assertFalse(any("/roleDefinitions/" in event[1]
                                      for event in self.events if event[0].startswith("arm-")))
 
+    def test_invalid_legacy_cleanup_id_is_rejected_before_install_writes(self):
+        for value in ("invalid-role", self.role_id(SUB2, ChaosStudio.ROLE_DEFINITION_GUID),
+                      self.role_id(SUB, "not-a-uuid")):
+            with self.subTest(value=value):
+                self.reset_resources()
+                with self.assertRaises(InvalidArgumentValueError):
+                    self.run_install(configuration_settings={
+                        "chaos-workspace-id": WORKSPACE, ChaosStudio.EXISTING_ROLE_KEY: value,
+                    })
+                self.assertFalse(any(event[0] in ("arm-put", "arm-delete", "create", "update")
+                                     for event in self.events))
+
+    def test_legacy_cleanup_id_cannot_be_added_or_changed_by_update(self):
+        role_id = self.role_id(SUB, "11111111-2222-3333-4444-555555555555")
+        other_role_id = self.role_id(SUB, "22222222-3333-4444-5555-666666666666")
+        for original in (None, role_id):
+            for requested in (other_role_id, "invalid-role"):
+                with self.subTest(original=original, requested=requested):
+                    self.reset_resources()
+                    settings = {"chaos-workspace-id": WORKSPACE}
+                    if original is not None:
+                        settings[ChaosStudio.EXISTING_ROLE_KEY] = original
+                    self.run_install(configuration_settings=settings)
+                    before = copy.deepcopy(self.client.extension.configuration_settings)
+                    self.events.clear()
+                    with self.assertRaises(InvalidArgumentValueError):
+                        self.partner.Update(self.cmd, "rg", "cluster", None, None, None, None,
+                                            {ChaosStudio.EXISTING_ROLE_KEY: requested}, {}, self.client.extension)
+                    self.assertEqual(self.client.extension.configuration_settings, before)
+                    self.assertFalse(any(event[0] in ("arm-put", "arm-delete", "create", "update")
+                                         for event in self.events))
+
+    def test_equivalent_legacy_cleanup_id_update_preserves_original_value(self):
+        role_id = self.role_id(SUB, "11111111-2222-3333-4444-555555555555")
+        self.run_install(configuration_settings={
+            "chaos-workspace-id": WORKSPACE, ChaosStudio.EXISTING_ROLE_KEY: role_id,
+        })
+        update = self.partner.Update(self.cmd, "rg", "cluster", None, None, None, None,
+                                     {ChaosStudio.EXISTING_ROLE_KEY: role_id.upper()}, {}, self.client.extension)
+        self.assertEqual(update.configuration_settings[ChaosStudio.EXISTING_ROLE_KEY], role_id)
+
+    def test_invalid_stored_legacy_cleanup_id_stops_delete_before_any_teardown(self):
+        for value in ("invalid-role", self.role_id(SUB2, ChaosStudio.ROLE_DEFINITION_GUID)):
+            with self.subTest(value=value):
+                self.reset_resources()
+                self.run_install()
+                self.client.extension.configuration_settings[ChaosStudio.EXISTING_ROLE_KEY] = value
+                before = copy.deepcopy(self.arm.resources)
+                self.events.clear()
+                with patch("azext_k8s_extension.partner_extensions.DefaultExtension.DefaultExtension.Delete"):
+                    with self.assertRaises(InvalidArgumentValueError):
+                        self.partner.Delete(self.cmd, self.client, "rg", "cluster", "chaos",
+                                            "managedClusters", "Microsoft.ContainerService", True)
+                self.assertEqual(self.arm.resources, before)
+                self.assertFalse(any(event[0] == "arm-delete" for event in self.events))
+
+    def test_pending_active_legacy_install_reconciles_role_after_success(self):
+        self.run_install()
+        builtin = next(key for key in self.arm.resources if "/roleAssignments/" in key)
+        legacy = self.arm.resources.pop(builtin)
+        legacy["properties"]["roleDefinitionId"] = self.role_id(SUB, ChaosStudio.ROLE_DEFINITION_GUID)
+        self.arm.resources[LEGACY_ASSIGNMENT] = copy.deepcopy(legacy)
+        self.client.extension.provisioning_state = "Updating"
+        self.client.next_states = ["Updating", "Succeeded"]
+        self.events.clear()
+        result = self.run_install()
+        self.assertEqual(result.provisioning_state, "Succeeded")
+        self.assertIn(builtin, self.arm.resources)
+        self.assertEqual(self.arm.resources[LEGACY_ASSIGNMENT], legacy)
+        self.assertEqual([event for event in self.events if event[0] == "arm-put"],
+                         [("arm-put", builtin)])
+        self.assertFalse(any(event[0] in ("create", "update", "arm-delete") for event in self.events))
+
+    def test_pending_active_legacy_install_never_grants_before_success(self):
+        for mode in ("no-wait", "failed"):
+            with self.subTest(mode=mode):
+                self.reset_resources()
+                self.run_install()
+                builtin = next(key for key in self.arm.resources if "/roleAssignments/" in key)
+                self.arm.resources[LEGACY_ASSIGNMENT] = self.arm.resources.pop(builtin)
+                self.client.extension.provisioning_state = "Updating"
+                self.client.next_states = ["Updating"] + (["Failed"] if mode == "failed" else [])
+                self.events.clear()
+                if mode == "failed":
+                    with self.assertRaises(AzureResponseError):
+                        self.run_install()
+                else:
+                    self.run_install(no_wait=True)
+                self.assertNotIn(builtin, self.arm.resources)
+                self.assertIn(LEGACY_ASSIGNMENT, self.arm.resources)
+                self.assertFalse(any(event[0] in ("arm-put", "arm-delete", "create", "update")
+                                     for event in self.events))
+
     def test_existing_installs_add_builtin_and_preserve_legacy_until_delete(self):
         for mode in ("create", "update"):
             for legacy, guid in (
@@ -1025,6 +1118,33 @@ class ClusterNamespaceTests(unittest.TestCase):
                 changed = copy.deepcopy(service_account)
                 changed["metadata"][field] = value
                 self.assertFalse(_ClusterClient._namespace_default("", "serviceaccounts", changed))
+
+    def test_root_ca_configmap_preserves_customer_metadata(self):
+        description = (
+            "Contains a CA bundle that can be used to verify the kube-apiserver when using internal endpoints "
+            "such as the internal service IP or kubernetes.default.svc. "
+            "No other usage is guaranteed across distributions of Kubernetes clusters."
+        )
+        config_map = {
+            "metadata": {
+                "name": "kube-root-ca.crt",
+                "managedFields": [{"manager": "kube-controller-manager"}],
+                "annotations": {"kubernetes.io/description": description},
+            },
+            "data": {"ca.crt": "synthetic-ca"},
+        }
+        self.assertTrue(_ClusterClient._namespace_default("", "configmaps", config_map))
+        for field, value in (
+            ("labels", {"customer": "preserve"}),
+            ("ownerReferences", [{"uid": "customer-owner"}]),
+            ("annotations", {"customer": "preserve"}),
+            ("annotations", {"kubernetes.io/description": "customer description"}),
+            ("annotations", {"kubernetes.io/description": description, "customer": "preserve"}),
+        ):
+            with self.subTest(field=field, value=value):
+                changed = copy.deepcopy(config_map)
+                changed["metadata"][field] = value
+                self.assertFalse(_ClusterClient._namespace_default("", "configmaps", changed))
 
     def test_deadline_is_explicit_failure_and_namespace_finalization_is_observed(self):
         self.cluster.deadline = 0

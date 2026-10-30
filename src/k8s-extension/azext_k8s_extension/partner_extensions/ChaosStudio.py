@@ -213,6 +213,20 @@ class _ClusterClient:
                 and not metadata.get("labels")
                 and not metadata.get("ownerReferences")
             )
+        else:
+            description = (
+                "Contains a CA bundle that can be used to verify the kube-apiserver when using internal endpoints "
+                "such as the internal service IP or kubernetes.default.svc. "
+                "No other usage is guaranteed across distributions of Kubernetes clusters."
+            )
+            controller_default = (
+                controller_default
+                and not metadata.get("labels")
+                and not metadata.get("ownerReferences")
+                and (metadata.get("annotations") or {}) in (
+                    {}, {"kubernetes.io/description": description},
+                )
+            )
         return (controller_default
                 and not metadata.get("finalizers")
                 and not obj.get("secrets")
@@ -402,6 +416,10 @@ class ChaosStudio(DefaultExtension):
         """Bootstrap and activate one extension; persisted ARM state is the resume record."""
         args = (resource_group_name, cluster_rp, cluster_type, cluster_name, name)
         arm = self._arm_client_factory(cmd)
+        if self.EXISTING_ROLE_KEY in extension.configuration_settings:
+            self._legacy_role_id(
+                extension.configuration_settings[self.EXISTING_ROLE_KEY], arm.subscription_id
+            )
         cluster_id = self._cluster_resource_id(arm.subscription_id, resource_group_name, cluster_name)
         extension_id = "{}/providers/Microsoft.KubernetesConfiguration/extensions/{}".format(cluster_id, name)
         workspace_id = extension.configuration_settings["subscriber.workspaceId"]
@@ -426,6 +444,10 @@ class ChaosStudio(DefaultExtension):
                                  "Chaos Studio workspace connection", allow_not_found=True)
             if existing is not None:
                 self._validate_existing(existing, extension, cluster_id)
+                if self.EXISTING_ROLE_KEY in existing.configuration_settings:
+                    self._legacy_role_id(
+                        existing.configuration_settings[self.EXISTING_ROLE_KEY], arm.subscription_id
+                    )
                 stage = self._stage(existing)
                 if stage == "true":
                     self._check_active_connection(existing, connection, workspace_id, cluster_id)
@@ -441,6 +463,11 @@ class ChaosStudio(DefaultExtension):
                             return existing
                         final = self._wait_existing(cmd, client, args)
                         self._check_active_connection(final, connection, workspace_id, cluster_id)
+                        self._reconcile_workspace_role(
+                            arm, workspace_id, self._prerequisite_resource_ids(
+                                arm.subscription_id, resource_group_name, cluster_name, cluster_id
+                            ),
+                        )
                         return final
                 elif self._state(existing) not in ("succeeded", "failed", "canceled", "cancelled"):
                     existing = self._wait_existing(cmd, client, args)
@@ -602,6 +629,19 @@ class ChaosStudio(DefaultExtension):
         original_settings = dict(
             getattr(original_extension, "configuration_settings", None) or {}
         )
+        arm = self._arm_client_factory(cmd)
+        for values in (original_settings, supplied_settings):
+            if self.EXISTING_ROLE_KEY in values:
+                self._legacy_role_id(values[self.EXISTING_ROLE_KEY], arm.subscription_id)
+        if self.EXISTING_ROLE_KEY in supplied_settings:
+            if not self._same_resource_id(
+                supplied_settings[self.EXISTING_ROLE_KEY], original_settings.get(self.EXISTING_ROLE_KEY)
+            ):
+                raise InvalidArgumentValueError(
+                    "'chaos-existing-role-definition-id' is immutable legacy cleanup state; "
+                    "it cannot be added or changed on an installed extension."
+                )
+            supplied_settings.pop(self.EXISTING_ROLE_KEY)
         configuration_settings = dict(original_settings)
         configuration_settings.update(supplied_settings)
         release_namespace = self._existing_release_namespace(
@@ -622,7 +662,6 @@ class ChaosStudio(DefaultExtension):
             original_settings,
         )
         if workspace_id is not None:
-            arm = self._arm_client_factory(cmd)
             cluster_id = self._cluster_resource_id(arm.subscription_id, resource_group_name, cluster_name)
             connection = arm.get(
                 "{}/connections/{}".format(workspace_id, self._recommended_connection_name(workspace_id, cluster_id)),
@@ -981,6 +1020,9 @@ class ChaosStudio(DefaultExtension):
         self._stage(extension)
         if self._state(extension) not in ("succeeded", "failed", "canceled", "cancelled"):
             raise InvalidArgumentValueError("Wait for the extension operation before deleting workspace resources.")
+        arm = self._arm_client_factory(cmd)
+        if self.EXISTING_ROLE_KEY in settings:
+            self._legacy_role_id(settings[self.EXISTING_ROLE_KEY], arm.subscription_id)
         workspace_id = settings.get("subscriber.workspaceId")
         managed_keys = (
             "subscriber.workspaceId",
@@ -1003,7 +1045,6 @@ class ChaosStudio(DefaultExtension):
                 "was not deleted.".format(", ".join(missing))
             )
 
-        arm = self._arm_client_factory(cmd)
         cluster_id = self._cluster_resource_id(
             arm.subscription_id, resource_group_name, cluster_name
         )

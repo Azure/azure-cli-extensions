@@ -4,6 +4,7 @@ Release History
 ===============
 1.9.5
 +++++++++++++++++++
+* Microsoft.ChaosStudio: preserve customized root CA ConfigMaps, validate and retain immutable legacy-role cleanup IDs before any teardown, and reconcile the built-in assignment after a pending active installation completes successfully.
 * Microsoft.ChaosStudio: assign the built-in Chaos Kubernetes Extension Operator role instead of provisioning or validating custom roles. Create and update add a separate built-in assignment; existing owned legacy assignments stay until uninstall to avoid interrupting authorization during migration. Delete removes both owned assignments but never role definitions.
 * Microsoft.ChaosStudio: require the persisted namespaceLifecycle.createdByInstall assertion as well as the matching namespace marker before post-uninstall namespace removal.
 * Microsoft.ChaosStudio: skip create-only Kubernetes APIs such as bindings and access reviews during namespace inventory; they aren't stored collections. Readable kinds without list support still fail cleanup.

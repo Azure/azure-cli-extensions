@@ -65,6 +65,14 @@ owned legacy assignment until uninstall so migration doesn't remove working
 authorization while the new assignment propagates. The old
 ``chaos-existing-role-definition-id`` setting no longer selects the assigned role;
 its persisted value only identifies an older owned assignment for cleanup.
+The value is validated before installation or updates and is immutable once
+installed; updates cannot add it or replace the original cleanup ID. Invalid
+persisted cleanup metadata stops uninstall before the connection or owned role
+assignments are deleted. The CLI does not guess the original role; that state
+requires owner-led repair from the installation record.
+An active create rerun that waits for a pending operation reconciles the built-in
+assignment after successful completion too; pending ``--no-wait`` calls and failed
+operations do not add an assignment.
 Updates retain existing configuration and reconcile prerequisites. Changing the
 workspace or release namespace requires deleting and recreating the extension.
 Delete removes the matching owned connection before both deterministic owned
@@ -89,7 +97,9 @@ ConfigMaps and custom resources, with pagination. An owned namespace is deleted
 only if no customer resources remain. The inventory excludes core/v1 and
 events.k8s.io Events, which are namespace-intrinsic and removed with the namespace,
 and the controller-managed default ServiceAccount and root CA ConfigMap, without customer
-changes or finalizers. AKS can omit managedFields on its pristine default
+changes or finalizers. The root CA ConfigMap may carry only the controller's known
+``kubernetes.io/description`` annotation; customer labels, annotations or ownership
+references keep it in the inventory. AKS can omit managedFields on its pristine default
 ServiceAccount; customer annotations, labels, ownership references and account
 settings still prevent its exclusion. Create-only APIs such as bindings and
 access reviews aren't stored collections and aren't listed. Remaining resource names and preservation reasons are
