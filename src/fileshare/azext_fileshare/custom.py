@@ -20,6 +20,7 @@ from azure.cli.core.aaz import (
     has_value
 )
 from .aaz.latest.fileshare import CheckNameAvailability as _CheckNameAvailability
+from .aaz.latest.fileshare import Update as _Update
 from .aaz.latest.fileshare.snapshot import Create as _SnapshotCreate
 from .aaz.latest.fileshare.private_endpoint_connection import Create as _PrivateEndpointConnectionCreate
 
@@ -36,6 +37,18 @@ class CheckNameAvailability(_CheckNameAvailability):
     def pre_operations(self):
         args = self.ctx.args
         args.type = "Microsoft.FileShares/fileShares"
+
+
+class Update(_Update):
+    # The generated update PATCHes an identity built only from these flags, without merging the
+    # share's current identity, so it could silently remove identities (including one used for a
+    # customer-managed key). Identity changes go through `az fileshare identity assign/remove`.
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.mi_system_assigned._registered = False
+        args_schema.mi_user_assigned._registered = False
+        return args_schema
 
 
 class SnapshotCreate(_SnapshotCreate):

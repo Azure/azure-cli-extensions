@@ -16,7 +16,7 @@ from azure.cli.core._profile import Profile
 from azure.core.exceptions import HttpResponseError
 from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD
 from azure.cli.testsdk import *
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse, RecordingProcessor
 
 # Scenario tests run against the East US 2 EUAP regional ARM endpoint.
 ARM_ENDPOINT = 'https://eastus2euap.management.azure.com'
@@ -31,6 +31,41 @@ KEY_VAULT_CRYPTO_OFFICER_ROLE = 'Key Vault Crypto Officer'
 HDD_CREATE_PENDING = 'HDD file share creation is not yet enabled by the storage backend in eastus2euap.'
 
 
+class FileShareListScopeFilter(RecordingProcessor):
+    """Keeps only the test's own resource group in recorded file share lists.
+
+    Listing by subscription returns every share in the shared test subscription; without this the
+    recording would capture unrelated resources' names, IDs and host names.
+    """
+
+    def __init__(self, test):
+        self._test = test
+
+    def process_response(self, response):
+        resource_group = self._test.kwargs.get('rg')
+        body = response['body'].get('string')
+        if not resource_group or not body or not isinstance(body, str) or '"value"' not in body:
+            return response
+        try:
+            payload = json.loads(body)
+        except ValueError:
+            return response
+        items = payload.get('value') if isinstance(payload, dict) else None
+        if not isinstance(items, list):
+            return response
+        marker = '/resourcegroups/{}/'.format(resource_group.lower())
+        kept = [item for item in items
+                if not (isinstance(item, dict) and item.get('type') == 'Microsoft.FileShares/fileShares')
+                or marker in str(item.get('id', '')).lower()]
+        if len(kept) == len(items):
+            return response
+        payload['value'] = kept
+        response['body']['string'] = json.dumps(payload, separators=(',', ':'))
+        self.replace_header_fn(response, 'content-length',
+                               lambda _: str(len(response['body']['string'].encode('utf-8'))))
+        return response
+
+
 class FilesharesScenario(ScenarioTest):
 
     def setUp(self):
@@ -42,6 +77,8 @@ class FilesharesScenario(ScenarioTest):
         cloud_patch = patch.object(self.cli_ctx, 'cloud', cloud)
         cloud_patch.start()
         self.addCleanup(cloud_patch.stop)
+        # Runs before the name replacer, while resource names are still the real ones.
+        self.recording_processors.insert(0, FileShareListScopeFilter(self))
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_fileshares')
