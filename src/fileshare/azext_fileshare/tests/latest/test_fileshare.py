@@ -818,13 +818,15 @@ class FilesharesScenario(ScenarioTest):
 
     def _get_caller_principal(self):
         # The signed-in principal's object ID and type, read from the ARM token rather than Microsoft Graph so no
-        # directory profile lands in the recording. Playback does not match request bodies, so a placeholder suffices.
+        # directory profile (name or email) lands in the recording; the object ID is recorded in the role assignment.
+        # Playback matches only File Shares request bodies, so a placeholder suffices for the role assignment.
         if not self.in_recording:
             return '00000000-0000-0000-0000-000000000000', 'User'
         token = Profile(cli_ctx=self.cli_ctx).get_raw_token()[0][1]
         payload = token.split('.')[1]
         claims = json.loads(base64.urlsafe_b64decode(payload + '=' * (-len(payload) % 4)))
-        principal_type = 'ServicePrincipal' if claims.get('idtyp') == 'app' else 'User'
+        # 'idtyp' is optional; user tokens always carry 'scp' and app-only tokens never do.
+        principal_type = 'ServicePrincipal' if claims.get('idtyp') == 'app' or 'scp' not in claims else 'User'
         return claims['oid'], principal_type
 
     def _create_key_with_rbac_retry(self, key_name_key):
