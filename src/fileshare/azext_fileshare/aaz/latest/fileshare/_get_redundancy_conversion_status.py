@@ -48,7 +48,7 @@ class GetRedundancyConversionStatus(AAZCommand):
             required=True,
         )
         _args_schema.resource_name = AAZStrArg(
-            options=["--resource-name"],
+            options=["-n", "--name", "--resource-name"],
             help="The resource name of the file share, as seen by the administrator through Azure Resource Manager.",
             required=True,
             id_part="name",

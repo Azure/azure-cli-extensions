@@ -851,10 +851,10 @@ class FilesharesScenario(ScenarioTest):
         self._create_private_endpoint_only_share()
 
         # Starting a conversion is a synchronous accept; the conversion itself can take days, so it is never awaited.
-        self.cmd('fileshare start-redundancy-conversion -g {rg} --resource-name {name} --target-redundancy Zone')
+        self.cmd('fileshare start-redundancy-conversion -g {rg} -n {name} --target-redundancy Zone')
 
         status = self.cmd(
-            'fileshare get-redundancy-conversion-status -g {rg} --resource-name {name}',
+            'fileshare get-redundancy-conversion-status -g {rg} -n {name}',
             checks=[
                 self.check('properties.targetRedundancy', 'Zone'),
             ]
