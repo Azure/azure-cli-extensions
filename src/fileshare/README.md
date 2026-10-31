@@ -1,12 +1,16 @@
 # Azure CLI Fileshares Extension
 
-Manage Azure File Shares resources (API version `2026-06-01`).
+Manage Azure File Shares resources (API version `2026-09-01`).
 
 ## Install
 
+Version `1.1.0b1` is a preview release. Install it with `--allow-preview`; without it, `az extension add` installs the latest stable version (`1.0.2`, API version `2026-06-01`).
+
 ```bash
-az extension add --name fileshare
+az extension add --name fileshare --allow-preview true
 ```
+
+API version `2026-09-01` is currently available only in the East US 2 EUAP region (`eastus2euap`).
 
 ## Usage
 
@@ -14,9 +18,9 @@ az extension add --name fileshare
 
 ```bash
 az fileshare create --name <share-name> --resource-group <resource-group> \
-    --location <location> --provisioned-bandwidth-mi-bps <bandwidth> \
-    --provisioned-iops <iops> --provisioned-storage-gi-b <storage-gib> \
-    --file-share-protocol <protocol>
+    --location <location> --protocol NFS --media-tier SSD --redundancy Local \
+    --provisioned-storage-gib <storage-gib> --provisioned-iops <iops> \
+    --provisioned-throughput-mib <throughput-mib>
 ```
 
 ### List file shares in a subscription
@@ -34,13 +38,19 @@ az fileshare show --name <share-name> --resource-group <resource-group>
 ### Check name availability
 
 ```bash
-az fileshare check-name-availability --name <share-name>
+az fileshare check-name-availability --name <share-name> --location <location>
+```
+
+### Assign a managed identity
+
+```bash
+az fileshare identity assign --name <share-name> --resource-group <resource-group> --system-assigned
 ```
 
 ### Create a snapshot
 
 ```bash
-az fileshare snapshot create --file-share-name <share-name> --resource-group <resource-group> \
+az fileshare snapshot create --resource-name <share-name> --resource-group <resource-group> \
     --name <snapshot-name>
 ```
 
