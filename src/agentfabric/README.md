@@ -6,7 +6,7 @@ child members, and independent Policy Group peer resources. It uses the
 `2026-11-03-preview` for every command, including waits.
 
 The command models are supplied by [Azure/aaz#1155](https://github.com/Azure/aaz/pull/1155),
-commit `4d8880d2da041e4d911354a998c980036476765b`. They were generated from the
+commit `27059f6d46d9af223bffe83df8b574bc16a8e6ca`. They were generated from the
 refreshed `RPSaaSMaster` at `7383c939bca038e922edf44005ac136fc35c9913`:
 [2026-11-03-preview/agentFabric.json](https://github.com/Azure/azure-rest-api-specs-pr/blob/7383c939bca038e922edf44005ac136fc35c9913/specification/networksecurity/resource-manager/Microsoft.NetworkSecurity/agentFabric/preview/2026-11-03-preview/agentFabric.json).
 The source file's SHA-256 is
@@ -199,7 +199,7 @@ azdev test agentfabric
 ```
 
 `AZURE_TEST_AGENTFABRIC_LOCATION` selects the service region (default:
-`centraluseuap`). The committed live recordings cover Fabric and
+`westcentralus`). The committed live recordings cover Fabric and
 Policy Group CRUD/wait, existing Member show/list/wait,
 resource-group lists, and egress trust bundle singleton and collection reads.
 They also cover AKS attach/show/list/update/detach
@@ -213,21 +213,23 @@ It skips live execution when that prerequisite is not supplied. Existing
 workload response schemas are additionally unit-tested.
 Signed operation-status URL values are scrubbed from recordings.
 
-These recordings were captured against `2026-10-07-preview`, not November.
-Playback permits only the explicit October/November API-version pair for
-otherwise identical NetworkSecurity URLs and query parameters; neither
-requests nor recordings are rewritten, and live recording uses exact
-matching. This preserves historical compatibility coverage without claiming
-November service verification. Separate offline tests check November request
-versions, every wait, new policy example payloads and response fields, and
-resource-name length boundaries.
+All six resource scenarios were freshly recorded against `2026-11-03-preview`
+in `westcentralus`. Playback requires an exact API-version match; the earlier
+October/November compatibility matcher has been removed. Tests also assert
+the recorded resource-request versions. Service-provided polling URLs are
+followed unchanged and can use a different operation-status API version.
+The Policy Group lifecycle records all generated FQDN, MCP matching, and TLS
+rule examples, plus a URL rule with its action omitted. Separate offline tests
+check every wait, request/response schemas, and resource-name boundaries.
 
 The AKS lifecycle provisions an Entra-enabled cluster; managed identity alone
 does not satisfy its authentication prerequisite. It cleans up the association,
 AKS, and Fabric before group teardown. Its AKS prerequisite client is pinned
 to the recorded `2026-06-01` Container Service API so changes to the core CLI's
 default AKS API version do not invalidate playback. Agent Fabric requests
-use `2026-11-03-preview`; recorded responses remain unchanged.
+use `2026-11-03-preview`. Attach also records `--if-none-match '*'`. Cleanup
+waits for AKS to finish any post-detach update before deleting the cluster,
+avoiding an `EtagMismatch` conflict with the in-progress operation.
 
 The egress trust bundle collection scenario runs in ordinary playback. Its
 successful live recording verifies that LIST returns the `default` bundle with
@@ -242,6 +244,13 @@ command first checks that its new cluster does not exist, and the association
 and Fabric deleted waits verify that their resources are gone. Attach, show,
 list, upgrade, and detach succeeded in that recorded lifecycle. The successful
 egress reads do not imply GA or availability in every region; the API remains
-`2026-11-03-preview`. November live behavior has not been recorded by this change.
+`2026-11-03-preview`.
+
+The November recording run verified the complete AKS enrollment lifecycle
+using a temporary Entra-enabled cluster, and positive member and egress reads
+using an existing Fabric without changing it. All disposable resource groups,
+clusters, and AKS node groups were confirmed deleted. These results supplement
+the earlier installed-wheel smoke test; they do not establish GA or all-region
+availability.
 
 Failed-run recordings are not committed as successful playback fixtures.

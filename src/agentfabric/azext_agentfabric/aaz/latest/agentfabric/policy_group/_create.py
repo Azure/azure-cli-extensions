@@ -20,7 +20,7 @@ class Create(AAZCommand):
     Policy Groups are independent resource-group-scoped Microsoft.NetworkSecurity peer resources and are not children of an Agent Fabric.
 
     :example: Create an independent FQDN filtering Policy Group
-        az agentfabric policy-group create --resource-group rgnetworksecurity --name testPolicyGroup --location eastus --display-name "Test Policy Group" --priority 100 --network-security-policies "[{fqdn-filtering:{name:allowOutbound,priority:10,direction:Outbound,ports:[443],source:{workload-id-patterns:{patterns:[workload1]}},destination:{fqdns:{fqdns:[example.com]}}}}]"
+        az agentfabric policy-group create --resource-group rgnetworksecurity --name testPolicyGroup --location eastus --display-name "Test Policy Group" --priority 100 --network-security-policies "[{fqdn-filtering:{name:allowOutbound,priority:10,direction:Outbound,ports:[443],source:{workload-id-patterns:{patterns:['spiffe://contoso.com/ns/*/sa/*']}},destination:{fqdns:{fqdns:[example.com]}}}}]"
 
     :example: Allow selected MCP tools using named matching rules
         az agentfabric policy-group create --resource-group rgnetworksecurity --name mcpRulesPolicyGroup --location eastus --priority 100 --network-security-policies "[{mcp:{default-action:Deny,source:{workload-id-patterns:{patterns:['spiffe://contoso.com/ns/agents/sa/*']}},destination:{fqdns:{fqdns:[mcp.contoso.com]}},rules:[{name:allow-search,priority:100,action:Allow,matching-conditions:{destinations:{tool-matching:{names:{values:[search],match-type:ExactMatch}}}}}]}},{tls-inspection:{source:{workload-id-patterns:{patterns:['spiffe://contoso.com/ns/agents/sa/*']}},certificate:{azure-managed-ca:{}},default-action:Inspect}}]"

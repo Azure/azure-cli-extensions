@@ -5,10 +5,14 @@
 
 import os
 import re
+import shlex
 import unittest
 from contextlib import ExitStack
+from pathlib import Path
 from unittest.mock import patch
 from urllib.parse import parse_qs, urlsplit
+
+import yaml
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
@@ -17,7 +21,7 @@ from azure.cli.testsdk.scenario_tests import RecordingProcessor
 from azure.mgmt.core.tools import parse_resource_id
 
 
-LOCATION = os.environ.get("AZURE_TEST_AGENTFABRIC_LOCATION", "centraluseuap")
+LOCATION = os.environ.get("AZURE_TEST_AGENTFABRIC_LOCATION", "westcentralus")
 
 
 class OperationStatusSignatureReplacer(RecordingProcessor):
@@ -80,55 +84,45 @@ class AksPrerequisiteClientTest(unittest.TestCase):
         self.assertIs(client, factory.return_value)
 
 
-class HistoricalRecordingMatcherTest(unittest.TestCase):
+class RecordingVersionTest(unittest.TestCase):
 
-    def test_api_compatibility_is_limited_to_explicit_playback_pair(self):
+    def test_playback_requires_exact_api_version(self):
         from types import SimpleNamespace
         scenario = AgentfabricResourceScenario("test_agentfabric_member_read")
-        scenario.in_recording = False
         path = "https://management.azure.com/providers/Microsoft.NetworkSecurity/agentFabrics"
         recorded = SimpleNamespace(uri=path + "?api-version=2026-10-07-preview")
         current = SimpleNamespace(uri=path + "?api-version=2026-11-03-preview")
-        self.assertTrue(scenario._custom_request_query_matcher(current, recorded))
-        for uri in (
-            path + "?api-version=2026-12-01-preview",
-            path + "?api-version=2026-11-03-preview&extra=value",
-            path.replace("agentFabrics", "policyGroups") + "?api-version=2026-11-03-preview",
-        ):
-            self.assertFalse(scenario._custom_request_query_matcher(SimpleNamespace(uri=uri), recorded))
-        for prefix in (
-            "https://management.azure.com/providers/Microsoft.ContainerService/managedClusters",
-            "https://example.test/providers/Microsoft.NetworkSecurity/agentFabrics",
-        ):
-            self.assertFalse(scenario._custom_request_query_matcher(
-                SimpleNamespace(uri=prefix + "?api-version=2026-11-03-preview"),
-                SimpleNamespace(uri=prefix + "?api-version=2026-10-07-preview"),
-            ))
-        scenario.in_recording = True
         self.assertFalse(scenario._custom_request_query_matcher(current, recorded))
-        self.assertEqual(current.uri, path + "?api-version=2026-11-03-preview")
-        self.assertEqual(recorded.uri, path + "?api-version=2026-10-07-preview")
+        self.assertTrue(scenario._custom_request_query_matcher(current, current))
+
+    def test_recorded_resource_requests_use_november_api(self):
+        recordings = Path(__file__).parent / "recordings"
+        resource_path = re.compile(r"/providers/microsoft\.networksecurity/(agentfabrics|policygroups)(/|$)")
+        for path in recordings.glob("test_agentfabric_*.yaml"):
+            interactions = yaml.safe_load(path.read_text(encoding="utf-8"))["interactions"]
+            for interaction in interactions:
+                url = urlsplit(interaction["request"]["uri"])
+                if resource_path.search(url.path.lower()):
+                    with self.subTest(recording=path.name, path=url.path):
+                        self.assertEqual(parse_qs(url.query).get("api-version"), ["2026-11-03-preview"])
+
+    def test_aks_recorded_errors_are_expected_absence_checks(self):
+        path = Path(__file__).parent / "recordings" / "test_agentfabric_aks_lifecycle.yaml"
+        interactions = yaml.safe_load(path.read_text(encoding="utf-8"))["interactions"]
+        errors = [item for item in interactions if item["response"]["status"]["code"] >= 400]
+        self.assertEqual(len(errors), 3)
+        resource_types = set()
+        for item in errors:
+            self.assertEqual(item["request"]["method"], "GET")
+            self.assertEqual(item["response"]["status"]["code"], 404)
+            resource_types.add(urlsplit(item["request"]["uri"]).path.lower().split("/")[-2])
+        self.assertEqual(resource_types, {"managedclusters", "clusterassociations", "agentfabrics"})
 
 
 class AgentfabricResourceScenario(ScenarioTest):
 
     def __init__(self, method_name):
         super().__init__(method_name, recording_processors=[OperationStatusSignatureReplacer()])
-
-    def _custom_request_query_matcher(self, request, recorded):
-        if super()._custom_request_query_matcher(request, recorded):
-            return True
-        if self.in_recording:
-            return False
-        current_url, recorded_url = urlsplit(request.uri), urlsplit(recorded.uri)
-        if (current_url.netloc != "management.azure.com" or
-                current_url.netloc != recorded_url.netloc or current_url.path != recorded_url.path or
-                "/providers/microsoft.networksecurity/" not in current_url.path.lower()):
-            return False
-        current_query, recorded_query = parse_qs(current_url.query), parse_qs(recorded_url.query)
-        # Preserve the real October recordings; only this explicit version pair is compatible playback.
-        versions = {tuple(current_query.pop("api-version", [])), tuple(recorded_query.pop("api-version", []))}
-        return versions == {("2026-10-07-preview",), ("2026-11-03-preview",)} and current_query == recorded_query
 
     @ResourceGroupPreparer(name_prefix="clitestaf", location=LOCATION)
     def test_agentfabric_fabric_lifecycle(self, resource_group):
@@ -188,6 +182,7 @@ class AgentfabricResourceScenario(ScenarioTest):
             self.cmd("agentfabric policy-group list -g {rg}", checks=[
                 self.check("[?name=='{policy}'] | length(@)", 1),
             ])
+            self._exercise_policy_examples()
             self.cmd("agentfabric policy-group update -g {rg} -n {policy} --tags stage=updated --no-wait")
             self.cmd("agentfabric policy-group wait -g {rg} -n {policy} --updated")
             self.cmd("agentfabric policy-group show -g {rg} -n {policy}", checks=[
@@ -197,6 +192,32 @@ class AgentfabricResourceScenario(ScenarioTest):
             self.cmd("agentfabric policy-group delete -g {rg} -n {policy} --yes")
         self.cmd("agentfabric policy-group wait -g {rg} -n {policy} --deleted")
         self.cmd("agentfabric policy-group list -g {rg}", checks=[self.is_empty()])
+
+    def _exercise_policy_examples(self):
+        from azext_agentfabric.aaz.latest.agentfabric.policy_group import Create
+        examples = [
+            shlex.split(line.strip()) for line in Create.__doc__.splitlines()
+            if line.strip().startswith("az agentfabric policy-group create ")
+        ]
+        for example in examples:
+            policies = example[example.index("--network-security-policies") + 1]
+            policies = shlex.quote(policies.replace("{", "{{").replace("}", "}}"))
+            self.cmd(
+                "agentfabric policy-group create -g {rg} -n {policy} -l {location} --priority 100 "
+                "--network-security-policies " + policies,
+                checks=[self.check("properties.provisioningState", "Succeeded")],
+            )
+        self.cmd(
+            "agentfabric policy-group create -g {rg} -n {policy} -l {location} --priority 100 "
+            '--network-security-policies "[{{url-filtering:{{default-action:Deny,'
+            "source:{{workload-id-patterns:{{patterns:['spiffe://cli.example/ns/test/sa/none']}}}},"
+            'rules:[{{name:optional-action,priority:1,hostname:example.invalid,paths:[/smoke]}}]}}}}]"',
+            checks=[
+                self.check("properties.provisioningState", "Succeeded"),
+                self.check("properties.networkSecurityPolicies[0].type", "UrlFiltering"),
+                self.check("properties.networkSecurityPolicies[0].rules[0].name", "optional-action"),
+            ],
+        )
 
     @ResourceGroupPreparer(name_prefix="clitestafetb", location=LOCATION)
     def test_agentfabric_egress_trust_bundle_show(self, resource_group):
@@ -225,6 +246,12 @@ class AgentfabricResourceScenario(ScenarioTest):
         self.assertEqual(resource.get("namespace", "").lower(), "microsoft.networksecurity")
         self.assertEqual(resource.get("type", "").lower(), "agentfabrics")
         self.assertEqual(resource.get("child_type_1", "").lower(), "members")
+        for original, recorded in (
+            (resource["resource_group"], "clitestafmember000001"),
+            (resource["name"], "cliaf000002"),
+            (resource["child_name_1"], "cliafmember000003"),
+        ):
+            self.name_replacer.register_name_pair(original, recorded)
         self.kwargs.update({
             "subscription": resource["subscription"],
             "rg": resource["resource_group"],
@@ -317,6 +344,8 @@ class AgentfabricResourceScenario(ScenarioTest):
         ).get_output_in_json()
         self.kwargs["aks_id"] = cluster["id"]
         cleanup.callback(self.cmd, "aks delete -g {rg} -n {aks} --yes")
+        # Association teardown can leave an AKS operation running after its own deleted wait succeeds.
+        cleanup.callback(self.cmd, "aks wait -g {rg} -n {aks} --updated --interval 10 --timeout 600")
         cleanup.callback(
             self.cmd, "agentfabric aks wait -g {rg} --fabric-name {fabric} -n {association} --deleted"
         )
@@ -325,7 +354,7 @@ class AgentfabricResourceScenario(ScenarioTest):
         )
         self.cmd(
             "agentfabric aks attach -g {rg} --fabric-name {fabric} -n {association} "
-            "-l {location} --cluster-resource-id {aks_id} --sku Standard",
+            "-l {location} --cluster-resource-id {aks_id} --sku Standard --if-none-match '*'",
             checks=[
                 self.check("name", "{association}"),
                 self.check("properties.provisioningState", "Succeeded"),
