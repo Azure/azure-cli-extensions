@@ -90,6 +90,13 @@ and updates can't override it. The compatible chart writes
 ``chaosstudio.microsoft.com/namespace-created-by=<release-namespace>/<release-name>``
 only on initial install. Older or pre-existing namespaces aren't adopted.
 
+Fetched ``kubelogin`` exec users use Azure CLI authentication, reusing the identity
+already signed in to ``az`` instead of prompting for device-code login. This
+normalization applies only to the fetched kubeconfig; it does not modify the
+current kube context or a kubeconfig file. Namespace-inspection connection
+failures and timeouts stop installation with phase and retry guidance; they
+are not evidence that the namespace is absent.
+
 A synchronous delete confirms the ARM extension deletion operation and reports
 that the release namespace and any remaining Kubernetes resources are retained.
 The CLI does not inventory namespace contents, delete namespaces or wait for
@@ -153,9 +160,10 @@ stress-tools image.
 Pending live validation
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-The built-in role rollout is pending. Don't count an install against an empty
-role definition as live authorization proof. Once the subscription's role readback
-contains all five permissions, run this checklist with a locally built wheel:
+Confirm the built-in role's effective permissions in the target subscription.
+Don't count an install against an empty role definition as live authorization
+proof. Once the subscription's role readback contains all five permissions, run
+this checklist with a locally built wheel:
 
 * Confirm ``az role definition list --name 681440c1-3630-4424-a530-0305ac721cfd``
   returns Actions ``Microsoft.KubernetesConfiguration/extensions/read``,
@@ -185,25 +193,26 @@ contains all five permissions, run this checklist with a locally built wheel:
   ARM/Kubernetes readbacks; do not record this as automatic namespace-removal proof.
 * Delete the disposable resource group and confirm absence.
 
-The 2026-10-21 disposable AKS attempt reached ``Succeeded`` with the local wheel
-and registered ``dev`` chart ``0.1.12``. The namespace had both creation markers.
-Uninstall removed the ARM extension, owned connection and built-in assignment.
-It exposed the create-only ``bindings`` discovery gap fixed here. Retrying
-namespace inspection preserved an unmarked ``durable-broker-learned-keys``
-ConfigMap and Kubernetes Events rather than erasing them. AKS also returned a
-pristine default ServiceAccount without managedFields, now covered by a regression.
-This wasn't live proof of clean namespace removal. This CLI version now
-intentionally retains namespaces; a chart release alone does not provide the
-concurrent-writer fence or durable recovery contract required for automatic
-removal. The compatible chart's learned-key owner marker and pre-delete cleanup
-remain separate from that deferred capability. The CLI doesn't
-special-case learned-key state; preserving the unmarked ConfigMap on 0.1.12 is
-correct. Events no longer block namespace removal. The built-in role
-readback still had empty Actions and DataActions, so this isn't live role
-authorization proof either.
-
 Historical evidence, not validation of staged installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The 2026-10-21 disposable AKS attempt used an earlier automatic namespace-cleanup
+implementation with a local wheel and registered ``dev`` chart ``0.1.12``.
+Installation reached ``Succeeded`` and the namespace had both creation markers.
+Uninstall removed the ARM extension, owned connection and built-in assignment.
+That attempt exposed a create-only ``bindings`` discovery gap and returned a
+pristine default ServiceAccount without managedFields. Its earlier cleanup
+implementation also preserved an unmarked ``durable-broker-learned-keys``
+ConfigMap and Kubernetes Events. The inventory/default-classifier implementation
+and its regressions were subsequently withdrawn; they are not delivered by this
+version. This CLI intentionally retains all namespace contents, including Events.
+The attempt was not live proof of clean namespace removal, and its empty built-in
+role Actions and DataActions were not live authorization proof.
+
+A chart release alone does not provide the concurrent-writer fence or durable
+recovery contract required for automatic namespace removal. The compatible
+chart's learned-key owner marker and pre-delete cleanup remain separate from that
+deferred capability. The CLI neither special-cases nor erases learned-key state.
 
 Installation and authorized data-plane polling succeeded with an earlier CLI
 implementation and dev chart ``0.1.3``, which explicitly provisioned subscriber identity.

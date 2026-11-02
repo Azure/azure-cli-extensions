@@ -15,6 +15,7 @@ from urllib.parse import quote, urlencode, urlsplit
 import yaml
 from kubernetes import config
 from kubernetes.client.exceptions import ApiException
+from urllib3.exceptions import HTTPError
 
 from azure.core.exceptions import AzureError, ResourceNotFoundError
 from azure.core.pipeline.policies import RetryPolicy
@@ -121,9 +122,21 @@ class _ClusterClient:
         configs = credentials.get("kubeconfigs", [])
         if len(configs) != 1 or not configs[0].get("value"):
             raise AzureResponseError("AKS did not return exactly one user kubeconfig.")
-        self.client = config.new_client_from_config_dict(
-            yaml.safe_load(base64.b64decode(configs[0]["value"]).decode("utf-8"))
-        )
+        kubeconfig = yaml.safe_load(base64.b64decode(configs[0]["value"]).decode("utf-8"))
+        for user in kubeconfig.get("users", []):
+            exec_config = user.get("user", {}).get("exec") or {}
+            if exec_config.get("command") not in ("kubelogin", "kubelogin.exe"):
+                continue
+            arguments = []
+            existing = iter(exec_config.get("args", []))
+            for argument in existing:
+                if argument in ("--login", "-l"):
+                    if next(existing, None) is None:
+                        raise AzureResponseError("AKS user kubeconfig is missing a kubelogin login value.")
+                elif not argument.startswith(("--login=", "-l")):
+                    arguments.append(argument)
+            exec_config["args"] = arguments + ["--login", "azurecli"]
+        self.client = config.new_client_from_config_dict(kubeconfig)
         # Keep the installation namespace check bounded.
         self.deadline = time.monotonic() + 210
 
@@ -140,8 +153,8 @@ class _ClusterClient:
                 auth_settings=["BearerToken"], _return_http_data_only=True,
                 _request_timeout=min(30, remaining),
             )
-        except ApiException as error:
-            if allow_not_found and error.status == 404:
+        except (ApiException, HTTPError) as error:
+            if allow_not_found and isinstance(error, ApiException) and error.status == 404:
                 return None
             raise AzureResponseError(
                 "Target-cluster {} {} failed; namespace inspection was not confirmed: {}".format(method, path, error)

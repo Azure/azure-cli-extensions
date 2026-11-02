@@ -6,6 +6,7 @@
 
 import base64
 import copy
+import json
 import time
 import unittest
 from types import SimpleNamespace
@@ -13,6 +14,7 @@ from unittest.mock import MagicMock, patch
 
 from azure.core.exceptions import HttpResponseError, ResourceNotFoundError, ServiceRequestError
 from kubernetes.client.exceptions import ApiException
+from urllib3.exceptions import HTTPError, MaxRetryError, ReadTimeoutError
 from azure.cli.core.azclierror import AzureResponseError, InvalidArgumentValueError
 from azext_k8s_extension import custom
 from azext_k8s_extension.partner_extensions.ChaosStudio import ChaosStudio, _ClusterClient
@@ -205,6 +207,18 @@ class ChaosStudioTests(unittest.TestCase):
             self.run_install()
         self.assertFalse(any(event[0] in ("create", "update", "arm-put") for event in self.events))
         self.cluster.close.assert_called_once()
+
+    def test_namespace_transport_failure_keeps_install_phase_and_retry_guidance(self):
+        cluster = _ClusterClient.__new__(_ClusterClient)
+        cluster.client = MagicMock()
+        cluster.client.call_api.side_effect = MaxRetryError(None, "/api/v1/namespaces/chaos-infrastructure")
+        cluster.deadline = time.monotonic() + 210
+        self.partner._cluster_client_factory = lambda *_args: cluster
+        with self.assertRaisesRegex(
+                AzureResponseError, "Chaos namespace inspection failed.*rerun after correcting the error"):
+            self.run_install()
+        self.assertFalse(any(event[0] in ("create", "update", "arm-put") for event in self.events))
+        cluster.client.close.assert_called_once()
 
     def test_resumed_creation_preserves_namespace_assertion(self):
         self.client.fail_after_create = True
@@ -998,6 +1012,60 @@ class ClusterNamespaceTests(unittest.TestCase):
         cluster.close()
         load.return_value.close.assert_called_once()
 
+    def test_fetched_kubelogin_exec_users_use_azure_cli_identity(self):
+        for command, login in (
+                ("kubelogin", ["--login", "devicecode"]),
+                ("kubelogin.exe", ["-l", "interactive"]),
+                ("kubelogin", ["--login=spn"]),
+                ("kubelogin", ["-ldevicecode"]),
+                ("kubelogin", []),
+                ("kubelogin", ["--login", "devicecode", "-l", "msi"])):
+            with self.subTest(command=command, login=login):
+                arguments = ["get-token", "--server-id", CLIENT, "--tenant-id", TENANT]
+                kubeconfig = {
+                    "apiVersion": "v1",
+                    "current-context": "target",
+                    "users": [
+                        {"name": "target", "user": {"exec": {
+                            "apiVersion": "client.authentication.k8s.io/v1beta1",
+                            "command": command,
+                            "args": arguments + login,
+                            "env": [{"name": "EXAMPLE", "value": "preserved"}],
+                        }}},
+                        {"name": "certificate-user", "user": {
+                            "client-certificate-data": "fixture",
+                            "client-key-data": "fixture",
+                            "exec": None,
+                        }},
+                        {"name": "other-exec-user", "user": {"exec": {
+                            "command": "other-credential-helper", "args": ["--login", "unchanged"],
+                        }}},
+                    ],
+                }
+                expected = copy.deepcopy(kubeconfig)
+                expected["users"][0]["user"]["exec"]["args"] = arguments + ["--login", "azurecli"]
+                arm = MagicMock(subscription_id=SUB)
+                arm.post.return_value = {"kubeconfigs": [{
+                    "value": base64.b64encode(json.dumps(kubeconfig).encode("utf-8")).decode("ascii"),
+                }]}
+                with patch(PREFIX + "config.new_client_from_config_dict") as load:
+                    cluster = _ClusterClient(None, arm, "rg", "cluster")
+                load.assert_called_once_with(expected)
+                cluster.close()
+                load.return_value.close.assert_called_once()
+
+    def test_fetched_kubelogin_login_requires_a_value(self):
+        arm = MagicMock(subscription_id=SUB)
+        arm.post.return_value = {"kubeconfigs": [{
+            "value": base64.b64encode(json.dumps({"users": [{"user": {"exec": {
+                "command": "kubelogin", "args": ["get-token", "--login"],
+            }}}]}).encode("utf-8")).decode("ascii"),
+        }]}
+        with patch(PREFIX + "config.new_client_from_config_dict") as load:
+            with self.assertRaisesRegex(AzureResponseError, "kubelogin login value"):
+                _ClusterClient(None, arm, "rg", "cluster")
+        load.assert_not_called()
+
     def test_only_404_is_absence(self):
         for status in (404, 403, 401, 500):
             self.cluster.client.call_api.side_effect = ApiException(status=status)
@@ -1015,6 +1083,19 @@ class ClusterNamespaceTests(unittest.TestCase):
         with self.assertRaisesRegex(AzureResponseError, "budget"):
             self.cluster.namespace("chaos")
         self.cluster.client.call_api.assert_not_called()
+
+    def test_namespace_transport_failures_are_errors_not_absence(self):
+        transport = HTTPError("API server unreachable")
+        transport.status = 404
+        for error in (
+                transport,
+                MaxRetryError(None, "/api/v1/namespaces/chaos"),
+                ReadTimeoutError(None, "/api/v1/namespaces/chaos", "API server read timed out")):
+            with self.subTest(error=type(error).__name__):
+                self.cluster.client.call_api.side_effect = error
+                with self.assertRaisesRegex(AzureResponseError, "namespace inspection was not confirmed") as raised:
+                    self.cluster.namespace("chaos")
+                self.assertIs(raised.exception.__cause__, error)
 
 
 if __name__ == "__main__":
