@@ -39,8 +39,12 @@ class RelationshipScenarioTest(ScenarioTest):
     def _wait(self, seconds):
         time.sleep(seconds)
 
-    def _create_service_group(self):
-        """Create a Service Group under the tenant root and delete it when the test ends."""
+    def _create_service_group(self, role):
+        """Create a Service Group under the tenant root and delete it when the test ends.
+
+        `role` is how the test uses it: 'target' of a dependency, 'source' of a
+        membership, or the 'scoped' parent of a Service Group dependency.
+        """
         name = self.create_random_name('clirelsg', 24)
         tenant_id = self.cmd('account show --query tenantId -o tsv').output.strip()
         root_id = f'/providers/Microsoft.Management/serviceGroups/{tenant_id}'
@@ -69,33 +73,39 @@ class RelationshipScenarioTest(ScenarioTest):
             self._wait(PROPAGATION_POLL_SECONDS)
         else:
             self.fail(f'Service Group {name} did not finish provisioning.')
-        self._wait_for_permissions(service_group_id)
+        self._wait_for_permissions(service_group_id, role)
         return service_group_id
 
-    def _wait_for_permissions(self, service_group_id):
-        """Poll a throwaway dependency from the subscription to the new Service Group.
+    def _wait_for_permissions(self, service_group_id, role):
+        """Poll the same relationship write the test will make until ARM allows it.
 
-        This exercises the same linked write check that the tests depend on, which
-        becomes valid only after the Service Group's role assignment has propagated.
+        A new Service Group's role assignment can take a long time to take effect for
+        relationship writes, so each probe is the create the test depends on.
         """
-        probe = self.create_random_name('clirelprobe', 24)
-        self.kwargs.update({
-            'probe_scope': f'/subscriptions/{self.get_subscription_id()}',
-            'probe_name': probe,
-            'probe_target': service_group_id,
-        })
+        name = self.create_random_name('clirelprobe', 24)
+        subscription = f'/subscriptions/{self.get_subscription_id()}'
+        if role == 'source':
+            command = f'az relationship service-group-member %s --resource-uri {subscription} --name {name}'
+            arguments = f'--source-id {service_group_id}'
+        elif role == 'scoped':
+            service_group_name = service_group_id.rsplit('/', 1)[-1]
+            command = (
+                f'az relationship dependency-of-by-service-group %s '
+                f'--service-group-name {service_group_name} --name {name}'
+            )
+            arguments = f'--target-id {subscription}'
+        else:
+            command = f'az relationship dependency-of %s --resource-uri {subscription} --name {name}'
+            arguments = f'--target-id {service_group_id}'
         for _ in range(PROPAGATION_TIMEOUT_SECONDS // PROPAGATION_POLL_SECONDS):
             try:
-                self.cmd(
-                    'az relationship dependency-of create --resource-uri {probe_scope} '
-                    '--name {probe_name} --target-id {probe_target}'
-                )
+                self.cmd(f'{command % "create"} {arguments}')
             except Exception as error:  # pylint: disable=broad-except
                 if 'AuthorizationFailed' not in str(error):
                     raise
                 self._wait(PROPAGATION_POLL_SECONDS)
                 continue
-            self.cmd('az relationship dependency-of delete --resource-uri {probe_scope} --name {probe_name} --yes')
+            self.cmd(f'{command % "delete"} --yes')
             return
         self.fail(f'Permissions on {service_group_id} did not propagate in time.')
 
@@ -104,7 +114,7 @@ class RelationshipScenarioTest(ScenarioTest):
         """Full CRUD lifecycle for a dependencyOf relationship (RG → ServiceGroup)."""
         rg_name = self.create_random_name('rg-dep-', 20)
         rel_name = 'deprel' + self.create_random_name('', 6).replace('-', '')
-        self.service_group_id = self._create_service_group()
+        self.service_group_id = self._create_service_group('target')
         sub_id = self.get_subscription_id()
         rg_uri = f'/subscriptions/{sub_id}/resourceGroups/{rg_name}'
 
@@ -180,7 +190,7 @@ class RelationshipScenarioTest(ScenarioTest):
     def test_dependency_of_subscription_scope(self):
         """DependencyOf with subscription as the source scope."""
         rel_name = 'depsub' + self.create_random_name('', 6).replace('-', '')
-        self.service_group_id = self._create_service_group()
+        self.service_group_id = self._create_service_group('target')
         sub_id = self.get_subscription_id()
         sub_uri = f'/subscriptions/{sub_id}'
 
@@ -230,7 +240,7 @@ class RelationshipScenarioTest(ScenarioTest):
         """Full CRUD lifecycle for a serviceGroupMember relationship (ServiceGroup → RG)."""
         rg_name = self.create_random_name('rg-sgm-', 20)
         rel_name = 'sgmrel' + self.create_random_name('', 6).replace('-', '')
-        self.service_group_id = self._create_service_group()
+        self.service_group_id = self._create_service_group('source')
         sub_id = self.get_subscription_id()
         rg_uri = f'/subscriptions/{sub_id}/resourceGroups/{rg_name}'
 
@@ -306,7 +316,7 @@ class RelationshipScenarioTest(ScenarioTest):
     def test_sgm_subscription_scope(self):
         """ServiceGroupMember with subscription as the target scope."""
         rel_name = 'sgmsub' + self.create_random_name('', 6).replace('-', '')
-        self.service_group_id = self._create_service_group()
+        self.service_group_id = self._create_service_group('source')
         sub_id = self.get_subscription_id()
         sub_uri = f'/subscriptions/{sub_id}'
 
@@ -359,7 +369,7 @@ class RelationshipScenarioTest(ScenarioTest):
     def test_dependency_of_by_service_group_crud(self):
         rg_name = self.create_random_name('rg-sg-dep-', 20)
         rel_name = self.create_random_name('sgdep', 16)
-        self.service_group_id = self._create_service_group()
+        self.service_group_id = self._create_service_group('scoped')
         sg_name = self.service_group_id.rstrip('/').rsplit('/', 1)[-1]
         scope = f'--service-group-name "{sg_name}"'
         created = False
