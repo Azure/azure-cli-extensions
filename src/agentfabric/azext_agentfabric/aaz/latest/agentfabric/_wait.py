@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}", "2026-10-07-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}", "2026-11-03-preview"],
         ]
     }
 
@@ -46,7 +46,7 @@ class Wait(AAZWaitCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^[a-zA-Z0-9-]{3,256}$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-10-07-preview",
+                    "api-version", "2026-11-03-preview",
                     required=True,
                 ),
             }

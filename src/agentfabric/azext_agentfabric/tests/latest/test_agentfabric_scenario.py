@@ -8,6 +8,7 @@ import re
 import unittest
 from contextlib import ExitStack
 from unittest.mock import patch
+from urllib.parse import parse_qs, urlsplit
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
@@ -79,10 +80,55 @@ class AksPrerequisiteClientTest(unittest.TestCase):
         self.assertIs(client, factory.return_value)
 
 
+class HistoricalRecordingMatcherTest(unittest.TestCase):
+
+    def test_api_compatibility_is_limited_to_explicit_playback_pair(self):
+        from types import SimpleNamespace
+        scenario = AgentfabricResourceScenario("test_agentfabric_member_read")
+        scenario.in_recording = False
+        path = "https://management.azure.com/providers/Microsoft.NetworkSecurity/agentFabrics"
+        recorded = SimpleNamespace(uri=path + "?api-version=2026-10-07-preview")
+        current = SimpleNamespace(uri=path + "?api-version=2026-11-03-preview")
+        self.assertTrue(scenario._custom_request_query_matcher(current, recorded))
+        for uri in (
+            path + "?api-version=2026-12-01-preview",
+            path + "?api-version=2026-11-03-preview&extra=value",
+            path.replace("agentFabrics", "policyGroups") + "?api-version=2026-11-03-preview",
+        ):
+            self.assertFalse(scenario._custom_request_query_matcher(SimpleNamespace(uri=uri), recorded))
+        for prefix in (
+            "https://management.azure.com/providers/Microsoft.ContainerService/managedClusters",
+            "https://example.test/providers/Microsoft.NetworkSecurity/agentFabrics",
+        ):
+            self.assertFalse(scenario._custom_request_query_matcher(
+                SimpleNamespace(uri=prefix + "?api-version=2026-11-03-preview"),
+                SimpleNamespace(uri=prefix + "?api-version=2026-10-07-preview"),
+            ))
+        scenario.in_recording = True
+        self.assertFalse(scenario._custom_request_query_matcher(current, recorded))
+        self.assertEqual(current.uri, path + "?api-version=2026-11-03-preview")
+        self.assertEqual(recorded.uri, path + "?api-version=2026-10-07-preview")
+
+
 class AgentfabricResourceScenario(ScenarioTest):
 
     def __init__(self, method_name):
         super().__init__(method_name, recording_processors=[OperationStatusSignatureReplacer()])
+
+    def _custom_request_query_matcher(self, request, recorded):
+        if super()._custom_request_query_matcher(request, recorded):
+            return True
+        if self.in_recording:
+            return False
+        current_url, recorded_url = urlsplit(request.uri), urlsplit(recorded.uri)
+        if (current_url.netloc != "management.azure.com" or
+                current_url.netloc != recorded_url.netloc or current_url.path != recorded_url.path or
+                "/providers/microsoft.networksecurity/" not in current_url.path.lower()):
+            return False
+        current_query, recorded_query = parse_qs(current_url.query), parse_qs(recorded_url.query)
+        # Preserve the real October recordings; only this explicit version pair is compatible playback.
+        versions = {tuple(current_query.pop("api-version", [])), tuple(recorded_query.pop("api-version", []))}
+        return versions == {("2026-10-07-preview",), ("2026-11-03-preview",)} and current_query == recorded_query
 
     @ResourceGroupPreparer(name_prefix="clitestaf", location=LOCATION)
     def test_agentfabric_fabric_lifecycle(self, resource_group):
