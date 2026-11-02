@@ -60,11 +60,12 @@ before `az validate` runs, so the file's content would be checked instead of the
 - **Commands from extensions that aren't installed** are checked against published command metadata,
   downloaded from the Azure CLI metadata stores and cached for 12 hours. This needs network access; with
   `--offline` or no network, such commands come back `unchecked`. Published metadata records parameter
-  names, required parameters, choices and number types, but not whether a parameter without a type takes
-  a value.
+  names, required parameters, choices and number types, but usually not which parameters are flags, so an
+  option without a type may take a value. When `true`, `false`, `yes` or `no` follows such an option, the
+  result has a `PossibleFlagValue` warning: if the option is a flag, the Azure CLI rejects the value.
 - **Core commands that an extension changes** (for example, a preview extension that adds parameters) are
-  checked against both: an error that the extension resolves is reported as a `RequiresExtension` warning
-  instead.
+  checked against both. Options that core also defines are read the way core reads them, and an error that
+  the extension resolves is reported as a `RequiresExtension` warning instead.
 - **Placeholders** such as `<resource-group>`, `$RG`, `${RG}`, `"$(az ...)"` and `@file` count as valid
   values, and are listed in `placeholders`. Real values are checked normally.
 - Configured defaults (`az config set defaults.group=...`) are ignored, so results don't depend on the
@@ -112,7 +113,7 @@ it runs.
 | What to do | Codes |
 | --- | --- |
 | Find the right command | `UnknownCommand`, `MissingSubcommand`, `NotAzCommand` |
-| Fix a parameter | `UnrecognizedArgument`, `AmbiguousArgument`, `MissingRequiredArgument`, `MissingValue`, `UnexpectedValue`, `MutuallyExclusiveArguments`, `InvalidValue`, `InvalidChoice`, `InvalidQuery`, `InvalidArgumentUsage` |
+| Fix a parameter | `UnrecognizedArgument`, `AmbiguousArgument`, `MissingRequiredArgument`, `MissingValue`, `UnexpectedValue`, `MutuallyExclusiveArguments`, `InvalidValue`, `InvalidChoice`, `InvalidQuery`, `InvalidArgumentUsage`; warning `PossibleFlagValue` |
 | Fix the shell syntax | `ShellSyntax`; warnings `UnquotedPlaceholder`, `UnquotedOperator` |
 | Could not check (`unchecked`) | `ExtensionNotPublished`, `MetadataUnavailable`, `ExtensionIndexUnavailable`, `UnsupportedShellSyntax`, `PlaceholderCommandName`, `InternalError` |
 | For information | `RequiresExtension`, `PromptsForConfirmation`, `DeprecatedArgument`, `DeprecatedCommand`, `Preview`, `PreviewArgument`, `Experimental`, `UpcomingBreakingChange`, `ExtensionOverridesCommand`, `ValueNotChecked`, `MetadataLimits`, `ExtensionNotInstalled`, `ExtensionGroup` |

@@ -288,14 +288,52 @@ def _choice_type(choices):
     return choice
 
 
+_FLAG_ACTIONS = ('store_true', 'store_false', 'store_const', 'count')
+_NOT_IN_CORE = object()
+
+
+def _flag_action(param):
+    """Metadata that records a flag action (store_true and the like): the option takes no value."""
+    return param.get('action') in _FLAG_ACTIONS
+
+
 def _may_be_flag(param):
-    """Published metadata doesn't say which options take a value. A type other than bool, choices, nargs,
-    an id_part or being required shows that one does; any other option may be a flag."""
-    return param.get('type') in (None, 'bool') and not any(
+    """Published metadata doesn't always say which options take a value. A flag action shows that one doesn't; a
+    type other than bool, choices, nargs, an id_part or being required shows that one does; any other option
+    may be a flag."""
+    return not _flag_action(param) and param.get('type') in (None, 'bool') and not any(
         param.get(k) for k in ('required', 'id_part', 'nargs', 'choices'))
 
 
-def _argument(param, cli_ctx=None):
+def _all_options(param):
+    """A parameter's option strings, including deprecated names."""
+    opts = [o for o in param.get('options') or [] if isinstance(o, str)]
+    opts += [d['target'] for d in param.get('options_deprecate_info') or []
+             if isinstance(d, dict) and isinstance(d.get('target'), str) and d['target'] not in opts]
+    return opts
+
+
+def core_kind(param, core_kinds):
+    """How core's own parser reads this parameter's options ('flag', or its nargs; None is exactly one value), or
+    _NOT_IN_CORE if core doesn't define them or its definitions of them disagree."""
+    kinds = {core_kinds[o] for o in _all_options(param) if o in (core_kinds or {})}
+    return kinds.pop() if len(kinds) == 1 else _NOT_IN_CORE
+
+
+def ambiguous_option(param, core_kinds=None):
+    """True if neither metadata nor core says whether this option takes a value."""
+    return bool(param.get('options')) and param.get('name') != 'yes' and _may_be_flag(param) and \
+        core_kind(param, core_kinds) is _NOT_IN_CORE
+
+
+def option_name(param):
+    """The name to report for a parameter: its longest '--' option, as for core's parameters."""
+    opts = [o for o in param.get('options') or [] if isinstance(o, str)]
+    longs = [o for o in opts if o.startswith('--')]
+    return max(longs, key=len) if longs else (opts[0] if opts else param.get('name'))
+
+
+def _argument(param, cli_ctx=None, core_kinds=None):
     from knack.arguments import CLICommandArgument
     from knack.deprecation import Deprecated
     options = list(param.get('options') or [])
@@ -303,12 +341,18 @@ def _argument(param, cli_ctx=None):
     if param.get('id_part'):
         kwargs['id_part'] = param['id_part']
     choices = param.get('choices')
-    if param['name'] == 'yes':
+    # An option that core also defines is read the way core reads it (a flag, or core's nargs); metadata's
+    # choices and types still apply, since extensions widen them.
+    kind = core_kind(param, core_kinds) if options and _may_be_flag(param) else _NOT_IN_CORE
+    if param['name'] == 'yes' or _flag_action(param) or kind == 'flag':
         kwargs['action'] = 'store_true'
     else:
-        # An option that may be a flag takes an optional value; one that needs a value is reported
-        # as MissingValue without it, as core does.
-        kwargs['nargs'] = param.get('nargs') or ('?' if options and _may_be_flag(param) else None)
+        if kind is not _NOT_IN_CORE:
+            kwargs['nargs'] = kind
+        else:
+            # An option that may be a flag takes an optional value; one that needs a value is reported
+            # as MissingValue without it, as core does.
+            kwargs['nargs'] = param.get('nargs') or ('?' if options and _may_be_flag(param) else None)
         if choices:
             kwargs['choices'] = choices
             kwargs['type'] = _choice_type(choices)
@@ -391,7 +435,7 @@ def _refuse(*_args, **_kwargs):
     raise RuntimeError('az validate never runs commands')
 
 
-def _meta_command(loader, name, meta, extension_name):
+def _meta_command(loader, name, meta, extension_name, core_kinds=None):
     """Build one command object from published metadata (arguments are built only when loaded)."""
     from azure.cli.core.commands import AzCliCommand, ExtensionCommandSource
     # Core adds these itself (as it does for installed commands); skip the exported copies.
@@ -400,7 +444,7 @@ def _meta_command(loader, name, meta, extension_name):
     params = [p for p in params if not injected.intersection(p.get('options') or [])]
 
     def _args(params=params):
-        return [(p['name'], _argument(p, loader.cli_ctx)) for p in params]
+        return [(p['name'], _argument(p, loader.cli_ctx, core_kinds)) for p in params]
     kwargs = {}
     dep = meta.get('deprecate_info')
     if isinstance(dep, dict):
@@ -445,9 +489,10 @@ def _metadata_loader_class(build_table):
     return MetadataCommandsLoader
 
 
-def metadata_loader_factory(extension_name, commands):
-    """Return a factory that builds a commands loader serving one extension's published metadata."""
+def metadata_loader_factory(extension_name, commands, core_kinds=None):
+    """Return a factory that builds a commands loader serving one extension's published metadata. core_kinds maps
+    a command name to how core's own parser reads that command's options (for a core command it changes)."""
     def build(loader, _args):
         for name, meta in commands.items():
-            yield name, _meta_command(loader, name, meta, extension_name)
+            yield name, _meta_command(loader, name, meta, extension_name, (core_kinds or {}).get(name))
     return _metadata_loader_class(build)

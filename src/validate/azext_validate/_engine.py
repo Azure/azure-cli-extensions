@@ -63,6 +63,7 @@ class Outcome:  # pylint: disable=too-many-instance-attributes
         self.blocked_unknown = False
         self.failed_extensions = []   # installed extensions that failed to load during a blocked load (internal)
         self.known_options = frozenset()  # option strings of the parsed command's parser (internal)
+        self.option_kinds = {}        # option string -> 'flag' or nargs, from the command's parser (internal)
 
     def fail(self, finding):
         self.status = 'invalid'
@@ -907,12 +908,23 @@ def parse_command(inner, args, loader_factory=None):  # pylint: disable=too-many
             out.blocked.extend(guard.violations)
             out.parameters = _used_parameters(cmd_parser or parser, args)
             out.known_options = frozenset(getattr(cmd_parser or parser, '_option_string_actions', {}))
+            out.option_kinds = _option_kinds(cmd_parser)
             _placeholder_info(out, parser, cmd_parser)
     if out.status is None:
         out.status = 'valid'
         if cmd_obj is not None and namespace is not None:
             _command_warnings(inner, cmd_obj, namespace, out)
     return out
+
+
+def _option_kinds(cmd_parser):
+    """How the command's parser reads each option: 'flag' if it takes no value, else its nargs (None is exactly
+    one value). Preview, deprecation and our own wrappers subclass the original action, so isinstance sees them."""
+    kinds = {}
+    for opt, action in getattr(cmd_parser, '_option_string_actions', {}).items():
+        flag = isinstance(action, (argparse._StoreConstAction, argparse._CountAction)) or action.nargs == 0  # pylint: disable=protected-access
+        kinds[opt] = 'flag' if flag else action.nargs
+    return kinds
 
 
 def _required_args(cmd):

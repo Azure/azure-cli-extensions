@@ -9,8 +9,8 @@ import time
 
 from . import _sandbox, _shell
 from ._engine import (Finding, Outcome, InnerCli, build_args, parse_command, PlaceholderArg)
-from ._extmeta import (MetadataStore, MetadataUnavailable, metadata_loader_factory, _extensions_under, _may_be_flag,
-                       _core_injected_options)
+from ._extmeta import (MetadataStore, MetadataUnavailable, metadata_loader_factory, _extensions_under,
+                       _core_injected_options, _all_options, ambiguous_option, option_name)
 
 SCHEMA_VERSION = '1.0'
 _UNKNOWN_CODES = ('UnknownCommand', 'MissingSubcommand')
@@ -42,10 +42,10 @@ def _run_parallel(fn, items, timeout):
         t.join(max(0.0, deadline - time.monotonic()))
 
 
-def _relax_flag_positionals(out, meta, args):
-    """Published metadata doesn't say which options are flags, so an option that may be one is built to
-    take an optional value, and a flag just before a positional argument takes it. If that may have
-    happened, don't report the positional as missing."""
+def _relax_flag_positionals(out, meta, args, core_kinds=None):
+    """Published metadata doesn't say which options are flags, so an option that may be one (and that core
+    doesn't define) is built to take an optional value, and a flag just before a positional argument takes it.
+    If that may have happened, don't report the positional as missing."""
     if not isinstance(meta, dict) or out.status != 'invalid':
         return
     params = [p for p in meta.get('parameters') or [] if isinstance(p, dict) and p.get('name')]
@@ -54,7 +54,7 @@ def _relax_flag_positionals(out, meta, args):
     for p in params:
         opts = [o for o in p.get('options') or [] if isinstance(o, str)]
         all_options.update(opts)
-        if opts and p['name'] != 'yes' and _may_be_flag(p):
+        if opts and ambiguous_option(p, core_kinds):
             maybe_flag.update(opts)
 
     def resolve(token):
@@ -97,13 +97,7 @@ def _option_groups(meta, name):
     if not isinstance(meta, dict):
         return []
     params = [p for p in meta.get('parameters') or [] if isinstance(p, dict) and p.get('name')]
-    groups = []
-    for p in params:
-        opts = [o for o in p.get('options') or [] if isinstance(o, str)]
-        opts += [d['target'] for d in p.get('options_deprecate_info') or []
-                 if isinstance(d, dict) and isinstance(d.get('target'), str) and d['target'] not in opts]
-        if opts:
-            groups.append(opts)
+    groups = [g for g in (_all_options(p) for p in params) if g]
     for opt in sorted(_core_injected_options(name or '', params)):
         if not any(opt in g for g in groups):
             groups.append([opt])
@@ -138,8 +132,54 @@ def _extension_only_value_errors(meta_out, groups, resolved, args, local):
                 names.update(_match_option(a[:2], groups) or [])
     seen = _atoms(local.errors)
     return [e for e in meta_out.errors
-            if e['code'] in ('MissingValue', 'InvalidValue', 'InvalidChoice') and e.get('parameter') in names and
-            (e['code'], e['parameter']) not in seen]
+            if e['code'] in ('MissingValue', 'InvalidValue', 'InvalidChoice', 'UnexpectedValue') and
+            e.get('parameter') in names and (e['code'], e['parameter']) not in seen]
+
+
+def _unplaced_values(meta_out, remaining, local):
+    """Values that metadata can't place, when core's remaining errors don't report any. Core only counts a stray
+    value next to an option it doesn't know, or reads it as that option's value, so its error about the option
+    may be resolved by the extension while the value is still wrong. Values next to an option that core knows but
+    metadata doesn't are core's to place, so they don't count."""
+    if any(e['code'] == 'UnrecognizedArgument' and (e.get('unexpectedValues') or not e.get('parameters'))
+           for e in remaining):
+        return []
+    count = sum(e.get('unexpectedValues') or 0 for e in meta_out.errors if e['code'] == 'UnrecognizedArgument' and
+                not set(e.get('parameters') or ()) & local.known_options)
+    if not count:
+        return []
+    return [Finding('UnrecognizedArgument', 'Unexpected value(s) that do not belong to any argument.',
+                    unexpectedValues=count)]
+
+
+_BOOLEAN_WORDS = ('true', 'false', 'yes', 'no')
+
+
+def _possible_flag_values(meta, args, core_kinds, ext):
+    """Warn about an option that neither metadata nor core defines precisely when a boolean word follows it: if
+    the option is a flag, the CLI rejects that word. Only metadata's option names are reported, never values."""
+    if not isinstance(meta, dict):
+        return []
+    params = [p for p in meta.get('parameters') or [] if isinstance(p, dict) and p.get('name') and p.get('options')]
+    groups = [_all_options(p) for p in params]
+    found = []
+    for i, a in enumerate(args):
+        if not isinstance(a, str) or isinstance(a, PlaceholderArg) or not a.startswith('-'):
+            continue
+        token, eq, attached = a.partition('=')
+        group = _match_option(token, groups)
+        param = next((p for p, g in zip(params, groups) if g is group), None)
+        if param is None or not ambiguous_option(param, core_kinds):
+            continue
+        value = attached if eq else (args[i + 1] if i + 1 < len(args) else None)
+        if not isinstance(value, str) or isinstance(value, PlaceholderArg) or value.lower() not in _BOOLEAN_WORDS:
+            continue
+        name = option_name(param)
+        if all(f['parameter'] != name for f in found):
+            found.append(Finding('PossibleFlagValue', "Published metadata for extension {} doesn't say whether {} "
+                                 "takes a value. If it's a flag, remove the value after it.".format(ext, name),
+                                 parameter=name, extension=ext))
+    return found
 
 
 def _drop_incomplete_subcommand_lists(local, kind, value):
@@ -403,13 +443,18 @@ class Validator:  # pylint: disable=too-many-instance-attributes
             new.source = 'extension:' + ext
             return new
         self.metadata_used[ext] = version
+        # For a core command the extension changes, options core also defines are read the way core reads them.
+        core_kinds = {local.command_name: local.option_kinds} if overlay else None
         try:
             meta_out = parse_command(self.inner, build_args(inv.words),
-                                     loader_factory=metadata_loader_factory(ext, commands))
+                                     loader_factory=metadata_loader_factory(ext, commands, core_kinds))
         except Exception as ex:  # pylint: disable=broad-except
             return Outcome().uncheck(Finding('InternalError', 'az validate could not check this command against '
                                              'extension metadata ({}).'.format(type(ex).__name__)))
-        _relax_flag_positionals(meta_out, commands.get(meta_out.command_name), build_args(inv.words))
+        meta = commands.get(meta_out.command_name)
+        kinds = (core_kinds or {}).get(meta_out.command_name)
+        _relax_flag_positionals(meta_out, meta, build_args(inv.words), kinds)
+        flag_values = _possible_flag_values(meta, build_args(inv.words), kinds, ext)
         meta_out.source = 'extension:' + ext
         meta_out.requires_extension = ext
         meta_out.extension_name = None
@@ -449,20 +494,25 @@ class Validator:  # pylint: disable=too-many-instance-attributes
                 remaining.append(e)
             params = sorted({p for _, p in resolved if p})
             remaining.extend(_extension_only_value_errors(meta_out, groups, resolved, build_args(inv.words), local))
+            remaining.extend(_unplaced_values(meta_out, remaining, local))
             local.errors = remaining
             local.status = 'invalid' if remaining else 'valid'
             local.requires_extension = ext
+            accepted = ', '.join(params) or 'this command as written'
             local.warnings.append(Finding(
-                'RequiresExtension', 'Extension {} (not installed; az installs it on first use) accepts {}, '
-                'which core alone rejects.'.format(ext, ', '.join(params) or 'this command'), extension=ext,
+                'RequiresExtension', "Extension {0} isn't installed; it accepts {1}, which core alone rejects. "
+                'Install it with az extension add --name {0}.'.format(ext, accepted), extension=ext,
                 parameters=params))
+            local.warnings.extend(flag_values)
             local.info.append(limits)
             local.parameters = meta_out.parameters or local.parameters
             if local.status == 'valid':
                 local.placeholders = meta_out.placeholders or local.placeholders
             return local
+        meta_out.warnings.extend(flag_values)
         meta_out.info.append(Finding('ExtensionNotInstalled', 'The command comes from extension {}; az installs '
-                                     'it on first use.'.format(ext), extension=ext, version=version))
+                                     'it on first use, and may ask first.'.format(ext), extension=ext,
+                                     version=version))
         meta_out.info.append(limits)
         return meta_out
 

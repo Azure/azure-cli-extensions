@@ -29,7 +29,8 @@ _GRAPH = {'module_name': 'resource-graph', 'name': 'resource-graph', 'commands':
         {'name': 'mode', 'options': ['--mode'], 'choices': ['Fast', 'Full']},
         {'name': 'allow_partial', 'options': ['--allow-partial'], 'type': 'bool', 'nargs': '?',
          'choices': ['false', 'true']},
-        {'name': 'include_hidden', 'options': ['--include-hidden'], 'type': 'bool'}]}, 'graph build': {
+        {'name': 'include_hidden', 'options': ['--include-hidden'], 'type': 'bool'},
+        {'name': 'strict', 'options': ['--strict'], 'action': 'store_true'}]}, 'graph build': {
     'name': 'graph build', 'parameters': [
         {'name': 'registry_name', 'options': ['--registry', '-r'], 'required': True},
         {'name': 'tag', 'options': ['--tag', '-t']},
@@ -47,9 +48,26 @@ _AKS_PREVIEW = {'module_name': 'aks-preview', 'name': 'aks-preview', 'commands':
          'options_deprecate_info': [{'target': '--preview-cnt', 'redirect': '--preview-count'}]},
         {'name': 'preview_tier', 'options': ['--preview-tier', '--tier-preview'], 'choices': ['Basic', 'Premium'],
          'options_deprecate_info': [{'target': '--tier-preview', 'redirect': '--preview-tier'}]},
-        {'name': 'enable_preview_feature', 'options': ['--enable-preview-feature']}]}}, 'sub_groups': {}}
+        {'name': 'enable_preview_feature', 'options': ['--enable-preview-feature']},
+        # Published metadata has only name and options for flags, for options core also defines too.
+        {'name': 'generate_ssh_keys', 'options': ['--generate-ssh-keys']},
+        {'name': 'os_sku', 'options': ['--os-sku'], 'choices': ['Ubuntu', 'AzureLinux', 'AzvSyntheticSku']},
+        {'name': 'preview_strict', 'options': ['--preview-strict'], 'action': 'store_true'}]}, 'aks update': {
+    'name': 'aks update', 'parameters': [
+        {'name': 'resource_group_name', 'options': ['--resource-group', '-g'], 'required': True},
+        {'name': 'name', 'options': ['--name', '-n'], 'required': True},
+        {'name': 'enable_managed_identity', 'options': ['--enable-managed-identity']},
+        {'name': 'enable_preview_backup', 'options': ['--enable-preview-backup']}]}}, 'sub_groups': {}}
+_STORAGE_PREVIEW = {'module_name': 'storage-preview', 'name': 'storage-preview', 'commands': {
+    'storage account update': {'name': 'storage account update', 'parameters': [
+        {'name': 'account_name', 'options': ['--name', '-n'], 'required': True},
+        {'name': 'resource_group_name', 'options': ['--resource-group', '-g']},
+        {'name': 'custom_domain', 'options': ['--custom-domain']},
+        {'name': 'enable_large_file_share', 'options': ['--enable-large-file-share']},
+        {'name': 'enable_preview_sftp', 'options': ['--enable-preview-sftp']}]}}, 'sub_groups': {}}
 _INDEX = {'graph': {'query': 'resource-graph', 'build': 'resource-graph', 'old': 'resource-graph'},
-          'aks': {'create': 'aks-preview'}}
+          'aks': {'create': 'aks-preview', 'update': 'aks-preview'},
+          'storage': {'account': {'update': 'storage-preview'}}}
 
 
 def _responses(**extra):
@@ -61,6 +79,8 @@ def _responses(**extra):
         _EXT_URL + '/ext-resource-graph/az_resource-graph_meta_2.1.0.json': _GRAPH,
         _EXT_URL + '/ext-aks-preview/version_list.txt': 'az_aks-preview_meta_9.0.0b1.json\n',
         _EXT_URL + '/ext-aks-preview/az_aks-preview_meta_9.0.0b1.json': _AKS_PREVIEW,
+        _EXT_URL + '/ext-storage-preview/version_list.txt': 'az_storage-preview_meta_1.0.0b8.json\n',
+        _EXT_URL + '/ext-storage-preview/az_storage-preview_meta_1.0.0b8.json': _STORAGE_PREVIEW,
     }
     responses.update(extra)
     return responses
@@ -206,6 +226,118 @@ class TestUninstalledExtensions(MetadataTestBase):
             json.dump({'commands': {}}, f)
         _, r = self.one("az graph query -q 'x'")
         self.assertEqual(r['status'], 'valid')
+
+
+def _errors(result):
+    return [(e['code'], e.get('parameter') or e.get('parameters')) for e in result['errors']]
+
+
+def _codes(items):
+    return [x['code'] for x in items]
+
+
+class TestFlagsFromMetadata(MetadataTestBase):
+    """Published metadata doesn't say which options are flags. Options core also defines are read the way core
+    reads them; a flag action in metadata is a flag; other untyped options may be flags."""
+
+    def test_core_flag_given_a_value_is_invalid(self):
+        for command in ('az storage account update -n st -g rg --enable-large-file-share true',
+                        'az aks create -g rg -n aks --generate-ssh-keys true',
+                        'az aks update -g rg -n aks --enable-managed-identity true'):
+            _, r = self.one(command)
+            self.assertEqual((r['status'], r['source']), ('invalid', 'core'), command)
+            self.assertEqual(_errors(r), [('UnrecognizedArgument', None)], command)
+            self.assertNotIn('RequiresExtension', _codes(r['warnings']), command)
+        # The same stray value, with an option only the extension has: core only counts the value, or reads it as
+        # the unknown option's value, so the extension resolves core's error but the value is still wrong.
+        for command in ('az aks update -g rg -n aks --enable-managed-identity true --enable-preview-backup',
+                        'az storage account update -n st -g rg --enable-large-file-share true --enable-preview-sftp',
+                        'az aks create -g rg -n aks --generate-ssh-keys true --enable-preview-feature',
+                        'az aks create -g rg -n aks --enable-preview-feature --generate-ssh-keys true',
+                        'az aks create -g rg -n aks --preview-strict --generate-ssh-keys true',
+                        'az aks create -g rg -n aks --preview-strict -1',
+                        'az aks create -g rg -n aks --enable-preview-feature v stray'):
+            _, r = self.one(command)
+            self.assertEqual((r['status'], r['source'], r['requiresExtension']), ('invalid', 'core', 'aks-preview'
+                                                                                  if 'aks' in command else
+                                                                                  'storage-preview'), command)
+            self.assertEqual(_errors(r), [('UnrecognizedArgument', None)], command)
+        _, r = self.one('az aks create -g rg -n aks --generate-ssh-keys=true --enable-preview-feature')
+        self.assertEqual(_errors(r), [('UnexpectedValue', '--generate-ssh-keys')])
+        # Without a value, and with core's value options, they stay valid when the extension is involved.
+        for command in ('az storage account update -n st -g rg --enable-large-file-share',
+                        'az storage account update -n st -g rg --tags a=1 b=2 --enable-preview-sftp',
+                        'az storage account update -n st -g rg --enable-large-file-share --enable-preview-sftp',
+                        'az storage account update -n st -g rg --custom-domain contoso.com',
+                        'az storage account update -n st -g rg --custom-domain contoso.com --enable-preview-sftp',
+                        'az aks create -g rg -n aks --generate-ssh-keys --enable-preview-feature',
+                        'az aks update -g rg -n aks --enable-managed-identity --enable-preview-backup',
+                        'az aks create -g rg -n aks --os-sku AzvSyntheticSku'):
+            _, r = self.one(command)
+            self.assertEqual(r['status'], 'valid', (command, r))
+        _, r = self.one('az aks create -g rg -n aks --os-sku AzvSyntheticSku')
+        self.assertEqual(r['warnings'][0]['parameters'], ['--os-sku'])
+
+    def test_extension_only_option_followed_by_boolean(self):
+        for command, param, ext, value in (('az aks create -g rg -n aks --enable-preview-feature tRuE',
+                                            '--enable-preview-feature', 'aks-preview', 'tRuE'),
+                                           ('az aks update -g rg -n aks --enable-preview-backup=nO',
+                                            '--enable-preview-backup', 'aks-preview', 'nO'),
+                                           ("az graph query -q 'x' --include-hidden yEs", '--include-hidden',
+                                            'resource-graph', 'yEs')):
+            code, doc, text = run_validate('--command', command)
+            self.assertEqual(code, 0)
+            r = doc['results'][0]
+            self.assertEqual(r['status'], 'valid', command)
+            flag = [w for w in r['warnings'] if w['code'] == 'PossibleFlagValue']
+            self.assertEqual([(w['parameter'], w['extension']) for w in flag], [(param, ext)], command)
+            self.assertEqual(flag[0]['message'], "Published metadata for extension {} doesn't say whether {} takes "
+                             "a value. If it's a flag, remove the value after it.".format(ext, param))
+            self.assertNotIn(value, text)
+        for command in ('az aks create -g rg -n aks --enable-preview-feature v2',
+                        'az aks create -g rg -n aks --enable-preview-feature "$X"',
+                        'az aks create -g rg -n aks --generate-ssh-keys --enable-preview-feature',
+                        'az storage account update -n st -g rg --custom-domain true --enable-preview-sftp',
+                        "az graph query -q 'x' --include-hidden"):
+            _, r = self.one(command)
+            self.assertEqual(r['status'], 'valid', command)
+            self.assertNotIn('PossibleFlagValue', _codes(r['warnings']), command)
+
+    def test_flag_action_in_metadata(self):
+        for command, errors in (("az graph query -q 'x' --strict true", [('UnrecognizedArgument', None)]),
+                                ("az graph query -q 'x' --strict=true", [('UnexpectedValue', '--strict')]),
+                                ('az aks create -g rg -n aks --preview-strict true', [('UnrecognizedArgument', None)]),
+                                ('az aks create -g rg -n aks --preview-strict=true',
+                                 [('UnexpectedValue', '--preview-strict')])):
+            _, r = self.one(command)
+            self.assertEqual((r['status'], _errors(r)), ('invalid', errors), command)
+            self.assertNotIn('PossibleFlagValue', _codes(r['warnings']), command)
+        for command in ("az graph query -q 'x' --strict", 'az aks create -g rg -n aks --preview-strict'):
+            _, r = self.one(command)
+            self.assertEqual(r['status'], 'valid', command)
+
+    def test_messages_about_installing(self):
+        _, r = self.one('az aks create -g rg -n aks --enable-preview-feature')
+        self.assertEqual(r['warnings'][0]['message'], "Extension aks-preview isn't installed; it accepts "
+                         '--enable-preview-feature, which core alone rejects. Install it with '
+                         'az extension add --name aks-preview.')
+        _, r = self.one("az graph query -q 'x'")
+        self.assertEqual(r['info'][0]['message'], 'The command comes from extension resource-graph; az installs '
+                         'it on first use, and may ask first.')
+
+    def test_relax_flag_positionals_uses_core_kinds(self):
+        from azext_validate._engine import Finding, Outcome
+        meta = {'parameters': [{'name': 'source'}, {'name': 'opt', 'options': ['--opt']}]}
+        args = ['thing', 'make', '--opt', 'v']
+
+        def relaxed(*core_kinds):
+            out = Outcome().fail(Finding('MissingRequiredArgument', 'Missing required arguments: <SOURCE>.',
+                                         parameters=['<SOURCE>']))
+            _validator._relax_flag_positionals(out, meta, args, *core_kinds)
+            return out.status
+        self.assertEqual(relaxed(), 'valid')
+        self.assertEqual(relaxed({'--opt': None}), 'invalid')
+        self.assertEqual(relaxed({'--opt': 'flag'}), 'invalid')
 
 
 # Commands of synthetic extensions that can't be installed anywhere (machines may have real extensions).
