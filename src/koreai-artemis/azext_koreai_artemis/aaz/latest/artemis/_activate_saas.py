@@ -54,11 +54,14 @@ class ActivateSaas(AAZCommand):
             help="Publisher Id for the marketplace offer.",
             required=True,
         )
-        _args_schema.saas_guid = AAZUuidArg(
+        _args_schema.saas_guid = AAZStrArg(
             options=["--saas-guid"],
             arg_group="Body",
             help="SaaS subscription identifier (GUID) issued by the Azure Marketplace fulfillment API.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            ),
         )
         return cls._args_schema
 
