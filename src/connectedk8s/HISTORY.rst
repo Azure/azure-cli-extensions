@@ -5,6 +5,7 @@ Release History
 1.11.6
 ++++++
 * Update the cluster prediagnostics image to 1.39.3.
+* Continue onboarding when the prediagnostics image falsely reports correctly owned Azure Arc CRDs as ownership conflicts.
 
 1.11.5
 +++++++
