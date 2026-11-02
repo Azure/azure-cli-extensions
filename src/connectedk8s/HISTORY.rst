@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.11.6
+++++++
+* Update the cluster prediagnostics image to 1.39.3.
+
 1.11.5
 +++++++
 * Update the cluster prediagnostics image to 1.38.0 to handle endpoint redirects in strict outbound allowlist and AGC scenarios.
