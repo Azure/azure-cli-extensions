@@ -15,7 +15,7 @@ from unittest import mock
 
 from azext_networkcloud.operations import custom_properties as output
 from azure.cli.core.aaz._base import AAZUndefined
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import AzureInternalError, InvalidArgumentValueError
 
 HOST = "results.blob.core.windows.net"
 URL = f"https://{HOST}/results/output.tar.gz?sig=example"
@@ -65,6 +65,53 @@ class TestArchiveOutput(unittest.TestCase):
     def test_download_without_checksum(self):
         output._download_and_extract(URL, self.destination, HOST)
         self.assertEqual(Path(self.destination, "result.txt").read_bytes(), b"result")
+
+    def test_truncated_gzip_rejected_before_extraction(self):
+        for missing_bytes in (1, 8, len(self.archive) // 2):
+            truncated = self.archive[:-missing_bytes]
+            for digest in (None, hashlib.sha256(truncated).hexdigest()):
+                with self.subTest(missing_bytes=missing_bytes, digest=digest):
+                    self.opener.open.return_value = io.BytesIO(truncated)
+                    with mock.patch.object(
+                        output.CustomActionProperties, "safe_extract"
+                    ) as extract:
+                        with self.assertRaisesRegex(
+                            tarfile.ReadError, "Incomplete gzip result archive"
+                        ) as error:
+                            self.download(digest=digest)
+                        self.assertIsInstance(error.exception.__cause__, EOFError)
+                        extract.assert_not_called()
+                    self.assertEqual(os.listdir(self.destination), [])
+
+    def test_truncated_gzip_is_handled_for_both_result_properties(self):
+        for property_name in ("resultUrl", "resultRef"):
+            cmd = mock.Mock()
+            args = cmd.ctx.args
+            args.output = self.destination
+            args.expected_storage_host.to_serialized_data.return_value = HOST
+            args.expected_sha256 = AAZUndefined
+            properties = cmd.ctx.vars.instance.properties
+            properties.output_head = AAZUndefined
+            properties.resultUrl = AAZUndefined
+            properties.resultRef = AAZUndefined
+            value = mock.Mock()
+            value.to_serialized_data.return_value = URL
+            setattr(properties, property_name, value)
+            self.opener.open.return_value = io.BytesIO(self.archive[:-8])
+            with self.subTest(property_name=property_name), mock.patch.object(
+                output, "Profile"
+            ) as profile:
+                profile.return_value.get_raw_token.return_value = (
+                    ("Bearer", "storage-token", {}),
+                    "subscription",
+                    "tenant",
+                )
+                with self.assertRaisesRegex(
+                    AzureInternalError, "Incomplete gzip result archive"
+                ) as error:
+                    output.CustomActionProperties._output(cmd)
+                self.assertIsInstance(error.exception.__cause__, tarfile.ReadError)
+                self.assertEqual(os.listdir(self.destination), [])
 
     def test_optional_checksum_does_not_bypass_host_validation(self):
         with self.assertRaises(InvalidArgumentValueError):
@@ -248,29 +295,41 @@ class TestArchiveOutput(unittest.TestCase):
                         self.extract([(member, None)], legacy)
         self.assertEqual(os.listdir(self.destination), [])
 
-    def test_legacy_rejects_symbolic_and_hard_links(self):
-        for entry_type in (tarfile.SYMTYPE, tarfile.LNKTYPE):
-            member = tarfile.TarInfo("link")
-            member.type = entry_type
+    def test_rejects_symbolic_and_hard_links_before_extraction(self):
+        for legacy in (False, True):
+            for entry_type in (tarfile.SYMTYPE, tarfile.LNKTYPE):
+                for target in ("result.txt", "../outside"):
+                    member = tarfile.TarInfo("link")
+                    member.type = entry_type
+                    member.linkname = target
+                    with self.subTest(
+                        legacy=legacy, entry_type=entry_type, target=target
+                    ):
+                        with self.assertRaisesRegex(ValueError, "links and special"):
+                            self.extract([regular_file(), (member, None)], legacy)
+                        self.assertEqual(os.listdir(self.destination), [])
+
+    def test_hard_link_fallback_copies_rejected_before_extraction(self):
+        payload = b"x" * (32 * 1024)
+        members = [regular_file(content=payload)]
+        for index in range(3):
+            name = f"copy-{index}"
+            members.append(regular_file(name, b""))
+            member = tarfile.TarInfo(name)
+            member.type = tarfile.LNKTYPE
             member.linkname = "result.txt"
-            with self.subTest(entry_type=entry_type):
+            members.append((member, None))
+        limit = 64 * 1024
+        self.assertLess(len(make_archive(members)), limit)
+        self.assertLess(sum(member.size for member, _ in members), limit)
+        self.assertGreater(len(payload) * 4, limit)
+        for legacy in (False, True):
+            with self.subTest(legacy=legacy), mock.patch.object(
+                output, "MAX_ARCHIVE_BYTES", limit
+            ):
                 with self.assertRaisesRegex(ValueError, "links and special"):
-                    self.extract([regular_file(), (member, None)], legacy=True)
-        self.assertEqual(os.listdir(self.destination), [])
-
-    def test_data_filter_blocks_escaping_link(self):
-        member = tarfile.TarInfo("link")
-        member.type = tarfile.SYMTYPE
-        member.linkname = "../outside"
-        with self.assertRaises(tarfile.TarError):
-            self.extract([(member, None)])
-
-    def test_data_filter_permits_safe_link(self):
-        member = tarfile.TarInfo("link")
-        member.type = tarfile.SYMTYPE
-        member.linkname = "result.txt"
-        self.extract([regular_file(), (member, None)])
-        self.assertEqual(Path(self.destination, "link").read_bytes(), b"result")
+                    self.extract(members, legacy)
+                self.assertEqual(os.listdir(self.destination), [])
 
     def test_legacy_resolves_existing_destination_symlinks(self):
         with tempfile.TemporaryDirectory() as outside:

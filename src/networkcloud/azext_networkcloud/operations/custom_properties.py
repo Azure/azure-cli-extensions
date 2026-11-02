@@ -115,8 +115,11 @@ def _download_and_extract(
             )
         downloaded.seek(0)
         with tempfile.TemporaryFile() as decompressed:
-            with gzip.GzipFile(fileobj=downloaded, mode="rb") as compressed:
-                _copy_bounded(compressed, decompressed)
+            try:
+                with gzip.GzipFile(fileobj=downloaded, mode="rb") as compressed:
+                    _copy_bounded(compressed, decompressed)
+            except EOFError as ex:
+                raise tarfile.ReadError("Incomplete gzip result archive") from ex
             decompressed.seek(0)
             with tarfile.open(fileobj=decompressed, mode="r:") as archive:
                 CustomActionProperties.safe_extract(archive, output_directory)
@@ -216,10 +219,11 @@ class CustomActionProperties:
                 raise ValueError(
                     f"Path traversal detected: {member_path} is outside target directory {path}"
                 )
+            # tarfile can copy link targets when link creation fails.
+            if not (member.isfile() or member.isdir()):
+                raise ValueError("Archive links and special entries are not permitted")
             if data_filter is not None:
                 data_filter(member, path)
-            elif not (member.isfile() or member.isdir()):
-                raise ValueError("Archive links and special entries are not permitted")
             members.append(member)
         if data_filter is not None:
             tar.extractall(path, members=members, filter="data")
