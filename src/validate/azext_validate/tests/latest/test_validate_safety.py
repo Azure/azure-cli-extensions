@@ -326,6 +326,15 @@ class TestS9NoValueEcho(SafetyTestBase):
             self.assertNotIn(s, err.getvalue())
         self.assertEqual([e['code'] for e in doc['results'][5]['errors']], ['MissingValue'])
 
+    def test_ambiguous_option_value_not_echoed(self):
+        # argparse puts the whole '--option=value' token in its "ambiguous option" message.
+        secret = 'Hunter2SECRET9'
+        code, doc, text = run_validate('--command', 'az vm create -g rg -n vm --image x --admin=' + secret)
+        self.assertEqual(code, 0)
+        self.assertNotIn(secret, text)
+        err = doc['results'][0]['errors'][0]
+        self.assertEqual((err['code'], err['parameter']), ('AmbiguousArgument', '--admin'))
+
 
 class TestS10Bounded(SafetyTestBase):
     def test_hanging_metadata_server_is_bounded(self):

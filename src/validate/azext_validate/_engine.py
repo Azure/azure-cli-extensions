@@ -418,8 +418,12 @@ def _classify_argparse_message(message, parser):
     m = _AMBIG_RE.match(message)
     if m:
         matches = [x.strip() for x in m.group(2).split(',')]
-        return Finding('AmbiguousArgument', "'{}' could match more than one argument.".format(m.group(1)),
-                       parameter=m.group(1), suggestions=matches[:3], matches=matches)
+        # argparse reports the whole token, so '--opt=value' would carry the value: report only the option name.
+        name = m.group(1).split('=', 1)[0]
+        name = name if _OPTION_NAME_RE.match(name) else None
+        return Finding('AmbiguousArgument', "'{}' could match more than one argument.".format(name) if name else
+                       'An option could match more than one argument.', parameter=name, suggestions=matches[:3],
+                       matches=matches)
     m = _ARG_RE.match(message)
     if m:
         name, detail = m.group(1), m.group(2)
