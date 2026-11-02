@@ -180,7 +180,8 @@ class TestFrontendDataset(unittest.TestCase):
                 dek_secret_id=None,
                 kek_keyvault_url=None,
                 kek_secret_id=None,
-                kek_maa_url=None)
+                kek_authority_type=None,
+                kek_authority_endpoint=None)
 
         # Verify
         self.assertEqual(result["datasetId"], "test-dataset-123")
@@ -240,7 +241,8 @@ class TestFrontendDataset(unittest.TestCase):
                 dek_secret_id="dek-secret-123",
                 kek_keyvault_url="https://mykeyvault.vault.azure.net",
                 kek_secret_id="kek-secret-123",
-                kek_maa_url="https://sharedeus.eus.attest.azure.net")
+                kek_authority_type="MAA",
+                kek_authority_endpoint="https://sharedeus.eus.attest.azure.net")
 
         # Verify
         self.assertEqual(result["datasetId"], "test-dataset-cpk")
@@ -255,6 +257,106 @@ class TestFrontendDataset(unittest.TestCase):
             "https://mykeyvault.vault.azure.net")
         self.assertIn("kek", body)
         self.assertEqual(body["kek"]["secretId"], "kek-secret-123")
+        self.assertEqual(
+            body["kek"]["authority"],
+            {"type": "MAA", "endpoint": "https://sharedeus.eus.attest.azure.net"})
+        # Deprecated maaUrl is still sent for MAA for backward compatibility.
+        self.assertEqual(
+            body["kek"]["maaUrl"], "https://sharedeus.eus.attest.azure.net")
+
+    def _publish_cpk(self, mock_get_client, **kek_authority_kwargs):
+        mock_client = Mock()
+        mock_client.collaboration.analytics_datasets_document_id_publish_post.return_value = {}
+        mock_get_client.return_value = mock_client
+
+        test_schema = {"fields": [{"fieldName": "id", "fieldType": "string"}]}
+        with patch('builtins.open', unittest.mock.mock_open(read_data=json.dumps(test_schema))):
+            frontend_collaboration_dataset_publish(
+                cmd=Mock(),
+                collaboration_id="test-collab-123",
+                document_id="test-dataset-cpk",
+                storage_account_url="https://mystorageaccount.blob.core.windows.net",
+                container_name="datasets",
+                storage_account_type="AzureStorageAccount",
+                encryption_mode="CPK",
+                schema_file="@schema.json",
+                access_mode="ReadWrite",
+                identity_name="northwind-identity",
+                identity_client_id="fb907136-1234-5678-9abc-def012345678",
+                identity_tenant_id="72f988bf-1234-5678-9abc-def012345678",
+                identity_issuer_url="https://oidc.example.com/issuer",
+                dek_keyvault_url="https://mykeyvault.vault.azure.net",
+                dek_secret_id="dek-secret-123",
+                kek_keyvault_url="https://mykeyvault.vault.azure.net",
+                kek_secret_id="kek-secret-123",
+                **kek_authority_kwargs)
+
+        call_args = mock_client.collaboration.analytics_datasets_document_id_publish_post.call_args
+        return call_args[0][2]
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_publish_dataset_cpk_cgs_authority(self, mock_get_client):
+        """Test CPK publish with CGS authority sends authority and omits maaUrl"""
+        body = self._publish_cpk(mock_get_client, kek_authority_type="CGS")
+
+        self.assertEqual(body["kek"]["authority"], {"type": "CGS"})
+        self.assertNotIn("maaUrl", body["kek"])
+        self.assertNotIn("authority", body["dek"])
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_publish_dataset_cpk_authority_type_case_insensitive(self, mock_get_client):
+        """Test that authority type is normalized to upper case"""
+        body = self._publish_cpk(mock_get_client, kek_authority_type="cgs")
+
+        self.assertEqual(body["kek"]["authority"], {"type": "CGS"})
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_publish_dataset_cpk_endpoint_only_defaults_to_maa(self, mock_get_client):
+        """Test that an endpoint without a type (e.g. deprecated --kek-maa-url) implies MAA"""
+        body = self._publish_cpk(
+            mock_get_client,
+            kek_authority_endpoint="https://sharedeus.eus.attest.azure.net")
+
+        self.assertEqual(
+            body["kek"]["authority"],
+            {"type": "MAA", "endpoint": "https://sharedeus.eus.attest.azure.net"})
+        self.assertEqual(
+            body["kek"]["maaUrl"], "https://sharedeus.eus.attest.azure.net")
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_publish_dataset_cpk_maa_requires_endpoint(self, mock_get_client):
+        """Test that MAA authority without an endpoint is rejected"""
+        from azure.cli.core.util import CLIError
+
+        with self.assertRaises(CLIError) as context:
+            self._publish_cpk(mock_get_client, kek_authority_type="MAA")
+
+        self.assertIn("--kek-authority-endpoint is required", str(context.exception))
+        mock_get_client.return_value.collaboration \
+            .analytics_datasets_document_id_publish_post.assert_not_called()
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_publish_dataset_cpk_cgs_rejects_endpoint(self, mock_get_client):
+        """Test that CGS authority with an endpoint is rejected"""
+        from azure.cli.core.util import CLIError
+
+        with self.assertRaises(CLIError) as context:
+            self._publish_cpk(
+                mock_get_client,
+                kek_authority_type="CGS",
+                kek_authority_endpoint="https://sharedeus.eus.attest.azure.net")
+
+        self.assertIn("not supported when --kek-authority-type is CGS", str(context.exception))
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_publish_dataset_cpk_missing_authority(self, mock_get_client):
+        """Test that CPK mode requires a KEK authority"""
+        from azure.cli.core.util import CLIError
+
+        with self.assertRaises(CLIError) as context:
+            self._publish_cpk(mock_get_client)
+
+        self.assertIn("--kek-authority-type", str(context.exception))
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_publish_dataset_mutual_exclusion(self, mock_get_client):

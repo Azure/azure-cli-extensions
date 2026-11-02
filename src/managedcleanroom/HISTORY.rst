@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.0.0b11
+++++++++
+* Added CGS as a secure key release (SKR) authority for CPK datasets, aligned with the frontend ``2026-03-01-preview`` spec
+* Added: ``--kek-authority-type`` (``CGS``, ``MAA``) and ``--kek-authority-endpoint`` to ``az managedcleanroom frontend analytics dataset publish``. The KEK is sent with an ``authority`` object
+* Deprecated: ``--kek-maa-url`` on ``az managedcleanroom frontend analytics dataset publish``; use ``--kek-authority-type MAA --kek-authority-endpoint`` instead
+* ``az managedcleanroom frontend analytics skr-policy``: ``--dataset-id`` is now optional. Without it, the command returns the collaboration-level CGS SKR policy
+* Regenerated analytics frontend client: added ``collaboration.analytics_contract_skr_policy_get(collaboration_id)``
+
 1.0.0b10
 ++++++++
 * Regenerated the analytics frontend client from the latest ``2026-03-01-preview`` frontend spec

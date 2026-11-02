@@ -93,18 +93,23 @@ def frontend_collaboration_analytics_show(cmd, collaboration_id, api_version=Non
 
 
 def frontend_collaboration_analytics_skr_policy(
-    cmd, collaboration_id, dataset_id, api_version=None
+    cmd, collaboration_id, dataset_id=None, api_version=None
 ):
-    """Get SKR policy for a dataset in analytics workload
+    """Get SKR policy for the analytics workload
+
+    Without a dataset ID, returns the collaboration-level CGS SKR policy. With a dataset ID,
+    returns the dataset-scoped policy that follows the dataset KEK's authority (MAA or CGS).
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
-    :param dataset_id: Dataset identifier
+    :param dataset_id: Optional dataset identifier for the dataset-scoped policy
     :param api_version: API version to use for this request
-    :return: SKR policy for the dataset
+    :return: SKR policy
     """
     client = get_frontend_client(cmd, api_version=api_version)
-    return client.collaboration.analytics_skr_policy_get(collaboration_id, dataset_id)
+    if dataset_id:
+        return client.collaboration.analytics_skr_policy_get(collaboration_id, dataset_id)
+    return client.collaboration.analytics_contract_skr_policy_get(collaboration_id)
 
 
 # ============================================================================
@@ -264,7 +269,8 @@ def frontend_collaboration_dataset_publish(
     dek_secret_id=None,
     kek_keyvault_url=None,
     kek_secret_id=None,
-    kek_maa_url=None,
+    kek_authority_type=None,
+    kek_authority_endpoint=None,
     subdirectory=None,
     api_version=None,
 ):
@@ -290,7 +296,10 @@ def frontend_collaboration_dataset_publish(
     :param dek_secret_id: DEK secret ID (CPK mode)
     :param kek_keyvault_url: KEK Key Vault URL (CPK mode)
     :param kek_secret_id: KEK secret ID (CPK mode)
-    :param kek_maa_url: KEK MAA URL (CPK mode)
+    :param kek_authority_type: KEK secure key release authority type, CGS or MAA (CPK mode).
+        Defaults to MAA when only an endpoint is supplied.
+    :param kek_authority_endpoint: KEK authority endpoint; required for MAA, not
+        allowed for CGS (CPK mode). Also accepts the deprecated --kek-maa-url.
     :param subdirectory: Optional subdirectory/prefix inside the storage container
     :param api_version: API version to use for this request
     :return: Publish result
@@ -356,20 +365,23 @@ def frontend_collaboration_dataset_publish(
         raise CLIError(f"Missing required parameters: {missing_params}")
 
     # Validate CPK parameters if encryption_mode is CPK
+    kek_authority = None
     if encryption_mode and encryption_mode.upper() == "CPK":
         cpk_params = {
             "dek_keyvault_url": dek_keyvault_url,
             "dek_secret_id": dek_secret_id,
             "kek_keyvault_url": kek_keyvault_url,
             "kek_secret_id": kek_secret_id,
-            "kek_maa_url": kek_maa_url,
         }
         missing_cpk = [k for k, v in cpk_params.items() if v is None]
+        if not kek_authority_type and not kek_authority_endpoint:
+            missing_cpk.append("kek_authority_type")
         if missing_cpk:
             missing_cpk_params = ", ".join(
                 f"--{k.replace('_', '-')}" for k in missing_cpk
             )
             raise CLIError(f"CPK encryption mode requires: {missing_cpk_params}")
+        kek_authority = _build_skr_authority(kek_authority_type, kek_authority_endpoint)
 
     # Load schema from file (handle Azure CLI auto-loading)
     schema_content = None
@@ -437,18 +449,52 @@ def frontend_collaboration_dataset_publish(
     }
 
     # Add DEK/KEK for CPK mode
-    if encryption_mode and encryption_mode.upper() == "CPK":
+    if kek_authority is not None:
         body["dek"] = {"keyVaultUrl": dek_keyvault_url, "secretId": dek_secret_id}
         body["kek"] = {
             "keyVaultUrl": kek_keyvault_url,
             "secretId": kek_secret_id,
-            "maaUrl": kek_maa_url,
+            "authority": kek_authority,
         }
+        # maaUrl is deprecated but still sent for MAA so older frontends keep working.
+        if kek_authority["type"] == "MAA":
+            body["kek"]["maaUrl"] = kek_authority["endpoint"]
 
     client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_datasets_document_id_publish_post(
         collaboration_id, document_id, body
     )
+
+
+def _build_skr_authority(authority_type, authority_endpoint):
+    """Build the SkrAuthority payload for a dataset encryption secret.
+
+    :param authority_type: CGS or MAA (case-insensitive). Defaults to MAA when only an
+        endpoint is supplied.
+    :param authority_endpoint: Authority endpoint; required for MAA, not allowed for CGS.
+    :return: Dict with ``type`` and, for MAA, ``endpoint``.
+    """
+    from azure.cli.core.util import CLIError
+
+    normalized_type = (authority_type or "MAA").upper()
+    if normalized_type not in ("CGS", "MAA"):
+        raise CLIError(
+            f"Invalid --kek-authority-type '{authority_type}'. Allowed values: CGS, MAA."
+        )
+
+    if normalized_type == "CGS":
+        if authority_endpoint:
+            raise CLIError(
+                "--kek-authority-endpoint (or --kek-maa-url) is not supported when "
+                "--kek-authority-type is CGS."
+            )
+        return {"type": "CGS"}
+
+    if not authority_endpoint:
+        raise CLIError(
+            "--kek-authority-endpoint is required when --kek-authority-type is MAA."
+        )
+    return {"type": "MAA", "endpoint": authority_endpoint}
 
 
 def frontend_collaboration_dataset_queries_list(

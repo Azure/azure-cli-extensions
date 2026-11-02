@@ -178,9 +178,16 @@ helps['managedcleanroom frontend analytics show'] = """
 
 helps['managedcleanroom frontend analytics skr-policy'] = """
     type: command
-    short-summary: Get SKR policy for a dataset
+    short-summary: Get the SKR (Secure Key Release) policy for the analytics workload
+    long-summary: |
+        Without --dataset-id, returns the collaboration-level CGS SKR policy. Use it to create
+        KEKs for datasets published with --kek-authority-type CGS.
+        With --dataset-id, returns the dataset-scoped policy based on the dataset KEK's
+        authority. This form is deprecated by the service and is retained for MAA-backed datasets.
     examples:
-        - name: Get SKR policy for a specific dataset
+        - name: Get the collaboration-level CGS SKR policy
+          text: az managedcleanroom frontend analytics skr-policy -c <collaboration-id>
+        - name: Get the SKR policy for a specific (MAA-backed) dataset
           text: az managedcleanroom frontend analytics skr-policy -c <collaboration-id> -d <dataset-id>
 """
 
@@ -421,9 +428,12 @@ helps['managedcleanroom frontend analytics dataset publish'] = """
         - name: --kek-secret-id
           type: string
           short-summary: KEK secret ID (CPK mode only)
-        - name: --kek-maa-url
+        - name: --kek-authority-type
           type: string
-          short-summary: MAA URL for KEK (CPK mode only)
+          short-summary: Attestation authority for KEK secure key release, CGS or MAA (CPK mode only)
+        - name: --kek-authority-endpoint
+          type: string
+          short-summary: Attestation authority endpoint for the KEK. Required for MAA, not allowed for CGS (CPK mode only)
         - name: --subdirectory
           type: string
           short-summary: Optional subdirectory/prefix inside the storage container to mount
@@ -444,7 +454,7 @@ helps['managedcleanroom frontend analytics dataset publish'] = """
               --identity-client-id fb907136-1234-5678-9abc-def012345678 \
               --identity-tenant-id 72f988bf-1234-5678-9abc-def012345678 \
               --identity-issuer-url https://oidc.example.com/issuer
-        - name: Publish a dataset using CPK encryption with individual parameters
+        - name: Publish a dataset using CPK encryption with CGS as the KEK authority
           text: |
             az managedcleanroom frontend analytics dataset publish \
               --collaboration-id my-collab-123 \
@@ -463,7 +473,28 @@ helps['managedcleanroom frontend analytics dataset publish'] = """
               --dek-secret-id dek-secret-123 \
               --kek-keyvault-url https://mykeyvault.vault.azure.net \
               --kek-secret-id kek-secret-123 \
-              --kek-maa-url https://sharedeus.eus.attest.azure.net
+              --kek-authority-type CGS
+        - name: Publish a dataset using CPK encryption with MAA as the KEK authority
+          text: |
+            az managedcleanroom frontend analytics dataset publish \
+              --collaboration-id my-collab-123 \
+              --document-id my-dataset \
+              --storage-account-url https://mystorageaccount.blob.core.windows.net \
+              --container-name datasets \
+              --storage-account-type AzureStorageAccount \
+              --encryption-mode CPK \
+              --schema-file @schema.json \
+              --access-mode ReadWrite \
+              --identity-name northwind-identity \
+              --identity-client-id fb907136-1234-5678-9abc-def012345678 \
+              --identity-tenant-id 72f988bf-1234-5678-9abc-def012345678 \
+              --identity-issuer-url https://oidc.example.com/issuer \
+              --dek-keyvault-url https://mykeyvault.vault.azure.net \
+              --dek-secret-id dek-secret-123 \
+              --kek-keyvault-url https://mykeyvault.vault.azure.net \
+              --kek-secret-id kek-secret-123 \
+              --kek-authority-type MAA \
+              --kek-authority-endpoint https://sharedeus.eus.attest.azure.net
         - name: Publish a dataset using a JSON body file (legacy mode)
           text: |
             az managedcleanroom frontend analytics dataset publish \
