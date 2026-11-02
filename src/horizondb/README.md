@@ -46,6 +46,29 @@ The command returns the provisioned cluster. If cluster provisioning fails or
 times out, the command reports the error. Create pools separately using
 `az horizondb cluster pool create`.
 
+## Restore a cluster
+
+Use the source cluster resource ID and an optional UTC restore time:
+
+```powershell
+az horizondb cluster restore --resource-group example-resource-group --cluster-name restored-cluster --source-cluster-id /subscriptions/00000000-0000-0000-0000-000000000001/resourceGroups/source-resource-group/providers/Microsoft.HorizonDb/clusters/source-cluster --point-in-time-utc 2026-07-27T12:00:00Z
+```
+
+Unspecified writable settings are inherited from the source cluster, including
+location, tags, PostgreSQL version, geo-redundancy, network, encryption, identity, and
+AI Model Management settings. Cluster-create options can override the inherited
+settings they expose, including individual encryption fields. The command sends
+`creationMode` as `PointInTimeRestore`, waits for cluster provisioning, and
+returns a final GET of the restored cluster. It does not create a pool.
+
+`--point-in-time-utc` defaults to the current UTC time if not supplied. PostgreSQL
+version and geo-redundancy are always inherited from the source cluster.
+Backup retention days are not inherited or sent to the API during restore;
+`--version`, `--geo-redundancy`, and `--retention-days` are not available
+on restore. `--location` can only be specified for a geo-redundant restore when
+the source cluster has geo-redundancy enabled. Otherwise, omit `--location` to
+use the source cluster location.
+
 ## Included Features
 
 ### HorizonDB Cluster Management

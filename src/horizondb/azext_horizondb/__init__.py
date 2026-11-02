@@ -18,8 +18,10 @@ class HorizonDBCommandsLoader(AzCommandsLoader):
             args=args
         )
         from .aaz.latest.horizondb.cluster.custom import ClusterCreate
+        from .aaz.latest.horizondb.cluster.custom_restore import ClusterRestore
         from .aaz.latest.horizondb.cluster.pool.custom import PoolCreate, PoolUpdate
         self.command_table['horizondb cluster create'] = ClusterCreate(loader=self)
+        self.command_table['horizondb cluster restore'] = ClusterRestore(loader=self)
         self.command_table['horizondb cluster pool create'] = PoolCreate(loader=self)
         self.command_table['horizondb cluster pool update'] = PoolUpdate(loader=self)
         return self.command_table
