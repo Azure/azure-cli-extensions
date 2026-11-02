@@ -103,6 +103,13 @@ class ClusterRestoreTests(TestCase):
         self.assertNotIn('geo_redundancy', self.command.arguments)
         self.assertNotIn('version', self.command.arguments)
         self.assertNotIn('retention_days', self.command.arguments)
+        self.assertNotIn('data_encryption', self.command.arguments)
+        self.assertIn('primary_key_uri', self.command.arguments)
+        self.assertIn('primary_user_assigned_identity_id', self.command.arguments)
+        self.assertEqual(
+            self.command.arguments['primary_user_assigned_identity_id'].type.settings['options_list'],
+            ['--primary-user-assigned-identity-id', '--primary-user-id'],
+        )
         create = ClusterCreate(cli_ctx=self.command.cli_ctx)
         create.load_arguments()
         self.assertNotIn('creation_source_cluster_resource_id', create.arguments)
@@ -147,11 +154,14 @@ class ClusterRestoreTests(TestCase):
         })
         self.assertEqual(self.source, original_source)
 
-    def test_explicit_values_override_source_settings_including_partial_encryption(self):
+    def test_explicit_values_override_source_settings_and_enable_key_vault_encryption(self):
+        self.source['properties']['dataEncryption'] = {'type': 'SystemManaged'}
+        target_identity_id = self.identity_id.replace('source-identity', 'target-identity')
         operation = self.build_operation(
             location='eastus2', tags={},
             public_access='Disabled',
-            data_encryption={'primary_key_uri': 'https://target.vault.azure.net/keys/target-key'},
+            primary_key_uri='https://target.vault.azure.net/keys/target-key',
+            primary_user_assigned_identity_id=target_identity_id,
         )
         content = operation.content
         self.assertEqual(content['location'], 'eastus2')
@@ -162,9 +172,27 @@ class ClusterRestoreTests(TestCase):
         self.assertEqual(content['properties']['dataEncryption'], {
             'type': 'AzureKeyVault',
             'primaryKeyUri': 'https://target.vault.azure.net/keys/target-key',
-            'primaryUserAssignedIdentityId': self.identity_id,
+            'primaryUserAssignedIdentityId': target_identity_id,
         })
         self.assertEqual(content['properties']['creationSourceClusterLocation'], 'japaneast')
+
+    def test_restore_inherits_system_managed_encryption_without_overrides(self):
+        self.source['properties']['dataEncryption'] = {'type': 'SystemManaged'}
+        content = self.build_operation().content
+        self.assertEqual(content['properties']['dataEncryption'], {'type': 'SystemManaged'})
+
+    def test_partial_encryption_override_fails_before_source_get_even_when_source_has_encryption(self):
+        for changes in [
+                {'primary_key_uri': 'https://target.vault.azure.net/keys/target-key'},
+                {'primary_user_assigned_identity_id': self.identity_id}]:
+            with self.subTest(changes=changes):
+                command = ClusterRestore(cli_ctx=self.command.cli_ctx)
+                with patch.object(cluster_custom._ClusterShow, '__call__', return_value=self.source) as show, \
+                        patch.object(command, 'ClustersCreateOrReplace') as create:
+                    with self.assertRaisesRegex(InvalidArgumentValueError, '--primary-key-uri'):
+                        command(command_args=dict(self.args, **changes))
+                show.assert_not_called()
+                create.assert_not_called()
 
     def test_missing_optional_source_settings_are_not_fabricated(self):
         self.source = {'location': 'japaneast', 'properties': {'backup': {'geoRedundancy': 'Disabled'}}}

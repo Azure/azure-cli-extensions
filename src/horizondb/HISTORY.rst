@@ -6,6 +6,8 @@ Release History
 1.0.0b9
 +++++++
 * New api version.
+* Expose separate encryption key URI and managed identity arguments on cluster create and restore, requiring both to enable Azure Key Vault encryption.
+* Expose the same encryption arguments and managed identity alias on cluster update, supporting independent sparse updates.
 * Add `az horizondb cluster restore` with an optional restore time and source cluster settings inheritance.
 * Inherit restore geo-redundancy from the source and allow location overrides only for geo-redundancy-enabled sources.
 * Create clusters without a default pool or pool-related arguments.

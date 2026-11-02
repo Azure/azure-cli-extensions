@@ -9,6 +9,8 @@ from unittest.mock import patch
 from knack.util import CLIError
 from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
 from azure.cli.core import get_default_cli
+from azure.cli.core.aaz import AAZCommand
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azext_horizondb import HorizonDBCommandsLoader
 from azext_horizondb.aaz.latest.horizondb.cluster import custom as cluster_custom
 from azext_horizondb.aaz.latest.horizondb.cluster.custom import ClusterCreate
@@ -32,10 +34,22 @@ class ClusterCreateTests(TestCase):
             'location': 'japaneast',
         }
         self.cluster = {'name': 'test-cluster', 'location': 'japaneast'}
+        self.identity_id = (
+            '/subscriptions/00000000-0000-0000-0000-000000000001/resourceGroups/test-rg'
+            '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/test-identity'
+        )
         show_cluster = patch.object(cluster_custom, '_ClusterShow')
         self.show_cluster = show_cluster.start().return_value
         self.addCleanup(show_cluster.stop)
         self.show_cluster.return_value = dict(self.cluster, provisioningState='Succeeded')
+
+    def build_content(self, **overrides):
+        args = dict(self.args, geo_redundancy='Disabled', **overrides)
+        AAZCommand._handler(self.command, args)  # pylint: disable=protected-access
+        self.command.pre_operations()
+        with patch.object(self.command.ctx, 'get_http_client'):
+            operation = self.command.ClustersCreateOrReplace(ctx=self.command.ctx)
+        return operation.content
 
     def test_loader_registers_custom_commands(self):
         loader = HorizonDBCommandsLoader(cli_ctx=self.command.cli_ctx)
@@ -54,6 +68,43 @@ class ClusterCreateTests(TestCase):
         for argument in self.command.arguments.values():
             for option in argument.type.settings.get('options_list', []):
                 self.assertFalse(option.startswith('--pool-'), option)
+
+    def test_create_exposes_separate_encryption_arguments(self):
+        self.command.load_arguments()
+        self.assertNotIn('data_encryption', self.command.arguments)
+        for name, options in {
+            'primary_key_uri': ['--primary-key-uri'],
+            'primary_user_assigned_identity_id': ['--primary-user-assigned-identity-id', '--primary-user-id'],
+        }.items():
+            with self.subTest(argument=name):
+                self.assertEqual(self.command.arguments[name].type.settings['options_list'], options)
+
+    def test_create_without_encryption_arguments_omits_data_encryption(self):
+        self.assertNotIn('dataEncryption', self.build_content()['properties'])
+
+    def test_create_enables_key_vault_encryption_with_both_arguments(self):
+        content = self.build_content(
+            primary_key_uri='https://test.vault.azure.net/keys/test-key',
+            primary_user_assigned_identity_id=self.identity_id,
+        )
+        self.assertEqual(content['properties']['dataEncryption'], {
+            'type': 'AzureKeyVault',
+            'primaryKeyUri': 'https://test.vault.azure.net/keys/test-key',
+            'primaryUserAssignedIdentityId': self.identity_id,
+        })
+
+    def test_incomplete_or_empty_encryption_arguments_prevent_create(self):
+        for changes in [
+                {'primary_key_uri': 'https://test.vault.azure.net/keys/test-key'},
+                {'primary_user_assigned_identity_id': self.identity_id},
+                {'primary_key_uri': '', 'primary_user_assigned_identity_id': self.identity_id}]:
+            with self.subTest(changes=changes):
+                command = ClusterCreate(cli_ctx=self.command.cli_ctx)
+                with patch.object(command, 'ClustersCreateOrReplace') as create:
+                    with self.assertRaisesRegex(InvalidArgumentValueError, '--primary-key-uri'):
+                        command(command_args=dict(self.args, **changes))
+                create.assert_not_called()
+        self.show_cluster.assert_not_called()
 
     def test_pool_commands_keep_compute_and_availability_arguments(self):
         expected_options = {

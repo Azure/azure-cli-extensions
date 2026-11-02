@@ -46,6 +46,23 @@ The command returns the provisioned cluster. If cluster provisioning fails or
 times out, the command reports the error. Create pools separately using
 `az horizondb cluster pool create`.
 
+To enable customer-managed data encryption, supply both `--primary-key-uri`
+(a versionless Azure Key Vault key URI) and `--primary-user-assigned-identity-id`
+(the managed identity resource ID, also available as `--primary-user-id` on
+create, restore, and update). The command sends `dataEncryption.type` as
+`AzureKeyVault`. Neither `--data-encryption` nor an encryption-type argument is
+exposed. If neither encryption argument is supplied on create, encryption
+configuration is omitted and the service uses system-managed encryption.
+
+## Update cluster encryption
+
+`az horizondb cluster update` exposes `--primary-key-uri` and
+`--primary-user-assigned-identity-id` (alias `--primary-user-id`) instead of
+`--data-encryption`. Either argument can be supplied independently. Only the
+supplied encryption fields are sent in the PATCH request; omitted fields and the
+existing encryption type remain unchanged. The service requires key URI and
+identity changes to be completed in separate updates.
+
 ## Restore a cluster
 
 Use the source cluster resource ID and an optional UTC restore time:
@@ -57,7 +74,11 @@ az horizondb cluster restore --resource-group example-resource-group --cluster-n
 Unspecified writable settings are inherited from the source cluster, including
 location, tags, PostgreSQL version, geo-redundancy, network, encryption, identity, and
 AI Model Management settings. Cluster-create options can override the inherited
-settings they expose, including individual encryption fields. The command sends
+settings they expose. To override source encryption, supply both
+`--primary-key-uri` and `--primary-user-assigned-identity-id`; the command sets
+the encryption type to `AzureKeyVault`. If neither is supplied, the source
+encryption settings are inherited. Supplying only one is rejected.
+The command sends
 `creationMode` as `PointInTimeRestore`, waits for cluster provisioning, and
 returns a final GET of the restored cluster. It does not create a pool.
 

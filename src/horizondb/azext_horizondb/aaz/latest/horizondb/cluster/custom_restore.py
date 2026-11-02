@@ -67,6 +67,7 @@ class ClusterRestore(ClusterCreate):
         return args_schema
 
     def pre_operations(self):
+        super().pre_operations()
         args = self.ctx.args
         if args.creation_source_cluster_resource_id.to_serialized_data() in (AAZUndefined, None):
             raise RequiredArgumentMissingError('--source-cluster-id is required.')
@@ -98,14 +99,15 @@ class ClusterRestore(ClusterCreate):
         }.items():
             if getattr(args, name).to_serialized_data() == AAZUndefined and value != AAZUndefined:
                 setattr(args, name, value)
-        encryption = properties.get('dataEncryption', {})
-        for name, key in {
-            'type': 'type',
-            'primary_key_uri': 'primaryKeyUri',
-            'primary_user_assigned_identity_id': 'primaryUserAssignedIdentityId',
-        }.items():
-            if getattr(args.data_encryption, name).to_serialized_data() == AAZUndefined and key in encryption:
-                setattr(args.data_encryption, name, encryption[key])
+        if args.data_encryption.to_serialized_data() == AAZUndefined:
+            encryption = properties.get('dataEncryption') or {}
+            for name, key in {
+                'type': 'type',
+                'primary_key_uri': 'primaryKeyUri',
+                'primary_user_assigned_identity_id': 'primaryUserAssignedIdentityId',
+            }.items():
+                if key in encryption:
+                    setattr(args.data_encryption, name, encryption[key])
 
     class ClustersCreateOrReplace(ClusterCreate.ClustersCreateOrReplace):
 
