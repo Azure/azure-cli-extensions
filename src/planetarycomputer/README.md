@@ -79,3 +79,37 @@ This offline smoke test invokes the CLI with mocked HTTP responses; it does not
 validate the live service. The existing scenario recordings still target
 `2026-04-15` and need refreshing before the full playback suite and pre-push gate
 can pass.
+
+## Private-link integration test ##
+
+The private-link lifecycle scenario uses an existing GeoCatalog and subnet. It
+creates a separate temporary network private endpoint, exercises the generated
+connection create/show/update/list/wait/delete commands, and removes only its own
+endpoint. It does not change catalog identity, tags, or public network access.
+
+Until the API rollout reaches global Azure Resource Manager routing, this test
+uses `https://eastus2euap.management.azure.com/` on its isolated CLI context and
+restores the original endpoint afterward.
+
+To record against an authorized test catalog and subnet:
+
+```bash
+export PLANETARYCOMPUTER_TEST_CATALOG_ID="/subscriptions/<catalog-subscription>/resourceGroups/<catalog-group>/providers/Microsoft.Orbital/geoCatalogs/<catalog>"
+export PLANETARYCOMPUTER_TEST_SUBNET_ID="/subscriptions/<network-subscription>/resourceGroups/<network-group>/providers/Microsoft.Network/virtualNetworks/<vnet>/subnets/<subnet>"
+AZURE_TEST_RUN_LIVE=true python -m unittest discover -s src/planetarycomputer/azext_planetarycomputer/tests/latest -p test_private_link.py -v
+```
+
+The recording currently uses `broken` in `canary-test` and the existing
+`internal-testing` private-endpoint subnet. If different fixtures are used for a
+new recording, update the playback fixture defaults in the scenario to match the
+sanitized recording.
+
+To replay without contacting Azure:
+
+```bash
+unset AZURE_TEST_RUN_LIVE
+python -m unittest discover -s src/planetarycomputer/azext_planetarycomputer/tests/latest -p test_private_link.py -v
+```
+
+The existing general GeoCatalog scenario recordings still require a separate
+refresh; this focused private-link test does not make the entire suite pass.
