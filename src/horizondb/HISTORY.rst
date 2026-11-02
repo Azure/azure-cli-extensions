@@ -6,8 +6,8 @@ Release History
 1.0.0b9
 +++++++
 * New api version.
-* Create a `defaultpool` after cluster creation using required compute and high-availability arguments.
-* Wait for cluster provisioning to succeed before creating `defaultpool` and display provisioning progress messages.
+* Create clusters without a default pool or pool-related arguments.
+* Wait for cluster provisioning to succeed and display provisioning progress messages.
 
 1.0.0b8
 +++++++
