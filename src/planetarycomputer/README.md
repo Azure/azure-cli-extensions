@@ -59,6 +59,9 @@ az planetarycomputer geocatalog private-endpoint-connection list -g MyResourceGr
 # Show a private endpoint connection
 az planetarycomputer geocatalog private-endpoint-connection show -g MyResourceGroup --catalog-name MyCatalog -n MyConnection
 
+# Update a private endpoint connection (the longer option remains supported)
+az planetarycomputer geocatalog private-endpoint-connection update -g MyResourceGroup --catalog-name MyCatalog -n MyConnection --connection-state description=Approved
+
 # List private link resources
 az planetarycomputer geocatalog private-link-resource list -g MyResourceGroup --catalog-name MyCatalog
 ```
@@ -79,6 +82,32 @@ This offline smoke test invokes the CLI with mocked HTTP responses; it does not
 validate the live service. The existing scenario recordings still target
 `2026-04-15` and need refreshing before the full playback suite and pre-push gate
 can pass.
+
+## GeoCatalog integration tests ##
+
+Use an authorized, disposable Basic GeoCatalog with `TenantReuse` domain scope
+and a user-assigned managed identity in the same subscription. These scenarios
+modify the catalog's tags and identity, and create three additional temporary
+catalogs in separate resource groups. Resource preparers remove those groups even
+when an assertion fails; the supplied catalog and identity remain caller-owned.
+Do not run other tests that modify the supplied catalog concurrently.
+
+```bash
+export PLANETARYCOMPUTER_TEST_CATALOG_ID="/subscriptions/<subscription>/resourceGroups/<group>/providers/Microsoft.Orbital/geoCatalogs/<catalog>"
+export PLANETARYCOMPUTER_TEST_IDENTITY_ID="/subscriptions/<subscription>/resourceGroups/<group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<identity>"
+export PLANETARYCOMPUTER_TEST_LOCATION="eastus2euap"
+AZURE_TEST_RUN_LIVE=true python -m unittest discover -s src/planetarycomputer/azext_planetarycomputer/tests/latest -p test_planetarycomputer.py -v
+```
+
+The test patches only its process-local ARM endpoint, defaulting to
+`https://eastus2euap.management.azure.com/`; set
+`PLANETARYCOMPUTER_TEST_ARM_ENDPOINT` to override it for live runs. The
+authentication audience is unchanged. Recordings sanitize the supplied resource
+names and subscription IDs and match request bodies as well as URLs.
+
+For playback, unset `AZURE_TEST_RUN_LIVE` and run the same command without the
+assignment. Playback uses sanitized fixtures and does not require the fixture
+environment variables.
 
 ## Private-link integration test ##
 

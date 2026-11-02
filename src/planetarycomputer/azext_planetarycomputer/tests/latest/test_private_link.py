@@ -94,7 +94,7 @@ class PlanetarycomputerPrivateLinkScenario(ScenarioTest):
         self.assertEqual(shown['privateEndpoint']['id'].lower(), endpoint['id'].lower())
         updated = self.cmd(
             connection + 'update ' + connection_args +
-            ' --private-link-service-connection-state description=cli-updated'
+            ' --connection-state description=cli-updated'
         ).get_output_in_json()
         self.assertEqual(updated['privateLinkServiceConnectionState']['status'], 'Approved')
         self.assertEqual(updated['privateLinkServiceConnectionState']['description'], 'cli-updated')
