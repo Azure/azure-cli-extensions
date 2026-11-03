@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import ScenarioTest
+from azure.core.exceptions import HttpResponseError
 
 
 class AiinfraoptimizationScenario(ScenarioTest):
@@ -76,3 +77,16 @@ class AiinfraoptimizationScenario(ScenarioTest):
                      self.check('length(options[?quota || placement])', 0),
                      self.check("length(options[?cost.source != 'AzureRetail'])", 0),
                  ])
+
+    def test_aiinfraoptimization_recommendvmsku_service_error(self):
+        # The service reads Hugging Face anonymously, so it can't size a gated model without its architecture fields.
+        self.kwargs.update({
+            'location': 'eastus2',
+            'model': '{hugging-face-model-id:meta-llama/Llama-3.1-8B-Instruct}',
+        })
+
+        with self.assertRaisesRegex(HttpResponseError, 'is gated on HuggingFace') as cm:
+            self.cmd('aiinfraoptimization recommendvmsku --location {location} --model "{model}"')
+        self.assertEqual(cm.exception.status_code, 400)
+        self.assertEqual(cm.exception.error.code, 'InvalidArgument')
+        self.assertEqual(cm.exception.error.target, 'model')
