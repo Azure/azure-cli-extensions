@@ -18,7 +18,7 @@ class GetRedundancyConversionStatus(AAZCommand):
     """Gets the status and details of the current or most recent redundancy conversion for the file share.
 
     :example: Get the status of the current or most recent redundancy conversion
-        az fileshare get-redundancy-conversion-status --resource-name MyFileShare --resource-group MyRG
+        az fileshare get-redundancy-conversion-status --name MyFileShare --resource-group MyRG
     """
 
     _aaz_info = {

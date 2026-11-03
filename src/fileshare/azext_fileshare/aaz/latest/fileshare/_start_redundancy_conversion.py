@@ -18,7 +18,7 @@ class StartRedundancyConversion(AAZCommand):
     """Starts a redundancy conversion for the file share.
 
     :example: Start a redundancy conversion to zone-redundant storage
-        az fileshare start-redundancy-conversion --resource-name MyFileShare --resource-group MyRG --target-redundancy Zone
+        az fileshare start-redundancy-conversion --name MyFileShare --resource-group MyRG --target-redundancy Zone
     """
 
     _aaz_info = {
