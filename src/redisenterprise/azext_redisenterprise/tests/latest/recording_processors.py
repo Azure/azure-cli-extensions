@@ -10,7 +10,7 @@ from azure.cli.testsdk.scenario_tests.utilities import is_json_payload
 
 
 class RedisEnterpriseKeyReplacer(RecordingProcessor):
-    """Keep access keys out of list-keys and regenerate-key recordings."""
+    """Keep access keys out of Redis and Redis Enterprise recordings."""
 
     def process_response(self, response):
         if not is_json_payload(response) or not response['body']['string']:
@@ -20,10 +20,15 @@ class RedisEnterpriseKeyReplacer(RecordingProcessor):
             return response
         replacements = {'primaryKey': 'fake_primary_key', 'secondaryKey': 'fake_secondary_key'}
         changed = False
-        for key, replacement in replacements.items():
-            if isinstance(body.get(key), str) and body[key]:
-                body[key] = replacement
-                changed = True
+        key_sets = [body]
+        properties = body.get('properties')
+        if isinstance(properties, dict) and isinstance(properties.get('accessKeys'), dict):
+            key_sets.append(properties['accessKeys'])
+        for keys in key_sets:
+            for key, replacement in replacements.items():
+                if isinstance(keys.get(key), str) and keys[key]:
+                    keys[key] = replacement
+                    changed = True
         if changed:
             response['body']['string'] = json.dumps(body)
         return response

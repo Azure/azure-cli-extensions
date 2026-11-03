@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Validate(AAZCommand):
     """Validates if a source Azure Cache for Redis resource can be migrated to a target Azure Managed Redis resource.
 
-    :example: Validate a migration from an Azure Cache for Redis source
-        az redisenterprise migration validate --cluster-name cache1 --resource-group rg1 --source-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Cache/Redis/source-cache
+    :example: Validate an OSS cache migration without transferring data
+        az redisenterprise migration validate --cluster-name cache1 --resource-group rg1 --source-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Cache/Redis/source-cache --skip-data-migration true
     """
 
     _aaz_info = {
-        "version": "2026-06-01-preview",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default/validate", "2026-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default/validate", "2026-09-01"],
         ]
     }
 
@@ -60,11 +60,6 @@ class Validate(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.force_migrate = AAZBoolArg(
-            options=["--force-migrate"],
-            arg_group="Body",
-            help="Sets whether to ignore warnings when validating if the source cache can be migrated to the target cache. If this property is true, the isValid property in the response will ignore warning-level disparities between the source and target resource. The default value is false.",
-        )
         _args_schema.skip_data_migration = AAZBoolArg(
             options=["--skip-data-migration"],
             arg_group="Body",
@@ -143,7 +138,7 @@ class Validate(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01-preview",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
@@ -168,7 +163,6 @@ class Validate(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("forceMigrate", AAZBoolType, ".force_migrate")
             _builder.set_prop("skipDataMigration", AAZBoolType, ".skip_data_migration")
             _builder.set_prop("sourceResourceId", AAZStrType, ".source_resource_id", typ_kwargs={"flags": {"required": True}})
 
