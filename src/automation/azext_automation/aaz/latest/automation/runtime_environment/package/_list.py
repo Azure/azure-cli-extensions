@@ -58,7 +58,7 @@ class List(AAZCommand):
             help="The name of the Runtime Environment.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z][a-zA-Z-_0-9]*$",
+                pattern="^[a-zA-Z][a-zA-Z-_.0-9]*$",
             ),
         )
         return cls._args_schema

@@ -59,7 +59,7 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z][a-zA-Z-_0-9]*$",
+                pattern="^[a-zA-Z][a-zA-Z-_.0-9]*$",
             ),
         )
         return cls._args_schema
