@@ -12,6 +12,7 @@ Release History
 * Microsoft.ChaosStudio: require confirmed raw synchronous extension deletion success even when the CLI progress helper suppresses a failed HTTP 404 poller result. An absent ARM extension does not imply namespace absence or resume Kubernetes cleanup.
 * Microsoft.ChaosStudio: the bounded installation namespace check uses AKS user credentials and namespace GET, not the current kube context or admin credentials. Uninstall adds no post-delete credential, inventory, namespace DELETE or finalization operation. Engine-name reclamation and deleting the chaosengines CRD while engines remain aren't implemented.
 * Microsoft.ChaosStudio: normalize fetched kubelogin exec users to the signed-in Azure CLI identity, and report namespace-inspection connection failures and timeouts with installation retry guidance rather than treating them as absence.
+* Fix extension installation on 32-bit Windows Azure CLI by allowing compatible Kubernetes and Oras dependency versions (``kubernetes>=24.2.0,<36`` and ``oras>=0.2.25,<0.3``) instead of requiring their older exact pins.
 
 1.9.4
 +++++++++++++++++++

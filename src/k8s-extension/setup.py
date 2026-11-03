@@ -31,8 +31,8 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    "kubernetes==24.2.0",
-    "oras==0.2.25",
+    "kubernetes>=24.2.0,<36",
+    "oras>=0.2.25,<0.3",
     "azure-mgmt-network>=18.0.0",
 ]
 
