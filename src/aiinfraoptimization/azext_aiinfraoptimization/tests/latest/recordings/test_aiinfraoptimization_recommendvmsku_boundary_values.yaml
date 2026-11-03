@@ -1,0 +1,68 @@
+interactions:
+- request:
+    body: '{"deployment": {"procurementOption": "Spot", "replicaCount": 2}, "model":
+      {"headDim": 128, "numKeyValueHeads": 8, "numLayers": 32, "parameterCount": 8000000000,
+      "weightPrecision": "BF16"}, "optimization": {"rankingPreference": "Latency"},
+      "subscriptionOptions": {"includePlacement": false, "includePricing": false,
+      "includeQuota": false}, "targetVmSizes": ["Standard_NC24ads_A100_v4", "Standard_NC40ads_H100_v5"],
+      "workload": {"maxConcurrentRequestsPerReplica": 4, "tokenBudget": {"maxOutputTokens":
+      0, "promptTokens": 4096}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aiinfraoptimization recommendvmsku
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '526'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --model --workload --deployment --optimization --target-vm-sizes
+        --subscription-options
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.37.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.AIInfraOptimization/locations/eastus2/recommendVmSku?api-version=2026-06-01-preview
+  response:
+    body:
+      string: '{"options":[{"vmSize":"Standard_NC40ads_H100_v5","recommendationRank":1,"readiness":{"status":"VerificationRequired","reason":"Quota
+        or placement evidence must be verified before attempting deployment."},"topology":{"estimatedNodeCountPerReplica":1,"estimatedTotalNodeCount":2,"accelerator":{"model":"H100
+        NVL","countPerVm":1,"memoryGiBPerAccelerator":94}},"cost":{"currencyCode":"USD","vmHourly":3.537464,"deploymentHourly":7.074928,"source":"AzureRetail","priceAsOf":"2026-11-02T05:44:38.8347952+00:00"},"documentationUrl":"https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/ncadsh100v5-series","performanceEstimate":{"deploymentOutputTokensPerSecond":32,"ttftMs":729.9}},{"vmSize":"Standard_NC24ads_A100_v4","recommendationRank":2,"readiness":{"status":"VerificationRequired","reason":"Quota
+        or placement evidence must be verified before attempting deployment."},"topology":{"estimatedNodeCountPerReplica":1,"estimatedTotalNodeCount":2,"accelerator":{"model":"A100","countPerVm":1,"memoryGiBPerAccelerator":80}},"cost":{"currencyCode":"USD","vmHourly":0.746354,"deploymentHourly":1.492708,"source":"AzureRetail","priceAsOf":"2026-11-02T05:44:38.8347952+00:00"},"documentationUrl":"https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/nca100v4-series","performanceEstimate":{"deploymentOutputTokensPerSecond":14,"ttftMs":1720.4}}],"sizing":{"model":{"parameterCount":8000000000,"weightPrecision":"BF16"},"workload":{"maxConcurrentRequestsPerReplica":4,"contextLength":4096},"memory":{"modelWeightsGiB":14.9,"kvCacheGiBPerRequest":0.5,"kvCacheGiBTotal":2,"modelAndKvCacheGiB":16.9},"basis":{"parameterCountSource":"Request","modelWeightsCalculation":"EstimatedFromParameterCount","contextLengthSource":"Request"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1769'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 05:44:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9e0b0df5-1f15-45f7-8e9f-e1be2997e32e/japaneast/99531031-3517-4f2e-84b0-10733c1d5202
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 1E22FE7414BF4ADA97181B3AA33D316E Ref B: TYO601100918031 Ref C: 2026-11-02T05:44:37Z'
+    status:
+      code: 200
+      message: OK
+version: 1
