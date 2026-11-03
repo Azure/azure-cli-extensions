@@ -23,7 +23,7 @@ from azure.cli.core.aaz import AAZUndefined
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError, RequiredArgumentMissingError, \
     UnrecognizedArgumentError, CLIInternalError, ClientRequestError
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.mgmt.core.tools import is_valid_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
 from .BastionServiceConstants import BastionSku
 from .aaz.latest.network.bastion import Create as _BastionCreate
@@ -340,8 +340,9 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
             launch_and_wait(command)
             tunnel_server.cleanup()
         else:
-            access_token = Profile(cli_ctx=cmd.cli_ctx).get_raw_token()[0][2].get("accessToken")
-            logger.debug("Response %s", access_token)
+            subscription_id = parse_resource_id(bastion['id'])['subscription']
+            auth_token, _, _ = Profile(cli_ctx=cmd.cli_ctx).get_raw_token(subscription=subscription_id)
+            access_token = auth_token[1]
             web_address = f"https://{bastion_endpoint}/api/rdpfile?resourceId={target_resource_id}&format=rdp" \
                           f"&rdpport={resource_port}&enablerdsaad={enable_mfa}"
 
@@ -429,8 +430,12 @@ def _write_to_file(response, file_path):
 
 
 def _get_tunnel(cmd, bastion, bastion_endpoint, vm_id, resource_port, port=None):
+    from azure.cli.core._profile import Profile
     from .tunnel import TunnelServer
 
+    # Resolve credentials before starting a worker so login errors reach the CLI.
+    subscription_id = parse_resource_id(bastion['id'])['subscription']
+    Profile(cli_ctx=cmd.cli_ctx).get_raw_token(subscription=subscription_id)
     if port is None:
         port = 0  # will auto-select a free port from 1024-65535
     tunnel_server = TunnelServer(cmd.cli_ctx, "localhost", port, bastion, bastion_endpoint, vm_id, resource_port)
