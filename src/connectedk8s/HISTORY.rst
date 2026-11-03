@@ -2,6 +2,15 @@
 
 Release History
 ===============
+1.11.5
++++++++
+* Update the cluster prediagnostics image to 1.38.0 to handle endpoint redirects in strict outbound allowlist and AGC scenarios.
+* Retry transient pre-onboarding diagnostic log retrieval failures and continue onboarding when logs remain unavailable after a completed diagnostic job.
+* Add temporary AGC diagnostic chart compatibility for USSec and USNat by using scheme-less MCR repository values.
+* Continue onboarding when cleanup of a stale diagnostic Helm release fails while preserving warning and telemetry reporting.
+* Treat a single generic DNS timeout as transient while keeping repeated or explicit DNS failures blocking.
+* Accept both exported chart directories and packaged Helm chart files.
+
 1.11.4
 +++++++
 * Standardize error reporting for configuration input, kubectl and cluster access, network connectivity, ARM operations, Helm, pre-onboarding diagnostics, custom locations, and the client proxy.

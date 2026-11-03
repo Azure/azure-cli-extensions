@@ -805,13 +805,33 @@ def test_report_connectedk8s_diagnostic_does_not_build_cli_exception(monkeypatch
         None,
         error,
         exception=RuntimeError("underlying"),
-        user_fault=True,
         details="details",
     )
 
     assert message == "[AZK8S0009] TestDiagnostic: Test diagnostic: details"
     add_event.assert_called_once()
     mock_telemetry.set_exception.assert_called_once()
+    mock_telemetry.set_user_fault.assert_not_called()
+    mock_telemetry.set_failure.assert_not_called()
+
+
+def test_report_connectedk8s_error_sets_user_fault(monkeypatch):
+    error = ArcError(
+        code="AZK8S0009",
+        name="TestError",
+        message="Test error: {details}",
+        fault_type="test-error",
+        az_error_cls=ValidationError,
+    )
+    mock_telemetry = MagicMock()
+    monkeypatch.setattr(utils_module, "telemetry", mock_telemetry)
+    monkeypatch.setattr(utils_module, "add_connectedk8s_telemetry_event", MagicMock())
+
+    result = utils_module.report_connectedk8s_error(
+        None, error, user_fault=True, details="details"
+    )
+
+    assert isinstance(result, ValidationError)
     mock_telemetry.set_user_fault.assert_called_once_with()
 
 
@@ -1167,6 +1187,23 @@ def test_get_chart_path_reports_missing_export(monkeypatch, tmp_path):
 def test_get_chart_path_validates_helmchart_override(monkeypatch, tmp_path):
     override_path = tmp_path / "override-chart"
     override_path.mkdir()
+    monkeypatch.setenv("HELMCHART", str(override_path))
+    monkeypatch.setattr(utils_module, "pull_helm_chart", MagicMock())
+    monkeypatch.setattr(utils_module.os.path, "expanduser", lambda _path: str(tmp_path))
+
+    chart_path = utils_module.get_chart_path(
+        "mcr.microsoft.com/chart:1.0.0",
+        None,
+        None,
+        "/usr/bin/helm",
+    )
+
+    assert chart_path == str(override_path)
+
+
+def test_get_chart_path_accepts_helmchart_archive_file(monkeypatch, tmp_path):
+    override_path = tmp_path / "override-chart.tgz"
+    override_path.touch()
     monkeypatch.setenv("HELMCHART", str(override_path))
     monkeypatch.setattr(utils_module, "pull_helm_chart", MagicMock())
     monkeypatch.setattr(utils_module.os.path, "expanduser", lambda _path: str(tmp_path))
@@ -1734,6 +1771,27 @@ class TestCheckClusterDNS:
         assert result == "Failed"
         assert diag[0].startswith("[AZK8S0304]")
 
+    def test_single_generic_timeout_warns_and_is_not_applicable(self, monkeypatch):
+        warning = MagicMock()
+        monkeypatch.setattr(utils_module.logger, "warning", warning)
+
+        result, diag = self._run("DNS Result: query timed out")
+
+        assert result == consts.Diagnostic_Check_Not_Applicable
+        assert diag == []
+        warning.assert_called_once_with(
+            "The DNS diagnostic timed out once. Continuing onboarding because "
+            "the timeout may be transient."
+        )
+
+    def test_repeated_generic_timeouts_fail(self):
+        log = "DNS Result: query timed out\nRetry: query timed out"
+
+        result, diag = self._run(log)
+
+        assert result == consts.Diagnostic_Check_Failed
+        assert diag[0].startswith("[AZK8S0302]")
+
     def test_passed(self):
         log = (
             "DNS Result: Name: kubernetes.default.svc.cluster.local\nAddress: 10.96.0.1"
@@ -1883,7 +1941,7 @@ def test_cluster_connect_failure_emits_azk8s0307_and_remains_nonfatal(monkeypatc
     assert properties[consts.Telemetry_Error_Code_Key] == "AZK8S0307"
     mock_telemetry.add_extension_event.assert_called_once()
     mock_telemetry.set_exception.assert_called_once()
-    mock_telemetry.set_user_fault.assert_called_once()
+    mock_telemetry.set_user_fault.assert_not_called()
 
 
 def test_onboarding_failure_emits_azk8s0306_and_fails_check(monkeypatch):
@@ -1899,7 +1957,7 @@ def test_onboarding_failure_emits_azk8s0306_and_fails_check(monkeypatch):
     assert properties[consts.Telemetry_Error_Code_Key] == "AZK8S0306"
     mock_telemetry.add_extension_event.assert_called_once()
     mock_telemetry.set_exception.assert_called_once()
-    mock_telemetry.set_user_fault.assert_called_once()
+    mock_telemetry.set_user_fault.assert_not_called()
 
 
 def test_non2xx_response_emits_informational_azk8s0308(monkeypatch):

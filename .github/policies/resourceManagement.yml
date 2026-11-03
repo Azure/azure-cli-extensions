@@ -1796,7 +1796,7 @@ configuration:
         - mentionUsers:
             mentionees:
             - dkershaw10
-            - SteveMutungi254
+            - gavinbarron
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
       - if:
@@ -2027,7 +2027,6 @@ configuration:
         then:
         - mentionUsers:
             mentionees:
-            - adana-popescu
             - KalpeshChavan12
             - ralucaminea
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
@@ -3538,19 +3537,10 @@ configuration:
             pattern: az \b(aks|acs|openshift)\b
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yanzhudd
-      - assignTo:
-          users:
-          - yanzhudd
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: yonzhan
-      - requestReview:
           reviewer: FumingZhang
-      - requestReview:
-          reviewer: Azure/act-observability-squad
       - addLabel:
           label: AKS
       - addLabel:
@@ -3568,11 +3558,6 @@ configuration:
             pattern: az \b(aimanager|aimanager namespace|aimanager model)\b
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yanzhudd
-      - assignTo:
-          users:
-          - yanzhudd
       - addLabel:
           label: Auto-Assign
       - requestReview:
@@ -3596,15 +3581,8 @@ configuration:
             pattern: az aosm
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yanzhudd
-      - assignTo:
-          users:
-          - yanzhudd
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: yonzhan
       - addLabel:
           label: AOSM
       description: '[aosm] Auto assign labels and reviewers based on PR title/description.'
@@ -3652,15 +3630,6 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: act-experience-enablement-squad
-      - requestReview:
-          reviewer: wangzelin007
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: Azure/act-experience-enablement-squad
-      - assignTo:
-          users:
-          - wangzelin007
       description: '[machine learning] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3726,10 +3695,6 @@ configuration:
           label: VM SSH
       - addLabel:
           label: act-observability-squad
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: Azure/act-observability-squad
       description: '[ssh] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3767,12 +3732,6 @@ configuration:
           label: Connected Kubernetes
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: jsntcy
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: yanzhudd
       description: '[connectedk8s] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3814,12 +3773,6 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: act-observability-squad
-      - requestReview:
-          reviewer: wangzelin007
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: Azure/act-observability-squad
       description: '[spring-cloud] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -3863,12 +3816,6 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: act-observability-squad
-      - requestReview:
-          reviewer: necusjz
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: Azure/act-observability-squad
       description: '[monitor] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -3879,19 +3826,8 @@ configuration:
             pattern: '\b(network|Network|NETWORK|bastion|Bastion|BASTION)\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: jsntcy
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: necusjz
-      - requestReview:
-          reviewer: Azure/act-quality-productivity-squad
-      - assignTo:
-          users:
-          - necusjz
       - addLabel:
           label: Network
       - addLabel:
@@ -3957,12 +3893,6 @@ configuration:
       then:
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: yanzhudd
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: Azure/act-observability-squad
       - addLabel:
           label: IoT/CLI
       - addLabel:
@@ -4004,10 +3934,6 @@ configuration:
           label: Azure Data Explorer
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: jsntcy
-      - requestReview:
-          reviewer: yonzhan
       description: '[kusto] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -4047,10 +3973,6 @@ configuration:
       then:
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: Azure/act-codegen-extensibility-squad
       - addLabel:
           label: Storage
       - addLabel:
@@ -4067,10 +3989,6 @@ configuration:
       then:
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: Azure/act-identity-squad
       - addLabel:
           label: KeyVault
       - addLabel:
@@ -4140,10 +4058,6 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: act-codegen-extensibility-squad
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: Azure/act-codegen-extensibility-squad
       description: '[cosmosdb] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -4181,10 +4095,6 @@ configuration:
       then:
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: Azure/act-identity-squad
       - addLabel:
           label: Account
       - addLabel:
@@ -4246,12 +4156,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @necusjz,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - necusjz
       description: '[ edgeorder ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4285,12 +4192,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @necusjz,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - necusjz
       description: '[ application-insights ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4396,12 +4300,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @necusjz,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - necusjz
       description: '[ stream-analytics ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4507,12 +4408,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @necusjz,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - necusjz
       description: '[ quantum ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4564,12 +4462,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @jsntcy,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - jsntcy
       description: '[ logic ] Notify to review Update index.json PR'
     - if:
       - payloadType: Issues
@@ -4609,8 +4504,6 @@ configuration:
           label: Logic App
       - addLabel:
           label: act-observability-squad
-      - requestReview:
-          reviewer: Azure/act-observability-squad
       description: '[logic] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -4644,12 +4537,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @necusjz,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - necusjz
       description: '[ resource-mover ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4773,12 +4663,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @necusjz,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - necusjz
       description: '[ scheduled-query ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4812,12 +4699,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @necusjz,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - necusjz
       description: '[ network-manager ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4869,12 +4753,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @necusjz,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - necusjz
       description: '[ virtual-wan ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4926,12 +4807,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @necusjz,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - necusjz
       description: '[ webpubsub ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -4947,12 +4825,9 @@ configuration:
       then:
       - addReply:
           reply: >-
-            Hi @necusjz,
+            Hi,
 
             Please review the pull request.
-      - assignTo:
-          users:
-          - necusjz
       description: '[ support ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -5076,8 +4951,6 @@ configuration:
       then:
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: yonzhan
       description: '[arcdata] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -5093,13 +4966,6 @@ configuration:
       then:
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: necusjz
-      - assignTo:
-          users:
-          - necusjz
-      - requestReview:
-          reviewer: yonzhan
       description: '[quota] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5136,13 +5002,6 @@ configuration:
       then:
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: necusjz
-      - assignTo:
-          users:
-          - necusjz
-      - requestReview:
-          reviewer: yonzhan
       - addLabel:
           label: Code Gen
       description: '[codegen] Auto assign labels and reviewers based on PR title/description.'
@@ -5160,21 +5019,10 @@ configuration:
       then:
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: necusjz
-      - assignTo:
-          users:
-          - necusjz
-      - requestReview:
-          reviewer: yonzhan
       - addLabel:
           label: Quantum
       - addLabel:
           label: act-codegen-extensibility-squad
-      - requestReview:
-          reviewer: wangzelin007
-      - requestReview:
-          reviewer: Azure/act-codegen-extensibility-squad
       description: '[quantum] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5212,14 +5060,8 @@ configuration:
             pattern: '[Aa]z \b(vm|vmss|image|disk|snapshot|disk-encryption-set|disk-access|sig|ppg|capacity|restore-point)\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: yanzhudd
-      - requestReview:
-          reviewer: Azure/act-observability-squad
       - addLabel:
           label: Compute
       - addLabel:
@@ -5269,18 +5111,10 @@ configuration:
             pattern: '\b([Ww][Ee][Bb][Aa][Pp][Pp])\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: yanzhudd
       - addLabel:
           label: App Services
-      - requestReview:
-          reviewer: jsntcy
-      - requestReview:
-          reviewer: Azure/act-observability-squad
       - addLabel:
           label: Web Apps
       - addLabel:
@@ -5328,10 +5162,6 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: act-codegen-extensibility-squad
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: Azure/act-codegen-extensibility-squad
       description: '[datamigration] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5365,16 +5195,10 @@ configuration:
             pattern: '\b([Gg][Rr][Aa][Ff][Aa][Nn][Aa])\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: wangzelin007
       - addLabel:
           label: extension/grafana
-      - requestReview:
-          reviewer: jsntcy
       description: '[grafana] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5410,14 +5234,6 @@ configuration:
             pattern: '[Ff]unction ?[Aa]pp'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
-      - addLabel:
-          label: Auto-Assign
-      - requestReview:
-          reviewer: wangzelin007
-      - requestReview:
-          reviewer: Azure/act-observability-squad
       - addLabel:
           label: Functions
       - addLabel:
@@ -5435,10 +5251,6 @@ configuration:
             pattern: '\b([Ee]vent ?[Gg]rid)\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: Azure/act-observability-squad
       - addLabel:
           label: Auto-Assign
       - addLabel:
@@ -5481,23 +5293,10 @@ configuration:
             pattern: '[Dd]esktop[Vv]irtualization'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
-      - addLabel:
-          label: Auto-Assign
-      - requestReview:
-          reviewer: wangzelin007
-      - assignTo:
-          users:
-          - wangzelin007
       - addLabel:
           label: Desktop Virtualization
       - addLabel:
           label: act-codegen-extensibility-squad
-      - requestReview:
-          reviewer: jsntcy
-      - requestReview:
-          reviewer: Azure/act-codegen-extensibility-squad
       description: '[desktopvirtualization] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5533,20 +5332,12 @@ configuration:
             pattern: '\b([Cc]ontainer ?[Aa]pps?)\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: wangzelin007
-      - requestReview:
-          reviewer: yanzhudd
       - addLabel:
           label: ContainerApp
       - addLabel:
           label: act-observability-squad
-      - requestReview:
-          reviewer: jsntcy
       - requestReview:
           reviewer: ruslany
       - requestReview:
@@ -5573,8 +5364,6 @@ configuration:
           reviewer: jijohn14
       - requestReview:
           reviewer: Greedygre
-      - requestReview:
-          reviewer: Azure/act-observability-squad
       description: '[container app] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5608,12 +5397,6 @@ configuration:
             pattern: '\b([Aa]lerts ?[Mm]anagement)\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
-      - addLabel:
-          label: Auto-Assign
-      - requestReview:
-          reviewer: wangzelin007
       - addLabel:
           label: Alerts Management
       description: '[Alerts Management] Auto assign labels and reviewers based on PR title/description.'
@@ -5649,8 +5432,6 @@ configuration:
             pattern: '[Dd]ata ?protection'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
       - addLabel:
@@ -5694,19 +5475,6 @@ configuration:
           label: CI
       - addLabel:
           label: act-platform-engineering-squad
-      - requestReview:
-          reviewer: wangzelin007
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: jsntcy
-      - requestReview:
-          reviewer: Pan-Qi
-      - requestReview:
-          reviewer: Azure/act-platform-engineering-squad
-      - assignTo:
-          users:
-          - wangzelin007
       description: '[ci] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5757,8 +5525,6 @@ configuration:
             pattern: '\b([Nn]etwork ?[Mm]anager)\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
       - addLabel:
@@ -5767,15 +5533,6 @@ configuration:
           label: Network - Network Manager
       - addLabel:
           label: act-quality-productivity-squad
-      - requestReview:
-          reviewer: necusjz
-      - assignTo:
-          users:
-          - necusjz
-      - requestReview:
-          reviewer: jsntcy
-      - requestReview:
-          reviewer: Azure/act-quality-productivity-squad
       description: '[NetworkManager] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5809,8 +5566,6 @@ configuration:
             pattern: '[Aa]z redisenterprise'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
       - addLabel:
@@ -5850,18 +5605,12 @@ configuration:
             pattern: '[Aa]z k8sconfiguration'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
       - addLabel:
           label: Kubernetes Configuration
       - addLabel:
           label: act-observability-squad
-      - requestReview:
-          reviewer: wangzelin007
-      - requestReview:
-          reviewer: Azure/act-observability-squad
       description: '[k8sconfiguration] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5904,14 +5653,10 @@ configuration:
             pattern: '\b([Ii]mage-?{Gg]allery)\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
       - addLabel:
           label: Compute - Images
-      - requestReview:
-          reviewer: wangzelin007
       description: '[image-gallery] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -5969,10 +5714,6 @@ configuration:
             pattern: '[Aa]z sql'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: Azure/act-codegen-extensibility-squad
       - addLabel:
           label: Auto-Assign
       - addLabel:
@@ -6044,10 +5785,6 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: Attestation
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: jsntcy
       description: '[Attestation] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6061,8 +5798,6 @@ configuration:
             pattern: k8s-extension
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
       - requestReview:
@@ -6080,8 +5815,6 @@ configuration:
             pattern: k8s-configuration
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
       - requestReview:
@@ -6120,19 +5853,8 @@ configuration:
             pattern: '\b([Ss]tream[ -]?[Aa]nalytics)\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
-      - addLabel:
-          label: Auto-Assign
-      - requestReview:
-          reviewer: jsntcy
-      - assignTo:
-          users:
-          - necusjz
       - addLabel:
           label: Stream Analytics
-      - requestReview:
-          reviewer: necusjz
       description: '[stream-analytics] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6146,12 +5868,8 @@ configuration:
             pattern: '[Cc]onnected ?[Mm]achine'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: wangzelin007
       description: '[connectedmachine] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6186,19 +5904,8 @@ configuration:
             pattern: healthcareapis
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yonzhan
-      - addLabel:
-          label: Auto-Assign
-      - requestReview:
-          reviewer: wangzelin007
-      - assignTo:
-          users:
-          - wangzelin007
       - addLabel:
           label: extension/healthcare
-      - requestReview:
-          reviewer: jsntcy
       description: '[healthcareapis] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6211,16 +5918,6 @@ configuration:
       then:
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: wangzelin007
-      - assignTo:
-          users:
-          - wangzelin007
-      - addReply:
-          reply: >-
-            Hi @wangzelin007,
-
-            Please review the pull request.
       description: '[ healthcareapis ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -6237,13 +5934,6 @@ configuration:
           label: Subscription
       - addLabel:
           label: act-identity-squad
-      - requestReview:
-          reviewer: Azure/act-identity-squad
-      - addReply:
-          reply: >-
-            Hi,
-
-            Please review the pull request.
       description: '[ subscription ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
@@ -6259,10 +5949,6 @@ configuration:
       then:
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: wangzelin007
-      - requestReview:
-          reviewer: Azure/act-identity-squad
       - addLabel:
           label: Subscription
       - addLabel:
@@ -6318,13 +6004,8 @@ configuration:
             pattern: '\b(az serial-console)\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: necusjz
       - addLabel:
           label: Auto-Assign
-      - assignTo:
-          users:
-          - necusjz
       - addLabel:
           label: Serial Console
       description: '[Serial-Console] Auto assign labels and reviewers based on PR title/description.'
@@ -6358,8 +6039,6 @@ configuration:
             pattern: az \b(spring)\b
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yanzhudd
       - addLabel:
           label: Auto-Assign
       description: '[Spring] Auto assign labels and reviewers based on PR title/description.'
@@ -6375,8 +6054,6 @@ configuration:
             pattern: '\b(az fleet)\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: jsntcy
       - addLabel:
           label: Auto-Assign
       description: '[Fleet] Auto assign labels and reviewers based on PR title/description.'
@@ -6392,10 +6069,6 @@ configuration:
             pattern: '[Vv]m-repair'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: yanzhudd
-      - requestReview:
-          reviewer: qwuae1
       - addLabel:
           label: Auto-Assign
       description: '[vm-repair] Auto assign labels and reviewers based on PR title/description.'
@@ -6485,13 +6158,6 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: Internet Analyzer
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: necusjz
-      - assignTo:
-          users:
-          - necusjz
       description: '[Internet Analyzer] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6505,10 +6171,6 @@ configuration:
             pattern: '\b(az load)\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: jsntcy
-      - requestReview:
-          reviewer: necusjz
       - addLabel:
           label: Auto-Assign
       description: '[load] Auto assign labels and reviewers based on PR title/description.'
@@ -6546,8 +6208,6 @@ configuration:
             pattern: devcenter
             isRegex: True
       then:
-      - requestReview:
-          reviewer: jsntcy
       - addLabel:
           label: Auto-Assign
       description: '[devcenter] Auto assign labels and reviewers based on PR title/description.'
@@ -6578,15 +6238,8 @@ configuration:
             pattern: '\b([Ss]ervice ?[Cc]onnector)\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: necusjz
-      - requestReview:
-          reviewer: jsntcy
       - addLabel:
           label: Auto-Assign
-      - assignTo:
-          users:
-          - necusjz
       description: '[Service Connector] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6600,8 +6253,6 @@ configuration:
             pattern: '\b([Cc]onnected ?[Vv]mware)\b'
             isRegex: True
       then:
-      - requestReview:
-          reviewer: jsntcy
       - addLabel:
           label: Auto-Assign
       description: '[Connected Vmware] Auto assign labels and reviewers based on PR title/description.'
@@ -6676,15 +6327,6 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: Peering
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: jsntcy
-      - requestReview:
-          reviewer: necusjz
-      - assignTo:
-          users:
-          - necusjz
       description: '[Peering] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6736,12 +6378,6 @@ configuration:
           label: Storagesync
       - addLabel:
           label: act-codegen-extensibility-squad
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: jsntcy
-      - requestReview:
-          reviewer: Azure/act-codegen-extensibility-squad
       description: '[Storagesync] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6796,17 +6432,6 @@ configuration:
           label: Network - Network Watcher
       - addLabel:
           label: act-quality-productivity-squad
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: jsntcy
-      - requestReview:
-          reviewer: necusjz
-      - requestReview:
-          reviewer: Azure/act-quality-productivity-squad
-      - assignTo:
-          users:
-          - necusjz
       description: '[Network Watcher] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -6857,15 +6482,6 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: PowerBI
-      - requestReview:
-          reviewer: yonzhan
-      - requestReview:
-          reviewer: jsntcy
-      - requestReview:
-          reviewer: necusjz
-      - assignTo:
-          users:
-          - necusjz
       description: '[PowerBI] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
@@ -6881,8 +6497,6 @@ configuration:
       then:
       - addLabel:
           label: Auto-Assign
-      - requestReview:
-          reviewer: yonzhan
       description: '[k8s-runtime] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues

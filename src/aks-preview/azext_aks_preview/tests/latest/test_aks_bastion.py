@@ -467,7 +467,10 @@ class TestAksBastionTunnel(unittest.TestCase):
         client.get.return_value = SimpleNamespace(
             id="cluster-id",
             node_resource_group="node-rg",
-            network_profile=SimpleNamespace(bastion_profile=bastion_profile),
+            network_profile=SimpleNamespace(
+                cluster_api_connectivity_profile=SimpleNamespace(bastion=bastion_profile)
+                if bastion_profile else None
+            ),
         )
         bastion_resource = BastionResource("bastion", "bastion-rg", "sub-id")
 
@@ -521,6 +524,11 @@ class TestAksBastionTunnel(unittest.TestCase):
         mock_parse = self._run_tunnel(
             SimpleNamespace(enabled=False, bastion_id="managed-bastion-id")
         )
+
+        mock_parse.assert_called_once_with(None, ["node-rg"], "sub-id")
+
+    def test_missing_connectivity_profile_uses_discovery(self):
+        mock_parse = self._run_tunnel(None)
 
         mock_parse.assert_called_once_with(None, ["node-rg"], "sub-id")
 

@@ -1,0 +1,2689 @@
+interactions:
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "centraluseuap"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '69'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --identity
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002","name":"cliaf000002","type":"microsoft.networksecurity/agentfabrics","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T02:05:08.4710714Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T02:05:08.4710714Z"},"identity":{"principalId":"f72ea24f-3ac3-4c07-8b4e-3fccc2e6d991","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"resourceGuid":"c67670e9-a7f3-4878-8dd0-011904a24b1c","defaultPolicyGroups":null,"trustDomain":null,"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/9c55ea18-1c5b-4d04-abba-ff5ea92b492c*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '771'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:05:11 GMT
+      etag:
+      - '"010070b6-0000-3300-0000-6ad6cc570000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 8323a5e3-f2b3-413f-8f8e-198db6743289
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - P6D
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/centraluseuap/7f2ff528-9518-4f23-8e0e-924b73f80973
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 7C9EC1EC48834E9AAA89D16268E89F94 Ref B: SN4AA2022402047 Ref C: 2026-10-20T02:05:06Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --identity
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/9c55ea18-1c5b-4d04-abba-ff5ea92b492c*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/9c55ea18-1c5b-4d04-abba-ff5ea92b492c*0000000000000000000000000000000000000000000000000000000000000000","name":"9c55ea18-1c5b-4d04-abba-ff5ea92b492c*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002","status":"Accepted","startTime":"2026-10-20T02:05:10.0158126Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '576'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:05:13 GMT
+      etag:
+      - '"02002424-0000-3300-0000-6ad6cc560000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/845f0842-9a11-40f1-b43a-7d87df0aa6ce
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 8CBDE24941274CA1867A0B57A28A7847 Ref B: SN4AA2022403011 Ref C: 2026-10-20T02:05:13Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --identity
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/9c55ea18-1c5b-4d04-abba-ff5ea92b492c*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/9c55ea18-1c5b-4d04-abba-ff5ea92b492c*0000000000000000000000000000000000000000000000000000000000000000","name":"9c55ea18-1c5b-4d04-abba-ff5ea92b492c*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002","status":"Succeeded","startTime":"2026-10-20T02:05:10.0158126Z","endTime":"2026-10-20T02:05:16.6843785Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '636'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:05:47 GMT
+      etag:
+      - '"02002c24-0000-3300-0000-6ad6cc5c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/c1ebe0dd-83d3-4d55-93a7-3adb22e281f9
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5AC6DD976A82478FA181B60FA9B0B7C2 Ref B: SN4AA2022302035 Ref C: 2026-10-20T02:05:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --identity
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002","name":"cliaf000002","type":"microsoft.networksecurity/agentfabrics","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T02:05:08.4710714Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T02:05:08.4710714Z"},"identity":{"principalId":"f72ea24f-3ac3-4c07-8b4e-3fccc2e6d991","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"resourceGuid":"c67670e9-a7f3-4878-8dd0-011904a24b1c","defaultPolicyGroups":null,"trustDomain":null,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '772'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:05:50 GMT
+      etag:
+      - '"770037b5-0000-3400-0000-6ad6cc5c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-msedge-ref:
+      - 'Ref A: 32DC05211B1941718F0C2E36664CCFB5 Ref B: SN4AA2022301025 Ref C: 2026-10-20T02:05:49Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --node-count --node-vm-size --tier --enable-managed-identity --enable-aad --no-ssh-key
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.ContainerService/managedClusters/cliafaks000003?api-version=2026-06-01
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.ContainerService/managedClusters/cliafaks000003''
+        under resource group ''clitestafaks000001'' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '247'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:06:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 83876D5E478941E2AD1D6B0A7FAE68DB Ref B: SN4AA2022302025 Ref C: 2026-10-20T02:06:01Z'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"location": "centraluseuap", "properties": {"agentPoolProfiles": [{"name": "nodepool1", "orchestratorVersion":
+      "", "vmSize": "Standard_D2s_v5", "osType": "Linux", "enableNodePublicIP": false, "count": 1, "enableAutoScaling": false,
+      "scaleSetPriority": "Regular", "nodeTaints": [], "upgradeSettings": {}, "type": "VirtualMachineScaleSets", "enableEncryptionAtHost":
+      false, "enableUltraSSD": false, "enableFIPS": false, "mode": "System"}], "kubernetesVersion": "", "dnsPrefix": "cliafaksmd-clitestafaksojgw-9b8218",
+      "disableLocalAccounts": false, "enableRBAC": true, "networkProfile": {"loadBalancerSku": "standard", "outboundType":
+      "loadBalancer"}, "addonProfiles": {}, "aadProfile": {"managed": true, "enableAzureRBAC": false}, "storageProfile": {},
+      "bootstrapProfile": {"artifactSource": "Direct"}}, "identity": {"type": "SystemAssigned"}, "sku": {"name": "Base", "tier":
+      "Free"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '882'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --node-count --node-vm-size --tier --enable-managed-identity --enable-aad --no-ssh-key
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.ContainerService/managedClusters/cliafaks000003?api-version=2026-06-01
+  response:
+    body:
+      string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafaks000001/providers/Microsoft.ContainerService/managedClusters/cliafaks000003\"\
+        ,\n \"location\": \"centraluseuap\",\n \"name\": \"cliafaks000003\",\n \"type\": \"Microsoft.ContainerService/ManagedClusters\"\
+        ,\n \"kind\": \"Base\",\n \"properties\": {\n  \"provisioningState\": \"Creating\",\n  \"powerState\": {\n   \"code\"\
+        : \"Running\"\n  },\n  \"kubernetesVersion\": \"1.36\",\n  \"currentKubernetesVersion\": \"1.36.4\",\n  \"dnsPrefix\"\
+        : \"cliafaksmd-clitestafaksojgw-9b8218\",\n  \"fqdn\": \"cliafaksmd-clitestafaksojgw-9b8218-mblkl6xb.hcp.centraluseuap.azmk8s.io\"\
+        ,\n  \"azurePortalFQDN\": \"cliafaksmd-clitestafaksojgw-9b8218-mblkl6xb.portal.hcp.centraluseuap.azmk8s.io\",\n  \"\
+        agentPoolProfiles\": [\n   {\n    \"name\": \"nodepool1\",\n    \"count\": 1,\n    \"vmSize\": \"Standard_D2s_v5\"\
+        ,\n    \"osDiskSizeGB\": 128,\n    \"osDiskType\": \"Managed\",\n    \"kubeletDiskType\": \"OS\",\n    \"maxPods\"\
+        : 250,\n    \"type\": \"VirtualMachineScaleSets\",\n    \"enableAutoScaling\": false,\n    \"scaleDownMode\": \"Delete\"\
+        ,\n    \"provisioningState\": \"Creating\",\n    \"powerState\": {\n     \"code\": \"Running\"\n    },\n    \"orchestratorVersion\"\
+        : \"1.36\",\n    \"currentOrchestratorVersion\": \"1.36.4\",\n    \"enableNodePublicIP\": false,\n    \"nodeLabels\"\
+        : {},\n    \"mode\": \"System\",\n    \"enableEncryptionAtHost\": false,\n    \"enableUltraSSD\": false,\n    \"osType\"\
+        : \"Linux\",\n    \"osSKU\": \"Ubuntu\",\n    \"nodeImageVersion\": \"AKSUbuntu-2404gen2containerd-202610.16.1\",\n\
+        \    \"upgradeSettings\": {\n     \"maxSurge\": \"10%\",\n     \"maxUnavailable\": \"0\"\n    },\n    \"enableFIPS\"\
+        : false,\n    \"securityProfile\": {\n     \"sshAccess\": \"LocalUser\",\n     \"enableVTPM\": false,\n     \"enableSecureBoot\"\
+        : false\n    }\n   }\n  ],\n  \"servicePrincipalProfile\": {\n   \"clientId\": \"msi\"\n  },\n  \"nodeResourceGroup\"\
+        : \"MC_clitestafaks000001_cliafaks000003_centraluseuap\",\n  \"enableRBAC\": true,\n  \"supportPlan\": \"KubernetesOfficial\"\
+        ,\n  \"networkProfile\": {\n   \"networkPlugin\": \"azure\",\n   \"networkPluginMode\": \"overlay\",\n   \"networkPolicy\"\
+        : \"none\",\n   \"networkDataplane\": \"azure\",\n   \"loadBalancerSku\": \"standard\",\n   \"loadBalancerProfile\"\
+        : {\n    \"managedOutboundIPs\": {\n     \"count\": 1\n    },\n    \"backendPoolType\": \"nodeIPConfiguration\"\n\
+        \   },\n   \"podCidr\": \"10.244.0.0/16\",\n   \"serviceCidr\": \"10.0.0.0/16\",\n   \"dnsServiceIP\": \"10.0.0.10\"\
+        ,\n   \"outboundType\": \"loadBalancer\",\n   \"podCidrs\": [\n    \"10.244.0.0/16\"\n   ],\n   \"serviceCidrs\":\
+        \ [\n    \"10.0.0.0/16\"\n   ],\n   \"ipFamilies\": [\n    \"IPv4\"\n   ]\n  },\n  \"aadProfile\": {\n   \"managed\"\
+        : true,\n   \"adminGroupObjectIDs\": null,\n   \"adminUsers\": null,\n   \"enableAzureRBAC\": false,\n   \"tenantID\"\
+        : \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n  },\n  \"maxAgentPools\": 100,\n  \"autoUpgradeProfile\": {\n   \"nodeOSUpgradeChannel\"\
+        : \"NodeImage\"\n  },\n  \"disableLocalAccounts\": false,\n  \"securityProfile\": {},\n  \"storageProfile\": {\n \
+        \  \"diskCSIDriver\": {\n    \"enabled\": true\n   },\n   \"fileCSIDriver\": {\n    \"enabled\": true\n   },\n   \"\
+        snapshotController\": {\n    \"enabled\": true\n   }\n  },\n  \"oidcIssuerProfile\": {\n   \"enabled\": true,\n  \
+        \ \"issuerURL\": \"https://centraluseuap.oic.prod-aks.azure.com/72f988bf-86f1-41af-91ab-2d7cd011db47/34f4f1d1-ca41-42e6-a9be-233e86307cbe/\"\
+        \n  },\n  \"workloadAutoScalerProfile\": {},\n  \"resourceUID\": \"6ad6cc90728fa800010ad20f\",\n  \"metricsProfile\"\
+        : {\n   \"costAnalysis\": {\n    \"enabled\": false\n   }\n  },\n  \"nodeProvisioningProfile\": {\n   \"mode\": \"\
+        Manual\"\n  },\n  \"bootstrapProfile\": {\n   \"artifactSource\": \"Direct\"\n  },\n  \"hostedSystemProfile\": {\n\
+        \   \"enabled\": false\n  }\n },\n \"identity\": {\n  \"type\": \"SystemAssigned\",\n  \"principalId\": \"aa0e298d-6836-4888-bd9f-231f6e201aea\"\
+        ,\n  \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n },\n \"sku\": {\n  \"name\": \"Base\",\n  \"tier\":\
+        \ \"Free\"\n }\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/d2786523-830c-4b1b-9dd8-97a6ceb4ca30?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '3662'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:06:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/centraluseuap/7606fc17-b07d-41bf-b5cc-67304d526d6c
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: EB3664801ACE45929B943996EB6D40F2 Ref B: SN4AA2022303049 Ref C: 2026-10-20T02:06:04Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --node-count --node-vm-size --tier --enable-managed-identity --enable-aad --no-ssh-key
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/d2786523-830c-4b1b-9dd8-97a6ceb4ca30?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"d2786523-830c-4b1b-9dd8-97a6ceb4ca30\",\n \"status\": \"InProgress\",\n \"startTime\": \"2026-10-20T02:06:09.1675821Z\"\
+        \n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '122'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:06:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/aa6cad0d-8fa9-4801-9329-654502ba4bf9
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 46B853967CC54C13AD1E51888FD081AC Ref B: SN4AA2022302027 Ref C: 2026-10-20T02:06:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --node-count --node-vm-size --tier --enable-managed-identity --enable-aad --no-ssh-key
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/d2786523-830c-4b1b-9dd8-97a6ceb4ca30?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"d2786523-830c-4b1b-9dd8-97a6ceb4ca30\",\n \"status\": \"ProvisioningNetworkResources\",\n \"\
+        startTime\": \"2026-10-20T02:06:09.1675821Z\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '140'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:06:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/448e1290-338d-4093-8d3a-29a69727490d
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 98ADB90567D84449BFC9237FC530C3E2 Ref B: SN4AA2022302017 Ref C: 2026-10-20T02:06:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --node-count --node-vm-size --tier --enable-managed-identity --enable-aad --no-ssh-key
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/d2786523-830c-4b1b-9dd8-97a6ceb4ca30?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"d2786523-830c-4b1b-9dd8-97a6ceb4ca30\",\n \"status\": \"CreatingAgentPools\",\n \"startTime\"\
+        : \"2026-10-20T02:06:09.1675821Z\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '130'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:07:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/622deeee-919c-45d8-a1bd-c972af11286c
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F74D9BE755ED444CBE34F8CFEBDED67C Ref B: SN4AA2022305037 Ref C: 2026-10-20T02:07:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --node-count --node-vm-size --tier --enable-managed-identity --enable-aad --no-ssh-key
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/d2786523-830c-4b1b-9dd8-97a6ceb4ca30?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"d2786523-830c-4b1b-9dd8-97a6ceb4ca30\",\n \"status\": \"CreatingAgentPools: 0/1 nodes completed\"\
+        ,\n \"startTime\": \"2026-10-20T02:06:09.1675821Z\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '151'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:07:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/11c7830d-d32f-447f-9ff4-53b909ca6565
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: E0CED5647EB3477EB075E2355698D59C Ref B: SN4AA2022305051 Ref C: 2026-10-20T02:07:55Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --node-count --node-vm-size --tier --enable-managed-identity --enable-aad --no-ssh-key
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/d2786523-830c-4b1b-9dd8-97a6ceb4ca30?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"d2786523-830c-4b1b-9dd8-97a6ceb4ca30\",\n \"status\": \"CreatingAgentPools: 0/1 nodes completed\"\
+        ,\n \"startTime\": \"2026-10-20T02:06:09.1675821Z\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '151'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:08:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/5fb1d577-b421-4396-b41b-4dad3c971e32
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A5A2B5FDB7194AFDA4713ACE763780C0 Ref B: SN4AA2022304053 Ref C: 2026-10-20T02:08:28Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --node-count --node-vm-size --tier --enable-managed-identity --enable-aad --no-ssh-key
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/d2786523-830c-4b1b-9dd8-97a6ceb4ca30?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"d2786523-830c-4b1b-9dd8-97a6ceb4ca30\",\n \"status\": \"CreatingAgentPools: 1/1 nodes completed\"\
+        ,\n \"startTime\": \"2026-10-20T02:06:09.1675821Z\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '151'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:09:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/853f28e8-cb45-4c4a-8f2e-e2a1be5c774d
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1582E019221748AA9ACA5A36BA586BE6 Ref B: SN4AA2022302025 Ref C: 2026-10-20T02:09:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --node-count --node-vm-size --tier --enable-managed-identity --enable-aad --no-ssh-key
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/d2786523-830c-4b1b-9dd8-97a6ceb4ca30?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"d2786523-830c-4b1b-9dd8-97a6ceb4ca30\",\n \"status\": \"Succeeded\",\n \"startTime\": \"2026-10-20T02:06:09.1675821Z\"\
+        ,\n \"endTime\": \"2026-10-20T02:09:24.7983489Z\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '165'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:09:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/e1605f95-c071-467e-9b6b-fbcf2370dcdc
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 020711364C974CA896364BA4697D2203 Ref B: SN4AA2022302019 Ref C: 2026-10-20T02:09:34Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --node-count --node-vm-size --tier --enable-managed-identity --enable-aad --no-ssh-key
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.ContainerService/managedClusters/cliafaks000003?api-version=2026-06-01
+  response:
+    body:
+      string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafaks000001/providers/Microsoft.ContainerService/managedClusters/cliafaks000003\"\
+        ,\n \"location\": \"centraluseuap\",\n \"name\": \"cliafaks000003\",\n \"type\": \"Microsoft.ContainerService/ManagedClusters\"\
+        ,\n \"kind\": \"Base\",\n \"properties\": {\n  \"provisioningState\": \"Succeeded\",\n  \"powerState\": {\n   \"code\"\
+        : \"Running\"\n  },\n  \"kubernetesVersion\": \"1.36\",\n  \"currentKubernetesVersion\": \"1.36.4\",\n  \"dnsPrefix\"\
+        : \"cliafaksmd-clitestafaksojgw-9b8218\",\n  \"fqdn\": \"cliafaksmd-clitestafaksojgw-9b8218-mblkl6xb.hcp.centraluseuap.azmk8s.io\"\
+        ,\n  \"azurePortalFQDN\": \"cliafaksmd-clitestafaksojgw-9b8218-mblkl6xb.portal.hcp.centraluseuap.azmk8s.io\",\n  \"\
+        agentPoolProfiles\": [\n   {\n    \"name\": \"nodepool1\",\n    \"count\": 1,\n    \"vmSize\": \"Standard_D2s_v5\"\
+        ,\n    \"osDiskSizeGB\": 128,\n    \"osDiskType\": \"Managed\",\n    \"kubeletDiskType\": \"OS\",\n    \"maxPods\"\
+        : 250,\n    \"type\": \"VirtualMachineScaleSets\",\n    \"enableAutoScaling\": false,\n    \"scaleDownMode\": \"Delete\"\
+        ,\n    \"provisioningState\": \"Succeeded\",\n    \"powerState\": {\n     \"code\": \"Running\"\n    },\n    \"orchestratorVersion\"\
+        : \"1.36\",\n    \"currentOrchestratorVersion\": \"1.36.4\",\n    \"enableNodePublicIP\": false,\n    \"mode\": \"\
+        System\",\n    \"enableEncryptionAtHost\": false,\n    \"enableUltraSSD\": false,\n    \"osType\": \"Linux\",\n  \
+        \  \"osSKU\": \"Ubuntu\",\n    \"nodeImageVersion\": \"AKSUbuntu-2404gen2containerd-202610.16.1\",\n    \"upgradeSettings\"\
+        : {\n     \"maxSurge\": \"10%\",\n     \"maxUnavailable\": \"0\"\n    },\n    \"enableFIPS\": false,\n    \"securityProfile\"\
+        : {\n     \"sshAccess\": \"LocalUser\",\n     \"enableVTPM\": false,\n     \"enableSecureBoot\": false\n    },\n \
+        \   \"eTag\": \"60421e56-af4a-4324-aa24-8176deb011a0\"\n   }\n  ],\n  \"servicePrincipalProfile\": {\n   \"clientId\"\
+        : \"msi\"\n  },\n  \"nodeResourceGroup\": \"MC_clitestafaks000001_cliafaks000003_centraluseuap\",\n  \"enableRBAC\"\
+        : true,\n  \"supportPlan\": \"KubernetesOfficial\",\n  \"networkProfile\": {\n   \"networkPlugin\": \"azure\",\n \
+        \  \"networkPluginMode\": \"overlay\",\n   \"networkPolicy\": \"none\",\n   \"networkDataplane\": \"azure\",\n   \"\
+        loadBalancerSku\": \"standard\",\n   \"loadBalancerProfile\": {\n    \"managedOutboundIPs\": {\n     \"count\": 1\n\
+        \    },\n    \"effectiveOutboundIPs\": [\n     {\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitestafaks000001_cliafaks000003_centraluseuap/providers/Microsoft.Network/publicIPAddresses/2fe34805-9872-4ea3-898f-47f58504f7cf\"\
+        \n     }\n    ],\n    \"backendPoolType\": \"nodeIPConfiguration\"\n   },\n   \"podCidr\": \"10.244.0.0/16\",\n  \
+        \ \"serviceCidr\": \"10.0.0.0/16\",\n   \"dnsServiceIP\": \"10.0.0.10\",\n   \"outboundType\": \"loadBalancer\",\n\
+        \   \"podCidrs\": [\n    \"10.244.0.0/16\"\n   ],\n   \"serviceCidrs\": [\n    \"10.0.0.0/16\"\n   ],\n   \"ipFamilies\"\
+        : [\n    \"IPv4\"\n   ]\n  },\n  \"aadProfile\": {\n   \"managed\": true,\n   \"adminGroupObjectIDs\": null,\n   \"\
+        adminUsers\": null,\n   \"enableAzureRBAC\": false,\n   \"tenantID\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n \
+        \ },\n  \"maxAgentPools\": 100,\n  \"identityProfile\": {\n   \"kubeletidentity\": {\n    \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitestafaks000001_cliafaks000003_centraluseuap/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliafaks000003-agentpool\"\
+        ,\n    \"clientId\": \"3911dbef-e807-4800-bb63-4b36bf50dfac\",\n    \"objectId\": \"5083bff3-a7a7-4e75-a7b7-5c87f5ebb6bc\"\
+        \n   }\n  },\n  \"autoUpgradeProfile\": {\n   \"nodeOSUpgradeChannel\": \"NodeImage\"\n  },\n  \"disableLocalAccounts\"\
+        : false,\n  \"securityProfile\": {},\n  \"storageProfile\": {\n   \"diskCSIDriver\": {\n    \"enabled\": true\n  \
+        \ },\n   \"fileCSIDriver\": {\n    \"enabled\": true\n   },\n   \"snapshotController\": {\n    \"enabled\": true\n\
+        \   }\n  },\n  \"oidcIssuerProfile\": {\n   \"enabled\": true,\n   \"issuerURL\": \"https://centraluseuap.oic.prod-aks.azure.com/72f988bf-86f1-41af-91ab-2d7cd011db47/34f4f1d1-ca41-42e6-a9be-233e86307cbe/\"\
+        \n  },\n  \"workloadAutoScalerProfile\": {},\n  \"resourceUID\": \"6ad6cc90728fa800010ad20f\",\n  \"metricsProfile\"\
+        : {\n   \"costAnalysis\": {\n    \"enabled\": false\n   }\n  },\n  \"nodeProvisioningProfile\": {\n   \"mode\": \"\
+        Manual\"\n  },\n  \"bootstrapProfile\": {\n   \"artifactSource\": \"Direct\"\n  },\n  \"hostedSystemProfile\": {\n\
+        \   \"enabled\": false\n  }\n },\n \"identity\": {\n  \"type\": \"SystemAssigned\",\n  \"principalId\": \"aa0e298d-6836-4888-bd9f-231f6e201aea\"\
+        ,\n  \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n },\n \"sku\": {\n  \"name\": \"Base\",\n  \"tier\":\
+        \ \"Free\"\n },\n \"eTag\": \"be1797ae-8c41-4853-8fc7-3db016b7fcc9\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4400'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:09:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: A06DFEBA92DF4D11BC7D03D389FB7DE6 Ref B: SN4AA2022303029 Ref C: 2026-10-20T02:09:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "centraluseuap", "properties": {"clusterResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafaks000001/providers/Microsoft.ContainerService/managedClusters/cliafaks000003",
+      "sku": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks attach
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '242'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --fabric-name -n -l --cluster-resource-id --sku
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004","name":"cliafassoc000004","type":"microsoft.networksecurity/agentfabrics/clusterassociations","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T02:09:39.9684066Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T02:09:39.9684066Z"},"properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafaks000001/providers/microsoft.containerservice/managedclusters/cliafaks000003","sku":"Standard","status":null,"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/f0ebe14c-17e0-47d9-a8e9-50fe678fde33*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '800'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:09:41 GMT
+      etag:
+      - '"07000532-0000-3300-0000-6ad6cd660000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 144cfed1-85a4-4f7d-aea7-20fb54c18a86
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - P6D
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/centraluseuap/c1f92663-74ed-4b04-a30d-4998a0987e44
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 7B333CCD2C7A4A699381D0916783708D Ref B: SN4AA2022302009 Ref C: 2026-10-20T02:09:38Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks attach
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n -l --cluster-resource-id --sku
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/f0ebe14c-17e0-47d9-a8e9-50fe678fde33*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/f0ebe14c-17e0-47d9-a8e9-50fe678fde33*0000000000000000000000000000000000000000000000000000000000000000","name":"f0ebe14c-17e0-47d9-a8e9-50fe678fde33*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004","status":"Accepted","startTime":"2026-10-20T02:09:40.2508494Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '613'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:09:44 GMT
+      etag:
+      - '"450021d3-0000-3400-0000-6ad6cd660000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/bb5f2bb5-a762-4fdf-a22c-b43191c03292
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 794638F3A9D9443C8FCBE8C31D513C91 Ref B: SN4AA2022301023 Ref C: 2026-10-20T02:09:44Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks attach
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n -l --cluster-resource-id --sku
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/f0ebe14c-17e0-47d9-a8e9-50fe678fde33*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/f0ebe14c-17e0-47d9-a8e9-50fe678fde33*0000000000000000000000000000000000000000000000000000000000000000","name":"f0ebe14c-17e0-47d9-a8e9-50fe678fde33*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004","status":"Succeeded","startTime":"2026-10-20T02:09:40.2508494Z","endTime":"2026-10-20T02:09:47.2988235Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '673'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:10:15 GMT
+      etag:
+      - '"02005526-0000-3300-0000-6ad6cd6b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/7232a17c-e0c9-429a-ac15-b55ffca2b11b
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1798C1F348AD4117BD16122F46330300 Ref B: SN4AA2022304039 Ref C: 2026-10-20T02:10:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks attach
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n -l --cluster-resource-id --sku
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004","name":"cliafassoc000004","type":"microsoft.networksecurity/agentfabrics/clusterassociations","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T02:09:39.9684066Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T02:09:39.9684066Z"},"properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafaks000001/providers/microsoft.containerservice/managedclusters/cliafaks000003","sku":"Standard","status":null,"provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '801'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:10:18 GMT
+      etag:
+      - '"2800e4ff-0000-3400-0000-6ad6cd6b0000"'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 235F5F88A7324F0BA941079F74147229 Ref B: SN4AA2022305049 Ref C: 2026-10-20T02:10:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --created
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004","name":"cliafassoc000004","type":"microsoft.networksecurity/agentfabrics/clusterassociations","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T02:09:39.9684066Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T02:09:39.9684066Z"},"properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafaks000001/providers/microsoft.containerservice/managedclusters/cliafaks000003","sku":"Standard","status":null,"provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '801'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:10:19 GMT
+      etag:
+      - '"2800e4ff-0000-3400-0000-6ad6cd6b0000"'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 0F9EDB72443A4FFCBF43A6E54B075C91 Ref B: SN4AA2022305023 Ref C: 2026-10-20T02:10:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004","name":"cliafassoc000004","type":"microsoft.networksecurity/agentfabrics/clusterassociations","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T02:09:39.9684066Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T02:09:39.9684066Z"},"properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafaks000001/providers/microsoft.containerservice/managedclusters/cliafaks000003","sku":"Standard","status":null,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '801'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:10:21 GMT
+      etag:
+      - '"2800e4ff-0000-3400-0000-6ad6cd6b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 5209C16A999445B29F195439D3E35084 Ref B: SN4AA2022303049 Ref C: 2026-10-20T02:10:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004","name":"cliafassoc000004","type":"microsoft.networksecurity/agentfabrics/clusterassociations","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T02:09:39.9684066Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T02:09:39.9684066Z"},"properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafaks000001/providers/microsoft.containerservice/managedclusters/cliafaks000003","sku":"Standard","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '799'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:10:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 89169d64-2de2-4eef-b30c-ff6b3ad9fc56
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 30A341A2F5524743945F135359D095C5 Ref B: SN4AA2022304027 Ref C: 2026-10-20T02:10:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --sku --no-wait
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004","name":"cliafassoc000004","type":"microsoft.networksecurity/agentfabrics/clusterassociations","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T02:09:39.9684066Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T02:09:39.9684066Z"},"properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafaks000001/providers/microsoft.containerservice/managedclusters/cliafaks000003","sku":"Standard","status":null,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '801'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:10:25 GMT
+      etag:
+      - '"2800e4ff-0000-3400-0000-6ad6cd6b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: CD2A00F0A8334DC7B4C8818662507F31 Ref B: SN4AA2022303019 Ref C: 2026-10-20T02:10:25Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"clusterResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafaks000001/providers/microsoft.containerservice/managedclusters/cliafaks000003",
+      "sku": "Premium"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '212'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --fabric-name -n --sku --no-wait
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004?api-version=2026-10-07-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/b06d0bf3-6fc1-4245-8429-5aaa5d2f5fe7*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:10:28 GMT
+      etag:
+      - '"07003332-0000-3300-0000-6ad6cd940000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/b06d0bf3-6fc1-4245-8429-5aaa5d2f5fe7*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - b5f01f91-9716-45bf-8fb6-c2e890cf4832
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - P6D
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/centraluseuap/93546753-d360-47f5-aa4d-595b28c5e850
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 682B635BB3304C3AA5C032C533DFFB42 Ref B: SN4AA2022305035 Ref C: 2026-10-20T02:10:27Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --updated
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004","name":"cliafassoc000004","type":"microsoft.networksecurity/agentfabrics/clusterassociations","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T02:09:39.9684066Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T02:10:27.5374769Z"},"properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafaks000001/providers/microsoft.containerservice/managedclusters/cliafaks000003","sku":"Premium","provisioningState":"Accepted"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '785'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:10:30 GMT
+      etag:
+      - '"07003332-0000-3300-0000-6ad6cd940000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 02DDD962573844AC8A81C81A4A03EF30 Ref B: SN4AA2022301049 Ref C: 2026-10-20T02:10:30Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --updated
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004","name":"cliafassoc000004","type":"microsoft.networksecurity/agentfabrics/clusterassociations","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T02:09:39.9684066Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T02:10:27.5374769Z"},"properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafaks000001/providers/microsoft.containerservice/managedclusters/cliafaks000003","sku":"Premium","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '786'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:11:01 GMT
+      etag:
+      - '"2800fbff-0000-3400-0000-6ad6cd990000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 62E629F996EF4AD18F2E9F91DAE56670 Ref B: SN4AA2022302017 Ref C: 2026-10-20T02:11:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004","name":"cliafassoc000004","type":"microsoft.networksecurity/agentfabrics/clusterassociations","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T02:09:39.9684066Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T02:10:27.5374769Z"},"properties":{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafaks000001/providers/microsoft.containerservice/managedclusters/cliafaks000003","sku":"Premium","provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '786'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:11:03 GMT
+      etag:
+      - '"2800fbff-0000-3400-0000-6ad6cd990000"'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: ECD2CD5138F74DBE85AFE080A58987D1 Ref B: SN4AA2022302017 Ref C: 2026-10-20T02:11:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks command invoke
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --command
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.ContainerService/managedClusters/cliafaks000003?api-version=2026-06-01
+  response:
+    body:
+      string: "{\n \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestafaks000001/providers/Microsoft.ContainerService/managedClusters/cliafaks000003\"\
+        ,\n \"location\": \"centraluseuap\",\n \"name\": \"cliafaks000003\",\n \"type\": \"Microsoft.ContainerService/ManagedClusters\"\
+        ,\n \"kind\": \"Base\",\n \"properties\": {\n  \"provisioningState\": \"Succeeded\",\n  \"powerState\": {\n   \"code\"\
+        : \"Running\"\n  },\n  \"kubernetesVersion\": \"1.36\",\n  \"currentKubernetesVersion\": \"1.36.4\",\n  \"dnsPrefix\"\
+        : \"cliafaksmd-clitestafaksojgw-9b8218\",\n  \"fqdn\": \"cliafaksmd-clitestafaksojgw-9b8218-mblkl6xb.hcp.centraluseuap.azmk8s.io\"\
+        ,\n  \"azurePortalFQDN\": \"cliafaksmd-clitestafaksojgw-9b8218-mblkl6xb.portal.hcp.centraluseuap.azmk8s.io\",\n  \"\
+        agentPoolProfiles\": [\n   {\n    \"name\": \"nodepool1\",\n    \"count\": 1,\n    \"vmSize\": \"Standard_D2s_v5\"\
+        ,\n    \"osDiskSizeGB\": 128,\n    \"osDiskType\": \"Managed\",\n    \"kubeletDiskType\": \"OS\",\n    \"maxPods\"\
+        : 250,\n    \"type\": \"VirtualMachineScaleSets\",\n    \"enableAutoScaling\": false,\n    \"scaleDownMode\": \"Delete\"\
+        ,\n    \"provisioningState\": \"Succeeded\",\n    \"powerState\": {\n     \"code\": \"Running\"\n    },\n    \"orchestratorVersion\"\
+        : \"1.36\",\n    \"currentOrchestratorVersion\": \"1.36.4\",\n    \"enableNodePublicIP\": false,\n    \"mode\": \"\
+        System\",\n    \"enableEncryptionAtHost\": false,\n    \"enableUltraSSD\": false,\n    \"osType\": \"Linux\",\n  \
+        \  \"osSKU\": \"Ubuntu\",\n    \"nodeImageVersion\": \"AKSUbuntu-2404gen2containerd-202610.16.1\",\n    \"upgradeSettings\"\
+        : {\n     \"maxSurge\": \"10%\",\n     \"maxUnavailable\": \"0\"\n    },\n    \"enableFIPS\": false,\n    \"securityProfile\"\
+        : {\n     \"sshAccess\": \"LocalUser\",\n     \"enableVTPM\": false,\n     \"enableSecureBoot\": false\n    },\n \
+        \   \"eTag\": \"60421e56-af4a-4324-aa24-8176deb011a0\"\n   }\n  ],\n  \"servicePrincipalProfile\": {\n   \"clientId\"\
+        : \"msi\"\n  },\n  \"nodeResourceGroup\": \"MC_clitestafaks000001_cliafaks000003_centraluseuap\",\n  \"enableRBAC\"\
+        : true,\n  \"supportPlan\": \"KubernetesOfficial\",\n  \"networkProfile\": {\n   \"networkPlugin\": \"azure\",\n \
+        \  \"networkPluginMode\": \"overlay\",\n   \"networkPolicy\": \"none\",\n   \"networkDataplane\": \"azure\",\n   \"\
+        loadBalancerSku\": \"standard\",\n   \"loadBalancerProfile\": {\n    \"managedOutboundIPs\": {\n     \"count\": 1\n\
+        \    },\n    \"effectiveOutboundIPs\": [\n     {\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitestafaks000001_cliafaks000003_centraluseuap/providers/Microsoft.Network/publicIPAddresses/2fe34805-9872-4ea3-898f-47f58504f7cf\"\
+        \n     }\n    ],\n    \"backendPoolType\": \"nodeIPConfiguration\"\n   },\n   \"podCidr\": \"10.244.0.0/16\",\n  \
+        \ \"serviceCidr\": \"10.0.0.0/16\",\n   \"dnsServiceIP\": \"10.0.0.10\",\n   \"outboundType\": \"loadBalancer\",\n\
+        \   \"podCidrs\": [\n    \"10.244.0.0/16\"\n   ],\n   \"serviceCidrs\": [\n    \"10.0.0.0/16\"\n   ],\n   \"ipFamilies\"\
+        : [\n    \"IPv4\"\n   ]\n  },\n  \"aadProfile\": {\n   \"managed\": true,\n   \"adminGroupObjectIDs\": null,\n   \"\
+        adminUsers\": null,\n   \"enableAzureRBAC\": false,\n   \"tenantID\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n \
+        \ },\n  \"maxAgentPools\": 100,\n  \"identityProfile\": {\n   \"kubeletidentity\": {\n    \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitestafaks000001_cliafaks000003_centraluseuap/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliafaks000003-agentpool\"\
+        ,\n    \"clientId\": \"3911dbef-e807-4800-bb63-4b36bf50dfac\",\n    \"objectId\": \"5083bff3-a7a7-4e75-a7b7-5c87f5ebb6bc\"\
+        \n   }\n  },\n  \"autoUpgradeProfile\": {\n   \"nodeOSUpgradeChannel\": \"NodeImage\"\n  },\n  \"disableLocalAccounts\"\
+        : false,\n  \"securityProfile\": {},\n  \"storageProfile\": {\n   \"diskCSIDriver\": {\n    \"enabled\": true\n  \
+        \ },\n   \"fileCSIDriver\": {\n    \"enabled\": true\n   },\n   \"snapshotController\": {\n    \"enabled\": true\n\
+        \   }\n  },\n  \"oidcIssuerProfile\": {\n   \"enabled\": true,\n   \"issuerURL\": \"https://centraluseuap.oic.prod-aks.azure.com/72f988bf-86f1-41af-91ab-2d7cd011db47/34f4f1d1-ca41-42e6-a9be-233e86307cbe/\"\
+        \n  },\n  \"workloadAutoScalerProfile\": {},\n  \"resourceUID\": \"6ad6cc90728fa800010ad20f\",\n  \"metricsProfile\"\
+        : {\n   \"costAnalysis\": {\n    \"enabled\": false\n   }\n  },\n  \"nodeProvisioningProfile\": {\n   \"mode\": \"\
+        Manual\"\n  },\n  \"bootstrapProfile\": {\n   \"artifactSource\": \"Direct\"\n  },\n  \"hostedSystemProfile\": {\n\
+        \   \"enabled\": false\n  }\n },\n \"identity\": {\n  \"type\": \"SystemAssigned\",\n  \"principalId\": \"aa0e298d-6836-4888-bd9f-231f6e201aea\"\
+        ,\n  \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n },\n \"sku\": {\n  \"name\": \"Base\",\n  \"tier\":\
+        \ \"Free\"\n },\n \"eTag\": \"be1797ae-8c41-4853-8fc7-3db016b7fcc9\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4400'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:11:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 9593C34474D34E62AFFB2073ACF3185E Ref B: SN4AA2022302019 Ref C: 2026-10-20T02:11:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks detach
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --fabric-name -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004?api-version=2026-10-07-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/bc81db91-a59a-433f-9b18-f36b1509828f*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:11:29 GMT
+      etag:
+      - '"07009b32-0000-3300-0000-6ad6cdd20000"'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/bc81db91-a59a-433f-9b18-f36b1509828f*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - 9c77c275-e60d-4632-b3ee-e64044729025
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/centraluseuap/409d4f83-78fa-4f7c-b434-c37739399be2
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 2F9A5C3AB3DA4FC2B01B7F2E8ED8DEF4 Ref B: SN4AA2022301039 Ref C: 2026-10-20T02:11:28Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks detach
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/bc81db91-a59a-433f-9b18-f36b1509828f*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/bc81db91-a59a-433f-9b18-f36b1509828f*0000000000000000000000000000000000000000000000000000000000000000","name":"bc81db91-a59a-433f-9b18-f36b1509828f*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004","status":"Deleting","startTime":"2026-10-20T02:11:29.5283714Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/centraluseuap/operationStatuses/bc81db91-a59a-433f-9b18-f36b1509828f*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '613'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:11:32 GMT
+      etag:
+      - '"450029d3-0000-3400-0000-6ad6cdd20000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/centraluseuap/operationStatuses/bc81db91-a59a-433f-9b18-f36b1509828f*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/f988dbcf-3992-454f-b247-f6ee08d1741f
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 00D2EDC3E2354FBB8BCB176DDE313482 Ref B: SN4AA2022303023 Ref C: 2026-10-20T02:11:32Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks detach
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/bc81db91-a59a-433f-9b18-f36b1509828f*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/bc81db91-a59a-433f-9b18-f36b1509828f*0000000000000000000000000000000000000000000000000000000000000000","name":"bc81db91-a59a-433f-9b18-f36b1509828f*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004","status":"Succeeded","startTime":"2026-10-20T02:11:29.5283714Z","endTime":"2026-10-20T02:11:35.5992448Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '673'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:12:04 GMT
+      etag:
+      - '"0200fa26-0000-3300-0000-6ad6cdd80000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/e018e4fe-b819-4bc7-8576-26fa6e483f38
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 39D956EF458F41D391E469B4FA891B33 Ref B: SN4AA2022304035 Ref C: 2026-10-20T02:12:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks detach
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/bc81db91-a59a-433f-9b18-f36b1509828f*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/bc81db91-a59a-433f-9b18-f36b1509828f*0000000000000000000000000000000000000000000000000000000000000000","name":"bc81db91-a59a-433f-9b18-f36b1509828f*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004","status":"Succeeded","startTime":"2026-10-20T02:11:29.5283714Z","endTime":"2026-10-20T02:11:35.5992448Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '673'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:12:05 GMT
+      etag:
+      - '"0200fa26-0000-3300-0000-6ad6cdd80000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/f31dcaf6-773b-429e-ab67-c2070a5fbb1a
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3DFC2E598C1E4C1795BE33F18BC6E73B Ref B: SN4AA2022304029 Ref C: 2026-10-20T02:12:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric aks wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --deleted
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.NetworkSecurity/agentFabrics/cliaf000002/clusterAssociations/cliafassoc000004''
+        under resource group ''clitestafaks000001'' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '277'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:12:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 422563C6DB6141B0BCABD379E8FA6208 Ref B: SN4AA2022301053 Ref C: 2026-10-20T02:12:08Z'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.ContainerService/managedClusters/cliafaks000003?api-version=2026-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 20 Oct 2026 02:12:15 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/centraluseuap/786f8ded-0d87-4a0e-9b4a-f8e7cd6ecbb1
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '800'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 3E6C0F554CD544698C7A67EAF27DC4FB Ref B: SN4AA2022303045 Ref C: 2026-10-20T02:12:10Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58\",\n \"status\": \"InProgress\",\n \"startTime\": \"2026-10-20T02:12:15.6280499Z\"\
+        \n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '122'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:12:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/017c874d-66d7-4f25-ac93-1d39b4b5154d
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B07164EF558E4710BFD06E15B0719E9B Ref B: SN4AA2022305035 Ref C: 2026-10-20T02:12:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58\",\n \"status\": \"InProgress\",\n \"startTime\": \"2026-10-20T02:12:15.6280499Z\"\
+        \n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '122'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:12:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/e83ff1aa-1733-43ac-8cc0-0f092b465bc3
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 97A904AF0206475F98426B1B022DE577 Ref B: SN4AA2022304045 Ref C: 2026-10-20T02:12:48Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58\",\n \"status\": \"InProgress\",\n \"startTime\": \"2026-10-20T02:12:15.6280499Z\"\
+        \n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '122'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:13:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/7ff7f2a7-e6da-407e-9a70-73a2a91dec55
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 8BE990A2492C404997A773A6FA14D881 Ref B: SN4AA2022302047 Ref C: 2026-10-20T02:13:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58\",\n \"status\": \"InProgress\",\n \"startTime\": \"2026-10-20T02:12:15.6280499Z\"\
+        \n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '122'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:13:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/9bb17c3c-dcb4-4c04-88c1-1f6264dfb483
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 7235CE01476E4B5192AD9723CD7F0B91 Ref B: SN4AA2022302017 Ref C: 2026-10-20T02:13:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58\",\n \"status\": \"InProgress\",\n \"startTime\": \"2026-10-20T02:12:15.6280499Z\"\
+        \n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '122'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:14:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/1f299e8c-4384-43a1-925e-a7dd8ba9f3ce
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: EFDBE4E56D844BA890E4A5005D8AED00 Ref B: SN4AA2022302037 Ref C: 2026-10-20T02:14:24Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58\",\n \"status\": \"InProgress\",\n \"startTime\": \"2026-10-20T02:12:15.6280499Z\"\
+        \n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '122'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:14:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/902eee9a-2517-4881-b276-5c51a04506c2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3A4014F0CC1C4D0A91993F4202CF4983 Ref B: SN4AA2022301019 Ref C: 2026-10-20T02:14:56Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58\",\n \"status\": \"InProgress\",\n \"startTime\": \"2026-10-20T02:12:15.6280499Z\"\
+        \n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '122'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:15:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/c77c5808-a8ff-484b-b759-f7899a9195ad
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C574F92821744FED8CC4B77F60ECE5F2 Ref B: SN4AA2022403009 Ref C: 2026-10-20T02:15:28Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58\",\n \"status\": \"InProgress\",\n \"startTime\": \"2026-10-20T02:12:15.6280499Z\"\
+        \n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '122'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:16:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/b7169a30-0398-4616-ab5a-2c6126fb12a2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: D9499CA441C34176BF57933F7306A222 Ref B: SN4AA2022304051 Ref C: 2026-10-20T02:16:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58\",\n \"status\": \"InProgress\",\n \"startTime\": \"2026-10-20T02:12:15.6280499Z\"\
+        \n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '122'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:16:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/7a028527-88ab-402e-899a-69fd2f35a007
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B09FA028A2A74739B1B884DD10D3A9DC Ref B: SN4AA2022301033 Ref C: 2026-10-20T02:16:32Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58\",\n \"status\": \"InProgress\",\n \"startTime\": \"2026-10-20T02:12:15.6280499Z\"\
+        \n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '122'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:17:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/47bcd2e5-5129-4146-90fd-8182b569665a
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 7E18DCF3470044C4B33A73DE24B1FBD0 Ref B: SN4AA2022303031 Ref C: 2026-10-20T02:17:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58\",\n \"status\": \"InProgress\",\n \"startTime\": \"2026-10-20T02:12:15.6280499Z\"\
+        \n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '122'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:17:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/ed7b917e-6f7a-45c6-93bd-97bd425c1ee8
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 39E22779FBDB45D4BAE2F0FBFDB0A9AD Ref B: SN4AA2022401039 Ref C: 2026-10-20T02:17:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58?api-version=2025-03-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: "{\n \"name\": \"a26e5b4d-83ad-4fb3-96f8-8e70d2c59e58\",\n \"status\": \"Succeeded\",\n \"startTime\": \"2026-10-20T02:12:15.6280499Z\"\
+        ,\n \"endTime\": \"2026-10-20T02:17:58.7165828Z\"\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '165'
+      content-type:
+      - application/json
+      date:
+      - Tue, 20 Oct 2026 02:18:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/234a6c8b-bb7e-4be6-b86c-bcbb305df3ff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 745D22ABD6E84656B8BAE422F9B3D346 Ref B: SN4AA2022303009 Ref C: 2026-10-20T02:18:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002?api-version=2026-10-07-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/fe0fbe99-1681-422b-9a0f-84a7ac914ae8*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:18:12 GMT
+      etag:
+      - '"01005dbb-0000-3300-0000-6ad6cf650000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/fe0fbe99-1681-422b-9a0f-84a7ac914ae8*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      mise-correlation-id:
+      - 7de98388-9e9e-464e-8f83-b65724f13439
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/centraluseuap/e5a1e10b-af91-4e53-b6ea-cda57ca98e0c
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: CFDB228F00AE4750BEAD02FBB49EE8C1 Ref B: SN4AA2022303045 Ref C: 2026-10-20T02:18:11Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/fe0fbe99-1681-422b-9a0f-84a7ac914ae8*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/fe0fbe99-1681-422b-9a0f-84a7ac914ae8*0000000000000000000000000000000000000000000000000000000000000000","name":"fe0fbe99-1681-422b-9a0f-84a7ac914ae8*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002","status":"Deleting","startTime":"2026-10-20T02:18:11.9897952Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/centraluseuap/operationStatuses/fe0fbe99-1681-422b-9a0f-84a7ac914ae8*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '576'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:18:14 GMT
+      etag:
+      - '"02003f2b-0000-3300-0000-6ad6cf640000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/centraluseuap/operationStatuses/fe0fbe99-1681-422b-9a0f-84a7ac914ae8*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/0a974e5a-ddc3-4daa-86d8-83baed9dbf6b
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 867A9767A4204296954E2DD3A7B7F3B9 Ref B: SN4AA2022303037 Ref C: 2026-10-20T02:18:15Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/fe0fbe99-1681-422b-9a0f-84a7ac914ae8*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/fe0fbe99-1681-422b-9a0f-84a7ac914ae8*0000000000000000000000000000000000000000000000000000000000000000","name":"fe0fbe99-1681-422b-9a0f-84a7ac914ae8*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002","status":"Succeeded","startTime":"2026-10-20T02:18:11.9897952Z","endTime":"2026-10-20T02:18:18.5460112Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '636'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:18:47 GMT
+      etag:
+      - '"0200482b-0000-3300-0000-6ad6cf6a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/c040ee5e-3ad5-47f1-b253-e09d692cef28
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F04753B36BDC406BBC6C0F46409CB3D6 Ref B: SN4AA2022305021 Ref C: 2026-10-20T02:18:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/fe0fbe99-1681-422b-9a0f-84a7ac914ae8*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/fe0fbe99-1681-422b-9a0f-84a7ac914ae8*0000000000000000000000000000000000000000000000000000000000000000","name":"fe0fbe99-1681-422b-9a0f-84a7ac914ae8*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002","status":"Succeeded","startTime":"2026-10-20T02:18:11.9897952Z","endTime":"2026-10-20T02:18:18.5460112Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '636'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:18:48 GMT
+      etag:
+      - '"0200482b-0000-3300-0000-6ad6cf6a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/a3bd8ec5-e378-46a4-8f79-9c6712308783
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 92D02887F4AB4F08B9B78809D9E84AB9 Ref B: SN4AA2022302049 Ref C: 2026-10-20T02:18:49Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - agentfabric wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --deleted
+      User-Agent:
+      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafaks000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliaf000002?api-version=2026-10-07-preview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.NetworkSecurity/agentFabrics/cliaf000002''
+        under resource group ''clitestafaks000001'' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '240'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 02:18:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 7222A7797E144FE6BB038AC96E3D8F34 Ref B: SN4AA2022302029 Ref C: 2026-10-20T02:18:51Z'
+    status:
+      code: 404
+      message: Not Found
+version: 1
