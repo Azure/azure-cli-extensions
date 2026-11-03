@@ -6,6 +6,9 @@ Release History
 3.0.1
 ++++++
 * Update list private IPs command for cloud vm cluster operations to API version 2026-07-01-preview
+* Updated Autonomous Database create, show, list, update, wait, action, restore, shrink, switchover, failover, and change-disaster-recovery-configuration commands to API version 2026-07-01-preview for local Data Guard zone support.
+* Added the update-only --local-data-guard-zone option (1–255 characters) for choosing a standby zone when enabling local Data Guard on an existing database.
+* Added properties.localDataGuardZone and properties.localStandbyDb.zone to Autonomous Database resource responses; unrelated updates do not resend the requested zone read from the service.
 
 3.0.0
 ++++++

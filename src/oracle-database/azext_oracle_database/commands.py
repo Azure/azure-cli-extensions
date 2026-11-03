@@ -12,4 +12,6 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    from .custom import AutonomousDatabaseUpdate
+    with self.command_group('oracle-database autonomous-database'):
+        self.command_table['oracle-database autonomous-database update'] = AutonomousDatabaseUpdate(loader=self)
