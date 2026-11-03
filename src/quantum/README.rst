@@ -59,19 +59,6 @@ Note that the `@EntryPoint` attribute tells Q# which operation to run when the p
 Prepare to submit and manage jobs in Azure Quantum using the `az quantum` extension
 ===================================================================================
 
-.. important::
-   The ``--storage`` argument has been removed from ``az quantum job submit``,
-   ``az quantum run``, and ``az quantum execute``. Remove it from existing scripts.
-   The argument was already ignored; jobs continue to use storage linked to the
-   Azure Quantum workspace. The backend does not support arbitrary per-job storage
-   accounts, and this CLI change does not require migrating the workspace's existing
-   linked storage.
-
-   The workspace-level ``--storage-account`` / ``-a`` argument on
-   ``az quantum workspace create`` is optional and is separate from the removed
-   per-job override. When omitted, Azure Quantum provisions managed storage.
-   Azure Quantum workspace authentication connection strings are unaffected.
-
 1. Log in to Azure using your credentials.
 
    .. code-block:: 
