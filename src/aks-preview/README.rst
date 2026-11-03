@@ -61,6 +61,11 @@ node-image targets, stored reads, cluster listing, and an unsupported-version bl
 with a scope-indented report. It never upgrades the cluster or pool. The preparer
 cleans up the temporary resource group.
 
+The scenario is marked ``live_only`` because the preview API requires an enabled test
+subscription and no live recording is available yet. Standard offline CI skips it before
+resource preparation. This skip is not evidence that live API validation passed; the
+scenario still runs under ``azdev test --live``.
+
 The live-test subscription must have ``Microsoft.ContainerService/AKSUpgradeInsightsPreview``
 registered, and the API must be enabled in the test region. Missing preview registration
 fails explicitly rather than reporting a skipped or successful live validation.

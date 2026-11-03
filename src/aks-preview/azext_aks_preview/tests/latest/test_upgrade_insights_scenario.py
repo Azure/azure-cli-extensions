@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from azext_aks_preview.tests.latest.custom_preparers import AKSCustomResourceGroupPreparer
@@ -11,6 +11,8 @@ from azext_aks_preview.tests.latest.custom_preparers import AKSCustomResourceGro
 
 class UpgradeInsightsScenarioTest(ScenarioTest):
     @AllowLargeResponse()
+    # Preview-only coverage has no recording; offline CI must not provision resources.
+    @live_only()
     @AKSCustomResourceGroupPreparer(name_prefix="clitestui", random_name_length=20, location="eastus2")
     def test_aks_upgrade_insights_scopes(self, resource_group, resource_group_location):
         feature = self.cmd(
