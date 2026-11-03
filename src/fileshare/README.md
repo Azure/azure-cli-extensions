@@ -4,8 +4,10 @@ Manage Azure File Shares resources (API version `2026-09-01`).
 
 ## Install
 
+Version `1.1.0b1` is a preview release. Install it with `--allow-preview`; without it, `az extension add` installs the latest stable version (`1.0.2`, API version `2026-06-01`).
+
 ```bash
-az extension add --name fileshare
+az extension add --name fileshare --allow-preview true
 ```
 
 ## Usage
