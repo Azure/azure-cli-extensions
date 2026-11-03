@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from datetime import datetime
+from dateutil.parser import isoparse
 
 from azure.core.exceptions import HttpResponseError
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
@@ -52,11 +52,11 @@ class RedisEnterpriseMigrationScenarioTest(ScenarioTest):
                  ])
 
     def _assert_migration_timestamps(self, properties, rollback_eligible):
-        created = datetime.fromisoformat(properties['creationTime'].replace('Z', '+00:00'))
-        modified = datetime.fromisoformat(properties['lastModifiedTime'].replace('Z', '+00:00'))
+        created = isoparse(properties['creationTime'])
+        modified = isoparse(properties['lastModifiedTime'])
         self.assertGreaterEqual(modified, created)
         if rollback_eligible:
-            deadline = datetime.fromisoformat(properties['rollbackEligibleUntil'].replace('Z', '+00:00'))
+            deadline = isoparse(properties['rollbackEligibleUntil'])
             self.assertGreater(deadline, modified)
         else:
             self.assertIsNone(properties.get('rollbackEligibleUntil'))

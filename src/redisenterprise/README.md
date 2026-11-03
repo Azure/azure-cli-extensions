@@ -16,11 +16,11 @@ Examples are not a script to run from top to bottom. Run delete examples only wh
 ### Included Features ###
 #### redisenterprise operation-status ####
 ##### Show #####
-This command requires the operation ID and region from the `Location` response header of an asynchronous management operation. An invented operation ID will not work.
+This command requires the operation ID and region from the `Azure-AsyncOperation` response header of an asynchronous management operation. For migration undo, `Location` identifies the migration resource, not the operation-status endpoint. An invented operation ID will not work.
 
 ```
-read -r -p "Operation ID from the Location response header: " operation_id
-read -r -p "Operation region: " operation_location
+read -r -p "Operation ID from the Azure-AsyncOperation response header: " operation_id
+read -r -p "Operation region from the Azure-AsyncOperation response header: " operation_location
 az redisenterprise operation-status show --operation-id "$operation_id" --location "$operation_location"
 ```
 #### redisenterprise ####
