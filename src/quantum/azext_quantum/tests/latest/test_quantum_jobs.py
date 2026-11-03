@@ -170,20 +170,19 @@ class QuantumJobsArgumentTest(unittest.TestCase):
                 self.assertIn('Examples', help_text)
                 self.assertIn('az ' + command_name, normalized_help)
 
-    def test_workspace_create_preserves_required_storage_account(self):
-        # Required workspace storage is separate from the removed per-job override.
+    def test_workspace_create_preserves_optional_storage_account(self):
+        # Optional workspace storage is separate from the removed per-job override.
         command_name = 'quantum workspace create'
         parser = self._get_command_parser(command_name)
         command = parser.cli_ctx.invocation.commands_loader.command_table[command_name]
         argument = command.arguments['storage_account']
         self.assertIn('--storage-account', argument.options_list)
         self.assertIn('-a', argument.options_list)
-        self.assertTrue(argument.options.get('required', False))
+        self.assertFalse(argument.options.get('required', False))
 
         args = command_name.split() + ['-g', 'test-rg', '-w', 'test-ws', '-l', 'eastus']
-        with self.assertRaises(SystemExit) as raised:
-            parser.parse_args(args)
-        self.assertEqual(raised.exception.code, 2)
+        parsed = parser.parse_args(args)
+        self.assertIsNone(parsed.storage_account)
 
         for option in ('--storage-account', '-a'):
             with self.subTest(option=option):
@@ -383,11 +382,13 @@ class QuantumJobsStorageRejectionTest(unittest.TestCase):
                     'quantum', 'workspace', 'create', '-g', 'rg', '-w', 'ws', '-l', 'eastus',
                     '--workspace-kind', kind,
                 ])
-                self.assertEqual(result.exit_code, 2)
-                self.assertIn('--storage-account', result.stderr)
+                self.assertEqual(result.exit_code, 0)
                 self.assertNotIn(self._MESSAGE, result.stderr)
-                result.validation.assert_not_called()
-                result.dispatch.assert_not_called()
+                result.validation.assert_called_once()
+                result.dispatch.assert_called_once()
+                parsed = result.dispatch.call_args.args[0]
+                self.assertIsNone(parsed.storage_account)
+                result.user_fault.assert_not_called()
             for options, expected in cases:
                 with self.subTest(kind=kind, options=options):
                     result = self._invoke([

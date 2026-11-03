@@ -68,7 +68,8 @@ Prepare to submit and manage jobs in Azure Quantum using the `az quantum` extens
    linked storage.
 
    The workspace-level ``--storage-account`` / ``-a`` argument on
-   ``az quantum workspace create`` remains required and is not affected by this change.
+   ``az quantum workspace create`` is optional and is separate from the removed
+   per-job override. When omitted, Azure Quantum provisions managed storage.
    Azure Quantum workspace authentication connection strings are unaffected.
 
 1. Log in to Azure using your credentials.
