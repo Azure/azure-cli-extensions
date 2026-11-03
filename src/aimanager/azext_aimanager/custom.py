@@ -8,7 +8,6 @@ import os
 from azure.cli.core.azclierror import ClientRequestError, InvalidArgumentValueError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.util import sdk_no_wait
-from azure.core import MatchConditions
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 from knack.util import CLIError
@@ -559,12 +558,9 @@ def update_modeldeployment(cmd, client, resource_group_name, ai_manager_name, na
         cmd, properties.model_resource_id, properties.vm_size,
         properties.model_source_resource_id, performance_mode, scale, override_values)
     headers = get_custom_headers(custom_headers)
-    etag = existing.e_tag
-    match_condition = MatchConditions.IfNotModified if etag is not None else None
     poller = sdk_no_wait(
         no_wait, client.begin_create_or_update, resource_group_name, ai_manager_name,
-        namespace_name, model_deployment_name, deployment, headers=headers,
-        etag=etag, match_condition=match_condition)
+        namespace_name, model_deployment_name, deployment, headers=headers)
     return _annotate_model_id_on_completion(cmd, poller, no_wait)
 
 
