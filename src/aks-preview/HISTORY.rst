@@ -11,6 +11,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks upgrade-insights create/show/list`: Add cluster upgrade readiness evaluations and stored insights with scope-nested issue reports and structured output support.
+* `az aks nodepool upgrade-insights create/show`: Add single-pool Kubernetes and node-image readiness evaluations.
 
 22.0.0b15
 +++++++++
