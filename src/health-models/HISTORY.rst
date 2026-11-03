@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0
++++++
+* Use the stable ``2026-11-01`` API, remove preview markings, support entity signal aggregation groups and nested recommendation configurations, and remove ``lookBackWindow`` from threshold rules.
+
 1.0.0b2
 ++++++
 * Mark the ``az monitor health-models`` command group and all of its commands as preview (``[Preview]``), matching the extension's preview status.

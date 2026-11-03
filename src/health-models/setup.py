@@ -6,10 +6,10 @@
 from codecs import open  # pylint: disable=redefined-builtin
 from setuptools import setup, find_packages
 
-VERSION = '1.0.0b2'
+VERSION = '1.0.0'
 
 CLASSIFIERS = [
-    'Development Status :: 4 - Beta',
+    'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Developers',
     'Intended Audience :: System Administrators',
     'Programming Language :: Python',
