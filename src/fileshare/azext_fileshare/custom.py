@@ -19,8 +19,10 @@ from azure.cli.core.aaz import (
     AAZStrArg,
     has_value
 )
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from .aaz.latest.fileshare import CheckNameAvailability as _CheckNameAvailability
 from .aaz.latest.fileshare import Update as _Update
+from .aaz.latest.fileshare.identity import Remove as _IdentityRemove
 from .aaz.latest.fileshare.snapshot import Create as _SnapshotCreate
 from .aaz.latest.fileshare.private_endpoint_connection import Create as _PrivateEndpointConnectionCreate
 
@@ -49,6 +51,26 @@ class Update(_Update):
         args_schema.mi_system_assigned._registered = False
         args_schema.mi_user_assigned._registered = False
         return args_schema
+
+
+class IdentityRemove(_IdentityRemove):
+    # azure-cli-core removes every user-assigned identity when `--user-assigned` names a single ID, so
+    # an ID that isn't assigned would silently drop the share's identity. A file share has at most one
+    # user-assigned identity, so removing an ID that is assigned matches that behavior; reject the rest.
+    def pre_instance_update(self, instance):
+        args = self.ctx.args
+        if not has_value(args.mi_user_assigned):
+            return
+        requested = args.mi_user_assigned.to_serialized_data()
+        if not requested:
+            return
+        assigned = set()
+        if has_value(instance) and has_value(instance.user_assigned_identities):
+            assigned = {i.lower() for i in instance.user_assigned_identities.to_serialized_data()}
+        not_assigned = [i for i in requested if i.lower() not in assigned]
+        if not_assigned:
+            raise InvalidArgumentValueError(
+                "User-assigned identity {} is not assigned to the file share.".format(", ".join(not_assigned)))
 
 
 class SnapshotCreate(_SnapshotCreate):

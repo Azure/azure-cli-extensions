@@ -13,6 +13,7 @@ from copy import deepcopy
 from unittest.mock import patch
 
 from azure.cli.core._profile import Profile
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.core.exceptions import HttpResponseError
 from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD
 from azure.cli.testsdk import *
@@ -705,6 +706,18 @@ class FilesharesScenario(ScenarioTest):
             checks=[
                 self.check('type', 'SystemAssigned,UserAssigned'),
                 self.exists('principalId'),
+                self.check('length(userAssignedIdentities)', 1),
+            ]
+        )
+
+        # Removing an identity that isn't assigned fails and leaves the share's identities unchanged
+        self.kwargs['unassigned_uami_id'] = uami['id'].rsplit('/', 1)[0] + '/not-assigned-uami'
+        with self.assertRaisesRegex(InvalidArgumentValueError, 'is not assigned to the file share'):
+            self.cmd('fileshare identity remove -g {rg} -n {name} --user-assigned {unassigned_uami_id}')
+        self.cmd(
+            'fileshare identity show -g {rg} -n {name}',
+            checks=[
+                self.check('type', 'SystemAssigned,UserAssigned'),
                 self.check('length(userAssignedIdentities)', 1),
             ]
         )

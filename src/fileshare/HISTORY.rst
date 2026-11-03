@@ -12,6 +12,7 @@ Release History
 * Add offer options (``--protocol``, ``--media-tier``, ``--scale-mode``) to ``az fileshare limits-show`` and ``az fileshare get-provisioning-recommendation``.
 * Surface file share migration state on ``az fileshare show``.
 * Fix ``az fileshare snapshot create`` sending the create request twice.
+* ``az fileshare identity remove`` rejects user-assigned identities that are not assigned to the file share, instead of removing the assigned one.
 
 1.0.2
 ++++++

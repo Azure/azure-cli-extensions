@@ -17,6 +17,10 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         self.command_table['fileshare check-name-availability'] = CheckNameAvailability(loader=self)
         self.command_table['fileshare update'] = Update(loader=self)
 
+    with self.command_group('fileshare identity'):
+        from .custom import IdentityRemove
+        self.command_table['fileshare identity remove'] = IdentityRemove(loader=self)
+
     with self.command_group('fileshare snapshot'):
         from .custom import SnapshotCreate
         self.command_table['fileshare snapshot create'] = SnapshotCreate(loader=self)
