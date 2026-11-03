@@ -38,8 +38,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='aiinfraoptimization',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Aiinfraoptimization extension for AI workload-aware '
-                'infrastructure provisioning and continuous optimization.',
+    description='Recommend Azure virtual machine sizes for AI inference workloads.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
