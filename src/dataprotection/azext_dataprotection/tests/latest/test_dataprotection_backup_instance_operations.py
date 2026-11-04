@@ -69,18 +69,19 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_update_policy(test):
         test.kwargs.update({
-            'subscriptionId': '59e574f1-e278-4b66-875b-e3e4fe74ad88',
-            'originalSubscriptionId': test.cmd('az account show --query id -o tsv').output.strip(),
+            'subscriptionId': '38304e13-357e-405e-9e9a-220351dcce8c',
             'rg': 'clitest-dpp-rg',
             'vaultName': 'clitest-bkp-vault-donotdelete',
-            'backupInstanceName': 'clitestblobsadnd-clitestblobsadnd-92e88a05-3816-418b-8987-1285f34c2030',
-            'policyName': 'altvaultpolicy',
-            'policyId': '/subscriptions/59e574f1-e278-4b66-875b-e3e4fe74ad88/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/altvaultpolicy',
-            'altPolicyName': 'vaultpolicy',
-            'altPolicyId': '/subscriptions/59e574f1-e278-4b66-875b-e3e4fe74ad88/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/vaultpolicy'
+            'backupInstanceName': 'clitestblobvijami-clitestblobvijami-92e88a05-3816-418b-8987-1285f34c2030',
+            'policyName': 'blobpolicy',
+            'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/blobpolicy',
+            'altPolicyName': 'altvaultpolicy',
+            'altPolicyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/altvaultpolicy'
         })
-        test.addCleanup(lambda: test.cmd('az account set --subscription "{originalSubscriptionId}"'))
-        test.cmd('az account set --subscription "{subscriptionId}"')
+        if test.is_live:
+            test.kwargs['originalSubscriptionId'] = test.cmd('az account show --query id -o tsv').output.strip()
+            test.addCleanup(lambda: test.cmd('az account set --subscription "{originalSubscriptionId}"'))
+            test.cmd('az account set --subscription "{subscriptionId}"')
         test.cmd('az dataprotection backup-instance wait -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --timeout 300 '
                  '--custom "properties.currentProtectionState==\'ProtectionConfigured\'"')
 

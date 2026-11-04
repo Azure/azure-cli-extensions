@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # coding=utf-8
 from knack.help_files import helps  # pylint: disable=unused-import
+from azext_migrate.runbook import _help as _runbook_help  # noqa: F401
 
 
 helps['migrate'] = """

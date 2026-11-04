@@ -6,29 +6,189 @@
 import json
 import os
 import pytest
-import random
+import shlex
+import tempfile
 import time
 import unittest
+import unittest.mock
+from datetime import datetime
 from urllib.parse import urlparse, parse_qs
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
-from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, AzureInternalError
+from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, ResourceNotFoundError as CliResourceNotFoundError
+from azure.core.exceptions import HttpResponseError, ResourceNotFoundError as AzureResourceNotFoundError
 
-from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name
+from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, run_cleanup_commands, get_offer_targets_with_quota
 from ...commands import transform_output
 from ...operations.job import (
+    list_files,
+    download_file,
+    update,
     _validate_max_poll_wait_secs,
     _convert_numeric_params,
     _construct_filter_query,
     _construct_orderby_expression,
+    ERROR_MSG_INVALID_PRIORITY_ARGUMENT,
     ERROR_MSG_INVALID_ORDER_ARGUMENT,
     ERROR_MSG_MISSING_ORDERBY_ARGUMENT)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+# Temporary V2 workspaces only run short simulator jobs in this test; cap the allocation request accordingly.
+TEST_V2_QUOTA_ALLOCATION_MINUTES = 2
+
 
 class QuantumJobsScenarioTest(ScenarioTest):
+
+    def _cmd_with_retry(self, command, retry_error_code, retries=3, delay=10):
+        for attempt in range(retries):
+            try:
+                return self.cmd(command)
+            except HttpResponseError as error:
+                error_code = getattr(getattr(error, 'error', None), 'code', None)
+                if (error_code != retry_error_code and f'({retry_error_code})' not in str(error)) \
+                        or attempt == retries - 1:
+                    raise
+                time.sleep(delay)
+
+    def _get_available_v2_simulator_with_quota(self, location):
+        offers = self.cmd('az quantum suite-offer list -o json').get_output_in_json()
+        for provider_id, targets_with_quota in get_offer_targets_with_quota(offers, location, min_quota=1):
+            targets_with_quota = {
+                target_id.lower(): quota for target_id, quota in targets_with_quota.items()
+            }
+            providers = self.cmd(
+                f'az quantum suite-offer target list -p {provider_id} -o json'
+            ).get_output_in_json()
+            for provider in providers:
+                for target in provider.get('targets', []):
+                    target_id = target.get('id') or ''
+                    available_quota = targets_with_quota.get(target_id.lower())
+                    if available_quota \
+                            and '.sim.' in target_id.lower() \
+                            and (target.get('currentAvailability') or '').lower() == 'available':
+                        # Keep the temporary allocation small without exceeding the available quota.
+                        return provider_id, target_id, min(TEST_V2_QUOTA_ALLOCATION_MINUTES, available_quota)
+        self.skipTest(
+            f"No V2 simulator target with allocated quota is currently available in '{location}'."
+        )
+
+    @unittest.mock.patch('azext_quantum.tests.latest.test_quantum_jobs.time.sleep')
+    def test_cmd_with_retry(self, mock_sleep):
+        command_result = unittest.mock.Mock()
+        transient_error = HttpResponseError('(StorageAccountInaccessible) transient error')
+        with unittest.mock.patch.object(
+                self, 'cmd', side_effect=[transient_error, transient_error, command_result]) as mock_cmd:
+            self.assertIs(
+                self._cmd_with_retry('az quantum job submit', 'StorageAccountInaccessible', retries=3, delay=10),
+                command_result,
+            )
+        self.assertEqual(mock_cmd.call_count, 3)
+        self.assertEqual(mock_sleep.call_args_list, [unittest.mock.call(10), unittest.mock.call(10)])
+
+        mock_sleep.reset_mock()
+        with unittest.mock.patch.object(self, 'cmd', side_effect=transient_error) as mock_cmd:
+            with self.assertRaises(HttpResponseError):
+                self._cmd_with_retry('az quantum job submit', 'StorageAccountInaccessible', retries=3, delay=10)
+        self.assertEqual(mock_cmd.call_count, 3)
+        self.assertEqual(mock_sleep.call_args_list, [unittest.mock.call(10), unittest.mock.call(10)])
+
+        mock_sleep.reset_mock()
+        non_retryable_error = HttpResponseError('(AuthorizationFailed) access denied')
+        with unittest.mock.patch.object(self, 'cmd', side_effect=non_retryable_error) as mock_cmd:
+            with self.assertRaises(HttpResponseError):
+                self._cmd_with_retry('az quantum job submit', 'StorageAccountInaccessible', retries=3, delay=10)
+        mock_cmd.assert_called_once_with('az quantum job submit')
+        mock_sleep.assert_not_called()
+
+    def test_get_available_v2_simulator_with_quota(self):
+        offers = [{
+            'properties': {
+                'providerId': 'provider-a',
+                'location': 'East US',
+                'targetQuotas': [
+                    {'targetId': 'provider-a.sim.zero', 'standardMinutesLifetime': 0},
+                    {'targetId': 'Provider-A.Sim.One', 'standardMinutesLifetime': 1},
+                    {'targetId': 'provider-a.sim.large', 'standardMinutesLifetime': 20},
+                ],
+            },
+        }]
+        providers = [{
+            'targets': [
+                {'id': 'provider-a.sim.zero', 'currentAvailability': 'Available'},
+                {'id': 'provider-a.qpu', 'currentAvailability': 'Available'},
+                {'id': 'provider-a.sim.unavailable', 'currentAvailability': 'Unavailable'},
+                {'id': 'Provider-A.Sim.One', 'currentAvailability': 'Available'},
+            ],
+        }]
+        with unittest.mock.patch.object(
+                self,
+                'cmd',
+                side_effect=[
+                    unittest.mock.Mock(get_output_in_json=unittest.mock.Mock(return_value=offers)),
+                    unittest.mock.Mock(get_output_in_json=unittest.mock.Mock(return_value=providers)),
+                ]):
+            result = self._get_available_v2_simulator_with_quota('eastus')
+
+        self.assertEqual(result, ('provider-a', 'Provider-A.Sim.One', 1))
+
+    def test_get_available_v2_simulator_with_quota_caps_allocation(self):
+        offers = [{
+            'properties': {
+                'providerId': 'provider-a',
+                'location': 'eastus',
+                'targetQuotas': [
+                    {'targetId': 'provider-a.sim.large', 'standardMinutesLifetime': 20},
+                ],
+            },
+        }]
+        providers = [{
+            'targets': [
+                {'id': 'provider-a.sim.large', 'currentAvailability': 'Available'},
+            ],
+        }]
+        with unittest.mock.patch.object(
+                self,
+                'cmd',
+                side_effect=[
+                    unittest.mock.Mock(get_output_in_json=unittest.mock.Mock(return_value=offers)),
+                    unittest.mock.Mock(get_output_in_json=unittest.mock.Mock(return_value=providers)),
+                ]):
+            result = self._get_available_v2_simulator_with_quota('East US')
+
+        self.assertEqual(result, ('provider-a', 'provider-a.sim.large', 2))
+
+    def test_get_available_v2_simulator_with_quota_skips_when_no_target_matches(self):
+        offers = [{
+            'properties': {
+                'providerId': 'provider-a',
+                'location': 'eastus',
+                'targetQuotas': [
+                    {'targetId': 'provider-a.sim.zero', 'standardMinutesLifetime': 0},
+                    {'targetId': 'provider-a.sim.unavailable', 'standardMinutesLifetime': 1},
+                    {'targetId': 'provider-a.qpu', 'standardMinutesLifetime': 10},
+                ],
+            },
+        }]
+        providers = [{
+            'targets': [
+                {'id': 'provider-a.sim.zero', 'currentAvailability': 'Available'},
+                {'id': 'provider-a.sim.unavailable', 'currentAvailability': 'Unavailable'},
+                {'id': 'provider-a.qpu', 'currentAvailability': 'Available'},
+            ],
+        }]
+        with unittest.mock.patch.object(
+                self,
+                'cmd',
+                side_effect=[
+                    unittest.mock.Mock(get_output_in_json=unittest.mock.Mock(return_value=offers)),
+                    unittest.mock.Mock(get_output_in_json=unittest.mock.Mock(return_value=providers)),
+                ]):
+            with self.assertRaisesRegex(
+                    unittest.SkipTest,
+                    "No V2 simulator target with allocated quota is currently available in 'eastus'"):
+                self._get_available_v2_simulator_with_quota('eastus')
 
     @live_only()
     def test_jobs(self):
@@ -46,9 +206,253 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
     def test_job_errors(self):
         issue_cmd_with_param_missing(self, "az quantum job cancel", "az quantum job cancel -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nCancel an Azure Quantum job by id.")
+        issue_cmd_with_param_missing(self, "az quantum job delete", "az quantum job delete -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nDelete an Azure Quantum job by id.")
+        issue_cmd_with_param_missing(self, "az quantum job update", "az quantum job update -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --job-name 'My new name'\nUpdate an Azure Quantum job by id.")
         issue_cmd_with_param_missing(self, "az quantum job output", "az quantum job output -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table\nPrint the results of a successful Azure Quantum job.")
+        issue_cmd_with_param_missing(self, "az quantum job file list", "az quantum job file list -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table\nList the files stored in a job's output storage container.")
+        issue_cmd_with_param_missing(self, "az quantum job file download", "az quantum job file download -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -n rawOutputData\nDownload a file from a job's output storage container.")
         issue_cmd_with_param_missing(self, "az quantum job show", "az quantum job show -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status\nGet the status of an Azure Quantum job.")
         issue_cmd_with_param_missing(self, "az quantum job wait", "az quantum job wait -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table\nWait for completion of a job, check at 60 second intervals.")
+
+    @unittest.mock.patch('azext_quantum.operations.job.cf_jobs')
+    @unittest.mock.patch('azext_quantum.operations.job.ContainerClient')
+    @unittest.mock.patch('azext_quantum.operations.job.Workspace')
+    @unittest.mock.patch('azext_quantum.operations.job._get_data_credentials')
+    @unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo')
+    def test_list_files(self, mock_workspace_info, mock_get_data_credentials, mock_workspace, mock_container_client, mock_cf_jobs):
+        import datetime
+        info = mock_workspace_info.return_value
+        info.subscription = "sub"
+        info.resource_group = "rg"
+        info.name = "ws"
+
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
+
+        blob1 = unittest.mock.MagicMock()
+        blob1.name = "rawOutputData"
+        blob1.size = 42
+        blob1.last_modified = datetime.datetime(2026, 1, 15, 12, 0, 0)
+
+        blob2 = unittest.mock.MagicMock()
+        blob2.name = "atom-logs.txt"
+        blob2.size = 1024
+        blob2.last_modified = None
+
+        mock_container_client.from_container_url.return_value.list_blobs.return_value = [blob1, blob2]
+
+        cmd = unittest.mock.MagicMock()
+        job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+
+        result = list_files(cmd, job_id, "rg", "ws")
+
+        mock_cf_jobs.return_value.get.assert_called_once_with("sub", "rg", "ws", job_id)
+        mock_container_client.from_container_url.assert_called_once_with("https://acct.blob.core.windows.net/job-id?sas")
+        self.assertEqual(result, [
+            {"name": "rawOutputData", "size": 42, "lastModified": "2026-01-15T12:00:00"},
+            {"name": "atom-logs.txt", "size": 1024, "lastModified": None}
+        ])
+
+    @unittest.mock.patch('azext_quantum.operations.job.cf_jobs')
+    @unittest.mock.patch('azext_quantum.operations.job.ContainerClient')
+    @unittest.mock.patch('azext_quantum.operations.job.Workspace')
+    @unittest.mock.patch('azext_quantum.operations.job._get_data_credentials')
+    @unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo')
+    def test_list_files_raises_when_container_missing(self, mock_workspace_info, mock_get_data_credentials, mock_workspace, mock_container_client, mock_cf_jobs):
+        info = mock_workspace_info.return_value
+        info.subscription = "sub"
+        info.resource_group = "rg"
+        info.name = "ws"
+
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
+        mock_container_client.from_container_url.return_value.list_blobs.side_effect = AzureResourceNotFoundError("not found")
+
+        cmd = unittest.mock.MagicMock()
+        job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+
+        with self.assertRaises(CliResourceNotFoundError):
+            list_files(cmd, job_id, "rg", "ws")
+
+    @unittest.mock.patch('azext_quantum.operations.job.cf_jobs')
+    @unittest.mock.patch('azext_quantum.operations.job.ContainerClient')
+    @unittest.mock.patch('azext_quantum.operations.job.Workspace')
+    @unittest.mock.patch('azext_quantum.operations.job._get_data_credentials')
+    @unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo')
+    def test_download_file_raises_when_file_missing(self, mock_workspace_info, mock_get_data_credentials, mock_workspace, mock_container_client, mock_cf_jobs):
+        info = mock_workspace_info.return_value
+        info.subscription = "sub"
+        info.resource_group = "rg"
+        info.name = "ws"
+
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
+        blob_client = mock_container_client.from_container_url.return_value.get_blob_client.return_value
+        blob_client.download_blob.side_effect = AzureResourceNotFoundError("not found")
+
+        cmd = unittest.mock.MagicMock()
+        job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+
+        with self.assertRaises(CliResourceNotFoundError):
+            download_file(cmd, job_id, "missingFile", "rg", "ws")
+
+    @unittest.mock.patch('azext_quantum.operations.job.cf_jobs')
+    @unittest.mock.patch('azext_quantum.operations.job.ContainerClient')
+    @unittest.mock.patch('azext_quantum.operations.job.Workspace')
+    @unittest.mock.patch('azext_quantum.operations.job._get_data_credentials')
+    @unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo')
+    def test_download_file(self, mock_workspace_info, mock_get_data_credentials, mock_workspace, mock_container_client, mock_cf_jobs):
+        import tempfile
+
+        info = mock_workspace_info.return_value
+        info.subscription = "sub"
+        info.resource_group = "rg"
+        info.name = "ws"
+
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
+
+        blob_client = mock_container_client.from_container_url.return_value.get_blob_client.return_value
+        file_content = b"hello world"
+
+        def fake_readinto(stream):
+            stream.write(file_content)
+            return len(file_content)
+
+        blob_client.download_blob.return_value.readinto.side_effect = fake_readinto
+
+        cmd = unittest.mock.MagicMock()
+        job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            result = download_file(cmd, job_id, "rawOutputData", "rg", "ws", dest=tmp_dir)
+
+            expected_path = os.path.join(tmp_dir, "rawOutputData")
+            self.assertTrue(os.path.exists(expected_path))
+            with open(expected_path, "rb") as file_handle:
+                self.assertEqual(file_handle.read(), file_content)
+
+            mock_cf_jobs.return_value.get.assert_called_once_with("sub", "rg", "ws", job_id)
+            mock_container_client.from_container_url.return_value.get_blob_client.assert_called_once_with("rawOutputData")
+            self.assertEqual(result["name"], "rawOutputData")
+            self.assertEqual(result["path"], os.path.abspath(expected_path))
+            self.assertEqual(result["size"], len(file_content))
+
+    @unittest.mock.patch('azext_quantum.operations.job.cf_jobs')
+    @unittest.mock.patch('azext_quantum.operations.job.ContainerClient')
+    @unittest.mock.patch('azext_quantum.operations.job.Workspace')
+    @unittest.mock.patch('azext_quantum.operations.job._get_data_credentials')
+    @unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo')
+    def test_download_file_sanitizes_traversal_name(self, mock_workspace_info, mock_get_data_credentials, mock_workspace, mock_container_client, mock_cf_jobs):
+        import tempfile
+
+        info = mock_workspace_info.return_value
+        info.subscription = "sub"
+        info.resource_group = "rg"
+        info.name = "ws"
+
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
+
+        blob_client = mock_container_client.from_container_url.return_value.get_blob_client.return_value
+        file_content = b"payload"
+
+        def fake_readinto(stream):
+            stream.write(file_content)
+            return len(file_content)
+
+        blob_client.download_blob.return_value.readinto.side_effect = fake_readinto
+
+        cmd = unittest.mock.MagicMock()
+        job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            target_dir = os.path.join(tmp_dir, "downloads")
+            os.makedirs(target_dir)
+
+            result = download_file(cmd, job_id, "../../evil.txt", "rg", "ws", dest=target_dir)
+
+            # Only the basename is used, so the file stays inside target_dir
+            # and never escapes via the traversal segments in the blob name.
+            safe_path = os.path.join(target_dir, "evil.txt")
+            self.assertTrue(os.path.exists(safe_path))
+            self.assertFalse(os.path.exists(os.path.join(tmp_dir, "evil.txt")))
+            self.assertEqual(result["path"], os.path.abspath(safe_path))
+
+    @unittest.mock.patch('azext_quantum.operations.job.cf_jobs')
+    @unittest.mock.patch('azext_quantum.operations.job.ContainerClient')
+    @unittest.mock.patch('azext_quantum.operations.job.Workspace')
+    @unittest.mock.patch('azext_quantum.operations.job._get_data_credentials')
+    @unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo')
+    def test_download_file_creates_missing_output_directory(self, mock_workspace_info, mock_get_data_credentials, mock_workspace, mock_container_client, mock_cf_jobs):
+        import tempfile
+
+        info = mock_workspace_info.return_value
+        info.subscription = "sub"
+        info.resource_group = "rg"
+        info.name = "ws"
+
+        mock_cf_jobs.return_value.get.return_value.container_uri = "https://acct.blob.core.windows.net/job-id?sas"
+
+        blob_client = mock_container_client.from_container_url.return_value.get_blob_client.return_value
+        file_content = b"payload"
+
+        def fake_readinto(stream):
+            stream.write(file_content)
+            return len(file_content)
+
+        blob_client.download_blob.return_value.readinto.side_effect = fake_readinto
+
+        cmd = unittest.mock.MagicMock()
+        job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # A non-existent --dest is created and treated as a directory.
+            new_dir = os.path.join(tmp_dir, "downloads")
+
+            result = download_file(cmd, job_id, "outputData", "rg", "ws", dest=new_dir)
+
+            expected_path = os.path.join(new_dir, "outputData")
+            self.assertTrue(os.path.isdir(new_dir))
+            self.assertTrue(os.path.exists(expected_path))
+            self.assertEqual(result["path"], os.path.abspath(expected_path))
+
+    @unittest.mock.patch('azext_quantum.operations.job.cf_jobs')
+    @unittest.mock.patch('azext_quantum.operations.job.WorkspaceInfo')
+    def test_job_update(self, mock_workspace_info, mock_cf_jobs):
+        info = mock_workspace_info.return_value
+        info.subscription = "sub"
+        info.resource_group = "rg"
+        info.name = "ws"
+        info.endpoint = "endpoint"
+        client = mock_cf_jobs.return_value
+        client.get.return_value.as_dict.return_value = {"id": "job-id"}
+        cmd = unittest.mock.MagicMock()
+        job_id = "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+
+        # Calling with no updatable fields should raise.
+        with self.assertRaises(RequiredArgumentMissingError):
+            update(cmd, job_id, "rg", "ws")
+
+        # An invalid priority value should raise.
+        with self.assertRaises(InvalidArgumentValueError) as context:
+            update(cmd, job_id, "rg", "ws", job_priority="NotAPriority")
+        self.assertEqual(str(context.exception), ERROR_MSG_INVALID_PRIORITY_ARGUMENT)
+
+        # An empty or whitespace-only job name is ignored, so with no other fields it should raise.
+        with self.assertRaises(RequiredArgumentMissingError):
+            update(cmd, job_id, "rg", "ws", job_name="   ")
+
+        # Passing only blank/whitespace tags is an explicit request to clear all tags,
+        # which sends an empty list rather than raising.
+        result = update(cmd, job_id, "rg", "ws", job_tags=["", "   "])
+        client.update.assert_called_once_with("sub", "rg", "ws", job_id, {"tags": []})
+        self.assertEqual(result, {"id": "job-id"})
+        client.update.reset_mock()
+        client.get.reset_mock()
+
+        # A valid update should build a merge-patch with only the provided fields
+        # and return the refreshed job. Surrounding whitespace is trimmed and blank
+        # tags are dropped.
+        result = update(cmd, job_id, "rg", "ws", job_name="  New name  ", job_priority="High", job_tags=["a", "  ", "b "])
+        client.update.assert_called_once_with("sub", "rg", "ws", job_id, {"name": "New name", "priority": "High", "tags": ["a", "b"]})
+        client.get.assert_called_once_with("sub", "rg", "ws", job_id)
+        self.assertEqual(result, {"id": "job-id"})
 
     def test_transform_output(self):
         # Call with a good histogram
@@ -194,115 +598,204 @@ class QuantumJobsScenarioTest(ScenarioTest):
     def test_submit(self):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
-        test_workspace_temp = get_test_workspace_random_name()
+        test_workspace_temp = self.create_random_name(prefix='e2e-test-w', length=18)
         test_provider_sku_list = "rigetti/azure-basic-qvm-only-unlimited,ionq/aq-internal-testing"
         test_storage = get_test_workspace_storage()
+        bell_state_input_file = "src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil"
+        qiskit_3_qubit_ghz_circuit_input_file = "src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json"
 
-        self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
-        
-        # Wait for role assignments to propagate so the new workspace can access the storage account
-        time.sleep(60)
-        
-        self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp}")
+        try:
+            self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
 
-        # Submit a job to Rigetti and look for SAS tokens in URIs in the output
-        results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
-        self.assert_not_contains_standard_sas_params(results["containerUri"])
-        self.assert_not_contains_standard_sas_params(results["inputDataUri"])
-        self.assert_not_contains_standard_sas_params(results["outputDataUri"])
+            self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp}")
 
-        job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
-  
-        self.assert_contains_standard_sas_params(job["containerUri"])
-        self.assert_contains_standard_sas_params(job["inputDataUri"])
-        self.assert_contains_standard_sas_params(job["outputDataUri"])
+            # Submit a job to Rigetti and look for SAS tokens in URIs in the output
+            # Poll while the new workspace's storage role assignment propagates.
+            results = self._cmd_with_retry(
+                f"az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file {bell_state_input_file} --job-output-format rigetti.quil-results.v1 -o json",
+                retry_error_code='StorageAccountInaccessible',
+                retries=13,
+                delay=10,
+            ).get_output_in_json()
+            self.assert_not_contains_standard_sas_params(results["containerUri"])
+            self.assert_not_contains_standard_sas_params(results["inputDataUri"])
+            self.assert_not_contains_standard_sas_params(results["outputDataUri"])
 
-        # Run a Quil pass-through job on Rigetti
-        results = self.cmd("az quantum run -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
-        self.assertIn("ro", results)
+            job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
 
-        # Run an IonQ Circuit pass-through job on IonQ
-        results = self.cmd("az quantum run -t ionq.simulator --shots 100 --job-input-format ionq.circuit.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json --job-output-format ionq.quantum-results.v1 --job-params shots=100 content-type=application/json -o json").get_output_in_json()
-        self.assertIn("histogram", results)
+            self.assert_contains_standard_sas_params(job["containerUri"])
+            self.assert_contains_standard_sas_params(job["inputDataUri"])
+            self.assert_contains_standard_sas_params(job["outputDataUri"])
 
-        # Test "az quantum job list" output, for filter-params, --skip, --top, and --orderby
-        results = self.cmd("az quantum job list --provider-id rigetti -o json").get_output_in_json()
-        self.assertIn("rigetti", str(results))
+            files = self.cmd(f'az quantum job file list -j {results["id"]} -o json').get_output_in_json()
+            self.assertIsInstance(files, list)
+            self.assertTrue(files)
+            input_file_name = os.path.basename(urlparse(results['inputDataUri']).path)
+            listed_file = next(
+                (item for item in files if item['name'] == input_file_name),
+                None,
+            )
+            self.assertIsNotNone(listed_file)
+            self.assertEqual(set(listed_file.keys()), {'name', 'size', 'lastModified'})
+            self.assertGreaterEqual(listed_file['size'], 0)
+            if listed_file['lastModified'] is not None:
+                datetime.fromisoformat(listed_file['lastModified'].replace('Z', '+00:00'))
+            file_name = listed_file['name']
+            with tempfile.TemporaryDirectory() as download_dir:
+                downloaded = self.cmd(
+                    f'az quantum job file download -j {results["id"]} -n {shlex.quote(file_name)} '
+                    f'--dest "{download_dir}" -o json'
+                ).get_output_in_json()
+                self.assertEqual(downloaded['name'], file_name)
+                self.assertTrue(os.path.isfile(downloaded['path']))
+                self.assertEqual(downloaded['size'], listed_file['size'])
+                self.assertEqual(os.path.getsize(downloaded['path']), listed_file['size'])
+                with open(bell_state_input_file, 'rb') as expected_file, open(downloaded['path'], 'rb') as actual_file:
+                    self.assertEqual(actual_file.read(), expected_file.read())
 
-        results = self.cmd("az quantum job list --target-id ionq.simulator -o json").get_output_in_json()
-        self.assertIn("ionq.simulator", str(results))
+            # Update the submitted job's name and tags, then confirm both changes were applied.
+            updated_job = self.cmd(
+                f'az quantum job update -j {results["id"]} --job-name "Updated job name" --job-tags tag1 tag2 -o json'
+            ).get_output_in_json()
+            self.assertEqual(updated_job["name"], "Updated job name")
+            self.assertEqual(updated_job["tags"], ["tag1", "tag2"])
 
-        jobs_list = self.cmd("az quantum job list --top 1 -o json").get_output_in_json()
-        self.assertEqual(len(jobs_list), 1)
-    
-        jobs_list = self.cmd("az quantum job list --skip 1 -o json").get_output_in_json()
-        self.assertEqual(len(jobs_list), 2)
+            # Run a Quil pass-through job on Rigetti
+            results = self.cmd(f"az quantum run -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file {bell_state_input_file} --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+            self.assertIn("ro", results)
 
-        jobs_list = self.cmd("az quantum job list --orderby Target --top 1 -o json").get_output_in_json()
-        self.assertEqual(len(jobs_list), 1)
-        results = str(jobs_list)
-        self.assertIn("ionq", results)
-        self.assertTrue("rigetti" not in results)
+            # Run an IonQ Circuit pass-through job on IonQ
+            results = self.cmd(f"az quantum run -t ionq.simulator --shots 100 --job-input-format ionq.circuit.v1 --job-input-file {qiskit_3_qubit_ghz_circuit_input_file} --job-output-format ionq.quantum-results.v1 --job-params shots=100 content-type=application/json -o json").get_output_in_json()
+            self.assertIn("histogram", results)
 
-        jobs_list = self.cmd("az quantum job list --orderby Target --skip 1 -o json").get_output_in_json()
-        self.assertEqual(len(jobs_list), 2)
-        results = str(jobs_list)
-        self.assertIn("rigetti", results)
-        self.assertTrue("ionq" not in results)
+            # Test "az quantum job list" output, for filter-params, --skip, --top, and --orderby
+            results = self.cmd("az quantum job list --provider-id rigetti -o json").get_output_in_json()
+            self.assertIn("rigetti", str(results))
 
-        self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
+            results = self.cmd("az quantum job list --target-id ionq.simulator -o json").get_output_in_json()
+            self.assertIn("ionq.simulator", str(results))
+
+            jobs_list = self.cmd("az quantum job list --top 1 -o json").get_output_in_json()
+            self.assertEqual(len(jobs_list), 1)
+
+            jobs_list = self.cmd("az quantum job list --skip 1 -o json").get_output_in_json()
+            self.assertEqual(len(jobs_list), 2)
+
+            jobs_list = self.cmd("az quantum job list --orderby Target --top 1 -o json").get_output_in_json()
+            self.assertEqual(len(jobs_list), 1)
+            results = str(jobs_list)
+            self.assertIn("ionq", results)
+            self.assertTrue("rigetti" not in results)
+
+            jobs_list = self.cmd("az quantum job list --orderby Target --skip 1 -o json").get_output_in_json()
+            self.assertEqual(len(jobs_list), 2)
+            results = str(jobs_list)
+            self.assertIn("rigetti", results)
+            self.assertTrue("ionq" not in results)
+
+        finally:
+            run_cleanup_commands(self, [
+                ('temporary workspace',
+                 f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}'),
+                ('workspace defaults', 'az quantum workspace clear'),
+            ])
+
+    def _test_submit_with_disabled_then_enabled_storage_key_access(self, workspace_kind=None):
+        test_location = get_test_workspace_location()
+        test_resource_group = get_test_resource_group()
+        test_workspace_temp = self.create_random_name(prefix='e2e-test-w', length=18)
+        target_id = 'rigetti.sim.qvm'
+        job_input_file = "src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil"
+        job_input_format = 'rigetti.quil.v1'
+        job_output_format = 'rigetti.quil-results.v1'
+        workspace_kind_args = ''
+        if workspace_kind == 'V2':
+            provider_id, target_id, workspace_quota_minutes = \
+                self._get_available_v2_simulator_with_quota(test_location)
+            test_provider_sku_list = f'{provider_id}/default'
+            job_input_file = "src/quantum/azext_quantum/tests/latest/input_data/Program.qs"
+            job_input_format = 'qir.v1'
+            job_output_format = 'microsoft.quantum-results.v1'
+            workspace_kind_args = (
+                f'--workspace-kind V2 --quota provider-id={provider_id} target-id={target_id} '
+                f'standard-minutes-lifetime={workspace_quota_minutes}'
+            )
+        else:
+            test_provider_sku_list = "rigetti/azure-basic-qvm-only-unlimited"
+        test_storage_temp = self.create_random_name(prefix='e2etests', length=24)
+        submit_command = (
+            f'az quantum job submit -t {target_id} --job-input-format {job_input_format} '
+            f'--job-input-file {job_input_file} --job-output-format {job_output_format} '
+            '--job-name "Storage authentication E2E" -o json'
+        )
+
+        try:
+            # Test that create workspace with not existing storage will create storage
+            self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_temp} -r {test_provider_sku_list} --skip-autoadd {workspace_kind_args}")
+
+            # Verify that access keys are disabled on the newly created storage account
+            storage_info = self.cmd(f"az storage account show -g {test_resource_group} -n {test_storage_temp} -o json").get_output_in_json()
+            self.assertFalse(storage_info["allowSharedKeyAccess"], "Access keys should be disabled on the newly created storage account for new workspace")
+
+            self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp}")
+
+            # Test that job submission works with disabled access keys on linked storage (/sasUri returns user delegation SAS),
+            # polling while the new workspace's storage role assignment propagates.
+            results = self._cmd_with_retry(
+                submit_command,
+                retry_error_code='StorageAccountInaccessible',
+                retries=13,
+                delay=10,
+            ).get_output_in_json()
+            self.assertIn("id", results)
+
+            job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
+            self.assert_contains_standard_sas_params(job["containerUri"])
+            self.assert_contains_standard_sas_params(job["inputDataUri"])
+            self.assert_contains_standard_sas_params(job["outputDataUri"])
+            self.assert_contains_user_delegation_sas_params(job["containerUri"])
+            self.assert_contains_user_delegation_sas_params(job["inputDataUri"])
+            self.assert_contains_user_delegation_sas_params(job["outputDataUri"])
+
+            # Enable access keys on this disposable account to verify the legacy service SAS path.
+            updated = self.cmd(
+                f'az storage account update -g {test_resource_group} -n {test_storage_temp} '
+                '--allow-shared-key-access true '
+                '--tags "Az.Sec.DisableLocalAuth.Storage::Skip=true" -o json'
+            ).get_output_in_json()
+            self.assertTrue(updated["allowSharedKeyAccess"], "Access keys should be enabled after update")
+            self.assertEqual(updated["tags"]["Az.Sec.DisableLocalAuth.Storage::Skip"], "true")
+
+            time.sleep(300) # wait for the cache to update
+
+            # Test that job submission works with enabled access keys on linked storage (/sasUri returns container-scoped Service SAS)
+            results = self.cmd(submit_command).get_output_in_json()
+            self.assertIn("id", results)
+
+            job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
+            self.assert_contains_standard_sas_params(job["containerUri"])
+            self.assert_contains_standard_sas_params(job["inputDataUri"])
+            self.assert_contains_standard_sas_params(job["outputDataUri"])
+            self.assert_not_contains_user_delegation_sas_params(job["containerUri"])
+            self.assert_not_contains_user_delegation_sas_params(job["inputDataUri"])
+            self.assert_not_contains_user_delegation_sas_params(job["outputDataUri"])
+
+        finally:
+            run_cleanup_commands(self, [
+                ('temporary workspace',
+                 f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}'),
+                ('temporary storage account',
+                 f'az storage account delete -g {test_resource_group} -n {test_storage_temp} --yes'),
+                ('workspace defaults', 'az quantum workspace clear'),
+            ])
 
     @live_only()
     def test_submit_with_disabled_then_enabled_storage_key_access(self):
-        test_location = get_test_workspace_location()
-        test_resource_group = get_test_resource_group()
-        test_workspace_temp = get_test_workspace_random_name()
-        test_provider_sku_list = "rigetti/azure-basic-qvm-only-unlimited"
-        test_storage_temp = "e2etests" + str(random.randint(10000000, 99999999))
+        self._test_submit_with_disabled_then_enabled_storage_key_access()
 
-        # Test that create workspace with not existing storage will create storage
-        self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_temp} -r {test_provider_sku_list} --skip-autoadd")
-
-        # Verify that access keys are disabled on the newly created storage account
-        storage_info = self.cmd(f"az storage account show -g {test_resource_group} -n {test_storage_temp} -o json").get_output_in_json()
-        self.assertFalse(storage_info["allowSharedKeyAccess"], "Access keys should be disabled on the newly created storage account for new workspace")
-
-        self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp}")
-        time.sleep(60) # wait for role assignments to propagate so the new workspace can access the storage account
-
-        # Test that job submission works with disabled access keys on linked storage (/sasUri returns user delegation SAS)
-        results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
-        self.assertIn("id", results)
-
-        job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
-        self.assert_contains_standard_sas_params(job["containerUri"])
-        self.assert_contains_standard_sas_params(job["inputDataUri"])
-        self.assert_contains_standard_sas_params(job["outputDataUri"])
-        self.assert_contains_user_delegation_sas_params(job["containerUri"])
-        self.assert_contains_user_delegation_sas_params(job["inputDataUri"])
-        self.assert_contains_user_delegation_sas_params(job["outputDataUri"])
-
-        # Enable access keys on the storage account
-        updated = self.cmd(f"az storage account update -g {test_resource_group} -n {test_storage_temp} --allow-shared-key-access true -o json").get_output_in_json()
-        self.assertTrue(updated["allowSharedKeyAccess"], "Access keys should be enabled after update")
-
-        time.sleep(300) # wait for the cache to update
-
-        # Test that job submission works with enabled access keys on linked storage (/sasUri returns container-scoped Service SAS)
-        results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
-        self.assertIn("id", results)
-
-        job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
-        self.assert_contains_standard_sas_params(job["containerUri"])
-        self.assert_contains_standard_sas_params(job["inputDataUri"])
-        self.assert_contains_standard_sas_params(job["outputDataUri"])
-        self.assert_not_contains_user_delegation_sas_params(job["containerUri"])
-        self.assert_not_contains_user_delegation_sas_params(job["inputDataUri"])
-        self.assert_not_contains_user_delegation_sas_params(job["outputDataUri"])
-
-        # Clean up
-        self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
-        self.cmd(f'az storage account delete -g {test_resource_group} -n {test_storage_temp} --yes')
+    @live_only()
+    def test_submit_with_disabled_then_enabled_storage_key_access_v2(self):
+        self._test_submit_with_disabled_then_enabled_storage_key_access(workspace_kind='V2')
 
     def test_job_list_param_formating(self):
         # Validate filter query formatting for each param

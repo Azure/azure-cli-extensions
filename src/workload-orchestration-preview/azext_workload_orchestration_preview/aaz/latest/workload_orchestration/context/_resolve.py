@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration context resolve",
+    "workload-orchestration-preview context resolve",
 )
 class Resolve(AAZCommand):
     """Post request to resolve configuration

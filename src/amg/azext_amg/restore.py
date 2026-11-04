@@ -9,13 +9,17 @@ from glob import glob
 import tarfile
 import tempfile
 
+import requests
+
 from azure.cli.core.azclierror import ArgumentUsageError
 from azure.cli.core.style import print_styled_text, Style
 from knack.log import get_logger
 
-from .utils import (get_folder_id, send_grafana_post, send_grafana_patch, send_grafana_put, send_grafana_delete,
+from .utils import (send_grafana_post, send_grafana_patch, send_grafana_put, send_grafana_delete,
                     send_grafana_get, create_datasource_mapping, remap_datasource_uids, get_snapshot,
                     search_annotations)
+from .dashboard_v2 import (is_v2_dashboard_definition, require_dashboard_v2_api_version,
+                           create_dashboard_v2, remap_v2_datasource_uids, dashboard_folder_uid)
 
 logger = get_logger(__name__)
 
@@ -86,15 +90,19 @@ def _load_and_create_dashboard(grafana_url, file_path, http_headers):
         data = f.read()
 
     content = json.loads(data)
-    content['dashboard']['id'] = None
+    if not is_v2_dashboard_definition(content):
+        content['dashboard']['id'] = None
 
     create_dashboard(grafana_url, content, http_headers, overwrite=True)
 
 
 def create_dashboard(grafana_url, content, http_headers, overwrite):
+    if is_v2_dashboard_definition(content):
+        return _create_v2_dashboard(grafana_url, content, http_headers, overwrite)
+
     payload = {
         'dashboard': content['dashboard'],
-        'folderId': get_folder_id(content, grafana_url, http_post_headers=http_headers),
+        'folderUid': dashboard_folder_uid(content),
         'overwrite': overwrite
     }
 
@@ -118,6 +126,29 @@ def create_dashboard(grafana_url, content, http_headers, overwrite):
     return result[0] == 200
 
 
+def _create_v2_dashboard(grafana_url, content, http_headers, overwrite):
+    # v2 (dynamic dashboards) resources are (re)created through the dashboard apiserver; the backup
+    # stores the full v2 resource, so its folder annotation and spec are preserved as-is.
+    dashboard_title = content.get('spec', {}).get('title', '')
+    # Rewrite datasource UIDs inside the v2 spec (no-op unless --remap-data-sources / migrate
+    # populated uid_mapping). v2 encodes refs as {"datasource": {"name": <uid>}}, so it needs the
+    # v2-aware remapper rather than the classic utils.remap_datasource_uids.
+    remap_v2_datasource_uids(content.get('spec', {}), uid_mapping)
+    try:
+        version = require_dashboard_v2_api_version(grafana_url, http_headers)
+        create_dashboard_v2(grafana_url, http_headers, content, version, overwrite=overwrite)
+        success = True
+    except (ArgumentUsageError, requests.exceptions.RequestException) as ex:
+        logger.warning("Failed to restore v2 dashboard '%s': %s", dashboard_title, ex)
+        success = False
+
+    print_styled_text([
+        (Style.WARNING, f'Create dashboard {dashboard_title}: '),
+        (Style.SUCCESS, 'SUCCESS') if success else (Style.ERROR, 'FAILURE')
+    ])
+    return success
+
+
 def check_dashboard_exists(grafana_url, uid, http_headers):
     result = send_grafana_get(f'{grafana_url}/api/dashboards/uid/{uid}', http_headers)
     return result[0] == 200
@@ -135,8 +166,8 @@ def _load_and_create_library_panel(grafana_url, file_path, http_headers):
 
 
 def create_library_panel(grafana_url, payload, http_headers, overwrite):
-    # set the folder id of the library panel
-    payload['folderId'] = get_folder_id(payload, grafana_url, http_post_headers=http_headers)
+    payload['folderUid'] = dashboard_folder_uid(payload)
+    payload.pop('folderId', None)
 
     datasources_missed = set()
     remap_datasource_uids(payload, uid_mapping, datasources_missed)
@@ -155,7 +186,8 @@ def create_library_panel(grafana_url, payload, http_headers, overwrite):
                     'name': panel_name,
                     'model': payload['model'],
                     'version': content['result']['version'],
-                    'kind': payload['kind']
+                    'kind': payload['kind'],
+                    'folderUid': payload['folderUid']
                 }
                 (status, content) = send_grafana_patch(f'{grafana_url}/api/library-elements/{uid}',
                                                        json.dumps(patch_payload), http_headers)

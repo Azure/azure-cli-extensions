@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2026-07-15"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Create(AAZCommand):
             help="The name of the license.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="[a-zA-Z0-9-_\\.]+",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -81,7 +81,7 @@ class Create(AAZCommand):
             options=["--target"],
             arg_group="LicenseDetails",
             help="Describes the license target server.",
-            enum={"Windows Server 2012": "Windows Server 2012", "Windows Server 2012 R2": "Windows Server 2012 R2"},
+            enum={"Windows Server 2012": "Windows Server 2012", "Windows Server 2012 R2": "Windows Server 2012 R2", "Windows Server 2016": "Windows Server 2016"},
         )
         _args_schema.type = AAZStrArg(
             options=["--type"],
@@ -174,7 +174,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -183,7 +183,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -226,7 +226,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }

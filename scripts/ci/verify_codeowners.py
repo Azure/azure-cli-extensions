@@ -11,7 +11,7 @@ import sys
 from util import get_repo_root
 
 REPO_ROOT = get_repo_root()
-CODEOWNERS = os.path.join(REPO_ROOT, '.github', 'CODEOWNERS')
+CODEOWNERS = os.path.join(REPO_ROOT, '.github', 'OWNERS')
 SRC_DIR = os.path.join(REPO_ROOT, 'src')
 
 

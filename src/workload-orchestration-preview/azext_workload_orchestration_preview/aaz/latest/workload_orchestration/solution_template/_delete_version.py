@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration solution-template delete-version",
+    "workload-orchestration-preview solution-template delete-version",
     confirmation="Are you sure you want to perform this operation?",
 )
 class DeleteVersion(AAZCommand):
     """Delete Solution Template Version Resource
     :example: Delete a Solution Template Version
-        az workload-orchestration solution-template delete-version -n mySolutionTemplate -g myResourceGroup --version 1.0.0
+        az workload-orchestration-preview solution-template delete-version -n mySolutionTemplate -g myResourceGroup --version 1.0.0
     """
 
     _aaz_info = {

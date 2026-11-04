@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.3.1
++++++
+* Added system-assigned managed identity creation to `endpoint create-for-s3-with-hmac`.
+
 1.3.0
 +++++
 * Updated to the 2025-12-01 GA API version.

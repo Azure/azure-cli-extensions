@@ -6,18 +6,37 @@
 
 import argparse
 
-from azure.cli.core.aaz import AAZStrArg, AAZBoolArg, AAZListArg
+from azure.cli.core.aaz import AAZStrArg, AAZBoolArg, AAZListArg, register_command
 from azure.cli.core.aaz._base import has_value
+from knack.log import get_logger
 from knack.util import CLIError
 
 from azext_cdn.vendored_sdks.models import ResourceType
-from azext_cdn.aaz.latest.afd.profile import Show as _AFDProfileShow, \
-    Create as _AFDProfileCreate, Update as _AFDProfileUpdate, Delete as _AFDProfileDelete, \
-    List as _AFDProfileList
+from azext_cdn.aaz.latest.cdn.profile import Show as _CDNProfileShow, \
+    Create as _CDNProfileCreate, Update as _CDNProfileUpdate, Delete as _CDNProfileDelete, \
+    List as _CDNProfileList
 from azext_cdn.aaz.latest.cdn._name_exists import NameExists
+from azext_cdn.aaz.latest.cdn.profile_migration import Commit as _CDNProfileMigrationCommit
 from azext_cdn.aaz.latest.cdn.origin import Create as _CDNOriginCreate, Update as _CDNOriginUpdate
 from azext_cdn.aaz.latest.cdn.endpoint import Create as _CDNEndpointCreate, \
     Update as _CDNEndpointUpdate, Show as _CDNEndpointShow
+
+
+logger = get_logger(__name__)
+
+POST_MIGRATION_ENDPOINT_CUTOVER_WARNING = (
+    "Migration completed successfully. Traffic may still depend on the classic endpoint. Update your custom "
+    "domain DNS or application references to use the new Azure Front Door Standard/Premium endpoint before "
+    "April 1, 2028 to avoid any service disruption. Learn more: "
+    "https://learn.microsoft.com/en-us/azure/cdn/migrate-tier?toc=/azure/frontdoor/toc.json."
+)
+
+POST_MIGRATION_ENDPOINT_CUTOVER_NO_WAIT_WARNING = (
+    "Migration request submitted successfully. After migration completes, traffic may still depend on the "
+    "classic endpoint. Update your custom domain DNS or application references to use the new Azure Front Door "
+    "Standard/Premium endpoint before April 1, 2028 to avoid any service disruption. Learn more: "
+    "https://learn.microsoft.com/en-us/azure/cdn/migrate-tier?toc=/azure/frontdoor/toc.json."
+)
 
 
 def default_content_types():
@@ -41,21 +60,30 @@ class NameExistsWithType(NameExists):
         self.ctx.args.type = ResourceType.MICROSOFT_CDN_PROFILES_ENDPOINTS.value
 
 
-class CDNProfileList(_AFDProfileList):
+@register_command("cdn profile list")
+class CDNProfileList(_CDNProfileList):
+    __doc__ = _CDNProfileList.__doc__
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         return args_schema
 
 
-class CDNProfileShow(_AFDProfileShow):
+@register_command("cdn profile show")
+class CDNProfileShow(_CDNProfileShow):
+    __doc__ = _CDNProfileShow.__doc__
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         return args_schema
 
 
-class CDNProfileCreate(_AFDProfileCreate):
+@register_command("cdn profile create")
+class CDNProfileCreate(_CDNProfileCreate):
+    __doc__ = _CDNProfileCreate.__doc__
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -66,7 +94,10 @@ class CDNProfileCreate(_AFDProfileCreate):
         self.ctx.args.location = 'global'
 
 
-class CDNProfileUpdate(_AFDProfileUpdate):
+@register_command("cdn profile update")
+class CDNProfileUpdate(_CDNProfileUpdate):
+    __doc__ = _CDNProfileUpdate.__doc__
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -74,11 +105,25 @@ class CDNProfileUpdate(_AFDProfileUpdate):
         return args_schema
 
 
-class CDNProfileDelete(_AFDProfileDelete):
+@register_command("cdn profile delete")
+class CDNProfileDelete(_CDNProfileDelete):
+    __doc__ = _CDNProfileDelete.__doc__
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         return args_schema
+
+
+class CDNProfileMigrationCommit(_CDNProfileMigrationCommit):
+    def _handler(self, command_args):
+        result = super()._handler(command_args)
+        if self.ctx.lro_no_wait:
+            logger.warning(POST_MIGRATION_ENDPOINT_CUTOVER_NO_WAIT_WARNING)
+        return result
+
+    def post_operations(self):
+        logger.warning(POST_MIGRATION_ENDPOINT_CUTOVER_WARNING)
 
 
 class CDNOriginCreate(_CDNOriginCreate):

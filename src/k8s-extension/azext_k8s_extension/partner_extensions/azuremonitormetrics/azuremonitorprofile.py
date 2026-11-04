@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 from azure.cli.core.azclierror import AzCLIError
-from knack.util import CLIError
 from .helper import (
     get_cluster_region,
     rp_registrations
@@ -16,7 +15,6 @@ from .amg.link import link_grafana_instance
 from .recordingrules.create import create_rules
 from .recordingrules.delete import delete_rules
 from .dc.delete import get_dc_objects_list, delete_dc_objects_if_prometheus_enabled
-from .helper import safe_key_check, safe_value_get
 
 
 # pylint: disable=line-too-long

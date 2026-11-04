@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration diagnostic delete",
+    "workload-orchestration-preview diagnostic delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete specified Diagnostic resource.
     :example: Delete a Diagnostic
-        az workload-orchestration diagnostic delete -n myDiagnostic -g myResourceGroup
+        az workload-orchestration-preview diagnostic delete -n myDiagnostic -g myResourceGroup
     """
 
     _aaz_info = {

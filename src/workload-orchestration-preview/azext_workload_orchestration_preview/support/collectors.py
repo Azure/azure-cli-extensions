@@ -6,7 +6,7 @@
 # pylint: disable=import-outside-toplevel,too-many-branches,too-many-statements
 # pylint: disable=too-many-locals,too-many-arguments,too-many-positional-arguments
 
-"""Data collectors for the workload-orchestration support bundle feature."""
+"""Data collectors for the workload-orchestration-preview support bundle feature."""
 
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed

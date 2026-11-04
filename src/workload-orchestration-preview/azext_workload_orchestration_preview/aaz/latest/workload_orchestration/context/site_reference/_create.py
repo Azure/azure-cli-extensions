@@ -13,12 +13,12 @@ from azext_workload_orchestration_preview.aaz.latest.workload_orchestration._res
 
 
 @register_command(
-    "workload-orchestration context site-reference create",
+    "workload-orchestration-preview context site-reference create",
 )
 class Create(AAZCommand):
     """Create Site Reference Resource
     :example: Create a Site Reference
-        az workload-orchestration context site-reference create -g {rg} -n {site_reference_name} --context-name {context_name} --site-id {site_id}
+        az workload-orchestration-preview context site-reference create -g {rg} -n {site_reference_name} --context-name {context_name} --site-id {site_id}
     """
 
     _aaz_info = {

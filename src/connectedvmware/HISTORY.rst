@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.2.2
+++++++
+* Fix `create-from-machines` when machines and the vCenter are in different subscriptions.
+
 1.2.1
 ++++++
 * For pwinput, read input from stdin when tty is not available
@@ -122,4 +126,3 @@ Issue link: https://github.com/Azure/azure-cli/issues/24781
 0.1.0
 ++++++
 * Initial release.
-

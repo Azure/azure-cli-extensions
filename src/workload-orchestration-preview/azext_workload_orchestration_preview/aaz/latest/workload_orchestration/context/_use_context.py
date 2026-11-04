@@ -13,12 +13,12 @@ from azure.cli.core.aaz import *
 from azure.cli.core.azclierror import CLIInternalError
 
 @register_command(
-    "workload-orchestration context use",
+    "workload-orchestration-preview context use",
 )
 class UseContext(AAZCommand):
     """Use Context by name
     :example: Use a Context
-        az workload-orchestration context use -n myContext -g myResourceGroup
+        az workload-orchestration-preview context use -n myContext -g myResourceGroup
     """
 
     _aaz_info = {

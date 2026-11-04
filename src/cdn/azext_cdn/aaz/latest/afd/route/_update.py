@@ -18,13 +18,16 @@ class Update(AAZCommand):
     """Update a new route with the specified route name under the specified subscription, resource group, profile, and AzureFrontDoor endpoint.
 
     :example: Routes_Create
-        az afd route update --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --route-name route1 --cache-configuration "{compression-settings:{content-types-to-compress:[text/html,application/octet-stream],is-compression-enabled:True},query-parameters:querystring=test,query-string-caching-behavior:IgnoreSpecifiedQueryStrings}" --formatted-custom-domains "[{id:/subscriptions/subid/resourceGroups/RG/providers/Microsoft.Cdn/profiles/profile1/customDomains/domain1}]" --enabled-state Enabled --forwarding-protocol MatchRequest --grpc-state Enabled --https-redirect Enabled --link-to-default-domain Enabled --origin-group /subscriptions/subid/resourceGroups/RG/providers/Microsoft.Cdn/profiles/profile1/originGroups/originGroup1 --origin-path None --patterns-to-match "[/*]" --formatted-rule-sets "[{id:/subscriptions/subid/resourceGroups/RG/providers/Microsoft.Cdn/profiles/profile1/ruleSets/ruleSet1}]" --supported-protocols "[Https,Http]"
+        az afd route update --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --route-name route1 --cache-configuration "{compression-settings:{content-types-to-compress:[text/html,application/octet-stream],is-compression-enabled:True},query-parameters:querystring=test,query-string-caching-behavior:IgnoreSpecifiedQueryStrings}" --formatted-custom-domains "[{id:/subscriptions/subid/resourceGroups/RG/providers/Microsoft.Cdn/profiles/profile1/customDomains/domain1}]" --enabled-state Enabled --forwarding-protocol MatchRequest --https-redirect Enabled --link-to-default-domain Enabled --origin-group /subscriptions/subid/resourceGroups/RG/providers/Microsoft.Cdn/profiles/profile1/originGroups/originGroup1 --origin-path None --patterns-to-match "[/*]" --formatted-rule-sets "[{id:/subscriptions/subid/resourceGroups/RG/providers/Microsoft.Cdn/profiles/profile1/ruleSets/ruleSet1}]" --supported-protocols "[Https,Http]"
+
+    :example: Enable gRPC on a route
+        az afd route update --resource-group MyResourceGroup --profile-name MyProfile --endpoint-name MyEndpoint --route-name MyRoute --grpc-state Enabled
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints/{}/routes/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints/{}/routes/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -331,7 +334,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -438,7 +441,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }

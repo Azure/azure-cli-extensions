@@ -168,3 +168,12 @@ Release History
 * `az grafana integrations`: rename to `az grafana integration`
 * `az grafana integration monitor`: drop `--monitor-resource-group-name` option; use `--monitor-rg-name` instead
 * `az grafana data-source`: drop lookup by numeric ID and switch to UID-based endpoints due to deprecated Grafana API
+
+3.1.0
+++++++
+* Support dynamic dashboards schema
+
+3.1.1
+++++++
+* `az grafana dashboard`, `az grafana restore`, `az grafana migrate`: use folder UIDs instead of numeric IDs to preserve dashboard and library panel folder placement
+* `az grafana restore`, `az grafana migrate`: preserve library panel folders when overwriting existing panels

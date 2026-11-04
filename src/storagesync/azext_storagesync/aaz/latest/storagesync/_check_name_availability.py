@@ -19,9 +19,9 @@ class CheckNameAvailability(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-06-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.storagesync/locations/{}/checknameavailability", "2022-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.storagesync/locations/{}/checknameavailability", "2025-12-01"],
         ]
     }
 
@@ -68,7 +68,7 @@ class CheckNameAvailability(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.StorageSyncServicesCheckNameAvailability(ctx=self.ctx)()
+        self.StorageSyncServicesOperationGroupCheckNameAvailability(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -83,7 +83,7 @@ class CheckNameAvailability(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class StorageSyncServicesCheckNameAvailability(AAZHttpOperation):
+    class StorageSyncServicesOperationGroupCheckNameAvailability(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -107,7 +107,7 @@ class CheckNameAvailability(AAZCommand):
 
         @property
         def error_format(self):
-            return "MgmtErrorFormat"
+            return "ODataV4Format"
 
         @property
         def url_parameters(self):
@@ -127,7 +127,7 @@ class CheckNameAvailability(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-06-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }

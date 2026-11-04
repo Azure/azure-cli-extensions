@@ -57,7 +57,8 @@ datasource_map = {
     "AzureKubernetesService": "Microsoft.ContainerService/managedClusters",
     "AzureDatabaseForPostgreSQLFlexibleServer": "Microsoft.DBforPostgreSQL/flexibleServers",
     "AzureDatabaseForMySQL": "Microsoft.DBforMySQL/flexibleServers",
-    "AzureCosmosDB": "Microsoft.DocumentDB/databaseAccounts"
+    "AzureCosmosDB": "Microsoft.DocumentDB/databaseAccounts",
+    "AzureElasticSAN": "Microsoft.ElasticSan/elasticSans/volumeGroups"
 }
 
 # This is ideally temporary, as Backup Vault contains secondary region information. But in some cases
@@ -574,6 +575,34 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
         restore_criteria_list.append(restore_criteria)
         return restore_criteria_list
 
+    if datasource_type == "AzureElasticSAN":
+        if restore_configuration is not None:
+            restore_criteria = restore_configuration
+        else:
+            raise RequiredArgumentMissingError(
+                "Please input parameter restore_configuration for AzureElasticSAN restore.\n"
+                "Use command initialize-restoreconfig for creating the RestoreConfiguration")
+        restore_criteria_list.append(restore_criteria)
+        return restore_criteria_list
+
+    if datasource_type == "AzureCosmosDB":
+        if any(value is not None for value in (container_list, from_prefix_pattern, to_prefix_pattern,
+                                               vaulted_blob_prefix_pattern)):
+            raise InvalidArgumentValueError(
+                "For AzureCosmosDB, --container-list, --from-prefix-pattern, --to-prefix-pattern and "
+                "--vaulted-blob-prefix-pattern are not applicable. Use --restore-configuration.")
+        if restore_configuration is None:
+            raise RequiredArgumentMissingError(
+                "Please input parameter restore_configuration for AzureCosmosDB restore.\n"
+                "Use command initialize-restoreconfig for creating the RestoreConfiguration")
+        if not isinstance(restore_configuration, dict) or \
+                restore_configuration.get("object_type") != "GenericRestoreDatasourceCriteria":
+            raise InvalidArgumentValueError(
+                "For AzureCosmosDB, --restore-configuration must be a GenericRestoreDatasourceCriteria object.\n"
+                "Use command initialize-restoreconfig for creating the RestoreConfiguration")
+        restore_criteria_list.append(restore_configuration)
+        return restore_criteria_list
+
     # implicit else:
     # For non-AKS workloads (blobs (non-vaulted)), we need either a prefix-pattern or a container-list. Accordingly, the restore
     # criteria's min_matching_value and max_matching_value are set. We need to provide one, but can't provide both
@@ -718,11 +747,13 @@ def validate_prefix_patterns(from_prefix_pattern, to_prefix_pattern):
             )
 
         for compareindex in range(index + 1, len(from_prefix_pattern)):
+            # pylint: disable=chained-comparison
             if (from_prefix_pattern[index] <= from_prefix_pattern[compareindex] and to_prefix_pattern[index] >= from_prefix_pattern[compareindex]) or \
                     (from_prefix_pattern[index] >= from_prefix_pattern[compareindex] and from_prefix_pattern[index] <= to_prefix_pattern[compareindex]):
                 raise InvalidArgumentValueError(
                     "overlapping ranges are not allowed."
                 )
+            # pylint: enable=chained-comparison
 
 
 def get_policy_parameters(datasource_id, snapshot_resource_group_name):
@@ -1004,6 +1035,8 @@ def get_help_word_from_permission_type(permission_type, datasource_type):
             helptext_dsname = "MySQL server"
         if datasource_type == 'AzureCosmosDB':
             helptext_dsname = "Cosmos DB account"
+        if datasource_type == 'AzureElasticSAN':
+            helptext_dsname = "Elastic SAN volume group"
 
         return helptext_dsname
 

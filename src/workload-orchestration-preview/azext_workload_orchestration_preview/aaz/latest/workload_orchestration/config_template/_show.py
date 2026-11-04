@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration config-template show",
+    "workload-orchestration-preview config-template show",
 )
 class Show(AAZCommand):
     """Get a Config Template Resource
     :example: Show a Config Template
-        az workload-orchestration config-template show -n myConfigTemplate -g myResourceGroup
+        az workload-orchestration-preview config-template show -n myConfigTemplate -g myResourceGroup
     """
 
     _aaz_info = {

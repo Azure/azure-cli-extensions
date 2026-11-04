@@ -1,0 +1,372 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+"""Single cross-feature ARM REST surface built on send_raw_request."""
+
+import json as _json
+import re as _re
+import time as _time
+from urllib.parse import urlsplit, urlunsplit
+
+from knack.log import get_logger
+
+from azure.cli.core.util import send_raw_request
+from azure.cli.core.azclierror import ForbiddenError
+
+from azext_migrate.shared import arm_ids, errors
+from azext_migrate.shared.constants import (
+    RUNBOOKS_API_VERSION,
+    WAVE_OPERATIONS_API_VERSION,
+)
+
+logger = get_logger(__name__)
+
+# Async status polling tuning.
+_DEFAULT_POLL_DELAY = 5
+_MAX_POLL_DELAY = 60
+_TERMINAL_SUCCESS = 'succeeded'
+_TERMINAL_FAILURE = ('failed', 'canceled', 'cancelled')
+
+# A control-plane action the caller is actually granted can still return a
+# transient AuthorizationFailed while RBAC replicas converge; ARM's own
+# guidance is to retry. Bounded so a genuine denial still fails promptly.
+_AUTH_RETRY_ATTEMPTS = 3
+_AUTH_RETRY_BACKOFF = 3
+
+
+def _poll_delay(response):
+    """Seconds to wait before the next poll, honoring Retry-After."""
+    retry_after = response.headers.get('Retry-After')
+    if retry_after and retry_after.isdigit():
+        return min(int(retry_after), _MAX_POLL_DELAY)
+    return _DEFAULT_POLL_DELAY
+
+
+def _force_https(url):
+    """Upgrade a poll URL to https.
+
+    ARM async-operation/Location URLs must be https; some services emit an
+    ``http://`` URL behind a TLS-terminating proxy, which the management edge
+    then rejects with a 400 HTML error. An ``http`` management URL is never
+    legitimate, so upgrade it in place (preserving the signed token).
+    """
+    if isinstance(url, str) and url.startswith('http://'):
+        return 'https://' + url[len('http://'):]
+    return url
+
+
+def _rewrite_poll_api_version(url):
+    """Point an async-operation status URL at the wave-operations API era.
+
+    Runbook create/delete are served by RUNBOOKS_API_VERSION, but the
+    Azure-AsyncOperation/Location status endpoint (migrateProjects/
+    waveOperations) is only registered at WAVE_OPERATIONS_API_VERSION and
+    returns NoRegisteredProviderFound otherwise. The header echoes the
+    request's api-version, so swap only that value, preserving the signed
+    token that follows.
+    """
+    if 'api-version=' not in url.lower():
+        return url + ('&' if '?' in url else '?') + \
+            'api-version=' + WAVE_OPERATIONS_API_VERSION
+    return _re.sub(
+        r'([?&]api-version=)[^&]+',
+        r'\g<1>' + WAVE_OPERATIONS_API_VERSION,
+        url, count=1)
+
+
+class ArmClient:
+    """Thin, generic wrapper over send_raw_request for ARM resources.
+
+    Every migrate feature package routes its REST calls through this one
+    surface so authentication, endpoint selection, serialization, paging
+    and error mapping live in exactly one place.
+    """
+
+    def __init__(self, cmd, api_version=RUNBOOKS_API_VERSION,
+                 rewrite_poll_api_version=True, quiet_lro=False):
+        self.cmd = cmd
+        self.api_version = api_version
+        # Runbook create/delete LROs are polled via the waveOperations type
+        # at a different api-version; artifact LROs are polled at their own
+        # async-operation URI as-is, so callers can opt out of the rewrite.
+        self.rewrite_poll_api_version = rewrite_poll_api_version
+        # When an LRO is a secondary step of a larger command (e.g. re-reading
+        # the definition right after an edit), the caller sets quiet_lro so it
+        # does not announce a second "long-running operation" / progress bar.
+        self.quiet_lro = quiet_lro
+
+    def _url(self, resource_id):
+        endpoint = self.cmd.cli_ctx.cloud.endpoints.resource_manager
+        return endpoint.rstrip('/') + arm_ids.with_api_version(
+            resource_id, self.api_version)
+
+    def _send(self, method, resource_id, body=None):
+        kwargs = {}
+        if body is not None:
+            kwargs['body'] = _json.dumps(body)
+        response = send_raw_request(
+            self.cmd.cli_ctx, method, self._url(resource_id), **kwargs)
+        if response.status_code >= 400:
+            errors.raise_for_arm_error(response)
+        return response
+
+    @staticmethod
+    def _json_or_none(response):
+        if not getattr(response, 'content', None):
+            return None
+        try:
+            return response.json()
+        except ValueError:
+            return None
+
+    def _finalize(self, result, final_get_id):
+        """Return the settled resource state after a successful LRO.
+
+        Standard Azure CLI behaviour is for create/update commands to
+        render the *final* resource (a GET issued once the operation
+        completes), not the initial 201/202 accepted body -- which still
+        shows ``provisioningState: InProgress``. ``final_get_id`` is the
+        resource to re-read; it is ``None`` for operations with nothing to
+        fetch (e.g. delete), in which case the initial body is returned
+        unchanged. If the follow-up GET 404s (resource gone), the initial
+        body is kept as a safe fallback.
+        """
+        if not final_get_id:
+            return result
+        refreshed = self.get_or_none(final_get_id)
+        return refreshed if refreshed is not None else result
+
+    def _poll_until_done(self, response, method, resource_id,
+                         final_get_id=None, return_final_poll=False):
+        """Follow an Azure LRO to completion and return the final state.
+
+        Create/delete on runbooks are long-running: they return 201/202
+        with an Azure-AsyncOperation (or Location) header. Poll that URL
+        until the operation reaches a terminal state. On success, when
+        ``final_get_id`` is set, re-read that resource so the caller sees
+        the settled representation (see :meth:`_finalize`); otherwise the
+        original response body is returned. When ``return_final_poll`` is
+        set (and no ``final_get_id``), the terminal operation-status body
+        is returned instead -- used by actions whose result (e.g. a SAS
+        URL) is carried in the async operation status rather than the
+        initial accepted body.
+        """
+        header_name = ('Azure-AsyncOperation'
+                       if response.headers.get('Azure-AsyncOperation')
+                       else 'Location')
+        poll_url = response.headers.get(header_name)
+        result = self._json_or_none(response)
+        correlation_id = (response.headers.get('x-ms-correlation-request-id')
+                          or response.headers.get('x-ms-request-id') or '')
+        corr = (" [correlation id %s]" % correlation_id
+                if correlation_id else '')
+        if response.status_code not in (201, 202) or not poll_url:
+            if not self.quiet_lro:
+                # warning (not info) so it shows at default verbosity.
+                logger.warning(
+                    "%s '%s' completed%s.", method, resource_id, corr)
+            else:
+                logger.debug(
+                    "%s '%s' completed synchronously (HTTP %s).",
+                    method, resource_id, response.status_code)
+            return self._finalize(result, final_get_id)
+        if self.rewrite_poll_api_version:
+            poll_url = _rewrite_poll_api_version(poll_url)
+        poll_url = _force_https(poll_url)
+        delay = _poll_delay(response)
+        if not self.quiet_lro:
+            # warning (not info) so it shows at default verbosity.
+            logger.warning(
+                "%s '%s': long-running operation started%s.",
+                method, resource_id, corr)
+        # Full operation-status URL is verbose; keep it to --debug only.
+        logger.debug("Async-operation poll URL: %s", poll_url)
+        progress = (None if self.quiet_lro
+                    else self.cmd.cli_ctx.get_progress_controller())
+        if progress:
+            progress.begin()
+        try:
+            start = _time.monotonic()
+            attempt = 0
+            # Force the ARM token audience on every poll: the async-operation
+            # URL can be on a host send_raw_request cannot map to a resource
+            # (it then attaches no Authorization header and the poll 401s).
+            arm_resource = (
+                self.cmd.cli_ctx.cloud.endpoints.active_directory_resource_id)
+            while True:
+                _time.sleep(delay)
+                attempt += 1
+                poll = send_raw_request(
+                    self.cmd.cli_ctx, 'GET', poll_url, resource=arm_resource)
+                if poll.status_code >= 400:
+                    errors.raise_for_arm_error(poll)
+                body = self._json_or_none(poll) or {}
+                status = body.get('status') or ''
+                elapsed = int(_time.monotonic() - start)
+                norm = status.lower()
+                if poll.status_code in (200, 204) and not status:
+                    logger.info(
+                        "%s '%s' completed (elapsed %ss, %s poll(s)).",
+                        method, resource_id, elapsed, attempt)
+                    if return_final_poll and not final_get_id:
+                        return body
+                    return self._finalize(result, final_get_id)
+                if norm == _TERMINAL_SUCCESS:
+                    logger.info(
+                        "%s '%s' succeeded (elapsed %ss, %s poll(s)).",
+                        method, resource_id, elapsed, attempt)
+                    if return_final_poll and not final_get_id:
+                        return body
+                    return self._finalize(result, final_get_id)
+                if norm in _TERMINAL_FAILURE:
+                    errors.raise_for_async_operation(body)
+                delay = _poll_delay(poll)
+                # Single, in-place status line: the progress controller
+                # rewrites the same terminal line each poll on a TTY (one
+                # concise line per attempt on non-TTY / piped output).
+                if progress:
+                    progress.add(
+                        message='%s: check #%s, %s; next retry in %ss '
+                                '(elapsed %ss)' % (
+                                    method, attempt, status or 'running',
+                                    delay, elapsed))
+                logger.debug(
+                    "%s '%s' still running: status=%s (elapsed %ss, "
+                    "poll #%s, next check in %ss).",
+                    method, resource_id, status or '(none)', elapsed,
+                    attempt, delay)
+        finally:
+            if progress:
+                progress.end()
+
+    def _begin(self, method, resource_id, body=None, no_wait=False,
+               final_get_id=None, return_final_poll=False, message=None):
+        # Optional human-readable lead-in, shown before the API/correlation-id
+        # log so users get context (e.g. "Generating runbook..."). Suppressed
+        # for quiet (secondary-step) LROs.
+        if message and not self.quiet_lro:
+            logger.warning('%s', message)
+        response = self._send(method, resource_id, body)
+        if no_wait:
+            logger.warning(
+                "%s '%s' accepted; --no-wait set, not polling for "
+                "completion.", method, resource_id)
+            return self._json_or_none(response)
+        return self._poll_until_done(
+            response, method, resource_id, final_get_id, return_final_poll)
+
+    def get(self, resource_id):
+        """GET a resource and return its JSON body."""
+        return self._send('GET', resource_id).json()
+
+    def get_or_none(self, resource_id):
+        """GET a resource, returning None on 404 (existence check)."""
+        from azure.cli.core.azclierror import HTTPError
+        try:
+            response = send_raw_request(
+                self.cmd.cli_ctx, 'GET', self._url(resource_id))
+        except HTTPError as ex:
+            if getattr(ex.response, 'status_code', None) == 404:
+                return None
+            raise
+        if response.status_code >= 400:
+            errors.raise_for_arm_error(response)
+        return response.json()
+
+    def list(self, collection_id):
+        """GET a collection, following nextLink pagination."""
+        items = []
+        url = self._url(collection_id)
+        while url:
+            response = send_raw_request(self.cmd.cli_ctx, 'GET', url)
+            if response.status_code >= 400:
+                errors.raise_for_arm_error(response)
+            body = response.json()
+            items.extend(body.get('value', []))
+            url = self._arm_next_link(body.get('nextLink'))
+        return items
+
+    def _arm_next_link(self, next_link):
+        """Route a paging nextLink back through the ARM endpoint.
+
+        Some Migrate collection APIs return a nextLink pointing at an
+        internal backend host; called directly it 500s because the
+        ARM-injected partition-key header (ResourceUniqueId) is missing.
+        Swap the scheme+host for the resource-manager endpoint, preserving
+        the path and query (the continuationToken).
+        """
+        if not next_link:
+            return next_link
+        endpoint = urlsplit(
+            self.cmd.cli_ctx.cloud.endpoints.resource_manager.rstrip('/'))
+        target = urlsplit(next_link)
+        return urlunsplit((
+            endpoint.scheme, endpoint.netloc,
+            target.path, target.query, target.fragment))
+
+    def put(self, resource_id, body=None, no_wait=False, message=None):
+        """PUT (create/generate/start) a resource, awaiting any LRO.
+
+        On success the settled resource is re-read (a final GET on the same
+        id) so callers render the final state (e.g. ``provisioningState:
+        Succeeded``) rather than the initial accepted body.
+        """
+        return self._begin(
+            'PUT', resource_id, body, no_wait, final_get_id=resource_id,
+            message=message)
+
+    def patch(self, resource_id, body=None):
+        """PATCH (update) a resource."""
+        return self._json_or_none(self._send('PATCH', resource_id, body))
+
+    def delete(self, resource_id, no_wait=False, message=None):
+        """DELETE a resource, awaiting any LRO.
+
+        Returns None: a completed delete has no resource to render (the
+        initial 202 accepted body still shows the resource as InProgress,
+        which is misleading), matching standard Azure CLI delete behaviour.
+        """
+        self._begin('DELETE', resource_id, no_wait=no_wait, message=message)
+
+    def post_action(self, resource_id, action_name, body=None,
+                    no_wait=False, final_get=False,
+                    return_final_poll=False, message=None,
+                    retry_transient=False):
+        """POST {resourceId}/{action_name} with an optional JSON body.
+
+        This is the workhorse for every action endpoint (AddStep,
+        PerformAction, ProvideApproval, GenerateDownloadUrl, ...).
+
+        Set ``final_get=True`` only for actions whose settled state is the
+        parent resource itself (e.g. Regenerate), so the LRO result is a
+        fresh GET of ``resource_id`` rather than the initial InProgress body.
+        Set ``return_final_poll=True`` for actions whose result is carried
+        in the async operation status (e.g. an artifact download SAS URL).
+        Most actions return their own payload (SAS URL, validation result)
+        or mutate state exposed elsewhere, so they leave both False.
+
+        Set ``retry_transient=True`` only for idempotent actions (e.g. the
+        SAS-minting Generate*Url actions) so a transient ARM
+        AuthorizationFailed is retried rather than surfaced.
+        """
+        action_id = f"{resource_id}/{action_name}"
+        final_get_id = resource_id if final_get else None
+        attempts = _AUTH_RETRY_ATTEMPTS if retry_transient else 1
+        last_exc = None
+        for attempt in range(1, attempts + 1):
+            try:
+                return self._begin(
+                    'POST', action_id, body, no_wait, final_get_id,
+                    return_final_poll, message=message)
+            except ForbiddenError as ex:
+                last_exc = ex
+                if attempt < attempts:
+                    wait = _AUTH_RETRY_BACKOFF * attempt
+                    logger.warning(
+                        "'%s' was denied by ARM authorization (attempt "
+                        "%s/%s); this is often a transient RBAC condition, "
+                        "retrying in %ss...",
+                        action_name, attempt, attempts, wait)
+                    _time.sleep(wait)
+        raise last_exc

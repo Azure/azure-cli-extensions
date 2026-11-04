@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a new origin within the specified origin group.
 
     :example: AFDOrigins_Create
-        az afd origin create --resource-group RG --profile-name profile1 --origin-group-name origingroup1 --origin-name origin1 --enabled-state Enabled --host-name host1.blob.core.windows.net --http-port 80 --https-port 443 --origin-host-header host1.foo.com --origin-capacity-resource "{enabled:Enabled,origin-ingress-rate-threshold:10,origin-request-rate-threshold:1000,region:EastUs}"
+        az afd origin create --resource-group RG --profile-name profile1 --origin-group-name origingroup1 --origin-name origin1 --enabled-state Enabled --host-name host1.blob.core.windows.net --http-port 80 --https-port 443 --origin-host-header host1.foo.com
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -72,6 +72,21 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.certificate_name_check_validation_mode = AAZStrArg(
+            options=["--cert-name-check-mode", "--certificate-name-check-validation-mode"],
+            arg_group="Properties",
+            help="The validation mode for certificate name check. Only applicable when enforceCertificateNameCheck is true.",
+            enum={"CustomCertificateSubject": "CustomCertificateSubject", "IncomingHostHeader": "IncomingHostHeader", "OriginHostname": "OriginHostname"},
+        )
+        _args_schema.custom_certificate_subjects = AAZListArg(
+            options=["--cert-subjects", "--custom-certificate-subjects"],
+            arg_group="Properties",
+            help="The list of custom certificate subjects to validate against. Only applicable when certificateNameCheckValidationMode is 'CustomCertificateSubject'. Must contain 1 or 2 entries.",
+            fmt=AAZListArgFormat(
+                max_length=2,
+                min_length=1,
+            ),
+        )
         _args_schema.enabled_state = AAZStrArg(
             options=["--enabled-state"],
             arg_group="Properties",
@@ -109,11 +124,6 @@ class Create(AAZCommand):
                 minimum=1,
             ),
         )
-        _args_schema.origin_capacity_resource = AAZObjectArg(
-            options=["--origin-capacity-resource"],
-            arg_group="Properties",
-            help="Origin capacity settings for an origin",
-        )
         _args_schema.origin_host_header = AAZStrArg(
             options=["--origin-host-header"],
             arg_group="Properties",
@@ -143,30 +153,8 @@ class Create(AAZCommand):
             ),
         )
 
-        origin_capacity_resource = cls._args_schema.origin_capacity_resource
-        origin_capacity_resource.enabled = AAZStrArg(
-            options=["enabled"],
-            help="Whether to enable origin capacity for a specific origin",
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        origin_capacity_resource.origin_ingress_rate_threshold = AAZIntArg(
-            options=["origin-ingress-rate-threshold"],
-            help="The ingress rate limit threshold for an origin per minute in bytes",
-            fmt=AAZIntArgFormat(
-                minimum=1,
-            ),
-        )
-        origin_capacity_resource.origin_request_rate_threshold = AAZIntArg(
-            options=["origin-request-rate-threshold"],
-            help="The request rate limit threshold for an origin per minute",
-            fmt=AAZIntArgFormat(
-                minimum=1,
-            ),
-        )
-        origin_capacity_resource.region = AAZStrArg(
-            options=["region"],
-            help="The nearest origin capacity pop region for an origin",
-        )
+        custom_certificate_subjects = cls._args_schema.custom_certificate_subjects
+        custom_certificate_subjects.Element = AAZStrArg()
 
         shared_private_link_resource = cls._args_schema.shared_private_link_resource
         shared_private_link_resource.group_id = AAZStrArg(
@@ -300,7 +288,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -329,23 +317,21 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("certificateNameCheckValidationMode", AAZStrType, ".certificate_name_check_validation_mode")
+                properties.set_prop("customCertificateSubjects", AAZListType, ".custom_certificate_subjects")
                 properties.set_prop("enabledState", AAZStrType, ".enabled_state")
                 properties.set_prop("enforceCertificateNameCheck", AAZBoolType, ".enforce_certificate_name_check")
                 properties.set_prop("hostName", AAZStrType, ".host_name")
                 properties.set_prop("httpPort", AAZIntType, ".http_port")
                 properties.set_prop("httpsPort", AAZIntType, ".https_port")
-                properties.set_prop("originCapacityResource", AAZObjectType, ".origin_capacity_resource")
                 properties.set_prop("originHostHeader", AAZStrType, ".origin_host_header")
                 properties.set_prop("priority", AAZIntType, ".priority")
                 properties.set_prop("sharedPrivateLinkResource", AAZObjectType, ".shared_private_link_resource")
                 properties.set_prop("weight", AAZIntType, ".weight")
 
-            origin_capacity_resource = _builder.get(".properties.originCapacityResource")
-            if origin_capacity_resource is not None:
-                origin_capacity_resource.set_prop("enabled", AAZStrType, ".enabled")
-                origin_capacity_resource.set_prop("originIngressRateThreshold", AAZIntType, ".origin_ingress_rate_threshold")
-                origin_capacity_resource.set_prop("originRequestRateThreshold", AAZIntType, ".origin_request_rate_threshold")
-                origin_capacity_resource.set_prop("region", AAZStrType, ".region")
+            custom_certificate_subjects = _builder.get(".properties.customCertificateSubjects")
+            if custom_certificate_subjects is not None:
+                custom_certificate_subjects.set_elements(AAZStrType, ".")
 
             shared_private_link_resource = _builder.get(".properties.sharedPrivateLinkResource")
             if shared_private_link_resource is not None:
@@ -424,6 +410,12 @@ class _CreateHelper:
             serialized_name="azureOrigin",
         )
         cls._build_schema_resource_reference_read(properties.azure_origin)
+        properties.certificate_name_check_validation_mode = AAZStrType(
+            serialized_name="certificateNameCheckValidationMode",
+        )
+        properties.custom_certificate_subjects = AAZListType(
+            serialized_name="customCertificateSubjects",
+        )
         properties.deployment_status = AAZStrType(
             serialized_name="deploymentStatus",
             flags={"read_only": True},
@@ -443,9 +435,6 @@ class _CreateHelper:
         properties.https_port = AAZIntType(
             serialized_name="httpsPort",
         )
-        properties.origin_capacity_resource = AAZObjectType(
-            serialized_name="originCapacityResource",
-        )
         properties.origin_group_name = AAZStrType(
             serialized_name="originGroupName",
             flags={"read_only": True},
@@ -463,15 +452,8 @@ class _CreateHelper:
         )
         properties.weight = AAZIntType()
 
-        origin_capacity_resource = _schema_afd_origin_read.properties.origin_capacity_resource
-        origin_capacity_resource.enabled = AAZStrType()
-        origin_capacity_resource.origin_ingress_rate_threshold = AAZIntType(
-            serialized_name="originIngressRateThreshold",
-        )
-        origin_capacity_resource.origin_request_rate_threshold = AAZIntType(
-            serialized_name="originRequestRateThreshold",
-        )
-        origin_capacity_resource.region = AAZStrType()
+        custom_certificate_subjects = _schema_afd_origin_read.properties.custom_certificate_subjects
+        custom_certificate_subjects.Element = AAZStrType()
 
         shared_private_link_resource = _schema_afd_origin_read.properties.shared_private_link_resource
         shared_private_link_resource.group_id = AAZStrType(

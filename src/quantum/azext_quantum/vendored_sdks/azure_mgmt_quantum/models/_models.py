@@ -626,6 +626,9 @@ class Provider(_serialization.Model):
     :ivar quotas: Quota allocations associated with this provider. Available only for special
      providers.
     :vartype quotas: ~azure.mgmt.quantum.models.QuotaAllocations
+    :ivar target_quotas: Target-specific quota allocations associated with this provider. Available
+     only for special providers.
+    :vartype target_quotas: list[~azure.mgmt.quantum.models.TargetQuotaAllocations]
     """
 
     _attribute_map = {
@@ -636,6 +639,7 @@ class Provider(_serialization.Model):
         "provisioning_state": {"key": "provisioningState", "type": "str"},
         "resource_usage_id": {"key": "resourceUsageId", "type": "str"},
         "quotas": {"key": "quotas", "type": "QuotaAllocations"},
+        "target_quotas": {"key": "targetQuotas", "type": "[TargetQuotaAllocations]"},
     }
 
     def __init__(
@@ -648,6 +652,7 @@ class Provider(_serialization.Model):
         provisioning_state: Optional[Union[str, "_models.ProviderStatus"]] = None,
         resource_usage_id: Optional[str] = None,
         quotas: Optional["_models.QuotaAllocations"] = None,
+        target_quotas: Optional[list["_models.TargetQuotaAllocations"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -667,6 +672,9 @@ class Provider(_serialization.Model):
         :keyword quotas: Quota allocations associated with this provider. Available only for special
          providers.
         :paramtype quotas: ~azure.mgmt.quantum.models.QuotaAllocations
+        :keyword target_quotas: Target-specific quota allocations associated with this provider.
+         Available only for special providers.
+        :paramtype target_quotas: list[~azure.mgmt.quantum.models.TargetQuotaAllocations]
         """
         super().__init__(**kwargs)
         self.provider_id = provider_id
@@ -676,6 +684,7 @@ class Provider(_serialization.Model):
         self.provisioning_state = provisioning_state
         self.resource_usage_id = resource_usage_id
         self.quotas = quotas
+        self.target_quotas = target_quotas
 
 
 class ProviderDescription(_serialization.Model):
@@ -1018,6 +1027,8 @@ class QuantumSuiteOfferProperties(_serialization.Model):
     :vartype description: str
     :ivar quotas: Quota allocations associated with this offer.
     :vartype quotas: ~azure.mgmt.quantum.models.QuotaAllocations
+    :ivar target_quotas: Target-specific quota allocations associated with this offer.
+    :vartype target_quotas: list[~azure.mgmt.quantum.models.TargetQuotaAllocations]
     """
 
     _validation = {
@@ -1035,6 +1046,7 @@ class QuantumSuiteOfferProperties(_serialization.Model):
         "location": {"key": "location", "type": "str"},
         "description": {"key": "description", "type": "str"},
         "quotas": {"key": "quotas", "type": "QuotaAllocations"},
+        "target_quotas": {"key": "targetQuotas", "type": "[TargetQuotaAllocations]"},
     }
 
     def __init__(
@@ -1046,6 +1058,7 @@ class QuantumSuiteOfferProperties(_serialization.Model):
         location: str,
         description: str,
         quotas: Optional["_models.QuotaAllocations"] = None,
+        target_quotas: Optional[list["_models.TargetQuotaAllocations"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -1061,6 +1074,8 @@ class QuantumSuiteOfferProperties(_serialization.Model):
         :paramtype description: str
         :keyword quotas: Quota allocations associated with this offer.
         :paramtype quotas: ~azure.mgmt.quantum.models.QuotaAllocations
+        :keyword target_quotas: Target-specific quota allocations associated with this offer.
+        :paramtype target_quotas: list[~azure.mgmt.quantum.models.TargetQuotaAllocations]
         """
         super().__init__(**kwargs)
         self.provider_id = provider_id
@@ -1069,6 +1084,7 @@ class QuantumSuiteOfferProperties(_serialization.Model):
         self.location = location
         self.description = description
         self.quotas = quotas
+        self.target_quotas = target_quotas
 
 
 class TrackedResource(Resource):
@@ -1582,6 +1598,55 @@ class TargetDescription(_serialization.Model):
         self.num_qubits: Optional[int] = None
         self.target_profile: Optional[str] = None
         self.metadata: Optional[dict[str, Any]] = None
+
+
+class TargetQuotaAllocations(_serialization.Model):
+    """Quota allocations for a specific Target.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar target_id: The ID of the Target these quota allocations apply to. Required.
+    :vartype target_id: str
+    :ivar standard_minutes_lifetime: Lifetime limit for standard priority jobs execution in
+     minutes. Required.
+    :vartype standard_minutes_lifetime: int
+    :ivar high_minutes_lifetime: Lifetime limit for high priority jobs execution in minutes.
+    :vartype high_minutes_lifetime: int
+    """
+
+    _validation = {
+        "target_id": {"required": True, "max_length": 200, "min_length": 1, "pattern": r"^[a-zA-Z0-9][-._a-zA-Z0-9]*$"},
+        "standard_minutes_lifetime": {"required": True, "minimum": 0},
+        "high_minutes_lifetime": {"minimum": 0},
+    }
+
+    _attribute_map = {
+        "target_id": {"key": "targetId", "type": "str"},
+        "standard_minutes_lifetime": {"key": "standardMinutesLifetime", "type": "int"},
+        "high_minutes_lifetime": {"key": "highMinutesLifetime", "type": "int"},
+    }
+
+    def __init__(
+        self,
+        *,
+        target_id: str,
+        standard_minutes_lifetime: int,
+        high_minutes_lifetime: Optional[int] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword target_id: The ID of the Target these quota allocations apply to. Required.
+        :paramtype target_id: str
+        :keyword standard_minutes_lifetime: Lifetime limit for standard priority jobs execution in
+         minutes. Required.
+        :paramtype standard_minutes_lifetime: int
+        :keyword high_minutes_lifetime: Lifetime limit for high priority jobs execution in minutes.
+        :paramtype high_minutes_lifetime: int
+        """
+        super().__init__(**kwargs)
+        self.target_id = target_id
+        self.standard_minutes_lifetime = standard_minutes_lifetime
+        self.high_minutes_lifetime = high_minutes_lifetime
 
 
 class UserAssignedIdentity(_serialization.Model):

@@ -8,13 +8,9 @@ import os
 import unittest
 import time
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
+from azure.cli.testsdk import ScenarioTest, live_only
 
 class OracleExaDbVmclusterScenarioTest(ScenarioTest):
-    @live_only()
-    @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def setUp(self):
         subscription_id = self.get_subscription_id()
         self.kwargs.update({
@@ -24,22 +20,24 @@ class OracleExaDbVmclusterScenarioTest(ScenarioTest):
             'location': 'eastus',
             'zone': '2',
             'description': 'Test Description',
-            'ssh_public_key': 'ssh-rsa xxxx',
             'display_name': 'test-vault',
             'high_capacity_database_storage_input': 'total-size-in-gbs=300',
             'enabled_ecpu_count': 16,
-            'grid_image_ocid': 'ocid.xx',
+            'grid_image_ocid': 'ocid1.dbpatch.oc1.iad.anuwcljrt5t4sqqaxri4hvrmrtacbitx46nndilovnm7njnihofkqar43qzq',
             'hostname': 'test-host',
             'node_count': 2,
             'shape': 'EXADBXS',
-            'vnet_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet',
-            'subnet_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated',
+            'vnet_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testAzureCLi/providers/Microsoft.Network/virtualNetworks/testExaDbVnet2026',
+            'subnet_id': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testAzureCLi/providers/Microsoft.Network/virtualNetworks/testExaDbVnet2026/subnets/default2',
             'total_ecpu_count': 32,
             'vm_file_system_storage': 'total-size-in-gbs=1024',
             'tags': '{tagk1:tagv1}',
         })
 
+    @live_only()
     def test_exad_vmcluster(self):
+        self.kwargs['ssh_public_key'] = os.environ['AZURE_ORACLE_DATABASE_SSH_PUBLIC_KEY']
+
         # Fetch Storage Vault ID
         db_storage_vault = self.cmd(
             'az oracle-database exascale-db-storage-vault show '

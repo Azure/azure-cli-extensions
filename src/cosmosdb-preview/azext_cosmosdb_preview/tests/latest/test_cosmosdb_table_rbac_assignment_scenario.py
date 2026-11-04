@@ -8,41 +8,32 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 class Cosmosdb_previewtableRbacAssignmentScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_table_role_assignment', location='westus2')
-    def test_cosmosdb_table_role_assignment(self, resource_group):
+    def test_cosmosdb_table_role_assignment(self):
         acc_name = self.create_random_name(prefix='cli', length=15)
         db_name = self.create_random_name(prefix='cli', length=15)
 
-        subscription = self.get_subscription_id()
-        
-        user_definition_id = db_name + '.testUser'
-        user_name = 'testUser'
-        
-        role_def_id = 'be79875a-2cc4-40d5-8958-566017875b39'
         role_assignment_id = 'cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8'
-        principal_id = 'ca95ad70-0b97-48cd-a757-57662ffa33e9'
-        
-        scope = ('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.DocumentDB/databaseAccounts/{2}').format(subscription, resource_group, acc_name)        
-        
-        builtin_role_def_id_full = '/subscriptions/80be3961-0521-4a0a-8570-5cd5a4e2f98c/resourceGroups/cli_test_cosmosdb_table_role_assignmentu4ss2n535bbvhe2wmufck5yfhyziujp77gg4/providers/Microsoft.DocumentDB/databaseAccounts/clikznzrccyiwbv/tableRoleDefinitions/00000000-0000-0000-0000-000000000001'
-        
-        builtin_role_def_id_full_update = '/subscriptions/80be3961-0521-4a0a-8570-5cd5a4e2f98c/resourceGroups/cli_test_cosmosdb_table_role_assignmentu4ss2n535bbvhe2wmufck5yfhyziujp77gg4/providers/Microsoft.DocumentDB/databaseAccounts/clikznzrccyiwbv/tableRoleDefinitions/00000000-0000-0000-0000-000000000002'
-        
+
         self.kwargs.update({
             'acc': acc_name,
             'db_name': db_name,
-            
-            'user_name': user_name,
-            
-            'principal_id': principal_id,
-            'scope': scope,
-            'builtin_role_def_id_full': builtin_role_def_id_full,
             'role_assignment_id': role_assignment_id,
-            'builtin_role_def_id_full_update': builtin_role_def_id_full_update
         })
 
         #setup
-        self.cmd(
-            'az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --kind GlobalDocumentDB --capabilities EnableTable')            
+        account = self.cmd(
+            'az cosmosdb create --disable-local-auth true -n {acc} -g {rg} --kind GlobalDocumentDB --capabilities EnableTable --assign-identity [system]').get_output_in_json()
+        scope = account['id']
+        principal_id = account['identity']['principalId']
+        assert principal_id
+        builtin_role_def_id_full = scope + '/tableRoleDefinitions/00000000-0000-0000-0000-000000000001'
+        builtin_role_def_id_full_update = scope + '/tableRoleDefinitions/00000000-0000-0000-0000-000000000002'
+        self.kwargs.update({
+            'scope': scope,
+            'principal_id': principal_id,
+            'builtin_role_def_id_full': builtin_role_def_id_full,
+            'builtin_role_def_id_full_update': builtin_role_def_id_full_update,
+        })
         self.cmd(
             'az cosmosdb show --name {acc} --resource-group {rg}')
         self.cmd(
@@ -51,6 +42,8 @@ class Cosmosdb_previewtableRbacAssignmentScenarioTest(ScenarioTest):
         # ensure the built-in role exists
         assert self.cmd(
             'az cosmosdb table role definition exists -g {rg} -a {acc} --role-definition-id 00000000-0000-0000-0000-000000000001').get_output_in_json()
+        assert self.cmd(
+            'az cosmosdb table role definition exists -g {rg} -a {acc} --role-definition-id 00000000-0000-0000-0000-000000000002').get_output_in_json()
         
         # ensure test role assignment doesnt already exists     
         self.cmd(
@@ -62,7 +55,8 @@ class Cosmosdb_previewtableRbacAssignmentScenarioTest(ScenarioTest):
         # Create a role assignment 
         self.cmd('az cosmosdb table role assignment create -g {rg} -a {acc} --scope {scope} --principal-id {principal_id} --role-definition-id {builtin_role_def_id_full} --role-assignment-id {role_assignment_id}', checks=[
             self.check('scope', scope),
-            self.check('principalId', principal_id)
+            self.check('principalId', principal_id),
+            self.check('roleDefinitionId', builtin_role_def_id_full)
         ])
         
         # Show/list role assignment
@@ -77,7 +71,8 @@ class Cosmosdb_previewtableRbacAssignmentScenarioTest(ScenarioTest):
         # Update role assignment
         self.cmd('az cosmosdb table role assignment update -g {rg} -a {acc} --scope {scope} --principal-id {principal_id} --role-definition-id {builtin_role_def_id_full_update} --role-assignment-id {role_assignment_id}', checks=[
             self.check('scope', scope),
-            self.check('principalId', principal_id)
+            self.check('principalId', principal_id),
+            self.check('roleDefinitionId', builtin_role_def_id_full_update)
         ])
         
         # Delete role assignment, for cleanup
@@ -87,4 +82,3 @@ class Cosmosdb_previewtableRbacAssignmentScenarioTest(ScenarioTest):
         role_assignment_list = self.cmd(
             'az cosmosdb table role assignment list -g {rg} -a {acc}').get_output_in_json()
         assert len(role_assignment_list) == 0
-        

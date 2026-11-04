@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database character-set show",
 )
 class Show(AAZCommand):
-    """Get an Autonomous Database character set
+    """Get a AutonomousDatabaseCharacterSet
 
     :example: Get ADBS Character Set
         az oracle-database autonomous-database character-set show --location <location> --name <charset name>
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/autonomousdatabasecharactersets/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/autonomousdatabasecharactersets/{}", "2026-06-01"],
         ]
     }
 
@@ -46,7 +46,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.adbscharsetname = AAZStrArg(
             options=["-n", "--name", "--adbscharsetname"],
-            help="Autonomous Database character set name",
+            help="AutonomousDatabaseCharacterSet name",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -124,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -163,7 +163,9 @@ class Show(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},

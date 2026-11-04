@@ -42,6 +42,12 @@ az cloudhsm create \
 
 #### Available SKUs:
 - `Standard_B1` (default)
+- `Standard B10`
+- `Standard_B1v2`
+- `Standard_B5v2`
+- `Standard_B10v2`
+- `Standard_B15v2`
+- `Standard_B20v2`
 
 
 ### 2. List CloudHSM Clusters

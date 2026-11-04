@@ -13,12 +13,12 @@ from azure.cli.core.azclierror import ValidationError
 import yaml
 
 @register_command(
-    "workload-orchestration schema create",
+    "workload-orchestration-preview schema create",
 )
 class Create(AAZCommand):
     """Create a Schema Resource
     :example: Create a Schema
-        az workload-orchestration schema create -n mySchema -g myResourceGroup --location eastus --version 1.0.0 --schema-file ./schema.yaml
+        az workload-orchestration-preview schema create -n mySchema -g myResourceGroup --location eastus --version 1.0.0 --schema-file ./schema.yaml
     """
 
     _aaz_info = {

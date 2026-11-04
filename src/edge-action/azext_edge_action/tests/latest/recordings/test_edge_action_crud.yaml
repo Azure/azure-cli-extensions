@@ -5,7 +5,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - edge-action list
       Connection:
@@ -13,9 +13,9 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.80.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions?api-version=2025-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions?api-version=2026-10-01
   response:
     body:
       string: '{"value":[]}'
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 26 Nov 2025 01:20:09 GMT
+      - Thu, 29 Oct 2026 00:28:00 GMT
       expires:
       - '-1'
       pragma:
@@ -39,55 +39,51 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '520'
-      x-ms-original-request-ids:
-      - ''
+      - '149'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
-      x-msedge-ref:
-      - 'Ref A: D9F7414C9D9E496E8B4DDA2258D7621A Ref B: MNZ221060609025 Ref C: 2025-11-26T01:20:08Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "global", "sku": {"name": "Standard", "tier": "Standard"}}'
+    body: '{"location":"global","sku":{"name":"Standard","tier":"Standard"}}'
     headers:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - edge-action create
       Connection:
       - keep-alive
       Content-Length:
-      - '71'
+      - '65'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --sku --location
       User-Agent:
-      - AZURECLI/2.80.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2025-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2026-10-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","attachments":null},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
+      string: '{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitests000001/providers/Microsoft.Cdn/edgeactionoperations/01965047-4216-43df-b8ae-eeb2997072ee?api-version=2025-09-01-preview&t=638997168114644909&c=MIIHhzCCBm-gAwIBAgITfAla5jyv8QRP_5ow7AAACVrmPDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUxMDIwMDQzNjIzWhcNMjYwNDE4MDQzNjIzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMddVfpiBdDmUhIBJwKZ3KQON7oBNDWmOOmY4g1ElyXgEkjon3Gv6o2iUWBTlxPP_EZQJhupEuO2DlNcI72qn4SyWwWct2tCEYRZJerV4rv1id9sCDj3fEamCo4QEH3xMKcGXqtPe3f3eb4VUSK8a2gJFqPiH-B-2oetOTm_-t1_J9TkLUFEUdYIHsylTl0OH2FEQVYAAgRXhe4lJ-WGzZ1ffooW6zFScKcbHC-ij1AA2xiuPbLogZIDjkgpOYoQbn9dJCcXDjro2GtBWEIEIaRIheA5TONmvBvNjwgvM95OihgVouEt3T1X5Jz2jgZVe8XVf5WuHz-a-o1TsKrZzcECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSklsMGrs_eAsv_RTi_q4qgDc9qNDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJ51PdAaul136rrBMSwKBqaPsalRACK88HnU3-MuFwPY3EKcBNfr_DcyIemG6qcdAt6oBTDGXSVm8qGYJ2eHSVBH91yTQvJd5-a7_b9xta0wy4EJYoK-Olj6bE5ygF6klhRzpEyjfq2vFjpc2SF6xPxtXMaj4I7ACMq2QHy3CO_thX0U9_MhBYBb-v3ICmOFIZIBb4wOpeX0BsfrYbqwos0TpMW5k0T0RtCs4mpGUt-7YgEXCPIwlt7JN4fLqGTiEElAPaYcSl4-0aYA_RVN98y83vlGlM0kIjglh8_t1QOAUw0jy8LA4CNtMdgL_ncOt66gFr9ocwuFusQMx11WpTM&s=Ws7ERyS2uUClSOQOz2PUi2dhi53Cg-wNy19tW_8p-ANyVJm1hTXx60ZcZl0ujp-Sx8tQur6pE1dQ41qqD-5Fd03oQckolL1qSJdtQ295UYWz-ekKNtMTweA3SUk7ihx018cVNeAzCMOR9If2oUSTn0VTF4t2nHgIWidJTQkQEjwXJfCBKcbVpUlJsTqXVUrWOUj9SH91A6jDyDGUP_29SrSU1DshI7zbWGNwgr672NABPYPGVPesjSzcZaqfK1f0Pwvth4IoAX8-cnVKtJOYJ9LXZDUsaBPxzeGYKsNdQtukSmlKRamX_rdqElMYpqQxGNhrN9mJfYkKvfVfebFKrA&h=WGNzCRzkEI5dVQj-VEkifmP3ieQrLYa5EBhVI7HKIRQ
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitests000001/providers/Microsoft.Cdn/edgeactionoperations/e432ced4-7e32-472c-bc48-f157b6bddd2f?api-version=2026-10-01&t=Sanitized_efdcd5c379c68195&c=Sanitized_b1ef672c9884996c&s=Sanitized_e240f5c67c7a78f6&h=Sanitized_454bd850902056ac
       cache-control:
       - no-cache
       content-length:
-      - '344'
+      - '342'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 26 Nov 2025 01:20:11 GMT
+      - Thu, 29 Oct 2026 00:28:04 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2025-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2026-10-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -97,15 +93,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '66'
-      x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=57b9b506-b455-490e-9b53-6e632ea5b44c/westus/dfc69e37-c35d-4def-bedd-23e7c108864a
+      - '1633'
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
-      x-msedge-ref:
-      - 'Ref A: A66A77F6243548C6BEC87F6F03CEEA93 Ref B: MNZ221060619045 Ref C: 2025-11-26T01:20:10Z'
     status:
       code: 201
       message: Created
@@ -115,7 +107,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - edge-action create
       Connection:
@@ -123,12 +115,12 @@ interactions:
       ParameterSetName:
       - -g -n --sku --location
       User-Agent:
-      - AZURECLI/2.80.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitests000001/providers/Microsoft.Cdn/edgeactionoperations/01965047-4216-43df-b8ae-eeb2997072ee?api-version=2025-09-01-preview&t=638997168114644909&c=MIIHhzCCBm-gAwIBAgITfAla5jyv8QRP_5ow7AAACVrmPDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUxMDIwMDQzNjIzWhcNMjYwNDE4MDQzNjIzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMddVfpiBdDmUhIBJwKZ3KQON7oBNDWmOOmY4g1ElyXgEkjon3Gv6o2iUWBTlxPP_EZQJhupEuO2DlNcI72qn4SyWwWct2tCEYRZJerV4rv1id9sCDj3fEamCo4QEH3xMKcGXqtPe3f3eb4VUSK8a2gJFqPiH-B-2oetOTm_-t1_J9TkLUFEUdYIHsylTl0OH2FEQVYAAgRXhe4lJ-WGzZ1ffooW6zFScKcbHC-ij1AA2xiuPbLogZIDjkgpOYoQbn9dJCcXDjro2GtBWEIEIaRIheA5TONmvBvNjwgvM95OihgVouEt3T1X5Jz2jgZVe8XVf5WuHz-a-o1TsKrZzcECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSklsMGrs_eAsv_RTi_q4qgDc9qNDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJ51PdAaul136rrBMSwKBqaPsalRACK88HnU3-MuFwPY3EKcBNfr_DcyIemG6qcdAt6oBTDGXSVm8qGYJ2eHSVBH91yTQvJd5-a7_b9xta0wy4EJYoK-Olj6bE5ygF6klhRzpEyjfq2vFjpc2SF6xPxtXMaj4I7ACMq2QHy3CO_thX0U9_MhBYBb-v3ICmOFIZIBb4wOpeX0BsfrYbqwos0TpMW5k0T0RtCs4mpGUt-7YgEXCPIwlt7JN4fLqGTiEElAPaYcSl4-0aYA_RVN98y83vlGlM0kIjglh8_t1QOAUw0jy8LA4CNtMdgL_ncOt66gFr9ocwuFusQMx11WpTM&s=Ws7ERyS2uUClSOQOz2PUi2dhi53Cg-wNy19tW_8p-ANyVJm1hTXx60ZcZl0ujp-Sx8tQur6pE1dQ41qqD-5Fd03oQckolL1qSJdtQ295UYWz-ekKNtMTweA3SUk7ihx018cVNeAzCMOR9If2oUSTn0VTF4t2nHgIWidJTQkQEjwXJfCBKcbVpUlJsTqXVUrWOUj9SH91A6jDyDGUP_29SrSU1DshI7zbWGNwgr672NABPYPGVPesjSzcZaqfK1f0Pwvth4IoAX8-cnVKtJOYJ9LXZDUsaBPxzeGYKsNdQtukSmlKRamX_rdqElMYpqQxGNhrN9mJfYkKvfVfebFKrA&h=WGNzCRzkEI5dVQj-VEkifmP3ieQrLYa5EBhVI7HKIRQ
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitests000001/providers/Microsoft.Cdn/edgeactionoperations/e432ced4-7e32-472c-bc48-f157b6bddd2f?api-version=2026-10-01&t=Sanitized_efdcd5c379c68195&c=Sanitized_b1ef672c9884996c&s=Sanitized_e240f5c67c7a78f6&h=Sanitized_454bd850902056ac
   response:
     body:
-      string: '{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActionOperations/01965047-4216-43df-b8ae-eeb2997072ee","operationId":"01965047-4216-43df-b8ae-eeb2997072ee","status":"Succeeded","operationType":"create","startTime":"2025-11-26T01:20:11.2985743+00:00","endTime":"2025-11-26T01:20:11.3409585+00:00","error":null}'
+      string: '{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActionOperations/e432ced4-7e32-472c-bc48-f157b6bddd2f","operationId":"e432ced4-7e32-472c-bc48-f157b6bddd2f","status":"Succeeded","operationType":"create","startTime":"2026-10-29T00:28:02.6978725+00:00","endTime":"2026-10-29T00:28:04.0104629+00:00","error":null}'
     headers:
       cache-control:
       - no-cache
@@ -137,7 +129,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 26 Nov 2025 01:20:11 GMT
+      - Thu, 29 Oct 2026 00:28:05 GMT
       expires:
       - '-1'
       pragma:
@@ -149,13 +141,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '152'
-      x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=57b9b506-b455-490e-9b53-6e632ea5b44c/westus/d0fd9468-c7ce-45a0-8748-34fb25c50ce9
+      - '140'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
-      x-msedge-ref:
-      - 'Ref A: 05365D7B12B14F6CB30D666E30BEBB16 Ref B: MNZ221060610021 Ref C: 2025-11-26T01:20:11Z'
     status:
       code: 200
       message: OK
@@ -165,7 +153,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - edge-action create
       Connection:
@@ -173,21 +161,21 @@ interactions:
       ParameterSetName:
       - -g -n --sku --location
       User-Agent:
-      - AZURECLI/2.80.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2025-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2026-10-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","attachments":null},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
+      string: '{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '344'
+      - '342'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 26 Nov 2025 01:20:13 GMT
+      - Thu, 29 Oct 2026 00:28:06 GMT
       expires:
       - '-1'
       pragma:
@@ -199,11 +187,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '24'
+      - '346'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
-      x-msedge-ref:
-      - 'Ref A: 8E064B42874C48EBAFFB44D0D06CCC8B Ref B: MNZ221060618039 Ref C: 2025-11-26T01:20:12Z'
     status:
       code: 200
       message: OK
@@ -213,7 +199,51 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Cdn/edgeActions?api-version=2026-10-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EA-demo/providers/Microsoft.Cdn/edgeActions/eapreprodtest1763081736rg1","name":"eapreprodtest1763081736rg1","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/earulespectests","name":"earulespectests","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EA-demo/providers/Microsoft.Cdn/edgeActions/demotestea","name":"demotestea","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EA-demo/providers/Microsoft.Cdn/edgeActions/testactioncli","name":"testactioncli","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltests/providers/Microsoft.Cdn/edgeActions/eaptdeploydec01","name":"eaptdeploydec01","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EA-demo/providers/Microsoft.Cdn/edgeActions/deletedebugtest1","name":"deletedebugtest1","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EA-demo/providers/Microsoft.Cdn/edgeActions/rawtest8548","name":"rawtest8548","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EA-demo/providers/Microsoft.Cdn/edgeActions/rawtest3078","name":"rawtest3078","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"staticheadermanipulation_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-PreProd/providers/Microsoft.Cdn/profiles/afd-static-ea-preprod/rulesets/staticheadermanipulationRuleSet/rules/staticheadermanipulationRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-PreProd/providers/Microsoft.Cdn/edgeActions/staticheadermanipulation","name":"staticheadermanipulation","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/afd-test-preprod/providers/Microsoft.Cdn/edgeActions/staticexecutionfilteraction","name":"staticexecutionfilteraction","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"requestrejection403_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-PreProd/providers/Microsoft.Cdn/profiles/afd-request-rejection-preprod/rulesets/requestrejection403RuleSet/rules/requestrejection403Rule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-PreProd/providers/Microsoft.Cdn/edgeActions/requestrejection403","name":"requestrejection403","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"requestrejection401_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-PreProd/providers/Microsoft.Cdn/profiles/afd-request-rejection-preprod/rulesets/requestrejection401RuleSet/rules/requestrejection401Rule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-PreProd/providers/Microsoft.Cdn/edgeActions/requestrejection401","name":"requestrejection401","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"originselectionaction_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-PreProd/providers/Microsoft.Cdn/profiles/afd-origin-selection-preprod/rulesets/originselectionactionRuleSet/rules/originselectionactionRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-PreProd/providers/Microsoft.Cdn/edgeActions/originselectionaction","name":"originselectionaction","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"requestheadermanipulation_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-PreProd/providers/Microsoft.Cdn/profiles/afd-static-ea-preprod/rulesets/requestheadermanipulationRuleSet/rules/requestheadermanipulationRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-PreProd/providers/Microsoft.Cdn/edgeActions/requestheadermanipulation","name":"requestheadermanipulation","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"servervariables_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-PreProd/providers/Microsoft.Cdn/profiles/afd-static-ea-preprod/rulesets/eaServerVariablesRuleSet/rules/eaServerVariablesRule"},{"id":"servervariables_a2","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-PreProd/providers/Microsoft.Cdn/profiles/afd-static-ea-preprod/rulesets/eaRuleSet/rules/eaRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-PreProd/providers/Microsoft.Cdn/edgeActions/servervariables","name":"servervariables","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/afd-test-preprod/providers/Microsoft.Cdn/edgeActions/eademoaction","name":"eademoaction","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/afd-test-preprod/providers/Microsoft.Cdn/edgeActions/eatestbicep5","name":"eatestbicep5","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Failed","attachments":[{"id":"urlrewrite_a2","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-Preprod/providers/Microsoft.Cdn/profiles/afd-static-ea-preprod/rulesets/urlrewriteRuleSet/rules/urlrewriteRule"},{"id":"urlrewrite_a3","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-Preprod/providers/Microsoft.Cdn/profiles/afd-urlrewrite-ppe/rulesets/urlrewriteRuleSet/rules/urlrewriteRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/afd-test-preprod/providers/Microsoft.Cdn/edgeActions/urlrewrite","name":"urlrewrite","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/afd-test-preprod/providers/Microsoft.Cdn/edgeActions/setmultiplecookies","name":"setmultiplecookies","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Failed","attachments":[{"id":"testAttachmentDelete_a2","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-Preprod/providers/Microsoft.Cdn/profiles/afd-earulecreatedup-ppe/rulesets/testRuleSet/rules/EdgeActionTestRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-Preprod/providers/Microsoft.Cdn/edgeActions/testAttachmentDelete","name":"testAttachmentDelete","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-Preprod/providers/Microsoft.Cdn/edgeActions/testcreate","name":"testcreate","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-Preprod/providers/Microsoft.Cdn/edgeActions/eaPublicPreivewTest","name":"eaPublicPreivewTest","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"testedgeaction_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/bugbash/providers/Microsoft.Cdn/profiles/testprofile/rulesets/testedgeactionRuleSet/rules/testedgeactionRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bugbash/providers/Microsoft.Cdn/edgeActions/testedgeaction","name":"testedgeaction","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ea-demo/providers/Microsoft.Cdn/edgeActions/mobileedgeactionsdemo","name":"mobileedgeactionsdemo","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ea-demo/providers/Microsoft.Cdn/edgeActions/mobiledemo","name":"mobiledemo","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ea-demo/providers/Microsoft.Cdn/edgeActions/mobiledemooriginselection","name":"mobiledemooriginselection","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ea-demo/providers/Microsoft.Cdn/edgeActions/demomobileselection","name":"demomobileselection","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ea-demo/providers/Microsoft.Cdn/edgeActions/demomobileantonzheng","name":"demomobileantonzheng","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ea-demo/providers/Microsoft.Cdn/edgeActions/dannytestdefault","name":"dannytestdefault","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/edgeactionrule","name":"edgeactionrule","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/earulenoversions","name":"earulenoversions","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eatestbicep","name":"eatestbicep","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1759246626deletenon","name":"eapreprodtest1759246626deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1759332891deletenon","name":"eapreprodtest1759332891deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1759419286deletenon","name":"eapreprodtest1759419286deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1759505781deletenon","name":"eapreprodtest1759505781deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1759764999deletenon","name":"eapreprodtest1759764999deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1759851333deletenon","name":"eapreprodtest1759851333deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1759937701deletenon","name":"eapreprodtest1759937701deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1760024004deletenon","name":"eapreprodtest1760024004deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1760110502deletenon","name":"eapreprodtest1760110502deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1760369742deletenon","name":"eapreprodtest1760369742deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1760385447deletenon","name":"eapreprodtest1760385447deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1760392415deletenon","name":"eapreprodtest1760392415deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1760401998deletenon","name":"eapreprodtest1760401998deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1760415781deletenon","name":"eapreprodtest1760415781deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1760456129deletenon","name":"eapreprodtest1760456129deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1760478086deletenon","name":"eapreprodtest1760478086deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1760512752deletenon","name":"eapreprodtest1760512752deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1760542537deletenon","name":"eapreprodtest1760542537deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1760628864deletenon","name":"eapreprodtest1760628864deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1760715281deletenon","name":"eapreprodtest1760715281deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1760974638deletenon","name":"eapreprodtest1760974638deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1761061019deletenon","name":"eapreprodtest1761061019deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-test-preprod/providers/Microsoft.Cdn/edgeActions/eapreprodtest1761147301deletenon","name":"eapreprodtest1761147301deletenon","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExecutionFilter-Tests-PreProd/providers/Microsoft.Cdn/edgeActions/eafilterspectests","name":"eafilterspectests","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExecutionFilter-Tests-PreProd/providers/Microsoft.Cdn/edgeActions/eafilterspectestscreate","name":"eafilterspectestscreate","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExecutionFilter-Tests-PreProd/providers/Microsoft.Cdn/edgeActions/eafilterspectestsupdate","name":"eafilterspectestsupdate","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExecutionFilter-Tests-PreProd/providers/Microsoft.Cdn/edgeActions/eafilterspectestsdelete","name":"eafilterspectestsdelete","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExecutionFilter-Tests-PreProd/providers/Microsoft.Cdn/edgeActions/eafilterspectestsheader","name":"eafilterspectestsheader","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExecutionFilter-Tests-PreProd/providers/Microsoft.Cdn/edgeActions/eafilterspectestsget","name":"eafilterspectestsget","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExecutionFilter-Tests-PreProd/providers/Microsoft.Cdn/edgeActions/eafilterspectestslist","name":"eafilterspectestslist","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExecutionFilter-Tests-PreProd/providers/Microsoft.Cdn/edgeActions/eafilterspectestsdup","name":"eafilterspectestsdup","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExecutionFilter-Tests-PreProd/providers/Microsoft.Cdn/edgeActions/eafilterspectestsupdatever","name":"eafilterspectestsupdatever","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testrg/providers/Microsoft.Cdn/edgeActions/eademoaction1","name":"eademoaction1","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bugbash/providers/Microsoft.Cdn/edgeActions/MyTestEdgeAction","name":"MyTestEdgeAction","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bugbash/providers/Microsoft.Cdn/edgeActions/testnewclusters","name":"testnewclusters","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-Preprod/providers/Microsoft.Cdn/edgeActions/responseheaderdelete","name":"responseheaderdelete","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1783107906swap","name":"eapreprodtest1783107906swap","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1783110074zipcode","name":"eapreprodtest1783110074zipcode","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1783112190filecode","name":"eapreprodtest1783112190filecode","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1783114355defcode","name":"eapreprodtest1783114355defcode","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1783365125getcode","name":"eapreprodtest1783365125getcode","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1783367258swap","name":"eapreprodtest1783367258swap","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1783369412zipcode","name":"eapreprodtest1783369412zipcode","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1783371530filecode","name":"eapreprodtest1783371530filecode","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1783373692defcode","name":"eapreprodtest1783373692defcode","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-Preprod/providers/Microsoft.Cdn/edgeActions/responsemetadatatest","name":"responsemetadatatest","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"easwapversionea2_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ea-swap-version-rg/providers/Microsoft.Cdn/profiles/ea-swap-version-afd-ppe/rulesets/AFDEdgeActionDefaultRuleSet/rules/AFDEdgeActionDefaultRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ea-swap-version-rg/providers/Microsoft.Cdn/edgeActions/easwapversionea2","name":"easwapversionea2","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"easwapversionea3_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ea-swap-version-rg/providers/Microsoft.Cdn/profiles/ea-swap-version-afd2-ppe/rulesets/AFDEdgeActionDefaultRuleSet/rules/AFDEdgeActionDefaultRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ea-swap-version-rg/providers/Microsoft.Cdn/edgeActions/easwapversionea3","name":"easwapversionea3","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"easwapversionea4_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/bugbash/providers/Microsoft.Cdn/profiles/testprofile-3/rulesets/AFDEdgeActionDefaultRuleSet/rules/AFDEdgeActionDefaultRule"},{"id":"easwapversionea4_a2","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/bugbash/providers/Microsoft.Cdn/profiles/test-disablement/rulesets/AFDEdgeActionDefaultRuleSet000/rules/AFDEdgeActionDefaultRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ea-swap-version-rg/providers/Microsoft.Cdn/edgeActions/easwapversionea4","name":"easwapversionea4","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"easwapversionea5_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ea-swap-version-rg/providers/Microsoft.Cdn/profiles/ea-swap-version-afd3-ppe/rulesets/AFDEdgeActionDefaultRuleSet/rules/AFDEdgeActionDefaultRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ea-swap-version-rg/providers/Microsoft.Cdn/edgeActions/easwapversionea5","name":"easwapversionea5","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1785526878swap","name":"eapreprodtest1785526878swap","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1785760490swap","name":"eapreprodtest1785760490swap","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1785762964filecode","name":"eapreprodtest1785762964filecode","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1785775759getcode","name":"eapreprodtest1785775759getcode","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1785777894swap","name":"eapreprodtest1785777894swap","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eaversionswapspectests","name":"eaversionswapspectests","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"responsemetadataset_a2","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-Preprod/providers/Microsoft.Cdn/profiles/afd-resp-metadata-functional-prep/rulesets/AFDEdgeActionDefaultRuleSet/rules/AFDEdgeActionDefaultRule"},{"id":"responsemetadataset_a2","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-Preprod/providers/Microsoft.Cdn/profiles/afd-ea-response-metadata-ppe/rulesets/AFDEdgeActionDefaultRuleSet/rules/AFDEdgeActionDefaultRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-Preprod/providers/Microsoft.Cdn/edgeActions/responsemetadataset","name":"responsemetadataset","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"clientresponsemutation_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-Preprod/providers/Microsoft.Cdn/profiles/afd-resp-mutation-e2e-preprod/rulesets/AFDEdgeActionDefaultRuleSet001/rules/AFDEdgeActionDefaultRule"},{"id":"clientResponseMutation_a2","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-Preprod/providers/Microsoft.Cdn/profiles/afd-e2e-client-response-mutation-ppe/rulesets/clientResponseMutationRuleSet/rules/clientResponseMutationRule"},{"id":"clientResponseMutation_a3","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-Preprod/providers/Microsoft.Cdn/profiles/afd-client-response-mutation-ppe/rulesets/responseMutationRuleSet/rules/responseMutationRuleSet"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-Preprod/providers/Microsoft.Cdn/edgeActions/clientResponseMutation","name":"clientResponseMutation","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1787280700defcode","name":"eapreprodtest1787280700defcode","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1787348196defcode","name":"eapreprodtest1787348196defcode","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1787775738filecode","name":"eapreprodtest1787775738filecode","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1787777876defcode","name":"eapreprodtest1787777876defcode","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bugbash/providers/Microsoft.Cdn/edgeActions/jeanbugbashpreprodea","name":"jeanbugbashpreprodea","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-PreProd/providers/Microsoft.Cdn/edgeActions/responsemetadata","name":"responsemetadata","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1788196799defcode","name":"eapreprodtest1788196799defcode","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"urlrewriteaction_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-PreProd/providers/Microsoft.Cdn/profiles/afd-static-ea-preprod/rulesets/urlrewriteRuleSet/rules/urlrewriteRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-PreProd/providers/Microsoft.Cdn/edgeActions/urlrewriteaction","name":"urlrewriteaction","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"responseinvocationaction_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-PreProd/providers/Microsoft.Cdn/profiles/afd-ea-preprod-response-invocation-test/rulesets/responseinvocationRuleSet/rules/responseinvocationRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-PreProd/providers/Microsoft.Cdn/edgeActions/responseinvocationaction","name":"responseinvocationaction","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"jeantestruleissueppeea_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/testrg/providers/Microsoft.Cdn/profiles/jeantest-ruleissue-ppe-afd/rulesets/AFDEdgeActionDefaultRuleSet/rules/AFDEdgeActionDefaultRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testrg/providers/Microsoft.Cdn/edgeActions/jeantestruleissueppeea","name":"jeantestruleissueppeea","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"testfib_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/antontest/providers/Microsoft.Cdn/profiles/testhttpbin/rulesets/AFDEdgeActionDefaultRuleSet/rules/AFDEdgeActionDefaultRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/antontest/providers/Microsoft.Cdn/edgeActions/testfib","name":"testfib","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EA-demo/providers/Microsoft.Cdn/edgeActions/testportaldevexp","name":"testportaldevexp","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jeantest/providers/Microsoft.Cdn/edgeActions/jeantestea1","name":"jeantestea1","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jeantest/providers/Microsoft.Cdn/edgeActions/jeantestea2","name":"jeantestea2","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jeantest/providers/Microsoft.Cdn/edgeActions/jeantestea3","name":"jeantestea3","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"headerSemantics_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AFD-Test-Preprod/providers/Microsoft.Cdn/profiles/afd-e2e-header-semantics-ppe/rulesets/AFDEdgeActionDefaultRuleSet/rules/AFDEdgeActionDefaultRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AFD-Test-Preprod/providers/Microsoft.Cdn/edgeActions/headerSemantics","name":"headerSemantics","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltests/providers/Microsoft.Cdn/edgeActions/eaupdfilterdec02","name":"eaupdfilterdec02","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/powershelltests/providers/Microsoft.Cdn/edgeActions/eaupdateverdec01","name":"eaupdateverdec01","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-RPTests-Preprod/providers/Microsoft.Cdn/edgeActions/earulenoversions","name":"earulenoversions","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/edgeActions/responsemetadata","name":"responsemetadata","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"originselectionaction_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/profiles/ea-ct-afd-origin-selection-preprod/rulesets/originselectionactionRuleSet/rules/originselectionactionRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/edgeActions/originselectionaction","name":"originselectionaction","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"clientResponseMutation_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/profiles/ea-ct-afd-response-mutation-preprod/rulesets/responseMutationRuleSet/rules/responseMutationRuleSet"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/edgeActions/clientResponseMutation","name":"clientResponseMutation","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"servervariables_a2","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/profiles/ea-ct-afd-static-preprod/rulesets/servervariablesRuleSet/rules/servervariablesRule"},{"id":"servervariables_a2","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/profiles/ea-ct-afd-static-preprod/rulesets/eaServerVariablesRuleSet/rules/eaRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/edgeActions/servervariables","name":"servervariables","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"staticheadermanipulation_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/profiles/ea-ct-afd-static-preprod/rulesets/staticheadermanipulationRuleSet/rules/staticheadermanipulationRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/edgeActions/staticheadermanipulation","name":"staticheadermanipulation","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"requestheadermanipulation_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/profiles/ea-ct-afd-static-preprod/rulesets/requestheadermanipulationRuleSet/rules/requestheadermanipulationRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/edgeActions/requestheadermanipulation","name":"requestheadermanipulation","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"responsemetadataset_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/profiles/ea-ct-afd-response-metadata-preprod/rulesets/AFDEdgeActionDefaultRuleSet/rules/AFDEdgeActionDefaultRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/edgeActions/responsemetadataset","name":"responsemetadataset","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"requestrejection403_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/profiles/ea-ct-afd-request-rejection-preprod/rulesets/requestrejection403RuleSet/rules/requestrejection403Rule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/edgeActions/requestrejection403","name":"requestrejection403","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"urlrewrite_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/profiles/ea-ct-afd-url-rewrite-preprod/rulesets/urlrewriteRuleSet/rules/urlrewriteRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/edgeActions/urlrewrite","name":"urlrewrite","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"responseinvocationaction_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/profiles/ea-ct-afd-response-invocation-preprod/rulesets/responseinvocationRuleSet/rules/responseinvocationRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/edgeActions/responseinvocationaction","name":"responseinvocationaction","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-RPTests-Preprod/providers/Microsoft.Cdn/edgeActions/earulespectests","name":"earulespectests","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-RPTests-Preprod/providers/Microsoft.Cdn/edgeActions/eaversionswapspectests","name":"eaversionswapspectests","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-ExecutionFilterTests-Preprod/providers/Microsoft.Cdn/edgeActions/eafilterspectestsheader","name":"eafilterspectestsheader","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-ExecutionFilterTests-Preprod/providers/Microsoft.Cdn/edgeActions/eafilterspectestsupdatever","name":"eafilterspectestsupdatever","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-ExecutionFilterTests-Preprod/providers/Microsoft.Cdn/edgeActions/eafilterspectestsupdate","name":"eafilterspectestsupdate","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-ExecutionFilterTests-Preprod/providers/Microsoft.Cdn/edgeActions/eafilterspectestscreate","name":"eafilterspectestscreate","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-ExecutionFilterTests-Preprod/providers/Microsoft.Cdn/edgeActions/eafilterspectestsget","name":"eafilterspectestsget","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-ExecutionFilterTests-Preprod/providers/Microsoft.Cdn/edgeActions/eafilterspectestslist","name":"eafilterspectestslist","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-ExecutionFilterTests-Preprod/providers/Microsoft.Cdn/edgeActions/eafilterspectestsdelete","name":"eafilterspectestsdelete","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-ExecutionFilterTests-Preprod/providers/Microsoft.Cdn/edgeActions/eafilterspectests","name":"eafilterspectests","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-ExecutionFilterTests-Preprod/providers/Microsoft.Cdn/edgeActions/eafilterspectestsdup","name":"eafilterspectestsdup","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"requestrejection401_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/profiles/ea-ct-afd-request-rejection-preprod/rulesets/requestrejection401RuleSet/rules/requestrejection401Rule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/edgeActions/requestrejection401","name":"requestrejection401","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[{"id":"urlrewriteaction_a1","attachedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/profiles/ea-ct-afd-static-preprod/rulesets/urlrewriteRuleSet/rules/urlrewriteRule"}]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-CloudTest-Resources-DPTests-Preprod/providers/Microsoft.Cdn/edgeActions/urlrewriteaction","name":"urlrewriteaction","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{"purpose":"java-sdk-test"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/javasdk-edgeaction-tests-rg/providers/Microsoft.Cdn/edgeActions/javaea16896d4f4e5","name":"javaea16896d4f4e5","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{"purpose":"java-sdk-test"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/javasdk-edgeaction-tests-rg/providers/Microsoft.Cdn/edgeActions/javaea14749d198d1","name":"javaea14749d198d1","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/EdgeActions-Test-PreProd/providers/Microsoft.Cdn/edgeActions/eapreprodtest1792426467701a8acblist","name":"eapreprodtest1792426467701a8acblist","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{"purpose":"java-sdk-test"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/javasdk-edgeaction-tests-rg/providers/Microsoft.Cdn/edgeActions/javaea03118e4a0df","name":"javaea03118e4a0df","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{"purpose":"java-sdk-test"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/javasdk-edgeaction-tests-rg/providers/Microsoft.Cdn/edgeActions/javaea5448387fffb","name":"javaea5448387fffb","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/edgeactions-sdk-apps-rg/providers/Microsoft.Cdn/edgeActions/eanoupload1792808557","name":"eanoupload1792808557","type":"Microsoft.Cdn/EdgeActions"},{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '61165'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 29 Oct 2026 00:28:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '11510'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16500'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
       CommandName:
       - edge-action show
       Connection:
@@ -221,21 +251,21 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.80.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2025-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2026-10-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","attachments":null},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
+      string: '{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '344'
+      - '342'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 26 Nov 2025 01:20:15 GMT
+      - Thu, 29 Oct 2026 00:28:23 GMT
       expires:
       - '-1'
       pragma:
@@ -247,11 +277,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '17'
+      - '344'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
-      x-msedge-ref:
-      - 'Ref A: 179DBEF204AB4CA0B3E9ABC9790C1CFB Ref B: MNZ221060619025 Ref C: 2025-11-26T01:20:15Z'
     status:
       code: 200
       message: OK
@@ -261,7 +289,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - edge-action list
       Connection:
@@ -269,12 +297,206 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.80.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions?api-version=2025-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions?api-version=2026-10-01
   response:
     body:
-      string: '{"value":[{"properties":{"provisioningState":"Succeeded","attachments":null},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}]}'
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '354'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 29 Oct 2026 00:28:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '221'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --tags
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2026-10-01
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '342'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 29 Oct 2026 00:28:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '363'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location":"global","properties":{},"sku":{"name":"Standard","tier":"Standard"},"tags":{"test":"value"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '105'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --sku --tags
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2026-10-01
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{"test":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitests000001/providers/Microsoft.Cdn/edgeactionoperations/e2c620ec-e996-49bb-8d16-b31ff0e6e477?api-version=2026-10-01&t=Sanitized_26c1796a06ef0158&c=Sanitized_b1ef672c9884996c&s=Sanitized_1a85c5cbd1476b12&h=Sanitized_578bcfe04af52e31
+      cache-control:
+      - no-cache
+      content-length:
+      - '356'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 29 Oct 2026 00:28:29 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2026-10-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '1024'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --tags
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitests000001/providers/Microsoft.Cdn/edgeactionoperations/e2c620ec-e996-49bb-8d16-b31ff0e6e477?api-version=2026-10-01&t=Sanitized_26c1796a06ef0158&c=Sanitized_b1ef672c9884996c&s=Sanitized_1a85c5cbd1476b12&h=Sanitized_578bcfe04af52e31
+  response:
+    body:
+      string: '{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActionOperations/e2c620ec-e996-49bb-8d16-b31ff0e6e477","operationId":"e2c620ec-e996-49bb-8d16-b31ff0e6e477","status":"Succeeded","operationType":"create","startTime":"2026-10-29T00:28:29.0569221+00:00","endTime":"2026-10-29T00:28:29.7550907+00:00","error":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '386'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 29 Oct 2026 00:28:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '141'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --tags
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2026-10-01
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{"test":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
     headers:
       cache-control:
       - no-cache
@@ -283,7 +505,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 26 Nov 2025 01:20:16 GMT
+      - Thu, 29 Oct 2026 00:28:33 GMT
       expires:
       - '-1'
       pragma:
@@ -295,13 +517,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '220'
-      x-ms-original-request-ids:
-      - ''
+      - '1224'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
-      x-msedge-ref:
-      - 'Ref A: C4883B2EB0774FAFB86FA3A2F5BA608B Ref B: MNZ221060610029 Ref C: 2025-11-26T01:20:16Z'
     status:
       code: 200
       message: OK
@@ -311,29 +529,29 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
-      - edge-action update
+      - edge-action show
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --tags
+      - -g -n
       User-Agent:
-      - AZURECLI/2.80.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2025-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2026-10-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","attachments":null},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
+      string: '{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{"test":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '344'
+      - '356'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 26 Nov 2025 01:20:17 GMT
+      - Thu, 29 Oct 2026 00:28:36 GMT
       expires:
       - '-1'
       pragma:
@@ -345,54 +563,97 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '35'
+      - '346'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
-      x-msedge-ref:
-      - 'Ref A: 659568A96AD84760ABA2705B30559E25 Ref B: MNZ221060610047 Ref C: 2025-11-26T01:20:17Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "global", "properties": {}, "sku": {"name": "Standard", "tier":
-      "Standard"}, "tags": {"test": "value"}}'
+    body: null
     headers:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --tags
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2026-10-01
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{"test":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '356'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 29 Oct 2026 00:28:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '345'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location":"global","properties":{},"sku":{"name":"Standard","tier":"Standard"},"tags":{}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
       CommandName:
       - edge-action update
       Connection:
       - keep-alive
       Content-Length:
-      - '116'
+      - '91'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -n --tags
+      - -g -n --sku --tags
       User-Agent:
-      - AZURECLI/2.80.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2025-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2026-10-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","attachments":null},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{"test":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
+      string: '{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitests000001/providers/Microsoft.Cdn/edgeactionoperations/11a52256-dc94-4f1a-adfb-bbc36bbda9ea?api-version=2025-09-01-preview&t=638997168193140940&c=MIIHhzCCBm-gAwIBAgITfAla5jyv8QRP_5ow7AAACVrmPDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUxMDIwMDQzNjIzWhcNMjYwNDE4MDQzNjIzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMddVfpiBdDmUhIBJwKZ3KQON7oBNDWmOOmY4g1ElyXgEkjon3Gv6o2iUWBTlxPP_EZQJhupEuO2DlNcI72qn4SyWwWct2tCEYRZJerV4rv1id9sCDj3fEamCo4QEH3xMKcGXqtPe3f3eb4VUSK8a2gJFqPiH-B-2oetOTm_-t1_J9TkLUFEUdYIHsylTl0OH2FEQVYAAgRXhe4lJ-WGzZ1ffooW6zFScKcbHC-ij1AA2xiuPbLogZIDjkgpOYoQbn9dJCcXDjro2GtBWEIEIaRIheA5TONmvBvNjwgvM95OihgVouEt3T1X5Jz2jgZVe8XVf5WuHz-a-o1TsKrZzcECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSklsMGrs_eAsv_RTi_q4qgDc9qNDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJ51PdAaul136rrBMSwKBqaPsalRACK88HnU3-MuFwPY3EKcBNfr_DcyIemG6qcdAt6oBTDGXSVm8qGYJ2eHSVBH91yTQvJd5-a7_b9xta0wy4EJYoK-Olj6bE5ygF6klhRzpEyjfq2vFjpc2SF6xPxtXMaj4I7ACMq2QHy3CO_thX0U9_MhBYBb-v3ICmOFIZIBb4wOpeX0BsfrYbqwos0TpMW5k0T0RtCs4mpGUt-7YgEXCPIwlt7JN4fLqGTiEElAPaYcSl4-0aYA_RVN98y83vlGlM0kIjglh8_t1QOAUw0jy8LA4CNtMdgL_ncOt66gFr9ocwuFusQMx11WpTM&s=bNjlG6b6d1iD_E93k6yL1VuPkyT9WhK_IBtM-qq4ziU9ay1rxG05FygwDq5Dk33MHK7eOr5cwKPmfiDjO4WAtr0UEADDjftWTjI0s2ty_Tg0pemQo6Kb33NwC_wdcW_HHshQgG9xvTT2A0WPlm9ui5bnBzlRAE6J6JVjd8u093mspseDNmUswVZ26tn9mbDk7gpXaecLq9OjbCJrxgF-6_0vC0c_VmKDeBvK_TXuw9H4LKhw8e3deqyqQ8at0QLfrBooDz3zjW5FI91e1vsKY6ygSSpGfRVp3Z3Oba-G5HTPMVblZbGiZJzAdUdkA22h2QkKQKtDevEnYxMOZi-6sw&h=9-BnxG9jRv9TP6gax067jBo8mWDPwpdqof6omjaWHc4
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitests000001/providers/Microsoft.Cdn/edgeactionoperations/64f953a8-6a97-468e-b2b1-dcc4786005a6?api-version=2026-10-01&t=Sanitized_bee8909f53cd38e8&c=Sanitized_b1ef672c9884996c&s=Sanitized_c47c5f2e052773e8&h=Sanitized_4cb55fe0396ee17f
       cache-control:
       - no-cache
       content-length:
-      - '358'
+      - '342'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 26 Nov 2025 01:20:19 GMT
+      - Thu, 29 Oct 2026 00:28:40 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2025-09-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2026-10-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -402,38 +663,34 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '46'
-      x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=57b9b506-b455-490e-9b53-6e632ea5b44c/westus/b00c843e-ad70-49f1-8d42-2d7f721b08a1
+      - '1018'
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
-      x-msedge-ref:
-      - 'Ref A: 8EED485289FB44C69DE4D5E3DE71C22C Ref B: MNZ221060619009 Ref C: 2025-11-26T01:20:17Z'
     status:
-      code: 201
-      message: Created
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - edge-action update
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --tags
+      - -g -n --sku --tags
       User-Agent:
-      - AZURECLI/2.80.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitests000001/providers/Microsoft.Cdn/edgeactionoperations/11a52256-dc94-4f1a-adfb-bbc36bbda9ea?api-version=2025-09-01-preview&t=638997168193140940&c=MIIHhzCCBm-gAwIBAgITfAla5jyv8QRP_5ow7AAACVrmPDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUxMDIwMDQzNjIzWhcNMjYwNDE4MDQzNjIzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMddVfpiBdDmUhIBJwKZ3KQON7oBNDWmOOmY4g1ElyXgEkjon3Gv6o2iUWBTlxPP_EZQJhupEuO2DlNcI72qn4SyWwWct2tCEYRZJerV4rv1id9sCDj3fEamCo4QEH3xMKcGXqtPe3f3eb4VUSK8a2gJFqPiH-B-2oetOTm_-t1_J9TkLUFEUdYIHsylTl0OH2FEQVYAAgRXhe4lJ-WGzZ1ffooW6zFScKcbHC-ij1AA2xiuPbLogZIDjkgpOYoQbn9dJCcXDjro2GtBWEIEIaRIheA5TONmvBvNjwgvM95OihgVouEt3T1X5Jz2jgZVe8XVf5WuHz-a-o1TsKrZzcECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSklsMGrs_eAsv_RTi_q4qgDc9qNDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJ51PdAaul136rrBMSwKBqaPsalRACK88HnU3-MuFwPY3EKcBNfr_DcyIemG6qcdAt6oBTDGXSVm8qGYJ2eHSVBH91yTQvJd5-a7_b9xta0wy4EJYoK-Olj6bE5ygF6klhRzpEyjfq2vFjpc2SF6xPxtXMaj4I7ACMq2QHy3CO_thX0U9_MhBYBb-v3ICmOFIZIBb4wOpeX0BsfrYbqwos0TpMW5k0T0RtCs4mpGUt-7YgEXCPIwlt7JN4fLqGTiEElAPaYcSl4-0aYA_RVN98y83vlGlM0kIjglh8_t1QOAUw0jy8LA4CNtMdgL_ncOt66gFr9ocwuFusQMx11WpTM&s=bNjlG6b6d1iD_E93k6yL1VuPkyT9WhK_IBtM-qq4ziU9ay1rxG05FygwDq5Dk33MHK7eOr5cwKPmfiDjO4WAtr0UEADDjftWTjI0s2ty_Tg0pemQo6Kb33NwC_wdcW_HHshQgG9xvTT2A0WPlm9ui5bnBzlRAE6J6JVjd8u093mspseDNmUswVZ26tn9mbDk7gpXaecLq9OjbCJrxgF-6_0vC0c_VmKDeBvK_TXuw9H4LKhw8e3deqyqQ8at0QLfrBooDz3zjW5FI91e1vsKY6ygSSpGfRVp3Z3Oba-G5HTPMVblZbGiZJzAdUdkA22h2QkKQKtDevEnYxMOZi-6sw&h=9-BnxG9jRv9TP6gax067jBo8mWDPwpdqof6omjaWHc4
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitests000001/providers/Microsoft.Cdn/edgeactionoperations/64f953a8-6a97-468e-b2b1-dcc4786005a6?api-version=2026-10-01&t=Sanitized_bee8909f53cd38e8&c=Sanitized_b1ef672c9884996c&s=Sanitized_c47c5f2e052773e8&h=Sanitized_4cb55fe0396ee17f
   response:
     body:
-      string: '{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActionOperations/11a52256-dc94-4f1a-adfb-bbc36bbda9ea","operationId":"11a52256-dc94-4f1a-adfb-bbc36bbda9ea","status":"Succeeded","operationType":"create","startTime":"2025-11-26T01:20:18.7803161+00:00","endTime":"2025-11-26T01:20:18.8052387+00:00","error":null}'
+      string: '{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActionOperations/64f953a8-6a97-468e-b2b1-dcc4786005a6","operationId":"64f953a8-6a97-468e-b2b1-dcc4786005a6","status":"Succeeded","operationType":"create","startTime":"2026-10-29T00:28:40.1628228+00:00","endTime":"2026-10-29T00:28:40.8698152+00:00","error":null}'
     headers:
       cache-control:
       - no-cache
@@ -442,7 +699,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 26 Nov 2025 01:20:19 GMT
+      - Thu, 29 Oct 2026 00:28:41 GMT
       expires:
       - '-1'
       pragma:
@@ -454,13 +711,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '12'
-      x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=57b9b506-b455-490e-9b53-6e632ea5b44c/eastus/57ec1973-b3fb-4ebb-b7a7-d37258d91d1e
+      - '141'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
-      x-msedge-ref:
-      - 'Ref A: BE6BE9BB54BA470C8D2C8BC30414BD84 Ref B: MNZ221060609045 Ref C: 2025-11-26T01:20:19Z'
     status:
       code: 200
       message: OK
@@ -470,29 +723,29 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - edge-action update
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --tags
+      - -g -n --sku --tags
       User-Agent:
-      - AZURECLI/2.80.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2025-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2026-10-01
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","attachments":null},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
+      string: '{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '344'
+      - '342'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 26 Nov 2025 01:20:19 GMT
+      - Thu, 29 Oct 2026 00:28:43 GMT
       expires:
       - '-1'
       pragma:
@@ -504,11 +757,55 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '17'
+      - '365'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
-      x-msedge-ref:
-      - 'Ref A: 8F8BFA8B8EAB4C7CA41C3A774C6DBE7D Ref B: MNZ221060619045 Ref C: 2025-11-26T01:20:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - edge-action show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2026-10-01
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","attachments":[]},"sku":{"name":"Standard","tier":"Standard"},"location":"global","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002","name":"edgeaction000002","type":"Microsoft.Cdn/EdgeActions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '342'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 29 Oct 2026 00:28:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '1049'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
     status:
       code: 200
       message: OK
@@ -518,7 +815,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - edge-action delete
       Connection:
@@ -528,9 +825,9 @@ interactions:
       ParameterSetName:
       - -g -n -y
       User-Agent:
-      - AZURECLI/2.80.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2025-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions/edgeaction000002?api-version=2026-10-01
   response:
     body:
       string: ''
@@ -540,7 +837,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 26 Nov 2025 01:20:21 GMT
+      - Thu, 29 Oct 2026 00:29:30 GMT
       expires:
       - '-1'
       pragma:
@@ -552,15 +849,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '46'
-      x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=57b9b506-b455-490e-9b53-6e632ea5b44c/westus/9a8ae485-731c-464a-a83f-2584fe2aeea0
+      - '2138'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '799'
+      - '800'
       x-ms-ratelimit-remaining-subscription-global-deletes:
-      - '11999'
-      x-msedge-ref:
-      - 'Ref A: 9C7E2542996545B78EA6B8899EB9E397 Ref B: MNZ221060609049 Ref C: 2025-11-26T01:20:20Z'
+      - '12000'
     status:
       code: 200
       message: OK
@@ -570,7 +863,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - edge-action list
       Connection:
@@ -578,9 +871,9 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.80.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.14.5 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions?api-version=2025-09-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitests000001/providers/Microsoft.Cdn/edgeActions?api-version=2026-10-01
   response:
     body:
       string: '{"value":[]}'
@@ -592,7 +885,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 26 Nov 2025 01:20:24 GMT
+      - Thu, 29 Oct 2026 00:29:33 GMT
       expires:
       - '-1'
       pragma:
@@ -604,13 +897,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '169'
-      x-ms-original-request-ids:
-      - ''
+      - '143'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
-      x-msedge-ref:
-      - 'Ref A: 5F515028D1B54678B01C3CB84D910361 Ref B: MNZ221060608029 Ref C: 2025-11-26T01:20:22Z'
     status:
       code: 200
       message: OK

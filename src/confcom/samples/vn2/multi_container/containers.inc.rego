@@ -161,7 +161,11 @@
       }
     ],
     "working_dir": "/",
-    "command": []
+    "command": [],
+    "signals": [
+      9,
+      15
+    ]
   },
   {
     "id": "mcr.microsoft.com/azurelinux/distroless/base@sha256:1e77d97e1e39f22ed9c52f49b3508b4c1044cec23743df9098ac44e025f654f2",
@@ -324,6 +328,10 @@
       "/bin/sh",
       "-c",
       "echo worker"
+    ],
+    "signals": [
+      9,
+      15
     ]
   }
 ]

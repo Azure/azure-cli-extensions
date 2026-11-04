@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "datadog sso-config create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Sets up Single Sign-On (SSO) for your Datadog monitor resource, allowing users to log in to Datadog using their Azure Active Directory credentials for streamlined and secure access.
@@ -22,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-06-11",
+        "version": "2025-12-26-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/singlesignonconfigurations/{}", "2025-06-11"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/singlesignonconfigurations/{}", "2025-12-26-preview"],
         ]
     }
 
@@ -165,7 +166,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-11",
+                    "api-version", "2025-12-26-preview",
                     required=True,
                 ),
             }

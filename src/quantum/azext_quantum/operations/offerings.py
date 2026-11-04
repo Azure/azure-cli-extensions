@@ -33,8 +33,15 @@ def _get_publisher_and_offer_from_provider_id(providers, provider_id):
     offer_id = None
     for p in providers:
         if p.id.lower() == provider_id.lower():
-            offer_id = p.properties.managed_application.offer_id
-            publisher_id = p.properties.managed_application.publisher_id
+            managed_application = p.properties.managed_application
+            if managed_application is None:
+                # V2-only providers have no legacy marketplace ManagedApplication association;
+                # treat the same as the existing "N/A" sentinel instead of raising.
+                publisher_id = PUBLISHER_NOT_AVAILABLE
+                offer_id = OFFER_NOT_AVAILABLE
+            else:
+                offer_id = managed_application.offer_id
+                publisher_id = managed_application.publisher_id
             break
     return (publisher_id, offer_id)
 

@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "workload-orchestration config-template hierarchy",
+    "workload-orchestration-preview config-template hierarchy",
 )
 class __CMDGroup(AAZCommandGroup):
-    """workload-orchestration config-template hierarchy helps to manage config template hierarchies
+    """workload-orchestration-preview config-template hierarchy helps to manage config template hierarchies
     """
     pass
 

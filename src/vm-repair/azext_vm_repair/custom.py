@@ -4,26 +4,53 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except, too-many-branches
+import enum
 import json
+import os
+import re
+import shlex
 import timeit
 import traceback
+from urllib.parse import unquote
 import requests
 
 from knack.log import get_logger
 
-from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
+from azure.cli.command_modules.vm.custom import get_vm_by_aaz, _is_linux_os_aaz
+from azure.cli.command_modules.vm.operations.vm import VMUpdate
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
+from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.commands import LongRunningOperation
+from azure.core.exceptions import HttpResponseError
 from azure.mgmt.core.tools import parse_resource_id
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
 
 from .command_helper_class import command_helper
+from .vm_creation import create_repair_vm as _create_vm_by_core
+from .storage_utils import (
+    create_unmanaged_blob_snapshot,
+    get_unmanaged_blob_client,
+    get_unmanaged_blob_copy_status,
+    get_unmanaged_blob_service_client,
+    start_unmanaged_blob_copy,
+)
 from .repair_utils import (
     _uses_managed_disk,
+    _attach_unmanaged_disk_by_aaz,
+    _detach_unmanaged_disk_by_aaz,
     _call_az_command,
+    _legacy_value,
+    _validate_legacy_values,
+    _validate_command_values,
+    _validate_command_token,
     _clean_up_resources,
     _fetch_compatible_sku,
+    _fetch_source_disk_controller_type,
+    _fetch_sku_disk_controller_types,
+    _select_repair_disk_controller_type,
     _list_resource_ids_in_rg,
     _get_repair_resource_tag,
+    _validate_tags_for_command,
     _fetch_compatible_windows_os_urn,
     _fetch_matching_windows_os_urn,
     _fetch_run_script_map,
@@ -39,6 +66,8 @@ from .repair_utils import (
     _check_linux_hyperV_gen,
     _select_distro_linux_gen2,
     _set_repair_map_url,
+    REPAIR_LIBRARY_FORK,
+    REPAIR_LIBRARY_BRANCH,
     _is_gen2,
     _unlock_encrypted_vm_run,
     _create_repair_vm,
@@ -53,8 +82,98 @@ from .repair_utils import (
 
 logger = get_logger(__name__)
 
+PREVIEW_URL_ERROR = ("Invalid preview url. Write full URL of map.json file. "
+                     "example https://github.com/{user}/repair-script-library/blob/main/map.json. "
+                     "The branch name must be a single path segment.")
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None, tags=None, copy_tags=False, size=None, yes=False):
+# The driver downloads from https://github.com/<fork>/repair-script-library/tarball/<branch>/,
+# so the repository name and a single-segment branch are both part of the contract.
+PREVIEW_URL_PATTERN = re.compile(
+    r'^https://github\.com/(?P<fork>[^/]+)/repair-script-library/(?:blob|tree)/(?P<branch>[^/]+)/map\.json$')
+
+
+def _parse_preview_url(preview):
+    """Extract the fork and branch from a preview map.json URL.
+
+    The URL is read positionally, so a branch name containing a slash shifts the fork to the
+    repository name and resolves to an entirely different GitHub organization. Reject anything
+    that does not match the documented shape rather than downloading scripts from a repository
+    the caller never named.
+    """
+    match = PREVIEW_URL_PATTERN.match(str(preview).strip())
+    if not match:
+        raise InvalidArgumentValueError(PREVIEW_URL_ERROR)
+    return match.group('fork'), match.group('branch')
+
+
+def _build_repo_params(preview, is_linux):
+    """Build the run-command parameters telling the run driver which script library to download.
+
+    The Linux driver receives parameters positionally, so the fork and branch are always sent for
+    Linux. Omitting them there would both shift the positions of the script parameters that follow
+    and leave the driver downloading the default library while the run id resolved from a fork.
+    """
+    fork_name = REPAIR_LIBRARY_FORK
+    branch_name = REPAIR_LIBRARY_BRANCH
+
+    if preview:
+        fork_name, branch_name = _parse_preview_url(preview)
+    elif not is_linux:
+        # The Windows driver declares these as named parameters with the same defaults.
+        return []
+
+    return ['repo_fork="{}"'.format(fork_name), 'repo_branch="{}"'.format(branch_name)]
+
+
+def _set_source_resource_context(command, source_vm, source_vm_instance_view=None, disk_controller_type=None):
+    """Populate telemetry-only resource shape without allowing enrichment to fail a command."""
+    source_controller = disk_controller_type
+    if source_controller is None:
+        try:
+            # Shared helper falls back to an ARM query when the SDK does not model the field.
+            source_controller = _fetch_source_disk_controller_type(source_vm)
+        except Exception as exception:
+            logger.debug('Could not determine source VM disk controller type for telemetry: %s', exception)
+
+    hyperv_generation = None
+    if source_vm_instance_view:
+        try:
+            hyperv_generation = 'V{}'.format(_is_gen2(source_vm_instance_view))
+        except (AttributeError, TypeError, ValueError) as exception:
+            logger.debug('Could not determine source VM Hyper-V generation for telemetry: %s', exception)
+
+    if hasattr(command, 'set_resource_context'):
+        command.set_resource_context(
+            os_family='linux' if _is_linux_os_aaz(source_vm) else 'windows',
+            vm_size=source_vm.get('hardwareProfile', {}).get('vmSize'),
+            disk_controller_type=source_controller,
+            hyperv_generation=hyperv_generation)
+    return source_controller
+
+
+def _enrich_source_resource_context(command, cmd, source_vm, resource_group_name, vm_name):
+    """Add instance-view telemetry when available without changing command success or failure."""
+    try:
+        source_vm_instance_view = get_vm_by_aaz(cmd, resource_group_name, vm_name, 'instanceView')
+    except Exception as exception:
+        logger.debug('Could not fetch source VM instance view for telemetry: %s', exception)
+        source_vm_instance_view = None
+    _set_source_resource_context(command, source_vm, source_vm_instance_view)
+
+
+def _enrich_repair_controller_context(command, cmd, resource_group_name, vm_name):
+    """Add the actual repair VM controller when available without changing command behavior."""
+    if not hasattr(command, 'set_resource_context'):
+        return
+    try:
+        repair_vm = get_vm_by_aaz(cmd, resource_group_name, vm_name)
+        repair_controller = _fetch_source_disk_controller_type(repair_vm)
+        command.set_resource_context(repair_vm_disk_controller_type=repair_controller)
+    except Exception as exception:
+        logger.debug('Could not fetch repair VM disk controller type for telemetry: %s', exception)
+
+
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', encrypt_recovery_key="", disable_trusted_launch=False, os_disk_type=None, tags=None, copy_tags=False, size=None, disk_controller_type=None, yes=False):
     """
     This function creates a repair VM.
 
@@ -77,6 +196,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     - tags: Tags to apply to the repair VM. Should be a dictionary or a string in key[=value] format.
     - copy_tags: If True, tags will be copied from the source VM to the repair VM. Default is False.
     - size: The size of the repair VM. If not provided, the size of the broken vm will be used.
+    - disk_controller_type: Optional SCSI or NVMe override for the repair VM disk controller.
     """
 
     # Logging all the command parameters, except the sensitive data.
@@ -89,6 +209,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
     # Initializing a command helper object.
     command = command_helper(logger, cmd, 'vm repair create')
+    repair_resources_started = False
 
     # The main command execution block.
     try:
@@ -100,24 +221,31 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # Set parameters used in exception handling to avoid Unbound errors:
         existing_rg = None
         copy_disk_id = None
+        _validate_legacy_values(vm_name, resource_group_name, repair_vm_name, repair_group_name,
+                                encrypt_recovery_key)
 
         # Fetching the data of the source VM.
-        source_vm = get_vm(cmd, resource_group_name, vm_name)
-        source_vm_instance_view = get_vm(cmd, resource_group_name, vm_name, 'instanceView')
+        source_vm = get_vm_by_aaz(cmd, resource_group_name, vm_name)
+        source_vm_instance_view = get_vm_by_aaz(cmd, resource_group_name, vm_name, 'instanceView')
 
         # Checking if the OS of the source VM is Linux and what the Hyper-V generation is.
-        is_linux = _is_linux_os(source_vm)
+        is_linux = _is_linux_os_aaz(source_vm)
         vm_hypervgen = _is_gen2(source_vm_instance_view)
+        source_controller = _fetch_source_disk_controller_type(source_vm)
+        _set_source_resource_context(command, source_vm, source_vm_instance_view,
+                                     disk_controller_type=source_controller)
 
         # Fetching the name of the OS disk and checking if it's managed.
-        target_disk_name = source_vm.storage_profile.os_disk.name
+        target_disk_name = source_vm.get('storageProfile', {}).get('osDisk', {}).get('name')
         is_managed = _uses_managed_disk(source_vm)
+        if is_managed:
+            _validate_legacy_values(copy_disk_name, target_disk_name)
 
         # Set up tags variable with passed data and resource.  Passed variable 'merged_tags' will be the holding location for the data throughout.
         merged_tags = {}
         # Optionally copy existing VM tags from the source VM.
-        if copy_tags and source_vm.tags:
-            merged_tags.update(source_vm.tags)
+        if copy_tags and source_vm.get('tags'):
+            merged_tags.update(source_vm['tags'])
         # Merge user-provided tags
         if isinstance(tags, dict):
             merged_tags.update(tags)
@@ -136,8 +264,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if sep:
             merged_tags[repair_key] = repair_value
 
-        # Convert to CLI string for passing to az cli later.
-        tag_string = ' '.join(f'{k}={v}' for k, v in merged_tags.items())
+        _validate_tags_for_command(merged_tags)
+        _validate_command_token(repair_username, field_name='repair username', tag_style=True)
 
         # initializing the list of created resources.
         created_resources = []
@@ -182,27 +310,16 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # Set public IP address for repair VM
         public_ip_name = _make_public_ip_name(repair_vm_name, associate_public_ip)
 
-        # Set up base create vm command
-        # Always include the --public-ip-address argument to 'vm create', but only provide a value if associate_public_ip is True.
-        # Old code would omit the argument entirely if False, which leads to creating a public IP implicitly in some scenarios.  The desired behavior
-        # is to never create a public IP unless explicitly requested.
-        if associate_public_ip:
-            public_ip_arg = f' --public-ip-address {public_ip_name}'
-        else:
-            public_ip_arg = ' --public-ip-address ""'
-
-        # Assemble the create VM command for passing to azure cli call
-        create_repair_vm_command = (
-            f'az vm create -g {repair_group_name} -n {repair_vm_name} '
-            f'--image {os_image_urn} '
-            f'--admin-username {repair_username} '
-            f'--admin-password {repair_password}'
-            f'{public_ip_arg} '
-            f'--tags {tag_string}'
-        )
+        create_repair_vm_command = {
+            'resource_group': repair_group_name, 'name': repair_vm_name,
+            'image': os_image_urn, 'admin_username': repair_username,
+            'admin_password': repair_password,
+            'public_ip_address': public_ip_name if associate_public_ip else '',
+            'tags': merged_tags,
+        }
         # Linux-specific consideration(s)
         if is_linux:
-            create_repair_vm_command += f' --custom-data {_get_cloud_init_script()}'
+            create_repair_vm_command['custom_data'] = _get_cloud_init_script()
 
         # Fetching the size of the repair VM.
         sku = _fetch_compatible_sku(source_vm, enable_nested, size)
@@ -211,17 +328,30 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # If no compatible size is found, raise an error.
             raise SkuNotAvailableError('Failed to find compatible VM size for source VM\'s OS disk within given region and subscription.')
         # Adding the size to the command.
-        create_repair_vm_command += ' --size {sku}'.format(sku=sku)
+        create_repair_vm_command['size'] = sku
+
+        supported_controllers = []
+        if not disk_controller_type and source_controller and str(source_controller).lower() == 'nvme':
+            supported_controllers = _fetch_sku_disk_controller_types(sku, source_vm.get('location'))
+        selected_controller, level, message = _select_repair_disk_controller_type(
+            source_controller, supported_controllers, disk_controller_type)
+        getattr(logger, level)(message)
+        if level == 'warning':
+            command.warnings.append(message)
+        if selected_controller:
+            create_repair_vm_command['disk_controller_type'] = selected_controller
+        if hasattr(command, 'set_resource_context'):
+            command.set_resource_context(repair_vm_disk_controller_type=selected_controller)
 
         # Setting the availability zone for the repair VM.
         # If the source VM has availability zones, the first one is chosen for the repair VM.
-        if source_vm.zones:
-            zone = source_vm.zones[0]
-            create_repair_vm_command += ' --zone {zone}'.format(zone=zone)
+        if source_vm.get('zones'):
+            zone = source_vm['zones'][0]
+            create_repair_vm_command['zone'] = zone
 
         if disable_trusted_launch:
             logger.debug('Set security-type to Standard...')
-            create_repair_vm_command += ' --security-type Standard'
+            create_repair_vm_command['security_type'] = 'Standard'
         else:
             # If a Bitlocker recovery key is provided, this indicates the source VM is encrypted.
             # In this case, the VM and OS disk security profiles need to be fetched and added to the repair VM creation command.
@@ -233,7 +363,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                 logger.debug('Fetching VM security profile...')
                 vm_security_params = _fetch_vm_security_profile_parameters(source_vm)
                 if vm_security_params:
-                    create_repair_vm_command += vm_security_params
+                    security_tokens = shlex.split(vm_security_params)
+                    create_repair_vm_command.update({
+                        security_tokens[index][2:].replace('-', '_'): security_tokens[index + 1]
+                        for index in range(0, len(security_tokens), 2)
+                    })
 
         if encrypt_recovery_key:
             # TODO: this was assumed to also need for Trusted Launch VMs, but I don't think this is the case.
@@ -243,7 +377,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             logger.debug('Fetching OS Disk security profile...')
             osdisk_security_params = _fetch_osdisk_security_profile_parameters(source_vm)
             if osdisk_security_params:
-                create_repair_vm_command += osdisk_security_params
+                security_tokens = shlex.split(osdisk_security_params)
+                create_repair_vm_command.update({
+                    security_tokens[index][2:].replace('-', '_'): security_tokens[index + 1]
+                    for index in range(0, len(security_tokens), 2)
+                })
 
         # Creating a new resource group for the repair VM and its resources.
         # First, check if the repair group already exists.
@@ -251,13 +389,14 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         existing_rg = _check_existing_rg(repair_group_name)
         if not existing_rg:
             create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
-                .format(loc=source_vm.location, group_name=repair_group_name)
+                .format(loc=_legacy_value(source_vm.get('location')), group_name=_legacy_value(repair_group_name))
             logger.info('Creating resource group for repair VM and its resources...')
+            repair_resources_started = True
             _call_az_command(create_resource_group_command)
 
         # Check if user is changing the Repair VM os disk type
         if os_disk_type:
-            create_repair_vm_command += ' --storage-sku {os_disk_type} '.format(os_disk_type=os_disk_type)
+            create_repair_vm_command['storage_sku'] = os_disk_type
 
         # Check if the source VM uses managed disks.
         # If it does, the repair VM will also be created with managed disks.
@@ -270,10 +409,12 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Prepare the command to create a copy of the source VM's OS disk.
             # The command includes the resource group name, copy disk name, target disk name, SKU, location, and OS type.
             copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --os-type {os_type} --query id -o tsv' \
-                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=location, os_type=os_type)
+                .format(g=_legacy_value(resource_group_name), n=_legacy_value(copy_disk_name),
+                        s=_legacy_value(target_disk_name), sku=_legacy_value(disk_sku),
+                        loc=_legacy_value(location), os_type=_legacy_value(os_type))
             # If the Hyper-V generation for the disk is available, append it to the copy disk command.
             if hyperV_generation:
-                copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation)
+                copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=_legacy_value(hyperV_generation))
 
             # If the source VM is a Linux Gen2 VM but the Hyper-V generation is not available in the disk info,
             # log this situation and manually add 'V2' to the copy disk command.
@@ -282,12 +423,13 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                 copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation_linux)
 
             # If the source VM has availability zones, get the first one and add it to the copy disk command.
-            if source_vm.zones:
-                zone = source_vm.zones[0]
-                copy_disk_command += ' --zone {zone}'.format(zone=zone)
+            if source_vm.get('zones'):
+                zone = source_vm['zones'][0]
+                copy_disk_command += ' --zone {zone}'.format(zone=_legacy_value(zone))
 
             # Execute the command to create a copy of the OS disk of the source VM.
             logger.info('Copying OS disk of source VM...')
+            repair_resources_started = True
             copy_disk_id = _call_az_command(copy_disk_command).strip('\n')
 
             # Depending on the operating system of the source VM and whether it's encrypted, different steps are taken.
@@ -295,19 +437,19 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # This is the case for Windows VMs, both encrypted and not encrypted.
             if not is_linux:
                 # Call the method to create the repair VM, providing the necessary parameters.
-                _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username)
+                _create_repair_vm(cmd, copy_disk_id, create_repair_vm_command)
 
             # If the source VM is a Windows machine and it is encrypted, unlock the encrypted VM after creation.
             if not is_linux and unlock_encrypted_vm:
                 # Call the method to create the repair VM.
-                _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username)
+                _create_repair_vm(cmd, copy_disk_id, create_repair_vm_command)
                 # Call the method to unlock the encrypted VM, providing the necessary parameters.
                 _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encrypt_recovery_key)
 
             # If the source VM is a Linux machine and it is encrypted, create the repair VM and then unlock it.
             if is_linux and unlock_encrypted_vm:
                 # Call the method to create the repair VM.
-                _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username)
+                _create_repair_vm(cmd, copy_disk_id, create_repair_vm_command)
                 # Call the method to unlock the encrypted VM.
                 _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux)
 
@@ -315,10 +457,10 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # This is done after VM creation to avoid a UUID mismatch causing an incorrect boot.
             if is_linux and (not unlock_encrypted_vm):
                 # Call the method to create the repair VM, with the fix_uuid parameter set to True.
-                _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=True)
+                _create_repair_vm(cmd, copy_disk_id, create_repair_vm_command, fix_uuid=True)
                 logger.info('Attaching copied disk to repair VM as data disk...')
                 # Set up the command to attach the copied disk to the repair VM.
-                attach_disk_command = "az vm disk attach -g {g} --name {disk_id} --vm-name {vm_name} ".format(g=repair_group_name, disk_id=copy_disk_id, vm_name=repair_vm_name)
+                attach_disk_command = "az vm disk attach -g {g} --name {disk_id} --vm-name {vm_name} ".format(g=_legacy_value(repair_group_name), disk_id=_legacy_value(copy_disk_id), vm_name=_legacy_value(repair_vm_name))
                 # Execute the command to attach the disk.
                 _call_az_command(attach_disk_command)
 
@@ -328,7 +470,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             logger.info('Source VM uses unmanaged disks. Creating repair VM with unmanaged disks.\n')
 
             # Get the URI of the OS disk from the source VM.
-            os_disk_uri = source_vm.storage_profile.os_disk.vhd.uri
+            os_disk_uri = source_vm.get('storageProfile', {}).get('osDisk', {}).get('vhd', {}).get('uri')
 
             # Create the name of the copy disk by appending '.vhd' to the existing name.
             copy_disk_name = copy_disk_name + '.vhd'
@@ -337,42 +479,37 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             storage_account = StorageResourceIdentifier(cmd.cli_ctx.cloud, os_disk_uri)
 
             # Validate the VM creation command to ensure all parameters are correct before proceeding.
-            validate_create_vm_command = create_repair_vm_command + ' --validate'
             logger.info('Validating VM template before continuing...')
-            _call_az_command(validate_create_vm_command, secure_params=[repair_password, repair_username])
+            repair_resources_started = True
+            _create_vm_by_core(cmd, create_repair_vm_command, validate=True)
 
-            # Fetch the connection string of the storage account.
-            get_connection_string_command = 'az storage account show-connection-string -g {g} -n {n} --query connectionString -o tsv' \
-                .format(g=resource_group_name, n=storage_account.account_name)
-            logger.debug('Fetching storage account connection string...')
-            connection_string = _call_az_command(get_connection_string_command).strip('\n')
+            blob_service_client = get_unmanaged_blob_service_client(
+                cmd, resource_group_name, storage_account.account_name)
+            source_blob_client = get_unmanaged_blob_client(
+                blob_service_client, storage_account.container, unquote(storage_account.blob))
 
             # Create a snapshot of the unmanaged OS disk.
-            make_snapshot_command = 'az storage blob snapshot -c {c} -n {n} --connection-string "{con_string}" --query snapshot -o tsv' \
-                .format(c=storage_account.container, n=storage_account.blob, con_string=connection_string)
             logger.info('Creating snapshot of OS disk...')
-            snapshot_timestamp = _call_az_command(make_snapshot_command, secure_params=[connection_string]).strip('\n')
+            snapshot_timestamp = create_unmanaged_blob_snapshot(source_blob_client)
             snapshot_uri = os_disk_uri + '?snapshot={timestamp}'.format(timestamp=snapshot_timestamp)
 
             # Create a copy of the snapshot into an unmanaged disk.
-            copy_snapshot_command = 'az storage blob copy start -c {c} -b {name} --source-uri {source} --connection-string "{con_string}"' \
-                .format(c=storage_account.container, name=copy_disk_name, source=snapshot_uri, con_string=connection_string)
             logger.info('Creating a copy disk from the snapshot...')
-            _call_az_command(copy_snapshot_command, secure_params=[connection_string])
+            destination_blob_client = get_unmanaged_blob_client(
+                blob_service_client, storage_account.container, copy_disk_name)
+            start_unmanaged_blob_copy(destination_blob_client, snapshot_uri)
 
             # Generate the URI of the copied disk.
             copy_disk_id = os_disk_uri.rstrip(storage_account.blob) + copy_disk_name
 
             # Create the repair VM with the copied unmanaged disk.
-            create_repair_vm_command = create_repair_vm_command + ' --use-unmanaged-disk'
+            create_repair_vm_command['use_unmanaged_disk'] = True
             logger.info('Creating repair VM while disk copy is in progress...')
-            _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
+            _create_vm_by_core(cmd, create_repair_vm_command)
 
             # Check if the disk copy process is done.
             logger.info('Checking if disk copy is done...')
-            copy_check_command = 'az storage blob show -c {c} -n {name} --connection-string "{con_string}" --query properties.copy.status -o tsv' \
-                .format(c=storage_account.container, name=copy_disk_name, con_string=connection_string)
-            copy_result = _call_az_command(copy_check_command, secure_params=[connection_string]).strip('\n')
+            copy_result = get_unmanaged_blob_copy_status(destination_blob_client)
 
             # If the disk copy process failed, raise an error.
             if copy_result != 'success':
@@ -380,9 +517,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
             # Attach the copied unmanaged disk to the repair VM.
             logger.info('Attaching copied disk to repair VM as data disk...')
-            attach_disk_command = "az vm unmanaged-disk attach -g {g} -n {disk_name} --vm-name {vm_name} --vhd-uri {uri}" \
-                .format(g=repair_group_name, disk_name=copy_disk_name, vm_name=repair_vm_name, uri=copy_disk_id)
-            _call_az_command(attach_disk_command)
+            _attach_unmanaged_disk_by_aaz(cmd, repair_group_name, repair_vm_name, copy_disk_name, copy_disk_id)
 
         # Check if the Nested Hyper-V needs to be enabled.
         # If it does, run the script to install Hyper-V and create the nested VM.
@@ -391,7 +526,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
             # Set up the command to run the script to enable Nested Hyper-V.
             run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv --parameters gen={gen}" \
-                .format(g=repair_group_name, name=repair_vm_name, gen=vm_hypervgen)
+                .format(g=_legacy_value(repair_group_name), name=_legacy_value(repair_vm_name), gen=_legacy_value(vm_hypervgen))
 
             # Execute the command to enable Nested Hyper-V.
             ret_enable_nested = _call_az_command(run_hyperv_command)
@@ -399,7 +534,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
             # If the script indicates that a restart is required, restart the repair VM.
             if str.find(ret_enable_nested, "SuccessRestartRequired") > -1:
-                restart_cmd = 'az vm restart -g {rg} -n {vm}'.format(rg=repair_group_name, vm=repair_vm_name)
+                restart_cmd = 'az vm restart -g {rg} -n {vm}'.format(rg=_legacy_value(repair_group_name), vm=_legacy_value(repair_vm_name))
                 logger.info("Restarting Repair VM")
                 restart_ret = _call_az_command(restart_cmd)
                 logger.debug(restart_ret)
@@ -407,7 +542,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                 # After the restart, run the script to enable Nested Hyper-V again to create the nested VM.
                 logger.info("Running win-enable-nested-hyperv.ps1 again to create nested VM")
                 run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv --parameters gen={gen}" \
-                    .format(g=repair_group_name, name=repair_vm_name, gen=vm_hypervgen)
+                    .format(g=_legacy_value(repair_group_name), name=_legacy_value(repair_vm_name), gen=_legacy_value(vm_hypervgen))
                 ret_enable_nested_again = _call_az_command(run_hyperv_command)
                 logger.debug("stderr: %s", ret_enable_nested_again)
 
@@ -422,7 +557,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         command.error_stack_trace = traceback.format_exc()
         command.error_message = "Command interrupted by user input."
         command.message = "Command interrupted by user input. Cleaning up resources."
-    except AzCommandError as azCommandError:
+    except (AzCommandError, HttpResponseError) as azCommandError:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(azCommandError)
         command.message = "Repair create failed. Cleaning up created resources."
@@ -458,10 +593,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     if not command.is_status_success():
         command.set_status_error()
         return_dict = command.init_return_dict()
-        if existing_rg:
-            _clean_up_resources(repair_group_name, confirm=True)
-        else:
-            _clean_up_resources(repair_group_name, confirm=False)
+        if repair_resources_started:
+            _clean_up_resources(repair_group_name, confirm=bool(existing_rg))
     else:
         created_resources.append(copy_disk_id if copy_disk_id is not None else "")
         command.message = 'Your repair VM \'{n}\' has been created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
@@ -481,76 +614,115 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     return return_dict
 
 
+class _RestoreStage(enum.Enum):
+    PREPARATION = 'preparation'
+    DISK_DETACH = 'disk detach'
+    SOURCE_VM_UPDATE = 'source VM update'
+    REPAIR_RESOURCE_CLEANUP = 'repair resource cleanup'
+
+
 # This method is responsible for restoring the VM after repair
-def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):
+def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False, no_cleanup=False):
 
     # Create an instance of the command helper object to facilitate logging and status tracking.
     command = command_helper(logger, cmd, 'vm repair restore')
     source_disk = None
+    repair_resource_group = None
+    restore_stage = _RestoreStage.PREPARATION
 
     try:
         # Fetch source and repair VM data
-        source_vm = get_vm(cmd, resource_group_name, vm_name)  # Fetch the source VM data
+        source_vm = get_vm_by_aaz(cmd, resource_group_name, vm_name)  # Fetch the source VM data
+        _enrich_source_resource_context(
+            command, cmd, source_vm, resource_group_name, vm_name)
         is_managed = _uses_managed_disk(source_vm)  # Check if the source VM uses managed disks
         if repair_vm_id:
             logger.info('Repair VM ID: %s', repair_vm_id)
             repair_vm_id = parse_resource_id(repair_vm_id)  # Parse the repair VM ID
             repair_vm_name = repair_vm_id['name']
             repair_resource_group = repair_vm_id['resource_group']
+            _enrich_repair_controller_context(
+                command, cmd, repair_resource_group, repair_vm_name)
 
             # For MANAGED DISK
             if is_managed:
-                source_disk = source_vm.storage_profile.os_disk.name
+                source_disk = source_vm.get('storageProfile', {}).get('osDisk', {}).get('name')
                 # Retrieve required data from the repair disk before doing the disk swap, we need the full disk URI (id), not just the name
                 _, _, _, _, disk_id = _fetch_disk_info(resource_group_name, disk_name)
                 # Commands to detach the repaired data disk from the repair VM and os-disk-swap it onto the source VM
                 detach_disk_command = 'az vm disk detach -g {g} --vm-name {repair} --name {disk}' \
-                    .format(g=repair_resource_group, repair=repair_vm_name, disk=disk_name)
+                    .format(g=_legacy_value(repair_resource_group), repair=_legacy_value(repair_vm_name), disk=_legacy_value(disk_name))
                 attach_fixed_command = 'az vm update -g {g} -n {n} --os-disk {disk}' \
-                    .format(g=resource_group_name, n=vm_name, disk=disk_id)
+                    .format(g=_legacy_value(resource_group_name), n=_legacy_value(vm_name), disk=_legacy_value(disk_id))
+
+                # Validate before detaching, so a rejected attach command can't strand the
+                # disk detached from the repair VM.
+                _validate_command_values(attach_fixed_command, field_name='source disk ID')
 
                 # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
                 logger.info('Detaching repaired data disk from repair VM...')
+                restore_stage = _RestoreStage.DISK_DETACH
                 _call_az_command(detach_disk_command)
                 logger.info('Attaching repaired data disk to source VM as an OS disk...')
+                restore_stage = _RestoreStage.SOURCE_VM_UPDATE
                 _call_az_command(attach_fixed_command)
 
             # For UNMANAGED DISK
             else:
-                source_disk = source_vm.storage_profile.os_disk.vhd.uri
+                source_disk = source_vm.get('storageProfile', {}).get('osDisk', {}).get('vhd', {}).get('uri')
                 # Fetch disk uri from disk name
-                repair_vm = get_vm(cmd, repair_vm_id['resource_group'], repair_vm_id['name'])
-                data_disks = repair_vm.storage_profile.data_disks
+                repair_vm = get_vm_by_aaz(cmd, repair_vm_id['resource_group'], repair_vm_id['name'])
+                data_disks = repair_vm.get('storageProfile', {}).get('dataDisks', [])
 
                 # The params went through validator so no need for existence checks
-                disk_uri = [disk.vhd.uri for disk in data_disks if disk.name == disk_name][0]
+                disk_uri = [
+                    disk.get('vhd', {}).get('uri')
+                    for disk in data_disks
+                    if disk.get('name') == disk_name
+                ][0]
 
-                # Commands to detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
-                detach_unamanged_command = 'az vm unmanaged-disk detach -g {g} --vm-name {repair} --name {disk}' \
-                    .format(g=repair_resource_group, repair=repair_vm_name, disk=disk_name)
-                attach_unmanaged_command = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"' \
-                    .format(g=resource_group_name, n=vm_name, uri=disk_uri)
+                if not isinstance(disk_uri, str) or not disk_uri:
+                    raise InvalidArgumentValueError('The repaired disk must have a nonempty VHD URI.')
+                if os.name == 'nt':
+                    _validate_command_token(disk_uri, field_name='storageProfile.osDisk.vhd.uri', uri=True)
+
+                def update_os_disk_uri(instance, **_):
+                    storage_profile = instance.properties.storage_profile
+                    storage_profile.image_reference = None
+                    storage_profile.os_disk.vhd.uri = disk_uri
+
+                # Preserve the existing OS-disk object when updating its VHD URI.
+                attach_os_disk = VMUpdate(cli_ctx=cmd.cli_ctx, callbacks={
+                    'post_instance_update': update_os_disk_uri,
+                })
 
                 # Detach the repaired data disk from the repair VM and attach it to the source VM as an OS disk
                 logger.info('Detaching repaired data disk from repair VM...')
-                _call_az_command(detach_unamanged_command)
+                restore_stage = _RestoreStage.DISK_DETACH
+                _detach_unmanaged_disk_by_aaz(cmd, repair_resource_group, repair_vm_name, disk_name)
                 logger.info('Attaching repaired data disk to source VM as an OS disk...')
-                _call_az_command(attach_unmanaged_command)
+                restore_stage = _RestoreStage.SOURCE_VM_UPDATE
+                LongRunningOperation(cmd.cli_ctx)(attach_os_disk(command_args={
+                    'resource_group': resource_group_name,
+                    'vm_name': vm_name,
+                }))
 
             # Clean up the resources in the repair resource group
-            _clean_up_resources(repair_resource_group, confirm=not yes)
+            restore_stage = _RestoreStage.REPAIR_RESOURCE_CLEANUP
+            _clean_up_resources(repair_resource_group, confirm=not yes, skip_cleanup=no_cleanup,
+                                raise_on_failure=True)
             command.set_status_success()  # Set the command status to success
     # Handle possible exceptions
     except KeyboardInterrupt:
         # Capture the stack trace and set the error message if the command is interrupted by the user
         command.error_stack_trace = traceback.format_exc()
         command.error_message = "Command interrupted by user input."
-        command.message = "Command interrupted by user input. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'."
-    except AzCommandError as azCommandError:
+        command.message = "Command interrupted by user input."
+    except (AzCommandError, HttpResponseError) as azCommandError:
         # Capture the stack trace and set the error message if an Azure command error occurs
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(azCommandError)
-        command.message = "Repair restore failed. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'."
+        command.message = "Repair restore failed."
     except Exception as exception:
         # Capture the stack trace and set the error message if an unexpected error occurs
         command.error_stack_trace = traceback.format_exc()
@@ -563,6 +735,31 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
     # Set the command status to error if it's not success
     if not command.is_status_success():
+        command.message += ' Restore stopped during {stage}.'.format(stage=restore_stage.value)
+        if restore_stage == _RestoreStage.PREPARATION:
+            command.message += ' No disk detach was attempted.'
+        elif restore_stage == _RestoreStage.REPAIR_RESOURCE_CLEANUP:
+            command.message += (
+                " The source VM disk update completed. Do not repeat the disk swap."
+                " Cleanup may have partially completed. Verify the source VM health and inspect"
+                " remaining resources in repair resource group '{repair_rg}' before retrying only cleanup."
+            ).format(repair_rg=repair_resource_group)
+        else:
+            if restore_stage == _RestoreStage.DISK_DETACH:
+                command.message += ' The source VM update was not started.'
+            else:
+                command.message += ' Disk detach completed.'
+            command.message += (
+                " Repair resource cleanup was not started."
+                " Check disk attachments on source VM '{source_vm}' in resource group '{source_rg}'"
+                " and repair VM '{repair_vm}' in resource group '{repair_rg}'."
+                " The operation outcome may be unknown after a timeout or interruption."
+                " Wait for any in-progress operation to finish."
+                " If the source VM already uses the repaired disk, do not reattach it elsewhere."
+                " If the source update is confirmed unsuccessful and the disk is unused,"
+                " retry that update or manually reattach the disk to the repair VM."
+            ).format(source_vm=vm_name, source_rg=resource_group_name,
+                     repair_vm=repair_vm_name, repair_rg=repair_resource_group)
         command.set_status_error()
         return_dict = command.init_return_dict()
     else:
@@ -570,6 +767,10 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         command.message = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Please test your repairs and once confirmed, ' \
             'you may choose to delete the source OS disk \'{src_disk}\' within resource group \'{rg}\' manually if you no longer need it, to avoid any undesired costs.' \
             .format(disk=disk_name, n=vm_name, src_disk=source_disk, rg=resource_group_name)
+        if no_cleanup and repair_resource_group:
+            command.message += ' The repair resources in the resource group \'{repair_rg}\' were kept because --no-cleanup was used. ' \
+                'Delete them with \'az group delete --name {repair_rg}\' once you no longer need them, to avoid any undesired costs.' \
+                .format(repair_rg=repair_resource_group)
         return_dict = command.init_return_dict()
         logger.info('\n%s\n', return_dict['message'])
 
@@ -583,6 +784,11 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     logger.debug('vm repair run parameters: vm_name: %s, resource_group_name: %s, run_id: %s, repair_vm_id: %s, custom_script_file: %s, parameters: %s, run_on_repair: %s, preview: %s',
                  vm_name, resource_group_name, run_id, repair_vm_id, custom_script_file, parameters, run_on_repair, preview)
 
+    # Reject a bad preview url before the command helper exists: its destructor runs at interpreter
+    # shutdown when the command aborts early, which loses the telemetry and prints a shutdown traceback.
+    if preview:
+        _parse_preview_url(preview)
+
     # Initiate a command helper object for logging and status tracking
     command = command_helper(logger, cmd, 'vm repair run')
 
@@ -590,16 +796,20 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     LINUX_RUN_SCRIPT_NAME = 'linux-run-driver.sh'
     WINDOWS_RUN_SCRIPT_NAME = 'win-run-driver.ps1'
 
-    # Set the repair map URL if a preview is available
     if preview:
         _set_repair_map_url(preview)
 
     try:
+        _validate_legacy_values(vm_name, resource_group_name, *(parameters or []))
+        if os.name == 'nt' and custom_script_file:
+            _validate_command_token('@' + custom_script_file, field_name='custom_script_file', file_reference=True)
         # Fetch data of the VM on which the script is to be run
-        source_vm = get_vm(cmd, resource_group_name, vm_name)
+        source_vm = get_vm_by_aaz(cmd, resource_group_name, vm_name)
 
         # Determine the OS of the source VM
-        is_linux = _is_linux_os(source_vm)
+        is_linux = _is_linux_os_aaz(source_vm)
+        _enrich_source_resource_context(
+            command, cmd, source_vm, resource_group_name, vm_name)
 
         # Choose the appropriate script based on the OS of the source VM
         if is_linux:
@@ -612,9 +822,14 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             repair_vm_id = parse_resource_id(repair_vm_id)
             repair_vm_name = repair_vm_id['name']
             repair_resource_group = repair_vm_id['resource_group']
+            _enrich_repair_controller_context(
+                command, cmd, repair_resource_group, repair_vm_name)
         else:
             repair_vm_name = vm_name
             repair_resource_group = resource_group_name
+            if hasattr(command, 'set_resource_context'):
+                command.set_resource_context(
+                    repair_vm_disk_controller_type=command.disk_controller_type)
 
         run_command_params = []
         additional_scripts = []
@@ -623,6 +838,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         if not custom_script_file:
             # Fetch the path to the script from GitHub using the run ID
             repair_script_path = _fetch_run_script_path(run_id)
+            _validate_legacy_values(repair_script_path)
             run_command_params.append('script_path="./{}"'.format(repair_script_path))
         # For the custom script scenario for script testers
         else:
@@ -630,15 +846,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             additional_scripts.append(custom_script_file)
 
         # If a preview URL is provided, validate it and extract the fork and branch names
-        if preview:
-            parts = preview.split('/')
-            if len(parts) < 7 or parts.index('map.json') == -1:
-                raise ValueError('Invalid preview url. Write full URL of map.json file. example https://github.com/Azure/repair-script-library/blob/main/map.json')
-            last_index = parts.index('map.json')
-            fork_name = parts[last_index - 4]
-            branch_name = parts[last_index - 1]
-            run_command_params.append('repo_fork="{}"'.format(fork_name))
-            run_command_params.append('repo_branch="{}"'.format(branch_name))
+        run_command_params.extend(_build_repo_params(preview, is_linux))
 
         # Append parameters for the script
         if parameters:
@@ -748,9 +956,11 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
 # This method lists all available repair scripts
 def list_scripts(cmd, preview=None):
     # Initiate a command helper object for logging and status tracking
+    if preview:
+        _parse_preview_url(preview)
+
     command = command_helper(logger, cmd, 'vm repair list-scripts')
 
-    # Set the repair map URL if a preview is available
     if preview:
         _set_repair_map_url(preview)
 
@@ -801,7 +1011,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         # VM must be running to reset its NIC.
         VM_OFF_MESSAGE = 'VM is not running. The VM must be in running to reset its NIC.\n'
 
-        vm_instance_view = get_vm(cmd, resource_group_name, vm_name, 'instanceView')
+        vm_instance_view = get_vm_by_aaz(cmd, resource_group_name, vm_name, 'instanceView')
         VM_started = _check_n_start_vm(vm_name, resource_group_name, not yes, VM_OFF_MESSAGE, vm_instance_view)
 
         # If VM is not started, raise an error
@@ -813,8 +1023,8 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
 
         # Fetch primary NIC ID. The primary field is null or true for primary NICs.
         get_primary_nic_id_command = 'az vm nic list -g {g} --vm-name {n} --query "[[?primary].id || [?primary==null].id][0][0]" -o tsv' \
-            .format(g=resource_group_name, n=vm_name)
-        primary_nic_id = _call_az_command(get_primary_nic_id_command)
+            .format(g=_legacy_value(resource_group_name), n=_legacy_value(vm_name))
+        primary_nic_id = _call_az_command(get_primary_nic_id_command).strip()
 
         # If no primary NIC is found, raise an error
         if not primary_nic_id:
@@ -823,7 +1033,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
 
         # Get IP config info to get: vnet name, current private IP, IP config name, subnet ID
         get_primary_ip_config = 'az network nic ip-config list -g {g} --nic-name {nic_name} --query [[?primary]][0][0]' \
-            .format(g=resource_group_name, nic_name=primary_nic_name)
+            .format(g=_legacy_value(resource_group_name), nic_name=_legacy_value(primary_nic_name))
         ip_config_string = _call_az_command(get_primary_ip_config)
 
         # If no primary IP configuration is found, raise an error
@@ -849,7 +1059,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             for item in ip_config_object[applicationSecurityGroups]:
                 application_id_tokens = item['id'].split('/')
                 if application_id_tokens[-1] is not None:
-                    application_names += application_id_tokens[-1] + " "
+                    application_names += _legacy_value(application_id_tokens[-1]) + " "
 
         logger.info('applicationSecurityGroups {application_names}...\n')
 
@@ -858,11 +1068,32 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
 
         # Get available IP address within subnet
         get_available_ip_command = 'az network vnet subnet list-available-ips -g {g} --vnet-name {vnet} --name {subnet} --query [0] -o tsv' \
-            .format(g=vnet_resource_group, vnet=vnet_name, subnet=subnet_name)
-        swap_ip_address = _call_az_command(get_available_ip_command)
+            .format(g=_legacy_value(vnet_resource_group), vnet=_legacy_value(vnet_name), subnet=_legacy_value(subnet_name))
+        swap_ip_address = _call_az_command(get_available_ip_command).strip()
+        _validate_legacy_values(resource_group_name, primary_nic_name, ipconfig_name, orig_ip_address, swap_ip_address)
         if not swap_ip_address:
             # Raise available IP not found error
             raise SupportingResourceNotFoundError('Available IP address was not found within the VM subnet.')
+
+        # Build the revert command up front and validate it before swapping the IP, so a
+        # rejected revert token can't strand the NIC on swap_ip_address with no automatic
+        # way back to orig_ip_address.
+        if orig_ip_allocation_method == DYNAMIC_CONFIG:
+            if application_names:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method} --asgs {asgs}' \
+                    .format(g=_legacy_value(resource_group_name), nic=_legacy_value(primary_nic_name), config=_legacy_value(ipconfig_name), method=DYNAMIC_CONFIG, asgs=application_names)
+            else:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method}' \
+                    .format(g=_legacy_value(resource_group_name), nic=_legacy_value(primary_nic_name), config=_legacy_value(ipconfig_name), method=DYNAMIC_CONFIG)
+        else:
+            if application_names:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} --asgs {asgs}' \
+                    .format(g=_legacy_value(resource_group_name), nic=_legacy_value(primary_nic_name), config=_legacy_value(ipconfig_name), ip=_legacy_value(orig_ip_address), asgs=application_names)
+            else:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
+                    .format(g=_legacy_value(resource_group_name), nic=_legacy_value(primary_nic_name), config=_legacy_value(ipconfig_name), ip=_legacy_value(orig_ip_address))
+        _validate_command_values(
+            revert_ip_command, field_name='network interface configuration (IP address or application security group name)')
 
         # 3) Update private IP address to another in subnet. This will invoke and wait for a VM restart.
         logger.info('Updating VM IP configuration. This might take a few minutes...\n')
@@ -870,45 +1101,21 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         # Update IP address
         if application_names:
             update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} --asgs {asgs}' \
-                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address, asgs=application_names)
+                .format(g=_legacy_value(resource_group_name), nic=_legacy_value(primary_nic_name), config=_legacy_value(ipconfig_name), ip=_legacy_value(swap_ip_address), asgs=application_names)
         else:
             logger.info('applicationSecurityGroups do not exist...\n')
             update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip}' \
-                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address)
+                .format(g=_legacy_value(resource_group_name), nic=_legacy_value(primary_nic_name), config=_legacy_value(ipconfig_name), ip=_legacy_value(swap_ip_address))
         _call_az_command(update_ip_command)
 
         # Wait for IP to be updated
         # This command waits for the network interface card (NIC) IP configuration to be updated
         wait_ip_update_command = 'az network nic ip-config wait --updated -g {g} --nic-name {nic}' \
-            .format(g=resource_group_name, nic=primary_nic_name)
+            .format(g=_legacy_value(resource_group_name), nic=_legacy_value(primary_nic_name))
         _call_az_command(wait_ip_update_command)
 
         # 4) Revert the configurations. This will also invoke and wait for a VM restart.
         logger.info('NIC reset is complete. Now reverting back to your original configuration...\n')
-
-        # Initialize the revert IP command variable
-        revert_ip_command = None
-
-        # If the original IP allocation method was dynamic, revert back to dynamic
-        if orig_ip_allocation_method == DYNAMIC_CONFIG:
-            # If there are application security groups, include them in the command
-            if application_names:
-                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method} --asgs {asgs}' \
-                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG, asgs=application_names)
-            else:
-                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method}' \
-                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG)
-        else:
-            # If the original IP allocation method was not dynamic, revert to the original static IP
-            # If there are application security groups, include them in the command
-            if application_names:
-                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} --asgs {asgs}' \
-                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address, asgs=application_names)
-            else:
-                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
-                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address)
-
-        # Execute the revert IP command
         _call_az_command(revert_ip_command)
         logger.info('VM guest NIC reset is complete and all configurations are reverted.')
 
@@ -950,7 +1157,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
     return return_dict
 
 
-def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None, copy_tags=False, size=None):
+def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None, copy_tags=False, size=None, no_cleanup=False):
     """
     This function manages the process of repairing and restoring a specified virtual machine (VM). The process involves
     the creation of a repair VM, the generation of a copy of the problem VM's disk, and the formation of a new resource
@@ -967,13 +1174,21 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     :param tags: (Optional) Tags to apply to the repair VM.
     :param copy_tags: (Optional) Boolean indicating whether to copy tags from the source VM to the repair VM.
     :param size: (Optional) The size of the repair VM.
+    :param no_cleanup: (Optional) Boolean indicating whether the repair resources should be kept instead of deleted.
     """
-    from datetime import datetime
+    from datetime import datetime, timezone
     import secrets
     import string
 
     # Initialize command helper object
     command = command_helper(logger, cmd, 'vm repair repair-and-restore')
+
+    try:
+        source_vm = get_vm_by_aaz(cmd, resource_group_name, vm_name)
+        _enrich_source_resource_context(
+            command, cmd, source_vm, resource_group_name, vm_name)
+    except Exception as exception:
+        logger.debug('Could not fetch source VM resource shape for telemetry: %s', exception)
 
     # Generate a random password for the repair operation
     password_length = 30
@@ -986,7 +1201,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     repair_username = ''.join(secrets.choice(username_characters) for _ in range(username_length))
 
     # Generate unique names for the repair VM, copied disk, and repair resource group
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    timestamp = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
     repair_vm_name = ('repair-' + vm_name)[:14] + '_'
     copy_disk_name = vm_name + '-DiskCopy-' + timestamp
     repair_group_name = 'repair-' + vm_name + '-' + timestamp
@@ -1004,6 +1219,8 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     repair_vm_name = create_out['repair_vm_name']
     copy_disk_name = create_out['copied_disk_name']
     repair_group_name = create_out['repair_resource_group']
+    _enrich_repair_controller_context(
+        command, cmd, repair_group_name, repair_vm_name)
 
     # Log that the fstab run command is about to be executed
     logger.info('Running fstab run command')
@@ -1021,9 +1238,9 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
         # If the resource group existed before, confirm before cleaning up resources
         # Otherwise, clean up resources without confirmation
         if existing_rg:
-            _clean_up_resources(repair_group_name, confirm=True)
+            _clean_up_resources(repair_group_name, confirm=True, skip_cleanup=no_cleanup)
         else:
-            _clean_up_resources(repair_group_name, confirm=False)
+            _clean_up_resources(repair_group_name, confirm=False, skip_cleanup=no_cleanup)
         return
 
     # Log the output of the run command
@@ -1033,25 +1250,32 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     if run_out['script_status'] == 'ERROR':
         logger.error('fstab script returned an error.')
         if existing_rg:
-            _clean_up_resources(repair_group_name, confirm=True)
+            _clean_up_resources(repair_group_name, confirm=True, skip_cleanup=no_cleanup)
         else:
-            _clean_up_resources(repair_group_name, confirm=False)
+            _clean_up_resources(repair_group_name, confirm=False, skip_cleanup=no_cleanup)
         return
 
     # Run the restore command
     logger.info('Running restore command')
     show_vm_id = 'az vm show -g {g} -n {n} --query id -o tsv' \
-        .format(g=repair_group_name, n=repair_vm_name)
+        .format(g=_legacy_value(repair_group_name), n=_legacy_value(repair_vm_name))
 
-    repair_vm_id = _call_az_command(show_vm_id)
+    repair_vm_id = _call_az_command(show_vm_id).rstrip('\r\n')
 
-    restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True)
+    restore_out = restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True, no_cleanup=no_cleanup)
+    if restore_out['status'] != 'SUCCESS':
+        command.set_status_error()
+        command.message = restore_out['message']
+        command.error_message = restore_out.get('error_message', '')
+        command.return_dict = restore_out
+        return restore_out
 
     # Set the success message
+    repair_vm_fate = 'the repair resources were kept' if no_cleanup else 'the repair VM was then deleted'
     command.message = 'fstab script has been applied to the source VM. A new repair VM \'{n}\' was created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
-        'The repairs were complete using the fstab script and the repair VM was then deleted. ' \
+        'The repairs were complete using the fstab script and {fate}. ' \
         'The repair disk was restored to the source VM. ' \
-        .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name)
+        .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, fate=repair_vm_fate)
 
     # Mark the operation as successful
     command.set_status_success()
@@ -1069,11 +1293,11 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     return return_dict
 
 
-def repair_button(cmd, vm_name, resource_group_name, button_command, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None, copy_tags=False, size=None, yes=False):
+def repair_button(cmd, vm_name, resource_group_name, button_command, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, tags=None, copy_tags=False, size=None, yes=False, no_cleanup=False):
     """
     Button-triggered repair operation. Supports tags for the repair VM.
     """
-    from datetime import datetime
+    from datetime import datetime, timezone
     import secrets
     import string
 
@@ -1092,7 +1316,7 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
     username_characters = string.ascii_lowercase + string.digits
     repair_username = ''.join(secrets.choice(username_characters) for i in range(username_length))
 
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    timestamp = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
     repair_vm_name = ('repair-' + vm_name)[:14] + '_'
     copy_disk_name = vm_name + '-DiskCopy-' + timestamp
     repair_group_name = 'repair-' + vm_name + '-' + timestamp
@@ -1118,9 +1342,9 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
         command.error_message = "Command failed when running  script."
         command.message = "Command failed when running script."
         if existing_rg:
-            _clean_up_resources(repair_group_name, confirm=True)
+            _clean_up_resources(repair_group_name, confirm=True, skip_cleanup=no_cleanup)
         else:
-            _clean_up_resources(repair_group_name, confirm=False)
+            _clean_up_resources(repair_group_name, confirm=False, skip_cleanup=no_cleanup)
         return
 
     # log run_out
@@ -1129,23 +1353,30 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
     if run_out['script_status'] == 'ERROR':
         logger.error(' script returned an error.')
         if existing_rg:
-            _clean_up_resources(repair_group_name, confirm=True)
+            _clean_up_resources(repair_group_name, confirm=True, skip_cleanup=no_cleanup)
         else:
-            _clean_up_resources(repair_group_name, confirm=False)
+            _clean_up_resources(repair_group_name, confirm=False, skip_cleanup=no_cleanup)
         return
 
     logger.info('Running restore command')
     show_vm_id = 'az vm show -g {g} -n {n} --query id -o tsv' \
-        .format(g=repair_group_name, n=repair_vm_name)
+        .format(g=_legacy_value(repair_group_name), n=_legacy_value(repair_vm_name))
 
-    repair_vm_id = _call_az_command(show_vm_id)
+    repair_vm_id = _call_az_command(show_vm_id).rstrip('\r\n')
 
-    restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True)
+    restore_out = restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True, no_cleanup=no_cleanup)
+    if restore_out['status'] != 'SUCCESS':
+        command.set_status_error()
+        command.message = restore_out['message']
+        command.error_message = restore_out.get('error_message', '')
+        command.return_dict = restore_out
+        return restore_out
 
+    repair_vm_fate = 'the repair resources were kept' if no_cleanup else 'the repair VM was then deleted'
     command.message = 'script has been applied to the source VM. A new repair VM \'{n}\' was created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
-        'The repairs were complete using the script and the repair VM was then deleted. ' \
+        'The repairs were complete using the script and {fate}. ' \
         'The repair disk was restored to the source VM. ' \
-        .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name)
+        .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, fate=repair_vm_fate)
 
     command.set_status_success()
     if command.error_stack_trace:

@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -118,6 +118,12 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.environment_type = AAZStrArg(
+            options=["--environment-type"],
+            arg_group="Properties",
+            help={"short-summary": "Environment type, set only when creating the profile.", "long-summary": "Requires the NonProduction environment preview to be enabled for the subscription. The environment type cannot be changed after creation."},
+            enum={"NonProduction": "NonProduction"},
+        )
         _args_schema.log_scrubbing = AAZObjectArg(
             options=["--log-scrubbing"],
             arg_group="Properties",
@@ -151,7 +157,7 @@ class Create(AAZCommand):
             options=["match-variable"],
             help="The variable to be scrubbed from the logs.",
             required=True,
-            enum={"QueryStringArgNames": "QueryStringArgNames", "RequestBodyJsonArgNames": "RequestBodyJsonArgNames", "RequestBodyPostArgNames": "RequestBodyPostArgNames", "RequestCookieNames": "RequestCookieNames", "RequestHeaderNames": "RequestHeaderNames", "RequestIPAddress": "RequestIPAddress", "RequestUri": "RequestUri"},
+            enum={"QueryStringArgNames": "QueryStringArgNames", "RequestIPAddress": "RequestIPAddress", "RequestUri": "RequestUri"},
         )
         _element.selector = AAZStrArg(
             options=["selector"],
@@ -161,7 +167,7 @@ class Create(AAZCommand):
             options=["selector-match-operator"],
             help="When matchVariable is a collection, operate on the selector to specify which elements in the collection this rule applies to.",
             required=True,
-            enum={"Equals": "Equals", "EqualsAny": "EqualsAny"},
+            enum={"EqualsAny": "EqualsAny"},
         )
         _element.state = AAZStrArg(
             options=["state"],
@@ -176,7 +182,7 @@ class Create(AAZCommand):
             options=["--sku"],
             arg_group="Sku",
             help="Name of the pricing tier.",
-            enum={"Classic_AzureFrontDoor": "Classic_AzureFrontDoor", "Custom_Verizon": "Custom_Verizon", "Premium_AzureFrontDoor": "Premium_AzureFrontDoor", "Premium_Verizon": "Premium_Verizon", "StandardPlus_955BandWidth_ChinaCdn": "StandardPlus_955BandWidth_ChinaCdn", "StandardPlus_AvgBandWidth_ChinaCdn": "StandardPlus_AvgBandWidth_ChinaCdn", "StandardPlus_ChinaCdn": "StandardPlus_ChinaCdn", "Standard_955BandWidth_ChinaCdn": "Standard_955BandWidth_ChinaCdn", "Standard_Akamai": "Standard_Akamai", "Standard_AvgBandWidth_ChinaCdn": "Standard_AvgBandWidth_ChinaCdn", "Standard_AzureFrontDoor": "Standard_AzureFrontDoor", "Standard_ChinaCdn": "Standard_ChinaCdn", "Standard_Microsoft": "Standard_Microsoft", "Standard_Verizon": "Standard_Verizon"},
+            enum={"Custom_Verizon": "Custom_Verizon", "Premium_AzureFrontDoor": "Premium_AzureFrontDoor", "Premium_Verizon": "Premium_Verizon", "StandardPlus_955BandWidth_ChinaCdn": "StandardPlus_955BandWidth_ChinaCdn", "StandardPlus_AvgBandWidth_ChinaCdn": "StandardPlus_AvgBandWidth_ChinaCdn", "StandardPlus_ChinaCdn": "StandardPlus_ChinaCdn", "Standard_955BandWidth_ChinaCdn": "Standard_955BandWidth_ChinaCdn", "Standard_Akamai": "Standard_Akamai", "Standard_AvgBandWidth_ChinaCdn": "Standard_AvgBandWidth_ChinaCdn", "Standard_AzureFrontDoor": "Standard_AzureFrontDoor", "Standard_ChinaCdn": "Standard_ChinaCdn", "Standard_Microsoft": "Standard_Microsoft", "Standard_Verizon": "Standard_Verizon"},
         )
         return cls._args_schema
 
@@ -261,7 +267,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -309,8 +315,13 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("extendedProperties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
                 properties.set_prop("logScrubbing", AAZObjectType, ".log_scrubbing")
                 properties.set_prop("originResponseTimeoutSeconds", AAZIntType, ".origin_response_timeout_seconds")
+
+            extended_properties = _builder.get(".properties.extendedProperties")
+            if extended_properties is not None:
+                extended_properties.set_prop("environmentType", AAZStrType, ".environment_type")
 
             log_scrubbing = _builder.get(".properties.logScrubbing")
             if log_scrubbing is not None:

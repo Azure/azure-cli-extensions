@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -141,7 +141,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -196,6 +196,12 @@ class Wait(AAZWaitCommand):
                 serialized_name="azureOrigin",
             )
             _WaitHelper._build_schema_resource_reference_read(properties.azure_origin)
+            properties.certificate_name_check_validation_mode = AAZStrType(
+                serialized_name="certificateNameCheckValidationMode",
+            )
+            properties.custom_certificate_subjects = AAZListType(
+                serialized_name="customCertificateSubjects",
+            )
             properties.deployment_status = AAZStrType(
                 serialized_name="deploymentStatus",
                 flags={"read_only": True},
@@ -215,9 +221,6 @@ class Wait(AAZWaitCommand):
             properties.https_port = AAZIntType(
                 serialized_name="httpsPort",
             )
-            properties.origin_capacity_resource = AAZObjectType(
-                serialized_name="originCapacityResource",
-            )
             properties.origin_group_name = AAZStrType(
                 serialized_name="originGroupName",
                 flags={"read_only": True},
@@ -235,15 +238,8 @@ class Wait(AAZWaitCommand):
             )
             properties.weight = AAZIntType()
 
-            origin_capacity_resource = cls._schema_on_200.properties.origin_capacity_resource
-            origin_capacity_resource.enabled = AAZStrType()
-            origin_capacity_resource.origin_ingress_rate_threshold = AAZIntType(
-                serialized_name="originIngressRateThreshold",
-            )
-            origin_capacity_resource.origin_request_rate_threshold = AAZIntType(
-                serialized_name="originRequestRateThreshold",
-            )
-            origin_capacity_resource.region = AAZStrType()
+            custom_certificate_subjects = cls._schema_on_200.properties.custom_certificate_subjects
+            custom_certificate_subjects.Element = AAZStrType()
 
             shared_private_link_resource = cls._schema_on_200.properties.shared_private_link_resource
             shared_private_link_resource.group_id = AAZStrType(

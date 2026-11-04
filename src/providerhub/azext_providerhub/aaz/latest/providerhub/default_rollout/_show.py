@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-01-preview",
+        "version": "2026-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.providerhub/providerregistrations/{}/defaultrollouts/{}", "2024-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.providerhub/providerregistrations/{}/defaultrollouts/{}", "2026-02-01-preview"],
         ]
     }
 
@@ -56,7 +56,7 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[-\w\._\(\)]+$",
+                pattern="^[-\\w\\._\\(\\)]+$",
                 max_length=260,
             ),
         )
@@ -127,7 +127,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01-preview",
+                    "api-version", "2026-02-01-preview",
                     required=True,
                 ),
             }
@@ -311,6 +311,9 @@ class Show(AAZCommand):
             properties.dsts_configuration = AAZObjectType(
                 serialized_name="dstsConfiguration",
             )
+            properties.enable_preset_resource_types = AAZBoolType(
+                serialized_name="enablePresetResourceTypes",
+            )
             properties.enable_tenant_linked_notification = AAZBoolType(
                 serialized_name="enableTenantLinkedNotification",
                 nullable=True,
@@ -327,6 +330,9 @@ class Show(AAZCommand):
             properties.legacy_registrations = AAZListType(
                 serialized_name="legacyRegistrations",
             )
+            properties.lifecycle_info = AAZObjectType(
+                serialized_name="lifecycleInfo",
+            )
             properties.linked_notification_rules = AAZListType(
                 serialized_name="linkedNotificationRules",
             )
@@ -334,7 +340,7 @@ class Show(AAZCommand):
             properties.management_group_global_notification_endpoints = AAZListType(
                 serialized_name="managementGroupGlobalNotificationEndpoints",
             )
-            properties.metadata = AAZFreeFormDictType()
+            properties.metadata = AAZDictType()
             properties.namespace = AAZStrType()
             properties.notification_options = AAZStrType(
                 serialized_name="notificationOptions",
@@ -344,6 +350,9 @@ class Show(AAZCommand):
             )
             properties.notifications = AAZListType()
             _ShowHelper._build_schema_notifications_read(properties.notifications)
+            properties.obo_subscription_id = AAZStrType(
+                serialized_name="oboSubscriptionId",
+            )
             properties.optional_features = AAZListType(
                 serialized_name="optionalFeatures",
             )
@@ -443,6 +452,23 @@ class Show(AAZCommand):
             legacy_registrations = cls._schema_on_200.properties.specification.provider_registration.properties.legacy_registrations
             legacy_registrations.Element = AAZStrType()
 
+            lifecycle_info = cls._schema_on_200.properties.specification.provider_registration.properties.lifecycle_info
+            lifecycle_info.allowed_subscriptions = AAZListType(
+                serialized_name="allowedSubscriptions",
+            )
+            lifecycle_info.isolation_type = AAZStrType(
+                serialized_name="isolationType",
+            )
+            lifecycle_info.lifecycle_stage = AAZStrType(
+                serialized_name="lifecycleStage",
+            )
+            lifecycle_info.partner_category = AAZStrType(
+                serialized_name="partnerCategory",
+            )
+
+            allowed_subscriptions = cls._schema_on_200.properties.specification.provider_registration.properties.lifecycle_info.allowed_subscriptions
+            allowed_subscriptions.Element = AAZStrType()
+
             linked_notification_rules = cls._schema_on_200.properties.specification.provider_registration.properties.linked_notification_rules
             linked_notification_rules.Element = AAZObjectType()
 
@@ -488,6 +514,12 @@ class Show(AAZCommand):
             )
             management.expedited_rollout_submitters = AAZListType(
                 serialized_name="expeditedRolloutSubmitters",
+            )
+            management.feature_approval_claims = AAZListType(
+                serialized_name="featureApprovalClaims",
+            )
+            management.feature_management_owners = AAZListType(
+                serialized_name="featureManagementOwners",
             )
             management.incident_contact_email = AAZStrType(
                 serialized_name="incidentContactEmail",
@@ -540,6 +572,12 @@ class Show(AAZCommand):
             expedited_rollout_submitters = cls._schema_on_200.properties.specification.provider_registration.properties.management.expedited_rollout_submitters
             expedited_rollout_submitters.Element = AAZStrType()
 
+            feature_approval_claims = cls._schema_on_200.properties.specification.provider_registration.properties.management.feature_approval_claims
+            feature_approval_claims.Element = AAZStrType()
+
+            feature_management_owners = cls._schema_on_200.properties.specification.provider_registration.properties.management.feature_management_owners
+            feature_management_owners.Element = AAZStrType()
+
             manifest_owners = cls._schema_on_200.properties.specification.provider_registration.properties.management.manifest_owners
             manifest_owners.Element = AAZStrType()
 
@@ -557,6 +595,9 @@ class Show(AAZCommand):
             management_group_global_notification_endpoints = cls._schema_on_200.properties.specification.provider_registration.properties.management_group_global_notification_endpoints
             management_group_global_notification_endpoints.Element = AAZObjectType()
             _ShowHelper._build_schema_resource_provider_endpoint_read(management_group_global_notification_endpoints.Element)
+
+            metadata = cls._schema_on_200.properties.specification.provider_registration.properties.metadata
+            metadata.Element = AAZAnyType()
 
             notification_settings = cls._schema_on_200.properties.specification.provider_registration.properties.notification_settings
             notification_settings.subscriber_settings = AAZListType(
@@ -780,6 +821,9 @@ class Show(AAZCommand):
             properties.allowed_unauthorized_actions = AAZListType(
                 serialized_name="allowedUnauthorizedActions",
             )
+            properties.allowed_unauthorized_actions_extensions = AAZListType(
+                serialized_name="allowedUnauthorizedActionsExtensions",
+            )
             properties.api_profiles = AAZListType(
                 serialized_name="apiProfiles",
             )
@@ -857,6 +901,9 @@ class Show(AAZCommand):
             properties.legacy_policy = AAZObjectType(
                 serialized_name="legacyPolicy",
             )
+            properties.lifecycle_info = AAZObjectType(
+                serialized_name="lifecycleInfo",
+            )
             properties.linked_access_checks = AAZListType(
                 serialized_name="linkedAccessChecks",
             )
@@ -917,6 +964,9 @@ class Show(AAZCommand):
             properties.resource_concurrency_control_options = AAZDictType(
                 serialized_name="resourceConcurrencyControlOptions",
             )
+            properties.resource_deletion_policies = AAZListType(
+                serialized_name="resourceDeletionPolicies",
+            )
             properties.resource_deletion_policy = AAZStrType(
                 serialized_name="resourceDeletionPolicy",
             )
@@ -963,6 +1013,9 @@ class Show(AAZCommand):
             properties.subscription_state_rules = AAZListType(
                 serialized_name="subscriptionStateRules",
             )
+            properties.super_scale_enabled = AAZBoolType(
+                serialized_name="superScaleEnabled",
+            )
             properties.supports_tags = AAZBoolType(
                 serialized_name="supportsTags",
             )
@@ -982,6 +1035,9 @@ class Show(AAZCommand):
                 serialized_name="tokenAuthConfiguration",
             )
             _ShowHelper._build_schema_token_auth_configuration_read(properties.token_auth_configuration)
+            properties.write_lock = AAZObjectType(
+                serialized_name="writeLock",
+            )
 
             allowed_resource_names = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.allowed_resource_names
             allowed_resource_names.Element = AAZObjectType()
@@ -997,6 +1053,13 @@ class Show(AAZCommand):
 
             allowed_unauthorized_actions = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.allowed_unauthorized_actions
             allowed_unauthorized_actions.Element = AAZStrType()
+
+            allowed_unauthorized_actions_extensions = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.allowed_unauthorized_actions_extensions
+            allowed_unauthorized_actions_extensions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.allowed_unauthorized_actions_extensions.Element
+            _element.action = AAZStrType()
+            _element.intent = AAZStrType()
 
             api_profiles = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.api_profiles
             api_profiles.Element = AAZObjectType()
@@ -1225,6 +1288,11 @@ class Show(AAZCommand):
             disallowed_legacy_operations = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.legacy_policy.disallowed_legacy_operations
             disallowed_legacy_operations.Element = AAZStrType()
 
+            lifecycle_info = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.lifecycle_info
+            lifecycle_info.lifecycle_stage = AAZStrType(
+                serialized_name="lifecycleStage",
+            )
+
             linked_access_checks = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.linked_access_checks
             linked_access_checks.Element = AAZObjectType()
 
@@ -1243,6 +1311,9 @@ class Show(AAZCommand):
             )
             _element.linked_type = AAZStrType(
                 serialized_name="linkedType",
+            )
+            _element.options = AAZStrType(
+                flags={"read_only": True},
             )
 
             linked_notification_rules = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.linked_notification_rules
@@ -1366,6 +1437,12 @@ class Show(AAZCommand):
             management.expedited_rollout_submitters = AAZListType(
                 serialized_name="expeditedRolloutSubmitters",
             )
+            management.feature_approval_claims = AAZListType(
+                serialized_name="featureApprovalClaims",
+            )
+            management.feature_management_owners = AAZListType(
+                serialized_name="featureManagementOwners",
+            )
             management.incident_contact_email = AAZStrType(
                 serialized_name="incidentContactEmail",
             )
@@ -1417,6 +1494,12 @@ class Show(AAZCommand):
             expedited_rollout_submitters = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.management.expedited_rollout_submitters
             expedited_rollout_submitters.Element = AAZStrType()
 
+            feature_approval_claims = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.management.feature_approval_claims
+            feature_approval_claims.Element = AAZStrType()
+
+            feature_management_owners = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.management.feature_management_owners
+            feature_management_owners.Element = AAZStrType()
+
             manifest_owners = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.management.manifest_owners
             manifest_owners.Element = AAZStrType()
 
@@ -1437,7 +1520,10 @@ class Show(AAZCommand):
             )
 
             metadata = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.metadata
-            metadata.Element = AAZFreeFormDictType()
+            metadata.Element = AAZDictType()
+
+            _element = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.metadata.Element
+            _element.Element = AAZAnyType()
 
             on_behalf_of_tokens = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.on_behalf_of_tokens
             on_behalf_of_tokens.action_name = AAZStrType(
@@ -1540,6 +1626,23 @@ class Show(AAZCommand):
             _element = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.resource_concurrency_control_options.Element
             _element.policy = AAZStrType()
 
+            resource_deletion_policies = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.resource_deletion_policies
+            resource_deletion_policies.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.resource_deletion_policies.Element
+            _element.policy_name = AAZStrType(
+                serialized_name="policyName",
+            )
+            _element.properties = AAZObjectType()
+
+            properties = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.resource_deletion_policies.Element.properties
+            properties.maximum_retention_time = AAZStrType(
+                serialized_name="maximumRetentionTime",
+            )
+            properties.minimum_retention_time = AAZStrType(
+                serialized_name="minimumRetentionTime",
+            )
+
             resource_graph_configuration = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.resource_graph_configuration
             resource_graph_configuration.api_version = AAZStrType(
                 serialized_name="apiVersion",
@@ -1558,9 +1661,38 @@ class Show(AAZCommand):
             )
 
             batch_provisioning_support = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.resource_management_options.batch_provisioning_support
+            batch_provisioning_support.action_configurations = AAZListType(
+                serialized_name="actionConfigurations",
+            )
+            batch_provisioning_support.batch_contract_version = AAZStrType(
+                serialized_name="batchContractVersion",
+            )
+            batch_provisioning_support.max_batch_size = AAZIntType(
+                serialized_name="maxBatchSize",
+            )
+            batch_provisioning_support.max_nested_batch_size = AAZIntType(
+                serialized_name="maxNestedBatchSize",
+            )
+            batch_provisioning_support.required_features = AAZListType(
+                serialized_name="requiredFeatures",
+            )
             batch_provisioning_support.supported_operations = AAZStrType(
                 serialized_name="supportedOperations",
             )
+
+            action_configurations = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.resource_management_options.batch_provisioning_support.action_configurations
+            action_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.resource_management_options.batch_provisioning_support.action_configurations.Element
+            _element.authorization_action = AAZStrType(
+                serialized_name="authorizationAction",
+            )
+            _element.max_batch_size = AAZIntType(
+                serialized_name="maxBatchSize",
+            )
+
+            required_features = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.resource_management_options.batch_provisioning_support.required_features
+            required_features.Element = AAZStrType()
 
             delete_dependencies = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.resource_management_options.delete_dependencies
             delete_dependencies.Element = AAZObjectType()
@@ -1645,12 +1777,20 @@ class Show(AAZCommand):
             _element.api_versions = AAZListType(
                 serialized_name="apiVersions",
             )
+            _element.lifecycle_info = AAZObjectType(
+                serialized_name="lifecycleInfo",
+            )
             _element.swagger_spec_folder_uri = AAZStrType(
                 serialized_name="swaggerSpecFolderUri",
             )
 
             api_versions = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.swagger_specifications.Element.api_versions
             api_versions.Element = AAZStrType()
+
+            lifecycle_info = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.swagger_specifications.Element.lifecycle_info
+            lifecycle_info.lifecycle_stage = AAZStrType(
+                serialized_name="lifecycleStage",
+            )
 
             template_deployment_options = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.template_deployment_options
             template_deployment_options.preflight_options = AAZListType(
@@ -1699,6 +1839,9 @@ class Show(AAZCommand):
             metrics.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.throttling_rules.Element.metrics.Element
+            _element.bucket_size = AAZStrType(
+                serialized_name="bucketSize",
+            )
             _element.interval = AAZStrType()
             _element.limit = AAZIntType(
                 flags={"required": True},
@@ -1709,6 +1852,9 @@ class Show(AAZCommand):
 
             required_features = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.throttling_rules.Element.required_features
             required_features.Element = AAZStrType()
+
+            write_lock = cls._schema_on_200.properties.specification.resource_type_registrations.Element.properties.write_lock
+            write_lock.state = AAZStrType()
 
             rest_of_the_world_group_one = cls._schema_on_200.properties.specification.rest_of_the_world_group_one
             rest_of_the_world_group_one.regions = AAZListType()
@@ -1804,12 +1950,15 @@ class _ShowHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_extended_error_info_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"required": True},
         )
+
+        info = _schema_extended_error_info_read.additional_info.Element.info
+        info.Element = AAZAnyType()
 
         details = _schema_extended_error_info_read.details
         details.Element = AAZObjectType()

@@ -8,6 +8,17 @@ from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
 from azure.cli.core.azclierror import ValidationError, CLIError
 from azure.cli.testsdk import live_only
 
+import unittest
+
+from azext_firewall.aaz.latest.network.firewall._create import Create as _Create
+from azext_firewall.aaz.latest.network.firewall._list import List as _List
+from azext_firewall.aaz.latest.network.firewall._show import Show as _Show
+from azext_firewall.aaz.latest.network.firewall._update import Update as _Update
+from azext_firewall.aaz.latest.network.firewall.policy.kube_selector_group._create import Create as _KsgCreate
+from azext_firewall.aaz.latest.network.firewall.policy.kube_selector_group._update import Update as _KsgUpdate
+from azext_firewall.custom import (ThreatIntelAllowListCreate, ThreatIntelAllowListUpdate,
+                                   ThreatIntelAllowListDelete)
+
 
 class AzureFirewallScenario(ScenarioTest):
 
@@ -548,7 +559,8 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy show -g {rg} -n {policy}', checks=[
             self.check('type', 'Microsoft.Network/FirewallPolicies'),
-            self.check('name', '{policy}')
+            self.check('name', '{policy}'),
+            self.check('afcManaged', False)
         ])
 
         self.cmd('network firewall policy list -g {rg}', checks=[
@@ -1090,6 +1102,89 @@ class AzureFirewallScenario(ScenarioTest):
         })
         self.cmd('network firewall create -g {rg} -n af --sku AZFW_VNet --tier Premium',
                  checks=self.check('sku.tier', 'Premium'))
+
+    # ponytail: replays from the recording, so it asserts only what the CLI owns: that
+    # --create-afc-control-plane reaches the RP as the createAfcControlPlane query parameter
+    # (playback matches on query parameters, so dropping it breaks this test) and that the
+    # firewall still provisions. The RP returns afcConfiguration only once an AFC control plane
+    # is actually deployed for the firewall, which it is not in the recorded subscription, so
+    # serviceEndpoint is covered offline in AzureFirewallAfcArgumentTest instead.
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_afc', location='westus2')
+    def test_azure_firewall_afc_control_plane(self, resource_group):
+        self.kwargs.update({
+            'af': 'af-afc',
+            'pubip': 'pubip-afc',
+            'vnet': 'vnet-afc',
+            'conf': 'ipconfig-afc',
+        })
+
+        self.cmd('network public-ip create -g {rg} -n {pubip} --sku Standard --allocation-method Static')
+        self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name AzureFirewallSubnet '
+                 '--address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24')
+
+        # the AFC control plane is only provisioned for a firewall that has an IP configuration
+        self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_VNet --tier Standard '
+                 '--vnet-name {vnet} --public-ip {pubip} --conf-name {conf} --create-afc-control-plane true')
+
+        self.cmd('network firewall show -g {rg} -n {af}',
+                 checks=[
+                     self.check('name', '{af}'),
+                     self.check('provisioningState', 'Succeeded'),
+                 ])
+
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_kube_selector_group', location='westus2')
+    def test_azure_firewall_policy_kube_selector_group(self, resource_group):
+        self.kwargs.update({
+            'policy': 'testpolicy',
+            'ksg': 'testksg',
+            'pod_selector': '{match-labels:{app:web},match-expressions:[{key:tier,operator:In,values:[frontend,backend]}]}',
+            'ns_selector': '{match-labels:{kubernetes.io/metadata.name:production}}',
+            'pod_selector_2': '{match-expressions:[{key:tier,operator:Exists}]}',
+        })
+
+        self.cmd('network firewall policy create -g {rg} -n {policy}')
+
+        self.cmd('network firewall policy kube-selector-group create -g {rg} --policy-name {policy} -n {ksg} '
+                 '--pod-selector "{pod_selector}" --namespace-selector "{ns_selector}"',
+                 checks=[
+                     self.check('name', '{ksg}'),
+                     self.check('properties.podSelector.matchLabels.app', 'web'),
+                     self.check('properties.podSelector.matchExpressions[0].key', 'tier'),
+                     self.check('properties.podSelector.matchExpressions[0].operator', 'In'),
+                     self.check('properties.podSelector.matchExpressions[0].values', ['frontend', 'backend']),
+                     self.check('properties.namespaceSelector.matchLabels."kubernetes.io/metadata.name"', 'production'),
+                 ])
+
+        self.cmd('network firewall policy kube-selector-group show -g {rg} --policy-name {policy} -n {ksg}',
+                 checks=[
+                     self.check('name', '{ksg}'),
+                     self.check('properties.provisioningState', 'Succeeded'),
+                 ])
+
+        self.cmd('network firewall policy kube-selector-group list -g {rg} --policy-name {policy}',
+                 checks=self.check('length(@)', 1))
+
+        # read-modify-write: --namespace-selector is not passed, so it must survive the update
+        self.cmd('network firewall policy kube-selector-group update -g {rg} --policy-name {policy} -n {ksg} '
+                 '--pod-selector "{pod_selector_2}"',
+                 checks=[
+                     self.check('properties.podSelector.matchExpressions[0].operator', 'Exists'),
+                     self.check('properties.podSelector.matchLabels', None),
+                     self.check('properties.namespaceSelector.matchLabels."kubernetes.io/metadata.name"', 'production'),
+                 ])
+
+        # an explicit null is the only way to clear a selector
+        self.cmd('network firewall policy kube-selector-group update -g {rg} --policy-name {policy} -n {ksg} '
+                 '--namespace-selector null',
+                 checks=[
+                     self.check('properties.namespaceSelector', None),
+                     self.check('properties.podSelector.matchExpressions[0].operator', 'Exists'),
+                 ])
+
+        self.cmd('network firewall policy kube-selector-group delete -g {rg} --policy-name {policy} -n {ksg} --yes')
+
+        self.cmd('network firewall policy kube-selector-group list -g {rg} --policy-name {policy}',
+                 checks=self.check('length(@)', 0))
 
     # BUG ISSUE: https://github.com/Azure/azure-cli-extensions/issues/4096
     @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_update_premiumonlyproperty_issue', location='westus2')
@@ -1728,3 +1823,50 @@ class AzureFirewallScenario(ScenarioTest):
 
         #Delete firewall
         self.cmd('network firewall delete -n {firewall_name} -g {rg}')
+
+
+class AzureFirewallKubeSelectorGroupArgumentTest(unittest.TestCase):
+
+    def test_selectors_are_registered_on_create_and_update(self):
+        for cls in (_KsgCreate, _KsgUpdate):
+            cls._args_schema = None
+            schema = cls._build_arguments_schema()
+            self.assertTrue(schema.pod_selector._registered)
+            self.assertTrue(schema.namespace_selector._registered)
+            operator = schema.pod_selector.match_expressions.Element.operator
+            self.assertEqual(sorted(operator.enum.items), ['DoesNotExist', 'Exists', 'In', 'NotIn'])
+
+    def test_update_is_read_modify_write_and_nullable(self):
+        # the GET before the PUT is what keeps a selector that was not passed on this invocation
+        _KsgUpdate._args_schema = None
+        schema = _KsgUpdate._build_arguments_schema()
+        self.assertTrue(schema.pod_selector._nullable)
+        self.assertTrue(schema.namespace_selector._nullable)
+        operations = [op.__name__ for op in (_KsgUpdate.FirewallPolicyKubeSelectorGroupsGet,
+                                             _KsgUpdate.InstanceUpdateByJson,
+                                             _KsgUpdate.FirewallPolicyKubeSelectorGroupsCreateOrUpdate)]
+        self.assertEqual(operations, ['FirewallPolicyKubeSelectorGroupsGet', 'InstanceUpdateByJson',
+                                      'FirewallPolicyKubeSelectorGroupsCreateOrUpdate'])
+
+
+class AzureFirewallAfcArgumentTest(unittest.TestCase):
+
+    def test_create_and_update_expose_afc_control_plane(self):
+        for cls in (_Create, _Update):
+            cls._args_schema = None
+            self.assertTrue(cls._build_arguments_schema().create_afc_control_plane._registered)
+
+    def test_threat_intel_allowlist_hides_afc_control_plane(self):
+        for cls in (ThreatIntelAllowListCreate, ThreatIntelAllowListUpdate, ThreatIntelAllowListDelete):
+            # ponytail: AAZ caches _args_schema on the shared base class, drop it so each class builds its own
+            cls._args_schema = None
+            self.assertFalse(cls._build_arguments_schema().create_afc_control_plane._registered)
+
+    def test_show_and_list_expose_afc_service_endpoint(self):
+        # AAZObjectType raises AAZUnknownFieldError for a field the generated schema does not define,
+        # so this fails if a regeneration drops afcConfiguration from the read commands.
+        show = _Show.AzureFirewallsGet._build_schema_on_200()
+        self.assertTrue(show.properties.afc_configuration.service_endpoint._flags['read_only'])
+        for op in (_List.AzureFirewallsList, _List.AzureFirewallsListAll):
+            listed = op._build_schema_on_200()
+            self.assertTrue(listed.value.Element.properties.afc_configuration.service_endpoint._flags['read_only'])

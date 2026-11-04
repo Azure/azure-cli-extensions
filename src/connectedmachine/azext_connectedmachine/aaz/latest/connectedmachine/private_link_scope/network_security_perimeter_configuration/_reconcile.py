@@ -22,17 +22,16 @@ class Reconcile(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2026-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/networksecurityperimeterconfigurations/{}/reconcile", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/networksecurityperimeterconfigurations/{}/reconcile", "2026-07-15"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -63,7 +62,7 @@ class Reconcile(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="[a-zA-Z0-9-_\\.]+",
             ),
         )
         return cls._args_schema
@@ -82,8 +81,11 @@ class Reconcile(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        # Reconcile operation returns minimal response, check if instance exists
+        if hasattr(self.ctx.vars, 'instance') and self.ctx.vars.instance is not None:
+            result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+            return result
+        return None
 
     class NetworkSecurityPerimeterConfigurationsReconcileForPrivateLinkScope(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -97,7 +99,7 @@ class Reconcile(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -106,7 +108,7 @@ class Reconcile(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -153,7 +155,7 @@ class Reconcile(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2026-07-15",
                     required=True,
                 ),
             }
@@ -186,7 +188,9 @@ class Reconcile(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.location = AAZStrType()
+            _schema_on_200.location = AAZStrType(
+                flags={"read_only": True},
+            )
 
             return cls._schema_on_200
 

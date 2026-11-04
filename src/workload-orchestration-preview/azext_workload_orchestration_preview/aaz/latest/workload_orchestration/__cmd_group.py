@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "workload-orchestration",
+    "workload-orchestration-preview",
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage workload orchestration resources

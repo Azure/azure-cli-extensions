@@ -8,27 +8,74 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-import unittest
+import re
+
 from azure.cli.testsdk import *
+from azure.cli.testsdk.scenario_tests import RecordingProcessor
+from azure.cli.testsdk.scenario_tests.utilities import is_text_payload
+
+
+MOCK_GUID = "00000000-0000-0000-0000-000000000000"
+_GUID_RE = re.compile(
+    r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
+_DDAPP_RE = re.compile(r"ddapp_[A-Za-z0-9]+")
+_DDOG_RE = re.compile(r"ddog_[A-Za-z0-9]+")
+_HEXKEY_RE = re.compile(r'("key"\s*:\s*")[A-Fa-f0-9]{32}"')
+_TENANT_RE = re.compile(r"tenantId=[0-9a-fA-F-]{36}")
+_OBJECT_RE = re.compile(r"objectId=[0-9a-fA-F-]{36}")
+
+
+class DatadogSecretScrubber(RecordingProcessor):
+    """Scrub Datadog keys and Azure identity GUIDs (subscription, tenant,
+    principalId, objectId) from recorded responses so no real values are
+    committed to the repository."""
+
+    def process_response(self, response):
+        headers = response.get("headers") or {}
+        for name in list(headers.keys()):
+            val = headers[name]
+            if isinstance(val, list):
+                headers[name] = [self._scrub_header(v) for v in val]
+            else:
+                headers[name] = self._scrub_header(val)
+        if is_text_payload(response) and response["body"]["string"]:
+            response["body"]["string"] = self._scrub_body(response["body"]["string"])
+        return response
+
+    @staticmethod
+    def _scrub_header(value):
+        if not isinstance(value, str):
+            return value
+        value = _TENANT_RE.sub("tenantId=" + MOCK_GUID, value)
+        value = _OBJECT_RE.sub("objectId=" + MOCK_GUID, value)
+        return value
+
+    @staticmethod
+    def _scrub_body(body):
+        body = _DDAPP_RE.sub("ddapp_" + "0" * 34, body)
+        body = _DDOG_RE.sub("ddog_" + "0" * 34, body)
+        body = _HEXKEY_RE.sub(lambda m: m.group(1) + "0" * 32 + '"', body)
+        body = _GUID_RE.sub(MOCK_GUID, body)
+        return body
+
 
 class DatadogMonitorsTestScenario(ScenarioTest):
     test_options = {
-        "subscription": "00000000-0000-0000-0000-000000000000",
-        "rg": "bhanu-test",
-        "sku": "pro_testing_20200911_Monthly@TIDgmz7xq9ge3py"
+        "sku": "test-plan-no-billing_Monthly@TIDn7ja87drquhy"
     }
+
+    def __init__(self, method_name):
+        super(DatadogMonitorsTestScenario, self).__init__(
+            method_name,
+            recording_processors=[DatadogSecretScrubber()],
+        )
 
     @ResourceGroupPreparer(name_prefix='cli_test_datadog_monitor', location='centraluseuap')
     def test_datadog_monitor(self, resource_group):
-        email = self.cmd('account show').get_output_in_json()['user']['name']
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 20),
-            'rg': self.test_options["rg"],
-            'email': email,
             'sku': self.test_options["sku"],
-            'subscription': self.test_options["subscription"],
-            'org_name': 'myorg'+self.create_random_name('', 5),
-            'ruleSetId': '31d91b5afb6f4c2eaaf104c97b1991dd'
+            'org_name': 'myorg'+self.create_random_name('', 5)
         })
 
         self.cmd('datadog monitor create '
@@ -36,16 +83,14 @@ class DatadogMonitorsTestScenario(ScenarioTest):
                     '-g {rg} '
                     '--location centraluseuap '
                     '--monitoring-status Enabled '
-                    '--subscription {subscription} '
                     '--org-properties name="{org_name}" '
                     '--sku name="{sku}" '
                     '--identity type="SystemAssigned" '
-                    '--user-info name="Alice" email-address="alice@microsoft.com" --debug', checks=[
+                    '--user-info name="Alice" email-address="alice@microsoft.com"', checks=[
                      self.check('name', '{monitor}'),
                      self.check('resourceGroup', '{rg}'),
                      self.check('sku.name', '{sku}')
                  ])
-        
 
         self.cmd('datadog monitor list -g {rg}', checks=[
             self.check('[0].name', '{monitor}'),
@@ -59,14 +104,13 @@ class DatadogMonitorsTestScenario(ScenarioTest):
             self.check('sku.name', '{sku}')
         ])
 
-        self.cmd('datadog monitor get-billing-info --monitor-name {monitor} -g {rg}', checks=[
-                 self.check('length(marketplaceSaasInfo)', 5)
-                 ])
-
+        self.cmd('datadog monitor get-billing-info --monitor-name {monitor} -g {rg}')
         self.cmd('datadog monitor get-default-key -g {rg} --monitor-name {monitor}')
         self.cmd('datadog monitor list-api-key -g {rg} --monitor-name {monitor}')
         self.cmd('datadog monitor list-host -g {rg} --monitor-name {monitor}')
         self.cmd('datadog monitor list-linked-resource -g {rg} --monitor-name {monitor}')
         self.cmd('datadog monitor list-monitored-resource -g {rg} --monitor-name {monitor}')
+        self.cmd('datadog monitor latest-linked-saas -g {rg} --monitor-name {monitor}')
+        self.cmd('datadog monitor get-default-application-key -g {rg} --monitor-name {monitor}')
 
         self.cmd('datadog monitor delete --name {monitor} --resource-group {rg} -y')

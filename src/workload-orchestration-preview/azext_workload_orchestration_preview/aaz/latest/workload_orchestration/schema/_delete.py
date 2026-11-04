@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration schema delete",
+    "workload-orchestration-preview schema delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete a Schema Resource
     :example: Delete a Schema
-        az workload-orchestration schema delete -n mySchema -g myResourceGroup --version
+        az workload-orchestration-preview schema delete -n mySchema -g myResourceGroup --version
     """
 
     _aaz_info = {

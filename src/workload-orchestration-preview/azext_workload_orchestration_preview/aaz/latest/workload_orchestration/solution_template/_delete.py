@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration solution-template delete",
+    "workload-orchestration-preview solution-template delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete a Solution Template Resource
     :example: Delete a Solution Template
-        az workload-orchestration solution-template delete -n mySolutionTemplate -g myResourceGroup
+        az workload-orchestration-preview solution-template delete -n mySolutionTemplate -g myResourceGroup
     """
 
     _aaz_info = {

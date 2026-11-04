@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "datadog monitor list-api-key",
+    is_preview=True,
 )
 class ListApiKey(AAZCommand):
     """Lists all API keys associated with a specific Datadog monitor resource, allowing you to manage and audit the keys used for authentication and data transmission.
@@ -22,9 +23,9 @@ class ListApiKey(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-06-11",
+        "version": "2025-12-26-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/listapikeys", "2025-06-11"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/listapikeys", "2025-12-26-preview"],
         ]
     }
 
@@ -126,7 +127,7 @@ class ListApiKey(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-11",
+                    "api-version", "2025-12-26-preview",
                     required=True,
                 ),
             }

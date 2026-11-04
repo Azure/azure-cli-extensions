@@ -172,10 +172,15 @@ def configure_load_balancer_profile(
                 profile.managed_outbound_i_ps = (
                     ManagedClusterLoadBalancerProfileManagedOutboundIPs()
                 )
-            if managed_outbound_ip_count is not None:
-                profile.managed_outbound_i_ps.count = managed_outbound_ip_count
+            existing_count = profile.managed_outbound_i_ps.count
+            existing_or_default_count = existing_count if existing_count is not None else 1
+            profile.managed_outbound_i_ps.count = (
+                managed_outbound_ip_count
+                if managed_outbound_ip_count is not None
+                else existing_or_default_count
+            )
             if managed_outbound_ipv6_count is not None:
-                profile.managed_outbound_i_ps.count_i_pv6 = managed_outbound_ipv6_count
+                profile.managed_outbound_i_ps.count_ipv6 = managed_outbound_ipv6_count
         else:
             profile.managed_outbound_i_ps = None
 

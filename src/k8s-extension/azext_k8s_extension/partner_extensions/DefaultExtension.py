@@ -31,6 +31,7 @@ class DefaultExtension(PartnerExtensionModel):
         extension_type,
         scope,
         auto_upgrade_minor_version,
+        auto_upgrade_mode,
         release_train,
         version,
         target_namespace,
@@ -74,6 +75,7 @@ class DefaultExtension(PartnerExtensionModel):
         extension = Extension(
             extension_type=extension_type,
             auto_upgrade_minor_version=auto_upgrade_minor_version,
+            auto_upgrade_mode=auto_upgrade_mode,
             release_train=release_train,
             version=version,
             scope=ext_scope,
@@ -89,6 +91,7 @@ class DefaultExtension(PartnerExtensionModel):
         resource_group_name,
         cluster_name,
         auto_upgrade_minor_version,
+        auto_upgrade_mode,
         release_train,
         version,
         configuration_settings,
@@ -102,6 +105,7 @@ class DefaultExtension(PartnerExtensionModel):
 
         return PatchExtension(
             auto_upgrade_minor_version=auto_upgrade_minor_version,
+            auto_upgrade_mode=auto_upgrade_mode,
             release_train=release_train,
             version=version,
             configuration_settings=configuration_settings,

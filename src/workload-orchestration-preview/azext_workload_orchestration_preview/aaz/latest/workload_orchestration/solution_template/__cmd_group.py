@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "workload-orchestration solution-template",
+    "workload-orchestration-preview solution-template",
 )
 class __CMDGroup(AAZCommandGroup):
-    """workload-orchestration solution-template helps to manage Solution Templates
+    """workload-orchestration-preview solution-template helps to manage Solution Templates
     """
     pass
 

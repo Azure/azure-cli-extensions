@@ -4,7 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 
+import hashlib
 import json
+from contextlib import contextmanager
+
+from azure.cli.testsdk import JMESPathCheck
+from azure.cli.testsdk.scenario_tests.recording_processors import RecordingProcessor
 
 from .scenario_mixin import add_tags
 
@@ -96,11 +101,90 @@ def _escape_format_placeholders(command, format_placeholders=None):
     return ''.join(escaped)
 
 
+class ByocVaultRecordingProcessor(RecordingProcessor):
+    def __init__(self, principal_id):
+        self.principal_id = principal_id
+
+    @staticmethod
+    def _scrub_identity(value):
+        prefix = '00000000-0000-0000-0000-'
+        if not value or value.startswith(prefix):
+            return value
+        return prefix + hashlib.sha256(value.lower().encode()).hexdigest()[:12]
+
+    def _scrub_body(self, body):
+        if not body:
+            return body
+        try:
+            payload = json.loads(body)
+        except (TypeError, ValueError):
+            return body
+        if not isinstance(payload, dict):
+            return body
+        properties = payload.get('properties')
+        if not isinstance(properties, dict):
+            return body
+        policies = properties.get('accessPolicies')
+        if policies is None:
+            return body
+        for policy in policies:
+            if policy.get('objectId', '').lower() == self.principal_id.lower():
+                continue
+            for name in ('objectId', 'tenantId', 'applicationId'):
+                if name in policy:
+                    policy[name] = self._scrub_identity(policy[name])
+        system_data = payload.get('systemData') or {}
+        for name in ('createdBy', 'lastModifiedBy'):
+            if name in system_data:
+                system_data[name] = self._scrub_identity(system_data[name])
+        scrubbed = json.dumps(payload)
+        return scrubbed.encode() if isinstance(body, bytes) else scrubbed
+
+    def process_request(self, request):
+        request.body = self._scrub_body(request.body)
+        return request
+
+    def process_response(self, response):
+        response['body']['string'] = self._scrub_body(response['body']['string'])
+        return response
+
+
 # pylint: disable=too-many-public-methods
 class CdnAfdScenarioMixin:
     def cmd(self, command, checks=None, expect_failure=False):
         return super().cmd(_escape_format_placeholders(command, getattr(self, 'kwargs', {})), checks,
                            expect_failure=expect_failure)
+
+    @contextmanager
+    def afd_byoc_identity(self, resource_group, profile_name, vault_name='Azure-CDN-BYOC',
+                          vault_resource_group='byoc', vault_subscription='3c0124f9-e564-4c42-86f7-fa79457aedc3'):
+        identity = self.cmd(
+            f'afd profile identity assign -g {resource_group} --profile-name {profile_name} '
+            '--system-assigned').get_output_in_json()
+        principal_id = identity['principalId']
+        self.assertTrue(principal_id, 'The profile system-assigned identity must have a principal ID')
+        tenant_id = identity['tenantId']
+        self.assertTrue(tenant_id, 'The profile system-assigned identity must have a tenant ID')
+        # Recording processors sanitize every subscription, including cross-subscription vaults.
+        vault_subscription = (
+            vault_subscription
+            if self.in_recording or self.is_live else self.get_subscription_id()
+        )
+        policy_args = (
+            f'--name {vault_name} --resource-group {vault_resource_group} --subscription {vault_subscription} '
+            f'--object-id {principal_id}'
+        )
+        # The built-in commands serialize the shared vault's other policies as well.
+        processor = ByocVaultRecordingProcessor(principal_id)
+        self.recording_processors.append(processor)
+        try:
+            self.cmd(f'keyvault set-policy {policy_args} --secret-permissions get')
+            try:
+                yield
+            finally:
+                self.cmd(f'keyvault delete-policy {policy_args}')
+        finally:
+            self.recording_processors.remove(processor)
 
     def afd_profile_create_cmd(self, resource_group_name, profile_name, tags=None, checks=None, options=None,
                                sku="Standard_AzureFrontDoor", expect_failure=False):
@@ -111,6 +195,18 @@ class CdnAfdScenarioMixin:
             command = command + ' ' + options
 
         return self.cmd(command, checks, expect_failure=expect_failure)
+
+    def afd_nonproduction_profile_create_cmd(self, resource_group_name, profile_name,
+                                             sku="Standard_AzureFrontDoor"):
+        profile_args = f'-g {resource_group_name} --profile-name {profile_name}'
+        # Keep the AAZ-only create input when re-importing the read-only Swagger dictionary.
+        self.cmd(
+            f'afd profile create {profile_args} --sku {sku} '
+            '--environment-type NonProduction --no-wait')
+        self.cmd(f'afd profile wait {profile_args} --created')
+        return self.cmd(f'afd profile show {profile_args}', checks=[
+            JMESPathCheck('extendedProperties.environmentType', 'NonProduction'),
+        ])
 
     def afd_profile_update_cmd(self, group, name, tags=None, checks=None, options=None):
         command = 'afd profile update -g {} --profile-name {}'.format(group, name)
@@ -140,7 +236,7 @@ class CdnAfdScenarioMixin:
 
     def afd_endpoint_create_cmd(self, resource_group_name, profile_name, endpoint_name,
                                 enabled_state,
-                                tags=None, checks=None, name_reuse_scope=None):
+                                tags=None, checks=None, name_reuse_scope=None, enforce_mtls=None):
         cmd = f'afd endpoint create -g {resource_group_name} --endpoint-name {endpoint_name} ' \
               f'--profile-name {profile_name} ' \
               f'--enabled-state {enabled_state}'
@@ -148,19 +244,22 @@ class CdnAfdScenarioMixin:
         if name_reuse_scope:
             cmd += f" --name-reuse-scope {name_reuse_scope}"
 
+        cmd = _add_paramter_if_needed(cmd, "enforce-mtls", enforce_mtls)
+
         if tags:
             cmd = add_tags(cmd, tags)
 
         return self.cmd(cmd, checks)
 
     def afd_endpoint_update_cmd(self, resource_group_name, profile_name, endpoint_name,
-                                enabled_state=None, tags=None, checks=None, options=None):
+                                enabled_state=None, tags=None, checks=None, options=None, enforce_mtls=None):
         command = f'afd endpoint update -g {resource_group_name} --endpoint-name {endpoint_name} ' \
                   f'--profile-name {profile_name}'
         if tags:
             command = add_tags(command, tags)
 
         command = _add_paramter_if_needed(command, "enabled-state", enabled_state)
+        command = _add_paramter_if_needed(command, "enforce-mtls", enforce_mtls)
 
         if options:
             command = command + ' ' + options
@@ -183,9 +282,14 @@ class CdnAfdScenarioMixin:
             command = command + ' ' + f'--domains {" ".join(domains)}'
         return self.cmd(command, checks)
 
-    def afd_rule_set_add_cmd(self, resource_group_name, rule_set_name, profile_name, checks=None):
+    def afd_rule_set_add_cmd(self, resource_group_name, rule_set_name, profile_name, checks=None,
+                             batch_mode=None, rules=None):
         command = f'az afd rule-set create -g {resource_group_name} --rule-set-name {rule_set_name} ' \
                   f'--profile-name {profile_name}'
+
+        command = _add_paramter_if_needed(command, "batch-mode", batch_mode)
+        if rules is not None:
+            command += f' --rules {_json_arg(rules)}'
 
         return self.cmd(command, checks)
 
@@ -288,15 +392,23 @@ class CdnAfdScenarioMixin:
         return self.cmd(command, checks)
 
     def afd_secret_create_cmd(self, resource_group_name, profile_name, secret_name, secret_source,
-                              use_latest_version, secret_version, checks=None):
-        parameters = {
-            'customer-certificate': {
-                'secret-source': {'id': secret_source},
-                'use-latest-version': _to_bool(use_latest_version)
+                              use_latest_version, secret_version, checks=None, secret_type='customer-certificate'):
+        if secret_type == 'mtls-certificate-chain':
+            parameters = {
+                'mtls-certificate-chain': {
+                    'secret-source': {'id': secret_source},
+                    'secret-version': secret_version
+                }
             }
-        }
-        if secret_version:
-            parameters['customer-certificate']['secret-version'] = secret_version
+        else:
+            parameters = {
+                'customer-certificate': {
+                    'secret-source': {'id': secret_source},
+                    'use-latest-version': _to_bool(use_latest_version)
+                }
+            }
+            if secret_version:
+                parameters['customer-certificate']['secret-version'] = secret_version
         cmd = f'afd secret create -g {resource_group_name} --profile-name {profile_name} ' \
               f'--secret-name {secret_name} --parameters {_json_arg(parameters)}'
 
@@ -334,7 +446,8 @@ class CdnAfdScenarioMixin:
 
     def afd_custom_domain_create_cmd(self, resource_group_name, profile_name, custom_domain_name,
                                      host_name, certificate_type, minimum_tls_version,
-                                     azure_dns_zone=None, secret=None, checks=None):
+                                     azure_dns_zone=None, secret=None, checks=None, mtls_settings=None,
+                                     server_tls_group_policy=None):
         cmd = f'afd custom-domain create -g {resource_group_name} --profile-name {profile_name} ' \
               f'--custom-domain-name {custom_domain_name} --host-name {host_name} ' \
               f'--certificate-type {certificate_type} --minimum-tls-version {minimum_tls_version}'
@@ -343,12 +456,15 @@ class CdnAfdScenarioMixin:
             cmd += f' --azure-dns-zone={azure_dns_zone}'
         if secret:
             cmd += f' --secret={secret}'
+        if mtls_settings is not None:
+            cmd += f' --mtls-settings {_json_arg(mtls_settings)}'
+        cmd = _add_paramter_if_needed(cmd, "server-tls-group-policy", server_tls_group_policy)
 
         return self.cmd(cmd, checks)
 
     def afd_custom_domain_update_cmd(self, resource_group_name, profile_name, custom_domain_name,
                                      certificate_type=None, minimum_tls_version=None,
-                                     azure_dns_zone=None, secret=None, checks=None):
+                                     azure_dns_zone=None, secret=None, checks=None, mtls_settings=None):
         cmd = f'afd custom-domain update -g {resource_group_name} --profile-name {profile_name} ' \
               f'--custom-domain-name {custom_domain_name} ' \
               f'--certificate-type {certificate_type} --minimum-tls-version {minimum_tls_version}'
@@ -357,6 +473,8 @@ class CdnAfdScenarioMixin:
             cmd += f' --azure-dns-zone={azure_dns_zone}'
         if secret:
             cmd += f' --secret={secret}'
+        if mtls_settings is not None:
+            cmd += f' --mtls-settings {_json_arg(mtls_settings)}'
 
         return self.cmd(cmd, checks)
 

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies/{}", "2025-09-01"],
         ]
     }
 
@@ -123,7 +123,7 @@ class Wait(AAZWaitCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -160,7 +160,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.id = AAZStrType()
-            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.identity = AAZIdentityObjectType()
             _schema_on_200.location = AAZStrType()
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
@@ -201,6 +201,10 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.afc_managed = AAZBoolType(
+                serialized_name="afcManaged",
+                flags={"read_only": True},
+            )
             properties.base_policy = AAZObjectType(
                 serialized_name="basePolicy",
             )
@@ -222,12 +226,19 @@ class Wait(AAZWaitCommand):
             properties.intrusion_detection = AAZObjectType(
                 serialized_name="intrusionDetection",
             )
+            properties.kube_selector_groups = AAZListType(
+                serialized_name="kubeSelectorGroups",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.rule_collection_groups = AAZListType(
                 serialized_name="ruleCollectionGroups",
+                flags={"read_only": True},
+            )
+            properties.size = AAZStrType(
                 flags={"read_only": True},
             )
             properties.sku = AAZObjectType()
@@ -377,6 +388,10 @@ class Wait(AAZWaitCommand):
             _element = cls._schema_on_200.properties.intrusion_detection.configuration.signature_overrides.Element
             _element.id = AAZStrType()
             _element.mode = AAZStrType()
+
+            kube_selector_groups = cls._schema_on_200.properties.kube_selector_groups
+            kube_selector_groups.Element = AAZObjectType()
+            _WaitHelper._build_schema_sub_resource_read(kube_selector_groups.Element)
 
             rule_collection_groups = cls._schema_on_200.properties.rule_collection_groups
             rule_collection_groups.Element = AAZObjectType()

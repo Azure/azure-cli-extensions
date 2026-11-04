@@ -114,9 +114,9 @@ class AzdevExtensionHelper:
             raise ValueError(f"Underscores `_` are not allowed in the extension root directory, "
                              f"please change it to a hyphen `-`.")
         if metadata['name'] != extension_name:
-            raise ValueError(f"The name {metadata['name']} in setup.py "
+            raise ValueError(f"The name {metadata['name']} declared in pyproject.toml/setup.py "
                              f"is not the same as the extension name {extension_name}! \n"
-                             f"Please fix the name in setup.py!")
+                             f"Please fix the name in pyproject.toml/setup.py!")
 
 
 def find_modified_files_against_master_branch():
@@ -162,7 +162,8 @@ def contain_extension_code(files):
         if 'src/' in file and os.path.isfile(file) and os.path.isdir(os.path.dirname(file)):
             new_extension_home = os.path.dirname(file)
 
-            if os.path.isfile(os.path.join(new_extension_home, 'setup.py')):
+            # Accept both while extensions are migrating to pyproject.toml.
+            if os.path.isfile(os.path.join(new_extension_home, 'pyproject.toml')) or os.path.isfile(os.path.join(new_extension_home, 'setup.py')):
                 return True
 
     return False

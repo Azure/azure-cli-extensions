@@ -7,6 +7,7 @@ import os
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
+from .recording_processors import RedisEnterpriseKeyReplacer
 
 from .. import (
     try_manual,
@@ -37,7 +38,7 @@ def step_create_cluster_with_b1_sku(test, checks=None):
     test.cmd('az redisenterprise create '
              '--cluster-name "{cluster}" '
              '--sku "Balanced_B1" '
-             '--location "centraluseuap" '
+             '--location "centralindia" '
              '--tags tag1="value1" '
              '--public-network-access "Enabled" '
              '--access-keys-auth Enabled '
@@ -117,7 +118,7 @@ def call_test_connection_scenario(test, rg):
     step_show_cluster(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "Central US EUAP"),
+        test.check("location", "Central India"),
         test.check("sku.name", "Balanced_B1"),
         test.check("tags.tag1", "value1"),
         test.check("minimumTlsVersion", "1.2"),
@@ -155,6 +156,7 @@ class RedisEnterpriseTestConnectionScenarioTest(ScenarioTest):
 
     def __init__(self, *args, **kwargs):
         super(RedisEnterpriseTestConnectionScenarioTest, self).__init__(*args, **kwargs)
+        self.recording_processors.append(RedisEnterpriseKeyReplacer())
 
         self.kwargs.update({
             'cluster': self.create_random_name(prefix='clitest-tc-', length=21)
@@ -162,11 +164,10 @@ class RedisEnterpriseTestConnectionScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-tc-', key='rg', parameter_name='rg',
-                           location='eastasia', random_name_length=34)
+                           location='centralindia', random_name_length=34)
     @live_only()
     def test_redisenterprise_test_connection(self, rg):
         call_test_connection_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()
-
 

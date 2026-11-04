@@ -10,24 +10,23 @@
 
 from azure.cli.core.aaz import *
 
+from ._list import List
+
 
 @register_command(
     "oracle-database autonomous-database backup create",
 )
 class Create(AAZCommand):
-    """Create an Autonomous Database backup
+    """Create an Autonomous Database backup.
 
     :example: Create an Autonomous Database backup
         az oracle-database autonomous-database backup create --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id> --display-name <display name> --retention-period-in-days <days>
-
-    :example: Create and return the Azure backup resource ID
-        az oracle-database autonomous-database backup create --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id> --retention-period-in-days <days> --query "{id:id,name:name}"
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/autonomousdatabasebackups/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/autonomousdatabasebackups/{}", "2026-06-01"],
         ]
     }
 
@@ -50,7 +49,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.adbbackupid = AAZStrArg(
             options=["-n", "--name", "--adbbackupid"],
-            help="Azure backup resource id. Use the value returned by backup create or backup list.",
+            help="Name for the new Azure backup resource.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern=".*",
@@ -104,7 +103,7 @@ class Create(AAZCommand):
         target_backup_id = self.ctx.args.adbbackupid.to_serialized_data()
         next_link = None
         while True:
-            self.ctx.next_link = next_link
+            self.ctx.next_link = next_link if next_link else AAZUndefined
             self.AutonomousDatabaseBackupsListByParent(ctx=self.ctx)()
             backups = self.deserialize_output(self.ctx.vars.backup_list.value, client_flatten=True)
             result = self._find_backup(backups, target_backup_id)
@@ -224,7 +223,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -249,7 +248,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -282,7 +281,9 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -294,6 +295,10 @@ class Create(AAZCommand):
             properties = cls._schema_on_200_201.properties
             properties.autonomous_database_ocid = AAZStrType(
                 serialized_name="autonomousDatabaseOcid",
+                flags={"read_only": True},
+            )
+            properties.backup_destination = AAZStrType(
+                serialized_name="backupDestination",
                 flags={"read_only": True},
             )
             properties.backup_type = AAZStrType(
@@ -376,103 +381,29 @@ class Create(AAZCommand):
 
             return cls._schema_on_200_201
 
-    class AutonomousDatabaseBackupsListByParent(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
+    class AutonomousDatabaseBackupsListByParent(List.AutonomousDatabaseBackupsListByParent):
 
         @property
         def url(self):
             if has_value(self.ctx.next_link):
                 return self.ctx.next_link
 
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Oracle.Database/autonomousDatabases/{autonomousdatabasename}/autonomousDatabaseBackups",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "autonomousdatabasename", self.ctx.args.autonomousdatabasename,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
+            return super().url
 
         @property
         def query_parameters(self):
             if has_value(self.ctx.next_link):
                 return {}
 
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2025-09-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
+            return super().query_parameters
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "backup_list",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=List.AutonomousDatabaseBackupsListByParent._build_schema_on_200
             )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
-
-            _schema_on_200.value.Element = Create.AutonomousDatabaseBackupsCreateOrUpdate._build_schema_on_200_201()
-
-            return cls._schema_on_200
 
 
 class _CreateHelper:

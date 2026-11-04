@@ -4,26 +4,16 @@
 # --------------------------------------------------------------------------------------------
 import json
 from knack.util import CLIError
-from ..constants import MapToClosestMACRegion
-from .defaults import get_default_region, sanitize_name
+from .defaults import get_default_dcr_name
 from ..constants import (
-    DC_TYPE,
     DC_API
 )
-
-
-def get_default_dcr_name(cmd, mac_region, cluster_name):
-    region = get_default_region(cmd)
-    if dict.get(MapToClosestMACRegion, mac_region):
-        region = MapToClosestMACRegion[mac_region]
-    default_dcr_name = "MSProm-" + region + "-" + cluster_name
-    return sanitize_name(default_dcr_name, DC_TYPE.DCR, 64)
 
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
 def create_dcr(cmd, mac_region, azure_monitor_workspace_resource_id, cluster_subscription, cluster_resource_group_name, cluster_name, dce_resource_id):
     from azure.cli.core.util import send_raw_request
-    dcr_name = get_default_dcr_name(cmd, mac_region, cluster_name)
+    dcr_name = get_default_dcr_name(mac_region, cluster_name)
     dcr_resource_id = f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.Insights/dataCollectionRules/{dcr_name}"
     dcr_creation_body = json.dumps({"location": mac_region,
                                     "kind": "Linux",

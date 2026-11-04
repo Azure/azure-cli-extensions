@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration solution-template update-capabilities",
+    "workload-orchestration-preview solution-template update-capabilities",
 )
 class UpdateCapabilities(AAZCommand):
     """Update the capabilities of a Solution Template Resource
 
     :example: Update Solution Template Capabilities
-        az workload-orchestration solution-template update-capabilities -n mySolutionTemplate --capabilities "capability1" "capability2" "capability3" --location eastus --resource-group myResourceGroup
+        az workload-orchestration-preview solution-template update-capabilities -n mySolutionTemplate --capabilities "capability1" "capability2" "capability3" --location eastus --resource-group myResourceGroup
     """
 
     _aaz_info = {

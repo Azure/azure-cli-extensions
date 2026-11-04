@@ -1,6 +1,9 @@
 # Azure CLI RedisEnterprise Extension #
 This is an extension to Azure CLI to manage redisenterprise resources.
 
+### Test recordings ###
+Scenarios that list or regenerate database keys must register `RedisEnterpriseKeyReplacer` from `tests/latest/recording_processors.py`. Commit only sanitized recordings with `fake_primary_key` and `fake_secondary_key`, never service-issued access keys.
+
 ### How to use ###
 Install this extension using the below CLI command
 ```

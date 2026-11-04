@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration diagnostic update",
+    "workload-orchestration-preview diagnostic update",
 )
 class Update(AAZCommand):
     """Update new or updates existing Diagnostic resource.
        :example: Update a Diagnostic resource.
-             az workload-orchestration diagnostic update -n MyDiagnostic -g MyResourceGroup
+             az workload-orchestration-preview diagnostic update -n MyDiagnostic -g MyResourceGroup
     """
 
     _aaz_info = {

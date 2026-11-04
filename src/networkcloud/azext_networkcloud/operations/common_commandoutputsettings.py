@@ -27,6 +27,9 @@ class CommandOutputSettings:
     @classmethod
     def pre_operations_update(cls, args):
         if has_value(args.command_output_settings):
+            # skip validation when the value is explicitly set to null
+            if args.command_output_settings._data is None:
+                return
             # ensure container URL is provided
             if not has_value(args.command_output_settings.container_url):
                 raise RequiredArgumentMissingError(

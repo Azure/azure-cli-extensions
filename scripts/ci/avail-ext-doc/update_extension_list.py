@@ -11,6 +11,7 @@ The file content is list of all available latest extensions.
 """
 
 import os
+import string
 import sys
 
 import collections
@@ -33,6 +34,43 @@ TEMPLATE_FILE = os.path.join(AZURE_CLI_EXTENSIONS_REPO_PATH, 'scripts', 'ci', 'a
 sys.path.insert(0, os.path.join(AZURE_CLI_EXTENSIONS_REPO_PATH, 'scripts'))
 from ci.util import get_index_data, INDEX_PATH
 
+# azdev writes 'Home' for setup.py builds, derived from the deprecated Home-page field. It predates
+# PEP 753 and does not normalize to 'homepage', so it has to be matched separately. Ordered, because
+# the first match wins.
+LEGACY_HOME_LABELS = ('home',)
+
+
+def normalize_label(label):
+    removal_map = str.maketrans('', '', string.punctuation + string.whitespace)
+    return label.translate(removal_map).lower()
+
+
+def get_project_url(metadata):
+    """Return the extension's home page URL, or '' when it declares none.
+
+    Labels reach index.json in two shapes. Newer entries carry a project_urls mapping under
+    python.details; older ones carry the raw 'label, url' Project-URL line in project_url. Both
+    are normalized the same way so the lookup does not depend on which shape an extension used.
+    """
+    details = metadata.get('extensions', {}).get('python.details', {})
+    labelled = {}
+
+    raw = metadata.get('project_url') or []
+    for entry in [raw] if isinstance(raw, str) else raw:
+        label, _, url = entry.partition(',')
+        if url:
+            labelled[normalize_label(label)] = url.strip()
+
+    for label, url in (details.get('project_urls') or {}).items():
+        labelled[normalize_label(label)] = url
+
+    # Deliberately not falling back to 'source', 'repository' and friends. They carry different
+    # semantics, and rendering an issue tracker as the project URL is worse than rendering nothing.
+    for label in ('homepage', *LEGACY_HOME_LABELS):
+        if labelled.get(label):
+            return labelled[label]
+    return ''
+
 
 def get_extensions():
     extensions = []
@@ -42,18 +80,16 @@ def get_extensions():
         exts = sorted(exts, key=lambda c: Version(c['metadata']['version']), reverse=True)
 
         # some extension modules may not include 'HISTORY.rst'
-        # setup.py
-        if 'project_urls' in exts[0]['metadata']['extensions']['python.details']:
-            project_url = exts[0]['metadata']['extensions']['python.details']['project_urls']['Home']
-        # pyproject.toml
-        elif 'project_url' in exts[0]['metadata']:
-            project_url = exts[0]['metadata']['project_url'].replace('homepage,', '').strip()
-            print(f"Warning: extension {exts[0]['metadata']['name']} has migrated to pyproject.toml.")
-        else:
-            project_url = ''
+        project_url = get_project_url(exts[0]['metadata'])
+        if not project_url:
             print(f"Warning: No project_url found for extension {exts[0]['metadata']['name']}")
-        history_tmp = project_url + '/HISTORY.rst'
-        history = project_url if str(requests.get(history_tmp).status_code) == '404' else history_tmp
+
+        # requests.get('/HISTORY.rst') raises MissingSchema, so only probe when there is a URL.
+        if project_url:
+            history_tmp = project_url + '/HISTORY.rst'
+            history = project_url if str(requests.get(history_tmp).status_code) == '404' else history_tmp
+        else:
+            history = ''
         if exts[0]['metadata'].get('azext.isPreview'):
             status = 'Preview'
         elif exts[0]['metadata'].get('azext.isExperimental'):

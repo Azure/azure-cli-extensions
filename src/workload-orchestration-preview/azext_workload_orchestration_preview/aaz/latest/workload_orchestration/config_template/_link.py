@@ -13,12 +13,12 @@ from azext_workload_orchestration_preview.aaz.latest.workload_orchestration._res
 
 
 @register_command(
-    "workload-orchestration config-template link",
+    "workload-orchestration-preview config-template link",
 )
 class Link(AAZCommand):
     """Link a Config Template to hierarchies
     :example: Link a Config Template to hierarchies
-        az workload-orchestration config-template link -g rg1 -n configTemplatename --hierarchy-ids "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --context-id "context123"
+        az workload-orchestration-preview config-template link -g rg1 -n configTemplatename --hierarchy-ids "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Edge/sites/site1" --context-id "context123"
     """
 
     _aaz_info = {

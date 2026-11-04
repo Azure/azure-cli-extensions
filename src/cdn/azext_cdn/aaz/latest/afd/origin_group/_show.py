@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -135,7 +135,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -214,6 +214,9 @@ class Show(AAZCommand):
 
             authentication = cls._schema_on_200.properties.authentication
             authentication.scope = AAZStrType()
+            authentication.token_destination_header = AAZStrType(
+                serialized_name="tokenDestinationHeader",
+            )
             authentication.type = AAZStrType()
             authentication.user_assigned_identity = AAZObjectType(
                 serialized_name="userAssignedIdentity",
@@ -240,11 +243,22 @@ class Show(AAZCommand):
             load_balancing_settings.additional_latency_in_milliseconds = AAZIntType(
                 serialized_name="additionalLatencyInMilliseconds",
             )
+            load_balancing_settings.capacity_distribution_settings = AAZObjectType(
+                serialized_name="capacityDistributionSettings",
+            )
             load_balancing_settings.sample_size = AAZIntType(
                 serialized_name="sampleSize",
             )
             load_balancing_settings.successful_samples_required = AAZIntType(
                 serialized_name="successfulSamplesRequired",
+            )
+
+            capacity_distribution_settings = cls._schema_on_200.properties.load_balancing_settings.capacity_distribution_settings
+            capacity_distribution_settings.capacity_conscious_threshold = AAZIntType(
+                serialized_name="capacityConsciousThreshold",
+            )
+            capacity_distribution_settings.distribution_type = AAZStrType(
+                serialized_name="distributionType",
             )
 
             system_data = cls._schema_on_200.system_data

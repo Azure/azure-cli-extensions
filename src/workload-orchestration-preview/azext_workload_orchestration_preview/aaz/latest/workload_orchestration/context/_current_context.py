@@ -9,12 +9,12 @@
 from azure.cli.core.aaz import *
 
 @register_command(
-    "workload-orchestration context current",
+    "workload-orchestration-preview context current",
 )
 class CurrentContext(AAZCommand):
     """Show current context information
     :example: Show current context
-        az workload-orchestration context current
+        az workload-orchestration-preview context current
     """
 
     _aaz_info = {

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "workload-orchestration workflow version create",
+    "workload-orchestration-preview workflow version create",
 )
 class Create(AAZCommand):
     """Create a Workflow Version Resource

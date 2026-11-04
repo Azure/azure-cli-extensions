@@ -85,5 +85,9 @@
             "pattern": "",
             "strategy": "any"
         }
-    }
+    },
+    "signals": [
+        9,
+        15
+    ]
 }

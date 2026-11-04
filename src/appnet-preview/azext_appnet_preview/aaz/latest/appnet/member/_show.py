@@ -23,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-08-01-preview",
+        "version": "2026-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.applink/applinks/{}/applinkmembers/{}", "2025-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.applink/applinks/{}/applinkmembers/{}", "2026-08-01-preview"],
         ]
     }
 
@@ -137,7 +137,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-08-01-preview",
+                    "api-version", "2026-08-01-preview",
                     required=True,
                 ),
             }
@@ -214,6 +214,7 @@ class Show(AAZCommand):
             connectivity_profile.east_west_gateway = AAZObjectType(
                 serialized_name="eastWestGateway",
             )
+            connectivity_profile.network = AAZStrType()
             connectivity_profile.private_connect = AAZObjectType(
                 serialized_name="privateConnect",
             )

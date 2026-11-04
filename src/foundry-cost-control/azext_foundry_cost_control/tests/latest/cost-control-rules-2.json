@@ -1,0 +1,29 @@
+[
+  {
+    "name": "per-project-monthly",
+    "counterKey": {
+      "type": "Project"
+    },
+    "unit": "Usd",
+    "amount": 500,
+    "period": "Month",
+    "recurring": true,
+    "match": {
+      "projectIds": [
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-resource-group/providers/Microsoft.CognitiveServices/accounts/projects/my-project"
+      ]
+    },
+    "thresholds": [
+      {
+        "type": "Percentage",
+        "value": 70,
+        "action": "Alert"
+      },
+      {
+        "type": "Percentage",
+        "value": 80,
+        "action": "Block"
+      }
+    ]
+  }
+]
