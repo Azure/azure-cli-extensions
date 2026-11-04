@@ -3,6 +3,12 @@
 Release History
 ===============
 
+2.0.1b4
++++++++
+* ``az aimanager namespace modeldeployment update``: Stop automatically sending an
+  ``If-Match`` header, matching the unconditional updates used by AI Manager and namespace
+  update commands.
+
 2.0.1b3
 +++++++
 * ``az aimanager get-credentials`` and ``az aimanager namespace get-credentials``: If the
