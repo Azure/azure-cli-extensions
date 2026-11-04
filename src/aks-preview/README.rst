@@ -59,7 +59,8 @@ Live validation
 temporary single-pool cluster and tests all four upgrade scopes, latest and explicit
 node-image targets, stored reads, cluster listing, and an unsupported-version blocker
 with a scope-indented report. It never upgrades the cluster or pool. The preparer
-cleans up the temporary resource group.
+cleans up the temporary resource group. Its cluster needs no SSH key and explicitly
+enables KMS infrastructure encryption to match the live service's encryption requirements.
 
 The scenario is marked ``live_only`` because the preview API requires an enabled test
 subscription and no live recording is available yet. Standard offline CI skips it before

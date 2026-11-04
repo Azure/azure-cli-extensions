@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import copy
+import inspect
 from io import StringIO
 from types import SimpleNamespace
 import unittest
@@ -85,6 +86,56 @@ def insight(upgrade_type="ControlPlaneAndAgentPools", pool_name="pool1"):
             if upgrade_type == "AgentPool":
                 properties["agentPoolName"] = pool_name
     return {"name": "stored-insight", "properties": properties}
+
+
+class UpgradeInsightsScenarioFlowTest(unittest.TestCase):
+    def test_scenario_runs_all_scopes_without_an_ssh_helper(self):
+        from azext_aks_preview.tests.latest.test_upgrade_insights_scenario import UpgradeInsightsScenarioTest
+
+        scenario = UpgradeInsightsScenarioTest("test_aks_upgrade_insights_scopes")
+        scenario.create_random_name = Mock(return_value="cluster")
+        records = []
+        for scope in ("ControlPlaneAndAgentPools", "ControlPlane", "AgentPool", "NodeImage"):
+            record = insight(scope, pool_name="nodepool1")
+            record["name"] = scope
+            record["id"] = f"/managedClusters/cluster/upgradeInsights/{scope}"
+            records.append(record)
+        blocked = copy.deepcopy(records[0])
+        blocked["name"] = "blocked-combined"
+        blocked["properties"]["targetKubernetesVersion"] = "1.99.0"
+        blocked["id"] = "/managedClusters/cluster/upgradeInsights/blocked-combined"
+        report = format_upgrade_insight_report(blocked, "cluster")
+
+        def result(data=None, output=""):
+            return SimpleNamespace(get_output_in_json=lambda: data, output=output)
+
+        responses = [
+            result({"properties": {"state": "Registered"}}),
+            result({"kubernetesVersion": "1.34.2"}),
+            result({"controlPlaneProfile": {"upgrades": [{"kubernetesVersion": "1.35.1"}]}}),
+        ]
+        for record in records:
+            responses.extend((result(record), result(copy.deepcopy(record))))
+        responses.extend((
+            result(copy.deepcopy(records[-1])),
+            result(blocked),
+            result(output=report),
+            result(records + [blocked]),
+            result(output=report),
+        ))
+        scenario.cmd = Mock(side_effect=responses)
+
+        inspect.unwrap(UpgradeInsightsScenarioTest.test_aks_upgrade_insights_scopes)(
+            scenario, "rg", "eastus2",
+        )
+
+        create = scenario.cmd.call_args_list[1].args[0]
+        self.assertIn("--no-ssh-key", create)
+        self.assertNotIn("--ssh-key-value", create)
+        self.assertIn("--kms-infrastructure-encryption Enabled", create)
+        self.assertEqual(scenario.cmd.call_count, len(responses))
+        self.assertEqual(scenario.kwargs["target"], "1.35.1")
+        self.assertEqual(scenario.kwargs["image"], "image-target")
 
 
 class UpgradeInsightsCommandsTest(unittest.TestCase):

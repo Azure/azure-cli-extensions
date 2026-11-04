@@ -28,11 +28,11 @@ class UpgradeInsightsScenarioTest(ScenarioTest):
             "location": resource_group_location,
             "cluster": self.create_random_name("cliui", 16),
             "pool": "nodepool1",
-            "ssh_key": self.generate_ssh_keys(),
         })
         cluster = self.cmd(
             "aks create -g {rg} --name {cluster} --location {location} --nodepool-name {pool} "
-            "--node-count 1 --node-vm-size Standard_D2s_v3 --ssh-key-value {ssh_key} -o json",
+            "--node-count 1 --node-vm-size Standard_D2s_v3 --no-ssh-key "
+            "--kms-infrastructure-encryption Enabled -o json",
             checks=[self.check("provisioningState", "Succeeded")],
         ).get_output_in_json()
         upgrades = self.cmd(
