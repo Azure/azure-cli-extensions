@@ -72,6 +72,7 @@ prediagnostic_dns_check = consts.Diagnostic_Check_Starting
 prediagnostic_outbound_check = consts.Diagnostic_Check_Starting
 prediagnostic_entra_check = consts.Diagnostic_Check_Starting
 prediagnostic_crd_check = consts.Diagnostic_Check_Starting
+_prediagnostic_container_exited_one = False
 
 _POD_LOG_READ_MAX_ATTEMPTS = 4
 _TRANSIENT_KUBERNETES_API_STATUSES = frozenset({429, 500, 502, 503, 504})
@@ -162,6 +163,50 @@ def _parse_crd_check_result(crd_check_log: str) -> str:
         )
         return consts.Diagnostic_Check_Failed
     return consts.Diagnostic_Check_Passed
+
+
+def _has_only_known_crd_ownership_failures(log_lines: list[str]) -> bool:
+    """Recognize the complete diagnostic output affected by reversed Helm ownership."""
+    if not log_lines or log_lines[-1] != (
+        "Some PreOnboading Diagnostic Checks failed. Please check the logs for more details."
+    ):
+        return False
+
+    ownership_lines = [
+        f"Current ownership - release-name: '{consts.Helm_Release_Name}', "
+        f"release-namespace: '{consts.Release_Install_Namespace}'",
+        f"Expected ownership - release-name: '{consts.Release_Install_Namespace}', "
+        f"release-namespace: '{consts.Helm_Release_Name}'",
+    ]
+    verified_failures = set()
+    for crd_name in (
+        "extensionconfigs.clusterconfig.azure.com",
+        "configsyncstatuses.clusterconfig.azure.com",
+    ):
+        failure = (
+            f"Check Failed: CRD {crd_name} exists but is not owned by "
+            f"{consts.Release_Install_Namespace}."
+        )
+        absent = (
+            f"CRD {crd_name} does not exist - OK "
+            "(will be created during Arc installation)"
+        )
+        result_indices = [
+            index for index, line in enumerate(log_lines) if line in (failure, absent)
+        ]
+        if len(result_indices) != 1:
+            return False
+        index = result_indices[0]
+        if log_lines[index] == failure:
+            start = index + 1
+            end = index + 3
+            if log_lines[start:end] != ownership_lines:
+                return False
+            verified_failures.add(failure)
+
+    return bool(verified_failures) and all(
+        "Check Failed:" not in line or line in verified_failures for line in log_lines
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -418,6 +463,7 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
           - Diagnostic_Check_Incomplete: job didn't run or checks couldn't be determined
     """
     global prediagnostic_job_execution_status, prediagnostic_dns_check, prediagnostic_outbound_check, prediagnostic_entra_check, prediagnostic_crd_check  # pylint: disable=global-statement
+    global _prediagnostic_container_exited_one  # pylint: disable=global-statement
     try:
         diagnoser_output.clear()
         prediagnostic_job_execution_status = consts.Job_Status_Not_Started
@@ -425,6 +471,8 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
         prediagnostic_outbound_check = consts.Diagnostic_Check_Starting
         prediagnostic_entra_check = consts.Diagnostic_Check_Starting
         prediagnostic_crd_check = consts.Diagnostic_Check_Starting
+        _prediagnostic_container_exited_one = False
+        crd_ownership_compatibility_applied = False
         # Executing the cluster_diagnostic_checks job and fetching the logs obtained
         cluster_diagnostic_checks_container_log = (
             executing_cluster_diagnostic_checks_job(
@@ -521,7 +569,30 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
                     "login.microsoftonline.com through your proxy."
                 )
                 prediagnostic_entra_check = consts.Diagnostic_Check_Not_Applicable
-            prediagnostic_crd_check = _parse_crd_check_result(crd_check_log)
+            crd_ownership_compatibility_applied = (
+                prediagnostic_job_execution_status == consts.Job_Status_Not_Completed
+                and _prediagnostic_container_exited_one
+                and dns_check == consts.Diagnostic_Check_Passed
+                and outbound_connectivity_check == consts.Diagnostic_Check_Passed
+                and prediagnostic_entra_check == consts.Diagnostic_Check_Passed
+                and _has_only_known_crd_ownership_failures(
+                    cluster_diagnostic_checks_container_log_list
+                )
+            )
+            if crd_ownership_compatibility_applied:
+                prediagnostic_crd_check = consts.Diagnostic_Check_Passed
+                message = (
+                    "Continuing onboarding: the diagnostic image reversed the expected Helm "
+                    "release name and namespace. Existing CRDs report correct Azure Arc "
+                    "ownership, all other mandatory checks passed, and the diagnostic "
+                    "container finished with exit code 1 only for this known false positive."
+                )
+                _send_onboarding_telemetry_event(
+                    "prediagnostics-crd-ownership-compatibility",
+                    message,
+                )
+            else:
+                prediagnostic_crd_check = _parse_crd_check_result(crd_check_log)
         else:
             # Empty log — if job didn't complete (e.g., pod never scheduled), treat as Incomplete not Passed
             if prediagnostic_job_execution_status == consts.Job_Status_Not_Completed:
@@ -582,7 +653,10 @@ def fetch_diagnostic_checks_results(  # pylint: disable=too-many-return-statemen
         # If the job did not complete, partial results cannot be trusted -- treat as Incomplete.
         # The container may have exited early, causing some checks to appear
         # Passed/NotApplicable while later checks never actually executed.
-        if prediagnostic_job_execution_status == consts.Job_Status_Not_Completed:
+        if (
+            prediagnostic_job_execution_status == consts.Job_Status_Not_Completed
+            and not crd_ownership_compatibility_applied
+        ):
             send_prediagnostic_job_execution_error_telemetry(cmd=cmd)
             return consts.Diagnostic_Check_Incomplete, storage_space_available
 
@@ -698,6 +772,8 @@ def executing_cluster_diagnostic_checks_job(
         - None if the job could not be scheduled or cleanup of a stale release failed
     """
     global prediagnostic_job_execution_status  # pylint: disable=global-statement
+    global _prediagnostic_container_exited_one  # pylint: disable=global-statement
+    _prediagnostic_container_exited_one = False
     job_name = "cluster-diagnostic-checks-job"
     # Setting the log output as Empty
     cluster_diagnostic_checks_container_log = ""
@@ -801,9 +877,10 @@ def executing_cluster_diagnostic_checks_job(
             mcr_url,
         )
 
-        # Watch the Job for up to 180s waiting for it to reach Complete or Failed (3 retries) state
+        # Watch the Job for up to 180s waiting for Complete, Failed, or three failed attempts.
         w = watch.Watch()
         is_job_complete = False
+        job_reached_failure_limit = False
         is_job_scheduled = False
         # To watch for changes in pods' states till it reach completed state or exit if it takes more than 180 seconds
         for job in w.stream(
@@ -819,11 +896,22 @@ def executing_cluster_diagnostic_checks_job(
                 # Checking if job get scheduled or not
                 if job["object"].metadata.name == "cluster-diagnostic-checks-job":
                     is_job_scheduled = True
-
-                    if (
+                    failure_condition = next(
+                        (
+                            condition
+                            for condition in job["object"].status.conditions or []
+                            if condition.type == "Failed" and condition.status == "True"
+                        ),
+                        None,
+                    )
+                    if failure_condition is not None or (
                         job["object"].status.failed is not None
                         and job["object"].status.failed >= 3
                     ):
+                        job_reached_failure_limit = (
+                            failure_condition is None
+                            or failure_condition.reason == "BackoffLimitExceeded"
+                        )
                         logger.debug("Cluster Diagnostic Checks job Failed")
                         w.stop()
                         break
@@ -915,6 +1003,18 @@ def executing_cluster_diagnostic_checks_job(
             )
             if matching_pods:
                 each_pod = matching_pods[0]
+                _prediagnostic_container_exited_one = (
+                    job_reached_failure_limit
+                    and each_pod.status.phase == "Failed"
+                    and any(
+                        container_status.name == "cluster-diagnostic-checks-container"
+                        and container_status.state is not None
+                        and container_status.state.terminated is not None
+                        and container_status.state.terminated.reason == "Error"
+                        and container_status.state.terminated.exit_code == 1
+                        for container_status in each_pod.status.container_statuses or []
+                    )
+                )
                 incomplete_job_diagnostic = _get_incomplete_job_diagnostic(each_pod)
                 # Fetching the current Pod name and creating a folder with that name inside the timestamp folder
                 pod_name = each_pod.metadata.name
