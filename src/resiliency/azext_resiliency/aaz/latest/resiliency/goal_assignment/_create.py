@@ -17,11 +17,11 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a goal assignment.
 
-    :example: GoalAssignments_CreateOrUpdate_MaximumSet
-        az resiliency goal-assignment create --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --service-level-resources "[{service-level-indicator-resource-id:/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/MyVirtualMachine}]" --require-zonal-resiliency True
+    :example: Create a goal assignment that requires zonal resiliency
+        az resiliency goal-assignment create --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --require-zonal-resiliency true
 
-    :example: GoalAssignments_CreateOrUpdate_MinimumSet
-        az resiliency goal-assignment create --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --service-level-resources "[{service-level-indicator-resource-id:/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/MyVirtualMachine}]" --require-zonal-resiliency True --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --require-zonal-resiliency True
+    :example: Create a goal assignment for specific service level indicator resources
+        az resiliency goal-assignment create --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --sli-resources "[{service-level-indicator-resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Compute/virtualMachines/vm1}]" --require-zonal-resiliency true
     """
 
     _aaz_info = {
@@ -74,7 +74,7 @@ class Create(AAZCommand):
             help="Whether zonal resiliency is required for this goal assignment.",
         )
         _args_schema.service_level_resources = AAZListArg(
-            options=["--service-resources", "--service-level-resources"],
+            options=["--sli-resources", "--service-resources", "--service-level-resources"],
             arg_group="Properties",
             help="List of service level resources.",
         )

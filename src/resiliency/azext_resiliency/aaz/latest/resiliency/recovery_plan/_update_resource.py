@@ -17,8 +17,8 @@ from azure.cli.core.aaz import *
 class UpdateResource(AAZCommand):
     """This action adds or updates the resources to be included in the recovery orchestration plan.
 
-    :example: RecoveryPlanActions_UpdateResources_MaximumSet
-        az resiliency recovery-plan update-resource --service-group-name sampleServiceGroupName --operation-id qmn --recovery-plan-name samplePlanName --resources-to-update "[{protectionStatus:Unknown,errorDetails:{},recovery-resource-unique-id:e2a7b8d1-4c3f-4e2b-9a1c-7f6e2d8b5c4a,selected-protection-solution-type:AzureNative,selected-protection-solution-setting:{azure-native:{}},recovery-group-id:11111111-1111-1111-1111-123456789012,associated-identity:{type:UserAssigned,user-assigned-identity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1},inclusion-state:Included}]" --resources-to-remove "[/providers/Microsoft.Management/serviceGroups/sampleServiceGroupName/providers/Microsoft.AzureResilienceManagement/recoveryPlans/samplePlanName/recoveryResources/12345678-9012-3456-7890-123456789012]"
+    :example: Include a resource in a recovery plan
+        az resiliency recovery-plan update-resource --service-group-name sampleServiceGroupName --recovery-plan-name samplePlanName --operation-id 3f1c2a4b-5d6e-4f70-8a9b-0c1d2e3f4a5b --resources-to-update "[{recovery-resource-unique-id:e2a7b8d1-4c3f-4e2b-9a1c-7f6e2d8b5c4a,inclusion-state:Included,selected-protection-solution-type:AzureNative,selected-protection-solution-setting:{azure-native:{}},associated-identity:{type:UserAssigned,user-assigned-identity:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}}]"
     """
 
     _aaz_info = {

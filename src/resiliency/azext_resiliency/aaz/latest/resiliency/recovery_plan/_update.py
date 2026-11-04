@@ -17,8 +17,8 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a RecoveryPlan
 
-    :example: RecoveryPlans_CreateOrUpdate_MaximumSet
-        az resiliency recovery-plan update --service-group-name sampleServiceGroupName --recovery-plan-name samplePlanName --plan-description Sample Plan --recovery-groups-setting "{default-group:{properties:{groupUniqueId:b7e2a1c4-9f3b-4e2d-8c6a-2f7e4d1b5a9f,orderId:0,description:'sample recoverygroup',preActions:[{name:sample-group-action,description:'sample group action instructions',type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}}],postActions:[{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}}]}},additional-groups:[{properties:{groupUniqueId:b7e2a1c4-9f3b-4e2d-8c6a-2f7e4d1b5a9f,orderId:1,description:'sample recoverygroup',preActions:[{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}}],postActions:[{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}}]}},{properties:{groupUniqueId:b7e2a1c4-9f3b-4e2d-8c6a-2f7e4d1b5a9f,orderId:1,description:'sample recoverygroup',preActions:[{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}}],postActions:[{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}}]}},{properties:{groupUniqueId:b7e2a1c4-9f3b-4e2d-8c6a-2f7e4d1b5a9f,orderId:1,description:'sample recoverygroup',preActions:[{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}}],postActions:[{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}},{name:sample-group-action,type:CustomRunbook,timeoutInMinutes:29,actionResourceId:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.Automation/automationAccounts/sampleAccount/runbooks/sameplRunbooks1,parameters:{key7795:uvapupcbbdgow},associatedIdentity:{type:UserAssigned,userAssignedIdentity:/subscriptions/4e88bed3-114f-443d-9975-28f64122ec5e/resourcegroups/resourceGroup1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uami1}}]}}]}"
+    :example: Update the description of a recovery plan
+        az resiliency recovery-plan update --service-group-name sampleServiceGroupName --recovery-plan-name samplePlanName --plan-description "Updated sample plan"
     """
 
     _aaz_info = {
@@ -29,8 +29,6 @@ class Update(AAZCommand):
     }
 
     AZ_SUPPORT_NO_WAIT = True
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -88,7 +86,6 @@ class Update(AAZCommand):
         recovery_groups_setting.additional_groups = AAZListArg(
             options=["additional-groups"],
             help="Additional recovery orchestration group settings.",
-            nullable=True,
             fmt=AAZListArgFormat(
                 max_length=14,
             ),
@@ -97,11 +94,103 @@ class Update(AAZCommand):
             options=["default-group"],
             help="The default recovery orchestration group setting. Every recovery orchestration plan has a default recovery orchestration group.",
         )
-        cls._build_args_recovery_group_update(recovery_groups_setting.default_group)
 
         additional_groups = cls._args_schema.recovery_groups_setting.additional_groups
         additional_groups.Element = AAZObjectArg()
-        cls._build_args_recovery_group_update(additional_groups.Element)
+
+        _element = cls._args_schema.recovery_groups_setting.additional_groups.Element
+        _element.description = AAZStrArg(
+            options=["description"],
+            help="A description of the recovery orchestration group.",
+            fmt=AAZStrArgFormat(
+                max_length=50,
+                min_length=5,
+            ),
+        )
+        _element.group_unique_id = AAZStrArg(
+            options=["group-unique-id"],
+            help="A unique id for the recovery orchestration group, which is a GUID.",
+            fmt=AAZStrArgFormat(
+                pattern="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            ),
+        )
+        _element.order_id = AAZIntArg(
+            options=["order-id"],
+            help="The order ID of the recovery orchestration group.",
+            fmt=AAZIntArgFormat(
+                maximum=15,
+                minimum=0,
+            ),
+        )
+        _element.post_actions = AAZListArg(
+            options=["post-actions"],
+            help="Post-actions for the recovery orchestration group.",
+            fmt=AAZListArgFormat(
+                max_length=10,
+            ),
+        )
+        _element.pre_actions = AAZListArg(
+            options=["pre-actions"],
+            help="Pre-actions for the recovery orchestration group.",
+            fmt=AAZListArgFormat(
+                max_length=10,
+            ),
+        )
+
+        post_actions = cls._args_schema.recovery_groups_setting.additional_groups.Element.post_actions
+        post_actions.Element = AAZObjectArg()
+        cls._build_args_recovery_group_base_action_update(post_actions.Element)
+
+        pre_actions = cls._args_schema.recovery_groups_setting.additional_groups.Element.pre_actions
+        pre_actions.Element = AAZObjectArg()
+        cls._build_args_recovery_group_base_action_update(pre_actions.Element)
+
+        default_group = cls._args_schema.recovery_groups_setting.default_group
+        default_group.description = AAZStrArg(
+            options=["description"],
+            help="A description of the recovery orchestration group.",
+            fmt=AAZStrArgFormat(
+                max_length=50,
+                min_length=5,
+            ),
+        )
+        default_group.group_unique_id = AAZStrArg(
+            options=["group-unique-id"],
+            help="A unique id for the recovery orchestration group, which is a GUID.",
+            fmt=AAZStrArgFormat(
+                pattern="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            ),
+        )
+        default_group.order_id = AAZIntArg(
+            options=["order-id"],
+            help="The order ID of the recovery orchestration group.",
+            fmt=AAZIntArgFormat(
+                maximum=15,
+                minimum=0,
+            ),
+        )
+        default_group.post_actions = AAZListArg(
+            options=["post-actions"],
+            help="Post-actions for the recovery orchestration group.",
+            fmt=AAZListArgFormat(
+                max_length=10,
+            ),
+        )
+        default_group.pre_actions = AAZListArg(
+            options=["pre-actions"],
+            help="Pre-actions for the recovery orchestration group.",
+            fmt=AAZListArgFormat(
+                max_length=10,
+            ),
+        )
+
+        post_actions = cls._args_schema.recovery_groups_setting.default_group.post_actions
+        post_actions.Element = AAZObjectArg()
+        cls._build_args_recovery_group_base_action_update(post_actions.Element)
+
+        pre_actions = cls._args_schema.recovery_groups_setting.default_group.pre_actions
+        pre_actions.Element = AAZObjectArg()
+        cls._build_args_recovery_group_base_action_update(pre_actions.Element)
         return cls._args_schema
 
     _args_recovery_group_base_action_update = None
@@ -116,9 +205,7 @@ class Update(AAZCommand):
             _schema.timeout_in_minutes = cls._args_recovery_group_base_action_update.timeout_in_minutes
             return
 
-        cls._args_recovery_group_base_action_update = AAZObjectArg(
-            nullable=True,
-        )
+        cls._args_recovery_group_base_action_update = AAZObjectArg()
 
         recovery_group_base_action_update = cls._args_recovery_group_base_action_update
         recovery_group_base_action_update.custom_runbook = AAZObjectArg(
@@ -131,7 +218,6 @@ class Update(AAZCommand):
         recovery_group_base_action_update.description = AAZStrArg(
             options=["description"],
             help="A description of the recovery orchestration group action, containing the instructions to be performed during this action.",
-            nullable=True,
             fmt=AAZStrArgFormat(
                 max_length=100,
             ),
@@ -139,6 +225,7 @@ class Update(AAZCommand):
         recovery_group_base_action_update.name = AAZStrArg(
             options=["name"],
             help="The name of the recovery orchestration group action.",
+            required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
@@ -146,6 +233,7 @@ class Update(AAZCommand):
         recovery_group_base_action_update.timeout_in_minutes = AAZIntArg(
             options=["timeout-in-minutes"],
             help="The maximum amount of time, in minutes, allowed for the action to complete before it times out.",
+            required=True,
             fmt=AAZIntArgFormat(
                 maximum=10000,
                 minimum=0,
@@ -156,35 +244,30 @@ class Update(AAZCommand):
         custom_runbook.action_resource_id = AAZResourceIdArg(
             options=["action-resource-id"],
             help="The ARM Resource ID of the resource that includes the actionable script, such as a Runbook in an Automation Account.",
-            nullable=True,
         )
         custom_runbook.associated_identity = AAZObjectArg(
             options=["associated-identity"],
             help="The identity associated with actionResourceId for RBAC.",
-            nullable=True,
         )
         custom_runbook.parameters = AAZDictArg(
             options=["parameters"],
             help="Key-value parameters for the operation.",
-            nullable=True,
         )
 
         associated_identity = cls._args_recovery_group_base_action_update.custom_runbook.associated_identity
         associated_identity.type = AAZStrArg(
             options=["type"],
             help="Identity type linked with the resource",
+            required=True,
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
         )
         associated_identity.user_assigned_identity = AAZResourceIdArg(
             options=["user-assigned-identity"],
             help="User assigned identity id linked with the resource",
-            nullable=True,
         )
 
         parameters = cls._args_recovery_group_base_action_update.custom_runbook.parameters
-        parameters.Element = AAZStrArg(
-            nullable=True,
-        )
+        parameters.Element = AAZStrArg()
 
         _schema.custom_runbook = cls._args_recovery_group_base_action_update.custom_runbook
         _schema.description = cls._args_recovery_group_base_action_update.description
@@ -192,87 +275,9 @@ class Update(AAZCommand):
         _schema.name = cls._args_recovery_group_base_action_update.name
         _schema.timeout_in_minutes = cls._args_recovery_group_base_action_update.timeout_in_minutes
 
-    _args_recovery_group_update = None
-
-    @classmethod
-    def _build_args_recovery_group_update(cls, _schema):
-        if cls._args_recovery_group_update is not None:
-            _schema.description = cls._args_recovery_group_update.description
-            _schema.group_unique_id = cls._args_recovery_group_update.group_unique_id
-            _schema.order_id = cls._args_recovery_group_update.order_id
-            _schema.post_actions = cls._args_recovery_group_update.post_actions
-            _schema.pre_actions = cls._args_recovery_group_update.pre_actions
-            return
-
-        cls._args_recovery_group_update = AAZObjectArg()
-
-        recovery_group_update = cls._args_recovery_group_update
-        recovery_group_update.description = AAZStrArg(
-            options=["description"],
-            help="A description of the recovery orchestration group.",
-            fmt=AAZStrArgFormat(
-                max_length=50,
-                min_length=5,
-            ),
-        )
-        recovery_group_update.group_unique_id = AAZStrArg(
-            options=["group-unique-id"],
-            help="A unique id for the recovery orchestration group, which is a GUID.",
-            fmt=AAZStrArgFormat(
-                pattern="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-            ),
-        )
-        recovery_group_update.order_id = AAZIntArg(
-            options=["order-id"],
-            help="The order ID of the recovery orchestration group.",
-            fmt=AAZIntArgFormat(
-                maximum=15,
-                minimum=0,
-            ),
-        )
-        recovery_group_update.post_actions = AAZListArg(
-            options=["post-actions"],
-            help="Post-actions for the recovery orchestration group.",
-            nullable=True,
-            fmt=AAZListArgFormat(
-                max_length=10,
-            ),
-        )
-        recovery_group_update.pre_actions = AAZListArg(
-            options=["pre-actions"],
-            help="Pre-actions for the recovery orchestration group.",
-            nullable=True,
-            fmt=AAZListArgFormat(
-                max_length=10,
-            ),
-        )
-
-        post_actions = cls._args_recovery_group_update.post_actions
-        post_actions.Element = AAZObjectArg(
-            nullable=True,
-        )
-        cls._build_args_recovery_group_base_action_update(post_actions.Element)
-
-        pre_actions = cls._args_recovery_group_update.pre_actions
-        pre_actions.Element = AAZObjectArg(
-            nullable=True,
-        )
-        cls._build_args_recovery_group_base_action_update(pre_actions.Element)
-
-        _schema.description = cls._args_recovery_group_update.description
-        _schema.group_unique_id = cls._args_recovery_group_update.group_unique_id
-        _schema.order_id = cls._args_recovery_group_update.order_id
-        _schema.post_actions = cls._args_recovery_group_update.post_actions
-        _schema.pre_actions = cls._args_recovery_group_update.pre_actions
-
     def _execute_operations(self):
         self.pre_operations()
-        self.RecoveryPlansGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        yield self.RecoveryPlansCreateOrUpdate(ctx=self.ctx)()
+        yield self.RecoveryPlansUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -283,98 +288,11 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class RecoveryPlansGet(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/providers/Microsoft.Management/serviceGroups/{serviceGroupName}/providers/Microsoft.AzureResilienceManagement/recoveryPlans/{recoveryPlanName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "recoveryPlanName", self.ctx.args.recovery_plan_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "serviceGroupName", self.ctx.args.service_group_name,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2026-10-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_recovery_plan_read(cls._schema_on_200)
-
-            return cls._schema_on_200
-
-    class RecoveryPlansCreateOrUpdate(AAZHttpOperation):
+    class RecoveryPlansUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -384,18 +302,18 @@ class Update(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200, 201]:
+            if session.http_response.status_code in [200]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200_201,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -410,7 +328,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -456,68 +374,214 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_recovery_plan_read(cls._schema_on_200_201)
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("planDescription", AAZStrType, ".plan_description", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("recoveryGroupsSetting", AAZObjectType, ".recovery_groups_setting", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("planDescription", AAZStrType, ".plan_description")
+                properties.set_prop("recoveryGroupsSetting", AAZObjectType, ".recovery_groups_setting")
 
             recovery_groups_setting = _builder.get(".properties.recoveryGroupsSetting")
             if recovery_groups_setting is not None:
                 recovery_groups_setting.set_prop("additionalGroups", AAZListType, ".additional_groups")
-                _UpdateHelper._build_schema_recovery_group_update(recovery_groups_setting.set_prop("defaultGroup", AAZObjectType, ".default_group", typ_kwargs={"flags": {"required": True}}))
+                recovery_groups_setting.set_prop("defaultGroup", AAZObjectType, ".default_group")
 
             additional_groups = _builder.get(".properties.recoveryGroupsSetting.additionalGroups")
             if additional_groups is not None:
-                _UpdateHelper._build_schema_recovery_group_update(additional_groups.set_elements(AAZObjectType, "."))
+                additional_groups.set_elements(AAZObjectType, ".")
 
-            return _instance_value
+            _elements = _builder.get(".properties.recoveryGroupsSetting.additionalGroups[]")
+            if _elements is not None:
+                _elements.set_prop("properties", AAZObjectType)
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
+            properties = _builder.get(".properties.recoveryGroupsSetting.additionalGroups[].properties")
+            if properties is not None:
+                properties.set_prop("description", AAZStrType, ".description", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("groupUniqueId", AAZStrType, ".group_unique_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("orderId", AAZIntType, ".order_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("postActions", AAZListType, ".post_actions")
+                properties.set_prop("preActions", AAZListType, ".pre_actions")
 
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
+            post_actions = _builder.get(".properties.recoveryGroupsSetting.additionalGroups[].properties.postActions")
+            if post_actions is not None:
+                _UpdateHelper._build_schema_recovery_group_base_action_update(post_actions.set_elements(AAZObjectType, "."))
+
+            pre_actions = _builder.get(".properties.recoveryGroupsSetting.additionalGroups[].properties.preActions")
+            if pre_actions is not None:
+                _UpdateHelper._build_schema_recovery_group_base_action_update(pre_actions.set_elements(AAZObjectType, "."))
+
+            default_group = _builder.get(".properties.recoveryGroupsSetting.defaultGroup")
+            if default_group is not None:
+                default_group.set_prop("properties", AAZObjectType)
+
+            properties = _builder.get(".properties.recoveryGroupsSetting.defaultGroup.properties")
+            if properties is not None:
+                properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("groupUniqueId", AAZStrType, ".group_unique_id")
+                properties.set_prop("orderId", AAZIntType, ".order_id")
+                properties.set_prop("postActions", AAZListType, ".post_actions")
+                properties.set_prop("preActions", AAZListType, ".pre_actions")
+
+            post_actions = _builder.get(".properties.recoveryGroupsSetting.defaultGroup.properties.postActions")
+            if post_actions is not None:
+                _UpdateHelper._build_schema_recovery_group_base_action_update(post_actions.set_elements(AAZObjectType, "."))
+
+            pre_actions = _builder.get(".properties.recoveryGroupsSetting.defaultGroup.properties.preActions")
+            if pre_actions is not None:
+                _UpdateHelper._build_schema_recovery_group_base_action_update(pre_actions.set_elements(AAZObjectType, "."))
+
+            return self.serialize_content(_content_value)
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
             )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.identity = AAZIdentityObjectType()
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _UpdateHelper._build_schema_system_data_read(_schema_on_200.system_data)
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.error_details = AAZObjectType(
+                serialized_name="errorDetails",
+                flags={"read_only": True},
+            )
+            _UpdateHelper._build_schema_error_detail_read(properties.error_details)
+            properties.latest_failover_status = AAZObjectType(
+                serialized_name="latestFailoverStatus",
+                flags={"read_only": True},
+            )
+            properties.latest_validation_status = AAZObjectType(
+                serialized_name="latestValidationStatus",
+                flags={"read_only": True},
+            )
+            properties.plan_description = AAZStrType(
+                serialized_name="planDescription",
+                flags={"required": True},
+            )
+            properties.plan_state = AAZStrType(
+                serialized_name="planState",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.recovery_groups_setting = AAZObjectType(
+                serialized_name="recoveryGroupsSetting",
+                flags={"required": True},
+            )
+
+            latest_failover_status = cls._schema_on_200.properties.latest_failover_status
+            latest_failover_status.error_details = AAZObjectType(
+                serialized_name="errorDetails",
+                flags={"read_only": True},
+            )
+            _UpdateHelper._build_schema_error_detail_read(latest_failover_status.error_details)
+            latest_failover_status.last_executed_at = AAZStrType(
+                serialized_name="lastExecutedAt",
+                flags={"read_only": True},
+            )
+            latest_failover_status.operation_status = AAZStrType(
+                serialized_name="operationStatus",
+                flags={"read_only": True},
+            )
+            latest_failover_status.recovery_time_actual = AAZStrType(
+                serialized_name="recoveryTimeActual",
+                flags={"read_only": True},
+            )
+
+            latest_validation_status = cls._schema_on_200.properties.latest_validation_status
+            latest_validation_status.error_details = AAZObjectType(
+                serialized_name="errorDetails",
+                flags={"read_only": True},
+            )
+            _UpdateHelper._build_schema_error_detail_read(latest_validation_status.error_details)
+            latest_validation_status.last_executed_at = AAZStrType(
+                serialized_name="lastExecutedAt",
+                flags={"read_only": True},
+            )
+            latest_validation_status.operation_status = AAZStrType(
+                serialized_name="operationStatus",
+                flags={"read_only": True},
+            )
+
+            recovery_groups_setting = cls._schema_on_200.properties.recovery_groups_setting
+            recovery_groups_setting.additional_groups = AAZListType(
+                serialized_name="additionalGroups",
+            )
+            recovery_groups_setting.default_group = AAZObjectType(
+                serialized_name="defaultGroup",
+                flags={"required": True},
+            )
+            _UpdateHelper._build_schema_recovery_group_read(recovery_groups_setting.default_group)
+
+            additional_groups = cls._schema_on_200.properties.recovery_groups_setting.additional_groups
+            additional_groups.Element = AAZObjectType()
+            _UpdateHelper._build_schema_recovery_group_read(additional_groups.Element)
+
+            return cls._schema_on_200
 
 
 class _UpdateHelper:
@@ -549,28 +613,6 @@ class _UpdateHelper:
         parameters = _builder.get("{type:CustomRunbook}.parameters")
         if parameters is not None:
             parameters.set_elements(AAZStrType, ".")
-
-    @classmethod
-    def _build_schema_recovery_group_update(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("properties", AAZObjectType)
-
-        properties = _builder.get(".properties")
-        if properties is not None:
-            properties.set_prop("description", AAZStrType, ".description", typ_kwargs={"flags": {"required": True}})
-            properties.set_prop("groupUniqueId", AAZStrType, ".group_unique_id", typ_kwargs={"flags": {"required": True}})
-            properties.set_prop("orderId", AAZIntType, ".order_id", typ_kwargs={"flags": {"required": True}})
-            properties.set_prop("postActions", AAZListType, ".post_actions")
-            properties.set_prop("preActions", AAZListType, ".pre_actions")
-
-        post_actions = _builder.get(".properties.postActions")
-        if post_actions is not None:
-            cls._build_schema_recovery_group_base_action_update(post_actions.set_elements(AAZObjectType, "."))
-
-        pre_actions = _builder.get(".properties.preActions")
-        if pre_actions is not None:
-            cls._build_schema_recovery_group_base_action_update(pre_actions.set_elements(AAZObjectType, "."))
 
     _schema_error_detail_read = None
 
@@ -776,156 +818,6 @@ class _UpdateHelper:
         _schema.properties = cls._schema_recovery_group_read.properties
         _schema.system_data = cls._schema_recovery_group_read.system_data
         _schema.type = cls._schema_recovery_group_read.type
-
-    _schema_recovery_plan_read = None
-
-    @classmethod
-    def _build_schema_recovery_plan_read(cls, _schema):
-        if cls._schema_recovery_plan_read is not None:
-            _schema.id = cls._schema_recovery_plan_read.id
-            _schema.identity = cls._schema_recovery_plan_read.identity
-            _schema.name = cls._schema_recovery_plan_read.name
-            _schema.properties = cls._schema_recovery_plan_read.properties
-            _schema.system_data = cls._schema_recovery_plan_read.system_data
-            _schema.type = cls._schema_recovery_plan_read.type
-            return
-
-        cls._schema_recovery_plan_read = _schema_recovery_plan_read = AAZObjectType()
-
-        recovery_plan_read = _schema_recovery_plan_read
-        recovery_plan_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        recovery_plan_read.identity = AAZIdentityObjectType()
-        recovery_plan_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        recovery_plan_read.properties = AAZObjectType()
-        recovery_plan_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        cls._build_schema_system_data_read(recovery_plan_read.system_data)
-        recovery_plan_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        identity = _schema_recovery_plan_read.identity
-        identity.principal_id = AAZStrType(
-            serialized_name="principalId",
-            flags={"read_only": True},
-        )
-        identity.tenant_id = AAZStrType(
-            serialized_name="tenantId",
-            flags={"read_only": True},
-        )
-        identity.type = AAZStrType(
-            flags={"required": True},
-        )
-        identity.user_assigned_identities = AAZDictType(
-            serialized_name="userAssignedIdentities",
-        )
-
-        user_assigned_identities = _schema_recovery_plan_read.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectType(
-            nullable=True,
-        )
-
-        _element = _schema_recovery_plan_read.identity.user_assigned_identities.Element
-        _element.client_id = AAZStrType(
-            serialized_name="clientId",
-            flags={"read_only": True},
-        )
-        _element.principal_id = AAZStrType(
-            serialized_name="principalId",
-            flags={"read_only": True},
-        )
-
-        properties = _schema_recovery_plan_read.properties
-        properties.error_details = AAZObjectType(
-            serialized_name="errorDetails",
-            flags={"read_only": True},
-        )
-        cls._build_schema_error_detail_read(properties.error_details)
-        properties.latest_failover_status = AAZObjectType(
-            serialized_name="latestFailoverStatus",
-            flags={"read_only": True},
-        )
-        properties.latest_validation_status = AAZObjectType(
-            serialized_name="latestValidationStatus",
-            flags={"read_only": True},
-        )
-        properties.plan_description = AAZStrType(
-            serialized_name="planDescription",
-            flags={"required": True},
-        )
-        properties.plan_state = AAZStrType(
-            serialized_name="planState",
-            flags={"read_only": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.recovery_groups_setting = AAZObjectType(
-            serialized_name="recoveryGroupsSetting",
-            flags={"required": True},
-        )
-
-        latest_failover_status = _schema_recovery_plan_read.properties.latest_failover_status
-        latest_failover_status.error_details = AAZObjectType(
-            serialized_name="errorDetails",
-            flags={"read_only": True},
-        )
-        cls._build_schema_error_detail_read(latest_failover_status.error_details)
-        latest_failover_status.last_executed_at = AAZStrType(
-            serialized_name="lastExecutedAt",
-            flags={"read_only": True},
-        )
-        latest_failover_status.operation_status = AAZStrType(
-            serialized_name="operationStatus",
-            flags={"read_only": True},
-        )
-        latest_failover_status.recovery_time_actual = AAZStrType(
-            serialized_name="recoveryTimeActual",
-            flags={"read_only": True},
-        )
-
-        latest_validation_status = _schema_recovery_plan_read.properties.latest_validation_status
-        latest_validation_status.error_details = AAZObjectType(
-            serialized_name="errorDetails",
-            flags={"read_only": True},
-        )
-        cls._build_schema_error_detail_read(latest_validation_status.error_details)
-        latest_validation_status.last_executed_at = AAZStrType(
-            serialized_name="lastExecutedAt",
-            flags={"read_only": True},
-        )
-        latest_validation_status.operation_status = AAZStrType(
-            serialized_name="operationStatus",
-            flags={"read_only": True},
-        )
-
-        recovery_groups_setting = _schema_recovery_plan_read.properties.recovery_groups_setting
-        recovery_groups_setting.additional_groups = AAZListType(
-            serialized_name="additionalGroups",
-        )
-        recovery_groups_setting.default_group = AAZObjectType(
-            serialized_name="defaultGroup",
-            flags={"required": True},
-        )
-        cls._build_schema_recovery_group_read(recovery_groups_setting.default_group)
-
-        additional_groups = _schema_recovery_plan_read.properties.recovery_groups_setting.additional_groups
-        additional_groups.Element = AAZObjectType()
-        cls._build_schema_recovery_group_read(additional_groups.Element)
-
-        _schema.id = cls._schema_recovery_plan_read.id
-        _schema.identity = cls._schema_recovery_plan_read.identity
-        _schema.name = cls._schema_recovery_plan_read.name
-        _schema.properties = cls._schema_recovery_plan_read.properties
-        _schema.system_data = cls._schema_recovery_plan_read.system_data
-        _schema.type = cls._schema_recovery_plan_read.type
 
     _schema_system_data_read = None
 
