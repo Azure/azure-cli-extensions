@@ -482,13 +482,13 @@ class MigrationStart(_MigrationStart):
         args_schema.skip_data_migration = AAZBoolArg(
             options=["--skip-data-migration"],
             arg_group="Properties",
-            help="Sets whether the data is migrated from source to target or not. This property must be true during the preview.",
+            help="Sets whether the data is migrated from source to target or not. Set this property to true to skip data migration.",
             required=True,
         )
         args_schema.switch_dns = AAZBoolArg(
             options=["--switch-dns"],
             arg_group="Properties",
-            help="Sets whether the DNS is switched automatically after the data is transferred from the source cache to the target cache. This property must be true during the preview.",
+            help="Sets whether the DNS is switched automatically after the data is transferred from the source cache to the target cache.",
             required=True,
         )
         args_schema.force_migrate = AAZBoolArg(

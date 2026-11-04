@@ -73,7 +73,7 @@ class Start(AAZCommand):
         )
         azure_cache_for_redis.skip_data_migration = AAZBoolArg(
             options=["skip-data-migration"],
-            help="Sets whether the data is migrated from source to target or not. This property must be true during the preview.",
+            help="Sets whether the data is migrated from source to target or not. Set this property to true to skip data migration.",
             required=True,
         )
         azure_cache_for_redis.source_resource_id = AAZResourceIdArg(
