@@ -85,10 +85,40 @@ def insight(upgrade_type="ControlPlaneAndAgentPools", pool_name="pool1"):
             properties["evaluation"] = evaluation()
             if upgrade_type == "AgentPool":
                 properties["agentPoolName"] = pool_name
-    return {"name": "stored-insight", "properties": properties}
+    return {
+        "id": "/managedClusters/cluster/upgradeInsights/stored-insight",
+        "name": "stored-insight",
+        "properties": properties,
+    }
 
 
 class UpgradeInsightsScenarioFlowTest(unittest.TestCase):
+    def test_combined_response_missing_pools_fails_with_full_response(self):
+        from azext_aks_preview.tests.latest.test_upgrade_insights_scenario import UpgradeInsightsScenarioTest
+
+        scenario = UpgradeInsightsScenarioTest("test_aks_upgrade_insights_scopes")
+        scenario.kwargs["pool"] = "pool1"
+        data = insight()
+        del data["properties"]["agentPools"]
+        with self.assertRaises(AssertionError) as error:
+            scenario._assert_insight(data, "ControlPlaneAndAgentPools")
+        self.assertIn("agentPools", str(error.exception))
+        self.assertIn('"controlPlane":', str(error.exception))
+        self.assertIn('"provisioningState": "Succeeded"', str(error.exception))
+
+    def test_combined_response_cannot_omit_the_created_pool(self):
+        from azext_aks_preview.tests.latest.test_upgrade_insights_scenario import UpgradeInsightsScenarioTest
+
+        scenario = UpgradeInsightsScenarioTest("test_aks_upgrade_insights_scopes")
+        scenario.kwargs["pool"] = "pool1"
+        for pools in ([], None):
+            with self.subTest(pools=pools), self.assertRaises(AssertionError):
+                data = insight()
+                data["properties"]["agentPools"] = pools
+                scenario._assert_insight(data, "ControlPlaneAndAgentPools")
+        with self.assertRaises(AssertionError):
+            scenario._assert_insight(insight(pool_name="otherpool"), "ControlPlaneAndAgentPools")
+
     def test_scenario_runs_all_scopes_without_an_ssh_helper(self):
         from azext_aks_preview.tests.latest.test_upgrade_insights_scenario import UpgradeInsightsScenarioTest
 

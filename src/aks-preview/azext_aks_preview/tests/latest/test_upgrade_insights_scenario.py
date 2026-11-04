@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
+
 from azure.cli.testsdk import ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
@@ -55,25 +57,26 @@ class UpgradeInsightsScenarioTest(ScenarioTest):
             (pool_command, pool_args, "AgentPool", "--target-kubernetes-ver {target}"),
             (pool_command, pool_args, "NodeImage", "--upgrade-type NodeImage"),
         ):
-            created = self.cmd(f"{command} create {arguments} {flags} -o json").get_output_in_json()
-            self._assert_insight(created, scope)
-            names.add(created["name"])
-            self.kwargs["insight"] = created["name"]
-            stored = self.cmd(
-                f"{command} show {arguments} --insight-name {{insight}} -o json"
-            ).get_output_in_json()
-            self.assertEqual(stored["properties"], created["properties"])
-            self.assertEqual(stored["id"], created["id"])
-            if scope == "NodeImage":
-                self.kwargs["image"] = created["properties"]["targetNodeImageVersion"]
-                self.assertTrue(self.kwargs["image"])
-                explicit = self.cmd(
-                    f"{pool_command} create {pool_args} --upgrade-type NodeImage "
-                    "--target-node-image-ver {image} -o json"
+            with self.subTest(upgrade_type=scope):
+                created = self.cmd(f"{command} create {arguments} {flags} -o json").get_output_in_json()
+                self._assert_insight(created, scope)
+                names.add(created["name"])
+                self.kwargs["insight"] = created["name"]
+                stored = self.cmd(
+                    f"{command} show {arguments} --insight-name {{insight}} -o json"
                 ).get_output_in_json()
-                self._assert_insight(explicit, "NodeImage")
-                self.assertEqual(explicit["properties"]["targetNodeImageVersion"], self.kwargs["image"])
-                self.assertEqual(explicit["name"], created["name"])
+                self.assertEqual(stored["properties"], created["properties"])
+                self.assertEqual(stored["id"], created["id"])
+                if scope == "NodeImage":
+                    self.kwargs["image"] = created["properties"]["targetNodeImageVersion"]
+                    self.assertTrue(self.kwargs["image"])
+                    explicit = self.cmd(
+                        f"{pool_command} create {pool_args} --upgrade-type NodeImage "
+                        "--target-node-image-ver {image} -o json"
+                    ).get_output_in_json()
+                    self._assert_insight(explicit, "NodeImage")
+                    self.assertEqual(explicit["properties"]["targetNodeImageVersion"], self.kwargs["image"])
+                    self.assertEqual(explicit["name"], created["name"])
 
         blocked = self.cmd(
             f"{cluster_command} create {cluster_args} --target-kubernetes-ver 1.99.0 -o json"
@@ -112,8 +115,20 @@ class UpgradeInsightsScenarioTest(ScenarioTest):
         self.assertEqual(properties["upgradeType"], scope)
         self.assertEqual(properties["provisioningState"], "Succeeded")
         if scope == "ControlPlaneAndAgentPools":
+            diagnostic = (
+                "The combined live response must include control-plane and agent-pool evaluations. "
+                f"Response: {json.dumps(data, sort_keys=True)}"
+            )
+            self.assertIn("controlPlane", properties, diagnostic)
+            self.assertIn("agentPools", properties, diagnostic)
+            self.assertIsInstance(properties["agentPools"], list, diagnostic)
+            self.assertTrue(properties["agentPools"], diagnostic)
+            self.assertIn(
+                self.kwargs["pool"],
+                [pool["agentPoolName"] for pool in properties["agentPools"]],
+                diagnostic,
+            )
             results = [properties["controlPlane"]] + properties["agentPools"]
-            self.assertTrue(properties["agentPools"])
         else:
             results = [properties]
             if scope in ("AgentPool", "NodeImage"):
