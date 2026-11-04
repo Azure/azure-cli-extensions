@@ -6,7 +6,11 @@ This is an extension to Azure CLI to manage ElasticSan resources.
 ## Elastic San
 ### Create an Elastic SAN.
 `az elastic-san create -n {san_name} -g {rg} --tags "{key1810:aaaa}" -l southcentralusstg --base-size-tib 23 --extended-capacity-size-tib 14 --sku "{name:Premium_LRS,tier:Premium}"`
-For V1 (including when `--version` is omitted), omitted base and extended capacities default to 20 and 0 TiB. V2 does not inject these V1 capacity defaults; provision it using `--sku "{name:ElasticSAN_LRS}" --version V2 --total-iops ... --total-mbps ... --total-size-tib ...` and supply autoscale settings (`--auto-scale-policy-enforcement`, `--capacity-unit-scale-up-limit-tib`, `--increase-capacity-unit-by-tib`, and `--unused-size-tib`).
+For V1 (including when `--version` is omitted), omitted base and extended capacities default to 20 and 0 TiB. V2 does not inject these V1 capacity defaults; provision it using `--sku "{name:ElasticSAN_LRS}" --version V2 --total-iops ... --total-mbps ... --total-size-tib ...`. All three totals are required for V2 creation.
+
+V2 creation defaults omitted autoscale enforcement to `Enabled`, increase capacity to 1 TiB, and the unused-capacity threshold to 1 TiB. When `--capacity-unit-scale-up-limit-tib` is omitted, the CLI queries Elastic SAN SKUs in the target subscription with a location filter and defaults the ceiling to `min(5 * total-size-tib, regional maximum total capacity)`. Discovery requires exactly one entry matching the requested SKU name, location, and `elasticSans` resource type, with exactly one positive-integer `elasticSanMaxTotalCapacityTiB` capability. Missing, invalid, ambiguous, or failed discovery stops creation; supplying the ceiling explicitly bypasses discovery.
+
+These defaults apply only during V2 creation and preserve explicit numeric inputs, including zero. V2 creation rejects enforcement `Disabled` before discovery or creation, but preserves explicit `None`. V1 and update behavior are unchanged.
 The separate `test_elastic_san_v2_scenarios` integration test covers V2 create, show, list, update, and delete in `eastus2euap`. Record it with `azdev test --live --discover test_elastic_san_v2_scenarios`, then verify playback with `azdev test --discover test_elastic_san_v2_scenarios`. A successful live recording requires V2 access on the target subscription and region; this test does not skip service feature-gate errors.
 ### Delete an Elastic SAN.
 `az elastic-san delete -g {rg} -n {san_name}`

@@ -18,6 +18,7 @@ from .aaz.latest.elastic_san.volume_group import Update as _VolumeGroupUpdate
 from .aaz.latest.elastic_san import Create as _ElasticSanCreate
 from .aaz.latest.elastic_san import Update as _ElasticSanUpdate
 from .aaz.latest.elastic_san import Show as _ElasticSanShow
+from .aaz.latest.elastic_san import ListSku as _ElasticSanListSku
 from .aaz.latest.elastic_san.volume import Create as _VolumeCreate
 from .aaz.latest.elastic_san.volume import List as _VolumeList
 from .aaz.latest.elastic_san.volume import Show as _VolumeShow
@@ -534,9 +535,24 @@ class ElasticSanCreate(_ElasticSanCreate):
 
     def pre_operations(self):
         from azure.cli.core.aaz import has_value
+        from azure.cli.core.azclierror import InvalidArgumentValueError
 
         args = self.ctx.args
         if args.version == "V2":
+            if args.auto_scale_policy_enforcement == "Disabled":
+                raise InvalidArgumentValueError("V2 creation does not support autoscale policy enforcement Disabled.")
+            for name in ("total_size_tib", "total_iops", "total_mbps"):
+                if not has_value(args[name]):
+                    raise InvalidArgumentValueError(f"--{name.replace('_', '-')} is required for V2 creation.")
+            if not has_value(args.auto_scale_policy_enforcement):
+                args.auto_scale_policy_enforcement = "Enabled"
+            for name in ("increase_capacity_unit_by_tib", "unused_size_tib"):
+                if not has_value(args[name]):
+                    args[name] = 1
+            if not has_value(args.capacity_unit_scale_up_limit_tib):
+                args.capacity_unit_scale_up_limit_tib = min(
+                    5 * args.total_size_tib.to_serialized_data(), self._get_v2_regional_capacity_limit()
+                )
             explicit_args = getattr(self, "_explicit_capacity_args", set())
             for name in ("base_size_tib", "extended_capacity_size_tib"):
                 if name not in explicit_args:
@@ -546,3 +562,87 @@ class ElasticSanCreate(_ElasticSanCreate):
                 args.base_size_tib = 20
             if not has_value(args.extended_capacity_size_tib):
                 args.extended_capacity_size_tib = 0
+
+    def _get_v2_regional_capacity_limit(self):
+        import re
+        from azure.core.exceptions import HttpResponseError, ServiceRequestError
+        from azure.cli.core.aaz import has_value
+        from azure.cli.core.azclierror import AzureResponseError, InvalidArgumentValueError
+
+        args = self.ctx.args
+        if not has_value(args.location) or not has_value(args.sku.name):
+            raise InvalidArgumentValueError("V2 autoscale SKU discovery requires a location and SKU name.")
+        location = str(args.location).lower()
+        sku_name = str(args.sku.name)
+        error = (
+            f"Cannot determine the V2 autoscale capacity limit for SKU '{sku_name}' in '{location}': "
+            "expected exactly one matching elasticSans SKU and one elasticSanMaxTotalCapacityTiB "
+            "capability with a positive integer value. "
+            "Specify --capacity-unit-scale-up-limit-tib explicitly or retry SKU discovery."
+        )
+        matches = []
+        previous_next_link = self.ctx.next_link
+        seen_links = set()
+        try:
+            self.ctx.next_link = None
+            while True:
+                page = self.AutoscaleSkusList(ctx=self.ctx)()
+                if not isinstance(page, dict) or not isinstance(page.get("value"), list):
+                    raise InvalidArgumentValueError(error)
+                for sku in page["value"]:
+                    if not isinstance(sku, dict):
+                        raise InvalidArgumentValueError(error)
+                    locations = sku.get("locations", [])
+                    location_info = sku.get("locationInfo", [])
+                    in_location = (
+                        isinstance(locations, list) and location in
+                        [value.lower() for value in locations if isinstance(value, str)]
+                    ) or (
+                        isinstance(location_info, list) and any(
+                            isinstance(info, dict) and isinstance(info.get("location"), str) and
+                            info["location"].lower() == location for info in location_info
+                        )
+                    )
+                    if sku.get("name") == sku_name and sku.get("resourceType") == "elasticSans" and in_location:
+                        matches.append(sku)
+                next_link = page.get("nextLink")
+                if next_link is None:
+                    break
+                if not isinstance(next_link, str) or not next_link or next_link in seen_links:
+                    raise InvalidArgumentValueError(error)
+                seen_links.add(next_link)
+                self.ctx.next_link = next_link
+        except (HttpResponseError, ServiceRequestError) as ex:
+            raise AzureResponseError(f"V2 autoscale SKU discovery failed: {ex}") from ex
+        finally:
+            self.ctx.next_link = previous_next_link
+
+        if len(matches) != 1 or not isinstance(matches[0].get("capabilities"), list):
+            raise InvalidArgumentValueError(error)
+        capabilities = [
+            capability for capability in matches[0]["capabilities"]
+            if isinstance(capability, dict) and capability.get("name") == "elasticSanMaxTotalCapacityTiB"
+        ]
+        if len(capabilities) != 1:
+            raise InvalidArgumentValueError(error)
+        value = capabilities[0].get("value")
+        if isinstance(value, str) and re.fullmatch(r"[0-9]+", value):
+            try:
+                value = int(value)
+            except ValueError as ex:
+                raise InvalidArgumentValueError(error) from ex
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise InvalidArgumentValueError(error)
+        return value
+
+    class AutoscaleSkusList(_ElasticSanListSku.SkusList):
+        @property
+        def query_parameters(self):
+            location = str(self.ctx.args.location).replace("'", "''")
+            return {
+                **self.serialize_query_param("$filter", f"location eq '{location}'"),
+                **self.serialize_query_param("api-version", "2026-05-01-preview", required=True),
+            }
+
+        def on_200(self, session):
+            return self.deserialize_http_content(session)

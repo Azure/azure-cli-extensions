@@ -8,9 +8,11 @@ import argparse
 import unittest
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
+from urllib.parse import unquote
 
+from azure.core.exceptions import HttpResponseError, ServiceRequestError
 from azure.cli.core.aaz._arg_action import AAZAnyTypeArgAction
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import AzureResponseError, InvalidArgumentValueError
 
 from azext_elastic_san.aaz.latest.elastic_san.volume import Delete as VolumeDelete
 from azext_elastic_san.custom import (
@@ -126,6 +128,10 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
                     "sku": {"name": "Premium_LRS" if version == "V1" else "ElasticSAN_LRS"},
                     "base_size_tib": 23,
                     "extended_capacity_size_tib": 14,
+                    "total_size_tib": 25,
+                    "total_iops": 100000,
+                    "total_mbps": 1000,
+                    "capacity_unit_scale_up_limit_tib": 30,
                 })
                 self.assertEqual(body["properties"]["baseSizeTiB"], 23)
                 self.assertEqual(body["properties"]["extendedCapacitySizeTiB"], 14)
@@ -454,6 +460,280 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
         args_schema = ElasticSanUpdate._build_arguments_schema()
 
         self.assertIn("ElasticSAN_LRS", args_schema.sku.name.enum.to_choices())
+
+
+class ElasticSanV2AutoscaleTest(unittest.TestCase):
+    def _command(self, **overrides):
+        data = {
+            "version": "V2",
+            "location": "eastus2euap",
+            "sku": {"name": "ElasticSAN_LRS"},
+            "total_size_tib": 25,
+            "total_iops": 100000,
+            "total_mbps": 1000,
+        }
+        data.update(overrides)
+        schema = ElasticSanCreate._build_arguments_schema()
+        command = object.__new__(ElasticSanCreate)
+        command.callbacks = {}
+        command._explicit_capacity_args = set()
+        command.ctx = SimpleNamespace(
+            args=schema._ValueCls(schema, schema.process_data(data)),
+            subscription_id="target-subscription",
+            next_link=None,
+            get_http_client=Mock(),
+        )
+        command.post_operations = Mock()
+        return command
+
+    @staticmethod
+    def _sku(value="200", **overrides):
+        sku = {
+            "name": "ElasticSAN_LRS",
+            "resourceType": "elasticSans",
+            "locations": ["eastus2euap"],
+            "capabilities": [{"name": "elasticSanMaxTotalCapacityTiB", "value": value}],
+        }
+        sku.update(overrides)
+        return sku
+
+    def _execute(self, command, pages=None, error=None):
+        client = command.ctx.get_http_client.return_value
+        client.send_request.return_value.http_response.status_code = 200
+        client.send_request.side_effect = error
+        client.format_url.side_effect = lambda template, **kwargs: template.format(**kwargs)
+        bodies = []
+
+        def create(operation):
+            bodies.append(operation.content)
+
+        with patch.object(command.AutoscaleSkusList, "deserialize_http_content", side_effect=pages or []), \
+                patch.object(command.ElasticSansCreate, "__call__", side_effect=create, autospec=True) as send:
+            try:
+                list(command._execute_operations())
+            except (InvalidArgumentValueError, AzureResponseError):
+                send.assert_not_called()
+                raise
+        self.assertEqual(len(bodies), 1)
+        return bodies[0]
+
+    def test_v2_defaults_and_both_capacity_ceiling_branches(self):
+        for regional_limit, expected in (("200", 125), ("100", 100), ("125", 125), (200, 125)):
+            with self.subTest(regional_limit=regional_limit):
+                command = self._command()
+                body = self._execute(command, [{"value": [self._sku(regional_limit)]}])
+                self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"], {
+                    "autoScalePolicyEnforcement": "Enabled",
+                    "capacityUnitScaleUpLimitTiB": expected,
+                    "increaseCapacityUnitByTiB": 1,
+                    "unusedSizeTiB": 1,
+                })
+                self.assertNotIn("baseSizeTiB", body["properties"])
+                self.assertNotIn("extendedCapacitySizeTiB", body["properties"])
+                self.assertIsNone(command.ctx.next_link)
+
+    def test_v2_ceiling_uses_arbitrary_precision_integer_arithmetic(self):
+        command = self._command(total_size_tib=2**63)
+        body = self._execute(command, [{"value": [self._sku(str(2**80))]}])
+        self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"]
+                         ["capacityUnitScaleUpLimitTiB"], 5 * 2**63)
+
+    def test_lookup_filters_target_subscription_location_and_exact_sku(self):
+        command = self._command()
+        skus = [
+            self._sku("10", name="Premium_LRS"),
+            self._sku("11", name="elasticsan_lrs"),
+            self._sku("12", locations=["westus"]),
+            self._sku("13", resourceType="volumes"),
+            self._sku("200", locations=["EASTUS2EUAP"]),
+        ]
+        body = self._execute(command, [{"value": skus}])
+        self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"]
+                         ["capacityUnitScaleUpLimitTiB"], 125)
+        request = command.ctx.get_http_client.return_value._request.call_args
+        self.assertEqual(request.args[0], "GET")
+        self.assertEqual(request.args[1],
+                         "/subscriptions/target-subscription/providers/Microsoft.ElasticSan/skus")
+        self.assertEqual(unquote(request.args[2]["$filter"]), "location eq 'eastus2euap'")
+        self.assertEqual(request.args[2]["api-version"], "2026-05-01-preview")
+
+    def test_lookup_supports_location_info_and_other_exact_requested_skus(self):
+        command = self._command(sku={"name": "ElasticSAN_ZRS"})
+        sku = self._sku(name="ElasticSAN_ZRS", locations=[], locationInfo=[{"location": "eastus2euap"}])
+        body = self._execute(command, [{"value": [self._sku(), sku]}])
+        self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"]
+                         ["capacityUnitScaleUpLimitTiB"], 125)
+
+    def test_lookup_uses_resolved_command_subscription_not_active_subscription(self):
+        from azure.cli.core.aaz._command_ctx import AAZCommandCtx
+        from azure.cli.core.mock import DummyCli
+
+        command = self._command()
+        args = command.ctx.args.to_serialized_data()
+        args["subscription"] = "identity-subscription"
+        command.ctx = AAZCommandCtx(DummyCli(), ElasticSanCreate._build_arguments_schema(), args)
+        command.ctx.get_http_client = Mock()
+        with patch("azure.cli.core.commands.client_factory.get_subscription_id",
+                   return_value="active-subscription") as active_subscription:
+            self._execute(command, [{"value": [self._sku()]}])
+        active_subscription.assert_not_called()
+        request = command.ctx.get_http_client.return_value._request.call_args
+        self.assertIn("/subscriptions/identity-subscription/", request.args[1])
+
+    def test_explicit_numeric_overrides_including_zero_bypass_discovery(self):
+        for value in (0, 7):
+            with self.subTest(value=value):
+                command = self._command(
+                    capacity_unit_scale_up_limit_tib=value,
+                    increase_capacity_unit_by_tib=value,
+                    unused_size_tib=value,
+                )
+                body = self._execute(command)
+                self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"], {
+                    "autoScalePolicyEnforcement": "Enabled",
+                    "capacityUnitScaleUpLimitTiB": value,
+                    "increaseCapacityUnitByTiB": value,
+                    "unusedSizeTiB": value,
+                })
+                command.ctx.get_http_client.return_value.send_request.assert_not_called()
+
+    def test_explicit_numeric_overrides_survive_discovery(self):
+        command = self._command(increase_capacity_unit_by_tib=0, unused_size_tib=0)
+        body = self._execute(command, [{"value": [self._sku()]}])
+        self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"], {
+            "autoScalePolicyEnforcement": "Enabled",
+            "capacityUnitScaleUpLimitTiB": 125,
+            "increaseCapacityUnitByTiB": 0,
+            "unusedSizeTiB": 0,
+        })
+
+    def test_explicit_zero_totals_are_present_and_preserved(self):
+        command = self._command(total_size_tib=0, total_iops=0, total_mbps=0,
+                                capacity_unit_scale_up_limit_tib=0)
+        body = self._execute(command)
+        for field in ("totalSizeTiB", "totalIops", "totalMBps"):
+            self.assertEqual(body["properties"][field], 0)
+        command.ctx.get_http_client.return_value.send_request.assert_not_called()
+
+    def test_explicit_none_enforcement_is_preserved(self):
+        for limit in (None, 0):
+            with self.subTest(limit=limit):
+                command = self._command(auto_scale_policy_enforcement="None")
+                if limit is not None:
+                    command.ctx.args.capacity_unit_scale_up_limit_tib = limit
+                body = self._execute(command, [{"value": [self._sku()]}])
+                self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"]
+                                 ["autoScalePolicyEnforcement"], "None")
+
+    def test_disabled_is_rejected_before_discovery_or_creation(self):
+        for limit in (None, 0):
+            with self.subTest(limit=limit):
+                command = self._command(auto_scale_policy_enforcement="Disabled")
+                if limit is not None:
+                    command.ctx.args.capacity_unit_scale_up_limit_tib = limit
+                with self.assertRaisesRegex(InvalidArgumentValueError, "Disabled"):
+                    self._execute(command)
+                command.ctx.get_http_client.assert_not_called()
+
+    def test_missing_v2_totals_are_rejected_before_discovery_or_creation(self):
+        for field in ("total_size_tib", "total_iops", "total_mbps"):
+            for explicit_limit in (False, True):
+                with self.subTest(field=field, explicit_limit=explicit_limit):
+                    command = self._command()
+                    del command.ctx.args[field]
+                    if explicit_limit:
+                        command.ctx.args.capacity_unit_scale_up_limit_tib = 0
+                    with self.assertRaisesRegex(InvalidArgumentValueError, field.replace("_", "-")):
+                        self._execute(command)
+                    command.ctx.get_http_client.return_value.send_request.assert_not_called()
+
+    def test_sku_discovery_failures_prevent_creation(self):
+        invalid_skus = [
+            [],
+            [self._sku(), self._sku()],
+            [self._sku(name="Premium_LRS")],
+            [self._sku(locations=["westus"])],
+            [self._sku(resourceType="volumes")],
+            [self._sku(capabilities=[])],
+            [self._sku(capabilities=None)],
+            [self._sku(capabilities=[{"name": "elasticSanMaxSizeTiB", "value": "999"}])],
+            [self._sku(capabilities=self._sku()["capabilities"] * 2)],
+        ]
+        for value in (None, "", "0", "-1", "1.5", "bad", "1e3", True, False, 0, -1, 1.5):
+            invalid_skus.append([self._sku(value)])
+        for skus in invalid_skus:
+            with self.subTest(skus=skus):
+                command = self._command()
+                with self.assertRaisesRegex(InvalidArgumentValueError, "elasticSanMaxTotalCapacityTiB"):
+                    self._execute(command, [{"value": skus}])
+                self.assertIsNone(command.ctx.next_link)
+
+    def test_malformed_discovery_responses_prevent_creation(self):
+        for page in ({}, {"value": None}, {"value": {}}, {"value": [None]}, [], None):
+            with self.subTest(page=page):
+                with self.assertRaisesRegex(InvalidArgumentValueError, "Cannot determine"):
+                    self._execute(self._command(), [page])
+
+    def test_missing_location_or_sku_prevents_discovery_and_creation(self):
+        for field in ("location", "sku"):
+            with self.subTest(field=field):
+                command = self._command()
+                del command.ctx.args[field]
+                with self.assertRaisesRegex(InvalidArgumentValueError, "location and SKU"):
+                    self._execute(command)
+                command.ctx.get_http_client.return_value.send_request.assert_not_called()
+
+    def test_discovery_request_errors_prevent_creation(self):
+        for error in (HttpResponseError("service unavailable"), ServiceRequestError("connection failed")):
+            with self.subTest(error=type(error).__name__):
+                command = self._command()
+                with self.assertRaisesRegex(AzureResponseError, "SKU discovery failed"):
+                    self._execute(command, error=error)
+                self.assertIsNone(command.ctx.next_link)
+
+    def test_discovery_checks_all_pages_for_ambiguity(self):
+        next_link = "https://management.azure.com/subscriptions/target-subscription/providers/" \
+                    "Microsoft.ElasticSan/skus?next=1"
+        command = self._command()
+        body = self._execute(command, [
+            {"value": [], "nextLink": next_link}, {"value": [self._sku()]},
+        ])
+        self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"]
+                         ["capacityUnitScaleUpLimitTiB"], 125)
+        self.assertEqual(command.ctx.get_http_client.return_value.send_request.call_count, 2)
+        self.assertIsNone(command.ctx.next_link)
+        with self.assertRaisesRegex(InvalidArgumentValueError, "exactly one"):
+            self._execute(self._command(), [
+                {"value": [self._sku()], "nextLink": next_link}, {"value": [self._sku()]},
+            ])
+
+    def test_invalid_or_repeated_next_links_prevent_creation(self):
+        for next_link in ("", 1, "https://management.azure.com/repeated"):
+            with self.subTest(next_link=next_link):
+                page = {"value": [], "nextLink": next_link}
+                with self.assertRaisesRegex(InvalidArgumentValueError, "Cannot determine"):
+                    self._execute(self._command(), [page, page])
+
+    def test_v1_creation_does_not_default_autoscale_or_discover_skus(self):
+        for version in (None, "V1"):
+            for policy in (None, "Disabled", "None"):
+                with self.subTest(version=version, policy=policy):
+                    command = self._command()
+                    for field in ("version", "total_size_tib", "total_iops", "total_mbps"):
+                        del command.ctx.args[field]
+                    if version is not None:
+                        command.ctx.args.version = version
+                    if policy is not None:
+                        command.ctx.args.auto_scale_policy_enforcement = policy
+                    body = self._execute(command)
+                    self.assertEqual(body["properties"]["baseSizeTiB"], 20)
+                    self.assertEqual(body["properties"]["extendedCapacitySizeTiB"], 0)
+                    if policy is None:
+                        self.assertNotIn("autoScaleProperties", body["properties"])
+                    else:
+                        self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"],
+                                         {"autoScalePolicyEnforcement": policy})
+                    command.ctx.get_http_client.return_value.send_request.assert_not_called()
 
 
 class VolumeManagedByCompatTest(unittest.TestCase):
