@@ -7,13 +7,6 @@ Release History
 * Support inline conditional input rules in runbook and execution parameter
   editors: const-based conditions select required inputs and exclude fields
   marked false from controls, validation, and saved parameters.
-* Evaluate conditional inputs independently for step inputs and each workload's
-  overrides, preserving defined required and optional fields until a matching
-  condition applies.
-* Avoid duplicate required errors and preserve allowed inherited values when
-  excluding conditional fields from saved parameters.
-* Report conditional validation errors before preparing the upload command,
-  while allowing incomplete parameters to be saved as a draft.
 
 3.0.0b6
 +++++++++++++++
