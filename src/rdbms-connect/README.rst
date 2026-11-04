@@ -1,7 +1,7 @@
 Microsoft Azure CLI 'rdbms-connect' Extension
 ==========================================
 
-This extension enables the command to connect to Azure Database for MySQL and Azure Database for PostgreSQL flexible server instances. .  
+This extension enables the command to connect to Azure Database for MySQL and Azure Database for PostgreSQL flexible server instances.
 
 -----
 Usage
