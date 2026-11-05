@@ -15,7 +15,9 @@ from azure.cli.core.aaz import *
     "redisenterprise migration start",
 )
 class Start(AAZCommand):
-    """Create a new migration
+    """Start migration from Azure Cache for Redis Basic, Standard, or Premium tiers to Azure Managed Redis.
+
+    These commands apply only to migrations from the Basic, Standard, and Premium tiers of Azure Cache for Redis to Azure Managed Redis.
 
     :example: Start a migration from an Azure Cache for Redis source
         az redisenterprise migration start --cluster-name cache1 --resource-group rg1 --source-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Cache/Redis/source-cache --skip-data-migration true --switch-dns true

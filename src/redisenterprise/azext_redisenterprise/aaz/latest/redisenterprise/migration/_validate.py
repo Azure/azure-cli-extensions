@@ -15,7 +15,9 @@ from azure.cli.core.aaz import *
     "redisenterprise migration validate",
 )
 class Validate(AAZCommand):
-    """Validates if a source Azure Cache for Redis resource can be migrated to a target Azure Managed Redis resource.
+    """Validate migration from Azure Cache for Redis Basic, Standard, or Premium tiers to Azure Managed Redis.
+
+    These commands apply only to migrations from the Basic, Standard, and Premium tiers of Azure Cache for Redis to Azure Managed Redis.
 
     :example: Validate an OSS cache migration without transferring data
         az redisenterprise migration validate --cluster-name cache1 --resource-group rg1 --source-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Cache/Redis/source-cache --skip-data-migration true

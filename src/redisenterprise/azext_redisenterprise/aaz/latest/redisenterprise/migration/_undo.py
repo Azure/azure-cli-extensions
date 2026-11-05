@@ -15,7 +15,9 @@ from azure.cli.core.aaz import *
     "redisenterprise migration undo",
 )
 class Undo(AAZCommand):
-    """Cancel or rollback the migration operation in a Redis Enterprise cluster.
+    """Cancel or roll back a migration from Azure Cache for Redis Basic, Standard, or Premium tiers to Azure Managed Redis.
+
+    These commands apply only to migrations from the Basic, Standard, and Premium tiers of Azure Cache for Redis to Azure Managed Redis.
 
     :example: Undo a migration because of performance issues
         az redisenterprise migration undo --cluster-name cache1 --resource-group rg1 --rollback-reason performance

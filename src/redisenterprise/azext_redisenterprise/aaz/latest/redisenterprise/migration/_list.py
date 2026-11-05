@@ -15,7 +15,9 @@ from azure.cli.core.aaz import *
     "redisenterprise migration list",
 )
 class List(AAZCommand):
-    """List information about all migrations attempts in a Redis Enterprise cluster.
+    """List migrations from Azure Cache for Redis Basic, Standard, or Premium tiers to Azure Managed Redis.
+
+    These commands apply only to migrations from the Basic, Standard, and Premium tiers of Azure Cache for Redis to Azure Managed Redis.
     """
 
     _aaz_info = {

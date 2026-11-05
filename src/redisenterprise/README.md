@@ -56,7 +56,7 @@ Use this cluster-level command after an Azure Cache for Redis Enterprise cluster
 az redisenterprise unlink-migrated-endpoint --cluster-name "cache1" --resource-group "rg1"
 ```
 #### redisenterprise migration ####
-These commands migrate an existing Azure Cache for Redis instance to a compatible Azure Managed Redis target cluster. The example assumes an existing source named `sourcecache` in `rg1`. Retrieve its actual resource ID rather than typing a sample subscription ID.
+Migrate Azure Cache for Redis instances (**Basic, Standard, or Premium only**) to Azure Managed Redis. The examples use an existing source cache named `sourcecache` in `rg1`.
 
 Prepare a separate target with the nonclustered configuration used for an OSS migration. The source region must support the target SKU and have available capacity.
 
@@ -96,7 +96,7 @@ For a successful migration, `properties.rollbackEligibleUntil` gives the rollbac
 az redisenterprise migration undo --cluster-name "migrationcache" --resource-group "rg1" --rollback-reason performance
 ```
 ##### Unlink an endpoint migrated from Azure Cache for Redis #####
-Use this migration-level command, not the cluster-level command above, for an Azure Cache for Redis source.
+Use this migration-level command, not the cluster-level command above, for an Azure Cache for Redis source in the Basic, Standard, or Premium tier.
 
 The source cache must be deleted before its migrated endpoint can be unlinked. Before deleting it, verify the target data and application connectivity and confirm you no longer need rollback.
 ```
