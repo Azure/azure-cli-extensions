@@ -700,3 +700,84 @@ helps['fleet clustermeshprofile wait'] = """
         - name: Wait for the cluster mesh profile to be created.
           text: az fleet clustermeshprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --created
 """
+
+helps['fleet network'] = """
+    type: group
+    short-summary: Commands to manage fleet networking.
+"""
+
+helps['fleet network cross-cluster'] = """
+    type: group
+    short-summary: Commands to manage cross-cluster networks.
+"""
+
+helps['fleet network cross-cluster create'] = """
+    type: command
+    short-summary: Create or update a cross-cluster network.
+    parameters:
+        - name: --member-selector --selector -s
+          type: string
+          short-summary: "Kubernetes-style label selector for selecting Fleet members, e.g. 'env=production'."
+    examples:
+        - name: Create a cross-cluster network with a label selector.
+          text: az fleet network cross-cluster create -g MyFleetResourceGroup -f MyFleetName -n MyCrossClusterNetwork --selector "env=production"
+        - name: Create a cross-cluster network without a selector (no members selected initially).
+          text: az fleet network cross-cluster create -g MyFleetResourceGroup -f MyFleetName -n MyCrossClusterNetwork
+"""
+
+helps['fleet network cross-cluster show'] = """
+    type: command
+    short-summary: Get a cross-cluster network.
+    examples:
+        - name: Show the details of a cross-cluster network.
+          text: az fleet network cross-cluster show -g MyFleetResourceGroup -f MyFleetName -n MyCrossClusterNetwork
+"""
+
+helps['fleet network cross-cluster list'] = """
+    type: command
+    short-summary: List all cross-cluster networks for a fleet.
+    examples:
+        - name: List all cross-cluster networks for a given fleet.
+          text: az fleet network cross-cluster list -g MyFleetResourceGroup -f MyFleetName
+"""
+
+helps['fleet network cross-cluster delete'] = """
+    type: command
+    short-summary: Delete a cross-cluster network. Members must be disconnected from the network before it can be deleted.
+    examples:
+        - name: Delete a specific cross-cluster network.
+          text: az fleet network cross-cluster delete -g MyFleetResourceGroup -f MyFleetName -n MyCrossClusterNetwork
+"""
+
+helps['fleet network cross-cluster apply'] = """
+    type: command
+    short-summary: Apply the cross-cluster network to selected fleet members.
+    examples:
+        - name: Apply a cross-cluster network.
+          text: az fleet network cross-cluster apply -g MyFleetResourceGroup -f MyFleetName -n MyCrossClusterNetwork
+        - name: Preview what changes would be made without actually applying.
+          text: az fleet network cross-cluster apply -g MyFleetResourceGroup -f MyFleetName -n MyCrossClusterNetwork --what-if --output table
+"""
+
+helps['fleet network cross-cluster list-members'] = """
+    type: command
+    short-summary: List fleet members for a cross-cluster network.
+    long-summary: |
+        Without --selector, lists members currently applied to the network.
+        With --selector, lists members that would match the network's label selector (i.e. candidates for the next apply).
+    examples:
+        - name: List members currently applied to the network.
+          text: az fleet network cross-cluster list-members -g MyFleetResourceGroup -f MyFleetName -n MyCrossClusterNetwork
+        - name: List members that would match the network's selector.
+          text: az fleet network cross-cluster list-members -g MyFleetResourceGroup -f MyFleetName -n MyCrossClusterNetwork --selector
+"""
+
+helps['fleet network cross-cluster wait'] = """
+    type: command
+    short-summary: Wait for a cross-cluster network to reach a desired state.
+    examples:
+        - name: Wait for the cross-cluster network to reach Connected state after apply.
+          text: az fleet network cross-cluster wait -g MyFleetResourceGroup -f MyFleetName -n MyCrossClusterNetwork --custom "properties.status.state=='Connected'"
+        - name: Wait for the cross-cluster network to be created.
+          text: az fleet network cross-cluster wait -g MyFleetResourceGroup -f MyFleetName -n MyCrossClusterNetwork --created
+"""
