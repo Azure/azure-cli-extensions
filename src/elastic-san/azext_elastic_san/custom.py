@@ -539,8 +539,10 @@ class ElasticSanCreate(_ElasticSanCreate):
 
         args = self.ctx.args
         if args.version == "V2":
-            if args.auto_scale_policy_enforcement == "Disabled":
-                raise InvalidArgumentValueError("V2 creation does not support autoscale policy enforcement Disabled.")
+            if str(args.auto_scale_policy_enforcement).lower() in ("none", "disabled"):
+                raise InvalidArgumentValueError(
+                    "V2 creation does not support autoscale policy enforcement None or Disabled."
+                )
             for name in ("total_size_tib", "total_iops", "total_mbps"):
                 if not has_value(args[name]):
                     raise InvalidArgumentValueError(f"--{name.replace('_', '-')} is required for V2 creation.")

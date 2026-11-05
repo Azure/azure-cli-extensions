@@ -564,6 +564,25 @@ class ElasticSanV2AutoscaleTest(unittest.TestCase):
         self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"]
                          ["capacityUnitScaleUpLimitTiB"], 125)
 
+    def test_cli_formats_display_locations_before_sku_discovery(self):
+        from azure.cli.core.aaz._command_ctx import AAZCommandCtx
+        from azure.cli.core.mock import DummyCli
+
+        for location, formatted in (("East US", "eastus"), ("eAsT uS", "eastus"), ("EASTUS", "EASTUS")):
+            with self.subTest(location=location):
+                command = self._command(location=location)
+                data = command.ctx.args.to_serialized_data()
+                data.update(elastic_san_name="test-san", resource_group="test-rg")
+                command.ctx = AAZCommandCtx(DummyCli(), ElasticSanCreate._build_arguments_schema(), data)
+                command.ctx.get_http_client = Mock()
+                with patch("azure.cli.core.aaz._command_ctx.get_subscription_locations",
+                           return_value=[SimpleNamespace(name="eastus", display_name="East US")]):
+                    command.ctx.format_args()
+                body = self._execute(command, [{"value": [self._sku(locations=["eastus"])]}])
+                self.assertEqual(body["location"], formatted)
+                request = command.ctx.get_http_client.return_value._request.call_args
+                self.assertEqual(unquote(request.args[2]["$filter"]), f"location eq '{formatted}'")
+
     def test_lookup_uses_resolved_command_subscription_not_active_subscription(self):
         from azure.cli.core.aaz._command_ctx import AAZCommandCtx
         from azure.cli.core.mock import DummyCli
@@ -615,25 +634,41 @@ class ElasticSanV2AutoscaleTest(unittest.TestCase):
             self.assertEqual(body["properties"][field], 0)
         command.ctx.get_http_client.return_value.send_request.assert_not_called()
 
-    def test_explicit_none_enforcement_is_preserved(self):
-        for limit in (None, 0):
-            with self.subTest(limit=limit):
-                command = self._command(auto_scale_policy_enforcement="None")
-                if limit is not None:
-                    command.ctx.args.capacity_unit_scale_up_limit_tib = limit
-                body = self._execute(command, [{"value": [self._sku()]}])
-                self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"]
-                                 ["autoScalePolicyEnforcement"], "None")
+    def test_none_and_disabled_are_rejected_before_discovery_or_creation(self):
+        for policy in ("None", "none", "nOnE", "Disabled", "disabled", "dIsAbLeD"):
+            for limit in (None, 0):
+                with self.subTest(policy=policy, limit=limit):
+                    command = self._command(auto_scale_policy_enforcement=policy)
+                    if limit is not None:
+                        command.ctx.args.capacity_unit_scale_up_limit_tib = limit
+                    with self.assertRaisesRegex(InvalidArgumentValueError, "None or Disabled"):
+                        self._execute(command)
+                    command.ctx.get_http_client.assert_not_called()
 
-    def test_disabled_is_rejected_before_discovery_or_creation(self):
-        for limit in (None, 0):
-            with self.subTest(limit=limit):
-                command = self._command(auto_scale_policy_enforcement="Disabled")
-                if limit is not None:
-                    command.ctx.args.capacity_unit_scale_up_limit_tib = limit
-                with self.assertRaisesRegex(InvalidArgumentValueError, "Disabled"):
-                    self._execute(command)
-                command.ctx.get_http_client.assert_not_called()
+    def test_explicit_enabled_enforcement_remains_supported(self):
+        for policy in ("Enabled", "enabled", "eNaBlEd"):
+            with self.subTest(policy=policy):
+                command = self._command(auto_scale_policy_enforcement=policy,
+                                        capacity_unit_scale_up_limit_tib=30)
+                body = self._execute(command)
+                self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"]
+                                 ["autoScalePolicyEnforcement"].lower(), "enabled")
+                command.ctx.get_http_client.return_value.send_request.assert_not_called()
+
+    def test_update_preserves_none_and_disabled_enforcement(self):
+        helper = ElasticSanUpdateCompatTest()
+        for policy in ("None", "Disabled"):
+            with self.subTest(policy=policy):
+                events, body = helper._execute_update(
+                    ElasticSanUpdate,
+                    {"auto_scale_policy_enforcement": policy},
+                    {"location": "eastus2euap",
+                     "properties": {"version": "V2", "sku": {"name": "ElasticSAN_LRS"}}},
+                    [],
+                )
+                self.assertEqual(events, ["GET", "PATCH"])
+                self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"],
+                                 {"autoScalePolicyEnforcement": policy})
 
     def test_missing_v2_totals_are_rejected_before_discovery_or_creation(self):
         for field in ("total_size_tib", "total_iops", "total_mbps"):
