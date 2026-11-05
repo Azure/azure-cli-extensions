@@ -8,7 +8,6 @@ from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from azure.core import MatchConditions
 
 from azext_aimanager import custom
 from azext_aimanager._params import load_arguments
@@ -222,7 +221,7 @@ class TestModelDeployment(unittest.TestCase):
     @patch.object(custom, "_annotate_model_id_on_completion", side_effect=lambda _cmd, p, _nw: p)
     @patch.object(custom, "sdk_no_wait")
     @patch.object(custom, "_construct_modeldeployment")
-    def test_update_preserves_omitted_properties_and_uses_etag(
+    def test_update_preserves_omitted_properties_without_etag_precondition(
             self, construct_modeldeployment, sdk_no_wait, _annotate):
         existing_scale = models.ScalingProfile(
             manual=models.ManualScalingProfile(replicas=2))
@@ -268,8 +267,6 @@ class TestModelDeployment(unittest.TestCase):
             "deployment",
             deployment,
             headers={},
-            etag='"etag-value"',
-            match_condition=MatchConditions.IfNotModified,
         )
 
     @patch.object(custom, "_annotate_model_id_on_completion", return_value="annotated")
