@@ -61,7 +61,7 @@ Live validation
 ``UpgradeInsightsScenarioTest.test_aks_upgrade_insights_scopes`` uses the repository's
 ``ScenarioTest`` and ``AKSCustomResourceGroupPreparer`` conventions. It creates a
 temporary single-pool cluster and tests all four upgrade scopes, latest and explicit
-node-image targets, stored reads, cluster listing, and an unsupported-version blocker
+node-image targets, stored reads, cluster listing, and an unsupported agent-pool version blocker
 with a scope-indented report. It never upgrades the cluster or pool. The preparer
 cleans up the temporary resource group. Its cluster needs no SSH key and explicitly
 enables KMS infrastructure encryption to match the live service's encryption requirements.

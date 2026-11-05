@@ -130,10 +130,15 @@ class UpgradeInsightsScenarioFlowTest(unittest.TestCase):
             record["name"] = scope
             record["id"] = f"/managedClusters/cluster/upgradeInsights/{scope}"
             records.append(record)
-        blocked = copy.deepcopy(records[0])
-        blocked["name"] = "blocked-combined"
+        blocked = copy.deepcopy(records[2])
+        blocked["name"] = "blocked-pool"
         blocked["properties"]["targetKubernetesVersion"] = "1.99.0"
-        blocked["id"] = "/managedClusters/cluster/upgradeInsights/blocked-combined"
+        blocked["properties"]["evaluation"] = evaluation("Failed", [{
+            "issueType": "UnsupportedKubernetesVersion",
+            "severity": "Blocking",
+            "message": "Kubernetes version 1.99.0 is not supported.",
+        }])
+        blocked["id"] = "/managedClusters/cluster/upgradeInsights/blocked-pool"
         report = format_upgrade_insight_report(blocked, "cluster")
 
         def result(data=None, output=""):
@@ -166,6 +171,10 @@ class UpgradeInsightsScenarioFlowTest(unittest.TestCase):
         self.assertEqual(scenario.cmd.call_count, len(responses))
         self.assertEqual(scenario.kwargs["target"], "1.35.1")
         self.assertEqual(scenario.kwargs["image"], "image-target")
+        blocked_command = scenario.cmd.call_args_list[12].args[0]
+        self.assertTrue(blocked_command.startswith("aks nodepool upgrade-insights create"))
+        self.assertIn("--upgrade-type AgentPool", blocked_command)
+        self.assertIn("--target-kubernetes-ver 1.99.0", blocked_command)
 
 
 class UpgradeInsightsCommandsTest(unittest.TestCase):

@@ -79,22 +79,22 @@ class UpgradeInsightsScenarioTest(ScenarioTest):
                     self.assertEqual(explicit["name"], created["name"])
 
         blocked = self.cmd(
-            f"{cluster_command} create {cluster_args} --target-kubernetes-ver 1.99.0 -o json"
+            f"{pool_command} create {pool_args} --upgrade-type AgentPool "
+            "--target-kubernetes-ver 1.99.0 -o json"
         ).get_output_in_json()
-        self._assert_insight(blocked, "ControlPlaneAndAgentPools")
+        self._assert_insight(blocked, "AgentPool")
         names.add(blocked["name"])
         self.kwargs["insight"] = blocked["name"]
-        pool = next(
-            item for item in blocked["properties"]["agentPools"]
-            if item["agentPoolName"] == self.kwargs["pool"]
-        )
+        pool = blocked["properties"]
+        self.assertEqual(pool["targetKubernetesVersion"], "1.99.0")
         self.assertEqual(pool["evaluation"]["status"], "Failed")
         self.assertTrue(any(
-            issue["severity"] == "Blocking" and issue["message"]
+            issue["issueType"] == "UnsupportedKubernetesVersion"
+            and issue["severity"] == "Blocking" and issue["message"]
             for issue in pool["evaluation"]["detectedIssues"]
         ))
         report = self.cmd(
-            f"{cluster_command} show {cluster_args} --insight-name {{insight}}"
+            f"{pool_command} show {pool_args} --insight-name {{insight}}"
         ).output
         self.assertIn(f"  Agent pool: {self.kwargs['pool']} - FAILED\n", report)
         pool_report = report.split(f"  Agent pool: {self.kwargs['pool']} - FAILED\n", 1)[1]
