@@ -115,9 +115,13 @@ def aks_nodepool_upgrade_insights_show(
 
 
 def _output_insights(cmd, result, cluster_name, detailed=True):
-    options = set(cmd.cli_ctx.data.get("safe_params") or [])
+    options = cmd.cli_ctx.data.get("safe_params") or []
+    explicit_output = any(
+        option == "-o" or (option.startswith("--") and "--output".startswith(option))
+        for option in options
+    )
     configured_output = cmd.cli_ctx.config.get("core", "output", fallback=None)
-    if options.intersection(("--output", "-o", "--query")) or configured_output:
+    if explicit_output or cmd.cli_ctx.invocation.data.get("query_active") or configured_output:
         return result
 
     insights = result if isinstance(result, list) else [result]

@@ -11,6 +11,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError
+from azure.cli.core.commands import AzCliCommandInvoker
 from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
 from knack.output import format_tsv
 from knack.util import CommandResultItem
@@ -184,7 +185,7 @@ class UpgradeInsightsCommandsTest(unittest.TestCase):
         config.get.return_value = None
         self.cmd = SimpleNamespace(cli_ctx=SimpleNamespace(
             data={"safe_params": ["--output"]}, config=config, out_file=self.output,
-            invocation=SimpleNamespace(data={"output": "json"}),
+            invocation=SimpleNamespace(data={"output": "json", "query_active": False}),
             output=Mock(),
         ))
         self.client = Mock()
@@ -332,8 +333,31 @@ class UpgradeInsightsCommandsTest(unittest.TestCase):
         for option in ("--output", "-o", "--query"):
             with self.subTest(option=option):
                 self.cmd.cli_ctx.data["safe_params"] = [option]
+                self.cmd.cli_ctx.invocation.data["query_active"] = option == "--query"
                 result = aks_upgrade_insights_show(self.cmd, self.client, "rg", "cluster", "stored-insight")
                 self.assertEqual(result["properties"]["agentPools"][0]["evaluation"]["detectedIssues"], [ISSUE])
+                self.assertEqual(self.output.getvalue(), "")
+
+    def test_abbreviated_output_preserves_full_results(self):
+        for args in (["--out", "json"], ["--out=json"], ["--outp", "json"], ["--outpu=json"]):
+            with self.subTest(args=args):
+                self.cmd.cli_ctx.data["safe_params"] = AzCliCommandInvoker._extract_parameter_names(args)
+                result = aks_upgrade_insights_show(self.cmd, self.client, "rg", "cluster", "stored-insight")
+                self.assertEqual(result["properties"]["agentPools"][0]["evaluation"]["detectedIssues"], [ISSUE])
+                self.assertEqual(self.cmd.cli_ctx.invocation.data["output"], "json")
+                self.assertEqual(self.output.getvalue(), "")
+
+    def test_abbreviated_query_preserves_queryable_results(self):
+        for args in (
+            ["--que", "properties.agentPools[0].agentPoolName"],
+            ["--que=properties.agentPools[0].agentPoolName"],
+        ):
+            with self.subTest(args=args):
+                self.cmd.cli_ctx.data["safe_params"] = AzCliCommandInvoker._extract_parameter_names(args)
+                self.cmd.cli_ctx.invocation.data["query_active"] = True
+                result = aks_upgrade_insights_show(self.cmd, self.client, "rg", "cluster", "stored-insight")
+                self.assertEqual(result["properties"]["agentPools"][0]["agentPoolName"], "pool1")
+                self.assertEqual(self.cmd.cli_ctx.invocation.data["output"], "json")
                 self.assertEqual(self.output.getvalue(), "")
 
     def test_configured_output_is_respected(self):

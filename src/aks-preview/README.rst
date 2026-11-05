@@ -49,7 +49,8 @@ command. API and authentication errors still fail the command.
 
 Use ``--output json`` for complete structured results, or ``--output table`` for scoped
 issue rows. Explicit output settings, a configured ``core.output``, and ``--query``
-retain standard Azure CLI formatting and query behavior.
+retain standard Azure CLI formatting and query behavior, including parser-accepted
+abbreviations such as ``--out json``, ``--out=json``, and ``--que``.
 
 If a combined response omits agent-pool evaluations, the report and table explicitly
 show that the agent pools were not evaluated; a passed control-plane result alone
