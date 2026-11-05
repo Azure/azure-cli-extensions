@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.1.1
+++++++
+* Fix `az load test create`: `--test-id` is no longer required when `testId` is specified in the YAML configuration file passed via `--load-test-config-file`.
+
 2.1.0
 ++++++
 * Add option for `--autostop-engine-users` to set maximum users per engine for AutoStop criteria.
