@@ -320,6 +320,7 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
             )
         self.pre_operations()
         self.VolumeGroupsGet(ctx=self.ctx)()
+        self._translate_legacy_identity()
         payload = _VolumeGroupUpdate.VolumeGroupsUpdate(ctx=self.ctx).content
         if str(self.ctx.args.mi_system_assigned).lower() == "false":
             if has_value(self.ctx.args.user_assigned_identity):
@@ -370,7 +371,6 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
         )
         args_schema.identity.type = AAZStrArg(
             options=["type"],
-            required=True,
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"},
         )
         args_schema.identity.user_assigned_identity_id = AAZStrArg(
@@ -394,25 +394,10 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
                     "Use either the legacy --identity option or the new managed identity options, not both."
                 )
 
-            identity_type = args.identity.type
-            if identity_type == "None":
-                # The legacy value removes every identity; the PATCH contract represents
-                # that as no system-assigned identity and an empty user-assigned list.
-                args.mi_system_assigned = "False"
-                args.user_assigned_identity = []
-                return
-
-            user_assigned_ids = []
-            if has_value(args.identity.user_assigned_identity_id):
-                user_assigned_ids.append(str(args.identity.user_assigned_identity_id))
-
-            if identity_type == "UserAssigned" and not user_assigned_ids:
+            if args.identity.type == "UserAssigned" and not has_value(args.identity.user_assigned_identity_id):
                 raise InvalidArgumentValueError(
                     "The legacy --identity type UserAssigned requires a user-assigned identity."
                 )
-
-            args.mi_system_assigned = "True" if identity_type == "SystemAssigned" else None
-            args.user_assigned_identity = user_assigned_ids
 
         if has_value(args.enforce_data_integrity_check_for_iscsi) and args.enforce_data_integrity_check_for_iscsi:
             logger.warning("CRC protection feature is not supported for Azure VMware solution (AVS) yet. "
@@ -436,6 +421,36 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
                            "group as datastores for Azure VMware Solution (AVS), as this feature is not supported for "
                            "AVS yet and the datastore creation will fail. "
                            "Learn more: https://go.microsoft.com/fwlink/?LinkId=2294733&id=Microsoft_Azure_ElasticSan")
+
+    def _translate_legacy_identity(self):
+        from azure.cli.core.aaz import has_value
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+
+        args = self.ctx.args
+        if not has_value(args.identity):
+            return
+        existing_identity = self.ctx.vars.instance.identity
+        identity_type = args.identity.type
+        if not has_value(identity_type):
+            if not has_value(existing_identity) or not has_value(existing_identity.type):
+                raise InvalidArgumentValueError(
+                    "The legacy --identity option requires type when the volume group has no existing identity type."
+                )
+            identity_type = existing_identity.type
+        identity_type = str(identity_type)
+        if identity_type == "None":
+            args.mi_system_assigned = "False"
+            args.user_assigned_identity = []
+            return
+
+        if has_value(args.identity.user_assigned_identity_id):
+            user_assigned_ids = [str(args.identity.user_assigned_identity_id)]
+        elif not has_value(args.identity.type) and has_value(existing_identity):
+            user_assigned_ids = list(existing_identity.to_serialized_data().get("userAssignedIdentities", {}))
+        else:
+            user_assigned_ids = []
+        args.mi_system_assigned = "True" if "SystemAssigned" in identity_type else None
+        args.user_assigned_identity = user_assigned_ids
 
 
 class ElasticSanUpdate(_ElasticSanUpdate):

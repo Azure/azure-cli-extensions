@@ -438,6 +438,77 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
         self.assertEqual(body["identity"]["type"], "None")
         self.assertEqual(body["identity"]["userAssignedIdentities"], {})
 
+    def test_volume_group_legacy_identity_type_is_optional_during_validation(self):
+        from azure.cli.core.aaz._command_ctx import AAZCommandCtx
+        from azure.cli.core.mock import DummyCli
+
+        identity_id = "/subscriptions/sub/resourceGroups/rg/providers/" \
+                      "Microsoft.ManagedIdentity/userAssignedIdentities/new"
+        ctx = AAZCommandCtx(DummyCli(), VolumeGroupUpdate._build_arguments_schema(), {
+            "subscription": "sub",
+            "resource_group": "rg",
+            "elastic_san_name": "test-san",
+            "volume_group_name": "test-group",
+            "identity": {"user_assigned_identity_id": identity_id},
+        })
+        ctx.format_args()
+        self.assertEqual(str(ctx.args.identity.user_assigned_identity_id), identity_id)
+
+    def test_volume_group_partial_legacy_identity_preserves_existing_type(self):
+        for identity_type in ("UserAssigned", "SystemAssigned, UserAssigned"):
+            with self.subTest(identity_type=identity_type):
+                events, body = self._execute_update(
+                    VolumeGroupUpdate,
+                    {"identity": {"user_assigned_identity_id": "/identities/new"}},
+                    {"identity": {
+                        "type": identity_type,
+                        "principalId": "principal",
+                        "userAssignedIdentities": {"/identities/old": {"clientId": "client"}},
+                    }, "properties": {"protocolType": "Iscsi"}},
+                    [],
+                )
+                self.assertEqual(events, ["GET", "PATCH"])
+                self.assertEqual({value.strip() for value in body["identity"]["type"].split(",")},
+                                 {value.strip() for value in identity_type.split(",")})
+                self.assertIn("/identities/new", body["identity"]["userAssignedIdentities"])
+                self.assertNotIn("principalId", body["identity"])
+
+    def test_volume_group_empty_legacy_identity_preserves_existing_assignments(self):
+        _, body = self._execute_update(
+            VolumeGroupUpdate,
+            {"identity": {}},
+            {"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/identities/old": {}}},
+             "properties": {"protocolType": "Iscsi"}},
+            [],
+        )
+        self.assertEqual(body["identity"], {
+            "type": "UserAssigned", "userAssignedIdentities": {"/identities/old": {}},
+        })
+
+    def test_volume_group_partial_identity_without_existing_type_rejects_patch(self):
+        schema = VolumeGroupUpdate._build_arguments_schema()
+        command = object.__new__(VolumeGroupUpdate)
+        command.ctx = SimpleNamespace(
+            args=schema._ValueCls(schema, schema.process_data(
+                {"identity": {"user_assigned_identity_id": "/identities/new"}}
+            )),
+            vars=SimpleNamespace(),
+            generic_update_args={"actions": []},
+            get_http_client=Mock(),
+        )
+
+        def get_instance(operation):
+            instance_schema = operation._build_schema_on_200()
+            operation.ctx.vars.instance = instance_schema._ValueCls(
+                instance_schema, instance_schema.process_data({"properties": {"protocolType": "Iscsi"}})
+            )
+
+        with patch.object(command.VolumeGroupsGet, "__call__", get_instance), \
+                patch.object(command.VolumeGroupsUpdate, "__call__") as update:
+            with self.assertRaisesRegex(InvalidArgumentValueError, "no existing identity type"):
+                list(command._execute_operations())
+        update.assert_not_called()
+
     def test_volume_group_rejects_generic_edits_to_unsupported_patch_fields(self):
         for field, value in (("encryptionInTransit", "true"), ("qualityOfService", "PerformanceCritical"),
                              ("encryption_in_transit", "true"), ("quality_of_service", "PerformanceCritical")):
