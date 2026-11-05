@@ -32,6 +32,9 @@ from azext_alias.hooks import (
 # Alter this cache through cache_reserved_commands(load_cmd_tbl_func) in util.py
 cached_reserved_commands = []
 
+# small change to force build
+print('alias extension is loading ... ')
+# remove me after testing .. again
 
 class AliasExtCommandLoader(AzCommandsLoader):
 
@@ -87,3 +90,5 @@ def get_alias_completer(cmd, prefix, namespace, **kwargs):  # pylint: disable=un
 
 
 COMMAND_LOADER_CLS = AliasExtCommandLoader
+
+
