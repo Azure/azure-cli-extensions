@@ -104,3 +104,18 @@ def infer_target(text=None, pr_files=None, token=None):
         if target["kind"] != "unknown":
             return target
     return {"kind": "unknown", "name": None, "repo": None}
+
+
+def _live_test_target(text, pr_files, module=None, target_kind=None, token=None):
+    """Resolve the command target for the live-test runner."""
+    if module:
+        resolved = resolve_target(module, token=token)
+        if resolved["kind"] != "unknown":
+            module = resolved["name"]
+            target_kind = target_kind or resolved["kind"]
+    else:
+        resolved = infer_target(text=text, pr_files=pr_files, token=token)
+        if resolved["kind"] in ("module", "extension"):
+            module = resolved["name"]
+            target_kind = target_kind or resolved["kind"]
+    return {"module": module, "target_kind": target_kind or 'extension'}
