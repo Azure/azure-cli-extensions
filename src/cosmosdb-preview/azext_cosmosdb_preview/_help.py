@@ -790,7 +790,10 @@ helps['cosmosdb copy'] = """
 
 helps['cosmosdb copy create'] = """
     type: command
-    short-summary: "Creates a container copy job."
+    short-summary: "Creates a container copy job on the source account."
+    long-summary: |
+        Use the source account's subscription and resource group. For cross-account copies, configure
+        the source account's default managed identity with read-write access to the destination account.
     parameters:
       - name: --src-cassandra
         short-summary: "Source table"
@@ -840,7 +843,7 @@ helps['cosmosdb copy create'] = """
       - name: Copy Azure Cosmos DB API for NoSQL container in same account
         text: |-
           az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --dest-account "acc1" --src-nosql database=db1 container=c1 --dest-nosql database=db2 container=c2
-      - name: Copy Azure Cosmos DB API for NoSQL container in different account
+      - name: Copy Azure Cosmos DB API for NoSQL container to a different account, hosting the job on acc1 in rg1
         text: |-
           az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --dest-account "acc2" --src-nosql database=db1 container=c1 --dest-nosql database=db2 container=c2
       - name: Copy Azure Cosmos DB API for Apache Cassandra table
