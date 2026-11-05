@@ -5,6 +5,7 @@
 # --------------------------------------------------------------------------------------------
 
 import argparse
+import json
 import unittest
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
@@ -228,6 +229,94 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
         self.assertEqual(body["properties"]["sku"]["name"], "Premium_ZRS")
         self.assertEqual(body["properties"]["baseSizeTiB"], 25)
         self.assertEqual(body["tags"], {"keep": "original", "added": "value"})
+
+    def test_san_patch_clears_whole_tag_container(self):
+        events, body = self._execute_update(
+            ElasticSanUpdate, {},
+            {"location": "eastus2", "tags": {"old": "value"},
+             "properties": {"sku": {"name": "Premium_LRS"}, "baseSizeTiB": 20}},
+            [("remove", ["tags"])],
+        )
+        self.assertEqual(events, ["GET", "PATCH"])
+        self.assertEqual(body["tags"], {})
+        self.assertEqual(body["properties"]["baseSizeTiB"], 20)
+
+    def test_san_patch_preserves_tags_readded_after_removal(self):
+        _, body = self._execute_update(
+            ElasticSanUpdate, {},
+            {"location": "eastus2", "tags": {"old": "value"}, "properties": {"sku": {"name": "Premium_LRS"}}},
+            [("remove", ["tags"]), ("set", ['tags={"new":"value"}'])],
+        )
+        self.assertEqual(body["tags"], {"new": "value"})
+
+    def test_unrelated_patch_does_not_add_absent_containers(self):
+        _, body = self._execute_update(
+            ElasticSanUpdate, {"base_size_tib": 25},
+            {"location": "eastus2", "properties": {"sku": {"name": "Premium_LRS"}, "baseSizeTiB": 20}}, [],
+        )
+        self.assertNotIn("tags", body)
+        _, body = self._execute_update(
+            VolumeGroupUpdate, {"reserved_iops": 1000}, {"properties": {"protocolType": "Iscsi"}}, [],
+        )
+        self.assertNotIn("identity", body)
+        self.assertNotIn("networkAcls", body["properties"])
+
+    def test_volume_group_patch_clears_whole_network_acl_container(self):
+        for path in ("networkAcls", "network_acls"):
+            with self.subTest(path=path):
+                events, body = self._execute_update(
+                    VolumeGroupUpdate, {},
+                    {"properties": {
+                        "protocolType": "Iscsi",
+                        "networkAcls": {"virtualNetworkRules": [{"id": "/subnets/old", "action": "Allow"}]},
+                    }},
+                    [("remove", [path])],
+                )
+                self.assertEqual(events, ["GET", "PATCH"])
+                self.assertEqual(body["properties"]["networkAcls"], {"virtualNetworkRules": []})
+                self.assertEqual(body["properties"]["protocolType"], "Iscsi")
+
+    def test_volume_group_patch_clears_whole_identity_container(self):
+        events, body = self._execute_update(
+            VolumeGroupUpdate, {},
+            {"identity": {
+                "type": "SystemAssigned, UserAssigned",
+                "userAssignedIdentities": {"/identities/old": {}},
+            }, "properties": {"protocolType": "Iscsi"}},
+            [("remove", ["identity"])],
+        )
+        self.assertEqual(events, ["GET", "PATCH"])
+        self.assertEqual(body["identity"], {"type": "None", "userAssignedIdentities": {}})
+        self.assertEqual(body["properties"]["protocolType"], "Iscsi")
+
+    def test_volume_group_patch_preserves_containers_readded_after_removal(self):
+        for field, initial, replacement in (
+                ("networkAcls", {"virtualNetworkRules": [{"id": "/subnets/old", "action": "Allow"}]},
+                 {"virtualNetworkRules": [{"id": "/subnets/new", "action": "Allow"}]}),
+                ("identity", {"type": "SystemAssigned"},
+                 {"type": "UserAssigned", "userAssignedIdentities": {"/identities/new": {}}})):
+            with self.subTest(field=field):
+                resource = {"properties": {"protocolType": "Iscsi"}}
+                if field == "identity":
+                    resource[field] = initial
+                else:
+                    resource["properties"][field] = initial
+                _, body = self._execute_update(
+                    VolumeGroupUpdate, {}, resource,
+                    [("remove", [field]), ("set", [f"{field}={json.dumps(replacement)}"])],
+                )
+                actual = body[field] if field == "identity" else body["properties"][field]
+                self.assertEqual(actual, replacement)
+
+    def test_volume_group_patch_preserves_identity_after_partial_removal(self):
+        _, body = self._execute_update(
+            VolumeGroupUpdate, {},
+            {"identity": {"type": "UserAssigned",
+                          "userAssignedIdentities": {"old": {}, "keep": {}}},
+             "properties": {"protocolType": "Iscsi"}},
+            [("remove", ["identity.userAssignedIdentities.old"])],
+        )
+        self.assertEqual(body["identity"], {"type": "UserAssigned", "userAssignedIdentities": {"keep": {}}})
 
     def test_san_generic_sku_update_selects_put(self):
         events, body = self._execute_update(

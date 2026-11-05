@@ -25,6 +25,7 @@ The separate `test_elastic_san_v2_scenarios` integration test covers V2 create, 
 `--sku` and `--availability-zones` are also accepted for compatibility. When either is supplied, the command reads the existing resource and uses the API's PUT (create-or-replace) operation because these fields are not part of the PATCH update contract.
 SAN and volume-group updates support `--add`, `--set`, `--remove`, and `--force-string`. Custom code reads the resource, applies explicit options followed by generic updates, and sends writable PATCH fields (or PUT for the legacy SAN options above). This compatibility flow reuses the generated show operations and survives regeneration of the PATCH commands.
 Volume-group generic updates to `encryptionInTransit` and `qualityOfService` are rejected before sending a request because these fields are not supported by the PATCH contract.
+For PATCH updates, `az elastic-san update --remove tags` clears all tags. Volume-group updates with `--remove networkAcls` (or `network_acls`) clear all virtual network rules, and `--remove identity` clears both system-assigned and user-assigned identities. These whole-container removals send explicit empty values rather than omitting the fields; partial removals and containers re-added by later generic edits retain their resulting values.
 
 ## Volume Group
 ### Create a Volume Group.

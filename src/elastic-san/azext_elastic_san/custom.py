@@ -155,6 +155,15 @@ def _generic_update_targets_property(generic_update_args, property_names):
     return False
 
 
+def _generic_update_removes_container(generic_update_args, property_names):
+    if not isinstance(generic_update_args, dict):
+        return False
+    return any(
+        action == "remove" and len(values) == 1 and str(values[0]).lower() in property_names
+        for action, values in generic_update_args.get("actions", [])
+    )
+
+
 def _add_legacy_managed_by_output(result):
     if isinstance(result, tuple):
         return (_add_legacy_managed_by_output(result[0]), *result[1:])
@@ -338,6 +347,13 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
             body = self.serialize_content(self.ctx.vars.instance)
             for key in ("encryptionInTransit", "qualityOfService"):
                 body.get("properties", {}).pop(key, None)
+            if ("networkAcls" not in body.get("properties", {}) and
+                    _generic_update_removes_container(
+                        self.ctx.generic_update_args, ("networkacls", "network_acls"))):
+                body.setdefault("properties", {})["networkAcls"] = {"virtualNetworkRules": []}
+            if ("identity" not in body and
+                    _generic_update_removes_container(self.ctx.generic_update_args, ("identity",))):
+                body["identity"] = {"type": "None", "userAssignedIdentities": {}}
             return body
 
     @classmethod
@@ -489,6 +505,9 @@ class ElasticSanUpdate(_ElasticSanUpdate):
             # These resource fields are accepted by PUT, but not by the PATCH contract.
             for key in ("availabilityZones", "sku", "version"):
                 body.get("properties", {}).pop(key, None)
+            if ("tags" not in body and
+                    _generic_update_removes_container(self.ctx.generic_update_args, ("tags",))):
+                body["tags"] = {}
             return {key: value for key, value in body.items() if key in ("properties", "tags")}
 
     class ElasticSanReplace(_ElasticSanUpdate.ElasticSansUpdate):
