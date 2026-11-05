@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from unittest import mock
 from unittest.mock import MagicMock, patch
-from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch
+from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch, delete_trivy_db_copy
 from azure.cli.core.mock import DummyCli
 
 
@@ -104,3 +104,17 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
         cmd = mock.MagicMock()
         cmd.cli_ctx = DummyCli()
         return cmd
+
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations._get_acr_token')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations.parse_resource_id')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations.acr_repository_delete')
+    def test_delete_trivy_db_copy_missing_repository_does_not_fail(self, mock_acr_repository_delete, mock_parse_resource_id, mock_get_acr_token):
+        cmd = self._setup_cmd()
+        registry = MagicMock()
+        mock_parse_resource_id.return_value = {"resource_group": "test_rg", "subscription": "test_subscription"}
+        mock_get_acr_token.return_value = "test_token"
+        mock_acr_repository_delete.side_effect = Exception("repository not found")
+
+        delete_trivy_db_copy(cmd, registry)
+
+        self.assertEqual(mock_acr_repository_delete.call_args.kwargs["repository"], "csscpolicies/trivy-db")

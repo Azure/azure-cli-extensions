@@ -26,6 +26,7 @@ from ._constants import (
     CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
     CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN,
     CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
+    CONTINUOUSPATCH_TRIVY_DB_REPOSITORY,
     CSSC_WORKFLOW_POLICY_REPOSITORY,
     ERROR_MESSAGE_INVALID_JSON_PARSE,
     ERROR_MESSAGE_INVALID_JSON_SCHEMA,
@@ -124,6 +125,25 @@ def delete_oci_artifact_continuous_patch(cmd, registry):
         logger.debug(exception)
         logger.error(f"{oci_target_name}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1} might not exist or attempt to delete failed.")
         raise
+
+
+def delete_trivy_db_copy(cmd, registry):
+    """Delete the registry copy of the Trivy DB kept by the trigger task. Best effort: it may not exist."""
+    resourceid = parse_resource_id(registry.id)
+    subscription = resourceid[SUBSCRIPTION]
+    oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_TRIVY_DB_REPOSITORY}"
+    try:
+        token = _get_acr_token(registry.name, subscription)
+        acr_repository_delete(
+            cmd=cmd,
+            registry_name=registry.name,
+            repository=oci_target_name,
+            username=BEARER_TOKEN_USERNAME,
+            password=token,
+            yes=True)
+        logger.warning(f"Deleted {oci_target_name}")
+    except Exception as exception:
+        logger.debug(f"{oci_target_name} was not deleted, it might not exist: {exception}")
 
 
 def _oras_client(registry):

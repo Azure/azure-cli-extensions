@@ -16,15 +16,27 @@ steps:
     retryDelay: 5
     timeout: 1800
     cmd: |
-      cssc trivy image \
+      cssc -c '
+      mirrorDb="{{.Run.Registry}}/csscpolicies/trivy-db:2"
+      dbRepos="ghcr.io/aquasecurity/trivy-db:2,public.ecr.aws/aquasecurity/trivy-db"
+      mirrorCreated=$(oras manifest fetch "$mirrorDb" 2>/dev/null | jq -r ".annotations[\"org.opencontainers.image.created\"] // empty")
+      mirrorAge=$(( $(date +%s) - $(date -d "${mirrorCreated:-1970-01-01T00:00:00Z}" +%s 2>/dev/null || echo 0) ))
+      if [ -n "$mirrorCreated" ] && [ $mirrorAge -lt 172800 ]; then
+        dbRepos="$mirrorDb,$dbRepos"
+        echo "Using Trivy DB registry copy $mirrorDb (created $mirrorCreated)"
+      else
+        echo "Trivy DB registry copy unavailable or older than 48 hours, using public DB sources"
+      fi
+      trivy image \
       {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
       --pkg-types os \
       --ignore-unfixed \
       --format json \
       --timeout 30m \
       --scanners vuln \
-      --db-repository "ghcr.io/aquasecurity/trivy-db:2","public.ecr.aws/aquasecurity/trivy-db" \
-      --output /workspace/data/vulnerability-report_trivy_$DATE.json
+      --db-repository "$dbRepos" \
+      --output /workspace/data/vulnerability-report_trivy_$DATE.json'
+    entryPoint: /bin/bash
 
   - cmd: cssc jq 'if .Results == null or (.Results | length) == 0 then 0 else [.Results[] | select(.Vulnerabilities != null) | .Vulnerabilities | length] | add end' /workspace/data/vulnerability-report_trivy_$DATE.json > /workspace/data/vulCount.txt
   - cmd: cssc jq 'if .Metadata.OS.EOSL == null then false else .Metadata.OS.EOSL end' /workspace/data/vulnerability-report_trivy_$DATE.json > /workspace/data/eosl.txt
