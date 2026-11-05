@@ -11,6 +11,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create/update`: `--kms-infrastructure-encryption` now only accepts `Enabled`, since infrastructure encryption for Kubernetes resource objects cannot be turned off once it has been turned on.
+* `az aks create/update`: Document that an unversioned `--azure-keyvault-kms-key-id` selects the new KMS experience with automatic key version rotation, while a versioned key identifier selects the legacy KMS experience.
 
 22.0.0b15
 +++++++++

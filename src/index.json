@@ -1807,7 +1807,93 @@
                 "sha256Digest": "cf91b4e1206b8690501d847cbe46c3ec13f659ef7a4d367add74ed5e8f97d69c"
             }
         ],
+        "aiinfraoptimization": [
+            {
+                "downloadUrl": "https://azcliprod.blob.core.windows.net/cli-extensions/aiinfraoptimization-1.0.0b1-py3-none-any.whl",
+                "filename": "aiinfraoptimization-1.0.0b1-py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "azext.minCliCoreVersion": "2.75.0",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.9",
+                        "Programming Language :: Python :: 3.10",
+                        "Programming Language :: Python :: 3.11",
+                        "Programming Language :: Python :: 3.12",
+                        "Programming Language :: Python :: 3.13",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/main/src/aiinfraoptimization"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "license": "MIT",
+                    "metadata_version": "2.4",
+                    "name": "aiinfraoptimization",
+                    "run_requires": [],
+                    "summary": "Recommend Azure virtual machine sizes for AI inference workloads.",
+                    "version": "1.0.0b1"
+                },
+                "sha256Digest": "f53efa30b193420ac9606651dfdf0da8f7f412fa0c45a8735117ca2d3a569894"
+            }
+        ],
         "aimanager": [
+            {
+                "downloadUrl": "https://azcliprod.blob.core.windows.net/cli-extensions/aimanager-2.0.1b4-py3-none-any.whl",
+                "filename": "aimanager-2.0.1b4-py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "azext.minCliCoreVersion": "2.61.0",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.6",
+                        "Programming Language :: Python :: 3.7",
+                        "Programming Language :: Python :: 3.8",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/main/src/aimanager"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "license": "MIT",
+                    "metadata_version": "2.4",
+                    "name": "aimanager",
+                    "run_requires": [],
+                    "summary": "Manage AI Manager resources, namespaces, and GPU-backed model deployments for Azure Kubernetes Service (AKS).",
+                    "version": "2.0.1b4"
+                },
+                "sha256Digest": "13ec27624200c6acdc3efb7681eb1541bc5ee8f27d748d97d4683dd1f83e951b"
+            },
             {
                 "downloadUrl": "https://azcliprod.blob.core.windows.net/cli-extensions/aimanager-2.0.1b3-py3-none-any.whl",
                 "filename": "aimanager-2.0.1b3-py3-none-any.whl",
@@ -50508,6 +50594,72 @@
         ],
         "connectedk8s": [
             {
+                "downloadUrl": "https://azcliprod.blob.core.windows.net/cli-extensions/connectedk8s-1.11.6-py2.py3-none-any.whl",
+                "filename": "connectedk8s-1.11.6-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.minCliCoreVersion": "2.70.0",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.6",
+                        "Programming Language :: Python :: 3.7",
+                        "Programming Language :: Python :: 3.8",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "description_content_type": "text/markdown",
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "k8connect@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/main/src/connectedk8s"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "license": "MIT",
+                    "metadata_version": "2.4",
+                    "name": "connectedk8s",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "azure-mgmt-hybridcompute (==7.0.0)",
+                                "azure-mgmt-hybridcompute==7.0.0",
+                                "kubernetes (==24.2.0)",
+                                "kubernetes==24.2.0",
+                                "mypy (>=1.13.0; extra == \"linting\")",
+                                "mypy>=1.13.0; extra == \"linting\"",
+                                "oras (==0.2.25)",
+                                "oras==0.2.25",
+                                "pycryptodome (==3.20.0)",
+                                "pycryptodome==3.20.0",
+                                "ruff (<0.16.0,>=0.7.2; extra == \"linting\")",
+                                "ruff<0.16.0,>=0.7.2; extra == \"linting\"",
+                                "types-jmespath (>=1.0.2; extra == \"linting\")",
+                                "types-jmespath>=1.0.2; extra == \"linting\"",
+                                "types-psutil (>=6.1.0; extra == \"linting\")",
+                                "types-psutil>=6.1.0; extra == \"linting\"",
+                                "types-pyyaml (>=6.0.12; extra == \"linting\")",
+                                "types-pyyaml>=6.0.12; extra == \"linting\"",
+                                "types-requests (>=2.32.0; extra == \"linting\")",
+                                "types-requests>=2.32.0; extra == \"linting\""
+                            ]
+                        }
+                    ],
+                    "summary": "Microsoft Azure Command-Line Tools Connectedk8s Extension",
+                    "version": "1.11.6"
+                },
+                "sha256Digest": "5080400ba06dff8c4fde2003e2ee5cc15f72ffa619864fc8a6a8cb964458421d"
+            },
+            {
                 "downloadUrl": "https://azcliprod.blob.core.windows.net/cli-extensions/connectedk8s-1.11.5-py2.py3-none-any.whl",
                 "filename": "connectedk8s-1.11.5-py2.py3-none-any.whl",
                 "metadata": {
@@ -72435,6 +72587,49 @@
             }
         ],
         "edge-action": [
+            {
+                "downloadUrl": "https://azcliprod.blob.core.windows.net/cli-extensions/edge_action-1.1.0-py3-none-any.whl",
+                "filename": "edge_action-1.1.0-py3-none-any.whl",
+                "metadata": {
+                    "azext.minCliCoreVersion": "2.75.0",
+                    "azext.summary": "Manage Azure Front Door edge actions, deploy code versions, and configure execution filters.",
+                    "classifiers": [
+                        "Development Status :: 5 - Production/Stable",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.9",
+                        "Programming Language :: Python :: 3.10",
+                        "Programming Language :: Python :: 3.11",
+                        "Programming Language :: Python :: 3.12",
+                        "Programming Language :: Python :: 3.13",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/main/src/edge-action"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "license": "MIT",
+                    "metadata_version": "2.4",
+                    "name": "edge-action",
+                    "run_requires": [],
+                    "summary": "Manage Azure Front Door edge actions, deploy code versions, and configure execution filters.",
+                    "version": "1.1.0"
+                },
+                "sha256Digest": "ed40b5f062919d114b617e8bf168a38f90e8ab5be9cf0507f2c0842eb1845dba"
+            },
             {
                 "downloadUrl": "https://azcliprod.blob.core.windows.net/cli-extensions/edge_action-1.0.0-py3-none-any.whl",
                 "filename": "edge_action-1.0.0-py3-none-any.whl",
@@ -108870,6 +109065,50 @@
         ],
         "relationship": [
             {
+                "downloadUrl": "https://azcliprod.blob.core.windows.net/cli-extensions/relationship-1.0.0b3-py2.py3-none-any.whl",
+                "filename": "relationship-1.0.0b3-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "azext.minCliCoreVersion": "2.75.0",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.9",
+                        "Programming Language :: Python :: 3.10",
+                        "Programming Language :: Python :: 3.11",
+                        "Programming Language :: Python :: 3.12",
+                        "Programming Language :: Python :: 3.13",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "description_content_type": "text/markdown",
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/main/src/relationship"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "license": "MIT",
+                    "metadata_version": "2.4",
+                    "name": "relationship",
+                    "run_requires": [],
+                    "summary": "Microsoft Azure Command-Line Tools Relationship Extension.",
+                    "version": "1.0.0b3"
+                },
+                "sha256Digest": "4e405e4986657a10e5cbe06e3ce5745272603ae4e9fb2d13729b67df1277bd54"
+            },
+            {
                 "downloadUrl": "https://azcliprod.blob.core.windows.net/cli-extensions/relationship-1.0.0b2-py2.py3-none-any.whl",
                 "filename": "relationship-1.0.0b2-py2.py3-none-any.whl",
                 "metadata": {
@@ -126359,6 +126598,46 @@
                     "version": "1.0.0b2"
                 },
                 "sha256Digest": "c3ae869c1371493180b9ed71db0bdc3842bad54c8832beb6007118d26bed71e8"
+            }
+        ],
+        "validate": [
+            {
+                "downloadUrl": "https://azcliprod.blob.core.windows.net/cli-extensions/validate-1.0.0b1-py3-none-any.whl",
+                "filename": "validate-1.0.0b1-py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "azext.minCliCoreVersion": "2.86.0",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 3",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/main/src/validate"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "license": "MIT",
+                    "metadata_version": "2.4",
+                    "name": "validate",
+                    "run_requires": [],
+                    "summary": "Support for checking the syntax and parameters of commands and scripts without running them.",
+                    "version": "1.0.0b1"
+                },
+                "sha256Digest": "33b802a476c0c76b2165930dba32c0b5bb0fa2e04ac9dc1b6819bf1121c0966c"
             }
         ],
         "vi": [
