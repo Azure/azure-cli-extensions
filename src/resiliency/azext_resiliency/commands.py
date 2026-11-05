@@ -12,4 +12,8 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    from .custom import RecoveryPlanCreate, RecoveryPlanList, RecoveryPlanShow, RecoveryPlanUpdate
+    self.command_table["resiliency recovery-plan create"] = RecoveryPlanCreate(loader=self)
+    self.command_table["resiliency recovery-plan list"] = RecoveryPlanList(loader=self)
+    self.command_table["resiliency recovery-plan show"] = RecoveryPlanShow(loader=self)
+    self.command_table["resiliency recovery-plan update"] = RecoveryPlanUpdate(loader=self)

@@ -8,7 +8,65 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
+from azure.cli.core.aaz import AAZStrType
 from knack.log import get_logger
+
+from .aaz.latest.resiliency.recovery_plan import (
+    Create as _RecoveryPlanCreate,
+    List as _RecoveryPlanList,
+    Show as _RecoveryPlanShow,
+    Update as _RecoveryPlanUpdate,
+)
 
 
 logger = get_logger(__name__)
+
+
+# The 2026-10-01 spec marks RecoveryPlanProperties.planType create-only
+# (x-ms-mutability: ["create"]), so the generated response schemas omit it even
+# though the service returns it. Add it back to the recovery-plan outputs until the
+# spec marks it readable; remove these overrides after regenerating from that spec.
+
+
+def _add_plan_type(schema):
+    if "plan_type" not in schema.properties._fields:  # pylint: disable=protected-access
+        schema.properties.plan_type = AAZStrType(serialized_name="planType")
+    return schema
+
+
+class RecoveryPlanCreate(_RecoveryPlanCreate):
+    class RecoveryPlansCreateOrUpdate(_RecoveryPlanCreate.RecoveryPlansCreateOrUpdate):
+        _schema_on_200_201 = None
+
+        @classmethod
+        def _build_schema_on_200_201(cls):
+            return _add_plan_type(super()._build_schema_on_200_201())
+
+
+class RecoveryPlanList(_RecoveryPlanList):
+    class RecoveryPlansList(_RecoveryPlanList.RecoveryPlansList):
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            schema = super()._build_schema_on_200()
+            _add_plan_type(schema.value.Element)
+            return schema
+
+
+class RecoveryPlanShow(_RecoveryPlanShow):
+    class RecoveryPlansGet(_RecoveryPlanShow.RecoveryPlansGet):
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            return _add_plan_type(super()._build_schema_on_200())
+
+
+class RecoveryPlanUpdate(_RecoveryPlanUpdate):
+    class RecoveryPlansUpdate(_RecoveryPlanUpdate.RecoveryPlansUpdate):
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            return _add_plan_type(super()._build_schema_on_200())
