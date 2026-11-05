@@ -572,15 +572,20 @@ class ElasticSanV2AutoscaleTest(unittest.TestCase):
             with self.subTest(location=location):
                 command = self._command(location=location)
                 data = command.ctx.args.to_serialized_data()
-                data.update(elastic_san_name="test-san", resource_group="test-rg")
+                data.update(elastic_san_name="test-san", resource_group="test-rg",
+                            subscription="target-subscription")
                 command.ctx = AAZCommandCtx(DummyCli(), ElasticSanCreate._build_arguments_schema(), data)
                 command.ctx.get_http_client = Mock()
                 with patch("azure.cli.core.aaz._command_ctx.get_subscription_locations",
                            return_value=[SimpleNamespace(name="eastus", display_name="East US")]):
                     command.ctx.format_args()
-                body = self._execute(command, [{"value": [self._sku(locations=["eastus"])]}])
+                with patch("azure.cli.core.commands.client_factory.get_subscription_id",
+                           side_effect=AssertionError("Unit tests must not use the active Azure account")):
+                    body = self._execute(command, [{"value": [self._sku(locations=["eastus"])]}])
                 self.assertEqual(body["location"], formatted)
                 request = command.ctx.get_http_client.return_value._request.call_args
+                self.assertEqual(request.args[1],
+                                 "/subscriptions/target-subscription/providers/Microsoft.ElasticSan/skus")
                 self.assertEqual(unquote(request.args[2]["$filter"]), f"location eq '{formatted}'")
 
     def test_lookup_uses_resolved_command_subscription_not_active_subscription(self):
