@@ -351,6 +351,29 @@ class UpgradeInsightsCommandsTest(unittest.TestCase):
 
 
 class UpgradeInsightsReportTest(unittest.TestCase):
+    def test_incomplete_combined_response_is_not_reported_as_passed(self):
+        for pools in (None, []):
+            with self.subTest(pools=pools):
+                data = insight()
+                data["properties"]["agentPools"] = pools
+                report = format_upgrade_insight_report(data, "cluster")
+                self.assertTrue(report.startswith("Upgrade readiness: NOT EVALUATED"), report)
+                self.assertIn("  Agent pools - NOT EVALUATED", report)
+                self.assertIn("No agent-pool evaluation results were returned", report)
+
+    def test_omitted_combined_pools_are_visible_in_report_and_table(self):
+        data = insight()
+        del data["properties"]["agentPools"]
+        original = copy.deepcopy(data)
+        report = format_upgrade_insight_report(data, "cluster")
+        self.assertTrue(report.startswith("Upgrade readiness: NOT EVALUATED"), report)
+        rows = aks_upgrade_insights_table_format(data)
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(rows[1]["Scope"], "AgentPool")
+        self.assertEqual(rows[1]["Status"], "Not evaluated")
+        self.assertIn("No agent-pool evaluation results were returned", rows[1]["Issue"])
+        self.assertEqual(data, original)
+
     def test_issues_are_nested_under_only_the_affected_scope(self):
         report = format_upgrade_insight_report(insight(), "cluster")
         control_plane, pool = report.split("  Agent pool: pool1")

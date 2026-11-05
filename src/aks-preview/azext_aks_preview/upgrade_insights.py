@@ -16,6 +16,8 @@ from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.models import (
     NodeImageGenerateUpgradeInsightsContent,
 )
 
+_MISSING_AGENT_POOL_RESULTS = "No agent-pool evaluation results were returned by the service."
+
 
 def validate_upgrade_insights_create(namespace):
     _validate_targets(
@@ -134,6 +136,8 @@ def _scopes(properties):
             ("AgentPool", pool.get("agentPoolName") or "Unknown", pool)
             for pool in properties.get("agentPools") or []
         )
+        if not properties.get("agentPools"):
+            scopes.append(("AgentPool", "", {}))
         return scopes
     return [(upgrade_type, properties.get("agentPoolName") or "", properties)]
 
@@ -192,6 +196,8 @@ def format_upgrade_insight_report(insight, cluster_name, detailed=True):
     _field(lines, "Provisioning state", properties.get("provisioningState"))
     for upgrade_type, pool_name, scope in _scopes(properties):
         label = "Control plane" if upgrade_type == "ControlPlane" else f"Agent pool: {pool_name}"
+        if upgrade_type == "AgentPool" and not pool_name:
+            label = "Agent pools"
         if upgrade_type == "NodeImage":
             label += " (node image)"
         lines.extend(("", f"  {label} - {_status(scope).upper()}"))
@@ -202,6 +208,8 @@ def format_upgrade_insight_report(insight, cluster_name, detailed=True):
         issues = evaluation.get("detectedIssues") or []
         if not issues:
             message = "No issues detected." if _status(scope) == "Passed" else "No issue details were returned."
+            if upgrade_type == "AgentPool" and not pool_name:
+                message = _MISSING_AGENT_POOL_RESULTS
             lines.append(f"    {message}")
         for issue in issues:
             _format_issue(lines, issue, detailed)
@@ -223,6 +231,10 @@ def aks_upgrade_insights_table_format(result):
                     Target=properties.get("targetKubernetesVersion") or properties.get("targetNodeImageVersion"),
                     Status=_status(scope),
                     Severity=issue.get("severity"),
-                    Issue=issue.get("message"),
+                    Issue=(
+                        _MISSING_AGENT_POOL_RESULTS
+                        if upgrade_type == "AgentPool" and not pool_name
+                        else issue.get("message")
+                    ),
                 ))
     return rows

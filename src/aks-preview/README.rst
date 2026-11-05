@@ -51,6 +51,10 @@ Use ``--output json`` for complete structured results, or ``--output table`` for
 issue rows. Explicit output settings, a configured ``core.output``, and ``--query``
 retain standard Azure CLI formatting and query behavior.
 
+If a combined response omits agent-pool evaluations, the report and table explicitly
+show that the agent pools were not evaluated; a passed control-plane result alone
+does not make the combined readiness report pass. Structured JSON is left unchanged.
+
 Live validation
 ---------------
 
