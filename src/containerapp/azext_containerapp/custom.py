@@ -35,7 +35,7 @@ from azure.cli.command_modules.containerapp._github_oauth import get_github_acce
 from azure.cli.command_modules.containerapp._utils import (safe_set,
                                                            _validate_subscription_registered,
                                                            _convert_object_from_snake_to_camel_case,
-                                                           _object_to_dict, _remove_additional_attributes,
+                                                           _remove_additional_attributes,
                                                            raise_missing_token_suggestion,
                                                            _remove_dapr_readonly_attributes,
                                                            _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
@@ -143,7 +143,8 @@ from ._models import (
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, DebugWebSocketConnection, read_debug_ssh)
 
 from ._utils import (connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check,
-                     get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity)
+                     get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity,
+                     _object_to_dict)
 from ._utils_validation import validate_image_name
 
 from ._arc_utils import (extract_domain_from_configmap, get_core_dns_deployment, get_core_dns_configmap, backup_custom_core_dns_configmap,
