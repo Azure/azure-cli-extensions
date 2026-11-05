@@ -91,6 +91,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The sibling runtime binding that provides orchestration.",
         )
+        _args_schema.subnet_resource_id = AAZResourceIdArg(
+            options=["--subnet-resource-id"],
+            arg_group="Properties",
+            help="Dedicated MVNP subnet resource ID. Required for customer networks; omit to use the space-owned subnet for managed networking.",
+        )
 
         capacity_profile = cls._args_schema.capacity_profile
         capacity_profile.maximum_nodes = AAZIntArg(
@@ -257,6 +262,7 @@ class Create(AAZCommand):
                 properties.set_prop("executionBindingResourceId", AAZStrType, ".execution_binding_resource_id")
                 properties.set_prop("integrationProfile", AAZObjectType, ".integration_profile")
                 properties.set_prop("orchestratorBindingResourceId", AAZStrType, ".orchestrator_binding_resource_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("subnetResourceId", AAZStrType, ".subnet_resource_id")
 
             capacity_profile = _builder.get(".properties.capacityProfile")
             if capacity_profile is not None:
