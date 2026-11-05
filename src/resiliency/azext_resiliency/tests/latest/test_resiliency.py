@@ -140,7 +140,7 @@ class ResiliencyScenarioTestBase(ScenarioTest):
         for attempt in range(attempts):
             try:
                 return self.cmd(command, checks=checks)
-            except HttpResponseError as ex:
+            except (HttpResponseError, HTTPError) as ex:
                 if 'AuthorizationFailed' not in str(ex) or attempt == attempts - 1:
                     raise
             time.sleep(delay_seconds)  # patched to a no-op during playback by the testsdk
