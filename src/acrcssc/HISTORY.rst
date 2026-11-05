@@ -8,6 +8,7 @@ Release History
 * Raise the maximum number of images per Continuous Patching run from 100 to 1,000. The CLI and the task templates now share a single limit.
 * Schedule scan tasks in parallel (10 at a time, with retries) instead of in batches of 10 with a 30-second pause, so large runs finish scheduling within the step timeout.
 * Keep a copy of the Trivy vulnerability database in the registry (`csscpolicies/trivy-db:2`), refreshed by the trigger task when the upstream copy changes. Scan and patch tasks read it from the registry first and fall back to `ghcr.io` and `public.ecr.aws`. `workflow delete` removes the copy.
+* Fix `workflow create` and `workflow update --config` failing with "Cannot respond to request for authentication" after `az acr login`: the configuration push now uses only the extension's ACR token, not `~/.docker/config.json`.
 * `workflow list`, `workflow delete` and `workflow cancel-run` now read every matching task run instead of stopping at 1,000, and `workflow list` downloads task logs with more workers.
 
 1.0.0b8

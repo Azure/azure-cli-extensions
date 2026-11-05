@@ -154,6 +154,10 @@ def _oras_client(registry):
         token = _get_acr_token(registry.name, subscription)
         client = OrasClient(hostname=str.lower(registry.login_server), auth_backend="token")
         client.login(BEARER_TOKEN_USERNAME, token)
+        # oras-py reads ~/.docker/config.json on every push/pull and replaces the credentials set by login() with the
+        # registry's `auth` entry. `az acr login` stores that entry with an empty password (the token is kept in
+        # `identitytoken`, which oras-py ignores), so pushes fail. Use only the token obtained above.
+        client.auth.load_configs = lambda *args, **kwargs: None
         logger.debug(f"Login to ACR {registry.name} completed successfully.")
     except Exception as exception:
         raise AzCLIError(f"Failed to login to Artifact Store ACR {registry.name}: {exception}")
