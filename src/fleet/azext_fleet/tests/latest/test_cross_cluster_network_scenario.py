@@ -9,7 +9,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
-class FleetClusterMeshScenarioTest(ScenarioTest):
+class CrossClusterNetworkScenarioTest(ScenarioTest):
 
     @classmethod
     def generate_ssh_keys(cls):
@@ -28,12 +28,12 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8, location='eastus2euap')
-    def test_fleet_cluster_mesh(self):
-        """End-to-end cluster mesh profile scenario.
+    def test_cross_cluster_network(self):
+        """End-to-end cross-cluster network scenario.
 
         Creates a vnet with flat-network subnets, two Cilium/ACNS-enabled
         AKS clusters with directly routable pod IPs, joins them to a fleet
-        with labels, then exercises the full clustermeshprofile CLI surface:
+        with labels, then exercises the full cross-cluster network CLI surface:
         create, list, show, list-members (with/without --selector),
         apply (including --what-if with conflict detection), and delete.
         """
@@ -42,8 +42,8 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
             'fleet_name': self.create_random_name(prefix='fl-', length=7),
             'member1_name': self.create_random_name(prefix='cm1-', length=8),
             'member2_name': self.create_random_name(prefix='cm2-', length=8),
-            'cmp1_name': self.create_random_name(prefix='cmp-', length=8),
-            'cmp2_name': self.create_random_name(prefix='cmp-', length=8),
+            'ccn1_name': self.create_random_name(prefix='cmp-', length=8),
+            'ccn2_name': self.create_random_name(prefix='cmp-', length=8),
             'vnet_name': self.create_random_name(prefix='vnet-', length=9),
             'ssh_key_value': self.generate_ssh_keys(),
         })
@@ -178,30 +178,32 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
 
         # -----------------------------------------------------------
         # Create cluster mesh profiles
-        #   cmp1: selector env=production  (matches both members)
-        #   cmp2: selector env=production  (same selector, for conflict test)
+        #   ccn1: selector env=production  (matches both members)
+        #   ccn2: selector env=production  (same selector, for conflict test)
         # -----------------------------------------------------------
         self.cmd(
-            'fleet clustermeshprofile create -g {rg} -f {fleet_name} '
-            '-n {cmp1_name} --member-selector "env=production"',
-            checks=[self.check('name', '{cmp1_name}')]
+            'fleet network cross-cluster create -g {rg} -f {fleet_name} '
+            '-n {ccn1_name} --member-selector "env=production"',
+            checks=[self.check('name', '{ccn1_name}')]
         )
 
+        # Exercise the deprecated command path while it remains an alias.
+        # Remove this call when az fleet clustermeshprofile is retired.
         self.cmd(
             'fleet clustermeshprofile create -g {rg} -f {fleet_name} '
-            '-n {cmp2_name} --member-selector "env=production"',
-            checks=[self.check('name', '{cmp2_name}')]
+            '-n {ccn2_name} --member-selector "env=production"',
+            checks=[self.check('name', '{ccn2_name}')]
         )
 
         # -----------------------------------------------------------
         # List / Show cluster mesh profiles
         # -----------------------------------------------------------
-        self.cmd('fleet clustermeshprofile list -g {rg} -f {fleet_name}', checks=[
+        self.cmd('fleet network cross-cluster list -g {rg} -f {fleet_name}', checks=[
             self.check('length([])', 2)
         ])
 
-        self.cmd('fleet clustermeshprofile show -g {rg} -f {fleet_name} -n {cmp1_name}', checks=[
-            self.check('name', '{cmp1_name}')
+        self.cmd('fleet network cross-cluster show -g {rg} -f {fleet_name} -n {ccn1_name}', checks=[
+            self.check('name', '{ccn1_name}')
         ])
 
         # -----------------------------------------------------------
@@ -210,12 +212,12 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
         # Selector-matched members: both (env=production)
         # -----------------------------------------------------------
         self.cmd(
-            'fleet clustermeshprofile list-members -g {rg} -f {fleet_name} -n {cmp1_name}',
+            'fleet network cross-cluster list-members -g {rg} -f {fleet_name} -n {ccn1_name}',
             checks=[self.check('length([])', 0)]
         )
 
         self.cmd(
-            'fleet clustermeshprofile list-members -g {rg} -f {fleet_name} -n {cmp1_name} --selector',
+            'fleet network cross-cluster list-members -g {rg} -f {fleet_name} -n {ccn1_name} --selector',
             checks=[self.check('length([])', 2)]
         )
 
@@ -223,7 +225,7 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
         # What-if before apply: both members should be "Add"
         # -----------------------------------------------------------
         what_if_before = self.cmd(
-            'fleet clustermeshprofile apply -g {rg} -f {fleet_name} -n {cmp1_name} --what-if'
+            'fleet network cross-cluster apply -g {rg} -f {fleet_name} -n {ccn1_name} --what-if'
         ).get_output_in_json()
 
         self.assertEqual(len(what_if_before), 2)
@@ -232,13 +234,13 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
         self.assertEqual(actions_before[self.kwargs['member2_name']], 'Add')
 
         # -----------------------------------------------------------
-        # Apply cmp1
+        # Apply ccn1
         # -----------------------------------------------------------
-        self.cmd('fleet clustermeshprofile apply -g {rg} -f {fleet_name} -n {cmp1_name}')
+        self.cmd('fleet network cross-cluster apply -g {rg} -f {fleet_name} -n {ccn1_name}')
 
         # Wait for the CMP and members to reach Connected state
         self.cmd(
-            'fleet clustermeshprofile wait -g {rg} -f {fleet_name} -n {cmp1_name} '
+            'fleet network cross-cluster wait -g {rg} -f {fleet_name} -n {ccn1_name} '
             '--custom "properties.status.state==\'Connected\'"',
             checks=[self.is_empty()]
         )
@@ -256,15 +258,15 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
         )
 
         # -----------------------------------------------------------
-        # Members should now be listed as applied to cmp1
+        # Members should now be listed as applied to ccn1
         # -----------------------------------------------------------
         self.cmd(
-            'fleet clustermeshprofile list-members -g {rg} -f {fleet_name} -n {cmp1_name}',
+            'fleet network cross-cluster list-members -g {rg} -f {fleet_name} -n {ccn1_name}',
             checks=[self.check('length([])', 2)]
         )
 
         self.cmd(
-            'fleet member list -g {rg} --fleet-name {fleet_name} --cluster-mesh-profile {cmp1_name}',
+            'fleet member list -g {rg} --fleet-name {fleet_name} --cluster-mesh-profile {ccn1_name}',
             checks=[self.check('length([])', 2)]
         )
 
@@ -272,7 +274,7 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
         # What-if on same profile: should show "-" (no change)
         # -----------------------------------------------------------
         what_if_same = self.cmd(
-            'fleet clustermeshprofile apply -g {rg} -f {fleet_name} -n {cmp1_name} --what-if'
+            'fleet network cross-cluster apply -g {rg} -f {fleet_name} -n {ccn1_name} --what-if'
         ).get_output_in_json()
 
         actions_same = {r['Name']: r['Action'] for r in what_if_same}
@@ -280,18 +282,18 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
             self.assertEqual(action, '-')
 
         # -----------------------------------------------------------
-        # What-if on cmp2 (conflict): members are in cmp1, so should
-        # show "Error" with an ErrorMessage mentioning cmp1
+        # What-if on ccn2 (conflict): members are in ccn1, so should
+        # show "Error" with an ErrorMessage mentioning ccn1
         # -----------------------------------------------------------
         what_if_conflict = self.cmd(
-            'fleet clustermeshprofile apply -g {rg} -f {fleet_name} -n {cmp2_name} --what-if'
+            'fleet network cross-cluster apply -g {rg} -f {fleet_name} -n {ccn2_name} --what-if'
         ).get_output_in_json()
 
         self.assertEqual(len(what_if_conflict), 2)
         for entry in what_if_conflict:
             self.assertEqual(entry['Action'], 'Error')
             self.assertIn('ErrorMessage', entry)
-            self.assertIn(self.kwargs['cmp1_name'], entry['ErrorMessage'])
+            self.assertIn(self.kwargs['ccn1_name'], entry['ErrorMessage'])
 
         # -----------------------------------------------------------
         # Cleanup: disconnect members from the CMP by changing the
@@ -301,24 +303,24 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
         # the entire resource group regardless of test outcome.
         # -----------------------------------------------------------
 
-        # Update cmp1 with a selector that matches no members
+        # Update ccn1 with a selector that matches no members
         self.cmd(
-            'fleet clustermeshprofile create -g {rg} -f {fleet_name} '
-            '-n {cmp1_name} --member-selector "env=none"',
+            'fleet network cross-cluster create -g {rg} -f {fleet_name} '
+            '-n {ccn1_name} --member-selector "env=none"',
         )
-        self.cmd('fleet clustermeshprofile apply -g {rg} -f {fleet_name} -n {cmp1_name}')
+        self.cmd('fleet network cross-cluster apply -g {rg} -f {fleet_name} -n {ccn1_name}')
 
         # Wait for the CMP to reach NotConnected and members to settle
         self.cmd(
-            'fleet clustermeshprofile wait -g {rg} -f {fleet_name} -n {cmp1_name} '
+            'fleet network cross-cluster wait -g {rg} -f {fleet_name} -n {ccn1_name} '
             '--custom "properties.status.state==\'NotConnected\'"',
             checks=[self.is_empty()]
         )
 
         # Delete CMPs
-        self.cmd('fleet clustermeshprofile delete -g {rg} -f {fleet_name} -n {cmp1_name} --yes')
-        self.cmd('fleet clustermeshprofile delete -g {rg} -f {fleet_name} -n {cmp2_name} --yes')
+        self.cmd('fleet network cross-cluster delete -g {rg} -f {fleet_name} -n {ccn1_name} --yes')
+        self.cmd('fleet network cross-cluster delete -g {rg} -f {fleet_name} -n {ccn2_name} --yes')
 
-        self.cmd('fleet clustermeshprofile list -g {rg} -f {fleet_name}', checks=[
+        self.cmd('fleet network cross-cluster list -g {rg} -f {fleet_name}', checks=[
             self.check('length([])', 0)
         ])

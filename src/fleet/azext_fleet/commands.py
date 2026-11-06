@@ -143,12 +143,21 @@ def load_command_table(self, _):
         g.custom_command("get-credentials", "get_namespace_credentials")
         g.wait_command("wait")
 
-    # cluster mesh profiles command group
-    with self.command_group("fleet clustermeshprofile", cluster_mesh_profiles_sdk, client_factory=cf_cluster_mesh_profiles, is_preview=True) as g:
-        g.custom_command("create", "create_cluster_mesh_profile", supports_no_wait=True)
-        g.custom_show_command("show", "show_cluster_mesh_profile")
-        g.custom_command("list", "list_cluster_mesh_profiles")
-        g.custom_command("delete", "delete_cluster_mesh_profile", supports_no_wait=True, confirmation=True)
-        g.custom_command("apply", "apply_cluster_mesh_profile", supports_no_wait=True)
-        g.custom_command("list-members", "list_cluster_mesh_profile_members")
+    # cluster mesh profiles command groups
+    with self.command_group("fleet network cross-cluster", cluster_mesh_profiles_sdk, client_factory=cf_cluster_mesh_profiles) as g:
+        g.custom_command("create", "create_cross_cluster_network", supports_no_wait=True)
+        g.custom_show_command("show", "show_cross_cluster_network")
+        g.custom_command("list", "list_cross_cluster_networks")
+        g.custom_command("delete", "delete_cross_cluster_network", supports_no_wait=True, confirmation=True)
+        g.custom_command("apply", "apply_cross_cluster_network", supports_no_wait=True)
+        g.custom_command("list-members", "list_cross_cluster_network_members")
+        g.wait_command("wait")
+
+    with self.command_group("fleet clustermeshprofile", cluster_mesh_profiles_sdk, client_factory=cf_cluster_mesh_profiles) as g:
+        g.custom_command("create", "create_cross_cluster_network", supports_no_wait=True)
+        g.custom_show_command("show", "show_cross_cluster_network")
+        g.custom_command("list", "list_cross_cluster_networks")
+        g.custom_command("delete", "delete_cross_cluster_network", supports_no_wait=True, confirmation=True)
+        g.custom_command("apply", "apply_cross_cluster_network", supports_no_wait=True)
+        g.custom_command("list-members", "list_cross_cluster_network_members")
         g.wait_command("wait")
