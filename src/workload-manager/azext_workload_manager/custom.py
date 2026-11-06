@@ -6,16 +6,12 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from knack.log import get_logger
 from azure.cli.core.aaz import has_value
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
 from azext_workload_manager.aaz.latest.workload_manager.workload_space.runtime_binding import (
     Create as _RuntimeBindingCreate,
 )
-
-
-logger = get_logger(__name__)
 
 
 class RuntimeBindingCreate(_RuntimeBindingCreate):
