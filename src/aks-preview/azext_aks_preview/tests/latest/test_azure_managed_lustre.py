@@ -26,6 +26,7 @@ from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview.azuremanagedlustre._helpers import (
     check_if_extension_is_installed,
     get_azure_managed_lustre_extension_client,
+    validate_no_other_installation,
 )
 from azext_aks_preview.azuremanagedlustre._validators import (
     _get_vm_sku_architectures,
@@ -100,6 +101,33 @@ class AzureManagedLustreHelpersTestCase(unittest.TestCase):
         with self.client_patch, self.assertRaisesRegex(HttpResponseError, "Forbidden"):
             check_if_extension_is_installed(self.cmd, "rg", "cluster")
 
+    def test_other_installation_is_rejected_by_type_regardless_of_name_or_state(self):
+        for state in ["Succeeded", "Failed", "Creating", "Deleting"]:
+            with self.subTest(state=state):
+                self.custom.list_k8s_extension.return_value = iter([
+                    SimpleNamespace(name="other", extension_type="microsoft.other"),
+                    SimpleNamespace(name="custom-lustre", extension_type="Microsoft.AzureManagedLustre",
+                                    provisioning_state=state),
+                ])
+                with self.client_patch, self.assertRaisesRegex(
+                    InvalidArgumentValueError, "custom-lustre.*Only one driver",
+                ):
+                    validate_no_other_installation(self.cmd, "rg", "cluster")
+
+    def test_list_allows_fixed_name_and_unrelated_extensions(self):
+        self.custom.list_k8s_extension.return_value = [
+            SimpleNamespace(name="AzureLustre", extension_type="Microsoft.AzureManagedLustre"),
+            SimpleNamespace(name="other", extension_type="microsoft.other"),
+        ]
+        with self.client_patch:
+            validate_no_other_installation(self.cmd, "rg", "cluster")
+        self.custom.list_k8s_extension.assert_called_once_with(self.client, "rg", "cluster", "managedClusters")
+
+    def test_list_failure_is_not_treated_as_no_installation(self):
+        self.custom.list_k8s_extension.side_effect = HttpResponseError("Forbidden")
+        with self.client_patch, self.assertRaisesRegex(HttpResponseError, "Forbidden"):
+            validate_no_other_installation(self.cmd, "rg", "cluster")
+
 
 class AzureManagedLustreValidatorsTestCase(unittest.TestCase):
     def setUp(self):
@@ -107,8 +135,14 @@ class AzureManagedLustreValidatorsTestCase(unittest.TestCase):
             VALIDATORS + "._get_vm_sku_architectures",
             return_value={"standard_d2s_v5": "x64", "standard_d2ps_v5": "arm64"},
         )
-        architecture_patch.start()
+        self.architectures = architecture_patch.start()
         self.addCleanup(architecture_patch.stop)
+        default_patch = patch(VALIDATORS + ".cf_managed_clusters")
+        default_client = default_patch.start()
+        default_client.return_value.list_kubernetes_versions.return_value = SimpleNamespace(values_property=[
+            SimpleNamespace(version="1.34", is_default=True),
+        ])
+        self.addCleanup(default_patch.stop)
 
     def test_conflicting_flags(self):
         with self.assertRaises(MutuallyExclusiveArgumentError):
@@ -164,11 +198,88 @@ class AzureManagedLustreValidatorsTestCase(unittest.TestCase):
             SimpleNamespace(os_sku="Ubuntu2404", vm_size=""),
         ])
         validate_azure_managed_lustre_node_compatibility(Mock(), cluster, allow_service_selected_size=True)
+        self.architectures.assert_not_called()
         with self.assertRaisesRegex(InvalidArgumentValueError, "architecture couldn't be determined"):
             validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
         cluster.agent_pool_profiles[0].os_sku = "Flatcar"
         with self.assertRaisesRegex(InvalidArgumentValueError, "none of the cluster's node pools"):
             validate_azure_managed_lustre_node_compatibility(Mock(), cluster, allow_service_selected_size=True)
+
+    def test_compatible_pools_do_not_require_a_minimum_kubernetes_version(self):
+        for os_sku in ["Ubuntu", "Ubuntu2204", "Ubuntu2404", "AzureLinux3"]:
+            for version in ["1.24.9", "1.28.15", "1.29.0", "1.35.0"]:
+                with self.subTest(os_sku=os_sku, version=version):
+                    cluster = SimpleNamespace(
+                        location="eastus", kubernetes_version=version, agent_pool_profiles=[
+                            SimpleNamespace(os_sku=os_sku, vm_size="Standard_D2s_v5"),
+                        ],
+                    )
+                    validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+
+    def test_older_pool_and_current_versions_are_not_rejected(self):
+        cluster = SimpleNamespace(location="eastus", kubernetes_version="1.30", agent_pool_profiles=[
+            SimpleNamespace(os_sku="Ubuntu2204", vm_size="Standard_D2s_v5", orchestrator_version="1.28.15"),
+        ])
+        validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+        cluster.agent_pool_profiles[0].current_orchestrator_version = "1.28.15"
+        cluster.current_kubernetes_version = "1.28.15"
+        validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+
+    def test_explicit_os_does_not_need_default_kubernetes_version(self):
+        cluster = SimpleNamespace(location="eastus", agent_pool_profiles=[
+            SimpleNamespace(os_sku="Ubuntu2204", vm_size="Standard_D2s_v5"),
+        ])
+        with patch(VALIDATORS + "._get_default_kubernetes_version", return_value="1.28") as default:
+            validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+            default.assert_not_called()
+        self.architectures.assert_called_once()
+
+    def test_taints_require_both_controller_and_node_capacity(self):
+        for taint, node_supported in [
+            ("CriticalAddonsOnly=true:NoSchedule", False),
+            ("dedicated=lustre:NoSchedule", False),
+            ("dedicated=lustre:NoExecute", False),
+            ("dedicated=lustre:PreferNoSchedule", True),
+            ("sku=gpu:NoSchedule", True),
+            ("sku=other:NoSchedule", False),
+            ("nvidia.com/gpu=true:NoSchedule", True),
+            ("kubernetes.azure.com/scalesetpriority=spot:NoSchedule", True),
+            ("kubernetes.azure.com/scalesetpriority=spot:NoExecute", False),
+        ]:
+            with self.subTest(taint=taint):
+                cluster = SimpleNamespace(location="eastus", kubernetes_version="1.34", agent_pool_profiles=[
+                    SimpleNamespace(os_sku="Ubuntu2404", vm_size="Standard_D2s_v5", node_taints=[taint]),
+                ])
+                if taint.endswith(":PreferNoSchedule"):
+                    validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+                else:
+                    with self.assertRaisesRegex(InvalidArgumentValueError, "az k8s-extension"):
+                        validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+                cluster.node_provisioning_profile = SimpleNamespace(mode="Auto")
+                if node_supported:
+                    validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+                else:
+                    with self.assertRaisesRegex(InvalidArgumentValueError, "az k8s-extension"):
+                        validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+                cluster.agent_pool_profiles.append(SimpleNamespace(
+                    os_sku="Ubuntu2404", vm_size="Standard_D2s_v5",
+                ))
+                cluster.node_provisioning_profile = None
+                validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+
+    def test_controller_control_plane_tolerations_are_not_node_tolerations(self):
+        controller_pool = SimpleNamespace(
+            os_sku="Ubuntu2204", vm_size="Standard_D2s_v5",
+            node_taints=["node-role.kubernetes.io/control-plane:NoSchedule"],
+        )
+        cluster = SimpleNamespace(location="eastus", kubernetes_version="1.34",
+                                  agent_pool_profiles=[controller_pool])
+        with self.assertRaisesRegex(InvalidArgumentValueError, "none of the cluster's node pools"):
+            validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
+        cluster.agent_pool_profiles.append(SimpleNamespace(
+            os_sku="Ubuntu2404", vm_size="Standard_D2s_v5", node_taints=["sku=gpu:NoSchedule"],
+        ))
+        validate_azure_managed_lustre_node_compatibility(Mock(), cluster)
 
     def test_unsupported_node_pool_os_skus(self):
         for os_sku in ["Flatcar", "Ubuntu2604"]:
@@ -249,8 +360,6 @@ class AzureManagedLustreValidatorsTestCase(unittest.TestCase):
             (None, "1.34.0", None, "x64", False),
             ("Ubuntu", "1.35.0", None, "arm64", False),
             (None, "1.35.0", None, "arm64", False),
-            ("Ubuntu", "1.24.9", None, "arm64", True),
-            ("Ubuntu", "1.24.9", None, "x64", False),
             ("Ubuntu", "1.35.0", "1.34.9", "arm64", True),
             ("AzureLinux", "1.31.9", "1.32.0", "arm64", True),
             ("azurelinux", "1.32", None, "arm64", True),
@@ -477,6 +586,9 @@ class AzureManagedLustreOperationsTestCase(unittest.TestCase):
         )
         self.client_patch.start()
         self.addCleanup(self.client_patch.stop)
+        other_installation_patch = patch(OPS + ".validate_no_other_installation")
+        self.other_installation = other_installation_patch.start()
+        self.addCleanup(other_installation_patch.stop)
         self.waiter = Mock(return_value=SimpleNamespace(provisioning_state="Succeeded"))
         self.wait_patch = patch(OPS + ".LongRunningOperation", return_value=self.waiter)
         self.wait_patch.start()
@@ -493,6 +605,14 @@ class AzureManagedLustreOperationsTestCase(unittest.TestCase):
             scope="cluster", auto_upgrade_minor_version=False,
         )
         self.waiter.assert_called_once_with(self.custom.create_k8s_extension.return_value)
+        self.other_installation.assert_called_once_with(self.cmd, "rg", "cluster")
+
+    def test_enable_rechecks_other_installations_before_creating(self):
+        self.other_installation.side_effect = InvalidArgumentValueError("Already installed as custom-lustre")
+        with self.assertRaisesRegex(InvalidArgumentValueError, "custom-lustre"):
+            perform_enable_azure_managed_lustre(self.cmd, "rg", "cluster")
+        self.custom.create_k8s_extension.assert_not_called()
+        self.waiter.assert_not_called()
 
     def test_enable_propagates_service_error_without_deleting_extension(self):
         self.custom.create_k8s_extension.side_effect = HttpResponseError("Forbidden")
@@ -623,6 +743,15 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
         )
         self.architectures = architecture_patch.start()
         self.addCleanup(architecture_patch.stop)
+        other_installation_patch = patch(DECORATOR + ".validate_no_other_lustre_installation")
+        self.other_installation = other_installation_patch.start()
+        self.addCleanup(other_installation_patch.stop)
+        default_patch = patch(VALIDATORS + ".cf_managed_clusters")
+        default_client = default_patch.start()
+        default_client.return_value.list_kubernetes_versions.return_value = SimpleNamespace(values_property=[
+            SimpleNamespace(version="1.34", is_default=True),
+        ])
+        self.addCleanup(default_patch.stop)
         register_aks_preview_resource_type()
         self.cmd = MockCmd(MockCLI())
         self.models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
@@ -635,7 +764,7 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
         raw_params = {"resource_group_name": "rg", "name": "cluster"}
         raw_params.update(params)
         decorator = decorator_type(self.cmd, self.client, raw_params, CUSTOM_MGMT_AKS_PREVIEW)
-        decorator.context.attach_mc(self.models.ManagedCluster(location="eastus"))
+        decorator.context.attach_mc(self.models.ManagedCluster(location="eastus", kubernetes_version="1.34"))
         decorator.context.mc.agent_pool_profiles = [
             self.models.ManagedClusterAgentPoolProfile(
                 name="nodepool1", os_sku="Ubuntu2404", vm_size="Standard_D2s_v5"
@@ -694,6 +823,27 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
         self.assertTrue(decorator.context.get_intermediate("enable_azure_managed_lustre"))
         self.assertTrue(decorator.check_is_postprocessing_required(mc))
 
+    def test_create_reuses_architectures_and_revalidates_returned_pool(self):
+        for returned_size, supported in [("Standard_D2s_v5", True), ("Standard_D2ps_v5", False)]:
+            with self.subTest(returned_size=returned_size):
+                decorator = self.make_decorator(True, enable_azure_managed_lustre=True)
+                mc = decorator.context.mc
+                mc.agent_pool_profiles[0].os_sku = "Ubuntu2204"
+                self.architectures.reset_mock()
+                self.architectures.return_value = {"standard_d2s_v5": "x64", "standard_d2ps_v5": "arm64"}
+                with patch(DECORATOR + ".get_azure_managed_lustre_extension_client"):
+                    decorator.set_up_azure_managed_lustre(mc)
+                mc.agent_pool_profiles[0].vm_size = returned_size
+                with patch.object(decorator.context.external_functions, "perform_enable_azure_managed_lustre") as install:
+                    if supported:
+                        decorator.postprocessing_after_mc_created(mc)
+                        install.assert_called_once()
+                    else:
+                        with self.assertRaisesRegex(InvalidArgumentValueError, "none of the cluster's node pools"):
+                            decorator.postprocessing_after_mc_created(mc)
+                        install.assert_not_called()
+                self.architectures.assert_called_once_with(self.cmd.cli_ctx, "eastus")
+
     def test_create_missing_dependency_fails_before_cluster_request(self):
         decorator = self.make_decorator(True, enable_azure_managed_lustre=True)
         with patch(DECORATOR + ".get_azure_managed_lustre_extension_client",
@@ -715,11 +865,13 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
                 )
                 mc = decorator.set_up_agentpool_profile(decorator.context.mc)
                 self.assertEqual(mc.agent_pool_profiles[0].vm_size, "")
+                self.architectures.reset_mock()
                 self.architectures.return_value = {
                     "standard_d2s_v5": "x64", "standard_d2ps_v5": "arm64",
                 }
                 with patch(DECORATOR + ".get_azure_managed_lustre_extension_client"):
                     decorator.set_up_azure_managed_lustre(mc)
+                self.architectures.assert_not_called()
                 cluster = self.models.ManagedCluster(location="eastus", agent_pool_profiles=[
                     self.models.ManagedClusterAgentPoolProfile(
                         name="nodepool1", os_sku="Ubuntu2204", vm_size=selected_size,
@@ -738,6 +890,7 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
                         install.assert_called_once_with(self.cmd, "rg", "cluster")
                 self.client.begin_create_or_update.assert_called()
                 self.assertEqual(mc.agent_pool_profiles[0].vm_size, "")
+                self.architectures.assert_called_once_with(self.cmd.cli_ctx, "eastus")
 
     def test_create_and_update_virtual_machines_pool(self):
         for create in [True, False]:
@@ -929,7 +1082,7 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
         for enable, installed in [(True, False), (False, True)]:
             with self.subTest(enable=enable, installed=installed):
                 decorator = self.make_decorator(
-                    False, enable_azure_managed_lustre=enable, disable_azure_managed_lustre=not enable
+                    False, enable_azure_managed_lustre=enable, disable_azure_managed_lustre=not enable, yes=True,
                 )
                 mc = decorator.context.mc
                 extension = SimpleNamespace(provisioning_state="Succeeded") if installed else None
@@ -992,7 +1145,7 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
                 if enable:
                     install.assert_called_once_with(self.cmd, "rg", "cluster")
                 else:
-                    uninstall.assert_called_once_with(self.cmd, "rg", "cluster", yes=False)
+                    uninstall.assert_called_once_with(self.cmd, "rg", "cluster", yes=True)
                 (uninstall if enable else install).assert_not_called()
 
     def test_update_passes_yes_to_disable(self):
@@ -1004,7 +1157,160 @@ class AzureManagedLustreDecoratorTestCase(unittest.TestCase):
             decorator.postprocessing_after_mc_created(decorator.context.mc)
         uninstall.assert_called_once_with(self.cmd, "rg", "cluster", yes=True)
 
-    def test_create_installs_lustre_before_container_storage_early_return(self):
+    def test_lustre_failure_does_not_skip_backup_or_automatic_role_assignment(self):
+        for create in [True, False]:
+            with self.subTest(create=create):
+                decorator = self.make_decorator(create, enable_backup=True)
+                decorator.context.set_intermediate("enable_azure_managed_lustre", True)
+                mc = decorator.context.mc
+                mc.sku = self.models.ManagedClusterSKU(name="Automatic")
+                events = []
+                error = HttpResponseError("Lustre installation failed")
+                functions = decorator.context.external_functions
+                with patch.object(functions, "enable_aks_backup",
+                                  side_effect=lambda *args: events.append("backup")), \
+                        patch.object(functions, "add_role_assignment_executor",
+                                     side_effect=lambda *args, **kwargs: events.append("role")), \
+                        patch(DECORATOR + ".get_graph_client") as graph, \
+                        patch.object(functions, "perform_enable_azure_managed_lustre", side_effect=error) as install, \
+                        patch(DECORATOR + ".logger.error") as log, \
+                        patch("azure.cli.command_modules.acs.managed_cluster_decorator."
+                              "AKSManagedClusterUpdateDecorator.postprocessing_after_mc_created"):
+                    graph.return_value.signed_in_user_get.return_value = {"id": "caller"}
+                    with self.assertRaises(HttpResponseError) as raised:
+                        decorator.postprocessing_after_mc_created(mc)
+                    self.assertIs(raised.exception, error)
+                    install.assert_called_once()
+                    log.assert_called_once()
+                    self.assertIn("cluster request succeeded", log.call_args.args[0])
+                self.assertEqual(events, ["role", "backup"] if create else ["backup"])
+
+    def test_postcreate_validation_failure_runs_independent_steps(self):
+        decorator = self.make_decorator(True, enable_backup=True)
+        decorator.context.set_intermediate("enable_azure_managed_lustre", True)
+        mc = decorator.context.mc
+        mc.agent_pool_profiles[0].os_sku = "Flatcar"
+        functions = decorator.context.external_functions
+        with patch.object(functions, "enable_aks_backup") as backup, \
+                patch.object(functions, "perform_enable_azure_managed_lustre") as install, \
+                patch(DECORATOR + ".logger.error") as log:
+            with self.assertRaisesRegex(InvalidArgumentValueError, "none of the cluster's node pools"):
+                decorator.postprocessing_after_mc_created(mc)
+        backup.assert_called_once()
+        install.assert_not_called()
+        log.assert_called_once()
+
+    def test_update_controller_rejects_lustre_before_monitoring_cleanup_or_put(self):
+        scenarios = [
+            ("conflict", True, True, True, MutuallyExclusiveArgumentError),
+            ("tainted", True, False, True, InvalidArgumentValueError),
+            ("requested-taints", True, False, True, InvalidArgumentValueError),
+            ("disable-auto-provisioning", True, False, True, InvalidArgumentValueError),
+            ("other-installation", True, False, True, InvalidArgumentValueError),
+            ("missing-extension", False, True, True, InvalidArgumentValueError),
+            ("cancel", False, True, False, None),
+            ("no-tty", False, True, False, NoTTYException),
+        ]
+        for scenario, enable, disable, yes, error_type in scenarios:
+            with self.subTest(scenario=scenario):
+                mc = self.make_decorator(False).context.mc
+                mc.addon_profiles = {"omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True, config={
+                        "useAADAuth": "true", "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace",
+                    },
+                )}
+                mc.identity = self.models.ManagedClusterIdentity(type="SystemAssigned", principal_id="identity")
+                if scenario == "tainted":
+                    mc.agent_pool_profiles[0].node_taints = ["CriticalAddonsOnly=true:NoSchedule"]
+                if scenario == "disable-auto-provisioning":
+                    mc.agent_pool_profiles[0].node_taints = ["sku=gpu:NoSchedule"]
+                    mc.node_provisioning_profile = self.models.ManagedClusterNodeProvisioningProfile(mode="Auto")
+                self.client.reset_mock()
+                self.client.get.return_value = mc
+                self.other_installation.side_effect = (
+                    InvalidArgumentValueError("Other installation exists") if scenario == "other-installation" else None
+                )
+                extension = None if scenario == "missing-extension" or enable else SimpleNamespace(
+                    provisioning_state="Succeeded",
+                )
+                with patch(DECORATOR + ".get_installed_azure_managed_lustre_extension", return_value=extension), \
+                        patch(DECORATOR + ".prompt_y_n", return_value=False) as prompt, \
+                        patch(DECORATOR + ".ensure_container_insights_for_monitoring_preview") as monitoring, \
+                        patch(DECORATOR + ".add_role_assignment") as role:
+                    if scenario == "no-tty":
+                        prompt.side_effect = NoTTYException()
+                    params = dict(
+                        disable_azure_monitor_logs=True, enable_azure_managed_lustre=enable,
+                        disable_azure_managed_lustre=disable, yes=yes,
+                    )
+                    if scenario == "requested-taints":
+                        params["nodepool_taints"] = "dedicated=other:NoSchedule"
+                    if scenario == "disable-auto-provisioning":
+                        params["node_provisioning_mode"] = "Manual"
+                    if error_type:
+                        with self.assertRaises(error_type):
+                            aks_update(self.cmd, self.client, "rg", "cluster", **params)
+                    else:
+                        self.assertIsNone(aks_update(self.cmd, self.client, "rg", "cluster", **params))
+                    monitoring.assert_not_called()
+                    role.assert_not_called()
+                    self.client.begin_create_or_update.assert_not_called()
+                self.assertTrue(mc.addon_profiles["omsagent"].enabled)
+
+    def test_update_controller_acceptance_precedes_monitoring_cleanup(self):
+        mc = self.make_decorator(False).context.mc
+        mc.addon_profiles = {"omsagent": self.models.ManagedClusterAddonProfile(
+            enabled=True, config={
+                "useAADAuth": "true", "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace",
+            },
+        )}
+        mc.identity = self.models.ManagedClusterIdentity(type="SystemAssigned", principal_id="identity")
+        mc.service_principal_profile = self.models.ManagedClusterServicePrincipalProfile(client_id="msi")
+        mc.identity_profile = {"kubeletidentity": SimpleNamespace(object_id="kubelet")}
+        mc.network_profile = self.models.ContainerServiceNetworkProfile()
+        self.client.get.return_value = mc
+        events = []
+
+        def cleanup(*args, **kwargs):
+            self.assertTrue(kwargs["remove_monitoring"])
+            self.assertTrue(kwargs["aad_route"])
+            events.append("cleanup")
+            raise RuntimeError("Reached monitoring cleanup")
+
+        with patch(DECORATOR + ".get_installed_azure_managed_lustre_extension",
+                   return_value=SimpleNamespace(provisioning_state="Succeeded")), \
+                patch(DECORATOR + ".prompt_y_n", side_effect=lambda *args, **kwargs: events.append("confirm") or True), \
+                patch(DECORATOR + ".AKSPreviewManagedClusterContext.get_subscription_id", return_value="test"), \
+                patch(DECORATOR + ".ensure_container_insights_for_monitoring_preview", side_effect=cleanup):
+            with self.assertRaisesRegex(RuntimeError, "Reached monitoring cleanup"):
+                aks_update(
+                    self.cmd, self.client, "rg", "cluster",
+                    disable_azure_monitor_logs=True, disable_azure_managed_lustre=True,
+                )
+        self.assertEqual(events, ["confirm", "cleanup"])
+        self.client.begin_create_or_update.assert_not_called()
+
+    def test_disable_preflight_prompts_once_and_acceptance_suppresses_later_prompt(self):
+        mc = self.make_decorator(False).context.mc
+        decorator = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd, self.client,
+            {"resource_group_name": "rg", "name": "cluster", "disable_azure_managed_lustre": True, "yes": False},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        with patch(DECORATOR + ".get_installed_azure_managed_lustre_extension",
+                   return_value=SimpleNamespace(provisioning_state="Succeeded")), \
+                patch(DECORATOR + ".prompt_y_n", return_value=True) as prompt, \
+                patch.object(decorator.context.external_functions, "perform_disable_azure_managed_lustre") as uninstall, \
+                patch("azure.cli.command_modules.acs.managed_cluster_decorator."
+                      "AKSManagedClusterUpdateDecorator.postprocessing_after_mc_created"):
+            self.client.get.return_value = mc
+            decorator.fetch_mc()
+            decorator.postprocessing_after_mc_created(mc)
+        prompt.assert_called_once()
+        self.assertIn("safe teardown", prompt.call_args.args[0])
+        uninstall.assert_called_once_with(self.cmd, "rg", "cluster", yes=True)
+
+    def test_create_installs_lustre_despite_container_storage_early_return(self):
         decorator = self.make_decorator(True)
         decorator.context.set_intermediate("enable_azure_managed_lustre", True)
         decorator.context.set_intermediate("enable_azure_container_storage", "ephemeralDisk")

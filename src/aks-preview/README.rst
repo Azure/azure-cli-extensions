@@ -29,9 +29,12 @@ For an existing AKS cluster, enable the extension with::
 These flags manage the ``azurelustre`` extension on the ``stable`` train, without a pinned
 version or automatic minor-version upgrades. Existing successful installations are preserved.
 Use ``az k8s-extension`` to manage installations with other names.
+Enablement rejects another Azure Managed Lustre extension regardless of its name or provisioning
+state: only one driver installation per cluster is supported.
 
 At least one supported Linux pool is required: Ubuntu 20.04/22.04 or Azure Linux 3 on x64,
-or Ubuntu 24.04 on x64/ARM64. OS aliases and default Kubernetes versions are resolved
+or Ubuntu 24.04 on x64/ARM64.
+OS aliases and default Kubernetes versions are resolved
 automatically. Create and update use Compute SKU discovery, not node labels. Without
 subscription-level ``Microsoft.Compute/skus/read``, a warning is shown and enablement
 continues without architecture validation. These flags do not require ``kubectl`` or cluster credentials.
@@ -39,6 +42,14 @@ When ``--node-vm-size`` is omitted during creation, the service-selected size is
 after the cluster is created and before Lustre is installed. If that size is incompatible,
 the cluster remains created but Lustre is not installed. Sizes in both manual and autoscale
 profiles are checked for ``VirtualMachines`` pools.
+Compute SKU discovery is deferred until a service-selected size is available; successful
+discovery for explicit sizes is reused during post-create validation.
+
+The default chart must be able to schedule both its controller and node plugin.
+Pools reserved with ``CriticalAddonsOnly`` or custom hard taints do not qualify for the
+node plugin. Spot/GPU taints supported by the chart allow the node plugin, but the
+controller still needs untainted Linux capacity (or node auto-provisioning).
+For custom tolerations, configure the extension with ``az k8s-extension`` instead.
 
 Before disabling, stop workloads and provisioning, and safely retire matching PVCs/PVs,
 including static and retained volumes, following the
@@ -46,13 +57,16 @@ including static and retained volumes, following the
 
     az aks update --resource-group <resource-group> --name <cluster-name> --disable-azure-managed-lustre
 
-Disable asks for confirmation before deleting the extension; use ``--yes`` to confirm
+Update validates Lustre inputs and asks for disable confirmation before any external changes,
+including monitoring cleanup and the cluster PUT. Use ``--yes`` to confirm
 non-interactively after reviewing the teardown guidance.
 It waits for Azure resource deletion and reports failures returned by Azure.
 It does not check PVs or Helm status. A Helm uninstall guard can block driver removal
 after the Azure resource is deleted, without an ARM failure; verify removal in the cluster.
 Do not use disable/re-enable for recovery or upgrades, or bypass the uninstall guard.
 These operations wait for cluster provisioning even with ``--no-wait``.
+Lustre operations run after independent cluster post-processing. If Lustre fails at that stage, the command reports the failure
+and explicitly notes that the cluster request has already succeeded.
 
 Dependency between aks-preview and azure-cli/acs (azure-cli-core)
 =================================================================

@@ -12,13 +12,18 @@ from azext_aks_preview.azuremanagedlustre._consts import (
     CONST_AMLFS_EXT_INSTALLATION_NAME,
     CONST_AMLFS_K8S_EXTENSION_NAME,
     CONST_AMLFS_RELEASE_TRAIN,
+    CONST_AMLFS_TEARDOWN_CONFIRMATION,
 )
-from azext_aks_preview.azuremanagedlustre._helpers import get_azure_managed_lustre_extension_client
+from azext_aks_preview.azuremanagedlustre._helpers import (
+    get_azure_managed_lustre_extension_client,
+    validate_no_other_installation,
+)
 
 logger = get_logger(__name__)
 
 
 def perform_enable_azure_managed_lustre(cmd, resource_group, cluster_name):
+    validate_no_other_installation(cmd, resource_group, cluster_name)
     client, custom_module = get_azure_managed_lustre_extension_client(cmd)
     result = custom_module.create_k8s_extension(
         cmd,
@@ -40,8 +45,7 @@ def perform_enable_azure_managed_lustre(cmd, resource_group, cluster_name):
 
 def perform_disable_azure_managed_lustre(cmd, resource_group, cluster_name, yes=False):
     user_confirmation(
-        "Please review the safe teardown guidance before disabling Azure Managed Lustre. "
-        "Existing Lustre volumes may prevent driver removal. Continue?",
+        CONST_AMLFS_TEARDOWN_CONFIRMATION,
         yes=yes,
     )
     client, custom_module = get_azure_managed_lustre_extension_client(cmd)

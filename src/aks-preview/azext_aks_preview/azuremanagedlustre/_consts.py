@@ -6,6 +6,10 @@
 CONST_AMLFS_EXT_INSTALLATION_NAME = "azurelustre"
 CONST_AMLFS_K8S_EXTENSION_NAME = "microsoft.azuremanagedlustre"
 CONST_AMLFS_RELEASE_TRAIN = "stable"
+CONST_AMLFS_TEARDOWN_CONFIRMATION = (
+    "Please review the safe teardown guidance before disabling Azure Managed Lustre. "
+    "Existing Lustre volumes may prevent driver removal. Continue?"
+)
 CONST_AMLFS_SUPPORTED_OS_ARCHITECTURES = {
     "ubuntu2004": frozenset(("x64",)),
     "ubuntu2204": frozenset(("x64",)),

@@ -108,7 +108,9 @@ from azext_aks_preview.azurecontainerstorage.acstor_ops import (
 from azext_aks_preview.azuremanagedlustre._helpers import (
     get_installed_extension as get_installed_azure_managed_lustre_extension,
     get_azure_managed_lustre_extension_client,
+    validate_no_other_installation as validate_no_other_lustre_installation,
 )
+from azext_aks_preview.azuremanagedlustre._consts import CONST_AMLFS_TEARDOWN_CONFIRMATION
 from azext_aks_preview.azuremanagedlustre._validators import (
     validate_azure_managed_lustre_node_compatibility,
     validate_azure_managed_lustre_params,
@@ -163,6 +165,7 @@ from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json, read_file_content
 from azure.core import MatchConditions
+from azure.core.exceptions import AzureError
 from azure.mgmt.containerservice.models import KubernetesSupportPlan
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id, resource_id
 from dateutil.parser import parse
@@ -5760,7 +5763,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def set_up_azure_managed_lustre(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
         if self.context.raw_param.get("enable_azure_managed_lustre"):
-            validate_azure_managed_lustre_node_compatibility(self.cmd, mc, allow_service_selected_size=True)
+            architectures = validate_azure_managed_lustre_node_compatibility(
+                self.cmd, mc, allow_service_selected_size=True,
+            )
+            self.context.set_intermediate("lustre_vm_sku_architectures", architectures, overwrite_exists=True)
             get_azure_managed_lustre_extension_client(self.cmd)
             self.context.set_intermediate("enable_azure_managed_lustre", True, overwrite_exists=True)
         return mc
@@ -6404,9 +6410,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_ai_toolchain_operator(mc)
         # set up for azure container storage
         mc = self.set_up_azure_container_storage(mc)
-        mc = self.set_up_azure_managed_lustre(mc)
         # set up node provisioning profile
         mc = self.set_up_node_provisioning_profile(mc)
+        mc = self.set_up_azure_managed_lustre(mc)
         # set up node disruption policy
         mc = self.set_up_node_disruption_policy(mc)
         # set up agentpool profile ssh access
@@ -6554,6 +6560,21 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
     # pylint: disable=too-many-locals,too-many-branches
     def postprocessing_after_mc_created(self, cluster: ManagedCluster) -> None:
+        self._postprocessing_before_lustre(cluster)
+        if self.context.get_intermediate("enable_azure_managed_lustre", default_value=False):
+            try:
+                validate_azure_managed_lustre_node_compatibility(
+                    self.cmd, cluster,
+                    vm_sku_architectures=self.context.get_intermediate("lustre_vm_sku_architectures"),
+                )
+                self.context.external_functions.perform_enable_azure_managed_lustre(
+                    self.cmd, self.context.get_resource_group_name(), self.context.get_name()
+                )
+            except (CLIError, AzureError):
+                logger.error("The cluster request succeeded, but Azure Managed Lustre enablement failed.")
+                raise
+
+    def _postprocessing_before_lustre(self, cluster: ManagedCluster) -> None:
         """Postprocessing performed after the cluster is created.
 
         :return: None
@@ -6684,12 +6705,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 self.__raw_parameters,
                 self.context.get_disable_azure_monitor_metrics(),
                 True
-            )
-
-        if self.context.get_intermediate("enable_azure_managed_lustre", default_value=False):
-            validate_azure_managed_lustre_node_compatibility(self.cmd, cluster)
-            self.context.external_functions.perform_enable_azure_managed_lustre(
-                self.cmd, self.context.get_resource_group_name(), self.context.get_name()
             )
 
         # enable azure container storage
@@ -7199,6 +7214,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         disable = self.context.raw_param.get("disable_azure_managed_lustre", False)
         validate_azure_managed_lustre_params(enable, disable)
         if enable or disable:
+            if enable:
+                validate_no_other_lustre_installation(
+                    self.cmd, self.context.get_resource_group_name(), self.context.get_name()
+                )
             extension = get_installed_azure_managed_lustre_extension(
                 self.cmd, self.context.get_resource_group_name(), self.context.get_name()
             )
@@ -7218,10 +7237,28 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 logger.warning("Azure Managed Lustre is already enabled. The existing configuration was preserved.")
                 enable = False
             elif enable:
-                validate_azure_managed_lustre_node_compatibility(self.cmd, mc)
+                requested_mc = copy.deepcopy(mc)
+                nodepool_taints = self.context.get_nodepool_taints()
+                if nodepool_taints is not None:
+                    for pool in requested_mc.agent_pool_profiles or []:
+                        pool.node_taints = nodepool_taints
+                provisioning_mode = self.context.get_node_provisioning_mode()
+                if provisioning_mode is not None:
+                    if requested_mc.node_provisioning_profile is None:
+                        requested_mc.node_provisioning_profile = self.models.ManagedClusterNodeProvisioningProfile()
+                    requested_mc.node_provisioning_profile.mode = provisioning_mode
+                validate_azure_managed_lustre_node_compatibility(self.cmd, requested_mc)
+            if disable and not self.context.get_yes():
+                if not prompt_y_n(CONST_AMLFS_TEARDOWN_CONFIRMATION, default="n"):
+                    raise DecoratorEarlyExitException()
             self.context.set_intermediate("enable_azure_managed_lustre", enable, overwrite_exists=True)
             self.context.set_intermediate("disable_azure_managed_lustre", disable, overwrite_exists=True)
         return mc
+
+    def fetch_mc(self) -> ManagedCluster:
+        mc = super().fetch_mc()
+        # The base controller can change ACR roles and monitoring resources immediately after fetching.
+        return self.update_azure_managed_lustre(mc)
 
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
     def update_azure_container_storage(self, mc: ManagedCluster) -> ManagedCluster:
@@ -9898,7 +9935,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_ai_toolchain_operator(mc)
         # update azure container storage
         mc = self.update_azure_container_storage(mc)
-        mc = self.update_azure_managed_lustre(mc)
         # update node provisioning profile
         mc = self.update_node_provisioning_profile(mc)
         # update bootstrap profile
@@ -9968,21 +10004,26 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
     # pylint: disable=too-many-statements
     # pylint: disable=too-many-locals
     def postprocessing_after_mc_created(self, cluster: ManagedCluster) -> None:
+        self._postprocessing_before_lustre(cluster)
+        try:
+            if self.context.get_intermediate("enable_azure_managed_lustre", default_value=False):
+                self.context.external_functions.perform_enable_azure_managed_lustre(
+                    self.cmd, self.context.get_resource_group_name(), self.context.get_name()
+                )
+            if self.context.get_intermediate("disable_azure_managed_lustre", default_value=False):
+                self.context.external_functions.perform_disable_azure_managed_lustre(
+                    self.cmd, self.context.get_resource_group_name(), self.context.get_name(), yes=True,
+                )
+        except (CLIError, AzureError):
+            logger.error("The cluster request succeeded, but the Azure Managed Lustre operation failed.")
+            raise
+
+    def _postprocessing_before_lustre(self, cluster: ManagedCluster) -> None:
         """Postprocessing performed after the cluster is created.
 
         :return: None
         """
         super().postprocessing_after_mc_created(cluster)
-
-        if self.context.get_intermediate("enable_azure_managed_lustre", default_value=False):
-            self.context.external_functions.perform_enable_azure_managed_lustre(
-                self.cmd, self.context.get_resource_group_name(), self.context.get_name()
-            )
-        if self.context.get_intermediate("disable_azure_managed_lustre", default_value=False):
-            self.context.external_functions.perform_disable_azure_managed_lustre(
-                self.cmd, self.context.get_resource_group_name(), self.context.get_name(),
-                yes=self.context.get_yes(),
-            )
 
         # Handle monitoring addon postprocessing (enable case)
         monitoring_addon_postprocessing_required = self.context.get_intermediate(

@@ -56,15 +56,19 @@ def _get_vm_sku_architectures(cli_ctx, location):
     return architectures
 
 
-def _resolve_os_sku(os_sku, kubernetes_version):
+def _parse_kubernetes_version(kubernetes_version):
     version_parts = str(kubernetes_version).lstrip("v").split(".")
     try:
-        version = (int(version_parts[0]), int(version_parts[1].split("-")[0]))
+        return (int(version_parts[0]), int(version_parts[1].split("-")[0]))
     except (IndexError, ValueError) as ex:
         raise InvalidArgumentValueError(
-            f"Cannot resolve OS SKU '{os_sku}' for Kubernetes version '{kubernetes_version}'. "
+            f"Cannot verify Azure Managed Lustre compatibility for Kubernetes version '{kubernetes_version}'. "
             "Specify a valid --kubernetes-version."
         ) from ex
+
+
+def _resolve_os_sku(os_sku, kubernetes_version):
+    version = _parse_kubernetes_version(kubernetes_version)
     if os_sku == "azurelinux":
         return "azurelinux3" if version >= (1, 32) else "azurelinux"
     if version >= (1, 35):
@@ -83,18 +87,61 @@ def _get_default_kubernetes_version(cmd, location):
     return defaults[0]
 
 
-def validate_azure_managed_lustre_node_compatibility(cmd, cluster, allow_service_selected_size=False):
+def _pool_vm_sizes(pool):
+    sizes = [pool.vm_size] if pool.vm_size else []
+    scale = getattr(getattr(pool, "virtual_machines_profile", None), "scale", None)
+    if scale is not None:
+        profiles = (getattr(scale, "manual", None) or []) + (getattr(scale, "autoscale", None) or [])
+        sizes.extend(item.size for item in profiles)
+    return sizes
+
+
+def _can_schedule(pool, controller=False):
+    tolerations = (
+        {
+            "node-role.kubernetes.io/master": None,
+            "node-role.kubernetes.io/controlplane": None,
+            "node-role.kubernetes.io/control-plane": None,
+        } if controller else {
+            "kubernetes.azure.com/scalesetpriority": "spot",
+            "sku": "gpu",
+            "nvidia.com/gpu": None,
+        }
+    )
+    for taint in getattr(pool, "node_taints", None) or []:
+        key_value, _, effect = taint.partition(":")
+        if effect not in ("NoSchedule", "NoExecute"):
+            continue
+        key, _, value = key_value.partition("=")
+        if effect != "NoSchedule" or key not in tolerations:
+            return False
+        if tolerations[key] is not None and tolerations[key] != value:
+            return False
+    return True
+
+
+def validate_azure_managed_lustre_node_compatibility(
+    cmd, cluster, allow_service_selected_size=False, vm_sku_architectures=None,
+):
+    """Return discovered SKU architectures for reuse within this command, or None when deferred/unverified."""
     pools = cluster.agent_pool_profiles or []
     supported_os_pools = []
     default_kubernetes_version = None
+    controller_schedulable = False
 
     for pool in pools:
         if (getattr(pool, "os_type", None) or "Linux").lower() != "linux":
             continue
+        controller_schedulable = controller_schedulable or _can_schedule(pool, controller=True)
+        if not _can_schedule(pool):
+            continue
         os_sku = (pool.os_sku or "Ubuntu").lower()
         if os_sku in ("ubuntu", "azurelinux"):
             kubernetes_version = (
-                getattr(pool, "orchestrator_version", None) or getattr(cluster, "kubernetes_version", None)
+                getattr(pool, "current_orchestrator_version", None)
+                or getattr(pool, "orchestrator_version", None)
+                or getattr(cluster, "current_kubernetes_version", None)
+                or getattr(cluster, "kubernetes_version", None)
             )
             if not kubernetes_version:
                 if default_kubernetes_version is None:
@@ -104,38 +151,39 @@ def validate_azure_managed_lustre_node_compatibility(cmd, cluster, allow_service
         if os_sku in CONST_AMLFS_SUPPORTED_OS_ARCHITECTURES:
             supported_os_pools.append((pool, CONST_AMLFS_SUPPORTED_OS_ARCHITECTURES[os_sku]))
 
+    provisioning_mode = getattr(getattr(cluster, "node_provisioning_profile", None), "mode", None)
+    if supported_os_pools and not controller_schedulable and provisioning_mode != "Auto":
+        raise InvalidArgumentValueError(
+            "No Linux pool can schedule the Azure Managed Lustre controller with its default tolerations. "
+            "Provide untainted capacity or configure supported tolerations using 'az k8s-extension'."
+        )
     if supported_os_pools:
+        pool_sizes = [(pool, supported, _pool_vm_sizes(pool)) for pool, supported in supported_os_pools]
+        if allow_service_selected_size and any(
+            not sizes and (getattr(pool, "type", None) or "").lower() != "virtualmachines"
+            for pool, _, sizes in pool_sizes
+        ):
+            return None
         try:
-            architectures = _get_vm_sku_architectures(cmd.cli_ctx, cluster.location)
+            architectures = (
+                vm_sku_architectures if vm_sku_architectures is not None
+                else _get_vm_sku_architectures(cmd.cli_ctx, cluster.location)
+            )
         except ForbiddenError:
             logger.warning(
                 "Architecture compatibility for the Azure Managed Lustre (AMLFS) extension cannot be verified "
                 "because the CLI caller lacks 'Microsoft.Compute/skus/read' at subscription scope. "
                 "Continuing without architecture validation."
             )
-            return
+            return None
         unknown_vm_sizes = []
-        service_selected_size = False
-        for pool, supported_architectures in supported_os_pools:
-            vm_sizes = [pool.vm_size] if pool.vm_size else []
-            profile = getattr(pool, "virtual_machines_profile", None)
-            scale = getattr(profile, "scale", None)
-            if scale is not None:
-                scale_profiles = (getattr(scale, "manual", None) or []) + (
-                    getattr(scale, "autoscale", None) or []
-                )
-                vm_sizes.extend(item.size for item in scale_profiles)
-            if not vm_sizes and (getattr(pool, "type", None) or "").lower() != "virtualmachines":
-                service_selected_size = True
+        for pool, supported_architectures, vm_sizes in pool_sizes:
             for vm_size in vm_sizes or [None]:
                 architecture = architectures.get((vm_size or "").lower())
                 if architecture in supported_architectures:
-                    return
+                    return architectures
                 if architecture not in ("x64", "arm64"):
                     unknown_vm_sizes.append(vm_size or "<unknown>")
-        # Create validates the concrete service-selected size again before installing the extension.
-        if allow_service_selected_size and service_selected_size:
-            return
         if unknown_vm_sizes:
             raise InvalidArgumentValueError(
                 "Cannot enable Azure Managed Lustre because the architecture couldn't be determined for "
@@ -146,5 +194,7 @@ def validate_azure_managed_lustre_node_compatibility(cmd, cluster, allow_service
         "Cannot enable Azure Managed Lustre because none of the cluster's node pools support "
         "the Azure Managed Lustre extension. Supported Linux pools: Ubuntu 20.04/22.04 on x64, "
         "Ubuntu 24.04 on x64 or ARM64, and Azure Linux 3 on x64. "
-        "Windows and other OS/architecture combinations aren't supported."
+        "Windows and other OS/architecture combinations aren't supported. "
+        "Eligible pools require schedulable nodes. "
+        "For custom-tainted pools, configure supported tolerations using 'az k8s-extension'."
     )

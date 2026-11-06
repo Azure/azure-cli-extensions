@@ -38,5 +38,16 @@ def get_installed_extension(cmd, resource_group, cluster_name):
     return extension
 
 
+def validate_no_other_installation(cmd, resource_group, cluster_name):
+    client, custom_module = get_azure_managed_lustre_extension_client(cmd)
+    for extension in custom_module.list_k8s_extension(client, resource_group, cluster_name, "managedClusters"):
+        if ((extension.extension_type or "").lower() == CONST_AMLFS_K8S_EXTENSION_NAME
+                and extension.name.lower() != CONST_AMLFS_EXT_INSTALLATION_NAME):
+            raise InvalidArgumentValueError(
+                f"Azure Managed Lustre is already installed as '{extension.name}'. Only one driver installation "
+                "per cluster is supported. Manage the existing installation using 'az k8s-extension'."
+            )
+
+
 def check_if_extension_is_installed(cmd, resource_group, cluster_name):
     return get_installed_extension(cmd, resource_group, cluster_name) is not None
