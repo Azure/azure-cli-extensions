@@ -46,6 +46,63 @@ class AgentProfile(_serialization.Model):
         self.vm_size = vm_size
 
 
+class AllowedSubject(_serialization.Model):
+    """A subject authorized to use the identity binding for token exchange. The namespace selector is
+    required and must be non-empty. The service account selector is optional; when omitted, all
+    service accounts in matching namespaces are authorized. Selectors within a single
+    AllowedSubject are AND'd; multiple AllowedSubjects on an identity binding profile are OR'd.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar namespace_selector: Label selector matching the namespaces in which this identity may be
+     used. Must be non-empty: an empty selector would match every namespace and is rejected to
+     prevent overly permissive bindings. Use the built-in ``kubernetes.io/metadata.name`` label to
+     target specific namespaces by name. Required.
+    :vartype namespace_selector:
+     ~azure.mgmt.containerservicefleet.models.IdentityBindingLabelSelector
+    :ivar service_account_selector: Optional label selector matching the service accounts (within
+     the namespaces matched by ``namespaceSelector``\\ ) that may use this identity. When omitted,
+     all service accounts in matching namespaces are authorized. When provided, it must be
+     non-empty.
+    :vartype service_account_selector:
+     ~azure.mgmt.containerservicefleet.models.IdentityBindingLabelSelector
+    """
+
+    _validation = {
+        "namespace_selector": {"required": True},
+    }
+
+    _attribute_map = {
+        "namespace_selector": {"key": "namespaceSelector", "type": "IdentityBindingLabelSelector"},
+        "service_account_selector": {"key": "serviceAccountSelector", "type": "IdentityBindingLabelSelector"},
+    }
+
+    def __init__(
+        self,
+        *,
+        namespace_selector: "_models.IdentityBindingLabelSelector",
+        service_account_selector: Optional["_models.IdentityBindingLabelSelector"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword namespace_selector: Label selector matching the namespaces in which this identity may
+         be used. Must be non-empty: an empty selector would match every namespace and is rejected to
+         prevent overly permissive bindings. Use the built-in ``kubernetes.io/metadata.name`` label to
+         target specific namespaces by name. Required.
+        :paramtype namespace_selector:
+         ~azure.mgmt.containerservicefleet.models.IdentityBindingLabelSelector
+        :keyword service_account_selector: Optional label selector matching the service accounts
+         (within the namespaces matched by ``namespaceSelector``\\ ) that may use this identity. When
+         omitted, all service accounts in matching namespaces are authorized. When provided, it must be
+         non-empty.
+        :paramtype service_account_selector:
+         ~azure.mgmt.containerservicefleet.models.IdentityBindingLabelSelector
+        """
+        super().__init__(**kwargs)
+        self.namespace_selector = namespace_selector
+        self.service_account_selector = service_account_selector
+
+
 class APIServerAccessProfile(_serialization.Model):
     """Access profile for the Fleet hub API server.
 
@@ -1062,6 +1119,58 @@ class FleetManagedNamespace(TrackedResource):
         self.e_tag: Optional[str] = None
 
 
+class FleetManagedNamespaceCredentialResult(_serialization.Model):
+    """One managed namespace credential result item.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar name: The name of the credential.
+    :vartype name: str
+    :ivar value: Base64-encoded Kubernetes configuration file.
+    :vartype value: str
+    """
+
+    _validation = {
+        "name": {"readonly": True},
+        "value": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "name": {"key": "name", "type": "str"},
+        "value": {"key": "value", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.name: Optional[str] = None
+        self.value: Optional[str] = None
+
+
+class FleetManagedNamespaceCredentialResults(_serialization.Model):
+    """The managed namespace credential results.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar kubeconfigs: Array of base64-encoded Kubernetes configuration files.
+    :vartype kubeconfigs:
+     list[~azure.mgmt.containerservicefleet.models.FleetManagedNamespaceCredentialResult]
+    """
+
+    _validation = {
+        "kubeconfigs": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "kubeconfigs": {"key": "kubeconfigs", "type": "[FleetManagedNamespaceCredentialResult]"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.kubeconfigs: Optional[list["_models.FleetManagedNamespaceCredentialResult"]] = None
+
+
 class FleetManagedNamespaceListResult(_serialization.Model):
     """The response of a FleetManagedNamespace list operation.
 
@@ -1156,6 +1265,12 @@ class FleetManagedNamespaceProperties(_serialization.Model):
     :vartype status: ~azure.mgmt.containerservicefleet.models.FleetManagedNamespaceStatus
     :ivar portal_fqdn: The Azure Portal FQDN of the Fleet hub.
     :vartype portal_fqdn: str
+    :ivar placed_member_ids: The resource IDs of the Fleet members where the current-generation
+     ClusterResourcePlacement status reports the managed namespace as successfully applied. This
+     property is omitted while current-generation placement status is unavailable, including while
+     an update is being scheduled. An empty array indicates that current-generation placement status
+     is available but the managed namespace is not successfully applied to any members.
+    :vartype placed_member_ids: list[str]
     """
 
     _validation = {
@@ -1164,6 +1279,7 @@ class FleetManagedNamespaceProperties(_serialization.Model):
         "delete_policy": {"required": True},
         "status": {"readonly": True},
         "portal_fqdn": {"readonly": True},
+        "placed_member_ids": {"readonly": True},
     }
 
     _attribute_map = {
@@ -1174,6 +1290,7 @@ class FleetManagedNamespaceProperties(_serialization.Model):
         "propagation_policy": {"key": "propagationPolicy", "type": "PropagationPolicy"},
         "status": {"key": "status", "type": "FleetManagedNamespaceStatus"},
         "portal_fqdn": {"key": "portalFqdn", "type": "str"},
+        "placed_member_ids": {"key": "placedMemberIds", "type": "[str]"},
     }
 
     def __init__(
@@ -1207,6 +1324,7 @@ class FleetManagedNamespaceProperties(_serialization.Model):
         self.propagation_policy = propagation_policy
         self.status: Optional["_models.FleetManagedNamespaceStatus"] = None
         self.portal_fqdn: Optional[str] = None
+        self.placed_member_ids: Optional[list[str]] = None
 
 
 class FleetManagedNamespacePropertiesPatch(_serialization.Model):
@@ -1383,6 +1501,124 @@ class FleetMember(ProxyResource):
         self.mesh_properties: Optional["_models.MeshProperties"] = None
 
 
+class FleetMemberCredentialRequest(_serialization.Model):
+    """The request for Fleet member credentials. Specify memberNames to retrieve credentials for up to
+    100 explicitly selected members in one response. Omit memberNames to retrieve credentials for
+    all applicable members with continuationToken used for subsequent pages.
+
+    :ivar member_names: The names of the Fleet members for which credentials are requested. Specify
+     between 1 and 100 unique names. Requests that specify memberNames are not paginated. When
+     omitted from an initial request, all applicable Fleet members are selected using server-side
+     pagination. This property must be omitted when continuationToken is provided.
+    :vartype member_names: list[str]
+    :ivar continuation_token: The opaque continuation token from a previous request that omitted
+     memberNames. When provided, this must be the only field in the request body because it
+     preserves the resource scope and cursor state for the all-members enumeration.
+    :vartype continuation_token: str
+    """
+
+    _validation = {
+        "member_names": {"max_items": 100, "min_items": 1, "unique": True},
+    }
+
+    _attribute_map = {
+        "member_names": {"key": "memberNames", "type": "[str]"},
+        "continuation_token": {"key": "continuationToken", "type": "str"},
+    }
+
+    def __init__(
+        self, *, member_names: Optional[list[str]] = None, continuation_token: Optional[str] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword member_names: The names of the Fleet members for which credentials are requested.
+         Specify between 1 and 100 unique names. Requests that specify memberNames are not paginated.
+         When omitted from an initial request, all applicable Fleet members are selected using
+         server-side pagination. This property must be omitted when continuationToken is provided.
+        :paramtype member_names: list[str]
+        :keyword continuation_token: The opaque continuation token from a previous request that omitted
+         memberNames. When provided, this must be the only field in the request body because it
+         preserves the resource scope and cursor state for the all-members enumeration.
+        :paramtype continuation_token: str
+        """
+        super().__init__(**kwargs)
+        self.member_names = member_names
+        self.continuation_token = continuation_token
+
+
+class FleetMemberCredentialResult(_serialization.Model):
+    """The credential request result for a Fleet member.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar name: The name of the Fleet member. Required.
+    :vartype name: str
+    :ivar status: The status of the credential request. Required. Known values are: "Succeeded" and
+     "Failed".
+    :vartype status: str or ~azure.mgmt.containerservicefleet.models.FleetMemberCredentialStatus
+    :ivar kubeconfig: The base64-encoded Kubernetes configuration file when credential retrieval
+     succeeds.
+    :vartype kubeconfig: str
+    :ivar error: The error details when credential retrieval fails.
+    :vartype error: ~azure.mgmt.containerservicefleet.models.ErrorDetail
+    """
+
+    _validation = {
+        "name": {"required": True, "readonly": True},
+        "status": {"required": True, "readonly": True},
+        "kubeconfig": {"readonly": True},
+        "error": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "name": {"key": "name", "type": "str"},
+        "status": {"key": "status", "type": "str"},
+        "kubeconfig": {"key": "kubeconfig", "type": "str"},
+        "error": {"key": "error", "type": "ErrorDetail"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.name: Optional[str] = None
+        self.status: Optional[Union[str, "_models.FleetMemberCredentialStatus"]] = None
+        self.kubeconfig: Optional[str] = None
+        self.error: Optional["_models.ErrorDetail"] = None
+
+
+class FleetMemberCredentialResults(_serialization.Model):
+    """The Fleet member credential results.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar value: The Fleet member credential results for this response. Required.
+    :vartype value: list[~azure.mgmt.containerservicefleet.models.FleetMemberCredentialResult]
+    :ivar continuation_token: The opaque continuation token to use in a subsequent request when the
+     initial request omitted memberNames. This property is omitted for explicit memberNames requests
+     and when there are no more results.
+    :vartype continuation_token: str
+    """
+
+    _validation = {
+        "value": {"required": True, "readonly": True},
+        "continuation_token": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[FleetMemberCredentialResult]"},
+        "continuation_token": {"key": "continuationToken", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.value: Optional[list["_models.FleetMemberCredentialResult"]] = None
+        self.continuation_token: Optional[str] = None
+
+
 class FleetMemberListResult(_serialization.Model):
     """The response of a FleetMember list operation.
 
@@ -1413,6 +1649,81 @@ class FleetMemberListResult(_serialization.Model):
         super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
+
+
+class FleetMemberManagedNamespaceCredentialResult(_serialization.Model):  # pylint: disable=name-too-long
+    """The credential request result for a Fleet member scoped to a managed namespace.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar name: The name of the Fleet member. Required.
+    :vartype name: str
+    :ivar status: The status of the credential request. Required. Known values are: "Succeeded" and
+     "Failed".
+    :vartype status: str or ~azure.mgmt.containerservicefleet.models.FleetMemberCredentialStatus
+    :ivar kubeconfig: The base64-encoded Kubernetes configuration file when credential retrieval
+     succeeds.
+    :vartype kubeconfig: str
+    :ivar error: The error details when credential retrieval fails.
+    :vartype error: ~azure.mgmt.containerservicefleet.models.ErrorDetail
+    """
+
+    _validation = {
+        "name": {"required": True, "readonly": True},
+        "status": {"required": True, "readonly": True},
+        "kubeconfig": {"readonly": True},
+        "error": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "name": {"key": "name", "type": "str"},
+        "status": {"key": "status", "type": "str"},
+        "kubeconfig": {"key": "kubeconfig", "type": "str"},
+        "error": {"key": "error", "type": "ErrorDetail"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.name: Optional[str] = None
+        self.status: Optional[Union[str, "_models.FleetMemberCredentialStatus"]] = None
+        self.kubeconfig: Optional[str] = None
+        self.error: Optional["_models.ErrorDetail"] = None
+
+
+class FleetMemberManagedNamespaceCredentialResults(_serialization.Model):  # pylint: disable=name-too-long
+    """The Fleet member credential results scoped to a managed namespace.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar value: The Fleet member credential results for this response. Required.
+    :vartype value:
+     list[~azure.mgmt.containerservicefleet.models.FleetMemberManagedNamespaceCredentialResult]
+    :ivar continuation_token: The opaque continuation token to use in a subsequent request when the
+     initial request omitted memberNames. This property is omitted for explicit memberNames requests
+     and when there are no more results.
+    :vartype continuation_token: str
+    """
+
+    _validation = {
+        "value": {"required": True, "readonly": True},
+        "continuation_token": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[FleetMemberManagedNamespaceCredentialResult]"},
+        "continuation_token": {"key": "continuationToken", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.value: Optional[list["_models.FleetMemberManagedNamespaceCredentialResult"]] = None
+        self.continuation_token: Optional[str] = None
 
 
 class FleetMemberStatus(_serialization.Model):
@@ -1916,6 +2227,417 @@ class GenerateResponse(_serialization.Model):
         """ """
         super().__init__(**kwargs)
         self.id: Optional[str] = None
+
+
+class IdentityBindingLabelSelector(_serialization.Model):
+    """A label selector is a label query over a set of resources. The result of matchLabels and
+    matchExpressions are ANDed. An empty label selector matches all objects. A null label selector
+    matches no objects.
+
+    :ivar match_labels: matchLabels is an array of {key=value} pairs. A single {key=value} in the
+     matchLabels map is equivalent to an element of matchExpressions, whose key field is ``key``\\ ,
+     the operator is ``In``\\ , and the values array contains only ``value``. The requirements are
+     ANDed.
+    :vartype match_labels: list[str]
+    :ivar match_expressions: matchExpressions is a list of label selector requirements. The
+     requirements are ANDed.
+    :vartype match_expressions:
+     list[~azure.mgmt.containerservicefleet.models.IdentityBindingLabelSelectorRequirement]
+    """
+
+    _attribute_map = {
+        "match_labels": {"key": "matchLabels", "type": "[str]"},
+        "match_expressions": {"key": "matchExpressions", "type": "[IdentityBindingLabelSelectorRequirement]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        match_labels: Optional[list[str]] = None,
+        match_expressions: Optional[list["_models.IdentityBindingLabelSelectorRequirement"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword match_labels: matchLabels is an array of {key=value} pairs. A single {key=value} in
+         the matchLabels map is equivalent to an element of matchExpressions, whose key field is
+         ``key``\\ , the operator is ``In``\\ , and the values array contains only ``value``. The
+         requirements are ANDed.
+        :paramtype match_labels: list[str]
+        :keyword match_expressions: matchExpressions is a list of label selector requirements. The
+         requirements are ANDed.
+        :paramtype match_expressions:
+         list[~azure.mgmt.containerservicefleet.models.IdentityBindingLabelSelectorRequirement]
+        """
+        super().__init__(**kwargs)
+        self.match_labels = match_labels
+        self.match_expressions = match_expressions
+
+
+class IdentityBindingLabelSelectorRequirement(_serialization.Model):
+    """A label selector requirement is a selector that contains values, a key, and an operator that
+    relates the key and values.
+
+    :ivar key: key is the label key that the selector applies to.
+    :vartype key: str
+    :ivar operator: operator represents a key's relationship to a set of values. Valid operators
+     are In, NotIn, Exists and DoesNotExist. Known values are: "In", "NotIn", "Exists", and
+     "DoesNotExist".
+    :vartype operator: str or
+     ~azure.mgmt.containerservicefleet.models.IdentityBindingLabelSelectorOperator
+    :ivar values: values is an array of string values, the values array must be non-empty.
+    :vartype values: list[str]
+    """
+
+    _attribute_map = {
+        "key": {"key": "key", "type": "str"},
+        "operator": {"key": "operator", "type": "str"},
+        "values": {"key": "values", "type": "[str]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        key: Optional[str] = None,
+        operator: Optional[Union[str, "_models.IdentityBindingLabelSelectorOperator"]] = None,
+        values: Optional[list[str]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword key: key is the label key that the selector applies to.
+        :paramtype key: str
+        :keyword operator: operator represents a key's relationship to a set of values. Valid operators
+         are In, NotIn, Exists and DoesNotExist. Known values are: "In", "NotIn", "Exists", and
+         "DoesNotExist".
+        :paramtype operator: str or
+         ~azure.mgmt.containerservicefleet.models.IdentityBindingLabelSelectorOperator
+        :keyword values: values is an array of string values, the values array must be non-empty.
+        :paramtype values: list[str]
+        """
+        super().__init__(**kwargs)
+        self.key = key
+        self.operator = operator
+        self.values = values
+
+
+class IdentityBindingManagedIdentityProfile(_serialization.Model):
+    """Managed identity profile for the identity binding.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar resource_id: The resource ID of the managed identity. Required.
+    :vartype resource_id: str
+    :ivar object_id: The object ID of the managed identity.
+    :vartype object_id: str
+    :ivar client_id: The client ID of the managed identity.
+    :vartype client_id: str
+    :ivar tenant_id: The tenant ID of the managed identity.
+    :vartype tenant_id: str
+    """
+
+    _validation = {
+        "resource_id": {
+            "required": True,
+            "pattern": r"^/subscriptions/[a-zA-Z0-9-]+/resourceGroups/[a-zA-Z0-9-]+/providers/Microsoft.ManagedIdentity/userAssignedIdentities/[a-zA-Z0-9-]+$",
+        },
+        "object_id": {
+            "readonly": True,
+            "max_length": 36,
+            "min_length": 36,
+            "pattern": r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+        },
+        "client_id": {
+            "readonly": True,
+            "max_length": 36,
+            "min_length": 36,
+            "pattern": r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+        },
+        "tenant_id": {
+            "readonly": True,
+            "max_length": 36,
+            "min_length": 36,
+            "pattern": r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+        },
+    }
+
+    _attribute_map = {
+        "resource_id": {"key": "resourceId", "type": "str"},
+        "object_id": {"key": "objectId", "type": "str"},
+        "client_id": {"key": "clientId", "type": "str"},
+        "tenant_id": {"key": "tenantId", "type": "str"},
+    }
+
+    def __init__(self, *, resource_id: str, **kwargs: Any) -> None:
+        """
+        :keyword resource_id: The resource ID of the managed identity. Required.
+        :paramtype resource_id: str
+        """
+        super().__init__(**kwargs)
+        self.resource_id = resource_id
+        self.object_id: Optional[str] = None
+        self.client_id: Optional[str] = None
+        self.tenant_id: Optional[str] = None
+
+
+class IdentityBindingOidcIssuerProfile(_serialization.Model):
+    """The OIDC issuer profile of the identity binding profile.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar oidc_issuer_url: The OIDC issuer URL of the identity binding profile.
+    :vartype oidc_issuer_url: str
+    """
+
+    _validation = {
+        "oidc_issuer_url": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "oidc_issuer_url": {"key": "oidcIssuerUrl", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.oidc_issuer_url: Optional[str] = None
+
+
+class IdentityBindingProfile(ProxyResource):
+    """A fleet identity binding profile.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.containerservicefleet.models.SystemData
+    :ivar properties: The resource-specific properties for this resource.
+    :vartype properties: ~azure.mgmt.containerservicefleet.models.IdentityBindingProfileProperties
+    :ivar e_tag: If eTag is provided in the response body, it may also be provided as a header per
+     the normal etag convention.  Entity tags are used for comparing two or more entities from the
+     same requested resource. HTTP/1.1 uses entity tags in the etag (section 14.19), If-Match
+     (section 14.24), If-None-Match (section 14.26), and If-Range (section 14.27) header fields.
+    :vartype e_tag: str
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "e_tag": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "IdentityBindingProfileProperties"},
+        "e_tag": {"key": "eTag", "type": "str"},
+    }
+
+    def __init__(
+        self, *, properties: Optional["_models.IdentityBindingProfileProperties"] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword properties: The resource-specific properties for this resource.
+        :paramtype properties:
+         ~azure.mgmt.containerservicefleet.models.IdentityBindingProfileProperties
+        """
+        super().__init__(**kwargs)
+        self.properties = properties
+        self.e_tag: Optional[str] = None
+
+
+class IdentityBindingProfileListResult(_serialization.Model):
+    """The response of a IdentityBindingProfile list operation.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar value: The IdentityBindingProfile items on this page. Required.
+    :vartype value: list[~azure.mgmt.containerservicefleet.models.IdentityBindingProfile]
+    :ivar next_link: The link to the next page of items.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"required": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[IdentityBindingProfile]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(
+        self, *, value: list["_models.IdentityBindingProfile"], next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword value: The IdentityBindingProfile items on this page. Required.
+        :paramtype value: list[~azure.mgmt.containerservicefleet.models.IdentityBindingProfile]
+        :keyword next_link: The link to the next page of items.
+        :paramtype next_link: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class IdentityBindingProfileProperties(_serialization.Model):
+    """The properties of an identity binding profile.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar provisioning_state: The status of the last operation. Known values are: "Succeeded",
+     "Failed", "Canceled", and "Applying".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.containerservicefleet.models.IdentityBindingProfileProvisioningState
+    :ivar member_selector: Select the fleet members that this identity binding profile is applied
+     to.
+
+     * Only key/value pairs with the ``=`` operator are accepted in the label selector.
+     * If empty or not specified, no fleet members will be selected.
+    :vartype member_selector: ~azure.mgmt.containerservicefleet.models.MemberSelector
+    :ivar identity_binding_properties: The identity binding properties applied to each selected
+     fleet member. Required.
+    :vartype identity_binding_properties:
+     ~azure.mgmt.containerservicefleet.models.IdentityBindingProperties
+    :ivar status: The identity binding profile status.
+    :vartype status: ~azure.mgmt.containerservicefleet.models.IdentityBindingProfileStatus
+    """
+
+    _validation = {
+        "provisioning_state": {"readonly": True},
+        "identity_binding_properties": {"required": True},
+        "status": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "member_selector": {"key": "memberSelector", "type": "MemberSelector"},
+        "identity_binding_properties": {"key": "identityBindingProperties", "type": "IdentityBindingProperties"},
+        "status": {"key": "status", "type": "IdentityBindingProfileStatus"},
+    }
+
+    def __init__(
+        self,
+        *,
+        identity_binding_properties: "_models.IdentityBindingProperties",
+        member_selector: Optional["_models.MemberSelector"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword member_selector: Select the fleet members that this identity binding profile is
+          applied to.
+
+          * Only key/value pairs with the ``=`` operator are accepted in the label selector.
+          * If empty or not specified, no fleet members will be selected.
+        :paramtype member_selector: ~azure.mgmt.containerservicefleet.models.MemberSelector
+        :keyword identity_binding_properties: The identity binding properties applied to each selected
+         fleet member. Required.
+        :paramtype identity_binding_properties:
+         ~azure.mgmt.containerservicefleet.models.IdentityBindingProperties
+        """
+        super().__init__(**kwargs)
+        self.provisioning_state: Optional[Union[str, "_models.IdentityBindingProfileProvisioningState"]] = None
+        self.member_selector = member_selector
+        self.identity_binding_properties = identity_binding_properties
+        self.status: Optional["_models.IdentityBindingProfileStatus"] = None
+
+
+class IdentityBindingProfileStatus(_serialization.Model):
+    """Status of the identity binding profile.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar last_operation_id: The last operation ID for the identity binding profile.
+    :vartype last_operation_id: str
+    :ivar last_operation_error: The last operation error of the identity binding profile.
+    :vartype last_operation_error: ~azure.mgmt.containerservicefleet.models.ErrorDetail
+    """
+
+    _validation = {
+        "last_operation_id": {"readonly": True},
+        "last_operation_error": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "last_operation_id": {"key": "lastOperationId", "type": "str"},
+        "last_operation_error": {"key": "lastOperationError", "type": "ErrorDetail"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.last_operation_id: Optional[str] = None
+        self.last_operation_error: Optional["_models.ErrorDetail"] = None
+
+
+class IdentityBindingProperties(_serialization.Model):
+    """The properties of the identity bindings created on each selected fleet member.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar managed_identity: Managed identity profile for the identity binding. Required.
+    :vartype managed_identity:
+     ~azure.mgmt.containerservicefleet.models.IdentityBindingManagedIdentityProfile
+    :ivar allowed_subjects: Optional list of subjects authorized to use this identity binding for
+     token exchange. Each entry pairs a required namespace label selector with an optional service
+     account label selector; selectors within an entry are AND'd, and multiple entries are OR'd.
+     When omitted or empty, authorization falls back exclusively to ClusterRole/ClusterRoleBinding
+     evaluation. Maximum 100 entries.
+    :vartype allowed_subjects: list[~azure.mgmt.containerservicefleet.models.AllowedSubject]
+    :ivar oidc_issuer: The OIDC issuer profile of the identity binding profile.
+    :vartype oidc_issuer: ~azure.mgmt.containerservicefleet.models.IdentityBindingOidcIssuerProfile
+    """
+
+    _validation = {
+        "managed_identity": {"required": True},
+        "allowed_subjects": {"max_items": 100, "min_items": 0},
+        "oidc_issuer": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "managed_identity": {"key": "managedIdentity", "type": "IdentityBindingManagedIdentityProfile"},
+        "allowed_subjects": {"key": "allowedSubjects", "type": "[AllowedSubject]"},
+        "oidc_issuer": {"key": "oidcIssuer", "type": "IdentityBindingOidcIssuerProfile"},
+    }
+
+    def __init__(
+        self,
+        *,
+        managed_identity: "_models.IdentityBindingManagedIdentityProfile",
+        allowed_subjects: Optional[list["_models.AllowedSubject"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword managed_identity: Managed identity profile for the identity binding. Required.
+        :paramtype managed_identity:
+         ~azure.mgmt.containerservicefleet.models.IdentityBindingManagedIdentityProfile
+        :keyword allowed_subjects: Optional list of subjects authorized to use this identity binding
+         for token exchange. Each entry pairs a required namespace label selector with an optional
+         service account label selector; selectors within an entry are AND'd, and multiple entries are
+         OR'd. When omitted or empty, authorization falls back exclusively to
+         ClusterRole/ClusterRoleBinding evaluation. Maximum 100 entries.
+        :paramtype allowed_subjects: list[~azure.mgmt.containerservicefleet.models.AllowedSubject]
+        """
+        super().__init__(**kwargs)
+        self.managed_identity = managed_identity
+        self.allowed_subjects = allowed_subjects
+        self.oidc_issuer: Optional["_models.IdentityBindingOidcIssuerProfile"] = None
 
 
 class ManagedClusterUpdate(_serialization.Model):
