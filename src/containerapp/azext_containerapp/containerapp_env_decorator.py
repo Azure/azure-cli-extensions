@@ -305,6 +305,8 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
             safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "dynamicJsonColumns", value=self.get_argument_logs_dynamic_json_columns())
 
     def set_up_custom_domain_configuration(self):
+        if self.get_argument_hostname():
+            safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "dnsSuffix", value=self.get_argument_hostname())
         if self.get_argument_certificate_file():
             blob, _ = load_cert_file(self.get_argument_certificate_file(), self.get_argument_certificate_password())
             safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateValue", value=blob)
