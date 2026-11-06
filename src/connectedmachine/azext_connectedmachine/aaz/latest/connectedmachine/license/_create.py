@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-07-15",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2026-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2026-09-01"],
         ]
     }
 
@@ -55,6 +55,21 @@ class Create(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.license_type = AAZStrArg(
+            options=["--license-type"],
+            arg_group="Properties",
+            help="The type of the license resource.",
+            enum={"ESU": "ESU"},
+        )
+        _args_schema.tenant_id = AAZStrArg(
+            options=["--tenant-id"],
+            arg_group="Properties",
+            help="Describes the tenant id.",
         )
 
         # define Arg Group "LicenseDetails"
@@ -109,11 +124,11 @@ class Create(AAZCommand):
             enum={"Year 1": "Year 1", "Year 2": "Year 2", "Year 3": "Year 3"},
         )
 
-        # define Arg Group "Parameters"
+        # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
-            arg_group="Parameters",
+            arg_group="Resource",
             help="The geo-location where the resource lives",
             required=True,
             fmt=AAZResourceLocationArgFormat(
@@ -122,27 +137,12 @@ class Create(AAZCommand):
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="Parameters",
+            arg_group="Resource",
             help="Resource tags.",
         )
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.license_type = AAZStrArg(
-            options=["--license-type"],
-            arg_group="Properties",
-            help="The type of the license resource.",
-            enum={"ESU": "ESU"},
-        )
-        _args_schema.tenant_id = AAZStrArg(
-            options=["--tenant-id"],
-            arg_group="Properties",
-            help="Describes the tenant id.",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -226,7 +226,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-07-15",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
