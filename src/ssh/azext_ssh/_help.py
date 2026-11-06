@@ -112,6 +112,9 @@ helps['ssh cert'] = """
         - name: Create a short lived ssh certificate signed by AAD
           text: |
             az ssh cert --public-key-file ./id_rsa.pub --file ./id_rsa-aadcert.pub
+        - name: Write a public certificate on a filesystem without ACL support, leaving file permissions unchanged
+          text: |
+            az ssh cert --public-key-file ./id_rsa.pub --file ./id_rsa-aadcert.pub --skip-cert-file-permissions
         - name: Give a SSH Client Folder to use the ssh executables in that folder, like ssh-keygen.exe. If not provided, the extension attempts to use pre-installed OpenSSH client (on Windows, extension looks for pre-installed executables under C:\\Windows\\System32\\OpenSSH).
           text: |
             az ssh cert --file ./id_rsa-aadcert.pub --ssh-client-folder "C:\\Program Files\\OpenSSH"

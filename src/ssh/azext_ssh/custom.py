@@ -106,7 +106,7 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
     _do_ssh_op(cmd, config_session, op_call)
 
 
-def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
+def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None, skip_cert_file_permissions=False):
     if not cert_path and not public_key_file:
         raise azclierror.RequiredArgumentMissingError("--file or --public-key-file must be provided.")
     if cert_path and not os.path.isdir(os.path.dirname(cert_path)):
@@ -125,7 +125,8 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
         keys_folder = os.path.dirname(cert_path)
 
     public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, keys_folder, ssh_client_folder)
-    cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path, ssh_client_folder)
+    cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path, ssh_client_folder,
+                                              skip_cert_file_permissions=skip_cert_file_permissions)
 
     if keys_folder:
         logger.warning("%s contains sensitive information (id_rsa, id_rsa.pub). "
@@ -204,7 +205,7 @@ def _do_ssh_op(cmd, op_info, op_call):
     op_call(op_info, delete_keys, delete_cert)
 
 
-def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder):
+def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder, skip_cert_file_permissions=False):
     scope = f'{const.AADSSHLOGINFORLINUX_SERVER_APP_ID}/.default'
     scopes = [scope]
 
@@ -230,7 +231,7 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folde
         cert_file = public_key_file + "-aadcert.pub"
 
     logger.debug("Generating certificate %s", cert_file)
-    _write_cert_file(certificate, cert_file)
+    _write_cert_file(certificate, cert_file, skip_cert_file_permissions=skip_cert_file_permissions)
     # instead we use the validprincipals from the cert due to mismatched upn and email in guest scenarios
     username = ssh_utils.get_ssh_cert_principals(cert_file, ssh_client_folder)[0]
     return cert_file, username.lower()
@@ -332,10 +333,22 @@ def _check_or_create_public_private_files(public_key_file, private_key_file, cre
     return public_key_file, private_key_file, delete_keys
 
 
-def _write_cert_file(certificate_contents, cert_file):
+def _write_cert_file(certificate_contents, cert_file, skip_cert_file_permissions=False):
     with open(cert_file, 'w', encoding='utf-8') as f:
         f.write(f"ssh-rsa-cert-v01@openssh.com {certificate_contents}")
-    oschmod.set_mode(cert_file, 0o644)
+    if skip_cert_file_permissions:
+        logger.warning("Certificate %s was written, but its file permissions were not adjusted.", cert_file)
+    else:
+        permissions_set = False
+        try:
+            oschmod.set_mode(cert_file, 0o644)
+            permissions_set = True
+        finally:
+            # Preserve all permission errors, including platform-specific ACL exceptions.
+            if not permissions_set:
+                logger.warning("Certificate %s was written, but its file permissions could not be set. "
+                               "For az ssh cert on a filesystem without ACL support, "
+                               "retry with --skip-cert-file-permissions.", cert_file)
     return cert_file
 
 
