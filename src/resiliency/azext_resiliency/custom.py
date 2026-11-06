@@ -32,7 +32,13 @@ from .aaz.latest.resiliency.drill.drill_run import (
     Resume as _DrillRunResume,
 )
 from .aaz.latest.resiliency.goal_assignment import (
+    RecommendCapacity as _GoalAssignmentRecommendCapacity,
+    Show as _GoalAssignmentShow,
+    Update as _GoalAssignmentUpdate,
     UpdateGoalResource as _GoalAssignmentUpdateGoalResource,
+)
+from .aaz.latest.resiliency.operation_status import (
+    Show as _OperationStatusShow,
 )
 from .aaz.latest.resiliency.recovery_plan.identity import (
     Assign as _RecoveryPlanIdentityAssign,
@@ -235,7 +241,9 @@ class GoalAssignmentUpdateGoalResource(_GoalAssignmentUpdateGoalResource):
         )
         return args_schema
 
-    class GoalAssignmentsUpdateGoalResources(_GoalAssignmentUpdateGoalResource.GoalAssignmentsUpdateGoalResources):
+    class GoalAssignmentsUpdateGoalResources(
+            _DecodeStringPropertiesOn200,
+            _GoalAssignmentUpdateGoalResource.GoalAssignmentsUpdateGoalResources):
 
         @property
         def content(self):
@@ -341,6 +349,63 @@ class DrillAddOrUpdateResource(_DrillAddOrUpdateResource):
                         "targetResourceId": default_fault.target_resource_id.to_serialized_data(),
                     }
             return body
+
+
+# The goal-assignment service returns the final result of recommend-capacity and
+# update-goal-resource as {"status": ..., "properties": "<JSON-encoded string>"} instead of the spec
+# shape, so the output was {}. Decode the string (_DecodeStringPropertiesOn200, also applied to
+# GoalAssignmentUpdateGoalResource above). No-op once the service returns the spec shape; remove
+# after the service fix.
+class GoalAssignmentRecommendCapacity(_GoalAssignmentRecommendCapacity):
+    class GoalAssignmentsRecommendCapacity(
+            _DecodeStringPropertiesOn200,
+            _GoalAssignmentRecommendCapacity.GoalAssignmentsRecommendCapacity):
+        pass
+
+
+# For goal-assignment update (PATCH, final-state-via: location) the service's final result is an
+# operation-status record with string-encoded properties instead of the goal assignment, so the
+# output was {} or the command failed after the update had succeeded. Drop that result and read the
+# goal assignment again so the output shows the updated goal assignment (PowerShell already reads
+# the original URI). No-op once the service returns the resource; remove after the service fix.
+class GoalAssignmentUpdate(_GoalAssignmentUpdate):
+
+    def post_operations(self):
+        if self.ctx.args.no_wait:
+            return
+        instance = self.ctx.vars.instance.to_serialized_data()
+        if isinstance(instance, dict) and instance.get("properties"):
+            return
+        _GoalAssignmentShow.GoalAssignmentsGet(ctx=self.ctx)()
+
+    class GoalAssignmentsUpdate(_GoalAssignmentUpdate.GoalAssignmentsUpdate):
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            if not isinstance(data, dict):
+                data = {}
+            elif isinstance(data.get("properties"), str):
+                data = dict(data, properties=None)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+
+# While an operation is still running the service returns HTTP 202 with the operation-status body,
+# but the spec allows only 200, so `operation-status show` failed with "invalid status 'Accepted'".
+# Treat 202 like 200 so the current status is shown. Remove after the service fix.
+class OperationStatusShow(_OperationStatusShow):
+    class OperationStatusGet(_OperationStatusShow.OperationStatusGet):
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200, 202]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
 
 
 # Commands whose request only needs the operationId query workaround (the recovery-plan action

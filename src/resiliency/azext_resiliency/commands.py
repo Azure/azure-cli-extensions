@@ -14,7 +14,8 @@
 def load_command_table(self, _):  # pylint: disable=unused-argument
     from .custom import (
         DrillAddOrUpdateResource,
-        GoalAssignmentUpdateGoalResource,
+        GoalAssignmentRecommendCapacity, GoalAssignmentUpdate, GoalAssignmentUpdateGoalResource,
+        OperationStatusShow,
         RecoveryPlanIdentityAssign, RecoveryPlanIdentityRemove,
         RecoveryPlanCreate, RecoveryPlanList, RecoveryPlanShow, RecoveryPlanUpdate,
         RecoveryPlanCheckReadiness, RecoveryPlanFailover, RecoveryPlanReprotect,
@@ -24,6 +25,9 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
     for name, command_cls in OPERATION_ID_QUERY_COMMANDS.items():
         self.command_table[name] = command_cls(loader=self)
     self.command_table["resiliency drill add-or-update-resource"] = DrillAddOrUpdateResource(loader=self)
+    self.command_table["resiliency goal-assignment recommend-capacity"] = GoalAssignmentRecommendCapacity(loader=self)
+    self.command_table["resiliency goal-assignment update"] = GoalAssignmentUpdate(loader=self)
+    self.command_table["resiliency operation-status show"] = OperationStatusShow(loader=self)
     self.command_table["resiliency goal-assignment update-goal-resource"] = GoalAssignmentUpdateGoalResource(loader=self)
     self.command_table["resiliency recovery-plan identity assign"] = RecoveryPlanIdentityAssign(loader=self)
     self.command_table["resiliency recovery-plan identity remove"] = RecoveryPlanIdentityRemove(loader=self)
