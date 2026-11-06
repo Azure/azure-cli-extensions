@@ -7,13 +7,11 @@ from typing import Any, Dict
 from azure.core import exceptions
 # from azure.storage.blob import (
 from ..azure_storage_blob import (
-    BlobServiceClient,
     ContainerClient,
     BlobClient,
     BlobSasPermissions,
     ContentSettings,
     generate_blob_sas,
-    generate_container_sas,
     BlobType,
     BlobProperties
 )
@@ -21,63 +19,6 @@ from datetime import datetime, timedelta
 from enum import Enum
 
 logger = logging.getLogger(__name__)
-
-
-def create_container(
-    connection_string: str, container_name: str
-) -> ContainerClient:
-    """
-    Creates and initialize a container; returns the client needed to access it.
-    """
-    blob_service_client = BlobServiceClient.from_connection_string(
-        connection_string
-    )
-    logger.info(
-        f'{"Initializing storage client for account:"}'
-        + f"{blob_service_client.account_name}"
-    )
-
-    container_client = blob_service_client.get_container_client(container_name)
-    create_container_using_client(container_client)
-    return container_client
-
-
-def create_container_using_client(container_client: ContainerClient):
-    """
-    Creates the container if it doesn't already exist.
-    """
-    if not container_client.exists():
-        logger.debug(
-            f'{"  - uploading to **new** container:"}'
-            f"{container_client.container_name}"
-        )
-        container_client.create_container()
-
-
-def get_container_uri(connection_string: str, container_name: str) -> str:
-    """
-    Creates and initialize a container;
-    returns a URI with a SAS read/write token to access it.
-    """
-    container = create_container(connection_string, container_name)
-    logger.info(
-        f'{"Creating SAS token for container"}'
-        + f"'{container_name}' on account: '{container.account_name}'"
-    )
-
-    sas_token = generate_container_sas(
-        container.account_name,
-        container.container_name,
-        account_key=container.credential.account_key,
-        permission=BlobSasPermissions(
-            read=True, add=True, write=True, create=True
-        ),
-        expiry=datetime.utcnow() + timedelta(days=14),
-    )
-
-    uri = container.url + "?" + sas_token
-    logger.debug(f"  - container url: '{uri}'.")
-    return uri
 
 
 def upload_blob(

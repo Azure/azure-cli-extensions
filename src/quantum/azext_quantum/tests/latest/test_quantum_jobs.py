@@ -12,6 +12,7 @@ import time
 import unittest
 import unittest.mock
 from datetime import datetime
+from types import SimpleNamespace
 from urllib.parse import urlparse, parse_qs
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
@@ -29,6 +30,8 @@ from ...operations.job import (
     _convert_numeric_params,
     _construct_filter_query,
     _construct_orderby_expression,
+    submit,
+    run,
     ERROR_MSG_INVALID_PRIORITY_ARGUMENT,
     ERROR_MSG_INVALID_ORDER_ARGUMENT,
     ERROR_MSG_MISSING_ORDERBY_ARGUMENT)
@@ -37,6 +40,128 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 # Temporary V2 workspaces only run short simulator jobs in this test; cap the allocation request accordingly.
 TEST_V2_QUOTA_ALLOCATION_MINUTES = 2
+
+
+class QuantumJobsStorageArgumentTest(ScenarioTest):
+
+    @unittest.mock.patch('azext_quantum._version_check_helper.check_version', return_value=None)
+    def test_job_commands_reject_storage(self, _check_version):
+        for command in ('quantum job submit', 'quantum run', 'quantum execute'):
+            for option in ('--storage legacy-storage', '--storage=legacy-storage'):
+                with self.subTest(command=command, option=option):
+                    with self.assertLogs('cli.azure.cli.core.azclierror', level='ERROR') as errors:
+                        with self.assertRaises(SystemExit) as raised:
+                            self.cmd(
+                                f'{command} -g test-rg -w test-ws -t provider.sim '
+                                f'--job-input-file input.bc --job-input-format qir.v1 {option} -o json',
+                                expect_failure=True,
+                            )
+                    self.assertEqual(raised.exception.code, 2)
+                    self.assertIn('unrecognized arguments: --storage', '\n'.join(errors.output))
+
+
+class QuantumJobsOperationsTest(unittest.TestCase):
+
+    @unittest.mock.patch('azext_quantum.operations.job.output')
+    @unittest.mock.patch('azext_quantum.operations.job.wait')
+    @unittest.mock.patch('azext_quantum.operations.job.submit')
+    def test_run_forwards_optional_arguments(self, submit_mock, wait_mock, output_mock):
+        cmd = SimpleNamespace(cli_ctx=object())
+        job_params = {'custom': 'value'}
+        expected_result = {'result': 'finished'}
+        submit_mock.return_value = {'id': 'job-123'}
+        wait_mock.return_value = {'id': 'job-123'}
+        output_mock.return_value = expected_result
+        # Call run() with distinct values
+        result = run(
+            cmd, 'test-rg', 'test-ws', 'provider.sim', 'input.bc', 'qir.v1',
+            job_name='test-job', shots=25, job_params=job_params,
+            target_capability='AdaptiveExecution',
+            job_output_format='custom.results.v1', entry_point='Main',
+        )
+        # Check what was forwarded
+        submit_mock.assert_called_once_with(
+            cmd, 'test-rg', 'test-ws', 'provider.sim', 'input.bc', 'qir.v1',
+            job_name='test-job', shots=25, job_params=job_params,
+            target_capability='AdaptiveExecution',
+            job_output_format='custom.results.v1', entry_point='Main',
+        )
+        wait_mock.assert_called_once_with(cmd, 'job-123', 'test-rg', 'test-ws')
+        output_mock.assert_called_once_with(cmd, 'job-123', 'test-rg', 'test-ws')
+        self.assertIs(result, expected_result)
+
+    def test_submit_uses_workspace_storage(self):
+        from ...operations import job as job_ops
+
+        cmd = SimpleNamespace(cli_ctx=object())
+        info = SimpleNamespace(
+            subscription='sub', resource_group='test-rg', name='test-ws',
+            endpoint='https://test-ws.eastus.quantum.azure.com',
+        )
+        credential = object()
+        job_id = '00000000-0000-0000-0000-000000000001'
+        container_uri = f'https://example.com/job-{job_id}?test-sas'
+        expected_result = {'id': job_id}
+        input_data = b'test-qir-bitcode'
+        job_params = {'custom': 'value'}
+
+        # Exercise real submission logic while replacing files, credentials and service boundaries.
+        with unittest.mock.patch.object(job_ops, 'WorkspaceInfo', return_value=info), \
+                unittest.mock.patch.object(job_ops, 'TargetInfo', return_value=SimpleNamespace(target_id='provider.sim')), \
+                unittest.mock.patch.object(job_ops, 'get_provider', return_value='provider'), \
+                unittest.mock.patch.object(job_ops, '_get_data_credentials', return_value=credential) as get_credentials, \
+                unittest.mock.patch.object(job_ops, 'Workspace') as workspace_factory, \
+                unittest.mock.patch.object(job_ops, 'ContainerClient') as container_factory, \
+                unittest.mock.patch.object(job_ops, 'upload_blob') as upload, \
+                unittest.mock.patch.object(job_ops, 'cf_jobs') as jobs_factory, \
+                unittest.mock.patch.object(job_ops.uuid, 'uuid4', return_value=job_id), \
+                unittest.mock.patch('builtins.open', unittest.mock.mock_open(read_data=input_data)) as open_input:
+            workspace_factory.return_value.get_container_uri.return_value = container_uri
+            jobs_factory.return_value.create.return_value.as_dict.return_value = expected_result
+            upload.return_value = f'https://example.com/job-{job_id}/inputData'
+
+            result = submit(
+                cmd, 'test-rg', 'test-ws', 'provider.sim', 'input.bc', 'qir.v1',
+                job_name='test-job', shots=25, job_params=job_params,
+                target_capability='AdaptiveExecution',
+                job_output_format='custom.results.v1', entry_point='Main',
+            )
+
+            open_input.assert_called_once_with('input.bc', 'rb')
+            get_credentials.assert_called_once_with(cmd.cli_ctx, 'sub')
+            # No storage connection string is passed to the embedded SDK.
+            workspace_factory.assert_called_once_with(
+                resource_id='/subscriptions/sub/resourceGroups/test-rg/providers/Microsoft.Quantum/Workspaces/test-ws',
+                credential=credential,
+            )
+            workspace_factory.return_value.get_container_uri.assert_called_once_with(job_id=job_id)
+            container_factory.from_container_url.assert_called_once_with(container_uri)
+            upload.assert_called_once_with(
+                container_factory.from_container_url.return_value,
+                'inputData', 'qir.v1', None, input_data, return_sas_token=False,
+            )
+            jobs_factory.assert_called_once_with(
+                cmd.cli_ctx, 'sub', 'test-rg', 'test-ws', info.endpoint,
+            )
+            # The submitted payload uses the same workspace-provided container as the upload.
+            jobs_factory.return_value.create.assert_called_once_with(
+                'sub', 'test-rg', 'test-ws', job_id, {
+                    'name': 'test-job',
+                    'containerUri': container_uri,
+                    'inputDataFormat': 'qir.v1',
+                    'outputDataFormat': 'custom.results.v1',
+                    'inputParams': {
+                        'custom': 'value', 'shots': 25,
+                        'targetCapability': 'AdaptiveExecution', 'entryPoint': 'Main',
+                        'arguments': [],
+                    },
+                    'providerId': 'provider',
+                    'target': 'provider.sim',
+                    'metadata': None,
+                    'tags': [],
+                },
+            )
+        self.assertIs(result, expected_result)
 
 
 class QuantumJobsScenarioTest(ScenarioTest):

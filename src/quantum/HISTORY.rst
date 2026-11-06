@@ -3,6 +3,16 @@
 Release History
 ===============
 
+1.0.0b32
+++++++++++++++
+* [BREAKING CHANGE] Removed the ignored ``--storage`` argument from ``az quantum job submit``, ``az quantum execute``, and ``az quantum run``. Commands using this argument now report an unrecognized-argument error. Remove it from scripts; jobs continue to use workspace-linked storage. The workspace-level ``--storage-account`` argument is unchanged.
+* Updated the vendored Quantum SDK to remove explicit storage connection-string overrides and their obsolete container helpers, matching the upstream SDK change.
+
+1.0.0b31
+++++++++++++++
+* Made ``--storage-account`` optional for ``az quantum workspace create``. When omitted, Azure Quantum provisions managed storage.
+* Made ``az quantum workspace create`` wait for provisioning to finish, including when ``--skip-role-assignment`` is used with a user-provided storage account. Using that flag without ``--storage-account`` reports a missing required argument.
+
 1.0.0b30
 ++++++++++++++
 * Fixed crashes in ``az quantum offerings list -o table`` and ``az quantum workspace create`` when a V2-only provider lacks a legacy marketplace ManagedApplication association.

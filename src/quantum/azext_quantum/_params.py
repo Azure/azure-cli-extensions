@@ -157,7 +157,7 @@ class QuotaAction(argparse._AppendAction):
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals
     workspace_name_type = CLIArgumentType(options_list=['--workspace-name', '-w'], help='Name of the Quantum Workspace. You can configure the default workspace using `az quantum workspace set`.', configured_default='workspace', id_part=None)
-    storage_account_name_type = CLIArgumentType(options_list=['--storage-account', '-a'], help='Name of the storage account to be used by a quantum workspace.')
+    storage_account_name_type = CLIArgumentType(options_list=['--storage-account', '-a'], help='Name of the storage account to be used by a quantum workspace. If omitted, Azure Quantum provisions managed storage.')
     target_id_type = CLIArgumentType(options_list=['--target-id', '-t'], help='Execution engine for quantum computing jobs. When a workspace is configured with a set of providers, they each enable one or more targets. You can configure the default target using `az quantum target set`.', configured_default='target_id')
     job_name_type = CLIArgumentType(help='A friendly name to give to this run of the program.')
     job_name_filter_type = CLIArgumentType(help='Job name to be listed (search by prefix), example "My Job".')
@@ -170,10 +170,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     job_params_type = CLIArgumentType(options_list=['--job-params'], help='Job parameters passed to the target as a list of key=value pairs, json string, or `@{file}` with json content.', action=JobParamsAction, nargs='+')
     target_capability_type = CLIArgumentType(options_list=['--target-capability'], help='Target-capability parameter passed to the compiler.')
     shots_type = CLIArgumentType(help='The number of times to run the program on the given target.')
-    storage_type = CLIArgumentType(help='If specified, the ConnectionString of an Azure Storage is used to store job data and results.')
     max_poll_wait_secs_type = CLIArgumentType(help='Poll time in seconds to query Azure Quantum for results of the corresponding job.')
     tag_type = CLIArgumentType(help='Show only quantum workspaces that have associated the specified tag.')
-    skip_role_assignment_type = CLIArgumentType(help='Skip the role assignment step for the quantum workspace in the storage account.')
+    skip_role_assignment_type = CLIArgumentType(help='Skip the CLI role assignment for a user-provided storage account. Requires --storage-account (-a). Azure Quantum configures role assignments for managed storage automatically.')
     provider_id_type = CLIArgumentType(options_list=['--provider-id', '-p'], help='Identifier of an Azure Quantum provider.')
     sku_type = CLIArgumentType(options_list=['--sku', '-k'], help='Identify a plan or SKU offered by an Azure Quantum provider.')
     provider_sku_list_type = CLIArgumentType(options_list=['--provider-sku-list', '-r'], help='Comma separated list of Provider/SKU pairs. Separate the Provider and SKU with a slash. Enclose the entire list in quotes. Values from `az quantum offerings list -l <location> -o table`')
@@ -237,7 +236,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('target_id', target_id_type)
         c.argument('job_name', job_name_type)
         c.argument('shots', shots_type)
-        c.argument('storage', storage_type)
         c.argument('max_poll_wait_secs', max_poll_wait_secs_type)
 
     with self.argument_context('quantum job list') as c:
@@ -275,7 +273,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('target_id', target_id_type)
         c.argument('job_name', job_name_type)
         c.argument('shots', shots_type)
-        c.argument('storage', storage_type)
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
         c.argument('job_input_file', job_input_file_type)
@@ -288,7 +285,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('target_id', target_id_type)
         c.argument('job_name', job_name_type)
         c.argument('shots', shots_type)
-        c.argument('storage', storage_type)
         c.argument('job_params', job_params_type)
         c.argument('target_capability', target_capability_type)
         c.argument('job_input_file', job_input_file_type)
