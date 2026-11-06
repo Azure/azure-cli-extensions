@@ -8,6 +8,8 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
+import json
+
 from azure.cli.core.aaz import AAZStrType
 from knack.log import get_logger
 
@@ -16,6 +18,14 @@ from .aaz.latest.resiliency.recovery_plan import (
     List as _RecoveryPlanList,
     Show as _RecoveryPlanShow,
     Update as _RecoveryPlanUpdate,
+    CheckReadiness as _RecoveryPlanCheckReadiness,
+    Failover as _RecoveryPlanFailover,
+    FailoverCommit as _RecoveryPlanFailoverCommit,
+    Reprotect as _RecoveryPlanReprotect,
+    TestFailover as _RecoveryPlanTestFailover,
+    TestFailoverCleanup as _RecoveryPlanTestFailoverCleanup,
+    ValidateForFailover as _RecoveryPlanValidateForFailover,
+    ValidateForReprotect as _RecoveryPlanValidateForReprotect,
 )
 
 
@@ -70,3 +80,79 @@ class RecoveryPlanUpdate(_RecoveryPlanUpdate):
         @classmethod
         def _build_schema_on_200(cls):
             return _add_plan_type(super()._build_schema_on_200())
+
+
+# For recovery-plan actions the service returns the final result (GET on the Location URL,
+# an operationStatuses record) as {"status": "Succeeded", "properties": "<JSON-encoded string>"}
+# instead of the spec shape ({"jobId": ...} / {"recoveryResourceQualifications": [...]}), so the
+# generated output is empty. Decode the string before the generated response handling. No-op
+# once the service returns the spec shape; remove these overrides after the service fix.
+def _unwrap_string_properties(data):
+    if isinstance(data, dict) and isinstance(data.get("properties"), str):
+        try:
+            inner = json.loads(data["properties"])
+        except ValueError:
+            return data
+        if isinstance(inner, dict):
+            return inner
+    return data
+
+
+class _DecodeStringPropertiesOn200:  # pylint: disable=too-few-public-methods
+    """Mixin for a generated AAZHttpOperation: decode string-encoded `properties` in the 200 body."""
+
+    def on_200(self, session):
+        data = _unwrap_string_properties(self.deserialize_http_content(session))
+        self.ctx.set_var(
+            "instance",
+            data,
+            schema_builder=self._build_schema_on_200
+        )
+
+
+class RecoveryPlanCheckReadiness(_RecoveryPlanCheckReadiness):
+    class RecoveryPlanActionsCheckReadiness(
+            _DecodeStringPropertiesOn200, _RecoveryPlanCheckReadiness.RecoveryPlanActionsCheckReadiness):
+        pass
+
+
+class RecoveryPlanFailover(_RecoveryPlanFailover):
+    class RecoveryPlanActionsFailover(
+            _DecodeStringPropertiesOn200, _RecoveryPlanFailover.RecoveryPlanActionsFailover):
+        pass
+
+
+class RecoveryPlanFailoverCommit(_RecoveryPlanFailoverCommit):
+    class RecoveryPlanActionsFailoverCommit(
+            _DecodeStringPropertiesOn200, _RecoveryPlanFailoverCommit.RecoveryPlanActionsFailoverCommit):
+        pass
+
+
+class RecoveryPlanReprotect(_RecoveryPlanReprotect):
+    class RecoveryPlanActionsReprotect(
+            _DecodeStringPropertiesOn200, _RecoveryPlanReprotect.RecoveryPlanActionsReprotect):
+        pass
+
+
+class RecoveryPlanTestFailover(_RecoveryPlanTestFailover):
+    class RecoveryPlanActionsTestFailover(
+            _DecodeStringPropertiesOn200, _RecoveryPlanTestFailover.RecoveryPlanActionsTestFailover):
+        pass
+
+
+class RecoveryPlanTestFailoverCleanup(_RecoveryPlanTestFailoverCleanup):
+    class RecoveryPlanActionsTestFailoverCleanup(
+            _DecodeStringPropertiesOn200, _RecoveryPlanTestFailoverCleanup.RecoveryPlanActionsTestFailoverCleanup):
+        pass
+
+
+class RecoveryPlanValidateForFailover(_RecoveryPlanValidateForFailover):
+    class RecoveryPlanActionsValidateForFailover(
+            _DecodeStringPropertiesOn200, _RecoveryPlanValidateForFailover.RecoveryPlanActionsValidateForFailover):
+        pass
+
+
+class RecoveryPlanValidateForReprotect(_RecoveryPlanValidateForReprotect):
+    class RecoveryPlanActionsValidateForReprotect(
+            _DecodeStringPropertiesOn200, _RecoveryPlanValidateForReprotect.RecoveryPlanActionsValidateForReprotect):
+        pass
