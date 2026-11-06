@@ -1,0 +1,1100 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+#
+# --------------------------------------------------------------------------------------------
+
+import argparse
+import json
+import unittest
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
+from urllib.parse import unquote
+
+from azure.core.exceptions import HttpResponseError, ServiceRequestError
+from azure.cli.core.aaz._arg_action import AAZAnyTypeArgAction
+from azure.cli.core.azclierror import AzureResponseError, InvalidArgumentValueError
+
+from azext_elastic_san.aaz.latest.elastic_san.volume import Delete as VolumeDelete
+from azext_elastic_san.custom import (
+    ElasticSanCreate,
+    ElasticSanUpdate,
+    VolumeCreate,
+    VolumeGroupCreate,
+    VolumeGroupList,
+    VolumeGroupUpdate,
+    VolumeList,
+    VolumeUpdate,
+    _add_legacy_managed_by_output,
+    _normalize_managed_by_argument,
+)
+
+
+class VolumeDeleteQueryTest(unittest.TestCase):
+    def _query_parameters(self, cli_args):
+        schema = VolumeDelete._build_arguments_schema()
+        delete_type = schema.delete_type
+        parser = argparse.ArgumentParser()
+        parser.add_argument(
+            *delete_type._options,
+            dest="delete_type",
+            action=delete_type._build_cmd_action(),
+        )
+        namespace = parser.parse_args(cli_args)
+        args = schema._ValueCls(schema, schema.process_data({}))
+        if namespace.delete_type is not None:
+            namespace.delete_type.apply(args, "delete_type")
+
+        operation = object.__new__(VolumeDelete.VolumesDelete)
+        operation.ctx = SimpleNamespace(args=args)
+        self.assertEqual(operation.method, "DELETE")
+        return operation.query_parameters
+
+    def test_delete_type_permanent_maps_to_query_parameter(self):
+        self.assertEqual(
+            self._query_parameters(["--delete-type", "permanent"]),
+            {"deleteType": "permanent", "api-version": "2026-05-01-preview"},
+        )
+
+    def test_omitted_delete_type_is_not_sent(self):
+        self.assertEqual(
+            self._query_parameters([]),
+            {"api-version": "2026-05-01-preview"},
+        )
+
+
+class ElasticSanUpdateCompatTest(unittest.TestCase):
+    def _create_body(self, args_data):
+        schema = ElasticSanCreate._build_arguments_schema()
+        command = object.__new__(ElasticSanCreate)
+        command.callbacks = {}
+        command._explicit_capacity_args = {
+            name for name in ("base_size_tib", "extended_capacity_size_tib") if name in args_data
+        }
+        command.ctx = SimpleNamespace(
+            args=schema._ValueCls(schema, schema.process_data(args_data)),
+            get_http_client=Mock(),
+        )
+        command.pre_operations()
+        return command.ElasticSansCreate(ctx=command.ctx).content
+
+    def test_v2_create_sends_only_minimum_properties(self):
+        body = self._create_body({
+            "location": "eastus2euap",
+            "sku": {"name": "ElasticSAN_LRS"},
+            "version": "V2",
+            "total_iops": 100000,
+            "total_mbps": 1000,
+            "total_size_tib": 25,
+            "auto_scale_policy_enforcement": "Enabled",
+            "capacity_unit_scale_up_limit_tib": 30,
+            "increase_capacity_unit_by_tib": 4,
+            "unused_size_tib": 14,
+        })
+        self.assertEqual(body, {
+            "location": "eastus2euap",
+            "properties": {
+                "sku": {"name": "ElasticSAN_LRS"},
+                "version": "V2",
+                "totalIops": 100000,
+                "totalMBps": 1000,
+                "totalSizeTiB": 25,
+                "autoScaleProperties": {
+                    "scaleUpProperties": {
+                        "autoScalePolicyEnforcement": "Enabled",
+                        "capacityUnitScaleUpLimitTiB": 30,
+                        "increaseCapacityUnitByTiB": 4,
+                        "unusedSizeTiB": 14,
+                    },
+                },
+            },
+        })
+
+    def test_v1_create_preserves_capacity_defaults(self):
+        schema = ElasticSanCreate._build_arguments_schema()
+        self.assertEqual(schema.base_size_tib._default, 20)
+        self.assertEqual(schema.extended_capacity_size_tib._default, 0)
+
+        for version in ({}, {"version": "V1"}):
+            with self.subTest(version=version):
+                body = self._create_body({"sku": {"name": "Premium_LRS"}, **version})
+                self.assertEqual(body["properties"]["baseSizeTiB"], 20)
+                self.assertEqual(body["properties"]["extendedCapacitySizeTiB"], 0)
+
+    def test_create_preserves_explicit_capacities(self):
+        for version in ("V1", "V2"):
+            with self.subTest(version=version):
+                body = self._create_body({
+                    "version": version,
+                    "sku": {"name": "Premium_LRS" if version == "V1" else "ElasticSAN_LRS"},
+                    "base_size_tib": 23,
+                    "extended_capacity_size_tib": 14,
+                    "total_size_tib": 25,
+                    "total_iops": 100000,
+                    "total_mbps": 1000,
+                    "capacity_unit_scale_up_limit_tib": 30,
+                })
+                self.assertEqual(body["properties"]["baseSizeTiB"], 23)
+                self.assertEqual(body["properties"]["extendedCapacitySizeTiB"], 14)
+
+    def test_regenerated_extension_loads_custom_commands(self):
+        from azure.cli.core.mock import DummyCli
+        from azext_elastic_san import ElasticSanCommandsLoader
+
+        command_table = ElasticSanCommandsLoader(cli_ctx=DummyCli()).load_command_table(None)
+        self.assertIsInstance(command_table["elastic-san update"], ElasticSanUpdate)
+        self.assertIsInstance(command_table["elastic-san volume-group update"], VolumeGroupUpdate)
+        self.assertIn("elastic-san create", command_table)
+
+    def _execute_update(self, command_type, args_data, resource, actions, force_string=False):
+        schema = command_type._build_arguments_schema()
+        args = schema._ValueCls(schema, schema.process_data(args_data))
+        command = object.__new__(command_type)
+        command.callbacks = {}
+        command.ctx = SimpleNamespace(
+            args=args,
+            vars=SimpleNamespace(),
+            generic_update_args={"actions": actions, "force_string": force_string},
+            get_http_client=Mock(),
+        )
+        is_san = command_type is ElasticSanUpdate
+        get_type = command.ElasticSansGet if is_san else command.VolumeGroupsGet
+        update_type = command.ElasticSansUpdate if is_san else command.VolumeGroupsUpdate
+        events = []
+        bodies = []
+
+        def get_instance(operation):
+            events.append("GET")
+            instance_schema = operation._build_schema_on_200()
+            operation.ctx.vars.instance = instance_schema._ValueCls(
+                instance_schema, instance_schema.process_data(resource)
+            )
+
+        def send_update(operation):
+            events.append(operation.method)
+            bodies.append(operation.content)
+
+        command.post_operations = Mock()
+        with patch.object(get_type, "__call__", get_instance):
+            if is_san:
+                with patch.object(command.ElasticSanReplace, "__call__", send_update), \
+                        patch.object(command.ElasticSansUpdate, "__call__", send_update):
+                    list(command._execute_operations())
+            else:
+                with patch.object(update_type, "__call__", send_update):
+                    list(command._execute_operations())
+        command.post_operations.assert_called_once()
+        return events, bodies[0]
+
+    def test_san_patch_merges_explicit_and_generic_updates(self):
+        events, body = self._execute_update(
+            ElasticSanUpdate,
+            {"base_size_tib": 25},
+            {
+                "location": "eastus2euap",
+                "tags": {"remove": "old", "keep": "original"},
+                "properties": {
+                    "sku": {"name": "Premium_LRS"},
+                    "availabilityZones": ["1"],
+                    "version": "V1",
+                    "baseSizeTiB": 23,
+                    "extendedCapacitySizeTiB": 14,
+                    "provisioningState": "Succeeded",
+                },
+            },
+            [("set", ["tags.keep=123", "baseSizeTiB=26"]), ("remove", ["tags.remove"])],
+            force_string=True,
+        )
+        self.assertEqual(events, ["GET", "PATCH"])
+        self.assertEqual(body["tags"], {"keep": "123"})
+        self.assertEqual(body["properties"]["baseSizeTiB"], 26)
+        self.assertEqual(body["properties"]["extendedCapacitySizeTiB"], 14)
+        self.assertNotIn("location", body)
+        for key in ("sku", "availabilityZones", "version", "provisioningState"):
+            self.assertNotIn(key, body["properties"])
+
+    def test_san_legacy_options_select_put_and_keep_explicit_updates(self):
+        events, body = self._execute_update(
+            ElasticSanUpdate,
+            {"sku": {"name": "Premium_ZRS"}, "base_size_tib": 25},
+            {
+                "location": "eastus2euap",
+                "tags": {"keep": "original"},
+                "properties": {"sku": {"name": "Premium_LRS"}, "baseSizeTiB": 23},
+            },
+            [("set", ["tags.added=value"])],
+        )
+        self.assertEqual(events, ["GET", "PUT"])
+        self.assertEqual(body["location"], "eastus2euap")
+        self.assertEqual(body["properties"]["sku"]["name"], "Premium_ZRS")
+        self.assertEqual(body["properties"]["baseSizeTiB"], 25)
+        self.assertEqual(body["tags"], {"keep": "original", "added": "value"})
+
+    def test_san_patch_clears_whole_tag_container(self):
+        events, body = self._execute_update(
+            ElasticSanUpdate, {},
+            {"location": "eastus2", "tags": {"old": "value"},
+             "properties": {"sku": {"name": "Premium_LRS"}, "baseSizeTiB": 20}},
+            [("remove", ["tags"])],
+        )
+        self.assertEqual(events, ["GET", "PATCH"])
+        self.assertEqual(body["tags"], {})
+        self.assertEqual(body["properties"]["baseSizeTiB"], 20)
+
+    def test_san_patch_preserves_tags_readded_after_removal(self):
+        _, body = self._execute_update(
+            ElasticSanUpdate, {},
+            {"location": "eastus2", "tags": {"old": "value"}, "properties": {"sku": {"name": "Premium_LRS"}}},
+            [("remove", ["tags"]), ("set", ['tags={"new":"value"}'])],
+        )
+        self.assertEqual(body["tags"], {"new": "value"})
+
+    def test_unrelated_patch_does_not_add_absent_containers(self):
+        _, body = self._execute_update(
+            ElasticSanUpdate, {"base_size_tib": 25},
+            {"location": "eastus2", "properties": {"sku": {"name": "Premium_LRS"}, "baseSizeTiB": 20}}, [],
+        )
+        self.assertNotIn("tags", body)
+        _, body = self._execute_update(
+            VolumeGroupUpdate, {"reserved_iops": 1000}, {"properties": {"protocolType": "Iscsi"}}, [],
+        )
+        self.assertNotIn("identity", body)
+        self.assertNotIn("networkAcls", body["properties"])
+
+    def test_volume_group_patch_clears_whole_network_acl_container(self):
+        for path in ("networkAcls", "network_acls"):
+            with self.subTest(path=path):
+                events, body = self._execute_update(
+                    VolumeGroupUpdate, {},
+                    {"properties": {
+                        "protocolType": "Iscsi",
+                        "networkAcls": {"virtualNetworkRules": [{"id": "/subnets/old", "action": "Allow"}]},
+                    }},
+                    [("remove", [path])],
+                )
+                self.assertEqual(events, ["GET", "PATCH"])
+                self.assertEqual(body["properties"]["networkAcls"], {"virtualNetworkRules": []})
+                self.assertEqual(body["properties"]["protocolType"], "Iscsi")
+
+    def test_volume_group_patch_clears_whole_identity_container(self):
+        events, body = self._execute_update(
+            VolumeGroupUpdate, {},
+            {"identity": {
+                "type": "SystemAssigned, UserAssigned",
+                "userAssignedIdentities": {"/identities/old": {}},
+            }, "properties": {"protocolType": "Iscsi"}},
+            [("remove", ["identity"])],
+        )
+        self.assertEqual(events, ["GET", "PATCH"])
+        self.assertEqual(body["identity"], {"type": "None", "userAssignedIdentities": {}})
+        self.assertEqual(body["properties"]["protocolType"], "Iscsi")
+
+    def test_volume_group_patch_preserves_containers_readded_after_removal(self):
+        for field, initial, replacement in (
+                ("networkAcls", {"virtualNetworkRules": [{"id": "/subnets/old", "action": "Allow"}]},
+                 {"virtualNetworkRules": [{"id": "/subnets/new", "action": "Allow"}]}),
+                ("identity", {"type": "SystemAssigned"},
+                 {"type": "UserAssigned", "userAssignedIdentities": {"/identities/new": {}}})):
+            with self.subTest(field=field):
+                resource = {"properties": {"protocolType": "Iscsi"}}
+                if field == "identity":
+                    resource[field] = initial
+                else:
+                    resource["properties"][field] = initial
+                _, body = self._execute_update(
+                    VolumeGroupUpdate, {}, resource,
+                    [("remove", [field]), ("set", [f"{field}={json.dumps(replacement)}"])],
+                )
+                actual = body[field] if field == "identity" else body["properties"][field]
+                self.assertEqual(actual, replacement)
+
+    def test_volume_group_patch_preserves_identity_after_partial_removal(self):
+        _, body = self._execute_update(
+            VolumeGroupUpdate, {},
+            {"identity": {"type": "UserAssigned",
+                          "userAssignedIdentities": {"old": {}, "keep": {}}},
+             "properties": {"protocolType": "Iscsi"}},
+            [("remove", ["identity.userAssignedIdentities.old"])],
+        )
+        self.assertEqual(body["identity"], {"type": "UserAssigned", "userAssignedIdentities": {"keep": {}}})
+
+    def test_san_generic_sku_update_selects_put(self):
+        events, body = self._execute_update(
+            ElasticSanUpdate,
+            {},
+            {
+                "location": "eastus2euap",
+                "tags": {"keep": "original"},
+                "properties": {
+                    "sku": {"name": "Premium_LRS", "tier": "Premium"},
+                    "availabilityZones": ["1"],
+                    "baseSizeTiB": 23,
+                    "extendedCapacitySizeTiB": 14,
+                    "version": "V1",
+                },
+            },
+            [("set", ["sku.name=Premium_ZRS"])],
+        )
+        self.assertEqual(events, ["GET", "PUT"])
+        self.assertEqual(body["properties"]["sku"]["name"], "Premium_ZRS")
+        self.assertEqual(body["properties"]["availabilityZones"], ["1"])
+
+    def test_san_generic_sku_edit_overrides_explicit_option(self):
+        events, body = self._execute_update(
+            ElasticSanUpdate,
+            {"sku": {"name": "Premium_LRS"}},
+            {
+                "location": "eastus2euap",
+                "properties": {"sku": {"name": "Premium_LRS"}, "baseSizeTiB": 23},
+            },
+            [("set", ["sku.name=Premium_ZRS"])],
+        )
+        self.assertEqual(events, ["GET", "PUT"])
+        self.assertEqual(body["properties"]["sku"]["name"], "Premium_ZRS")
+
+    def test_san_generic_zone_edits_apply_after_explicit_option(self):
+        events, body = self._execute_update(
+            ElasticSanUpdate,
+            {"availability_zones": ["1", "2"]},
+            {
+                "location": "eastus2euap",
+                "properties": {
+                    "sku": {"name": "Premium_LRS"},
+                    "availabilityZones": ["3"],
+                    "baseSizeTiB": 23,
+                },
+            },
+            [("add", ["availabilityZones", "3"]), ("remove", ["availabilityZones", "0"])],
+            force_string=True,
+        )
+        self.assertEqual(events, ["GET", "PUT"])
+        self.assertEqual(body["properties"]["availabilityZones"], ["2", "3"])
+
+    def test_san_generic_availability_zone_update_selects_put(self):
+        events, body = self._execute_update(
+            ElasticSanUpdate,
+            {},
+            {
+                "location": "eastus2euap",
+                "tags": {"keep": "original"},
+                "properties": {
+                    "sku": {"name": "Premium_LRS", "tier": "Premium"},
+                    "availabilityZones": ["1"],
+                    "baseSizeTiB": 23,
+                    "extendedCapacitySizeTiB": 14,
+                    "version": "V1",
+                },
+            },
+            [("add", ["availability_zones", "2"])],
+            force_string=True,
+        )
+        self.assertEqual(events, ["GET", "PUT"])
+        self.assertEqual(body["properties"]["availabilityZones"], ["1", "2"])
+        self.assertEqual(body["properties"]["sku"]["name"], "Premium_LRS")
+
+    def test_volume_group_patch_supports_add_set_and_remove(self):
+        events, body = self._execute_update(
+            VolumeGroupUpdate,
+            {"reserved_iops": 1000},
+            {"properties": {
+                "protocolType": "iSCSI",
+                "reservedIops": 500,
+                "networkAcls": {"virtualNetworkRules": [
+                    {"id": "/subnets/old", "action": "Allow"},
+                ]},
+                "qualityOfService": "PerformanceCritical",
+                "encryptionInTransit": True,
+                "provisioningState": "Succeeded",
+            }},
+            [
+                ("add", ["networkAcls.virtualNetworkRules", "id=/subnets/new", "action=Allow"]),
+                ("remove", ["networkAcls.virtualNetworkRules", "0"]),
+                ("set", ["reservedMBps=100"]),
+            ],
+        )
+        self.assertEqual(events, ["GET", "PATCH"])
+        self.assertEqual(body["properties"]["reservedIops"], 1000)
+        self.assertEqual(body["properties"]["reservedMBps"], 100)
+        self.assertEqual(body["properties"]["networkAcls"]["virtualNetworkRules"],
+                         [{"id": "/subnets/new", "action": "Allow"}])
+        for key in ("qualityOfService", "encryptionInTransit", "provisioningState"):
+            self.assertNotIn(key, body["properties"])
+
+    def test_volume_group_legacy_identity_none_clears_identity(self):
+        events, body = self._execute_update(
+            VolumeGroupUpdate,
+            {"identity": {"type": "None"}},
+            {
+                "identity": {
+                    "type": "SystemAssigned, UserAssigned",
+                    "principalId": "principal",
+                    "userAssignedIdentities": {"/identities/old": {"clientId": "client"}},
+                },
+                "properties": {"protocolType": "iSCSI"},
+            },
+            [],
+        )
+        self.assertEqual(events, ["GET", "PATCH"])
+        self.assertEqual(body["identity"]["type"], "None")
+        self.assertEqual(body["identity"]["userAssignedIdentities"], {})
+
+    def test_volume_group_legacy_identity_type_is_optional_during_validation(self):
+        from azure.cli.core.aaz._command_ctx import AAZCommandCtx
+        from azure.cli.core.mock import DummyCli
+
+        identity_id = "/subscriptions/sub/resourceGroups/rg/providers/" \
+                      "Microsoft.ManagedIdentity/userAssignedIdentities/new"
+        ctx = AAZCommandCtx(DummyCli(), VolumeGroupUpdate._build_arguments_schema(), {
+            "subscription": "sub",
+            "resource_group": "rg",
+            "elastic_san_name": "test-san",
+            "volume_group_name": "test-group",
+            "identity": {"user_assigned_identity_id": identity_id},
+        })
+        ctx.format_args()
+        self.assertEqual(str(ctx.args.identity.user_assigned_identity_id), identity_id)
+
+    def test_volume_group_partial_legacy_identity_preserves_existing_type(self):
+        for identity_type in ("UserAssigned", "SystemAssigned, UserAssigned"):
+            with self.subTest(identity_type=identity_type):
+                events, body = self._execute_update(
+                    VolumeGroupUpdate,
+                    {"identity": {"user_assigned_identity_id": "/identities/new"}},
+                    {"identity": {
+                        "type": identity_type,
+                        "principalId": "principal",
+                        "userAssignedIdentities": {"/identities/old": {"clientId": "client"}},
+                    }, "properties": {"protocolType": "Iscsi"}},
+                    [],
+                )
+                self.assertEqual(events, ["GET", "PATCH"])
+                self.assertEqual({value.strip() for value in body["identity"]["type"].split(",")},
+                                 {value.strip() for value in identity_type.split(",")})
+                self.assertIn("/identities/new", body["identity"]["userAssignedIdentities"])
+                self.assertNotIn("principalId", body["identity"])
+
+    def test_volume_group_empty_legacy_identity_preserves_existing_assignments(self):
+        _, body = self._execute_update(
+            VolumeGroupUpdate,
+            {"identity": {}},
+            {"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/identities/old": {}}},
+             "properties": {"protocolType": "Iscsi"}},
+            [],
+        )
+        self.assertEqual(body["identity"], {
+            "type": "UserAssigned", "userAssignedIdentities": {"/identities/old": {}},
+        })
+
+    def test_volume_group_partial_identity_without_existing_type_rejects_patch(self):
+        schema = VolumeGroupUpdate._build_arguments_schema()
+        command = object.__new__(VolumeGroupUpdate)
+        command.ctx = SimpleNamespace(
+            args=schema._ValueCls(schema, schema.process_data(
+                {"identity": {"user_assigned_identity_id": "/identities/new"}}
+            )),
+            vars=SimpleNamespace(),
+            generic_update_args={"actions": []},
+            get_http_client=Mock(),
+        )
+
+        def get_instance(operation):
+            instance_schema = operation._build_schema_on_200()
+            operation.ctx.vars.instance = instance_schema._ValueCls(
+                instance_schema, instance_schema.process_data({"properties": {"protocolType": "Iscsi"}})
+            )
+
+        with patch.object(command.VolumeGroupsGet, "__call__", get_instance), \
+                patch.object(command.VolumeGroupsUpdate, "__call__") as update:
+            with self.assertRaisesRegex(InvalidArgumentValueError, "no existing identity type"):
+                list(command._execute_operations())
+        update.assert_not_called()
+
+    def test_volume_group_rejects_generic_edits_to_unsupported_patch_fields(self):
+        for field, value in (("encryptionInTransit", "true"), ("qualityOfService", "PerformanceCritical"),
+                             ("encryption_in_transit", "true"), ("quality_of_service", "PerformanceCritical")):
+            for path in (field, f"properties.{field}"):
+                for action, values in (("set", [f"{path}={value}"]), ("remove", [path]),
+                                       ("add", [path, value])):
+                    with self.subTest(path=path, action=action):
+                        schema = VolumeGroupUpdate._build_arguments_schema()
+                        command = object.__new__(VolumeGroupUpdate)
+                        command.ctx = SimpleNamespace(
+                            args=schema._ValueCls(schema, schema.process_data({})),
+                            generic_update_args={"actions": [(action, values)], "force_string": False},
+                        )
+                        with patch.object(command.VolumeGroupsGet, "__call__") as get, \
+                                patch.object(command.VolumeGroupsUpdate, "__call__") as update:
+                            with self.assertRaisesRegex(InvalidArgumentValueError, "not supported"):
+                                list(command._execute_operations())
+                        get.assert_not_called()
+                        update.assert_not_called()
+
+    def test_volume_group_disabling_system_identity_keeps_user_identity(self):
+        _, body = self._execute_update(
+            VolumeGroupUpdate,
+            {"mi_system_assigned": "False"},
+            {
+                "identity": {
+                    "type": "SystemAssigned, UserAssigned",
+                    "userAssignedIdentities": {"/identities/keep": {"clientId": "client"}},
+                },
+                "properties": {"protocolType": "iSCSI"},
+            },
+            [],
+        )
+        self.assertEqual(body["identity"]["type"], "UserAssigned")
+        self.assertEqual(body["identity"]["userAssignedIdentities"], {"/identities/keep": {}})
+
+    def test_update_commands_register_generic_update_arguments(self):
+        for command in (ElasticSanUpdate, VolumeGroupUpdate):
+            with self.subTest(command=command.__name__):
+                args_schema = command._build_arguments_schema()
+
+                self.assertTrue(command.AZ_SUPPORT_GENERIC_UPDATE)
+                self.assertTrue(hasattr(args_schema, "generic_update_add"))
+                self.assertTrue(hasattr(args_schema, "generic_update_set"))
+                self.assertTrue(hasattr(args_schema, "generic_update_remove"))
+                self.assertTrue(hasattr(args_schema, "generic_update_force_string"))
+
+    def test_long_options_have_short_aliases(self):
+        for command in (VolumeList, VolumeGroupList):
+            with self.subTest(command=command.__name__):
+                arg = command._build_arguments_schema()._fields["x_ms_access_soft_deleted_resources"]
+                self.assertIn("-a", arg._options)
+
+        for command in (VolumeGroupCreate, VolumeGroupUpdate):
+            with self.subTest(command=command.__name__):
+                arg = command._build_arguments_schema()._fields["delete_retention_policy"]
+                self.assertIn("-d", arg._options)
+
+    def test_volume_list_soft_delete_help_describes_volumes(self):
+        arg = VolumeList._build_arguments_schema()._fields["x_ms_access_soft_deleted_resources"]
+        help_text = arg._help["short-summary"]
+        self.assertIn("soft-deleted volumes", help_text)
+        self.assertNotIn("volume groups", help_text)
+
+    def test_put_serializer_preserves_instance_without_reapplying_options(self):
+        args_schema = ElasticSanUpdate._build_arguments_schema()
+        args = args_schema._ValueCls(
+            args_schema,
+            args_schema.process_data({
+                "elastic_san_name": "test-san",
+                "resource_group": "test-rg",
+                "sku": {"name": "ElasticSAN_LRS"},
+                "availability_zones": ["2"],
+            }),
+        )
+        instance_schema = ElasticSanUpdate.ElasticSansGet._build_schema_on_200()
+        instance = instance_schema._ValueCls(
+            instance_schema,
+            instance_schema.process_data({
+                "id": "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ElasticSan/elasticSans/test-san",
+                "name": "test-san",
+                "location": "eastus2",
+                "type": "Microsoft.ElasticSan/elasticSans",
+                "tags": {"keep": "tag"},
+                "properties": {
+                    "sku": {"name": "Premium_LRS", "tier": "Premium"},
+                    "availabilityZones": ["1"],
+                    "baseSizeTiB": 23,
+                    "extendedCapacitySizeTiB": 14,
+                    "publicNetworkAccess": "Enabled",
+                    "version": "V1",
+                },
+            }),
+        )
+        operation = object.__new__(ElasticSanUpdate.ElasticSanReplace)
+        operation.ctx = SimpleNamespace(args=args, vars=SimpleNamespace(instance=instance))
+
+        body = operation.content
+
+        self.assertEqual(operation.method, "PUT")
+        self.assertEqual(body["location"], "eastus2")
+        self.assertEqual(body["tags"], {"keep": "tag"})
+        self.assertEqual(body["properties"]["sku"]["name"], "Premium_LRS")
+        self.assertEqual(body["properties"]["availabilityZones"], ["1"])
+        self.assertEqual(body["properties"]["baseSizeTiB"], 23)
+        self.assertEqual(body["properties"]["extendedCapacitySizeTiB"], 14)
+
+    def test_legacy_sku_enum_includes_elastic_san_sku(self):
+        args_schema = ElasticSanUpdate._build_arguments_schema()
+
+        self.assertIn("ElasticSAN_LRS", args_schema.sku.name.enum.to_choices())
+
+
+class ElasticSanV2AutoscaleTest(unittest.TestCase):
+    def _command(self, **overrides):
+        data = {
+            "version": "V2",
+            "location": "eastus2euap",
+            "sku": {"name": "ElasticSAN_LRS"},
+            "total_size_tib": 25,
+            "total_iops": 100000,
+            "total_mbps": 1000,
+        }
+        data.update(overrides)
+        schema = ElasticSanCreate._build_arguments_schema()
+        command = object.__new__(ElasticSanCreate)
+        command.callbacks = {}
+        command._explicit_capacity_args = set()
+        command.ctx = SimpleNamespace(
+            args=schema._ValueCls(schema, schema.process_data(data)),
+            subscription_id="target-subscription",
+            next_link=None,
+            get_http_client=Mock(),
+        )
+        command.post_operations = Mock()
+        return command
+
+    @staticmethod
+    def _sku(value="200", **overrides):
+        sku = {
+            "name": "ElasticSAN_LRS",
+            "resourceType": "elasticSans",
+            "locations": ["eastus2euap"],
+            "capabilities": [{"name": "elasticSanMaxTotalCapacityTiB", "value": value}],
+        }
+        sku.update(overrides)
+        return sku
+
+    def _execute(self, command, pages=None, error=None):
+        client = command.ctx.get_http_client.return_value
+        client.send_request.return_value.http_response.status_code = 200
+        client.send_request.side_effect = error
+        client.format_url.side_effect = lambda template, **kwargs: template.format(**kwargs)
+        bodies = []
+
+        def create(operation):
+            bodies.append(operation.content)
+
+        with patch.object(command.AutoscaleSkusList, "deserialize_http_content", side_effect=pages or []), \
+                patch.object(command.ElasticSansCreate, "__call__", side_effect=create, autospec=True) as send:
+            try:
+                list(command._execute_operations())
+            except (InvalidArgumentValueError, AzureResponseError):
+                send.assert_not_called()
+                raise
+        self.assertEqual(len(bodies), 1)
+        return bodies[0]
+
+    def test_v2_defaults_and_both_capacity_ceiling_branches(self):
+        for regional_limit, expected in (("200", 125), ("100", 100), ("125", 125), (200, 125)):
+            with self.subTest(regional_limit=regional_limit):
+                command = self._command()
+                body = self._execute(command, [{"value": [self._sku(regional_limit)]}])
+                self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"], {
+                    "autoScalePolicyEnforcement": "Enabled",
+                    "capacityUnitScaleUpLimitTiB": expected,
+                    "increaseCapacityUnitByTiB": 1,
+                    "unusedSizeTiB": 1,
+                })
+                self.assertNotIn("baseSizeTiB", body["properties"])
+                self.assertNotIn("extendedCapacitySizeTiB", body["properties"])
+                self.assertIsNone(command.ctx.next_link)
+
+    def test_v2_ceiling_uses_arbitrary_precision_integer_arithmetic(self):
+        command = self._command(total_size_tib=2**63)
+        body = self._execute(command, [{"value": [self._sku(str(2**80))]}])
+        self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"]
+                         ["capacityUnitScaleUpLimitTiB"], 5 * 2**63)
+
+    def test_lookup_filters_target_subscription_location_and_exact_sku(self):
+        command = self._command()
+        skus = [
+            self._sku("10", name="Premium_LRS"),
+            self._sku("11", name="elasticsan_lrs"),
+            self._sku("12", locations=["westus"]),
+            self._sku("13", resourceType="volumes"),
+            self._sku("200", locations=["EASTUS2EUAP"]),
+        ]
+        body = self._execute(command, [{"value": skus}])
+        self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"]
+                         ["capacityUnitScaleUpLimitTiB"], 125)
+        request = command.ctx.get_http_client.return_value._request.call_args
+        self.assertEqual(request.args[0], "GET")
+        self.assertEqual(request.args[1],
+                         "/subscriptions/target-subscription/providers/Microsoft.ElasticSan/skus")
+        self.assertEqual(unquote(request.args[2]["$filter"]), "location eq 'eastus2euap'")
+        self.assertEqual(request.args[2]["api-version"], "2026-05-01-preview")
+
+    def test_lookup_supports_location_info_and_other_exact_requested_skus(self):
+        command = self._command(sku={"name": "ElasticSAN_ZRS"})
+        sku = self._sku(name="ElasticSAN_ZRS", locations=[], locationInfo=[{"location": "eastus2euap"}])
+        body = self._execute(command, [{"value": [self._sku(), sku]}])
+        self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"]
+                         ["capacityUnitScaleUpLimitTiB"], 125)
+
+    def test_cli_formats_display_locations_before_sku_discovery(self):
+        from azure.cli.core.aaz._command_ctx import AAZCommandCtx
+        from azure.cli.core.mock import DummyCli
+
+        for location, formatted in (("East US", "eastus"), ("eAsT uS", "eastus"), ("EASTUS", "EASTUS")):
+            with self.subTest(location=location):
+                command = self._command(location=location)
+                data = command.ctx.args.to_serialized_data()
+                data.update(elastic_san_name="test-san", resource_group="test-rg",
+                            subscription="target-subscription")
+                command.ctx = AAZCommandCtx(DummyCli(), ElasticSanCreate._build_arguments_schema(), data)
+                command.ctx.get_http_client = Mock()
+                with patch("azure.cli.core.aaz._command_ctx.get_subscription_locations",
+                           return_value=[SimpleNamespace(name="eastus", display_name="East US")]):
+                    command.ctx.format_args()
+                with patch("azure.cli.core.commands.client_factory.get_subscription_id",
+                           side_effect=AssertionError("Unit tests must not use the active Azure account")):
+                    body = self._execute(command, [{"value": [self._sku(locations=["eastus"])]}])
+                self.assertEqual(body["location"], formatted)
+                request = command.ctx.get_http_client.return_value._request.call_args
+                self.assertEqual(request.args[1],
+                                 "/subscriptions/target-subscription/providers/Microsoft.ElasticSan/skus")
+                self.assertEqual(unquote(request.args[2]["$filter"]), f"location eq '{formatted}'")
+
+    def test_lookup_uses_resolved_command_subscription_not_active_subscription(self):
+        from azure.cli.core.aaz._command_ctx import AAZCommandCtx
+        from azure.cli.core.mock import DummyCli
+
+        command = self._command()
+        args = command.ctx.args.to_serialized_data()
+        args["subscription"] = "identity-subscription"
+        command.ctx = AAZCommandCtx(DummyCli(), ElasticSanCreate._build_arguments_schema(), args)
+        command.ctx.get_http_client = Mock()
+        with patch("azure.cli.core.commands.client_factory.get_subscription_id",
+                   return_value="active-subscription") as active_subscription:
+            self._execute(command, [{"value": [self._sku()]}])
+        active_subscription.assert_not_called()
+        request = command.ctx.get_http_client.return_value._request.call_args
+        self.assertIn("/subscriptions/identity-subscription/", request.args[1])
+
+    def test_explicit_numeric_overrides_including_zero_bypass_discovery(self):
+        for value in (0, 7):
+            with self.subTest(value=value):
+                command = self._command(
+                    capacity_unit_scale_up_limit_tib=value,
+                    increase_capacity_unit_by_tib=value,
+                    unused_size_tib=value,
+                )
+                body = self._execute(command)
+                self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"], {
+                    "autoScalePolicyEnforcement": "Enabled",
+                    "capacityUnitScaleUpLimitTiB": value,
+                    "increaseCapacityUnitByTiB": value,
+                    "unusedSizeTiB": value,
+                })
+                command.ctx.get_http_client.return_value.send_request.assert_not_called()
+
+    def test_explicit_numeric_overrides_survive_discovery(self):
+        command = self._command(increase_capacity_unit_by_tib=0, unused_size_tib=0)
+        body = self._execute(command, [{"value": [self._sku()]}])
+        self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"], {
+            "autoScalePolicyEnforcement": "Enabled",
+            "capacityUnitScaleUpLimitTiB": 125,
+            "increaseCapacityUnitByTiB": 0,
+            "unusedSizeTiB": 0,
+        })
+
+    def test_explicit_zero_totals_are_present_and_preserved(self):
+        command = self._command(total_size_tib=0, total_iops=0, total_mbps=0,
+                                capacity_unit_scale_up_limit_tib=0)
+        body = self._execute(command)
+        for field in ("totalSizeTiB", "totalIops", "totalMBps"):
+            self.assertEqual(body["properties"][field], 0)
+        command.ctx.get_http_client.return_value.send_request.assert_not_called()
+
+    def test_none_and_disabled_are_rejected_before_discovery_or_creation(self):
+        for policy in ("None", "none", "nOnE", "Disabled", "disabled", "dIsAbLeD"):
+            for limit in (None, 0):
+                with self.subTest(policy=policy, limit=limit):
+                    command = self._command(auto_scale_policy_enforcement=policy)
+                    if limit is not None:
+                        command.ctx.args.capacity_unit_scale_up_limit_tib = limit
+                    with self.assertRaisesRegex(InvalidArgumentValueError, "None or Disabled"):
+                        self._execute(command)
+                    command.ctx.get_http_client.assert_not_called()
+
+    def test_explicit_enabled_enforcement_remains_supported(self):
+        for policy in ("Enabled", "enabled", "eNaBlEd"):
+            with self.subTest(policy=policy):
+                command = self._command(auto_scale_policy_enforcement=policy,
+                                        capacity_unit_scale_up_limit_tib=30)
+                body = self._execute(command)
+                self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"]
+                                 ["autoScalePolicyEnforcement"].lower(), "enabled")
+                command.ctx.get_http_client.return_value.send_request.assert_not_called()
+
+    def test_update_preserves_none_and_disabled_enforcement(self):
+        helper = ElasticSanUpdateCompatTest()
+        for policy in ("None", "Disabled"):
+            with self.subTest(policy=policy):
+                events, body = helper._execute_update(
+                    ElasticSanUpdate,
+                    {"auto_scale_policy_enforcement": policy},
+                    {"location": "eastus2euap",
+                     "properties": {"version": "V2", "sku": {"name": "ElasticSAN_LRS"}}},
+                    [],
+                )
+                self.assertEqual(events, ["GET", "PATCH"])
+                self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"],
+                                 {"autoScalePolicyEnforcement": policy})
+
+    def test_missing_v2_totals_are_rejected_before_discovery_or_creation(self):
+        for field in ("total_size_tib", "total_iops", "total_mbps"):
+            for explicit_limit in (False, True):
+                with self.subTest(field=field, explicit_limit=explicit_limit):
+                    command = self._command()
+                    del command.ctx.args[field]
+                    if explicit_limit:
+                        command.ctx.args.capacity_unit_scale_up_limit_tib = 0
+                    with self.assertRaisesRegex(InvalidArgumentValueError, field.replace("_", "-")):
+                        self._execute(command)
+                    command.ctx.get_http_client.return_value.send_request.assert_not_called()
+
+    def test_sku_discovery_failures_prevent_creation(self):
+        invalid_skus = [
+            [],
+            [self._sku(), self._sku()],
+            [self._sku(name="Premium_LRS")],
+            [self._sku(locations=["westus"])],
+            [self._sku(resourceType="volumes")],
+            [self._sku(capabilities=[])],
+            [self._sku(capabilities=None)],
+            [self._sku(capabilities=[{"name": "elasticSanMaxSizeTiB", "value": "999"}])],
+            [self._sku(capabilities=self._sku()["capabilities"] * 2)],
+        ]
+        for value in (None, "", "0", "-1", "1.5", "bad", "1e3", True, False, 0, -1, 1.5):
+            invalid_skus.append([self._sku(value)])
+        for skus in invalid_skus:
+            with self.subTest(skus=skus):
+                command = self._command()
+                with self.assertRaisesRegex(InvalidArgumentValueError, "elasticSanMaxTotalCapacityTiB"):
+                    self._execute(command, [{"value": skus}])
+                self.assertIsNone(command.ctx.next_link)
+
+    def test_malformed_discovery_responses_prevent_creation(self):
+        for page in ({}, {"value": None}, {"value": {}}, {"value": [None]}, [], None):
+            with self.subTest(page=page):
+                with self.assertRaisesRegex(InvalidArgumentValueError, "Cannot determine"):
+                    self._execute(self._command(), [page])
+
+    def test_missing_location_or_sku_prevents_discovery_and_creation(self):
+        for field in ("location", "sku"):
+            with self.subTest(field=field):
+                command = self._command()
+                del command.ctx.args[field]
+                with self.assertRaisesRegex(InvalidArgumentValueError, "location and SKU"):
+                    self._execute(command)
+                command.ctx.get_http_client.return_value.send_request.assert_not_called()
+
+    def test_discovery_request_errors_prevent_creation(self):
+        for error in (HttpResponseError("service unavailable"), ServiceRequestError("connection failed")):
+            with self.subTest(error=type(error).__name__):
+                command = self._command()
+                with self.assertRaisesRegex(AzureResponseError, "SKU discovery failed"):
+                    self._execute(command, error=error)
+                self.assertIsNone(command.ctx.next_link)
+
+    def test_discovery_checks_all_pages_for_ambiguity(self):
+        next_link = "https://management.azure.com/subscriptions/target-subscription/providers/" \
+                    "Microsoft.ElasticSan/skus?next=1"
+        command = self._command()
+        body = self._execute(command, [
+            {"value": [], "nextLink": next_link}, {"value": [self._sku()]},
+        ])
+        self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"]
+                         ["capacityUnitScaleUpLimitTiB"], 125)
+        self.assertEqual(command.ctx.get_http_client.return_value.send_request.call_count, 2)
+        self.assertIsNone(command.ctx.next_link)
+        with self.assertRaisesRegex(InvalidArgumentValueError, "exactly one"):
+            self._execute(self._command(), [
+                {"value": [self._sku()], "nextLink": next_link}, {"value": [self._sku()]},
+            ])
+
+    def test_invalid_or_repeated_next_links_prevent_creation(self):
+        for next_link in ("", 1, "https://management.azure.com/repeated"):
+            with self.subTest(next_link=next_link):
+                page = {"value": [], "nextLink": next_link}
+                with self.assertRaisesRegex(InvalidArgumentValueError, "Cannot determine"):
+                    self._execute(self._command(), [page, page])
+
+    def test_v1_creation_does_not_default_autoscale_or_discover_skus(self):
+        for version in (None, "V1"):
+            for policy in (None, "Disabled", "None"):
+                with self.subTest(version=version, policy=policy):
+                    command = self._command()
+                    for field in ("version", "total_size_tib", "total_iops", "total_mbps"):
+                        del command.ctx.args[field]
+                    if version is not None:
+                        command.ctx.args.version = version
+                    if policy is not None:
+                        command.ctx.args.auto_scale_policy_enforcement = policy
+                    body = self._execute(command)
+                    self.assertEqual(body["properties"]["baseSizeTiB"], 20)
+                    self.assertEqual(body["properties"]["extendedCapacitySizeTiB"], 0)
+                    if policy is None:
+                        self.assertNotIn("autoScaleProperties", body["properties"])
+                    else:
+                        self.assertEqual(body["properties"]["autoScaleProperties"]["scaleUpProperties"],
+                                         {"autoScalePolicyEnforcement": policy})
+                    command.ctx.get_http_client.return_value.send_request.assert_not_called()
+
+
+class VolumeManagedByCompatTest(unittest.TestCase):
+    def test_managed_by_rejects_normalized_alias_collisions(self):
+        alias_groups = (
+            (("resource-id", "resourceId", "resource_id"), "/resource/one"),
+            (("resource-ids", "resourceIds", "resource_ids"), ["/resource/two"]),
+            (("client-id", "clientId", "client_id"), "client"),
+        )
+        entries = [(alias, value) for aliases, value in alias_groups for alias in aliases]
+        for first_key, first_value in entries:
+            for second_key, second_value in entries:
+                if first_key == second_key:
+                    continue
+                if first_key.startswith("client") != second_key.startswith("client"):
+                    continue
+                for as_list in (False, True):
+                    for command_type in (VolumeCreate, VolumeUpdate):
+                        with self.subTest(first=first_key, second=second_key, as_list=as_list,
+                                          command=command_type.__name__):
+                            item = {first_key: first_value, second_key: second_value}
+                            schema = command_type._build_arguments_schema()
+                            command = object.__new__(command_type)
+                            command.ctx = SimpleNamespace(args=schema._ValueCls(
+                                schema, schema.process_data({"managed_by": [item] if as_list else item})
+                            ))
+                            with self.assertRaisesRegex(InvalidArgumentValueError, "resource-ids|client_id"):
+                                command.pre_operations()
+
+    def test_legacy_managed_by_object_converts_to_single_resource_array(self):
+        legacy_managed_by = AAZAnyTypeArgAction.decode_str(
+            "{resource-id:/subscriptions/sub/resourceGroups/rg/providers/test/type/name}"
+        )
+        for command in (VolumeCreate, VolumeUpdate):
+            with self.subTest(command=command.__name__):
+                args_schema = command._build_arguments_schema()
+                args_data = args_schema.process_data({
+                    "managed_by": legacy_managed_by
+                })
+                args = args_schema._ValueCls(args_schema, args_data)
+
+                _normalize_managed_by_argument(args)
+
+                self.assertEqual(
+                    args.managed_by.to_serialized_data(),
+                    [{"resource_ids": ["/subscriptions/sub/resourceGroups/rg/providers/test/type/name"]}],
+                )
+
+    def test_legacy_managed_by_object_serializes_as_current_wire_array(self):
+        args_schema = VolumeCreate._build_arguments_schema()
+        args = args_schema._ValueCls(
+            args_schema,
+            args_schema.process_data({
+                "elastic_san_name": "test-san",
+                "resource_group": "test-rg",
+                "volume_group_name": "test-group",
+                "volume_name": "test-volume",
+                "size_gib": 1,
+                "managed_by": {"resource-id": "/resource/legacy"},
+            }),
+        )
+        _normalize_managed_by_argument(args)
+        operation = object.__new__(VolumeCreate.VolumesCreate)
+        operation.ctx = SimpleNamespace(args=args)
+
+        body = operation.content
+
+        self.assertEqual(
+            body["properties"]["managedBy"],
+            [{"resourceIds": ["/resource/legacy"]}],
+        )
+
+    def test_managed_by_shorthand_create_serializes_client_and_resource_ids(self):
+        resource_ids = [
+            "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Test/items/one",
+            "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Test/items/two",
+        ]
+        shorthand = AAZAnyTypeArgAction.decode_str(
+            "[{client-id:client-one,version:1,resource-ids:["
+            f"{resource_ids[0]},{resource_ids[1]}]}}]"
+        )
+        args_schema = VolumeCreate._build_arguments_schema()
+        args = args_schema._ValueCls(
+            args_schema,
+            args_schema.process_data({
+                "elastic_san_name": "test-san",
+                "resource_group": "test-rg",
+                "volume_group_name": "test-group",
+                "volume_name": "test-volume",
+                "size_gib": 1,
+                "managed_by": shorthand,
+            }),
+        )
+        _normalize_managed_by_argument(args)
+
+        operation = object.__new__(VolumeCreate.VolumesCreate)
+        operation.ctx = SimpleNamespace(args=args)
+        managed_by = operation.content["properties"]["managedBy"]
+
+        self.assertEqual(managed_by[0]["clientId"], "client-one")
+        self.assertEqual(managed_by[0]["resourceIds"], resource_ids)
+        self.assertEqual(managed_by[0]["version"], 1)
+
+    def test_managed_by_shorthand_update_serializes_client_and_resource_ids(self):
+        resource_ids = [
+            "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Test/items/one",
+            "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Test/items/two",
+        ]
+        shorthand = AAZAnyTypeArgAction.decode_str(
+            "[{client-id:client-two,version:2,resource-ids:["
+            f"{resource_ids[0]},{resource_ids[1]}]}}]"
+        )
+        args_schema = VolumeUpdate._build_arguments_schema()
+        args = args_schema._ValueCls(args_schema, args_schema.process_data({
+            "elastic_san_name": "test-san",
+            "resource_group": "test-rg",
+            "volume_group_name": "test-group",
+            "volume_name": "test-volume",
+            "size_gib": 1,
+            "managed_by": shorthand,
+        }))
+        _normalize_managed_by_argument(args)
+
+        instance_schema = VolumeUpdate.VolumesGet._build_schema_on_200()
+        instance = instance_schema._ValueCls(
+            instance_schema,
+            instance_schema.process_data({
+                "id": "/subscriptions/sub/resourceGroups/test-rg/providers/Microsoft.ElasticSan/elasticSans/test-san/volumeGroups/test-group/volumes/test-volume",
+                "name": "test-volume",
+                "properties": {"managedBy": [], "sizeGiB": 1},
+            }),
+        )
+        command = object.__new__(VolumeUpdate)
+        command.ctx = SimpleNamespace(args=args, vars=SimpleNamespace(instance=instance))
+        update_operation = object.__new__(VolumeUpdate.InstanceUpdateByJson)
+        update_operation.ctx = command.ctx
+        command.ctx.vars.instance = update_operation._update_instance(instance)
+
+        operation = object.__new__(VolumeUpdate.VolumesCreate)
+        operation.ctx = command.ctx
+        managed_by = operation.content["properties"]["managedBy"]
+
+        self.assertEqual(managed_by[0]["clientId"], "client-two")
+        self.assertEqual(managed_by[0]["resourceIds"], resource_ids)
+        self.assertEqual(managed_by[0]["version"], 2)
+
+    def test_output_keeps_new_shape_and_adds_first_resource_alias(self):
+        output = {
+            "properties": {
+                "managedBy": [
+                    {"resourceIds": ["/resource/first", "/resource/second"]},
+                    {"resourceIds": ["/resource/third"]},
+                ]
+            }
+        }
+
+        result = _add_legacy_managed_by_output(output)
+
+        self.assertEqual(result["properties"]["managedBy"], output["properties"]["managedBy"])
+        self.assertEqual(result["properties"]["managedByResourceId"], "/resource/first")
+
+
+if __name__ == "__main__":
+    unittest.main()
