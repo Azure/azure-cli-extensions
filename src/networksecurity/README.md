@@ -6,8 +6,7 @@ using API version `2026-10-01-preview`. Azure CLI 2.75.0 or later is required.
 The service is currently in private preview. Subscriptions must be enabled for
 the `Microsoft.NetworkSecurity/NeuroShieldPreview` feature.
 
-Command names are provisional pending
-[CLI onboarding review](https://github.com/Azure/azure-cli/issues/34021).
+Command names are provisional pending CLI-team design review.
 
 Inventory assessments and remediation require the `Microsoft.Azure.Networking`
 `Neuron` VM extension, installed separately using the service-provided settings.
