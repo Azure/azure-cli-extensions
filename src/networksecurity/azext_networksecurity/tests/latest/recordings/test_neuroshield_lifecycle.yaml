@@ -1,0 +1,406 @@
+interactions:
+- request:
+    body: '{"location": "westus", "properties": {"responseMode": "Manual", "severityThreshold":
+      "Medium"}, "tags": {"purpose": "cli-test"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networksecurity neuroshield create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '128'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --subscription -g -n -l --response-mode --severity-threshold --tags
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.NetworkSecurity/neuroShields/clitestns000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.NetworkSecurity/neuroShields/clitestns000002","name":"clitestns000002","type":"microsoft.networksecurity/neuroshields","location":"westus","tags":{"purpose":"cli-test"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-06T15:33:02.7389825Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-06T15:33:02.7389825Z"},"properties":{"provisioningState":"Succeeded","resourceGuid":"497a15f8-056f-40f7-afc7-819cf2ccf1d3","responseMode":"Manual","severityThreshold":"Medium","description":""}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '675'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 06 Nov 2026 15:33:03 GMT
+      etag:
+      - '"d219bfc8-0000-0700-0000-6aedf32f0000"'
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.NetworkSecurity/neuroShields/clitestns000002
+      mise-correlation-id:
+      - 108ac8db-68f0-437e-805c-39e2e183afb2
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '289'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=b694822b-187b-49d3-ace3-87a96fb407ec/japanwest/b8e06e38-5592-4f2e-a1e7-22fea571894a
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 4A8C3E51401A49228D8484C4A1FD68BA Ref B: SN4AA2022403051 Ref C: 2026-11-06T15:33:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networksecurity neuroshield show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription --ids
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.NetworkSecurity/neuroShields/clitestns000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.NetworkSecurity/neuroShields/clitestns000002","name":"clitestns000002","type":"Microsoft.NetworkSecurity/neuroShields","location":"westus","tags":{"purpose":"cli-test"},"systemData":{"createdByType":"User","createdAt":"2026-11-06T15:33:02.7389825Z","lastModifiedByType":"User","lastModifiedAt":"2026-11-06T15:33:02.7389825Z"},"properties":{"provisioningState":"Succeeded","resourceGuid":"497a15f8-056f-40f7-afc7-819cf2ccf1d3","responseMode":"Manual","severityThreshold":"Medium","description":""}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '608'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 06 Nov 2026 15:33:05 GMT
+      etag:
+      - '"d219bfc8-0000-0700-0000-6aedf32f0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 8b7aaf3a-85dc-4d9c-9f88-c65e4b898247
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '84'
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 305AB48EFEB749C2942F107B99E66803 Ref B: SN4AA2022402049 Ref C: 2026-11-06T15:33:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"responseMode": "Manual", "severityThreshold":
+      "High"}, "tags": {"purpose": "cli-test"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networksecurity neuroshield create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '126'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --subscription -g -n -l --response-mode --severity-threshold --tags
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.NetworkSecurity/neuroShields/clitestns000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.NetworkSecurity/neuroShields/clitestns000002","name":"clitestns000002","type":"microsoft.networksecurity/neuroshields","location":"westus","etag":"\"d219bfc8-0000-0700-0000-6aedf32f0000\"","tags":{"purpose":"cli-test"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-06T15:33:02.7389825Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-06T15:33:06.8016704Z"},"properties":{"provisioningState":"Succeeded","resourceGuid":"497a15f8-056f-40f7-afc7-819cf2ccf1d3","responseMode":"Manual","severityThreshold":"High","description":""}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '723'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 06 Nov 2026 15:33:06 GMT
+      etag:
+      - '"d2197cc9-0000-0700-0000-6aedf3330000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 4cdd313f-0f12-4f4e-9d37-802fa85e76cd
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '77'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=b694822b-187b-49d3-ace3-87a96fb407ec/japanwest/a3fcfc48-840e-4a4b-a6e6-d28e7d668d8b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: FDBDB0386D374DC59046CC013A491386 Ref B: SN4AA2022303029 Ref C: 2026-11-06T15:33:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "Partial update regression"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networksecurity neuroshield update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '60'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --subscription -g -n --description
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.NetworkSecurity/neuroShields/clitestns000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.NetworkSecurity/neuroShields/clitestns000002","name":"clitestns000002","type":"microsoft.networksecurity/neuroshields","location":"westus","etag":"\"d2197cc9-0000-0700-0000-6aedf3330000\"","tags":{"purpose":"cli-test"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-06T15:33:02.7389825Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-06T15:33:08.18657Z"},"properties":{"provisioningState":"Succeeded","resourceGuid":"497a15f8-056f-40f7-afc7-819cf2ccf1d3","responseMode":"Manual","severityThreshold":"High","description":"Partial
+        update regression"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '746'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 06 Nov 2026 15:33:08 GMT
+      etag:
+      - '"d219c9c9-0000-0700-0000-6aedf3350000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 244fe7ca-6ab6-4df2-a256-b0d767df3370
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '110'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=b694822b-187b-49d3-ace3-87a96fb407ec/japanwest/484e60db-fea1-440a-8922-0fab39f36cd8
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 5DC4E88A21494D89A7F568C30D84463A Ref B: SN4AA2022304021 Ref C: 2026-11-06T15:33:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networksecurity neuroshield show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription -g -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.NetworkSecurity/neuroShields/clitestns000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.NetworkSecurity/neuroShields/clitestns000002","name":"clitestns000002","type":"Microsoft.NetworkSecurity/neuroShields","location":"westus","tags":{"purpose":"cli-test"},"systemData":{"createdByType":"User","createdAt":"2026-11-06T15:33:02.7389825Z","lastModifiedByType":"User","lastModifiedAt":"2026-11-06T15:33:08.18657Z"},"properties":{"provisioningState":"Succeeded","resourceGuid":"497a15f8-056f-40f7-afc7-819cf2ccf1d3","responseMode":"Manual","severityThreshold":"High","description":"Partial
+        update regression"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '629'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 06 Nov 2026 15:33:10 GMT
+      etag:
+      - '"d219c9c9-0000-0700-0000-6aedf3350000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 49ca6d66-d9ef-4416-839d-71461976dfc1
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '57'
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 91885D1481174FAA8E552B4ACCB1F663 Ref B: SN4AA2022304029 Ref C: 2026-11-06T15:33:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networksecurity neuroshield delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --subscription -g -n --yes
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.NetworkSecurity/neuroShields/clitestns000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 06 Nov 2026 15:33:12 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d9200be1-3409-466d-9570-6127115de176
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '303'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=b694822b-187b-49d3-ace3-87a96fb407ec/japanwest/dffe69ee-287e-414a-b80f-59c09786028b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: ECA165F373854A71956A695F46D65140 Ref B: SN4AA2022303033 Ref C: 2026-11-06T15:33:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networksecurity neuroshield show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription -g -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.NetworkSecurity/neuroShields/clitestns000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.NetworkSecurity/neuroShields/clitestns000002''
+        under resource group ''clitest.rg000001'' was not found. For more details
+        please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '242'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 06 Nov 2026 15:33:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: E5FB3F85F0364EA2A4BC159C01400428 Ref B: SN4AA2022302029 Ref C: 2026-11-06T15:33:13Z'
+    status:
+      code: 404
+      message: Not Found
+version: 1
