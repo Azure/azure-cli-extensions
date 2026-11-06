@@ -9,6 +9,12 @@ the `Microsoft.NetworkSecurity/NeuroShieldPreview` feature.
 Command names are provisional pending
 [CLI onboarding review](https://github.com/Azure/azure-cli/issues/34021).
 
+Inventory assessments and remediation require the `Microsoft.Azure.Networking`
+`Neuron` VM extension, installed separately using the service-provided settings.
+Its managed identity must be attached to the VM and match the protected-resource
+registration. Creating a protected resource does not install the VM extension;
+installing the VM extension does not register the protected resource.
+
 ## Usage
 
 List NeuroShields in the current subscription:
