@@ -13,6 +13,7 @@ Pending
 +++++++
 * `az aks create/update`: `--kms-infrastructure-encryption` now only accepts `Enabled`, since infrastructure encryption for Kubernetes resource objects cannot be turned off once it has been turned on.
 * `az aks create/update`: Document that an unversioned `--azure-keyvault-kms-key-id` selects the new KMS experience with automatic key version rotation, while a versioned key identifier selects the legacy KMS experience.
+* `az aks create/update`: Add `--enable-azure-managed-lustre` with node compatibility validation and `az aks update --disable-azure-managed-lustre` to remove the extension resource.
 
 22.0.0b15
 +++++++++
