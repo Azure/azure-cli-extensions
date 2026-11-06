@@ -282,24 +282,6 @@ class RecoveryPlanIdentityRemove(_RefreshRecoveryPlanIdentity, _RecoveryPlanIden
     pass
 
 
-# The 2026-10-01 spec declares the 200 result of RecoveryJobs_Retry as ErrorResponse, but the service
-# returns the retried job's ID, as {"properties": "{\"jobId\": ...}"} (same pattern as the recovery-plan
-# actions above). Add jobId to the output schema and decode the string. Remove after the spec declares a
-# jobId result and the service returns it as an object.
-class RecoveryJobRetry(_RecoveryJobRetry):
-    class RecoveryJobsRetry(
-            _DecodeStringPropertiesOn200, _OperationIdQueryCompatibility,
-            _RecoveryJobRetry.RecoveryJobsRetry):
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            schema = super()._build_schema_on_200()
-            if "job_id" not in schema._fields:
-                schema.job_id = AAZStrType(serialized_name="jobId")
-            return schema
-
-
 # Commands whose request only needs the operationId query workaround (the recovery-plan action
 # overrides above already include it).
 OPERATION_ID_QUERY_COMMANDS = {
@@ -337,5 +319,5 @@ OPERATION_ID_QUERY_COMMANDS = {
         _RecoveryJobCancel, "RecoveryJobsCancel"),
     "resiliency recovery-plan recovery-job resume": _send_operation_id_in_query(
         _RecoveryJobResume, "RecoveryJobsResume"),
-    "resiliency recovery-plan recovery-job retry": RecoveryJobRetry,
+    "resiliency recovery-plan recovery-job retry": _send_operation_id_in_query(_RecoveryJobRetry, "RecoveryJobsRetry"),
 }
