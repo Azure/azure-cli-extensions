@@ -10,7 +10,9 @@
 
 import json
 
-from azure.cli.core.aaz import AAZStrArg, AAZStrType, has_value, register_command
+from azure.cli.core.aaz import (
+    AAZObjectArg, AAZResourceIdArg, AAZStrArg, AAZStrArgFormat, AAZStrType, has_value, register_command,
+)
 from knack.log import get_logger
 
 from .aaz.latest.resiliency.drill import (
@@ -282,11 +284,82 @@ class RecoveryPlanIdentityRemove(_RefreshRecoveryPlanIdentity, _RecoveryPlanIden
     pass
 
 
+# The service accepts faultProperties.defaultFault on add-or-update-resource, but the API definition
+# marks it read-only, so the generated command can't send it. Add a `default-fault` option and put it
+# in the request body only when the user supplies it; requests without it are unchanged. Remove once
+# defaultFault is writable in the API definition.
+@register_command("resiliency drill add-or-update-resource")
+class DrillAddOrUpdateResource(_DrillAddOrUpdateResource):
+    """This enables the user to include, exclude or update resources from their Drill.
+
+    :example: Add a virtual machine to a drill
+        az resiliency drill add-or-update-resource --service-group-name sampleServiceGroupName --drill-name drill1 --operation-id 3f1c2a4b-5d6e-4f70-8a9b-0c1d2e3f4a5b --fault-duration-in-min 10 --resource-lists "{include-resources:[{id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Compute/virtualMachines/vm1}]}"
+
+    :example: Set the default fault of a resource in a drill
+        az resiliency drill add-or-update-resource --service-group-name sampleServiceGroupName --drill-name drill1 --operation-id 3f1c2a4b-5d6e-4f70-8a9b-0c1d2e3f4a5b --fault-duration-in-min 10 --resource-lists "{update-resources:[{id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Compute/virtualMachines/vm1,fault-properties:{default-fault:{fault-name:VMShutdown,fault-urn:'urn:csci:microsoft:virtualMachine:shutdown/1.0',target-resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Compute/virtualMachines/vm1}}}]}"
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        for resources in (args_schema.resource_lists.include_resources, args_schema.resource_lists.update_resources):
+            fault_properties = resources.Element.fault_properties
+            if "default_fault" in fault_properties._fields:  # pylint: disable=protected-access
+                continue
+            fault_properties.default_fault = AAZObjectArg(
+                options=["default-fault"],
+                help="Default fault for the resource.",
+            )
+            default_fault = fault_properties.default_fault
+            default_fault.fault_name = AAZStrArg(
+                options=["fault-name"],
+                help="fault name",
+                required=True,
+                fmt=AAZStrArgFormat(max_length=100, min_length=1),
+            )
+            default_fault.fault_urn = AAZStrArg(
+                options=["fault-urn"],
+                help="fault urn.",
+                required=True,
+                fmt=AAZStrArgFormat(min_length=1),
+            )
+            default_fault.target_resource_id = AAZResourceIdArg(
+                options=["target-resource-id"],
+                help="ARMId of the target resource where fault will be applied. For non-NSG, same as ResourceId. "
+                     "For NSG, its the NSG resource and not the actual resource which is to be simulated for faulting.",
+                required=True,
+            )
+        return args_schema
+
+    class DrillsAddOrUpdateResources(_OperationIdQueryCompatibility,
+                                     _DrillAddOrUpdateResource.DrillsAddOrUpdateResources):
+
+        @property
+        def content(self):
+            body = super().content
+            resource_lists_arg = self.ctx.args.resource_lists
+            resource_lists = body.get("resourceLists") if isinstance(body, dict) else None
+            if not has_value(resource_lists_arg) or not isinstance(resource_lists, dict):
+                return body
+            for key, items_arg in (("includeResources", resource_lists_arg.include_resources),
+                                   ("updateResources", resource_lists_arg.update_resources)):
+                if not has_value(items_arg):
+                    continue
+                for item, item_arg in zip(resource_lists.get(key) or [], items_arg):
+                    default_fault = item_arg.fault_properties.default_fault
+                    if not has_value(default_fault):
+                        continue
+                    item.setdefault("faultProperties", {})["defaultFault"] = {
+                        "faultName": default_fault.fault_name.to_serialized_data(),
+                        "faultUrn": default_fault.fault_urn.to_serialized_data(),
+                        "targetResourceId": default_fault.target_resource_id.to_serialized_data(),
+                    }
+            return body
+
+
 # Commands whose request only needs the operationId query workaround (the recovery-plan action
 # overrides above already include it).
 OPERATION_ID_QUERY_COMMANDS = {
-    "resiliency drill add-or-update-resource": _send_operation_id_in_query(
-        _DrillAddOrUpdateResource, "DrillsAddOrUpdateResources"),
     "resiliency drill end": _send_operation_id_in_query(_DrillEnd, "DrillsEnd"),
     "resiliency drill resync-readiness-check": _send_operation_id_in_query(
         _DrillResyncReadinessCheck, "DrillsResyncReadinessCheck"),
