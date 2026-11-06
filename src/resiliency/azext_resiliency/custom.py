@@ -124,7 +124,21 @@ class RecoveryPlanShow(_RecoveryPlanShow):
             return _add_plan_type(super()._build_schema_on_200())
 
 
+# For recovery-plan update (PATCH, final-state-via: location) the service's final result is an
+# operationStatuses record ({"status": "Succeeded", "properties": null}) instead of the recovery
+# plan, so the command printed only the operation's id/name. When the result has no properties,
+# read the recovery plan again so the output shows the updated plan. No-op once the service
+# returns the resource; remove after the service fix.
 class RecoveryPlanUpdate(_RecoveryPlanUpdate):
+
+    def post_operations(self):
+        if self.ctx.args.no_wait:
+            return
+        instance = self.ctx.vars.instance.to_serialized_data()
+        if isinstance(instance, dict) and instance.get("properties"):
+            return
+        RecoveryPlanShow.RecoveryPlansGet(ctx=self.ctx)()
+
     class RecoveryPlansUpdate(_RecoveryPlanUpdate.RecoveryPlansUpdate):
         _schema_on_200 = None
 
