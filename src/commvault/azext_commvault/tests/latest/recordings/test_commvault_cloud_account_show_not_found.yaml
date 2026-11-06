@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - commvault cloud-account show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-commvault-test/providers/Commvault.ContentStore/cloudAccounts/cvmissing000001?api-version=2026-09-30
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Commvault.ContentStore/cloudAccounts/cvmissing000001'' under resource group ''rg-commvault-test'' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '241'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Oct 2026 19:25:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 541791D0DD0143BB8BDC93C8D36D9AE5 Ref B: SG2AA1070305025 Ref C: 2026-10-26T19:25:40Z'
+    status:
+      code: 404
+      message: Not Found
+version: 1
