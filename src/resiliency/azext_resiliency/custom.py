@@ -10,9 +10,16 @@
 
 import json
 
-from azure.cli.core.aaz import AAZStrType
+from azure.cli.core.aaz import AAZStrArg, AAZStrType, has_value, register_command
 from knack.log import get_logger
 
+from .aaz.latest.resiliency.goal_assignment import (
+    UpdateGoalResource as _GoalAssignmentUpdateGoalResource,
+)
+from .aaz.latest.resiliency.recovery_plan.identity import (
+    Assign as _RecoveryPlanIdentityAssign,
+    Remove as _RecoveryPlanIdentityRemove,
+)
 from .aaz.latest.resiliency.recovery_plan import (
     Create as _RecoveryPlanCreate,
     List as _RecoveryPlanList,
@@ -156,3 +163,63 @@ class RecoveryPlanValidateForReprotect(_RecoveryPlanValidateForReprotect):
     class RecoveryPlanActionsValidateForReprotect(
             _DecodeStringPropertiesOn200, _RecoveryPlanValidateForReprotect.RecoveryPlanActionsValidateForReprotect):
         pass
+
+
+# The service identifies each item of updateGoalResources by the goal resource's own ARM ID
+# (resources[].id), but the 2026-10-01 spec reuses the GoalResource model where id is read-only,
+# so the generated command cannot send it. Without it the service rejects the item after
+# returning 202 and the operation stays Accepted, holding a lock on the goal assignment.
+# Accept the ID (required) and add it to each item. Remove after the spec makes it writable.
+@register_command("resiliency goal-assignment update-goal-resource")
+class GoalAssignmentUpdateGoalResource(_GoalAssignmentUpdateGoalResource):
+    """Updates goal resources under a goal assignment.
+
+    Each item needs the goal resource ID (`id`), as returned by `az resiliency goal-assignment goal-resource list`.
+
+    :example: Exclude a goal resource from zonal resiliency recommendations
+        az resiliency goal-assignment update-goal-resource --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --resources "[{id:/providers/Microsoft.Management/serviceGroups/production-sg/providers/Microsoft.AzureResilienceManagement/goalAssignments/zonal-resiliency-goal/goalResources/vm-goal-resource,resource-arm-id:/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/MyVirtualMachine,zonal-resiliency:{goal-participation:Excluded,attestation-status:ManuallyAttested}}]"
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.resources.Element.id = AAZStrArg(
+            options=["id"],
+            help="The ARM ID of the goal resource, as returned by `az resiliency goal-assignment goal-resource list`.",
+            required=True,
+        )
+        return args_schema
+
+    class GoalAssignmentsUpdateGoalResources(_GoalAssignmentUpdateGoalResource.GoalAssignmentsUpdateGoalResources):
+
+        @property
+        def content(self):
+            body = super().content
+            for item, arg in zip(body.get("resources", []), self.ctx.args.resources):
+                if has_value(arg.id):
+                    item["id"] = arg.id.to_serialized_data()
+            return body
+
+
+# For recovery-plan PATCH the service's final result (GET on the Location URL) has
+# "properties": null and no identity, so `identity assign/remove` print {} although the change
+# persisted. When the final result has no identity, read the recovery plan again so the output
+# shows the resulting identity. No-op once the service returns the resource; remove after the fix.
+class _RefreshRecoveryPlanIdentity:  # pylint: disable=too-few-public-methods
+    """Mixin for generated recovery-plan identity commands: re-read the plan if the result has no identity."""
+
+    def post_operations(self):
+        if self.ctx.args.no_wait:
+            return
+        instance = self.ctx.vars.instance.to_serialized_data()
+        if isinstance(instance, dict) and instance.get("identity"):
+            return
+        self.RecoveryPlansGet(ctx=self.ctx)()
+
+
+class RecoveryPlanIdentityAssign(_RefreshRecoveryPlanIdentity, _RecoveryPlanIdentityAssign):
+    pass
+
+
+class RecoveryPlanIdentityRemove(_RefreshRecoveryPlanIdentity, _RecoveryPlanIdentityRemove):
+    pass

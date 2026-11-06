@@ -13,11 +13,16 @@
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     from .custom import (
+        GoalAssignmentUpdateGoalResource,
+        RecoveryPlanIdentityAssign, RecoveryPlanIdentityRemove,
         RecoveryPlanCreate, RecoveryPlanList, RecoveryPlanShow, RecoveryPlanUpdate,
         RecoveryPlanCheckReadiness, RecoveryPlanFailover, RecoveryPlanFailoverCommit, RecoveryPlanReprotect,
         RecoveryPlanTestFailover, RecoveryPlanTestFailoverCleanup,
         RecoveryPlanValidateForFailover, RecoveryPlanValidateForReprotect,
     )
+    self.command_table["resiliency goal-assignment update-goal-resource"] = GoalAssignmentUpdateGoalResource(loader=self)
+    self.command_table["resiliency recovery-plan identity assign"] = RecoveryPlanIdentityAssign(loader=self)
+    self.command_table["resiliency recovery-plan identity remove"] = RecoveryPlanIdentityRemove(loader=self)
     self.command_table["resiliency recovery-plan create"] = RecoveryPlanCreate(loader=self)
     self.command_table["resiliency recovery-plan list"] = RecoveryPlanList(loader=self)
     self.command_table["resiliency recovery-plan show"] = RecoveryPlanShow(loader=self)
