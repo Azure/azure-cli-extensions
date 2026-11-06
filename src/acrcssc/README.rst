@@ -107,8 +107,8 @@ Scaling
 =======
 A workflow run can include up to **1,000 images** (the number of matches reported by ``--dryrun``). How quickly a run finishes depends mostly on the images, not on the extension:
 
-- **Scheduling.** The trigger task schedules scan tasks in parallel (10 at a time). In testing it queued 250 scans in about 2 minutes, and every scan and patch task was queued within 7 minutes of the run starting.
-- **Patch time depends on the package manager.** Debian, Ubuntu and Alpine images typically patch in 1–3 minutes. Azure Linux, CBL-Mariner and Red Hat UBI images take 10–18 minutes because Copacetic installs its RPM tooling for every patch.
+- **Scheduling.** The trigger task schedules scan tasks in parallel (10 at a time), about 2 per second. In testing with 1,000 images, all scans were queued within 10 minutes and all patches within 13 minutes of the run starting. Images are scheduled in the order of the configuration file, so list the images that take longest to patch (Azure Linux, CBL-Mariner, UBI) first.
+- **Patch time depends on the package manager.** Debian, Ubuntu and Alpine images typically patch in 1–3 minutes. Azure Linux, CBL-Mariner and Red Hat UBI images take about 9–16 minutes because Copacetic installs its RPM tooling for every patch. In testing, a 1,000-image run with about 20% RPM-based images finished 99% of images in 27 minutes.
 - **Shared capacity.** Tasks run on the region's shared ACR Tasks agents. When a registry starts many runs at once, ACR Tasks gives its later runs lower priority so other customers aren't delayed; expect queue waits of a few minutes in large runs, and longer near the top of the hour, when many scheduled tasks start.
 - **Trivy database.** The trigger task keeps a copy of the Trivy vulnerability database in the registry (``csscpolicies/trivy-db:2``) and refreshes it when the upstream copy changes. Scan and patch tasks read it from the registry and fall back to ``ghcr.io`` and ``public.ecr.aws``.
 
