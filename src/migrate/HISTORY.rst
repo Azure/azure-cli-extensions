@@ -2,6 +2,12 @@
 
 Release History
 ===============
+3.0.0b7
++++++++++++++++
+* Support inline conditional input rules in runbook and execution parameter
+  editors: const-based conditions select required inputs and exclude fields
+  marked false from controls, validation, and saved parameters.
+
 3.0.0b6
 +++++++++++++++
 * Add ``az migrate runbook`` command group to author, configure, and run
