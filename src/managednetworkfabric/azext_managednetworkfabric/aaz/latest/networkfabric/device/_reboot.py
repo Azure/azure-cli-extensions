@@ -18,7 +18,7 @@ class Reboot(AAZCommand):
     """Reboot the Network Device.
 
     :example: Reboot the Network Device
-        az networkfabric device reboot --resource-group example-rg --resource-name example-device --reboot-type GracefulRebootWithZTP
+        az networkfabric device reboot --resource-group "example-rg" --resource-name "example-device" --reboot-type "GracefulRebootWithZTP"
     """
 
     _aaz_info = {

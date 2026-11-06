@@ -18,7 +18,7 @@ class ResyncPassword(AAZCommand):
     """Updates the Network Device to use the latest passwords. Does not generate new passwords. Allows network devices missed during a previous password rotation to be brought back into sync.
 
     :example: Updates the Network Device to use the latest passwords
-        az networkfabric device resync-password --resource-group example-rg --resource-name example-device
+        az networkfabric device resync-password --resource-group "example-rg" --resource-name "example-device"
     """
 
     _aaz_info = {

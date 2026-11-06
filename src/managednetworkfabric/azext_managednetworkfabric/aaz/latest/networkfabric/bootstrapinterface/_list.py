@@ -17,11 +17,11 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List all the Network Bootstrap Interface resources in a given resource group.
 
-    :example: List the Bootstrap Interfaces by Subscription
-        az networkfabric bootstrapinterface list --subscription <subscriptionId> --bootstrap-device example-device
+    :example: List Bootstrap Interfaces for a Device in a Specified Subscription
+        az networkfabric bootstrapinterface list --subscription "<subscriptionId>" --resource-group "example-rg" --bootstrap-device "example-device"
 
     :example: List the Bootstrap Interfaces by Resource Group
-        az networkfabric bootstrapinterface list --resource-group example-rg --bootstrap-device example-device
+        az networkfabric bootstrapinterface list --resource-group "example-rg" --bootstrap-device "example-device"
     """
 
     _aaz_info = {
@@ -231,6 +231,9 @@ class List(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.serial_number = AAZStrType(
+                serialized_name="serialNumber",
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
