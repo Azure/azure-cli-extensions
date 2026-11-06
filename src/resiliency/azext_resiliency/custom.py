@@ -13,6 +13,22 @@ import json
 from azure.cli.core.aaz import AAZStrArg, AAZStrType, has_value, register_command
 from knack.log import get_logger
 
+from .aaz.latest.resiliency.drill import (
+    AddOrUpdateResource as _DrillAddOrUpdateResource,
+    End as _DrillEnd,
+    ResyncReadinessCheck as _DrillResyncReadinessCheck,
+    Start as _DrillStart,
+    ValidateForExecution as _DrillValidateForExecution,
+)
+from .aaz.latest.resiliency.drill.drill_run import (
+    AddNote as _DrillRunAddNote,
+    FailOver as _DrillRunFailOver,
+    GenerateReport as _DrillRunGenerateReport,
+    ListReportDownloadUrl as _DrillRunListReportDownloadUrl,
+    MarkAsComplete as _DrillRunMarkAsComplete,
+    Reprotect as _DrillRunReprotect,
+    Resume as _DrillRunResume,
+)
 from .aaz.latest.resiliency.goal_assignment import (
     UpdateGoalResource as _GoalAssignmentUpdateGoalResource,
 )
@@ -33,10 +49,43 @@ from .aaz.latest.resiliency.recovery_plan import (
     TestFailoverCleanup as _RecoveryPlanTestFailoverCleanup,
     ValidateForFailover as _RecoveryPlanValidateForFailover,
     ValidateForReprotect as _RecoveryPlanValidateForReprotect,
+    Finalize as _RecoveryPlanFinalize,
+    UpdateResource as _RecoveryPlanUpdateResource,
+    ValidateForFailoverCommit as _RecoveryPlanValidateForFailoverCommit,
+    ValidateForOperation as _RecoveryPlanValidateForOperation,
+    ValidateForTestFailover as _RecoveryPlanValidateForTestFailover,
+    ValidateForTestFailoverCleanup as _RecoveryPlanValidateForTestFailoverCleanup,
+)
+from .aaz.latest.resiliency.recovery_plan.recovery_job import (
+    Cancel as _RecoveryJobCancel,
+    Resume as _RecoveryJobResume,
+    Retry as _RecoveryJobRetry,
 )
 
 
 logger = get_logger(__name__)
+
+
+# The 2026-10-01 spec sends the operation ID of action POSTs as the `operation-id` header, but the
+# released service does not reliably bind that header to its operationId parameter: the workflow
+# never starts, the POST stays in progress and later POSTs on the resource fail with 409
+# InvalidResourceOperation. Also send the same ID as the `operationId` query parameter (approach
+# from krtcodee/azure-cli-extensions#3). Remove once the service binds the header.
+class _OperationIdQueryCompatibility:  # pylint: disable=too-few-public-methods
+    """Mixin for a generated AAZHttpOperation: mirror the operation-id header into the operationId query."""
+
+    @property
+    def query_parameters(self):
+        parameters = super().query_parameters
+        parameters.update(self.serialize_query_param(
+            "operationId", self.ctx.args.operation_id, required=True))
+        return parameters
+
+
+def _send_operation_id_in_query(command_cls, operation_name):
+    """Subclass a generated command so its `operation_name` request also carries the operationId query."""
+    operation = type(operation_name, (_OperationIdQueryCompatibility, getattr(command_cls, operation_name)), {})
+    return type(command_cls.__name__, (command_cls,), {operation_name: operation})
 
 
 # The 2026-10-01 spec marks RecoveryPlanProperties.planType create-only
@@ -119,49 +168,57 @@ class _DecodeStringPropertiesOn200:  # pylint: disable=too-few-public-methods
 
 class RecoveryPlanCheckReadiness(_RecoveryPlanCheckReadiness):
     class RecoveryPlanActionsCheckReadiness(
-            _DecodeStringPropertiesOn200, _RecoveryPlanCheckReadiness.RecoveryPlanActionsCheckReadiness):
+            _DecodeStringPropertiesOn200, _OperationIdQueryCompatibility,
+            _RecoveryPlanCheckReadiness.RecoveryPlanActionsCheckReadiness):
         pass
 
 
 class RecoveryPlanFailover(_RecoveryPlanFailover):
     class RecoveryPlanActionsFailover(
-            _DecodeStringPropertiesOn200, _RecoveryPlanFailover.RecoveryPlanActionsFailover):
+            _DecodeStringPropertiesOn200, _OperationIdQueryCompatibility,
+            _RecoveryPlanFailover.RecoveryPlanActionsFailover):
         pass
 
 
 class RecoveryPlanFailoverCommit(_RecoveryPlanFailoverCommit):
     class RecoveryPlanActionsFailoverCommit(
-            _DecodeStringPropertiesOn200, _RecoveryPlanFailoverCommit.RecoveryPlanActionsFailoverCommit):
+            _DecodeStringPropertiesOn200, _OperationIdQueryCompatibility,
+            _RecoveryPlanFailoverCommit.RecoveryPlanActionsFailoverCommit):
         pass
 
 
 class RecoveryPlanReprotect(_RecoveryPlanReprotect):
     class RecoveryPlanActionsReprotect(
-            _DecodeStringPropertiesOn200, _RecoveryPlanReprotect.RecoveryPlanActionsReprotect):
+            _DecodeStringPropertiesOn200, _OperationIdQueryCompatibility,
+            _RecoveryPlanReprotect.RecoveryPlanActionsReprotect):
         pass
 
 
 class RecoveryPlanTestFailover(_RecoveryPlanTestFailover):
     class RecoveryPlanActionsTestFailover(
-            _DecodeStringPropertiesOn200, _RecoveryPlanTestFailover.RecoveryPlanActionsTestFailover):
+            _DecodeStringPropertiesOn200, _OperationIdQueryCompatibility,
+            _RecoveryPlanTestFailover.RecoveryPlanActionsTestFailover):
         pass
 
 
 class RecoveryPlanTestFailoverCleanup(_RecoveryPlanTestFailoverCleanup):
     class RecoveryPlanActionsTestFailoverCleanup(
-            _DecodeStringPropertiesOn200, _RecoveryPlanTestFailoverCleanup.RecoveryPlanActionsTestFailoverCleanup):
+            _DecodeStringPropertiesOn200, _OperationIdQueryCompatibility,
+            _RecoveryPlanTestFailoverCleanup.RecoveryPlanActionsTestFailoverCleanup):
         pass
 
 
 class RecoveryPlanValidateForFailover(_RecoveryPlanValidateForFailover):
     class RecoveryPlanActionsValidateForFailover(
-            _DecodeStringPropertiesOn200, _RecoveryPlanValidateForFailover.RecoveryPlanActionsValidateForFailover):
+            _DecodeStringPropertiesOn200, _OperationIdQueryCompatibility,
+            _RecoveryPlanValidateForFailover.RecoveryPlanActionsValidateForFailover):
         pass
 
 
 class RecoveryPlanValidateForReprotect(_RecoveryPlanValidateForReprotect):
     class RecoveryPlanActionsValidateForReprotect(
-            _DecodeStringPropertiesOn200, _RecoveryPlanValidateForReprotect.RecoveryPlanActionsValidateForReprotect):
+            _DecodeStringPropertiesOn200, _OperationIdQueryCompatibility,
+            _RecoveryPlanValidateForReprotect.RecoveryPlanActionsValidateForReprotect):
         pass
 
 
@@ -223,3 +280,44 @@ class RecoveryPlanIdentityAssign(_RefreshRecoveryPlanIdentity, _RecoveryPlanIden
 
 class RecoveryPlanIdentityRemove(_RefreshRecoveryPlanIdentity, _RecoveryPlanIdentityRemove):
     pass
+
+
+# Commands whose request only needs the operationId query workaround (the recovery-plan action
+# overrides above already include it).
+OPERATION_ID_QUERY_COMMANDS = {
+    "resiliency drill add-or-update-resource": _send_operation_id_in_query(
+        _DrillAddOrUpdateResource, "DrillsAddOrUpdateResources"),
+    "resiliency drill end": _send_operation_id_in_query(_DrillEnd, "DrillsEnd"),
+    "resiliency drill resync-readiness-check": _send_operation_id_in_query(
+        _DrillResyncReadinessCheck, "DrillsResyncReadinessCheck"),
+    "resiliency drill start": _send_operation_id_in_query(_DrillStart, "DrillsStart"),
+    "resiliency drill validate-for-execution": _send_operation_id_in_query(
+        _DrillValidateForExecution, "DrillsValidateForExecution"),
+    "resiliency drill drill-run add-note": _send_operation_id_in_query(_DrillRunAddNote, "DrillRunsAddNotes"),
+    "resiliency drill drill-run fail-over": _send_operation_id_in_query(_DrillRunFailOver, "DrillRunsFailOver"),
+    "resiliency drill drill-run generate-report": _send_operation_id_in_query(
+        _DrillRunGenerateReport, "DrillRunsGenerateReport"),
+    "resiliency drill drill-run list-report-download-url": _send_operation_id_in_query(
+        _DrillRunListReportDownloadUrl, "DrillRunsListReportDownloadUrl"),
+    "resiliency drill drill-run mark-as-complete": _send_operation_id_in_query(
+        _DrillRunMarkAsComplete, "DrillRunsMarkAsComplete"),
+    "resiliency drill drill-run reprotect": _send_operation_id_in_query(_DrillRunReprotect, "DrillRunsReprotect"),
+    "resiliency drill drill-run resume": _send_operation_id_in_query(_DrillRunResume, "DrillRunsResume"),
+    "resiliency recovery-plan finalize": _send_operation_id_in_query(
+        _RecoveryPlanFinalize, "RecoveryPlanActionsFinalize"),
+    "resiliency recovery-plan update-resource": _send_operation_id_in_query(
+        _RecoveryPlanUpdateResource, "RecoveryPlanActionsUpdateResources"),
+    "resiliency recovery-plan validate-for-failover-commit": _send_operation_id_in_query(
+        _RecoveryPlanValidateForFailoverCommit, "RecoveryPlanActionsValidateForFailoverCommit"),
+    "resiliency recovery-plan validate-for-operation": _send_operation_id_in_query(
+        _RecoveryPlanValidateForOperation, "RecoveryPlanActionsValidateForOperation"),
+    "resiliency recovery-plan validate-for-test-failover": _send_operation_id_in_query(
+        _RecoveryPlanValidateForTestFailover, "RecoveryPlanActionsValidateForTestFailover"),
+    "resiliency recovery-plan validate-for-test-failover-cleanup": _send_operation_id_in_query(
+        _RecoveryPlanValidateForTestFailoverCleanup, "RecoveryPlanActionsValidateForTestFailoverCleanup"),
+    "resiliency recovery-plan recovery-job cancel": _send_operation_id_in_query(
+        _RecoveryJobCancel, "RecoveryJobsCancel"),
+    "resiliency recovery-plan recovery-job resume": _send_operation_id_in_query(
+        _RecoveryJobResume, "RecoveryJobsResume"),
+    "resiliency recovery-plan recovery-job retry": _send_operation_id_in_query(_RecoveryJobRetry, "RecoveryJobsRetry"),
+}
