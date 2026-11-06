@@ -27,6 +27,8 @@ from .aaz.latest.redisenterprise import Wait as _DatabaseWait
 from .aaz.latest.redisenterprise import Update as _Update
 from .aaz.latest.redisenterprise.migration import Start as _MigrationStart
 from .aaz.latest.redisenterprise.migration import Undo as _MigrationUndo
+from .aaz.latest.redisenterprise.migration import UnlinkMigratedEndpoint as _MigrationUnlink
+from .aaz.latest.redisenterprise import UnlinkMigratedEndpoint as _ClusterUnlink
 from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
 )
@@ -480,13 +482,13 @@ class MigrationStart(_MigrationStart):
         args_schema.skip_data_migration = AAZBoolArg(
             options=["--skip-data-migration"],
             arg_group="Properties",
-            help="Sets whether the data is migrated from source to target or not. This property must be true during the preview.",
+            help="Sets whether the data is migrated from source to target or not. Set this property to true to skip data migration.",
             required=True,
         )
         args_schema.switch_dns = AAZBoolArg(
             options=["--switch-dns"],
             arg_group="Properties",
-            help="Sets whether the DNS is switched automatically after the data is transferred from the source cache to the target cache. This property must be true during the preview.",
+            help="Sets whether the DNS is switched automatically after the data is transferred from the source cache to the target cache.",
             required=True,
         )
         args_schema.force_migrate = AAZBoolArg(
@@ -508,44 +510,42 @@ class MigrationStart(_MigrationStart):
             args.azure_cache_for_redis.force_migrate = args.force_migrate
 
 
+class _MigrationAction:
+    # AAZ emits no deserializer for these bodyless actions, but Location returns a resource.
+    def __call__(self, *args, **kwargs):
+        request = self.make_request()
+        session = self.client.send_request(request=request, stream=False, **kwargs)
+        if session.http_response.status_code == 202:
+            return self.client.build_lro_polling(
+                self.ctx.args.no_wait,
+                session,
+                self.on_200,
+                self.on_error,
+                lro_options={"final-state-via": "location"},
+                path_format_arguments=self.url_parameters,
+            )
+        return self.on_error(session.http_response)
+
+    def on_200(self, session):
+        pass
+
+
 class MigrationUndo(_MigrationUndo):
-    """Override ``redisenterprise migration undo`` to avoid an AAZ-generated
-    ``NoneType`` crash on successful LRO completion.
 
-    The service's ``Migrations_Cancel`` operation is a 202 LRO declared with
-    ``final-state-via: location`` in swagger, but the ``Location`` header points
-    at the migration resource itself, so the final GET returns a non-empty body.
-    The generated ``MigrationsCancel.__call__`` passes ``None`` as the LRO
-    success deserializer to ``build_lro_polling``; azure-core's
-    ``base_polling._parse_resource`` then tries to call that ``None`` on the
-    non-empty final response and raises
-    ``TypeError: 'NoneType' object is not callable``. The cancel returns no
-    resource of interest, so we pass a no-op deserializer (``on_200``) instead,
-    mirroring how the generated ``delete`` handles its empty response.
+    class MigrationsUndo(_MigrationAction, _MigrationUndo.MigrationsUndo):
+        pass
 
-    Remove this subclass (and the ``commands.py`` registration) once the
-    ``Migrations_Cancel`` swagger contract is fixed to use
-    ``final-state-via: azure-async-operation`` like the other bodyless actions.
-    """
 
-    class MigrationsCancel(_MigrationUndo.MigrationsCancel):
+class MigrationUnlink(_MigrationUnlink):
 
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            return self.on_error(session.http_response)
+    class MigrationsUnlinkMigratedEndpoint(_MigrationAction, _MigrationUnlink.MigrationsUnlinkMigratedEndpoint):
+        pass
 
-        def on_200(self, session):
-            pass
+
+class ClusterUnlink(_ClusterUnlink):
+
+    class ClustersUnlinkMigratedEndpoint(_MigrationAction, _ClusterUnlink.ClustersUnlinkMigratedEndpoint):
+        pass
 
 
 def _get_cluster_with_databases(cluster,
