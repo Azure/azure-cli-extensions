@@ -12,23 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "planetarycomputer geocatalog show",
+    "planetarycomputer geocatalog private-endpoint-connection list",
 )
-class Show(AAZCommand):
-    """Get a GeoCatalog
+class List(AAZCommand):
+    """List private endpoint connections on the given resource
+
+    :example: PrivateEndpointConnections_ListByGeoCatalog
+        az planetarycomputer geocatalog private-endpoint-connection list --resource-group MyResourceGroup --catalog-name MyCatalog
     """
 
     _aaz_info = {
-        "version": "2026-04-15",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.orbital/geocatalogs/{}", "2026-04-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.orbital/geocatalogs/{}/privateendpointconnections", "2026-10-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -42,10 +46,9 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.catalog_name = AAZStrArg(
-            options=["-n", "--name", "--catalog-name"],
+            options=["--catalog-name"],
             help="The name of the catalog",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
@@ -57,7 +60,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.GeoCatalogsGet(ctx=self.ctx)()
+        self.PrivateEndpointConnectionsListByGeoCatalog(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,10 +72,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class GeoCatalogsGet(AAZHttpOperation):
+    class PrivateEndpointConnectionsListByGeoCatalog(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -86,7 +90,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Orbital/geoCatalogs/{catalogName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Orbital/geoCatalogs/{catalogName}/privateEndpointConnections",
                 **self.url_parameters
             )
 
@@ -120,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-15",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
@@ -153,72 +157,67 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
             )
-            _schema_on_200.identity = AAZIdentityObjectType()
-            _schema_on_200.location = AAZStrType(
+            _schema_on_200.value = AAZListType(
                 flags={"required": True},
             )
-            _schema_on_200.name = AAZStrType(
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            identity = cls._schema_on_200.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
+            properties = cls._schema_on_200.value.Element.properties
+            properties.group_ids = AAZListType(
+                serialized_name="groupIds",
                 flags={"read_only": True},
             )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
+            properties.private_endpoint = AAZObjectType(
+                serialized_name="privateEndpoint",
             )
-            identity.type = AAZStrType(
+            properties.private_link_service_connection_state = AAZObjectType(
+                serialized_name="privateLinkServiceConnectionState",
                 flags={"required": True},
-            )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType(
-                nullable=True,
-            )
-
-            _element = cls._schema_on_200.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-                flags={"read_only": True},
-            )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.auto_generated_domain_name_label_scope = AAZStrType(
-                serialized_name="autoGeneratedDomainNameLabelScope",
-            )
-            properties.catalog_uri = AAZStrType(
-                serialized_name="catalogUri",
-                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.tier = AAZStrType()
 
-            system_data = cls._schema_on_200.system_data
+            group_ids = cls._schema_on_200.value.Element.properties.group_ids
+            group_ids.Element = AAZStrType()
+
+            private_endpoint = cls._schema_on_200.value.Element.properties.private_endpoint
+            private_endpoint.id = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            private_link_service_connection_state = cls._schema_on_200.value.Element.properties.private_link_service_connection_state
+            private_link_service_connection_state.actions_required = AAZStrType(
+                serialized_name="actionsRequired",
+            )
+            private_link_service_connection_state.description = AAZStrType()
+            private_link_service_connection_state.status = AAZStrType()
+
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -238,14 +237,11 @@ class Show(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Show"]
+__all__ = ["List"]
