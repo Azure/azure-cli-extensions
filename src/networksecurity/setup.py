@@ -38,7 +38,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='networksecurity',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Networksecurity Extension.',
+    description='Manage NeuroShield resources, protected resources, findings, mitigations, and inventory uploads.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
