@@ -2,6 +2,11 @@
 Release History
 ===============
 
+2.0.0
+++++++
+* [BREAKING CHANGE] ``az cosmosdb copy create`` now always creates jobs on the source account. Use the source account's subscription and resource group, and grant its default managed identity read-write access to the destination for cross-account copies. Manage new jobs using the source account.
+* [BREAKING CHANGE] Remove the hidden ``--host-copy-on-src`` option; destination-hosted job creation is no longer supported.
+
 1.7.2
 ++++++
 * Fix ``az cosmosdb sql container update`` to preserve existing computed properties when updating indexing policies or other container settings.
