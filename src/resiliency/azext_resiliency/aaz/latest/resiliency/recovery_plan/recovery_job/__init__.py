@@ -9,7 +9,6 @@
 # flake8: noqa
 
 from .__cmd_group import *
-from ._cancel import *
 from ._list import *
 from ._resume import *
 from ._retry import *

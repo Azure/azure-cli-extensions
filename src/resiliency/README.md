@@ -129,18 +129,12 @@ az resiliency operation-status show --location <location> --operation-id <id>
 | `az resiliency recovery-plan wait` | Wait for a recovery plan operation to complete |
 | `az resiliency recovery-plan check-readiness` | Check the readiness of a recovery plan |
 | `az resiliency recovery-plan failover` | Failover a recovery plan |
-| `az resiliency recovery-plan failover-commit` | Commit a failover for a recovery plan |
 | `az resiliency recovery-plan finalize` | Finalize a recovery plan |
 | `az resiliency recovery-plan reprotect` | Reprotect a recovery plan |
-| `az resiliency recovery-plan test-failover` | Test failover for a recovery plan |
-| `az resiliency recovery-plan test-failover-cleanup` | Clean up a test failover |
 | `az resiliency recovery-plan update-resource` | Update resources in a recovery plan |
 | `az resiliency recovery-plan validate-for-failover` | Validate a recovery plan for failover |
-| `az resiliency recovery-plan validate-for-failover-commit` | Validate a recovery plan for failover commit |
 | `az resiliency recovery-plan validate-for-operation` | Validate a recovery plan for an operation |
 | `az resiliency recovery-plan validate-for-reprotect` | Validate a recovery plan for reprotect |
-| `az resiliency recovery-plan validate-for-test-failover` | Validate a recovery plan for test failover |
-| `az resiliency recovery-plan validate-for-test-failover-cleanup` | Validate a recovery plan for test failover cleanup |
 
 ### `az resiliency recovery-plan identity`
 
@@ -155,7 +149,6 @@ az resiliency operation-status show --location <location> --operation-id <id>
 
 | Command | Description |
 |---|---|
-| `az resiliency recovery-plan recovery-job cancel` | Cancel a recovery job |
 | `az resiliency recovery-plan recovery-job list` | List recovery jobs |
 | `az resiliency recovery-plan recovery-job resume` | Resume a recovery job |
 | `az resiliency recovery-plan recovery-job retry` | Retry a recovery job |

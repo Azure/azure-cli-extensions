@@ -45,21 +45,14 @@ from .aaz.latest.resiliency.recovery_plan import (
     Update as _RecoveryPlanUpdate,
     CheckReadiness as _RecoveryPlanCheckReadiness,
     Failover as _RecoveryPlanFailover,
-    FailoverCommit as _RecoveryPlanFailoverCommit,
     Reprotect as _RecoveryPlanReprotect,
-    TestFailover as _RecoveryPlanTestFailover,
-    TestFailoverCleanup as _RecoveryPlanTestFailoverCleanup,
     ValidateForFailover as _RecoveryPlanValidateForFailover,
     ValidateForReprotect as _RecoveryPlanValidateForReprotect,
     Finalize as _RecoveryPlanFinalize,
     UpdateResource as _RecoveryPlanUpdateResource,
-    ValidateForFailoverCommit as _RecoveryPlanValidateForFailoverCommit,
     ValidateForOperation as _RecoveryPlanValidateForOperation,
-    ValidateForTestFailover as _RecoveryPlanValidateForTestFailover,
-    ValidateForTestFailoverCleanup as _RecoveryPlanValidateForTestFailoverCleanup,
 )
 from .aaz.latest.resiliency.recovery_plan.recovery_job import (
-    Cancel as _RecoveryJobCancel,
     Resume as _RecoveryJobResume,
     Retry as _RecoveryJobRetry,
 )
@@ -182,31 +175,10 @@ class RecoveryPlanFailover(_RecoveryPlanFailover):
         pass
 
 
-class RecoveryPlanFailoverCommit(_RecoveryPlanFailoverCommit):
-    class RecoveryPlanActionsFailoverCommit(
-            _DecodeStringPropertiesOn200, _OperationIdQueryCompatibility,
-            _RecoveryPlanFailoverCommit.RecoveryPlanActionsFailoverCommit):
-        pass
-
-
 class RecoveryPlanReprotect(_RecoveryPlanReprotect):
     class RecoveryPlanActionsReprotect(
             _DecodeStringPropertiesOn200, _OperationIdQueryCompatibility,
             _RecoveryPlanReprotect.RecoveryPlanActionsReprotect):
-        pass
-
-
-class RecoveryPlanTestFailover(_RecoveryPlanTestFailover):
-    class RecoveryPlanActionsTestFailover(
-            _DecodeStringPropertiesOn200, _OperationIdQueryCompatibility,
-            _RecoveryPlanTestFailover.RecoveryPlanActionsTestFailover):
-        pass
-
-
-class RecoveryPlanTestFailoverCleanup(_RecoveryPlanTestFailoverCleanup):
-    class RecoveryPlanActionsTestFailoverCleanup(
-            _DecodeStringPropertiesOn200, _OperationIdQueryCompatibility,
-            _RecoveryPlanTestFailoverCleanup.RecoveryPlanActionsTestFailoverCleanup):
         pass
 
 
@@ -380,16 +352,8 @@ OPERATION_ID_QUERY_COMMANDS = {
         _RecoveryPlanFinalize, "RecoveryPlanActionsFinalize"),
     "resiliency recovery-plan update-resource": _send_operation_id_in_query(
         _RecoveryPlanUpdateResource, "RecoveryPlanActionsUpdateResources"),
-    "resiliency recovery-plan validate-for-failover-commit": _send_operation_id_in_query(
-        _RecoveryPlanValidateForFailoverCommit, "RecoveryPlanActionsValidateForFailoverCommit"),
     "resiliency recovery-plan validate-for-operation": _send_operation_id_in_query(
         _RecoveryPlanValidateForOperation, "RecoveryPlanActionsValidateForOperation"),
-    "resiliency recovery-plan validate-for-test-failover": _send_operation_id_in_query(
-        _RecoveryPlanValidateForTestFailover, "RecoveryPlanActionsValidateForTestFailover"),
-    "resiliency recovery-plan validate-for-test-failover-cleanup": _send_operation_id_in_query(
-        _RecoveryPlanValidateForTestFailoverCleanup, "RecoveryPlanActionsValidateForTestFailoverCleanup"),
-    "resiliency recovery-plan recovery-job cancel": _send_operation_id_in_query(
-        _RecoveryJobCancel, "RecoveryJobsCancel"),
     "resiliency recovery-plan recovery-job resume": _send_operation_id_in_query(
         _RecoveryJobResume, "RecoveryJobsResume"),
     "resiliency recovery-plan recovery-job retry": _send_operation_id_in_query(_RecoveryJobRetry, "RecoveryJobsRetry"),

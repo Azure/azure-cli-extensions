@@ -17,8 +17,7 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         GoalAssignmentUpdateGoalResource,
         RecoveryPlanIdentityAssign, RecoveryPlanIdentityRemove,
         RecoveryPlanCreate, RecoveryPlanList, RecoveryPlanShow, RecoveryPlanUpdate,
-        RecoveryPlanCheckReadiness, RecoveryPlanFailover, RecoveryPlanFailoverCommit, RecoveryPlanReprotect,
-        RecoveryPlanTestFailover, RecoveryPlanTestFailoverCleanup,
+        RecoveryPlanCheckReadiness, RecoveryPlanFailover, RecoveryPlanReprotect,
         RecoveryPlanValidateForFailover, RecoveryPlanValidateForReprotect,
         OPERATION_ID_QUERY_COMMANDS,
     )
@@ -34,9 +33,6 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
     self.command_table["resiliency recovery-plan update"] = RecoveryPlanUpdate(loader=self)
     self.command_table["resiliency recovery-plan check-readiness"] = RecoveryPlanCheckReadiness(loader=self)
     self.command_table["resiliency recovery-plan failover"] = RecoveryPlanFailover(loader=self)
-    self.command_table["resiliency recovery-plan failover-commit"] = RecoveryPlanFailoverCommit(loader=self)
     self.command_table["resiliency recovery-plan reprotect"] = RecoveryPlanReprotect(loader=self)
-    self.command_table["resiliency recovery-plan test-failover"] = RecoveryPlanTestFailover(loader=self)
-    self.command_table["resiliency recovery-plan test-failover-cleanup"] = RecoveryPlanTestFailoverCleanup(loader=self)
     self.command_table["resiliency recovery-plan validate-for-failover"] = RecoveryPlanValidateForFailover(loader=self)
     self.command_table["resiliency recovery-plan validate-for-reprotect"] = RecoveryPlanValidateForReprotect(loader=self)
