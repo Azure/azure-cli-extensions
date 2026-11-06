@@ -58,7 +58,7 @@ steps:
         fi
         exit 0'
     entryPoint: /bin/bash
-  - cmd: az login --identity --allow-no-subscriptions
+  - cmd: az login --identity --allow-no-subscriptions --output none
   - id: scan-and-schedule-patch
     timeout: 3300
     cmd: |
@@ -68,6 +68,12 @@ steps:
         if [[ $RegistryBaseName == *-* ]]; then
           RegistryBaseName="${RegistryBaseName%%-*}"
           echo "DNL registry name detected, readjusting RegistryBaseName to $RegistryBaseName for task scheduling"
+        fi
+        export AZURE_CORE_COLLECT_TELEMETRY=false
+        RegistryResourceGroup=$(az acr show --name $RegistryBaseName --query resourceGroup --output tsv 2>/dev/null)
+        ResourceGroupArgs=""
+        if [ -n "$RegistryResourceGroup" ]; then
+          ResourceGroupArgs="--resource-group $RegistryResourceGroup"
         fi
         echo "Tag Convention details: $(cat tagConvention.txt)"
         if grep -q "floating" tagConvention.txt; then
@@ -87,7 +93,7 @@ steps:
             IncrementedTagNumber=$((BASH_REMATCH[1]+1))
           fi
           for attempt in 1 2 3; do
-            if output=$(az acr task run --name $ScanImageAndSchedulePatchTask --registry $RegistryBaseName --set SOURCE_REPOSITORY=$RepoName --set SOURCE_IMAGE_TAG=$TagName --set SOURCE_IMAGE_ORIGINAL_TAG=$OriginalTag --set SOURCE_IMAGE_NEWPATCH_TAG=$IncrementedTagNumber --no-wait 2>&1); then
+            if output=$(az acr task run --name $ScanImageAndSchedulePatchTask --registry $RegistryBaseName $ResourceGroupArgs --set SOURCE_REPOSITORY=$RepoName --set SOURCE_IMAGE_TAG=$TagName --set SOURCE_IMAGE_ORIGINAL_TAG=$OriginalTag --set SOURCE_IMAGE_NEWPATCH_TAG=$IncrementedTagNumber --no-wait 2>&1); then
               echo "Scheduled $ScanImageAndSchedulePatchTask for ${RegistryBaseName}/$RepoName, Tag:$TagName, OriginalTag:$OriginalTag, PatchTag:$OriginalTag-$IncrementedTagNumber. $(echo "$output" | grep -o "ID: [a-z0-9]*" | head -1)"
               return 0
             fi

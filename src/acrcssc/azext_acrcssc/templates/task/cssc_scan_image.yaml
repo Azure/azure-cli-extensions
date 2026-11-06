@@ -61,7 +61,8 @@ steps:
             RegistryBaseName="${RegistryBaseName%%-*}"
             echo "DNL registry name detected, readjusting RegistryBaseName to $RegistryBaseName for task scheduling"
           fi
-          az login --identity --allow-no-subscriptions; \
+          export AZURE_CORE_COLLECT_TELEMETRY=false; \
+          az login --identity --allow-no-subscriptions --output none; \
           echo "Total OS vulnerabilities found -> $vulCount"; \
           echo "PATCHING task scheduled for image ${RegistryBaseName}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}, new patch tag will be {{.Values.SOURCE_IMAGE_ORIGINAL_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"; \
           az acr task run --name $patchimagetask --registry $RegistryBaseName --set SOURCE_REPOSITORY={{.Values.SOURCE_REPOSITORY}} --set SOURCE_IMAGE_TAG={{.Values.SOURCE_IMAGE_ORIGINAL_TAG}} --set SOURCE_IMAGE_NEWPATCH_TAG={{.Values.SOURCE_IMAGE_NEWPATCH_TAG}} --no-wait; \
