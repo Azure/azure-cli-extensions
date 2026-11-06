@@ -78,7 +78,10 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     # Analytics SKR policy context
     with self.argument_context('managedcleanroom frontend analytics skr-policy') as c:
         c.argument('dataset_id', options_list=['--dataset-id', '-d'],
-                   help='Dataset identifier for which to retrieve SKR policy')
+                   help='Optional dataset identifier. When provided, returns the '
+                   'dataset-scoped SKR policy based on the dataset KEK authority (use for '
+                   'MAA-backed datasets). When omitted, returns the collaboration-level CGS '
+                   'SKR policy.')
 
     # OIDC context
     with self.argument_context('managedcleanroom frontend oidc issuerinfo') as c:
@@ -205,9 +208,21 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             options_list=['--kek-secret-id'],
             help='KEK secret ID (CPK mode only)')
         c.argument(
-            'kek_maa_url',
-            options_list=['--kek-maa-url'],
-            help='MAA URL for KEK (CPK mode only)')
+            'kek_authority_type',
+            options_list=['--kek-authority-type'],
+            arg_type=get_enum_type(['CGS', 'MAA']),
+            help='Attestation authority used for KEK secure key release (CPK mode only). '
+            'Defaults to MAA when only --kek-authority-endpoint is supplied.')
+        c.argument(
+            'kek_authority_endpoint',
+            options_list=[
+                '--kek-authority-endpoint',
+                c.deprecate(
+                    target='--kek-maa-url',
+                    redirect='--kek-authority-endpoint',
+                    hide=True)],
+            help='Attestation authority endpoint for the KEK (CPK mode only). Required for '
+            'MAA; not allowed for CGS.')
         c.argument(
             'subdirectory',
             options_list=['--subdirectory'],
