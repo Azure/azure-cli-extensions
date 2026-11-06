@@ -24,12 +24,15 @@ class Create(AAZCommand):
         :example: Create a Target Resource
         az workload-orchestration target create -g {rg} -n {target_name} --location {location} --capabilities {capabilities} --description {description} --display-name {display_name} --hierarchy-level {hierarchy_level} --solution-scope {solution_scope} --state {state} --target-specification {target_specification}
 
+        :example: Create a Target bound to an Arc-connected server
+        az workload-orchestration target create -g {rg} -n {target_name} --location {location} --capabilities {capabilities} --description {description} --display-name {display_name} --hierarchy-level {hierarchy_level} --target-specification "@targetspecs.json" --target-location "@machine.json"
+
     """
 
     _aaz_info = {
-        "version": "2025-08-01",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/targets/{}", "2025-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/targets/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -116,6 +119,11 @@ class Create(AAZCommand):
             help="Specifies that we are using Helm charts for the k8s deployment",
             required=True,
         )
+        _args_schema.target_location = AAZObjectArg(
+            options=["--target-location"],
+            arg_group="Properties",
+            help="Machine the target is bound to, instead of --extended-location. Example: '@machine.json' with {\"name\": \"<machine ARM ID>\", \"type\": \"ArcMachine\"}.",
+        )
 
         _args_schema.service_group = AAZStrArg(
             options=["--service-group"],
@@ -157,6 +165,19 @@ class Create(AAZCommand):
             help="The type of the extended location.",
             required=True,
             enum={"CustomLocation": "CustomLocation", "EdgeZone": "EdgeZone"},
+        )
+
+        target_location = cls._args_schema.target_location
+        target_location.name = AAZStrArg(
+            options=["name"],
+            help="ARM ID of the machine.",
+            required=True,
+        )
+        target_location.type = AAZStrArg(
+            options=["type"],
+            help="ArcMachine: Arc-connected server. EdgeMachine: Edge machine (SFF drift recovery).",
+            required=True,
+            enum={"ArcMachine": "ArcMachine", "EdgeMachine": "EdgeMachine"},
         )
 
         tags = cls._args_schema.tags
@@ -349,7 +370,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-08-01",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -394,6 +415,12 @@ class Create(AAZCommand):
                 properties.set_prop("solutionScope", AAZStrType, ".solution_scope")
                 properties.set_prop("state", AAZStrType, ".state")
                 properties.set_prop("targetSpecification", AAZFreeFormDictType, ".target_specification", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("targetLocation", AAZObjectType, ".target_location")
+
+            target_location = _builder.get(".properties.targetLocation")
+            if target_location is not None:
+                target_location.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                target_location.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
             capabilities = _builder.get(".properties.capabilities")
             if capabilities is not None:
@@ -493,6 +520,17 @@ class Create(AAZCommand):
             )
             properties.target_specification = AAZFreeFormDictType(
                 serialized_name="targetSpecification",
+                flags={"required": True},
+            )
+            properties.target_location = AAZObjectType(
+                serialized_name="targetLocation",
+            )
+
+            target_location = cls._schema_on_200_201.properties.target_location
+            target_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            target_location.type = AAZStrType(
                 flags={"required": True},
             )
 

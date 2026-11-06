@@ -21,9 +21,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-08-01",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/targets/{}", "2025-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/targets/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -124,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-08-01",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -222,6 +222,17 @@ class Show(AAZCommand):
             )
             properties.target_specification = AAZFreeFormDictType(
                 serialized_name="targetSpecification",
+                flags={"required": True},
+            )
+            properties.target_location = AAZObjectType(
+                serialized_name="targetLocation",
+            )
+
+            target_location = cls._schema_on_200.properties.target_location
+            target_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            target_location.type = AAZStrType(
                 flags={"required": True},
             )
 
