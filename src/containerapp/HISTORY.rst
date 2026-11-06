@@ -6,6 +6,10 @@ upcoming
 ++++++
 * 'az containerapp env create': Pre-announce the future change of the '--logs-destination' default from 'log-analytics' to 'azure-monitor'. The current default remains 'log-analytics'; specify '--logs-destination log-analytics' to retain this behavior after the change.
 
+1.3.1b1
++++++++
+* `az containerapp show`: Fix missing container apps returning exit code 1 instead of 3.
+
 1.3.0b5
 ++++++
 * 'az containerapp env storage set': Support Azure Files authentication with an Azure Key Vault secret or managed identity
