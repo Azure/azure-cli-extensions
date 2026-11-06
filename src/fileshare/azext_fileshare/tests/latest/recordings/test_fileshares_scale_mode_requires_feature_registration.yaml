@@ -1,0 +1,221 @@
+interactions:
+- request:
+    body: '{"properties": {"mediaTier": "SSD", "protocol": "NFS", "scaleMode": "Scale"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fileshare limits-show
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '77'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --protocol --media-tier --scale-mode
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26300-SP0)
+    method: POST
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FileShares/locations/eastus2euap/getLimits?api-version=2026-09-01
+  response:
+    body:
+      string: '{"error":{"code":"-2131750881","message":"The requested scale mode
+        requires the subscription to be registered for the ''Microsoft.FileShares/AzurePremiumFilesNFSScaleMode''
+        feature. Register the feature for the subscription and retry the request.","target":"scaleMode","details":null,"additionalInfo":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '303'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Oct 2026 21:05:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=496ae77e-6ca8-4a1f-924c-83b8c9661760/eastus2euap/c92ef92c-9d07-4c32-90cb-c5823eeda88c
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: DD5D4A7475744854B5FB386B1B257459 Ref B: SN4AA2022302035 Ref C: 2026-10-30T21:05:25Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"mediaTier": "SSD", "protocol": "NFS", "provisionedStorageGiB":
+      1024, "scaleMode": "Scale"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fileshare get-provisioning-recommendation
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '108'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --provisioned-storage-gib --protocol --media-tier --scale-mode
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26300-SP0)
+    method: POST
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FileShares/locations/eastus2euap/getProvisioningRecommendation?api-version=2026-09-01
+  response:
+    body:
+      string: '{"error":{"code":"-2131750881","message":"The requested scale mode
+        requires the subscription to be registered for the ''Microsoft.FileShares/AzurePremiumFilesNFSScaleMode''
+        feature. Register the feature for the subscription and retry the request.","target":"scaleMode","details":null,"additionalInfo":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '303'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Oct 2026 21:05:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=496ae77e-6ca8-4a1f-924c-83b8c9661760/eastus2euap/794c1fd0-7f7b-49e4-a393-d200730f77ab
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 8578BF16DD7F42B292B1CA5183883F60 Ref B: SN4AA2022305039 Ref C: 2026-10-30T21:05:26Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"location": "eastus2euap", "properties": {"mediaTier": "SSD", "protocol":
+      "NFS", "provisionedIOPerSec": 3000, "provisionedStorageGiB": 100, "provisionedThroughputMiBPerSec":
+      125, "redundancy": "Local", "scaleMode": "Scale"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fileshare create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '225'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --location --protocol --media-tier --scale-mode --redundancy --provisioned-storage-gib
+        --provisioned-iops --provisioned-throughput-mib
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26300-SP0)
+    method: PUT
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fileshares_scale000001/providers/Microsoft.FileShares/fileShares/share000002?api-version=2026-09-01
+  response:
+    body:
+      string: '{"error":{"code":"-2131750881","message":"The requested scale mode
+        requires the subscription to be registered for the ''Microsoft.FileShares/AzurePremiumFilesNFSScaleMode''
+        feature. Register the feature for the subscription and retry the request.","target":"Validation","details":null,"additionalInfo":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '304'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Oct 2026 21:05:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: DE9E5E961BFC41C083E5637DC8B7933B Ref B: SN4AA2022304033 Ref C: 2026-10-30T21:05:27Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fileshare show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.11.9 (Windows-10-10.0.26300-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fileshares_scale000001/providers/Microsoft.FileShares/fileShares/share000002?api-version=2026-09-01
+  response:
+    body:
+      string: '{"error":{"code":"-2134347772","message":"Resource ''/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_fileshares_scale000001/providers/Microsoft.FileShares/fileShares/share000002''
+        not found.","target":"InvalidResource","details":null,"additionalInfo":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '281'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Oct 2026 21:05:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: D16779411D7D447FB7D86D1572504AED Ref B: SN4AA2022305047 Ref C: 2026-10-30T21:05:29Z'
+      x-servicefabric:
+      - ResourceNotFound
+    status:
+      code: 404
+      message: Not Found
+version: 1
