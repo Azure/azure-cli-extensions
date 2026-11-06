@@ -999,13 +999,24 @@ def delete_vm(
         machine_client.delete(resource_group_name, resource_name)
         return
 
+    if not delete_machine:
+        try:
+            machine = machine_client.get(resource_group_name, resource_name)
+        except ResourceNotFoundError:
+            machine = None
+
+        if machine is not None and machine.kind and machine.kind.lower() == MACHINE_KIND_SCVMM.lower():
+            _ = machine_client.update(
+                resource_group_name, resource_name, MachineUpdate(kind=''),
+            )
+
     try:
         # TODO (snaskar): Add deleteFromHost to SDK
         op = sdk_no_wait(
             no_wait, client.begin_delete, machine_id, force, delete_from_host,
         )
     except ResourceNotFoundError:
-        # Nothing to delete if the parent machine does not exist.
+        # Nothing to delete if the VM instance does not exist.
         return
 
     op.result()
