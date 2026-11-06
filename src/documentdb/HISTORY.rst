@@ -3,6 +3,13 @@
 Release History
 ===============
 
+1.1.0b2
++++++++
+* Add Microsoft Entra-only and dual-authentication options to point-in-time restore.
+* Add customer-managed-key and user-assigned identity options to point-in-time restore.
+* Preserve the existing native-authentication restore payload when new options are omitted.
+* Expand restore validation, help, and test coverage.
+
 1.1.0b1
 +++++++
 * Regenerate the extension with the ``2026-06-15-preview`` API.

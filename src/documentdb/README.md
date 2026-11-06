@@ -4,7 +4,7 @@ This is an extension to Azure CLI to manage **Azure DocumentDB**
 clusters (the `Microsoft.DocumentDB/mongoClusters` resource) under the
 `az documentdb mongocluster` command group.
 
-Version `1.1.0b1` is a Beta release generated against the
+Version `1.1.0b2` is a Beta release generated against the
 `2026-06-15-preview` management API. The Preview API adds planned replica
 promotion while retaining the existing command surface.
 
@@ -103,8 +103,41 @@ az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup \
 
 ### Point-in-time restore
 
+The existing native-authentication behavior remains the default. When
+`--auth-allowed-modes` and `--encryption` are both omitted, both administrator
+arguments are required.
+
 ```bash
 az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 \
     --source-cluster MyCluster --restore-time "2026-06-30T10:00:00Z" \
     --admin-user dbadmin --admin-password MyP@ssw0rd123!
 ```
+
+To restore an existing Microsoft Entra-only cluster, omit the administrator
+credentials. This example preserves the source's authentication mode; it does not
+demonstrate migrating a NativeAuth cluster to Entra-only authentication.
+
+```bash
+az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 \
+    --source-cluster MyEntraCluster --restore-time "2026-06-30T10:00:00Z" \
+    --auth-allowed-modes MicrosoftEntraID
+```
+
+Customer-managed-key restore accepts the same user-assigned identity and encryption
+shape as cluster creation. The identity referenced by the encryption configuration
+must also be supplied through `--user-assigned`. CMK configures encryption, not
+authentication. Supply administrator credentials when restoring with NativeAuth;
+adding CMK does not remove that service requirement.
+
+```bash
+az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 \
+    --source-cluster MyCluster --restore-time "2026-06-30T10:00:00Z" \
+    --admin-user dbadmin --admin-password MyP@ssw0rd123! \
+    --user-assigned <userAssignedIdentityResourceId> --encryption @encryption.json
+```
+
+The restore command does not accept compute, storage, sharding, server-version, or
+high-availability overrides. Those values follow the service's restore behavior.
+Networking settings are not copied, and high availability is disabled after
+restore. Inspect the new cluster and configure networking and high availability
+when required.

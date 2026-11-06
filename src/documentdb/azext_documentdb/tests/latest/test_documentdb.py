@@ -7,9 +7,40 @@ import json
 import os
 import tempfile
 import unittest
+from urllib.parse import urlsplit
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests.recording_processors import GeneralNameReplacer
+
+
+class MongoClusterOperationTokenReplacer(GeneralNameReplacer):
+    """Remove signed polling tokens from recorded URLs, headers, and bodies."""
+
+    def _register_url(self, url):
+        parts = urlsplit(url)
+        if not any(path in parts.path for path in (
+                '/mongoClusterAzureAsyncOperation/', '/mongoClusterOperationResults/')):
+            return
+        query = '&'.join(
+            pair.split('=', 1)[0] + '=REDACTED'
+            if pair.split('=', 1)[0] in {'t', 'c', 's', 'h'} else pair
+            for pair in parts.query.split('&')
+        )
+        sanitized = parts._replace(query=query).geturl()
+        if sanitized != url and (url, sanitized) not in self.names_name:
+            self.register_name_pair(url, sanitized)
+
+    def process_request(self, request):
+        self._register_url(request.uri)
+        return super().process_request(request)
+
+    def process_response(self, response):
+        for header, values in response['headers'].items():
+            if header.lower() in {'location', 'azure-asyncoperation'}:
+                for value in values:
+                    self._register_url(value)
+        return super().process_response(response)
 
 
 class DocumentdbScenario(ScenarioTest):
@@ -19,8 +50,8 @@ class DocumentdbScenario(ScenarioTest):
     and its own recording, so a failure in one scenario does not mask the others
     and a single scenario can be re-recorded on its own.
 
-    Every long-running operation runs synchronously (the command blocks until the
-    operation reaches a terminal state). The mongo cluster service can keep an
+    Long-running operations either run synchronously or use an explicit wait
+    followed by a terminal-state assertion. The mongo cluster service can keep an
     internal lock for a while after an operation reports ``Succeeded``, so
     ``_cmd_retry`` reissues a mutating command while the service still reports an
     operation ``in-progress``. It only sleeps between attempts during a live
@@ -28,6 +59,10 @@ class DocumentdbScenario(ScenarioTest):
     """
 
     # ---- helpers (not prefixed test_, so they never run as tests) ----
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.recording_processors.append(MongoClusterOperationTokenReplacer())
 
     def _cmd_retry(self, command, checks=None, retries=12, delay=45):
         import time
@@ -47,17 +82,20 @@ class DocumentdbScenario(ScenarioTest):
             raise last_error
         return None
 
-    def _create_cluster(self, extra=''):
+    def _create_cluster(self, extra='', storage_type='PremiumSSDv2'):
         """Create the shared base cluster and block until it is provisioned.
 
         ``extra`` appends scenario-specific create flags (for example Entra auth
         or a user-assigned identity).
         """
-        self._cmd_retry(
+        command = (
             'documentdb mongocluster create -n {cluster} -g {rg} --location {loc} '
             '--admin-user {admin} --password {password} '
-            '--tier M30 --storage-size 128 --storage-type PremiumSSDv2 '
-            '--shard-count 1 --high-availability Disabled ' + extra,
+            '--tier M30 --storage-size 128 --storage-type ' + storage_type + ' '
+            '--shard-count 1 --high-availability Disabled ' + extra
+        )
+        self._cmd_retry(
+            command,
             checks=[
                 self.check('name', '{cluster}'),
                 self.check('properties.provisioningState', 'Succeeded'),
@@ -71,6 +109,19 @@ class DocumentdbScenario(ScenarioTest):
             'admin': 'testadmin',
             'password': 'CliTest2026!Pw',
         })
+
+    def _wait_for_restore_point(self):
+        self.cmd(
+            'documentdb mongocluster wait -n {cluster} -g {rg} '
+            '--custom "properties.backup.earliestRestoreTime!=null" '
+            '--interval 60 --timeout 14400'
+        )
+        earliest = self.cmd(
+            'documentdb mongocluster show -n {cluster} -g {rg} '
+            '--query properties.backup.earliestRestoreTime -o tsv'
+        ).output.strip()
+        self.assertTrue(earliest, 'The source cluster did not expose a restore point.')
+        self.kwargs['restore_time'] = earliest
 
     # ---- test 1: cluster CRUD + connection strings + reset-password ----
 
@@ -329,20 +380,12 @@ class DocumentdbScenario(ScenarioTest):
         self._base_kwargs()
         self.kwargs['restored'] = self.create_random_name('cli-mc-rst', 20)
 
-        self._create_cluster()
+        self._create_cluster(storage_type='PremiumSSD')
 
         # Wait (via the native wait command) until the first backup produces a
         # restore point, then read that point in time and restore into a new
         # cluster from it.
-        self.cmd(
-            'documentdb mongocluster wait -n {cluster} -g {rg} '
-            '--custom "properties.backup.earliestRestoreTime!=null"'
-        )
-        earliest = self.cmd(
-            'documentdb mongocluster show -n {cluster} -g {rg} '
-            '--query properties.backup.earliestRestoreTime -o tsv'
-        ).output.strip()
-        self.kwargs['restore_time'] = earliest or '2026-01-01T00:00:00Z'
+        self._wait_for_restore_point()
         self._cmd_retry(
             'documentdb mongocluster restore -n {restored} -g {rg} --location {loc} '
             '--source-cluster {cluster} --restore-time {restore_time} '
@@ -350,13 +393,258 @@ class DocumentdbScenario(ScenarioTest):
             checks=[
                 self.check('name', '{restored}'),
                 self.check('properties.provisioningState', 'Succeeded'),
+                self.check('properties.administrator.userName', '{admin}'),
+                self.check('properties.compute.tier', 'M30'),
+                self.check('properties.storage.sizeGb', 128),
+                self.check('properties.storage.type', 'PremiumSSD'),
+                self.check('properties.sharding.shardCount', 1),
+                self.check('properties.highAvailability.targetMode', 'Disabled'),
+                self.check('properties.authConfig.allowedModes[0]', 'NativeAuth'),
+                self.check('length(properties.authConfig.allowedModes)', 1),
             ],
         )
         self._cmd_retry('documentdb mongocluster delete -n {restored} -g {rg} --yes')
 
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
 
-    # ---- test 7: customer-managed key (CMK) encryption at rest ----
+    # ---- test 7: point-in-time restore with Microsoft Entra-only auth ----
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_restore_entra', location='eastus2')
+    def test_documentdb_mongocluster_restore_entra(self, resource_group):
+        self._base_kwargs()
+        self.kwargs['restored'] = self.create_random_name('cli-mc-rst', 20)
+
+        # The generated create command requires native credentials; REST is only
+        # used to seed an Entra-only source, not to execute the restore under test.
+        self.kwargs['subscription_id'] = self.get_subscription_id()
+        self.kwargs['source_body'] = json.dumps({
+            'location': self.kwargs['loc'],
+            'properties': {
+                'authConfig': {'allowedModes': ['MicrosoftEntraID']},
+                'compute': {'tier': 'M30'},
+                'storage': {'sizeGb': 128, 'type': 'PremiumSSD'},
+                'sharding': {'shardCount': 1},
+                'highAvailability': {'targetMode': 'Disabled'},
+            },
+        })
+        self.cmd(
+            'rest --method put --url /subscriptions/{subscription_id}/resourceGroups/{rg}/'
+            'providers/Microsoft.DocumentDB/mongoClusters/{cluster}?api-version=2026-06-15-preview '
+            "--body '{source_body}'"
+        )
+        self.cmd(
+            'documentdb mongocluster wait -n {cluster} -g {rg} '
+            '--custom "properties.provisioningState==\'Succeeded\'" '
+            '--interval 60 --timeout 14400'
+        )
+        self.cmd(
+            'documentdb mongocluster show -n {cluster} -g {rg}',
+            checks=[
+                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('properties.authConfig.allowedModes[0]', 'MicrosoftEntraID'),
+                self.check('length(properties.authConfig.allowedModes)', 1),
+                self.not_exists('properties.administrator.userName'),
+                self.not_exists('properties.administrator.password'),
+            ],
+        )
+        self._wait_for_restore_point()
+
+        self._cmd_retry(
+            'documentdb mongocluster restore -n {restored} -g {rg} --location {loc} '
+            '--source-cluster {cluster} --restore-time {restore_time} '
+            '--auth-allowed-modes MicrosoftEntraID --no-wait'
+        )
+        self.cmd(
+            'documentdb mongocluster wait -n {restored} -g {rg} '
+            '--custom "properties.provisioningState==\'Succeeded\'" '
+            '--interval 60 --timeout 14400'
+        )
+        self.cmd(
+            'documentdb mongocluster show -n {restored} -g {rg}',
+            checks=[
+                self.check('name', '{restored}'),
+                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('properties.authConfig.allowedModes[0]', 'MicrosoftEntraID'),
+                self.check('length(properties.authConfig.allowedModes)', 1),
+                self.not_exists('properties.administrator.userName'),
+                self.not_exists('properties.administrator.password'),
+            ],
+        )
+        self._cmd_retry('documentdb mongocluster delete -n {restored} -g {rg} --yes')
+        self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
+
+    # ---- test 8: point-in-time restore with CMK and managed identity ----
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_restore_cmk', location='eastus2')
+    def test_documentdb_mongocluster_restore_cmk(self, resource_group):
+        self._test_restore_cmk(entra_only=False)
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_restore_entra_cmk', location='eastus2')
+    def test_documentdb_mongocluster_restore_entra_cmk(self, resource_group):
+        self._test_restore_cmk(entra_only=True)
+
+    def _test_restore_cmk(self, entra_only):
+        self._base_kwargs()
+        self.kwargs.update({
+            'restored': self.create_random_name('cli-mc-rst', 20),
+            'mi': self.create_random_name('climcmi', 20),
+            'kv': self.create_random_name('climckv', 20),
+            'key': 'cli-mc-restore-key',
+        })
+
+        if not entra_only:
+            self._create_cluster(storage_type='PremiumSSD')
+
+        mi = self.cmd('identity create -g {rg} -n {mi} -l {loc}').get_output_in_json()
+        self.kwargs['mi_id'] = mi['id'].replace('/resourcegroups/', '/resourceGroups/')
+        self.kwargs['mi_principal'] = mi['principalId']
+
+        self.cmd(
+            'keyvault create -g {rg} -n {kv} -l {loc} '
+            '--enable-purge-protection true --enable-rbac-authorization false'
+        )
+        self.cmd(
+            'keyvault set-policy -g {rg} -n {kv} --object-id {mi_principal} '
+            '--key-permissions get list wrapKey unwrapKey'
+        )
+        key = self.cmd(
+            'keyvault key create --vault-name {kv} -n {key} --kty RSA'
+        ).get_output_in_json()
+        self.kwargs['key_url'] = key['key']['kid'].rsplit('/', 1)[0]
+
+        encryption_checks = [
+            self.check(
+                'properties.encryption.customerManagedKeyEncryption.'
+                'keyEncryptionKeyIdentity.identityType',
+                'UserAssignedIdentity',
+            ),
+            self.check(
+                'properties.encryption.customerManagedKeyEncryption.'
+                'keyEncryptionKeyIdentity.userAssignedIdentityResourceId',
+                '{mi_id}',
+            ),
+            self.check(
+                'properties.encryption.customerManagedKeyEncryption.keyEncryptionKeyUrl',
+                '{key_url}',
+            ),
+        ]
+        auth_checks = [
+            self.check(
+                'properties.authConfig.allowedModes[0]',
+                'MicrosoftEntraID' if entra_only else 'NativeAuth',
+            ),
+            self.check('length(properties.authConfig.allowedModes)', 1),
+        ]
+        if entra_only:
+            auth_checks.extend([
+                self.not_exists('properties.administrator.userName'),
+                self.not_exists('properties.administrator.password'),
+            ])
+            # Seed the encrypted Entra-only source via REST because generated
+            # create still requires native credentials. Restore uses the CLI.
+            self.kwargs['subscription_id'] = self.get_subscription_id()
+            self.kwargs['source_body'] = json.dumps({
+                'location': self.kwargs['loc'],
+                'identity': {
+                    'type': 'UserAssigned',
+                    'userAssignedIdentities': {self.kwargs['mi_id']: {}},
+                },
+                'properties': {
+                    'authConfig': {'allowedModes': ['MicrosoftEntraID']},
+                    'compute': {'tier': 'M30'},
+                    'storage': {'sizeGb': 128, 'type': 'PremiumSSD'},
+                    'sharding': {'shardCount': 1},
+                    'highAvailability': {'targetMode': 'Disabled'},
+                    'encryption': {
+                        'customerManagedKeyEncryption': {
+                            'keyEncryptionKeyIdentity': {
+                                'identityType': 'UserAssignedIdentity',
+                                'userAssignedIdentityResourceId': self.kwargs['mi_id'],
+                            },
+                            'keyEncryptionKeyUrl': self.kwargs['key_url'],
+                        },
+                    },
+                },
+            })
+            self.cmd(
+                'rest --method put --url /subscriptions/{subscription_id}/resourceGroups/{rg}/'
+                'providers/Microsoft.DocumentDB/mongoClusters/{cluster}?api-version=2026-06-15-preview '
+                "--body '{source_body}'"
+            )
+            self.cmd(
+                'documentdb mongocluster wait -n {cluster} -g {rg} '
+                '--custom "properties.provisioningState==\'Succeeded\'" '
+                '--interval 60 --timeout 14400'
+            )
+            self.cmd(
+                'documentdb mongocluster show -n {cluster} -g {rg}',
+                checks=[
+                    self.check('properties.provisioningState', 'Succeeded'),
+                    self.check('identity.type', 'UserAssigned'),
+                    self.exists('identity.userAssignedIdentities."{mi_id}"'),
+                    self.check('identity.userAssignedIdentities."{mi_id}".principalId', '{mi_principal}'),
+                ] + encryption_checks + auth_checks,
+            )
+        else:
+            auth_checks.append(self.check('properties.administrator.userName', '{admin}'))
+
+        enc = {
+            'customer-managed-key-encryption': {
+                'key-encryption-key-identity': {
+                    'identity-type': 'UserAssignedIdentity',
+                    'user-assigned-identity-resource-id': self.kwargs['mi_id'],
+                },
+                'key-encryption-key-url': self.kwargs['key_url'],
+            }
+        }
+        enc_file = os.path.join(
+            tempfile.gettempdir(),
+            'cli_documentdb_restore_cmk_enc_{}.json'.format(self.kwargs['cluster']),
+        )
+        with open(enc_file, 'w') as handle:
+            json.dump(enc, handle)
+        self.kwargs['enc_file'] = enc_file.replace('\\', '/')
+
+        try:
+            self._wait_for_restore_point()
+            administrator_args = '' if entra_only else '--admin-user {admin} --password {password} '
+            self._cmd_retry(
+                'documentdb mongocluster restore -n {restored} -g {rg} --location {loc} '
+                '--source-cluster {cluster} --restore-time {restore_time} '
+                + administrator_args +
+                '--user-assigned {mi_id} --encryption @{enc_file} --no-wait'
+            )
+            self.cmd(
+                'documentdb mongocluster wait -n {restored} -g {rg} '
+                '--custom "properties.provisioningState==\'Succeeded\'" '
+                '--interval 60 --timeout 14400'
+            )
+            self.cmd(
+                'documentdb mongocluster show -n {restored} -g {rg}',
+                checks=[
+                    self.check('name', '{restored}'),
+                    self.check('properties.provisioningState', 'Succeeded'),
+                ] + encryption_checks + auth_checks,
+            )
+        finally:
+            if os.path.exists(enc_file):
+                os.remove(enc_file)
+
+        self.cmd(
+            'documentdb mongocluster identity show -n {restored} -g {rg}',
+            checks=[
+                self.check('type', 'UserAssigned'),
+                self.exists('userAssignedIdentities."{mi_id}"'),
+                self.check('userAssignedIdentities."{mi_id}".principalId', '{mi_principal}'),
+            ],
+        )
+        self._cmd_retry('documentdb mongocluster delete -n {restored} -g {rg} --yes')
+        self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
+
+    # ---- test 9: customer-managed key (CMK) encryption at rest ----
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_documentdb_cmk', location='eastus2')
@@ -454,7 +742,7 @@ class DocumentdbScenario(ScenarioTest):
 
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
 
-    # ---- tests 8-9: replica promote (forced and planned) ----
+    # ---- tests 10-11: replica promote (forced and planned) ----
 
     def _test_replica_promote(self, promote_option):
         self._base_kwargs()
@@ -520,7 +808,7 @@ class DocumentdbScenario(ScenarioTest):
     def test_documentdb_mongocluster_replica_promote_planned(self, resource_group):
         self._test_replica_promote('Planned')
 
-    # ---- test 10: additional cluster properties (create + update coverage) ----
+    # ---- test 12: additional cluster properties (create + update coverage) ----
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_documentdb_props', location='eastus2')
@@ -627,7 +915,7 @@ class DocumentdbScenario(ScenarioTest):
 
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
 
-    # ---- test 11: negative cases (validation + service rejections) ----
+    # ---- test 13: negative cases (validation + service rejections) ----
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_documentdb_neg', location='eastus2')
