@@ -300,6 +300,7 @@ from .action import (
     AddConfigurationSettings,
     AddConfigurationProtectedSettings,
 )
+from .upgrade_insights import validate_upgrade_insights_create
 
 from knack.arguments import CLIArgumentType
 from knack.deprecation import Deprecated
@@ -2342,6 +2343,43 @@ def load_arguments(self, _):
             help="Node pool name, alphanumeric characters only. See https://aka.ms/aks-naming-rules for length limits.",
             validator=validate_nodepool_name,
         )
+
+    with self.argument_context("aks upgrade-insights") as c:
+        c.argument("name", name_type, help="The managed cluster name.", required=True)
+
+    with self.argument_context("aks upgrade-insights create") as c:
+        c.argument(
+            "upgrade_type", arg_type=get_enum_type(["ControlPlane", "ControlPlaneAndAgentPools"]),
+            default="ControlPlaneAndAgentPools", validator=validate_upgrade_insights_create,
+            help="The upgrade scope to evaluate. Defaults to the control plane and all agent pools.",
+        )
+        c.argument(
+            "target_kubernetes_ver", required=True,
+            help="The target Kubernetes version to evaluate. This command does not upgrade the cluster.",
+        )
+
+    with self.argument_context("aks nodepool upgrade-insights") as c:
+        c.argument("cluster_name", required=True, help="The managed cluster name.")
+        c.argument(
+            "nodepool_name", options_list=["--name", "-n"], required=True,
+            validator=validate_nodepool_name, help="The node pool name.",
+        )
+
+    with self.argument_context("aks nodepool upgrade-insights create") as c:
+        c.argument(
+            "upgrade_type", arg_type=get_enum_type(["AgentPool", "NodeImage"]),
+            default="AgentPool", validator=validate_upgrade_insights_create,
+            help="The upgrade scope to evaluate. Defaults to an agent pool Kubernetes version upgrade.",
+        )
+        c.argument("target_kubernetes_ver", help="The target Kubernetes version. Required for AgentPool.")
+        c.argument(
+            "target_node_image_ver",
+            help="The target node image version. Only valid for NodeImage; omitted means the latest available image.",
+        )
+
+    for scope in ["aks upgrade-insights show", "aks nodepool upgrade-insights show"]:
+        with self.argument_context(scope) as c:
+            c.argument("insight_name", required=True, help="The stored insight name returned by create or list.")
 
     # managed namespace
     with self.argument_context("aks namespace") as c:

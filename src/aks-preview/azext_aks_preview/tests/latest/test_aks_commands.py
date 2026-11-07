@@ -23588,7 +23588,7 @@ spec:
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={aks_name} --location={location} "
-            "--ssh-key-value={ssh_key_value} "
+            "--ssh-key-value={ssh_key_value} --kms-infrastructure-encryption Enabled "
         )
         self.cmd(
             create_cmd,

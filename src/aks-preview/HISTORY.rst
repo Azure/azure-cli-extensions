@@ -11,6 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks upgrade-insights create/show/list`: Add cluster upgrade readiness evaluations and stored insights with scope-nested issue reports and structured output support.
+* `az aks nodepool upgrade-insights create/show`: Add single-pool Kubernetes and node-image readiness evaluations.
+* Upgrade Insights reports and tables explicitly show missing agent-pool evaluations instead of reporting an incomplete combined evaluation as passed.
+* Upgrade Insights commands preserve parser-accepted output and query abbreviations, including `--out json`, `--out=json`, and `--que`.
 
 22.0.0b16
 +++++++++
