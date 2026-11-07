@@ -15,13 +15,15 @@ from azure.cli.core.aaz import *
     "redisenterprise migration list",
 )
 class List(AAZCommand):
-    """List information about all migrations attempts in a Redis Enterprise cluster.
+    """List migrations from Azure Cache for Redis Basic, Standard, or Premium tiers to Azure Managed Redis.
+
+    These commands apply only to migrations from the Basic, Standard, and Premium tiers of Azure Cache for Redis to Azure Managed Redis.
     """
 
     _aaz_info = {
-        "version": "2026-06-01-preview",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations", "2026-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations", "2026-09-01"],
         ]
     }
 
@@ -121,7 +123,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01-preview",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
@@ -193,12 +195,17 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.rollback_eligible_until = AAZStrType(
+                serialized_name="rollbackEligibleUntil",
+                flags={"read_only": True},
+            )
             properties.source_type = AAZStrType(
                 serialized_name="sourceType",
                 flags={"required": True},
             )
             properties.status_details = AAZStrType(
                 serialized_name="statusDetails",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.target_resource_id = AAZStrType(

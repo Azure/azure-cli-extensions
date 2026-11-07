@@ -15,6 +15,9 @@ Pending
 * `az aks nodepool upgrade-insights create/show`: Add single-pool Kubernetes and node-image readiness evaluations.
 * Upgrade Insights reports and tables explicitly show missing agent-pool evaluations instead of reporting an incomplete combined evaluation as passed.
 * Upgrade Insights commands preserve parser-accepted output and query abbreviations, including `--out json`, `--out=json`, and `--que`.
+
+22.0.0b16
++++++++++
 * `az aks create/update`: `--kms-infrastructure-encryption` now only accepts `Enabled`, since infrastructure encryption for Kubernetes resource objects cannot be turned off once it has been turned on.
 * `az aks create/update`: Document that an unversioned `--azure-keyvault-kms-key-id` selects the new KMS experience with automatic key version rotation, while a versioned key identifier selects the legacy KMS experience.
 
