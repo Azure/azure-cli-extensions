@@ -23599,13 +23599,26 @@ spec:
 
         # enable app routing with keyvault secrets provider addon enabled
         enable_app_routing_cmd = "aks approuting enable --enable-kv --attach-kv {keyvault_id} --resource-group={resource_group} --name={aks_name}"
-        self.cmd(
+        app_routing_result = self.cmd(
             enable_app_routing_cmd,
             checks=[
-                self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.webAppRouting.enabled", True),
                 self.check("addonProfiles.azureKeyvaultSecretsProvider.enabled", True),
             ],
+        )
+        # An independent extension-addon rollout can start after the app-routing LRO completes.
+        if app_routing_result.get_output_in_json()["provisioningState"] == "Updating":
+            self.cmd(
+                "aks wait --resource-group={resource_group} --name={aks_name} "
+                "--updated --interval 10 --timeout 1800"
+            )
+            app_routing_result = self.cmd(
+                "aks show --resource-group={resource_group} --name={aks_name}"
+            )
+        app_routing_result.assert_with_checks(
+            self.check("provisioningState", "Succeeded"),
+            self.check("ingressProfile.webAppRouting.enabled", True),
+            self.check("addonProfiles.azureKeyvaultSecretsProvider.enabled", True),
         )
 
         # delete cluster
