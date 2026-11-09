@@ -87,6 +87,7 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
             'enrollment_name': self.create_random_name('enroll', 20),
             'goal_name': self.create_random_name('goal', 20),
             'nsg_name': self.create_random_name('nsg', 20),
+            'uami_name': self.create_random_name('uami', 20),
             'subscription_id': self.get_subscription_id(),
             'drill_location': TEST_DRILL_LOCATION,
         })
@@ -133,9 +134,21 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
             self._drill_command('resync-readiness-check --operation-id {resync_operation_id} --no-wait')
 
             self._drill_command('identity show', checks=[self.check('type', 'SystemAssigned')])
-            self._drill_command('identity assign --system-assigned true')
+            uami = self.cmd(
+                'az identity create --resource-group {rg} --name {uami_name} --location {drill_location}').get_output_in_json()
+            self.kwargs['uami_id'] = uami['id']
+            self._drill_command('identity assign --user-assigned {uami_id}')
             self._drill_command('identity wait --updated')
-            self._drill_command('identity show', checks=[self.check('type', 'SystemAssigned')])
+            self._drill_command('identity show', checks=[
+                self.check('type', 'SystemAssigned, UserAssigned'),
+                self.check('length(userAssignedIdentities)', 1),
+            ])
+            self._drill_command('identity remove --user-assigned {uami_id}')
+            self._drill_command('identity wait --updated')
+            self._drill_command('identity show', checks=[
+                self.check('type', 'SystemAssigned'),
+                self.check('userAssignedIdentities', None),
+            ])
 
             drill_resources = self._drill_command(
                 'drill-resource list',
