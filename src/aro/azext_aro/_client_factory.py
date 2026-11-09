@@ -21,7 +21,6 @@ def cf_aro(cli_ctx, *_):
         }
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-    client = get_mgmt_service_client(
-        cli_ctx, AzureRedHatOpenShiftClient, base_url_bound=False, **opt_args)
+    client = get_mgmt_service_client(cli_ctx, AzureRedHatOpenShiftClient, **opt_args)
 
     return client
