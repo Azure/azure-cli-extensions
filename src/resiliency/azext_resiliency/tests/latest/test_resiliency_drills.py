@@ -200,6 +200,37 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
                 pass
 
     @live_only()
+    def test_resiliency_drill_prepared_lifecycle_coverage(self):
+        """Exercise Drill validate/start/end against an explicitly supplied execution-ready fixture."""
+        fixture = {
+            'sg_name': os.environ.get('RESILIENCY_TEST_PREPARED_SERVICE_GROUP'),
+            'drill_name': os.environ.get('RESILIENCY_TEST_PREPARED_DRILL'),
+        }
+        if not all(fixture.values()):
+            self.skipTest('Prepared Drill fixture environment variables are not configured.')
+        self.kwargs.update(fixture)
+
+        drill = self._drill_command('show').get_output_in_json()
+        properties = drill.get('properties', {})
+        if properties.get('executionReadinessState') != 'Ready' or properties.get('executionState') != 'NotRunning':
+            self.skipTest('Prepared Drill must be Ready and NotRunning for lifecycle coverage.')
+
+        self.kwargs['validate_operation_id'] = self.create_guid()
+        self.kwargs['source_location'] = os.environ.get(
+            'RESILIENCY_TEST_PREPARED_SOURCE_LOCATION', 'northeurope-az1')
+        self._drill_command(
+            'validate-for-execution --operation-id {validate_operation_id} '
+            '--execution-properties "{{operation-name:Failover,source-locations:[{source_location}]}}"')
+        self.kwargs['start_operation_id'] = self.create_guid()
+        self._drill_command('start --operation-id {start_operation_id} --mode Failover')
+        self.kwargs['end_operation_id'] = self.create_guid()
+        self._drill_command(
+            'end --operation-id {end_operation_id} --attestation Success '
+            '--attestation-notes "azure-cli lifecycle coverage"')
+        self._drill_command(
+            'show', checks=[self.check('properties.executionState', 'NotRunning')])
+
+    @live_only()
     def test_resiliency_drill_prepared_run_coverage(self):
         """Exercise safe DrillRun reads/report actions against an explicitly supplied live fixture."""
         fixture = {
