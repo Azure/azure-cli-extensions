@@ -241,16 +241,21 @@ class Restore(_MongoClusterCreate):
     Creates a new mongo cluster from the backup of an existing (or deleted) source
     cluster at the requested point in time.
 
-    Compute, storage, sharding, and server version follow the service's restore
-    behavior and cannot be overridden here. Networking settings are not copied,
-    and high availability is disabled after restore. Reconfigure these settings
-    on the restored cluster when required.
+    Supported target configuration options include authentication modes,
+    customer-managed key encryption, user-assigned managed identities, storage
+    type, and public network access.
+
+    Overrides for server version, compute tier, storage size, shard count, high
+    availability, Data API, and network bypass are not supported by this command.
 
     :example: Restore a cluster with native authentication.
         az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123!
 
     :example: Restore a Microsoft Entra-only cluster.
         az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MyEntraCluster --restore-time "2026-06-30T10:00:00Z" --auth-allowed-modes MicrosoftEntraID
+
+    :example: Restore a cluster with a storage type and public network access setting.
+        az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123! --storage-type PremiumSSDv2 --public-network-access Disabled
     """
 
     # Own schema caches so deregistering the base ``create`` flags never mutates
@@ -272,7 +277,13 @@ class Restore(_MongoClusterCreate):
                 "auth_allowed_modes",
                 "mi_user_assigned",
                 "encryption",
+                "storage_type",
+                "public_network_access",
             })
+        args_schema.storage_type._help["short-summary"] = (
+            "Storage type for the restored cluster.")
+        args_schema.public_network_access._help["short-summary"] = (
+            "Public network access setting for the restored cluster.")
         args_schema.admin_user._required = False
         args_schema.admin_user._help["short-summary"] = (
             "The administrator user name. Required for NativeAuth, including CMK "
@@ -396,6 +407,9 @@ class Restore(_MongoClusterCreate):
                 properties.set_prop("authConfig", AAZObjectType)
                 properties.set_prop("encryption", AAZObjectType, ".encryption")
                 properties.set_prop(
+                    "publicNetworkAccess", AAZStrType, ".public_network_access")
+                properties.set_prop("storage", AAZObjectType)
+                properties.set_prop(
                     "restoreParameters", AAZObjectType, typ_kwargs={"flags": {"required": True}})
 
             administrator = _builder.get(".properties.administrator")
@@ -447,6 +461,10 @@ class Restore(_MongoClusterCreate):
                     typ_kwargs={"flags": {"required": True}})
                 restore_parameters.set_prop(
                     "pointInTimeUTC", AAZStrType, ".restore_time")
+
+            storage = _builder.get(".properties.storage")
+            if storage is not None:
+                storage.set_prop("type", AAZStrType, ".storage_type")
 
             return self.serialize_content(_content_value)
 

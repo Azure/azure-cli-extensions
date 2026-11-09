@@ -103,6 +103,19 @@ az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup \
 
 ### Point-in-time restore
 
+The restore command supports the following optional target configuration settings:
+
+| Setting | CLI parameter |
+| --- | --- |
+| Authentication modes | `--auth-allowed-modes` |
+| Customer-managed key encryption | `--encryption` |
+| User-assigned managed identities | `--user-assigned` |
+| Storage type | `--storage-type` |
+| Public network access | `--public-network-access` |
+
+Overrides for server version, compute tier, storage size, shard count, high
+availability, Data API, and network bypass are not supported by this command.
+
 The existing native-authentication behavior remains the default. When
 `--auth-allowed-modes` and `--encryption` are both omitted, both administrator
 arguments are required.
@@ -113,9 +126,7 @@ az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --locat
     --admin-user dbadmin --admin-password MyP@ssw0rd123!
 ```
 
-To restore an existing Microsoft Entra-only cluster, omit the administrator
-credentials. This example preserves the source's authentication mode; it does not
-demonstrate migrating a NativeAuth cluster to Entra-only authentication.
+For Microsoft Entra-only authentication, omit the native administrator credentials.
 
 ```bash
 az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 \
@@ -136,8 +147,11 @@ az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --locat
     --user-assigned <userAssignedIdentityResourceId> --encryption @encryption.json
 ```
 
-The restore command does not accept compute, storage, sharding, server-version, or
-high-availability overrides. Those values follow the service's restore behavior.
-Networking settings are not copied, and high availability is disabled after
-restore. Inspect the new cluster and configure networking and high availability
-when required.
+Specify storage type and public network access with the corresponding options:
+
+```bash
+az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 \
+    --source-cluster MyCluster --restore-time "2026-06-30T10:00:00Z" \
+    --admin-user dbadmin --admin-password MyP@ssw0rd123! \
+    --storage-type PremiumSSDv2 --public-network-access Disabled
+```

@@ -12,6 +12,7 @@ from azure.cli.core import get_default_cli
 from azure.cli.core.aaz._command_ctx import AAZCommandCtx
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
+from azext_documentdb.aaz.latest.documentdb.mongocluster import Create, Update
 from azext_documentdb.custom import Restore
 from azext_documentdb.tests.latest.test_documentdb import MongoClusterOperationTokenReplacer
 
@@ -90,6 +91,112 @@ class RestoreTest(unittest.TestCase):
                 },
             },
         }, content)
+
+    def test_storage_type_payload(self):
+        for storage_type in ("PremiumSSD", "PremiumSSDv2"):
+            with self.subTest(storage_type=storage_type):
+                content = self._serialize_content(self._create_command(
+                    admin_user="dbadmin",
+                    admin_password="P@ssword123!",
+                    storage_type=storage_type,
+                ))
+
+                self.assertEqual({"type": storage_type}, content["properties"]["storage"])
+                self.assertNotIn("publicNetworkAccess", content["properties"])
+
+    def test_public_network_access_payload(self):
+        for public_network_access in ("Enabled", "Disabled"):
+            with self.subTest(public_network_access=public_network_access):
+                content = self._serialize_content(self._create_command(
+                    admin_user="dbadmin",
+                    admin_password="P@ssword123!",
+                    public_network_access=public_network_access,
+                ))
+
+                self.assertEqual(
+                    public_network_access, content["properties"]["publicNetworkAccess"])
+                self.assertNotIn("storage", content["properties"])
+
+    def test_target_configuration_payload(self):
+        content = self._serialize_content(self._create_command(
+            admin_user="dbadmin",
+            admin_password="P@ssword123!",
+            storage_type="PremiumSSDv2",
+            public_network_access="Disabled",
+        ))
+
+        self.assertEqual({
+            "location": "eastus2",
+            "properties": {
+                "administrator": {
+                    "password": "P@ssword123!",
+                    "userName": "dbadmin",
+                },
+                "createMode": "PointInTimeRestore",
+                "restoreParameters": {
+                    "pointInTimeUTC": "2026-06-30T10:00:00Z",
+                    "sourceResourceId": self._SOURCE_ID,
+                },
+                "storage": {"type": "PremiumSSDv2"},
+                "publicNetworkAccess": "Disabled",
+            },
+        }, content)
+
+    def test_target_configuration_with_entra_auth_payload(self):
+        content = self._serialize_content(self._create_command(
+            auth_allowed_modes=["MicrosoftEntraID"],
+            storage_type="PremiumSSDv2",
+            public_network_access="Disabled",
+        ))
+
+        self.assertNotIn("administrator", content["properties"])
+        self.assertEqual(
+            ["MicrosoftEntraID"], content["properties"]["authConfig"]["allowedModes"])
+        self.assertEqual({"type": "PremiumSSDv2"}, content["properties"]["storage"])
+        self.assertEqual("Disabled", content["properties"]["publicNetworkAccess"])
+
+    def test_target_configuration_with_cmk_payload(self):
+        content = self._serialize_content(self._create_command(
+            admin_user="dbadmin",
+            admin_password="P@ssword123!",
+            mi_user_assigned=[self._IDENTITY_ID],
+            encryption=self._cmk_encryption(),
+            storage_type="PremiumSSDv2",
+            public_network_access="Disabled",
+        ))
+
+        self.assertEqual("UserAssigned", content["identity"]["type"])
+        self.assertIn(self._IDENTITY_ID, content["identity"]["userAssignedIdentities"])
+        self.assertEqual(
+            self._KEY_URL,
+            content["properties"]["encryption"]["customerManagedKeyEncryption"]["keyEncryptionKeyUrl"],
+        )
+        self.assertEqual(
+            {"userName": "dbadmin", "password": "P@ssword123!"},
+            content["properties"]["administrator"],
+        )
+        self.assertEqual({"type": "PremiumSSDv2"}, content["properties"]["storage"])
+        self.assertEqual("Disabled", content["properties"]["publicNetworkAccess"])
+
+    def test_restore_argument_registration_is_independent(self):
+        schemas = [
+            command_type(cli_ctx=get_default_cli()).get_arguments_schema()
+            for command_type in (Create, Update)
+        ]
+        restore_schema = self._create_command().get_arguments_schema()
+
+        for argument in ("storage_type", "public_network_access"):
+            with self.subTest(argument=argument):
+                self.assertTrue(getattr(restore_schema, argument)._registered)
+                self.assertFalse(getattr(restore_schema, argument)._required)
+
+        for argument in (
+                "server_version", "tier", "storage_size", "shard_count",
+                "high_availability", "data_api_mode", "network_bypass_mode"):
+            with self.subTest(argument=argument):
+                self.assertFalse(getattr(restore_schema, argument)._registered)
+                for schema in schemas:
+                    self.assertTrue(getattr(schema, argument)._registered)
 
     def test_entra_only_payload_omits_administrator(self):
         content = self._serialize_content(self._create_command(
