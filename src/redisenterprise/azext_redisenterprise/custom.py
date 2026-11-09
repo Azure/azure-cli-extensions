@@ -45,6 +45,11 @@ class RedisEnterpriseUpdate(_Update):
         if has_value(self.ctx.args.firewall_rules):
             self.ctx.redisenterprise_original = _Update.RedisEnterpriseCreate.serialize_content(instance)
         self.ctx.redisenterprise_generic_firewall_rules = False
+        for action, values in (self.ctx.generic_update_args or {}).get("actions", []):
+            for value in (values if action == "set" else values[:1]):
+                path = self.InstanceUpdateByGeneric._get_internal_path(value.split("=", 1)[0])
+                if path and path[0] in ("firewallRules", "firewall_rules"):
+                    self.ctx.redisenterprise_generic_firewall_rules = True
         try:
             current_sku = str(instance.sku.name) if hasattr(instance, 'sku') and instance.sku else None
         except (AttributeError, TypeError):
@@ -55,15 +60,6 @@ class RedisEnterpriseUpdate(_Update):
 
         if new_sku and current_sku and new_sku != current_sku:
             self._handle_sku_change(current_sku, new_sku, instance)
-
-    class InstanceUpdateByGeneric(_Update.InstanceUpdateByGeneric):
-
-        def _get_property_parent(self, instance, prop_name, flatten):
-            parent = super()._get_property_parent(instance, prop_name, flatten)
-            # Explicit generic edits can reassert the existing rules without changing them.
-            if parent is not None and prop_name in ("firewallRules", "firewall_rules"):
-                self.ctx.redisenterprise_generic_firewall_rules = True
-            return parent
 
     class RedisEnterpriseCreate(_Update.RedisEnterpriseCreate):
 
