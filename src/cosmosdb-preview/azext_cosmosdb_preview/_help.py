@@ -790,10 +790,14 @@ helps['cosmosdb copy'] = """
 
 helps['cosmosdb copy create'] = """
     type: command
-    short-summary: "Creates a container copy job on the source account."
+    short-summary: "Creates a container copy job on the source account by default."
     long-summary: |
-        Use the source account's subscription and resource group. For cross-account copies, configure
-        the source account's default managed identity with read-write access to the destination account.
+        Use the hosting account's subscription and resource group. Jobs are hosted on the source by
+        default; set --host-copy-on-src false to host on the destination instead. For cross-account
+        source-hosted copies, configure the source account's default managed identity with read-write
+        access to the destination. For destination-hosted copies, configure the destination account's
+        default managed identity with read access to the source. Manage jobs using the hosting account.
+        MongoDB RU-to-vCore jobs are always hosted on the source account.
     parameters:
       - name: --src-cassandra
         short-summary: "Source table"
@@ -846,6 +850,9 @@ helps['cosmosdb copy create'] = """
       - name: Copy Azure Cosmos DB API for NoSQL container to a different account, hosting the job on acc1 in rg1
         text: |-
           az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --dest-account "acc2" --src-nosql database=db1 container=c1 --dest-nosql database=db2 container=c2
+      - name: Copy Azure Cosmos DB API for NoSQL container, hosting the job on destination acc2 in rg2
+        text: |-
+          az cosmosdb copy create -g "rg2" --job-name "j1" --src-account "acc1" --dest-account "acc2" --host-copy-on-src false --src-nosql database=db1 container=c1 --dest-nosql database=db2 container=c2
       - name: Copy Azure Cosmos DB API for Apache Cassandra table
         text: |-
           az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --dest-account "acc1" --src-cassandra keyspace=k1 table=t1 --dest-cassandra keyspace=k2 table=t2

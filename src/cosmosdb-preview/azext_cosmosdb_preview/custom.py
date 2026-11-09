@@ -1706,28 +1706,40 @@ def cosmosdb_copy_job(client,
                       dest_mongo_vcore=None,
                       job_name=None,
                       worker_count=0,
+                      host_copy_on_src=True,
                       mode="Offline"):
     job_create_properties = {}
     if dest_account is None and dest_mongo_vcore is None:
         raise CLIError('Invalid input: dest_account is a required parameter')
 
     is_cross_account = False if dest_mongo_vcore is not None else src_account != dest_account
+    remote_account_name = dest_account if host_copy_on_src else src_account
+    host_account_name = src_account if (dest_mongo_vcore is not None or host_copy_on_src) else dest_account
 
     source = None
     if src_cassandra is not None:
         if source is not None:
             raise CLIError('Invalid input: multiple source components')
-        source = src_cassandra
+        if is_cross_account and not host_copy_on_src:
+            source = CosmosCassandraDataTransferDataSourceSink(keyspace_name=src_cassandra.keyspace_name, table_name=src_cassandra.table_name, remote_account_name=remote_account_name)
+        else:
+            source = src_cassandra
 
     if src_nosql is not None:
         if source is not None:
             raise CLIError('Invalid input: multiple source components')
-        source = src_nosql
+        if is_cross_account and not host_copy_on_src:
+            source = CosmosSqlDataTransferDataSourceSink(database_name=src_nosql.database_name, container_name=src_nosql.container_name, remote_account_name=remote_account_name)
+        else:
+            source = src_nosql
 
     if src_mongo is not None:
         if source is not None:
             raise CLIError('Invalid input: multiple source components')
-        source = src_mongo
+        if is_cross_account and not host_copy_on_src:
+            source = CosmosMongoDataTransferDataSourceSink(database_name=src_mongo.database_name, collection_name=src_mongo.collection_name, remote_account_name=remote_account_name)
+        else:
+            source = src_mongo
 
     if source is None:
         raise CLIError('source component is missing')
@@ -1737,24 +1749,24 @@ def cosmosdb_copy_job(client,
     if dest_cassandra is not None:
         if destination is not None:
             raise CLIError('Invalid input: multiple destination components')
-        if is_cross_account:
-            destination = CosmosCassandraDataTransferDataSourceSink(keyspace_name=dest_cassandra.keyspace_name, table_name=dest_cassandra.table_name, remote_account_name=dest_account)
+        if is_cross_account and host_copy_on_src:
+            destination = CosmosCassandraDataTransferDataSourceSink(keyspace_name=dest_cassandra.keyspace_name, table_name=dest_cassandra.table_name, remote_account_name=remote_account_name)
         else:
             destination = dest_cassandra
 
     if dest_nosql is not None:
         if destination is not None:
             raise CLIError('Invalid input: multiple destination components')
-        if is_cross_account:
-            destination = CosmosSqlDataTransferDataSourceSink(database_name=dest_nosql.database_name, container_name=dest_nosql.container_name, remote_account_name=dest_account)
+        if is_cross_account and host_copy_on_src:
+            destination = CosmosSqlDataTransferDataSourceSink(database_name=dest_nosql.database_name, container_name=dest_nosql.container_name, remote_account_name=remote_account_name)
         else:
             destination = dest_nosql
 
     if dest_mongo is not None:
         if destination is not None:
             raise CLIError('Invalid input: multiple destination components')
-        if is_cross_account:
-            destination = CosmosMongoDataTransferDataSourceSink(database_name=dest_mongo.database_name, collection_name=dest_mongo.collection_name, remote_account_name=dest_account)
+        if is_cross_account and host_copy_on_src:
+            destination = CosmosMongoDataTransferDataSourceSink(database_name=dest_mongo.database_name, collection_name=dest_mongo.collection_name, remote_account_name=remote_account_name)
         else:
             destination = dest_mongo
 
@@ -1779,7 +1791,7 @@ def cosmosdb_copy_job(client,
         job_name = _gen_guid()
 
     return client.create(resource_group_name=resource_group_name,
-                         account_name=src_account,
+                         account_name=host_account_name,
                          job_name=job_name,
                          job_create_parameters=job_create_parameters)
 
