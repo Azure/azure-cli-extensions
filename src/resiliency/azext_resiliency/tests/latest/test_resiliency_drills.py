@@ -237,3 +237,20 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
         self._drill_command(
             'drill-run list-report-download-url --drill-run-name {drill_run_name} '
             '--operation-id {report_url_operation_id} --format Html')
+
+        mutation_stage = os.environ.get('RESILIENCY_TEST_PREPARED_MARK_COMPLETE_STAGE')
+        if mutation_stage:
+            run = self._drill_command(
+                'drill-run show --drill-run-name {drill_run_name}').get_output_in_json()
+            supported = {
+                entry.get('drillRunStage'): entry.get('supportedVerbs', [])
+                for entry in run.get('properties', {}).get('supportedVerbsForStage', [])
+            }
+            if 'MarkAsComplete' not in supported.get(mutation_stage, []):
+                self.skipTest('Prepared DrillRun does not advertise MarkAsComplete for {}.'.format(
+                    mutation_stage))
+            self.kwargs['mark_complete_stage'] = mutation_stage
+            self.kwargs['mark_complete_operation_id'] = self.create_guid()
+            self._drill_command(
+                'drill-run mark-as-complete --drill-run-name {drill_run_name} '
+                '--operation-id {mark_complete_operation_id} --drill-run-stage {mark_complete_stage}')
