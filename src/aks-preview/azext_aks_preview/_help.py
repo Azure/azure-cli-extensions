@@ -3029,7 +3029,7 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update --mode System -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Update cluster autoscaler vm size, min-count and max-count for virtual machines node pool
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --update-cluster-autoscaler --node-vm-size "Standard_D2s_v3" --min-count 2 --max-count 4
-      - name: Resize VM size for a VMSS node pool (preview, requires AFEC registration)
+      - name: Resize VM size for a VMSS node pool (preview)
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-vm-size Standard_D4s_v3
       - name: Migrate a regional node pool to automatic zone placement.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --zones auto

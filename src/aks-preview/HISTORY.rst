@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks nodepool update`: Remove the stale feature registration note from the `--node-vm-size` VMSS resize example. Resizing a VMSS node pool no longer requires the `Microsoft.ContainerService/AgentPoolVMSSResize` feature registration.
 
 22.0.0b16
 +++++++++
