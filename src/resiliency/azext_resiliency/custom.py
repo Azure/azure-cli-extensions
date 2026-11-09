@@ -408,6 +408,17 @@ class OperationStatusShow(_OperationStatusShow):
             return self.on_error(session.http_response)
 
 
+# The spec marks downloadUrl as a secret (x-ms-secret), so the generated output hides it and
+# `drill drill-run list-report-download-url` printed no URL, although the URL is the command's only
+# result. Show it; the response schema keeps its secret marker.
+class DrillRunListReportDownloadUrl(
+        _send_operation_id_in_query(_DrillRunListReportDownloadUrl, "DrillRunsListReportDownloadUrl")):
+
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True, secret_hidden=False)
+        return result
+
+
 # Commands whose request only needs the operationId query workaround (the recovery-plan action
 # overrides above already include it).
 OPERATION_ID_QUERY_COMMANDS = {
@@ -421,8 +432,7 @@ OPERATION_ID_QUERY_COMMANDS = {
     "resiliency drill drill-run fail-over": _send_operation_id_in_query(_DrillRunFailOver, "DrillRunsFailOver"),
     "resiliency drill drill-run generate-report": _send_operation_id_in_query(
         _DrillRunGenerateReport, "DrillRunsGenerateReport"),
-    "resiliency drill drill-run list-report-download-url": _send_operation_id_in_query(
-        _DrillRunListReportDownloadUrl, "DrillRunsListReportDownloadUrl"),
+    "resiliency drill drill-run list-report-download-url": DrillRunListReportDownloadUrl,
     "resiliency drill drill-run mark-as-complete": _send_operation_id_in_query(
         _DrillRunMarkAsComplete, "DrillRunsMarkAsComplete"),
     "resiliency drill drill-run reprotect": _send_operation_id_in_query(_DrillRunReprotect, "DrillRunsReprotect"),
