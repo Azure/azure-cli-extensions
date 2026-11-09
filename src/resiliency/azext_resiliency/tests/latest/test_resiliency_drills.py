@@ -300,9 +300,14 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
             self._drill_command(
                 'drill-run fail-over --drill-run-name {drill_run_name} '
                 '--operation-id {failover_operation_id} '
-                '--auto-failover Disable '
+                '--auto-failover Disable --no-wait '
                 '--failover-properties "{{failover-direction:FromSpecificLocations,'
                 'failover-request-properties:{{source-locations:[northeurope-az1]}}}}"')
+            run = self._drill_command(
+                'drill-run show --drill-run-name {drill_run_name}').get_output_in_json()
+            self.assertEqual(
+                run.get('properties', {}).get('currentActiveOperationId'),
+                self.kwargs['failover_operation_id'])
 
         resume_stage = os.environ.get('RESILIENCY_TEST_PREPARED_RESUME_STAGE')
         if resume_stage:
