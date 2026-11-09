@@ -258,8 +258,6 @@ class ResiliencyGoalAssignmentScenario(ResiliencyLifecycleTestBase):
                 try:
                     self._test_goal_assignment()
                     self._test_operation_status()
-                    # 'unified-resilience-item list/show' are not exercised: the service returns 401 Unauthorized
-                    # for callers that can read the goal assignment on the same service group. Reported to owners.
                 finally:
                     self._sg_cmd('az resiliency goal-assignment delete --service-group-name {sg_name} '
                                  '--goal-assignment-name {goal_name} --yes')
@@ -291,15 +289,10 @@ class ResiliencyGoalAssignmentScenario(ResiliencyLifecycleTestBase):
                              self.check('properties.provisioningState', 'Succeeded')])
         self._sg_cmd('az resiliency goal-assignment list --service-group-name {sg_name}',
                      checks=[self.check("[?name == '{goal_name}'].name | [0]", '{goal_name}')])
-        # The service's final LRO result (operation status) returns the goal as a JSON string, which the CLI can't
-        # deserialize, so the PATCH is sent with --no-wait and verified with wait/show. Reported to owners.
         self._sg_cmd('az resiliency goal-assignment update --service-group-name {sg_name} '
-                     '--goal-assignment-name {goal_name} --require-zonal-resiliency true --no-wait')
-        self._sg_cmd('az resiliency goal-assignment wait --service-group-name {sg_name} '
-                     '--goal-assignment-name {goal_name} --updated')
-        self._sg_cmd('az resiliency goal-assignment show --service-group-name {sg_name} '
-                     '--goal-assignment-name {goal_name}',
-                     checks=[self.check('properties.requireZonalResiliency', True),
+                     '--goal-assignment-name {goal_name} --require-zonal-resiliency true',
+                     checks=[self.check('name', '{goal_name}'),
+                             self.check('properties.requireZonalResiliency', True),
                              self.check('properties.provisioningState', 'Succeeded')])
 
         for _ in range(20):
@@ -311,6 +304,7 @@ class ResiliencyGoalAssignmentScenario(ResiliencyLifecycleTestBase):
                        if resource['properties']['resourceArmId'].lower() == self.kwargs['vm_id'].lower()]
             if matches:
                 self.kwargs['goal_resource_name'] = matches[0]['name']
+                self.kwargs['goal_resource_id'] = matches[0]['id']
                 break
             time.sleep(30)  # patched to a no-op during playback by the testsdk
         else:
@@ -319,12 +313,25 @@ class ResiliencyGoalAssignmentScenario(ResiliencyLifecycleTestBase):
         self._sg_cmd('az resiliency goal-assignment goal-resource show --service-group-name {sg_name} '
                      '--goal-assignment-name {goal_name} --goal-resource-name {goal_resource_name}',
                      checks=[self.check('properties.resourceArmId', '{vm_id}', case_sensitive=False)])
-        # 'goal-assignment update-goal-resource' is not exercised: the service never completes the
-        # updateGoalResources operation (it stays in progress for hours), so the LRO never returns. Reported to owners.
-        # recommend-capacity's final LRO result returns its payload as a JSON string inside the operation status, so the
-        # CLI output is empty and only success is asserted. Reported to owners.
+        for participation, attestation in (('Excluded', 'ManuallyAttested'), ('Included', 'ManuallyAttested')):
+            self.kwargs['goal_resources'] = json.dumps([{
+                'id': self.kwargs['goal_resource_id'],
+                'resource-arm-id': self.kwargs['vm_id'],
+                'zonal-resiliency': {'goal-participation': participation, 'attestation-status': attestation},
+            }])
+            self._sg_cmd('az resiliency goal-assignment update-goal-resource --service-group-name {sg_name} '
+                         "--goal-assignment-name {goal_name} --resources '{goal_resources}'",
+                         checks=[self.check('resources[0].id', '{goal_resource_id}', case_sensitive=False),
+                                 self.check('resources[0].properties.zonalResiliency.goalParticipation', participation),
+                                 self.check('resources[0].properties.zonalResiliency.attestationStatus', attestation)])
+            self._sg_cmd('az resiliency goal-assignment goal-resource show --service-group-name {sg_name} '
+                         '--goal-assignment-name {goal_name} --goal-resource-name {goal_resource_name}',
+                         checks=[self.check('properties.zonalResiliency.goalParticipation', participation),
+                                 self.check('properties.zonalResiliency.attestationStatus', attestation)])
         self._sg_cmd('az resiliency goal-assignment recommend-capacity --service-group-name {sg_name} '
-                     '--goal-assignment-name {goal_name} --resource-ids {vm_id}')
+                     '--goal-assignment-name {goal_name} --resource-ids {vm_id}',
+                     checks=[self.check('type(resourceCapacities)', 'array'),
+                             self.check('type(recommendations)', 'array')])
 
     def _test_operation_status(self):
         from azure.cli.core.util import send_raw_request
@@ -347,19 +354,12 @@ class ResiliencyGoalAssignmentScenario(ResiliencyLifecycleTestBase):
         self.kwargs['op_location'] = path[path.index('locations') + 1]
         self.kwargs['op_id'] = path[path.index('operationStatuses') + 1]
 
-        # While the operation runs, the service answers the operation-status GET with HTTP 202, which the CLI treats
-        # as an error (it only accepts 200), so keep polling until the completed status is returned. Reported to owners.
         status = None
         for _ in range(20):
-            try:
-                status = self._sg_cmd('az resiliency operation-status show --location {op_location} '
-                                      '--operation-id {op_id}',
-                                      checks=[self.check('name', '{op_id}'), self.exists('status')]
-                                      ).get_output_in_json()['status']
-            except HttpResponseError as ex:
-                if "invalid status 'Accepted'" not in str(ex):
-                    raise
-                status = 'Accepted'
+            status = self._sg_cmd('az resiliency operation-status show --location {op_location} '
+                                  '--operation-id {op_id}',
+                                  checks=[self.check('name', '{op_id}'), self.exists('status')]
+                                  ).get_output_in_json()['status']
             if status not in ('Accepted', 'Running', 'InProgress'):
                 break
             time.sleep(15)  # patched to a no-op during playback by the testsdk
