@@ -168,13 +168,6 @@ az resiliency operation-status show --location <location> --operation-id <id>
 | `az resiliency recovery-plan recovery-resource list` | List recovery resources |
 | `az resiliency recovery-plan recovery-resource show` | Show a recovery resource |
 
-### `az resiliency unified-resilience-item`
-
-| Command | Description |
-|---|---|
-| `az resiliency unified-resilience-item list` | List unified resilience items |
-| `az resiliency unified-resilience-item show` | Show a unified resilience item |
-
 ### `az resiliency usage-plan`
 
 | Command | Description |
