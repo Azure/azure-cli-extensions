@@ -254,3 +254,36 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
             self._drill_command(
                 'drill-run mark-as-complete --drill-run-name {drill_run_name} '
                 '--operation-id {mark_complete_operation_id} --drill-run-stage {mark_complete_stage}')
+        failover_stage = os.environ.get('RESILIENCY_TEST_PREPARED_FAILOVER_STAGE')
+        if failover_stage:
+            run = self._drill_command(
+                'drill-run show --drill-run-name {drill_run_name}').get_output_in_json()
+            supported = {
+                entry.get('drillRunStage'): entry.get('supportedVerbs', [])
+                for entry in run.get('properties', {}).get('supportedVerbsForStage', [])
+            }
+            if 'Start' not in supported.get(failover_stage, []):
+                self.skipTest('Prepared DrillRun does not advertise Start for {}'.format(
+                    failover_stage))
+            self.kwargs['failover_operation_id'] = self.create_guid()
+            self._drill_command(
+                'drill-run fail-over --drill-run-name {drill_run_name} '
+                '--operation-id {failover_operation_id} '
+                '--failover-properties "{{failover-direction:FromSpecificLocations,'
+                'failover-request-properties:{{source-locations:[northeurope-az1]}}}}"')
+
+        resume_stage = os.environ.get('RESILIENCY_TEST_PREPARED_RESUME_STAGE')
+        if resume_stage:
+            run = self._drill_command(
+                'drill-run show --drill-run-name {drill_run_name}').get_output_in_json()
+            supported = {
+                entry.get('drillRunStage'): entry.get('supportedVerbs', [])
+                for entry in run.get('properties', {}).get('supportedVerbsForStage', [])
+            }
+            if 'Resume' not in supported.get(resume_stage, []):
+                self.skipTest('Prepared DrillRun does not advertise Resume for {}'.format(
+                    resume_stage))
+            self.kwargs['resume_operation_id'] = self.create_guid()
+            self._drill_command(
+                'drill-run resume --drill-run-name {drill_run_name} '
+                '--operation-id {resume_operation_id}')
