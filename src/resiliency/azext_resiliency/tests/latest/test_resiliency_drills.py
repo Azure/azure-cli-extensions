@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+import os
+import time
 from azure.core.exceptions import HttpResponseError
 from azure.cli.core.azclierror import HTTPError
 
@@ -13,6 +15,9 @@ from .test_resiliency import (
     SERVICE_GROUP_API_VERSION,
     TEST_LOCATION,
 )
+
+
+TEST_DRILL_LOCATION = os.environ.get('RESILIENCY_TEST_DRILL_LOCATION', 'westus2')
 
 
 class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
@@ -27,6 +32,51 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
             ' --service-group-name {sg_name} --drill-name {drill_name}',
             checks=checks)
 
+    def _wait_for_drill_resource_inclusion(self, timeout_seconds=600):
+        deadline = time.time() + timeout_seconds
+        while True:
+            resource = self._drill_command(
+                'drill-resource show --drill-resource-name {drill_resource_name}').get_output_in_json()
+            state = resource.get('properties', {}).get('inclusionState')
+            if state == 'Included':
+                return resource
+            if time.time() > deadline:
+                self.fail('Drill resource {} was not included (state: {})'.format(
+                    self.kwargs['drill_resource_name'], state))
+            time.sleep(15)  # patched to a no-op during playback by the testsdk
+
+    def _add_or_update_resource_after_resync(self, timeout_seconds=300):
+        """Retry inclusion while the preceding resync POST fence drains."""
+        deadline = time.time() + timeout_seconds
+        command = (
+            'add-or-update-resource --operation-id {resource_update_operation_id} --no-wait '
+            '--fault-duration-in-min 5 --force-update Enable '
+            '--resource-lists "{{include-resources:[{{id:{drill_resource_id}}}]}}"')
+        while True:
+            try:
+                return self._drill_command(command)
+            except HttpResponseError as ex:
+                active_post = (
+                    'InvalidResourceOperation' in str(ex) and
+                    "Another 'POST' operation on the same resource" in str(ex))
+                if not active_post or time.time() >= deadline:
+                    raise
+            time.sleep(10)  # patched to a no-op during playback by the testsdk
+
+    def _wait_for_drill_update(self, timeout_seconds=300):
+        """Retry the public wait command while the RP temporarily projects an incomplete Drill."""
+        deadline = time.time() + timeout_seconds
+        while True:
+            try:
+                return self._drill_command('wait --updated')
+            except HttpResponseError as ex:
+                transient_projection = (
+                    'HttpResponsePayloadAPISpecValidationFailed' in str(ex) and
+                    'Missing required property: drillType' in str(ex))
+                if not transient_projection or time.time() >= deadline:
+                    raise
+            time.sleep(10)  # patched to a no-op during playback by the testsdk
+
     @ResiliencyResourceGroupPreparer(name_prefix='clitest.rg.resiliency', location=TEST_LOCATION)
     def test_resiliency_drill_management(self, resource_group):
         self.kwargs.update({
@@ -38,11 +88,12 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
             'goal_name': self.create_random_name('goal', 20),
             'nsg_name': self.create_random_name('nsg', 20),
             'subscription_id': self.get_subscription_id(),
+            'drill_location': TEST_DRILL_LOCATION,
         })
         self.kwargs['sg_id'] = '/providers/Microsoft.Management/serviceGroups/' + self.kwargs['sg_name']
         try:
             self._create_service_group()
-            self.cmd('az network nsg create --resource-group {rg} --name {nsg_name} --location eastus2',
+            self.cmd('az network nsg create --resource-group {rg} --name {nsg_name} --location {drill_location}',
                      checks=[self.check('NewNSG.provisioningState', 'Succeeded')])
             self.kwargs['nsg_id'] = ('/subscriptions/{subscription_id}/resourceGroups/{rg}'
                                      '/providers/Microsoft.Network/networkSecurityGroups/{nsg_name}').format(
@@ -67,9 +118,10 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
                 checks=[self.check('properties.provisioningState', 'Succeeded')])
 
             self._drill_command(
-                'create --zonal "{{}}" --drill-asset-properties "{{subscription:{subscription_id},region:eastus2}}" --rbac-setup-mode Manual --system-assigned true '
+                'create --zonal "{{}}" --drill-asset-properties "{{subscription:{subscription_id},region:{drill_location}}}" --rbac-setup-mode AutomatedBuiltinRoles --system-assigned true '
                 '--chaos-resource-properties "{{identity:{{type:SystemAssigned}},chaos-resource-identity-for-faults:{{type:SystemAssigned}}}}" '
                 '--monitoring-properties "{{identity:{{type:SystemAssigned}}}}" '
+                '--goal-assignment-properties "{{identity:{{type:SystemAssigned}}}}" '
                 '--recovery-plan-properties "{{identity:{{type:SystemAssigned}}}}"',
                 checks=[self.check('name', '{drill_name}'), self.exists('id')])
             self._drill_command('wait --created')
@@ -77,7 +129,8 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
             self._cmd_after_rbac_propagation(
                 'az resiliency drill list --service-group-name {sg_name}',
                 checks=[self.check("length([?name=='{drill_name}'])", 1)])
-            self._drill_command('update --rbac-setup-mode Manual', checks=[self.check('name', '{drill_name}')])
+            self.kwargs['resync_operation_id'] = self.create_guid()
+            self._drill_command('resync-readiness-check --operation-id {resync_operation_id} --no-wait')
 
             self._drill_command('identity show', checks=[self.check('type', 'SystemAssigned')])
             self._drill_command('identity assign --system-assigned true')
@@ -101,6 +154,18 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
                     self.check('properties.provisioningState', 'Succeeded'),
                     self.check('properties.readinessState', 'Ready'),
                 ])
+
+            self.kwargs['resource_update_operation_id'] = self.create_guid()
+            self.kwargs['drill_resource_id'] = drill_resources[0]['id']
+            self._add_or_update_resource_after_resync()
+            self._wait_for_drill_resource_inclusion()
+
+            self._drill_command('update --rbac-setup-mode Manual --no-wait')
+            self._wait_for_drill_update()
+            self._drill_command('show', checks=[
+                self.check('name', '{drill_name}'),
+                self.check('properties.rbacSetupMode', 'Manual'),
+            ])
             self._drill_command('drill-run list', checks=[self.check('length(@)', 0)])
         finally:
             try:

@@ -74,6 +74,11 @@ class OperationIdentifierHeaderScrubber(RecordingProcessor):
     Response headers aren't used for request matching, so playback is unaffected.
     """
 
+    def process_request(self, request):
+        for key in [k for k in request.headers if k.lower() == 'operation-id']:
+            del request.headers[key]
+        return request
+
     def process_response(self, response):
         headers = response.get('headers', {})
         for key in [k for k in headers if k.lower() == 'x-ms-operation-identifier']:
