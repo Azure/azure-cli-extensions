@@ -300,6 +300,7 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
             self._drill_command(
                 'drill-run fail-over --drill-run-name {drill_run_name} '
                 '--operation-id {failover_operation_id} '
+                '--auto-failover Disable '
                 '--failover-properties "{{failover-direction:FromSpecificLocations,'
                 'failover-request-properties:{{source-locations:[northeurope-az1]}}}}"')
 
@@ -311,8 +312,8 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
                 entry.get('drillRunStage'): entry.get('supportedVerbs', [])
                 for entry in run.get('properties', {}).get('supportedVerbsForStage', [])
             }
-            if 'Resume' not in supported.get(resume_stage, []):
-                self.skipTest('Prepared DrillRun does not advertise Resume for {}'.format(
+            if 'Start' not in supported.get(resume_stage, []):
+                self.skipTest('Prepared DrillRun does not advertise Start for Resume at {}'.format(
                     resume_stage))
             self.kwargs['resume_operation_id'] = self.create_guid()
             self._drill_command(
