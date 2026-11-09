@@ -406,10 +406,10 @@ class OperationStatusShow(_OperationStatusShow):
 # The spec marks downloadUrl as a secret (x-ms-secret), so the generated output hides it and
 # `drill drill-run list-report-download-url` printed no URL, although the URL is the command's only
 # result. Show it; the response schema keeps its secret marker.
-class DrillRunListReportDownloadUrl(
+class DrillRunListReportDownloadUrl(  # pylint: disable=too-few-public-methods
         _send_operation_id_in_query(_DrillRunListReportDownloadUrl, "DrillRunsListReportDownloadUrl")):
 
-    def _output(self, *args, **kwargs):
+    def _output(self, *args, **kwargs):  # pylint: disable=unused-argument
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True, secret_hidden=False)
         return result
 
