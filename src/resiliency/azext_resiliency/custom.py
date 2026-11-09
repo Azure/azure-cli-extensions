@@ -33,7 +33,6 @@ from .aaz.latest.resiliency.drill.drill_run import (
 )
 from .aaz.latest.resiliency.goal_assignment import (
     RecommendCapacity as _GoalAssignmentRecommendCapacity,
-    Show as _GoalAssignmentShow,
     Update as _GoalAssignmentUpdate,
     UpdateGoalResource as _GoalAssignmentUpdateGoalResource,
 )
@@ -132,25 +131,24 @@ class RecoveryPlanShow(_RecoveryPlanShow):
 
 # For recovery-plan update (PATCH, final-state-via: location) the service's final result is an
 # operationStatuses record ({"status": "Succeeded", "properties": null}) instead of the recovery
-# plan, so the command printed only the operation's id/name. When the result has no properties,
-# read the recovery plan again so the output shows the updated plan. No-op once the service
-# returns the resource; remove after the service fix.
+# plan, so the command printed only the operation's id/name. The 202 carries only a Location header,
+# so final-state-via can't redirect the final GET. When the final result has no properties, read the
+# recovery plan again (in on_200, which runs after polling; post_operations runs before it). No-op
+# once the service returns the resource; remove after the service fix.
 class RecoveryPlanUpdate(_RecoveryPlanUpdate):
-
-    def post_operations(self):
-        if self.ctx.args.no_wait:
-            return
-        instance = self.ctx.vars.instance.to_serialized_data()
-        if isinstance(instance, dict) and instance.get("properties"):
-            return
-        RecoveryPlanShow.RecoveryPlansGet(ctx=self.ctx)()
-
     class RecoveryPlansUpdate(_RecoveryPlanUpdate.RecoveryPlansUpdate):
         _schema_on_200 = None
 
         @classmethod
         def _build_schema_on_200(cls):
             return _add_plan_type(super()._build_schema_on_200())
+
+        def on_200(self, session):
+            super().on_200(session)
+            instance = self.ctx.vars.instance.to_serialized_data()
+            if isinstance(instance, dict) and instance.get("properties"):
+                return
+            RecoveryPlanShow.RecoveryPlansGet(ctx=self.ctx)()
 
 
 # For recovery-plan actions the service returns the final result (GET on the Location URL,
@@ -256,26 +254,28 @@ class GoalAssignmentUpdateGoalResource(_GoalAssignmentUpdateGoalResource):
 
 # For recovery-plan PATCH the service's final result (GET on the Location URL) has
 # "properties": null and no identity, so `identity assign/remove` print {} although the change
-# persisted. When the final result has no identity, read the recovery plan again so the output
-# shows the resulting identity. No-op once the service returns the resource; remove after the fix.
-class _RefreshRecoveryPlanIdentity:  # pylint: disable=too-few-public-methods
-    """Mixin for generated recovery-plan identity commands: re-read the plan if the result has no identity."""
+# persisted. When the final result has no identity, read the recovery plan again (in on_200, which
+# runs after polling) so the output shows the resulting identity. No-op once the service returns
+# the resource; remove after the fix.
+class _ReadPlanIfNoIdentity:  # pylint: disable=too-few-public-methods
+    """Mixin for the PATCH operation of identity assign/remove: re-read the plan if the result has no identity."""
 
-    def post_operations(self):
-        if self.ctx.args.no_wait:
-            return
+    def on_200(self, session):
+        super().on_200(session)
         instance = self.ctx.vars.instance.to_serialized_data()
         if isinstance(instance, dict) and instance.get("identity"):
             return
-        self.RecoveryPlansGet(ctx=self.ctx)()
+        self.read_plan(ctx=self.ctx)()
 
 
-class RecoveryPlanIdentityAssign(_RefreshRecoveryPlanIdentity, _RecoveryPlanIdentityAssign):
-    pass
+class RecoveryPlanIdentityAssign(_RecoveryPlanIdentityAssign):
+    class RecoveryPlansUpdate(_ReadPlanIfNoIdentity, _RecoveryPlanIdentityAssign.RecoveryPlansUpdate):
+        read_plan = _RecoveryPlanIdentityAssign.RecoveryPlansGet
 
 
-class RecoveryPlanIdentityRemove(_RefreshRecoveryPlanIdentity, _RecoveryPlanIdentityRemove):
-    pass
+class RecoveryPlanIdentityRemove(_RecoveryPlanIdentityRemove):
+    class RecoveryPlansUpdate(_ReadPlanIfNoIdentity, _RecoveryPlanIdentityRemove.RecoveryPlansUpdate):
+        read_plan = _RecoveryPlanIdentityRemove.RecoveryPlansGet
 
 
 # The service accepts faultProperties.defaultFault on add-or-update-resource, but the API definition
@@ -363,34 +363,29 @@ class GoalAssignmentRecommendCapacity(_GoalAssignmentRecommendCapacity):
         pass
 
 
-# For goal-assignment update (PATCH, final-state-via: location) the service's final result is an
-# operation-status record with string-encoded properties instead of the goal assignment, so the
-# output was {} or the command failed after the update had succeeded. Drop that result and read the
-# goal assignment again so the output shows the updated goal assignment (PowerShell already reads
-# the original URI). No-op once the service returns the resource; remove after the service fix.
+# For goal-assignment update (PATCH) the spec says final-state-via: location, but the Location URL is
+# the operation-status record, which returns the goal assignment as a JSON string inside properties,
+# so the command failed after the update had succeeded. Take the final state from the goal
+# assignment itself (final-state-via: original-uri; the 202 carries Azure-AsyncOperation), as
+# PowerShell does. Remove after the service fix.
 class GoalAssignmentUpdate(_GoalAssignmentUpdate):
-
-    def post_operations(self):
-        if self.ctx.args.no_wait:
-            return
-        instance = self.ctx.vars.instance.to_serialized_data()
-        if isinstance(instance, dict) and instance.get("properties"):
-            return
-        _GoalAssignmentShow.GoalAssignmentsGet(ctx=self.ctx)()
 
     class GoalAssignmentsUpdate(_GoalAssignmentUpdate.GoalAssignmentsUpdate):
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            if not isinstance(data, dict):
-                data = {}
-            elif isinstance(data.get("properties"), str):
-                data = dict(data, properties=None)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200, 202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "original-uri"},
+                    path_format_arguments=self.url_parameters,
+                )
+
+            return self.on_error(session.http_response)
 
 
 # While an operation is still running the service returns HTTP 202 with the operation-status body,
