@@ -114,6 +114,7 @@ class ClusterRestore(ClusterCreate):
         @property
         def content(self):
             content = super().content
+            encryption_identity = content.get('identity')
             source = self.ctx.vars.restore_source.to_serialized_data()
             properties = content['properties']
             properties['creationMode'] = 'PointInTimeRestore'
@@ -131,4 +132,11 @@ class ClusterRestore(ClusterCreate):
                     content['identity']['userAssignedIdentities'] = {
                         resource_id: {} for resource_id in identity['userAssignedIdentities']
                     }
+                if encryption_identity is not None:
+                    content['identity']['type'] = (
+                        'SystemAssigned, UserAssigned' if 'SystemAssigned' in identity['type'] else 'UserAssigned'
+                    )
+                    content['identity'].setdefault('userAssignedIdentities', {}).update(
+                        encryption_identity['userAssignedIdentities']
+                    )
             return content

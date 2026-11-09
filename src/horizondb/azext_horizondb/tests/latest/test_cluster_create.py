@@ -80,7 +80,9 @@ class ClusterCreateTests(TestCase):
                 self.assertEqual(self.command.arguments[name].type.settings['options_list'], options)
 
     def test_create_without_encryption_arguments_omits_data_encryption(self):
-        self.assertNotIn('dataEncryption', self.build_content()['properties'])
+        content = self.build_content()
+        self.assertNotIn('dataEncryption', content['properties'])
+        self.assertNotIn('identity', content)
 
     def test_create_enables_key_vault_encryption_with_both_arguments(self):
         content = self.build_content(
@@ -91,6 +93,10 @@ class ClusterCreateTests(TestCase):
             'type': 'AzureKeyVault',
             'primaryKeyUri': 'https://test.vault.azure.net/keys/test-key',
             'primaryUserAssignedIdentityId': self.identity_id,
+        })
+        self.assertEqual(content['identity'], {
+            'type': 'UserAssigned',
+            'userAssignedIdentities': {self.identity_id: {}},
         })
 
     def test_incomplete_or_empty_encryption_arguments_prevent_create(self):

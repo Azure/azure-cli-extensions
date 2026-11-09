@@ -156,6 +156,7 @@ class ClusterRestoreTests(TestCase):
 
     def test_explicit_values_override_source_settings_and_enable_key_vault_encryption(self):
         self.source['properties']['dataEncryption'] = {'type': 'SystemManaged'}
+        original_source = deepcopy(self.source)
         target_identity_id = self.identity_id.replace('source-identity', 'target-identity')
         operation = self.build_operation(
             location='eastus2', tags={},
@@ -174,7 +175,29 @@ class ClusterRestoreTests(TestCase):
             'primaryKeyUri': 'https://target.vault.azure.net/keys/target-key',
             'primaryUserAssignedIdentityId': target_identity_id,
         })
+        self.assertEqual(content['identity'], {
+            'type': 'UserAssigned',
+            'userAssignedIdentities': {self.identity_id: {}, target_identity_id: {}},
+        })
         self.assertEqual(content['properties']['creationSourceClusterLocation'], 'japaneast')
+        self.assertEqual(self.source, original_source)
+
+    def test_restore_assigns_encryption_identity_without_source_assignments(self):
+        for source_identity, expected_type in [
+                (None, 'UserAssigned'),
+                ({'type': 'None'}, 'UserAssigned'),
+                ({'type': 'SystemAssigned'}, 'SystemAssigned, UserAssigned')]:
+            with self.subTest(source_identity=source_identity):
+                self.command = ClusterRestore(cli_ctx=self.command.cli_ctx)
+                self.source['identity'] = source_identity
+                content = self.build_operation(
+                    primary_key_uri='https://target.vault.azure.net/keys/target-key',
+                    primary_user_assigned_identity_id=self.identity_id,
+                ).content
+                self.assertEqual(content['identity'], {
+                    'type': expected_type,
+                    'userAssignedIdentities': {self.identity_id: {}},
+                })
 
     def test_restore_inherits_system_managed_encryption_without_overrides(self):
         self.source['properties']['dataEncryption'] = {'type': 'SystemManaged'}

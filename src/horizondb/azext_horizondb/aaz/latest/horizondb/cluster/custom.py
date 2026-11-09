@@ -83,6 +83,19 @@ class ClusterCreate(_ClusterCreate):
                 'type': 'AzureKeyVault',
             }
 
+    class ClustersCreateOrReplace(_ClusterCreate.ClustersCreateOrReplace):
+
+        @property
+        def content(self):
+            content = super().content
+            identity_id = content['properties'].get('dataEncryption', {}).get('primaryUserAssignedIdentityId')
+            if identity_id is not None:
+                content['identity'] = {
+                    'type': 'UserAssigned',
+                    'userAssignedIdentities': {identity_id: {}},
+                }
+            return content
+
     def _output(self, *args, **kwargs):
         command_args = {
             name: getattr(self.ctx.args, name).to_serialized_data()
