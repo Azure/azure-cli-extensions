@@ -7,7 +7,9 @@ from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
 from .recovery_plan_native import ResiliencyNativeRecoveryPlanScenario as _NativeBase
 
 
-class ResiliencyRemainingRecoveryPlanScenario(_NativeBase):
+class ResiliencyIdentityRemoveScenario(_NativeBase):
+    SAME_SUBSCRIPTION_FIXTURE = True
+
     def test_resiliency_recovery_plan_native_identity_remove(self):
         self._create()
         self._plan('identity remove --system-assigned', checks=[
@@ -23,6 +25,8 @@ class ResiliencyRemainingRecoveryPlanScenario(_NativeBase):
             self.check('properties.recoveryGroupsSetting.defaultGroup.properties.groupUniqueId', '{group_id}'),
         ])
 
+
+class ResiliencyRemainingRecoveryPlanScenario(_NativeBase):
     def test_resiliency_recovery_plan_native_validate_for_operation(self):
         created, _ = self._configure_runbook(bounded=True)
         self._authorize_runbooks(created['identity']['principalId'])
