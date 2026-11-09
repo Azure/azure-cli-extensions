@@ -92,8 +92,8 @@ class Update(AAZCommand):
             options=["--access-string"],
             arg_group="Properties",
             help=(
-                "The Redis ACL permissions string applied to this assignment, for example `+@read ~cache:*`. Defaults "
-                "to `+@all ~*` if not specified."
+                "The Redis ACL permissions string applied to this assignment, for example `+@read ~cache:*`. Omitting "
+                "--access-string preserves the existing permissions."
             ),
             nullable=True,
         )

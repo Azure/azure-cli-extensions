@@ -60,7 +60,7 @@ az redisenterprise update --cluster-name "restrictedcache" --resource-group "rg1
     --firewall-rules '[{"name":"office","source-address-prefix":"198.51.100.0/24"}]'
 ```
 
-Update replaces all rules with the supplied array; omitting `--firewall-rules` preserves them. Create uses PUT: omitting rules or supplying `[]` clears them, including when recreating an existing cluster. When disabling public network access, explicitly clear existing rules with `--public-network-access Disabled --firewall-rules '[]'`. **With public network access enabled, clearing rules allows all public traffic; it does not deny all traffic.** Do not combine firewall changes with scaling or encryption changes in one update.
+Update replaces all rules with the supplied array; omitting `--firewall-rules` preserves them. Create uses PUT: omitting rules or supplying `[]` clears them, including when recreating an existing cluster. When disabling public network access, explicitly clear existing rules with `--public-network-access Disabled --firewall-rules '[]'`. **With public network access enabled, clearing rules allows all public traffic; it does not deny all traffic.** Do not combine firewall changes with scaling or encryption changes in one update. Run generic `--remove` operations in a separate update command.
 
 ##### Custom Redis ACL assignments #####
 Assign custom permissions to a Microsoft Entra object on an existing default database:

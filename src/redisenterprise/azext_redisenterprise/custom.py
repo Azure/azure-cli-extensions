@@ -39,6 +39,15 @@ logger = get_logger(__name__)
 
 class RedisEnterpriseUpdate(_Update):
 
+    def pre_operations(self):
+        from azure.cli.core.aaz import has_value
+        if (has_value(self.ctx.args.firewall_rules)
+                and any(action == "remove" for action, _ in
+                        (self.ctx.generic_update_args or {}).get("actions", []))):
+            raise MutuallyExclusiveArgumentError(
+                "--firewall-rules cannot be combined with --remove.",
+                "Run the removal in a separate update command.")
+
     def pre_instance_update(self, instance):
         """Called before the instance is updated"""
         from azure.cli.core.aaz import has_value

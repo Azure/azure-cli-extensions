@@ -141,13 +141,11 @@ class Update(AAZCommand):
             arg_group="Properties",
             help=(
                 "The complete set of firewall rules for an Azure Managed Redis cluster. At most 250 rules are "
-                "supported, and non-empty rules require publicNetworkAccess to be Enabled. On PUT, the supplied array "
-                "replaces all existing rules. Omitting this property or supplying an empty array clears all rules. On "
-                "PATCH, omitting this property preserves existing rules. A supplied array replaces all existing rules; "
-                "rules absent from it are deleted. Supplying an empty array clears all rules. Disabling "
-                "publicNetworkAccess also clears existing rules. With publicNetworkAccess Enabled, an empty rule set "
-                "allows all public traffic; it does not deny all traffic. Firewall rule changes cannot be combined with"
-                " scaling or encryption changes in the same update request."
+                "supported. Omitting --firewall-rules preserves existing rules. A supplied array replaces all rules; "
+                "[] or null clears them. Non-empty rules require --public-network-access Enabled. To disable public "
+                "network access, explicitly clear existing rules with --firewall-rules []. With public access enabled, "
+                "an empty rule set allows all public traffic. Do not combine firewall changes with scaling or "
+                "encryption changes. Run --remove in a separate update command."
             ),
             nullable=True,
         )

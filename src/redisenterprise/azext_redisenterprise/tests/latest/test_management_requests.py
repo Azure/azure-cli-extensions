@@ -10,6 +10,7 @@ from unittest.mock import Mock, patch
 
 from azure.cli.core.aaz import AAZUndefined
 from azure.cli.core.aaz._command_ctx import AAZCommandCtx
+from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
 from azure.cli.core.mock import DummyCli
 
 from azext_redisenterprise.custom import (
@@ -253,6 +254,19 @@ class ManagementRequestsTest(unittest.TestCase):
                         {'name': rule['name'], 'sourceAddressPrefix': rule['source-address-prefix']}
                         for rule in rules
                     ] if rules is not None else None}})
+
+    def test_firewall_update_rejects_generic_removals(self):
+        for rules in (AAZUndefined, None, [], [{'name': 'office', 'source-address-prefix': '203.0.113.1'}]):
+            with self.subTest(rules=rules):
+                arguments = {'generic_update_args': {'actions': [('remove', ['tags'])]}}
+                if rules is AAZUndefined:
+                    operation = self._operation(RedisEnterpriseUpdate, 'RedisEnterpriseCreate', arguments)
+                    self.assertEqual(operation.method, 'PUT')
+                else:
+                    arguments['firewall_rules'] = rules
+                    with self.assertRaisesRegex(MutuallyExclusiveArgumentError,
+                                                '--firewall-rules cannot be combined with --remove'):
+                        self._operation(RedisEnterpriseUpdate, 'RedisEnterpriseCreate', arguments)
 
     def test_disabling_public_access_patches_only_supplied_properties(self):
         operation = self._operation(RedisEnterpriseUpdate, 'RedisEnterpriseCreate', {
