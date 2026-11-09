@@ -39,20 +39,12 @@ logger = get_logger(__name__)
 
 class RedisEnterpriseUpdate(_Update):
 
-    def pre_operations(self):
-        from azure.cli.core.aaz import has_value
-        if (has_value(self.ctx.args.firewall_rules)
-                and any(action == "remove" for action, _ in
-                        (self.ctx.generic_update_args or {}).get("actions", []))):
-            raise MutuallyExclusiveArgumentError(
-                "--firewall-rules cannot be combined with --remove.",
-                "Run the removal in a separate update command.")
-
     def pre_instance_update(self, instance):
         """Called before the instance is updated"""
         from azure.cli.core.aaz import has_value
         if has_value(self.ctx.args.firewall_rules):
             self.ctx.redisenterprise_original = _Update.RedisEnterpriseCreate.serialize_content(instance)
+        self.ctx.redisenterprise_generic_firewall_rules = False
         try:
             current_sku = str(instance.sku.name) if hasattr(instance, 'sku') and instance.sku else None
         except (AttributeError, TypeError):
@@ -63,6 +55,15 @@ class RedisEnterpriseUpdate(_Update):
 
         if new_sku and current_sku and new_sku != current_sku:
             self._handle_sku_change(current_sku, new_sku, instance)
+
+    class InstanceUpdateByGeneric(_Update.InstanceUpdateByGeneric):
+
+        def _get_property_parent(self, instance, prop_name, flatten):
+            parent = super()._get_property_parent(instance, prop_name, flatten)
+            # Explicit generic edits can reassert the existing rules without changing them.
+            if parent is not None and prop_name in ("firewallRules", "firewall_rules"):
+                self.ctx.redisenterprise_generic_firewall_rules = True
+            return parent
 
     class RedisEnterpriseCreate(_Update.RedisEnterpriseCreate):
 
@@ -76,13 +77,17 @@ class RedisEnterpriseUpdate(_Update):
             from azure.cli.core.aaz import has_value
             content = super().content
             if not has_value(self.ctx.args.firewall_rules):
-                if self.ctx.redisenterprise_legacy_sku:
+                if (not self.ctx.redisenterprise_generic_firewall_rules
+                        and (self.ctx.redisenterprise_legacy_sku
+                             or content.get("properties", {}).get("publicNetworkAccess") == "Disabled")):
                     content.get("properties", {}).pop("firewallRules", None)
                 return content
             # Do not replay unchanged SKU/encryption fields alongside a firewall change.
             original = self.ctx.redisenterprise_original
             patch = {key: value for key, value in content.items()
                      if key != "properties" and original.get(key) != value}
+            if "tags" in original and "tags" not in content:
+                patch["tags"] = {}
             properties = {key: value for key, value in content.get("properties", {}).items()
                           if key == "firewallRules" or original.get("properties", {}).get(key) != value}
             if self.ctx.args.firewall_rules.to_serialized_data() is None:

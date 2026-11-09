@@ -152,9 +152,9 @@ class Create(AAZCommand):
                 "The complete set of firewall rules for an Azure Managed Redis cluster. At most 250 rules are "
                 "supported. Create uses PUT: the supplied array replaces existing rules; omitting rules or supplying "
                 "[] clears them, including for an existing cluster. Non-empty rules require --public-network-access "
-                "Enabled. Clear existing rules explicitly when disabling public network access. With public access "
-                "enabled, an empty rule set allows all public traffic. Do not combine firewall changes with scaling "
-                "or encryption changes."
+                "Enabled. Disabling public network access clears existing rules automatically. With public access "
+                "enabled, an empty rule set allows all public traffic. On existing clusters, firewall rule changes "
+                "cannot be combined with scaling or encryption changes in the same update."
             ),
         )
         _args_schema.high_availability = AAZStrArg(

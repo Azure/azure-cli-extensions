@@ -10,7 +10,6 @@ from unittest.mock import Mock, patch
 
 from azure.cli.core.aaz import AAZUndefined
 from azure.cli.core.aaz._command_ctx import AAZCommandCtx
-from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
 from azure.cli.core.mock import DummyCli
 
 from azext_redisenterprise.custom import (
@@ -255,18 +254,103 @@ class ManagementRequestsTest(unittest.TestCase):
                         for rule in rules
                     ] if rules is not None else None}})
 
-    def test_firewall_update_rejects_generic_removals(self):
-        for rules in (AAZUndefined, None, [], [{'name': 'office', 'source-address-prefix': '203.0.113.1'}]):
-            with self.subTest(rules=rules):
-                arguments = {'generic_update_args': {'actions': [('remove', ['tags'])]}}
-                if rules is AAZUndefined:
+    def test_firewall_update_applies_generic_tag_removals(self):
+        for rules in (None, []):
+            for removed, expected_tags in (('tags', {}), ('tags.owner', {'keep': 'value'})):
+                with self.subTest(rules=rules, removed=removed):
+                    operation = self._operation(RedisEnterpriseUpdate, 'RedisEnterpriseCreate', {
+                        'firewall_rules': rules,
+                        'generic_update_args': {'actions': [('remove', [removed])]},
+                    })
+                    operation.ctx.set_var('instance', {
+                        'location': 'eastus2euap',
+                        'sku': {'name': 'Balanced_B1'},
+                        'tags': {'owner': 'old', 'keep': 'value'},
+                        'properties': {
+                            'publicNetworkAccess': 'Enabled',
+                            'firewallRules': [{'name': 'office', 'sourceAddressPrefix': '203.0.113.1'}],
+                        },
+                    }, schema_builder=RedisEnterpriseUpdate.RedisEnterpriseGet._build_schema_on_200)
+                    command = RedisEnterpriseUpdate(cli_ctx=operation.ctx.cli_ctx)
+                    command.ctx = operation.ctx
+                    command.pre_instance_update(operation.ctx.vars.instance)
+                    command.InstanceUpdateByJson(ctx=operation.ctx)()
+                    command.InstanceUpdateByGeneric(ctx=operation.ctx)()
+                    self.assertEqual(operation.method, 'PATCH')
+                    self.assertEqual(operation.content, {
+                        'tags': expected_tags,
+                        'properties': {'firewallRules': rules},
+                    })
+
+    def test_public_access_update_does_not_replay_rules_when_disabled(self):
+        for access in ('Enabled', 'Disabled'):
+            for mode in ('named', 'generic', 'override'):
+                with self.subTest(public_network_access=access, mode=mode):
+                    arguments = {}
+                    if mode == 'named':
+                        arguments['public_network_access'] = access
+                    else:
+                        arguments['generic_update_args'] = {
+                            'actions': [('set', ['publicNetworkAccess=' + access])],
+                        }
+                        if mode == 'override':
+                            arguments['public_network_access'] = 'Disabled' if access == 'Enabled' else 'Enabled'
                     operation = self._operation(RedisEnterpriseUpdate, 'RedisEnterpriseCreate', arguments)
+                    rules = [{'name': 'office', 'sourceAddressPrefix': '203.0.113.1'}]
+                    operation.ctx.set_var('instance', {
+                        'location': 'eastus2euap',
+                        'sku': {'name': 'Balanced_B1'},
+                        'properties': {'publicNetworkAccess': 'Enabled', 'firewallRules': rules},
+                    }, schema_builder=RedisEnterpriseUpdate.RedisEnterpriseGet._build_schema_on_200)
+                    command = RedisEnterpriseUpdate(cli_ctx=operation.ctx.cli_ctx)
+                    command.ctx = operation.ctx
+                    command.pre_instance_update(operation.ctx.vars.instance)
+                    command.InstanceUpdateByJson(ctx=operation.ctx)()
+                    command.InstanceUpdateByGeneric(ctx=operation.ctx)()
                     self.assertEqual(operation.method, 'PUT')
-                else:
-                    arguments['firewall_rules'] = rules
-                    with self.assertRaisesRegex(MutuallyExclusiveArgumentError,
-                                                '--firewall-rules cannot be combined with --remove'):
-                        self._operation(RedisEnterpriseUpdate, 'RedisEnterpriseCreate', arguments)
+                    self.assertEqual(operation.content['properties']['publicNetworkAccess'], access)
+                    if access == 'Disabled':
+                        self.assertNotIn('firewallRules', operation.content['properties'])
+                    else:
+                        self.assertEqual(operation.content['properties']['firewallRules'], rules)
+
+    def test_disabling_public_access_preserves_explicit_generic_firewall_edits(self):
+        original = [{'name': 'office', 'sourceAddressPrefix': '203.0.113.1'}]
+        replacement = [{'name': 'office', 'sourceAddressPrefix': '198.51.100.1'}]
+        actions = (
+            ('set', ['firewallRules=[{"name":"office","sourceAddressPrefix":"203.0.113.1"}]'], original),
+            ('set', ['firewall_rules=[{"name":"office","sourceAddressPrefix":"198.51.100.1"}]'], replacement),
+            ('set', ['firewallRules[0].sourceAddressPrefix=198.51.100.1'], replacement),
+            ('add', ['firewallRules', 'name=branch', 'sourceAddressPrefix=198.51.100.1'],
+             original + [{'name': 'branch', 'sourceAddressPrefix': '198.51.100.1'}]),
+            ('remove', ['firewallRules', '0'], []),
+        )
+        for action, values, expected in actions:
+            for generic_access in (False, True):
+                with self.subTest(action=action, values=values, generic_access=generic_access):
+                    updates = [(action, values)]
+                    arguments = {'generic_update_args': {'actions': updates}}
+                    if generic_access:
+                        updates.insert(0, ('set', ['publicNetworkAccess=Disabled']))
+                    else:
+                        arguments['public_network_access'] = 'Disabled'
+                    operation = self._operation(RedisEnterpriseUpdate, 'RedisEnterpriseCreate', arguments)
+                    operation.ctx.set_var('instance', {
+                        'location': 'eastus2euap',
+                        'sku': {'name': 'Balanced_B1'},
+                        'properties': {
+                            'publicNetworkAccess': 'Enabled',
+                            'firewallRules': [{'name': 'office', 'sourceAddressPrefix': '203.0.113.1'}],
+                        },
+                    }, schema_builder=RedisEnterpriseUpdate.RedisEnterpriseGet._build_schema_on_200)
+                    command = RedisEnterpriseUpdate(cli_ctx=operation.ctx.cli_ctx)
+                    command.ctx = operation.ctx
+                    command.pre_instance_update(operation.ctx.vars.instance)
+                    command.InstanceUpdateByJson(ctx=operation.ctx)()
+                    command.InstanceUpdateByGeneric(ctx=operation.ctx)()
+                    self.assertEqual(operation.method, 'PUT')
+                    self.assertEqual(operation.content['properties']['publicNetworkAccess'], 'Disabled')
+                    self.assertEqual(operation.content['properties']['firewallRules'], expected)
 
     def test_disabling_public_access_patches_only_supplied_properties(self):
         operation = self._operation(RedisEnterpriseUpdate, 'RedisEnterpriseCreate', {
