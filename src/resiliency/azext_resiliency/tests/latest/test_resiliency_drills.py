@@ -25,7 +25,12 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
     """Replayable Drill management coverage with a scenario-scoped readable parent."""
 
     def _root_service_group_id(self):
-        return '/providers/Microsoft.Management/serviceGroups/nsgv2sg1008063819'
+        parent = os.environ.get('RESILIENCY_TEST_PARENT_SERVICE_GROUP')
+        if parent:
+            if parent.startswith('/'):
+                return parent
+            return '/providers/Microsoft.Management/serviceGroups/' + parent
+        return super()._root_service_group_id()
 
     def _drill_command(self, suffix, checks=None):
         return self._cmd_after_rbac_propagation(
@@ -230,18 +235,35 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
         self._drill_command(
             'show', checks=[self.check('properties.executionState', 'NotRunning')])
 
-    @live_only()
-    def test_resiliency_drill_prepared_run_coverage(self):
-        """Exercise safe DrillRun reads/report actions against an explicitly supplied live fixture."""
+    def _prepared_run_fixture(self, stage_env=None):
         fixture = {
             'sg_name': os.environ.get('RESILIENCY_TEST_PREPARED_SERVICE_GROUP'),
             'drill_name': os.environ.get('RESILIENCY_TEST_PREPARED_DRILL'),
             'drill_run_name': os.environ.get('RESILIENCY_TEST_PREPARED_DRILL_RUN'),
         }
-        if not all(fixture.values()):
-            self.skipTest('Prepared DrillRun fixture environment variables are not configured.')
+        missing = [name for name, value in fixture.items() if not value]
+        if missing:
+            self.skipTest('Prepared DrillRun fixture is missing: {}.'.format(', '.join(missing)))
+        if stage_env:
+            stage = os.environ.get(stage_env)
+            if not stage:
+                self.skipTest('{} is not configured for this command.'.format(stage_env))
+            fixture['mutation_stage'] = stage
         self.kwargs.update(fixture)
+        return fixture.get('mutation_stage')
 
+    def _supported_verbs(self):
+        run = self._drill_command(
+            'drill-run show --drill-run-name {drill_run_name}').get_output_in_json()
+        return {
+            entry.get('drillRunStage'): entry.get('supportedVerbs', [])
+            for entry in run.get('properties', {}).get('supportedVerbsForStage', [])
+        }
+
+    @live_only()
+    def test_resiliency_drill_prepared_run_coverage(self):
+        """Exercise safe DrillRun reads/report actions against an explicitly supplied live fixture."""
+        self._prepared_run_fixture()
         self._drill_command(
             'drill-run show --drill-run-name {drill_run_name}',
             checks=[self.check('name', '{drill_run_name}'), self.exists('properties.status')])
@@ -252,10 +274,7 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
         self._drill_command(
             'drill-run drill-run-resource show --drill-run-name {drill_run_name} '
             '--drill-run-resource-name {drill_run_resource_name}',
-            checks=[
-                self.check('name', '{drill_run_resource_name}'),
-                self.exists('properties.status'),
-            ])
+            checks=[self.check('name', '{drill_run_resource_name}'), self.exists('properties.status')])
         self.kwargs['add_note_operation_id'] = self.create_guid()
         self._drill_command(
             'drill-run add-note --drill-run-name {drill_run_name} '
@@ -269,58 +288,39 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
             'drill-run list-report-download-url --drill-run-name {drill_run_name} '
             '--operation-id {report_url_operation_id} --format Html')
 
-        mutation_stage = os.environ.get('RESILIENCY_TEST_PREPARED_MARK_COMPLETE_STAGE')
-        if mutation_stage:
-            run = self._drill_command(
-                'drill-run show --drill-run-name {drill_run_name}').get_output_in_json()
-            supported = {
-                entry.get('drillRunStage'): entry.get('supportedVerbs', [])
-                for entry in run.get('properties', {}).get('supportedVerbsForStage', [])
-            }
-            if 'MarkAsComplete' not in supported.get(mutation_stage, []):
-                self.skipTest('Prepared DrillRun does not advertise MarkAsComplete for {}.'.format(
-                    mutation_stage))
-            self.kwargs['mark_complete_stage'] = mutation_stage
-            self.kwargs['mark_complete_operation_id'] = self.create_guid()
-            self._drill_command(
-                'drill-run mark-as-complete --drill-run-name {drill_run_name} '
-                '--operation-id {mark_complete_operation_id} --drill-run-stage {mark_complete_stage}')
-        failover_stage = os.environ.get('RESILIENCY_TEST_PREPARED_FAILOVER_STAGE')
-        if failover_stage:
-            run = self._drill_command(
-                'drill-run show --drill-run-name {drill_run_name}').get_output_in_json()
-            supported = {
-                entry.get('drillRunStage'): entry.get('supportedVerbs', [])
-                for entry in run.get('properties', {}).get('supportedVerbsForStage', [])
-            }
-            if 'Start' not in supported.get(failover_stage, []):
-                self.skipTest('Prepared DrillRun does not advertise Start for {}'.format(
-                    failover_stage))
-            self.kwargs['failover_operation_id'] = self.create_guid()
-            self._drill_command(
-                'drill-run fail-over --drill-run-name {drill_run_name} '
-                '--operation-id {failover_operation_id} '
-                '--auto-failover Disable --no-wait '
-                '--failover-properties "{{failover-direction:FromSpecificLocations,'
-                'failover-request-properties:{{source-locations:[northeurope-az1]}}}}"')
-            run = self._drill_command(
-                'drill-run show --drill-run-name {drill_run_name}').get_output_in_json()
-            self.assertEqual(
-                run.get('properties', {}).get('currentActiveOperationId'),
-                self.kwargs['failover_operation_id'])
+    @live_only()
+    def test_resiliency_drill_run_mark_as_complete(self):
+        stage = self._prepared_run_fixture('RESILIENCY_TEST_PREPARED_MARK_COMPLETE_STAGE')
+        if 'MarkAsComplete' not in self._supported_verbs().get(stage, []):
+            self.skipTest('Prepared DrillRun does not advertise MarkAsComplete for {}.'.format(stage))
+        self.kwargs['mark_complete_stage'] = stage
+        self.kwargs['mark_complete_operation_id'] = self.create_guid()
+        self._drill_command(
+            'drill-run mark-as-complete --drill-run-name {drill_run_name} '
+            '--operation-id {mark_complete_operation_id} --drill-run-stage {mark_complete_stage}')
 
-        resume_stage = os.environ.get('RESILIENCY_TEST_PREPARED_RESUME_STAGE')
-        if resume_stage:
-            run = self._drill_command(
-                'drill-run show --drill-run-name {drill_run_name}').get_output_in_json()
-            supported = {
-                entry.get('drillRunStage'): entry.get('supportedVerbs', [])
-                for entry in run.get('properties', {}).get('supportedVerbsForStage', [])
-            }
-            if 'Start' not in supported.get(resume_stage, []):
-                self.skipTest('Prepared DrillRun does not advertise Start for Resume at {}'.format(
-                    resume_stage))
-            self.kwargs['resume_operation_id'] = self.create_guid()
-            self._drill_command(
-                'drill-run resume --drill-run-name {drill_run_name} '
-                '--operation-id {resume_operation_id}')
+    @live_only()
+    def test_resiliency_drill_run_fail_over(self):
+        stage = self._prepared_run_fixture('RESILIENCY_TEST_PREPARED_FAILOVER_STAGE')
+        if 'Start' not in self._supported_verbs().get(stage, []):
+            self.skipTest('Prepared DrillRun does not advertise Start for {}.'.format(stage))
+        self.kwargs['failover_operation_id'] = self.create_guid()
+        self._drill_command(
+            'drill-run fail-over --drill-run-name {drill_run_name} '
+            '--operation-id {failover_operation_id} --auto-failover Disable --no-wait '
+            '--failover-properties "{{failover-direction:FromSpecificLocations,'
+            'failover-request-properties:{{source-locations:[northeurope-az1]}}}}"')
+        run = self._drill_command(
+            'drill-run show --drill-run-name {drill_run_name}').get_output_in_json()
+        self.assertEqual(run.get('properties', {}).get('currentActiveOperationId'),
+                         self.kwargs['failover_operation_id'])
+
+    @live_only()
+    def test_resiliency_drill_run_resume(self):
+        stage = self._prepared_run_fixture('RESILIENCY_TEST_PREPARED_RESUME_STAGE')
+        if 'Start' not in self._supported_verbs().get(stage, []):
+            self.skipTest('Prepared DrillRun does not advertise Start for Resume at {}.'.format(stage))
+        self.kwargs['resume_operation_id'] = self.create_guid()
+        self._drill_command(
+            'drill-run resume --drill-run-name {drill_run_name} '
+            '--operation-id {resume_operation_id}')
