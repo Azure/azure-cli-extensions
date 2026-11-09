@@ -15,10 +15,7 @@ from azure.cli.core.aaz import *
     "planetarycomputer geocatalog identity remove",
 )
 class Remove(AAZCommand):
-    """Remove the user or system managed identities.
-
-    :example: GeoCatalogs_Create
-        az planetarycomputer geocatalog identity remove --resource-group MyResourceGroup --catalog-name MyCatalog
+    """Remove user-assigned managed identities.
     """
 
     _aaz_info = {
@@ -61,12 +58,6 @@ class Remove(AAZCommand):
         # define Arg Group "Resource.identity"
 
         _args_schema = cls._args_schema
-        _args_schema.mi_system_assigned = AAZStrArg(
-            options=["--system-assigned", "--mi-system-assigned"],
-            arg_group="Resource.identity",
-            help="Set the system managed identity.",
-            blank="True",
-        )
         _args_schema.mi_user_assigned = AAZListArg(
             options=["--user-assigned", "--mi-user-assigned"],
             arg_group="Resource.identity",
@@ -324,7 +315,6 @@ class Remove(AAZCommand):
                 typ=AAZIdentityObjectType
             )
             _builder.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "remove"}})
-            _builder.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "remove"}})
 
             user_assigned = _builder.get(".userAssigned")
             if user_assigned is not None:
@@ -376,14 +366,6 @@ class _RemoveHelper:
         )
 
         identity = _schema_geo_catalog_read.identity
-        identity.principal_id = AAZStrType(
-            serialized_name="principalId",
-            flags={"read_only": True},
-        )
-        identity.tenant_id = AAZStrType(
-            serialized_name="tenantId",
-            flags={"read_only": True},
-        )
         identity.type = AAZStrType(
             flags={"required": True},
         )
@@ -418,9 +400,6 @@ class _RemoveHelper:
             serialized_name="managedStorageResourceIds",
             flags={"read_only": True},
         )
-        properties.premium_configuration = AAZObjectType(
-            serialized_name="premiumConfiguration",
-        )
         properties.private_endpoint_connections = AAZListType(
             serialized_name="privateEndpointConnections",
             flags={"read_only": True},
@@ -443,25 +422,6 @@ class _RemoveHelper:
 
         managed_storage_resource_ids = _schema_geo_catalog_read.properties.managed_storage_resource_ids
         managed_storage_resource_ids.Element = AAZStrType()
-
-        premium_configuration = _schema_geo_catalog_read.properties.premium_configuration
-        premium_configuration.compute_properties = AAZObjectType(
-            serialized_name="computeProperties",
-        )
-        premium_configuration.database_tier = AAZStrType(
-            serialized_name="databaseTier",
-        )
-        premium_configuration.managed_storage_capacity = AAZIntType(
-            serialized_name="managedStorageCapacity",
-        )
-
-        compute_properties = _schema_geo_catalog_read.properties.premium_configuration.compute_properties
-        compute_properties.catalog_tier = AAZStrType(
-            serialized_name="catalogTier",
-        )
-        compute_properties.ingestion_tier = AAZStrType(
-            serialized_name="ingestionTier",
-        )
 
         private_endpoint_connections = _schema_geo_catalog_read.properties.private_endpoint_connections
         private_endpoint_connections.Element = AAZObjectType()

@@ -66,9 +66,14 @@ az planetarycomputer geocatalog private-endpoint-connection update -g MyResource
 az planetarycomputer geocatalog private-link-resource list -g MyResourceGroup --catalog-name MyCatalog
 ```
 
-GeoCatalog creation also supports `--tier Premium` with
-`--premium-configuration`. Use
-`az planetarycomputer geocatalog create --help` for the configuration fields.
+The stable contract supports Basic catalogs and user-assigned managed identities.
+Premium configuration and system-assigned identity options are not exposed.
+Lifecycle `state` and `stoppedSinceUtc` are read-only response properties.
+
+Generation uses public specification commit
+`3d41865727e08555114cd851cb6145987474f9d8`.
+The AAZ workspace hides the generator-synthesized system-assigned identity
+arguments because the service supports only user-assigned identities.
 
 ## Development smoke test ##
 

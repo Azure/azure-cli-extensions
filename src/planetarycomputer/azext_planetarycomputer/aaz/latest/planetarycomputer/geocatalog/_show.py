@@ -181,14 +181,6 @@ class Show(AAZCommand):
             )
 
             identity = cls._schema_on_200.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
             identity.type = AAZStrType(
                 flags={"required": True},
             )
@@ -223,9 +215,6 @@ class Show(AAZCommand):
                 serialized_name="managedStorageResourceIds",
                 flags={"read_only": True},
             )
-            properties.premium_configuration = AAZObjectType(
-                serialized_name="premiumConfiguration",
-            )
             properties.private_endpoint_connections = AAZListType(
                 serialized_name="privateEndpointConnections",
                 flags={"read_only": True},
@@ -248,25 +237,6 @@ class Show(AAZCommand):
 
             managed_storage_resource_ids = cls._schema_on_200.properties.managed_storage_resource_ids
             managed_storage_resource_ids.Element = AAZStrType()
-
-            premium_configuration = cls._schema_on_200.properties.premium_configuration
-            premium_configuration.compute_properties = AAZObjectType(
-                serialized_name="computeProperties",
-            )
-            premium_configuration.database_tier = AAZStrType(
-                serialized_name="databaseTier",
-            )
-            premium_configuration.managed_storage_capacity = AAZIntType(
-                serialized_name="managedStorageCapacity",
-            )
-
-            compute_properties = cls._schema_on_200.properties.premium_configuration.compute_properties
-            compute_properties.catalog_tier = AAZStrType(
-                serialized_name="catalogTier",
-            )
-            compute_properties.ingestion_tier = AAZStrType(
-                serialized_name="ingestionTier",
-            )
 
             private_endpoint_connections = cls._schema_on_200.properties.private_endpoint_connections
             private_endpoint_connections.Element = AAZObjectType()

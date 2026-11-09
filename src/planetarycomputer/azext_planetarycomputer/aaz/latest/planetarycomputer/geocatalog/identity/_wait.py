@@ -198,14 +198,6 @@ class _WaitHelper:
         )
 
         identity = _schema_geo_catalog_read.identity
-        identity.principal_id = AAZStrType(
-            serialized_name="principalId",
-            flags={"read_only": True},
-        )
-        identity.tenant_id = AAZStrType(
-            serialized_name="tenantId",
-            flags={"read_only": True},
-        )
         identity.type = AAZStrType(
             flags={"required": True},
         )
@@ -240,9 +232,6 @@ class _WaitHelper:
             serialized_name="managedStorageResourceIds",
             flags={"read_only": True},
         )
-        properties.premium_configuration = AAZObjectType(
-            serialized_name="premiumConfiguration",
-        )
         properties.private_endpoint_connections = AAZListType(
             serialized_name="privateEndpointConnections",
             flags={"read_only": True},
@@ -265,25 +254,6 @@ class _WaitHelper:
 
         managed_storage_resource_ids = _schema_geo_catalog_read.properties.managed_storage_resource_ids
         managed_storage_resource_ids.Element = AAZStrType()
-
-        premium_configuration = _schema_geo_catalog_read.properties.premium_configuration
-        premium_configuration.compute_properties = AAZObjectType(
-            serialized_name="computeProperties",
-        )
-        premium_configuration.database_tier = AAZStrType(
-            serialized_name="databaseTier",
-        )
-        premium_configuration.managed_storage_capacity = AAZIntType(
-            serialized_name="managedStorageCapacity",
-        )
-
-        compute_properties = _schema_geo_catalog_read.properties.premium_configuration.compute_properties
-        compute_properties.catalog_tier = AAZStrType(
-            serialized_name="catalogTier",
-        )
-        compute_properties.ingestion_tier = AAZStrType(
-            serialized_name="ingestionTier",
-        )
 
         private_endpoint_connections = _schema_geo_catalog_read.properties.private_endpoint_connections
         private_endpoint_connections.Element = AAZObjectType()
