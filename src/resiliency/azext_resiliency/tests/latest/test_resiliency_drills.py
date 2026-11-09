@@ -8,6 +8,7 @@ import os
 import time
 from azure.core.exceptions import HttpResponseError
 from azure.cli.core.azclierror import HTTPError
+from azure.cli.testsdk import live_only
 
 from .test_resiliency import (
     ResiliencyResourceGroupPreparer,
@@ -197,3 +198,42 @@ class ResiliencyDrillScenario(ResiliencyScenarioTestBase):
                 self._delete_service_group()
             except (HttpResponseError, HTTPError):
                 pass
+
+    @live_only()
+    def test_resiliency_drill_prepared_run_coverage(self):
+        """Exercise safe DrillRun reads/report actions against an explicitly supplied live fixture."""
+        fixture = {
+            'sg_name': os.environ.get('RESILIENCY_TEST_PREPARED_SERVICE_GROUP'),
+            'drill_name': os.environ.get('RESILIENCY_TEST_PREPARED_DRILL'),
+            'drill_run_name': os.environ.get('RESILIENCY_TEST_PREPARED_DRILL_RUN'),
+        }
+        if not all(fixture.values()):
+            self.skipTest('Prepared DrillRun fixture environment variables are not configured.')
+        self.kwargs.update(fixture)
+
+        self._drill_command(
+            'drill-run show --drill-run-name {drill_run_name}',
+            checks=[self.check('name', '{drill_run_name}'), self.exists('properties.status')])
+        resources = self._drill_command(
+            'drill-run drill-run-resource list --drill-run-name {drill_run_name}',
+            checks=[self.greater_than('length(@)', 0)]).get_output_in_json()
+        self.kwargs['drill_run_resource_name'] = resources[0]['name']
+        self._drill_command(
+            'drill-run drill-run-resource show --drill-run-name {drill_run_name} '
+            '--drill-run-resource-name {drill_run_resource_name}',
+            checks=[
+                self.check('name', '{drill_run_resource_name}'),
+                self.exists('properties.status'),
+            ])
+        self.kwargs['add_note_operation_id'] = self.create_guid()
+        self._drill_command(
+            'drill-run add-note --drill-run-name {drill_run_name} '
+            '--operation-id {add_note_operation_id} --notes cli-coverage-validation')
+        self.kwargs['generate_report_operation_id'] = self.create_guid()
+        self._drill_command(
+            'drill-run generate-report --drill-run-name {drill_run_name} '
+            '--operation-id {generate_report_operation_id}')
+        self.kwargs['report_url_operation_id'] = self.create_guid()
+        self._drill_command(
+            'drill-run list-report-download-url --drill-run-name {drill_run_name} '
+            '--operation-id {report_url_operation_id} --format Html')
