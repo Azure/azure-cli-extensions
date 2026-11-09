@@ -41,15 +41,45 @@ class RedisEnterpriseUpdate(_Update):
 
     def pre_instance_update(self, instance):
         """Called before the instance is updated"""
+        from azure.cli.core.aaz import has_value
+        if has_value(self.ctx.args.firewall_rules):
+            self.ctx.redisenterprise_original = _Update.RedisEnterpriseCreate.serialize_content(instance)
         try:
             current_sku = str(instance.sku.name) if hasattr(instance, 'sku') and instance.sku else None
         except (AttributeError, TypeError):
             current_sku = None
 
+        self.ctx.redisenterprise_legacy_sku = bool(current_sku and current_sku.startswith('Enterprise'))
         new_sku = str(self.ctx.args.sku) if self.ctx.args.sku is not None else None
 
         if new_sku and current_sku and new_sku != current_sku:
             self._handle_sku_change(current_sku, new_sku, instance)
+
+    class RedisEnterpriseCreate(_Update.RedisEnterpriseCreate):
+
+        @property
+        def method(self):
+            from azure.cli.core.aaz import has_value
+            return "PATCH" if has_value(self.ctx.args.firewall_rules) else super().method
+
+        @property
+        def content(self):
+            from azure.cli.core.aaz import has_value
+            content = super().content
+            if not has_value(self.ctx.args.firewall_rules):
+                if self.ctx.redisenterprise_legacy_sku:
+                    content.get("properties", {}).pop("firewallRules", None)
+                return content
+            # Do not replay unchanged SKU/encryption fields alongside a firewall change.
+            original = self.ctx.redisenterprise_original
+            patch = {key: value for key, value in content.items()
+                     if key != "properties" and original.get(key) != value}
+            properties = {key: value for key, value in content.get("properties", {}).items()
+                          if key == "firewallRules" or original.get("properties", {}).get(key) != value}
+            if self.ctx.args.firewall_rules.to_serialized_data() is None:
+                properties["firewallRules"] = None
+            patch["properties"] = properties
+            return patch
 
     def _handle_sku_change(self, current_sku, new_sku, instance):
         """Handle SKU change logic for capacity and zones"""
@@ -602,6 +632,7 @@ def redisenterprise_create(cmd,
                            zones=None,
                            high_availability=None,
                            public_network_access=None,
+                           firewall_rules=None,
                            maintenance_configuration=None,
                            key_encryption_key_url=None,
                            identity_type=None,
@@ -676,6 +707,7 @@ def redisenterprise_create(cmd,
             "zones": zones,
             "high_availability": high_availability,
             "public_network_access": public_network_access,
+            "firewall_rules": firewall_rules,
             "maintenance_configuration": maintenance_configuration,
             "minimum_tls_version": minimum_tls_version,
             "key_encryption_key_url": key_encryption_key_url,
@@ -697,6 +729,7 @@ def redisenterprise_create(cmd,
         "zones": zones,
         "high_availability": high_availability,
         "public_network_access": public_network_access,
+        "firewall_rules": firewall_rules,
         "maintenance_configuration": maintenance_configuration,
         "minimum_tls_version": minimum_tls_version,
         "key_encryption_key_url": key_encryption_key_url,

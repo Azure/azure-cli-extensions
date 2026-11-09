@@ -3,22 +3,29 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""Offline regressions for stable migration requests, polling, and access policies."""
+"""Offline regressions for migration requests, polling, ACLs, and firewall rules."""
 
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
+from azure.cli.core.aaz import AAZUndefined
 from azure.cli.core.aaz._command_ctx import AAZCommandCtx
 from azure.cli.core.mock import DummyCli
 
-from azext_redisenterprise.custom import ClusterUnlink, MigrationStart, MigrationUndo, MigrationUnlink
+from azext_redisenterprise.custom import (
+    ClusterUnlink, MigrationStart, MigrationUndo, MigrationUnlink,
+    RedisEnterpriseUpdate, redisenterprise_create,
+)
+from azext_redisenterprise.aaz.latest.redisenterprise import Create as ClusterCreate
 from azext_redisenterprise.aaz.latest.redisenterprise.migration import Show, Validate
 from azext_redisenterprise.aaz.latest.redisenterprise.database.access_policy_assignment import (
     Create as AssignmentCreate,
+    Show as AssignmentShow,
+    Update as AssignmentUpdate,
 )
 
 
-class MigrationStartFlattenArgsTest(unittest.TestCase):
+class ManagementRequestsTest(unittest.TestCase):
 
     def test_flat_args_registered_and_object_hidden(self):
         schema = MigrationStart._build_arguments_schema()
@@ -131,6 +138,143 @@ class MigrationStartFlattenArgsTest(unittest.TestCase):
                 'accessPolicyName': 'default',
                 'user': {'objectId': arguments['object_id']},
             },
+        })
+
+    def test_custom_acl_create_does_not_require_deprecated_policy(self):
+        operation = self._operation(AssignmentCreate, 'AccessPolicyAssignmentCreateUpdate', {
+            'database_name': 'default',
+            'access_policy_assignment_name': 'reader',
+            'object_id': '11111111-1111-1111-1111-111111111111',
+            'access_string': '+@read ~cache:*',
+        })
+        self.assertEqual(operation.content['properties'], {
+            'accessString': '+@read ~cache:*',
+            'user': {'objectId': '11111111-1111-1111-1111-111111111111'},
+        })
+
+    def test_acl_update_preserves_user_and_does_not_send_provisioning_error(self):
+        operation = self._operation(AssignmentUpdate, 'AccessPolicyAssignmentCreateUpdate', {
+            'database_name': 'default',
+            'access_policy_assignment_name': 'reader',
+            'access_string': '+get ~cache:*',
+        })
+        operation.ctx.set_var('instance', {
+            'properties': {
+                'accessPolicyName': 'default',
+                'accessString': '+@read ~cache:*',
+                'user': {'objectId': '11111111-1111-1111-1111-111111111111'},
+                'provisioningError': {'code': 'InvalidACL', 'message': 'Invalid access string'},
+            },
+        }, schema_builder=AssignmentUpdate.AccessPolicyAssignmentGet._build_schema_on_200)
+        AssignmentUpdate.InstanceUpdateByJson(ctx=operation.ctx)()
+        self.assertEqual(operation.content['properties'], {
+            'accessPolicyName': 'default',
+            'accessString': '+get ~cache:*',
+            'user': {'objectId': '11111111-1111-1111-1111-111111111111'},
+        })
+        result = AssignmentShow.deserialize_output(operation.ctx.vars.instance, client_flatten=False)
+        self.assertEqual(result['properties']['provisioningError']['code'], 'InvalidACL')
+
+    def test_cluster_create_serializes_firewall_rules_and_empty_set(self):
+        rules = [
+            {'name': 'office', 'source-address-prefix': '203.0.113.0/24'},
+            {'name': 'azure', 'source-address-prefix': 'AzureCloud'},
+        ]
+        for supplied in (None, [], rules):
+            with self.subTest(rules=supplied):
+                operation = self._operation(ClusterCreate, 'RedisEnterpriseCreate', {
+                    'location': 'eastus2euap', 'sku': 'Balanced_B1',
+                    'public_network_access': 'Enabled', 'firewall_rules': supplied,
+                })
+                properties = operation.content['properties']
+                if supplied is None:
+                    self.assertNotIn('firewallRules', properties)
+                else:
+                    self.assertEqual(properties['firewallRules'], [
+                        {'name': rule['name'], 'sourceAddressPrefix': rule['source-address-prefix']}
+                        for rule in supplied
+                    ])
+
+    def test_custom_create_forwards_firewall_rules_with_and_without_database(self):
+        rules = [{'name': 'office', 'source-address-prefix': '203.0.113.1'}]
+        for no_database in (False, True):
+            with self.subTest(no_database=no_database):
+                with patch.object(ClusterCreate, '__call__', return_value=None) as create:
+                    with patch('azext_redisenterprise.aaz.latest.redisenterprise.database.Create.__call__'):
+                        redisenterprise_create(
+                            Mock(cli_ctx=DummyCli()), 'rg', 'cache', 'eastus2euap', 'Balanced_B1',
+                            public_network_access='Enabled', firewall_rules=rules, no_database=no_database,
+                        )
+                        self.assertEqual(create.call_args.kwargs['command_args']['firewall_rules'], rules)
+
+    def test_firewall_update_patches_only_changed_fields_and_clears_empty_array(self):
+        initial = {
+            'location': 'eastus2euap',
+            'sku': {'name': 'Balanced_B1'},
+            'identity': {
+                'type': 'SystemAssigned, UserAssigned',
+                'principalId': '11111111-1111-1111-1111-111111111111',
+                'tenantId': '22222222-2222-2222-2222-222222222222',
+                'userAssignedIdentities': {
+                    '/subscriptions/sub/resourceGroups/rg/providers/'
+                    'Microsoft.ManagedIdentity/userAssignedIdentities/cache': {
+                        'clientId': '33333333-3333-3333-3333-333333333333',
+                        'principalId': '44444444-4444-4444-4444-444444444444',
+                    },
+                },
+            },
+            'properties': {
+                'publicNetworkAccess': 'Enabled',
+                'firewallRules': [{'name': 'old', 'sourceAddressPrefix': '203.0.113.1'}],
+                'encryption': {'customerManagedKeyEncryption': {
+                    'keyEncryptionKeyUrl': 'https://example.vault.azure.net/keys/key/version',
+                }},
+            },
+        }
+        for rules in (AAZUndefined, None, [], [{'name': 'new', 'source-address-prefix': '198.51.100.0/24'}]):
+            with self.subTest(rules=rules):
+                operation = self._operation(RedisEnterpriseUpdate, 'RedisEnterpriseCreate', {
+                    'firewall_rules': rules,
+                } if rules is not AAZUndefined else {})
+                operation.ctx.set_var('instance', initial,
+                                      schema_builder=RedisEnterpriseUpdate.RedisEnterpriseGet._build_schema_on_200)
+                command = RedisEnterpriseUpdate(cli_ctx=operation.ctx.cli_ctx)
+                command.ctx = operation.ctx
+                command.pre_instance_update(operation.ctx.vars.instance)
+                command.InstanceUpdateByJson(ctx=operation.ctx)()
+                command.post_instance_update(operation.ctx.vars.instance)
+                if rules is AAZUndefined:
+                    self.assertEqual(operation.method, 'PUT')
+                    self.assertEqual(operation.content['properties']['firewallRules'],
+                                     initial['properties']['firewallRules'])
+                else:
+                    self.assertEqual(operation.method, 'PATCH')
+                    self.assertEqual(operation.content, {'properties': {'firewallRules': [
+                        {'name': rule['name'], 'sourceAddressPrefix': rule['source-address-prefix']}
+                        for rule in rules
+                    ] if rules is not None else None}})
+
+    def test_disabling_public_access_patches_only_supplied_properties(self):
+        operation = self._operation(RedisEnterpriseUpdate, 'RedisEnterpriseCreate', {
+            'public_network_access': 'Disabled',
+            'firewall_rules': [],
+        })
+        operation.ctx.set_var('instance', {
+            'location': 'eastus2euap',
+            'sku': {'name': 'Balanced_B1'},
+            'properties': {
+                'publicNetworkAccess': 'Enabled',
+                'firewallRules': [{'name': 'office', 'sourceAddressPrefix': '203.0.113.1'}],
+            },
+        }, schema_builder=RedisEnterpriseUpdate.RedisEnterpriseGet._build_schema_on_200)
+        command = RedisEnterpriseUpdate(cli_ctx=operation.ctx.cli_ctx)
+        command.ctx = operation.ctx
+        command.pre_instance_update(operation.ctx.vars.instance)
+        command.InstanceUpdateByJson(ctx=operation.ctx)()
+        command.post_instance_update(operation.ctx.vars.instance)
+        self.assertEqual(operation.method, 'PATCH')
+        self.assertEqual(operation.content, {
+            'properties': {'publicNetworkAccess': 'Disabled', 'firewallRules': []},
         })
 
     def test_bodyless_actions_deserialize_final_resource_and_preserve_no_wait(self):

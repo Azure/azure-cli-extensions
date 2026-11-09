@@ -1,12 +1,12 @@
 # Azure CLI RedisEnterprise Extension #
 This Azure CLI extension manages Azure Managed Redis and Azure Cache for Redis Enterprise resources.
 
-The extension uses stable management API version `2026-09-01` for Azure Managed Redis and Azure Cache for Redis Enterprise.
+This preview extension uses management API version `2026-10-01-preview` for Azure Managed Redis and Azure Cache for Redis Enterprise.
 
 ### How to use ###
-Use Azure CLI version 2.75.0 or later. Install the extension:
+Use Azure CLI version 2.75.0 or later. Once this preview is available in the extension index, install it:
 ```
-az extension add --name redisenterprise
+az extension add --name redisenterprise --allow-preview true --version 1.6.0b1
 ```
 
 The examples use Bash and assume you are signed in, have selected the intended subscription, and have an existing resource group named `rg1`. Choose unique cache names and a supported region with capacity for your chosen SKU; the create example uses `eastus2`.
@@ -49,6 +49,33 @@ az redisenterprise update --cluster-name "cache1" --minimum-tls-version "1.2" \
 ```
 az redisenterprise delete --cluster-name "cache1" --resource-group "rg1"
 ```
+##### Firewall rules (Azure Managed Redis only) #####
+Set the complete rule set with `--firewall-rules`. Rules accept IPv4 addresses, IPv4 CIDR ranges, and supported Azure service tags, not IPv6. At most 250 rules are supported. Non-empty rules require public network access to be enabled.
+
+```
+az redisenterprise create --cluster-name "restrictedcache" --resource-group "rg1" \
+    --location "eastus2" --sku "Balanced_B1" --no-database --public-network-access Enabled \
+    --firewall-rules '[{"name":"office","source-address-prefix":"203.0.113.0/24"}]'
+az redisenterprise update --cluster-name "restrictedcache" --resource-group "rg1" \
+    --firewall-rules '[{"name":"office","source-address-prefix":"198.51.100.0/24"}]'
+```
+
+Update replaces all rules with the supplied array; omitting `--firewall-rules` preserves them. Create uses PUT: omitting rules or supplying `[]` clears them, including when recreating an existing cluster. When disabling public network access, explicitly clear existing rules with `--public-network-access Disabled --firewall-rules '[]'`. **With public network access enabled, clearing rules allows all public traffic; it does not deny all traffic.** Do not combine firewall changes with scaling or encryption changes in one update.
+
+##### Custom Redis ACL assignments #####
+Assign custom permissions to a Microsoft Entra object on an existing default database:
+
+```
+az redisenterprise database access-policy-assignment create --cluster-name "cache1" \
+    --resource-group "rg1" --database-name default --access-policy-assignment-name reader \
+    --object-id "<Microsoft Entra object ID>" --access-string '+@read ~cache:*'
+az redisenterprise database access-policy-assignment update --cluster-name "cache1" \
+    --resource-group "rg1" --database-name default --access-policy-assignment-name reader \
+    --access-string '+get ~cache:*'
+```
+
+If omitted on create, `accessString` defaults to `+@all ~*`. `--access-policy-name` remains available for compatibility but is deprecated in this preview; responses always report `default`. Show and list responses include read-only `provisioningError` details when applying an ACL fails.
+
 ##### Unlink an endpoint migrated from Azure Cache for Redis Enterprise #####
 Use this cluster-level command after an Azure Cache for Redis Enterprise cluster has been migrated to Azure Managed Redis. Verify that applications use the current Azure Managed Redis endpoint before removing the legacy migrated endpoint.
 
