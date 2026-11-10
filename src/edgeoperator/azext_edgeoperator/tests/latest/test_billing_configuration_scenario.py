@@ -10,11 +10,23 @@ from unittest.mock import patch
 
 from azure.cli.testsdk import ScenarioTest
 
+from ._recording_processors import ArmEndpointNormalizer, PrivateAuthRequestFilter
+
 # Recording these tests replaces the active billing configuration on the target environment.
 STAMP_ID = "401ECB09-83EC-4777-A56C-6FFF26BCC815"
 
 
 class BillingConfigurationScenarioTest(ScenarioTest):
+
+    def __init__(self, method_name, **kwargs):
+        recording_processors = kwargs.pop("recording_processors", [])
+        replay_processors = kwargs.pop("replay_processors", [])
+        super().__init__(
+            method_name,
+            recording_processors=[PrivateAuthRequestFilter(), ArmEndpointNormalizer()] + recording_processors,
+            replay_processors=[ArmEndpointNormalizer()] + replay_processors,
+            **kwargs
+        )
 
     def setUp(self):
         super().setUp()
@@ -96,6 +108,19 @@ class BillingConfigurationScenarioTest(ScenarioTest):
                 self.check("properties.licenses[0].benefitName", "WindowsServer"),
                 self.check("properties.signatures[0].name", "primary"),
             ])
+
+        self.cmd("aldo billing-configuration show", checks=[
+            self.check("properties.resourceId", "{resource}"),
+            self.check("properties.licenses[0].benefitName", "WindowsServer"),
+            self.check("properties.signatures[0].name", "primary"),
+        ])
+        snapshots = self.cmd("aldo billing-configuration snapshot list").get_output_in_json()
+        self.assertGreater(len(snapshots), 0)
+        self.kwargs["snapshot"] = snapshots[0]["name"]
+        self.cmd("aldo billing-configuration snapshot show --name {snapshot}", checks=[
+            self.check("name", "{snapshot}"),
+            self.check("type(properties.billingConfiguration)", "object"),
+        ])
 
         sent = json.loads(self.cassette.requests[0].body)["properties"]
         self.assertEqual(sent["licenses"], manifest["properties"]["licenses"])

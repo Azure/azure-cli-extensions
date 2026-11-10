@@ -35,3 +35,21 @@ snapshot; use ``az aldo billing-configuration snapshot list`` and ``snapshot sho
 
 The commands use the `Microsoft.EdgeOperator BillingConfigurations REST API specification <https://github.com/Azure/azure-rest-api-specs/tree/main/specification/edgeoperator/resource-manager/Microsoft.EdgeOperator/BillingConfigurations>`_.
 Log collection and billing commands require the Operator subscription.
+
+Recording scenario tests
+------------------------
+
+The scenarios under ``azext_edgeoperator/tests/latest`` use the Azure CLI test SDK.
+Authenticate to AzureLocal and select the Operator subscription before recording live.
+Private-cloud authentication traffic is excluded, ARM endpoints are normalized for playback,
+and signed log-collection operation-status query parameters are scrubbed.
+
+Before recording log collection, set ``FROM_DATE`` and ``TO_DATE`` in
+``test_log_collection_scenario.py`` to a recent one-minute UTC interval. The direct scenario
+collects logs, polls the operation, waits for the job, retrieves it, and lists job history.
+Only run the indirect scenario with a valid destination and credentials.
+
+The billing scenarios replace the active configuration and create immutable snapshots.
+Run them only on an environment where those changes are intended. They cover individual
+arguments and manifest submission, showing the active configuration, and listing and showing
+snapshots. The manifest signature is a shape-only test fixture, not an Azure-issued signature.

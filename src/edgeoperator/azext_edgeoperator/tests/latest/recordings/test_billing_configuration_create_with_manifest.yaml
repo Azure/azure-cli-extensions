@@ -1,0 +1,171 @@
+interactions:
+- request:
+    body: '{"properties": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-billing-test/providers/Microsoft.Edge/disconnectedOperations/billing-test",
+      "resourceName": "billing-test", "stampId": "401ECB09-83EC-4777-A56C-6FFF26BCC815",
+      "location": "eastus", "billingModel": "Capacity", "connectionIntent": "Connected",
+      "billingConfiguration": {"autoRenew": "Enabled", "billingStatus": "Enabled",
+      "current": {"cores": 12, "pricingModel": "Annual", "startDate": "2026-01-01"}},
+      "licenses": [{"benefitType": "AzureHybridBenefit", "benefitName": "WindowsServer",
+      "current": {"unit": "CoresManaged", "quantity": 12}}], "signatures": [{"name":
+      "primary", "signedHash": "c2lnbmF0dXJl", "signingPublicKey": "Y2VydGlmaWNhdGU="}]}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo billing-configuration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '745'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --manifest
+      User-Agent:
+      - python/3.14.9 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/billingConfigurations/default?api-version=2026-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/billingConfigurations/default","name":"default","type":"microsoft.edgeoperator/billingconfigurations","etag":"\"0200aa35-0000-2300-0000-6af36ca10000\"","systemData":{"createdBy":"admin@demo.asz","createdByType":"User","createdAt":"2026-11-10T19:12:32.9073958Z","lastModifiedBy":"admin@demo.asz","lastModifiedByType":"User","lastModifiedAt":"2026-11-10T19:12:33.7038231Z"},"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-billing-test/providers/Microsoft.Edge/disconnectedOperations/billing-test","resourceName":"billing-test","stampId":"401ECB09-83EC-4777-A56C-6FFF26BCC815","location":"eastus","billingModel":"Capacity","connectionIntent":"Connected","billingConfiguration":{"autoRenew":"Enabled","billingStatus":"Enabled","current":{"cores":12,"pricingModel":"Annual","startDate":"2026-01-01"}},"licenses":[{"benefitType":"AzureHybridBenefit","benefitName":"WindowsServer","current":{"unit":"CoresManaged","quantity":12}}],"signatures":[{"name":"primary","signedHash":"c2lnbmF0dXJl","signingPublicKey":"Y2VydGlmaWNhdGU="}],"provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '1199'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Nov 2026 19:12:33 GMT
+      etag:
+      - '"0200b035-0000-2300-0000-6af36ca10000"'
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '2398'
+      x-ms-response-source:
+      - OperatorRPHost
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo billing-configuration show
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.14.9 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/billingConfigurations/default?api-version=2026-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/billingConfigurations/default","name":"default","type":"microsoft.edgeoperator/billingconfigurations","etag":"\"0200b035-0000-2300-0000-6af36ca10000\"","systemData":{"createdBy":"admin@demo.asz","createdByType":"User","createdAt":"2026-11-10T19:12:32.9073958Z","lastModifiedBy":"admin@demo.asz","lastModifiedByType":"User","lastModifiedAt":"2026-11-10T19:12:33.7038231Z"},"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-billing-test/providers/Microsoft.Edge/disconnectedOperations/billing-test","resourceName":"billing-test","stampId":"401ECB09-83EC-4777-A56C-6FFF26BCC815","location":"eastus","billingModel":"Capacity","connectionIntent":"Connected","billingConfiguration":{"autoRenew":"Enabled","billingStatus":"Enabled","current":{"cores":12,"pricingModel":"Annual","startDate":"2026-01-01"}},"licenses":[{"benefitType":"AzureHybridBenefit","benefitName":"WindowsServer","current":{"unit":"CoresManaged","quantity":12}}],"signatures":[{"name":"primary","signedHash":"c2lnbmF0dXJl","signingPublicKey":"Y2VydGlmaWNhdGU="}],"provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '1199'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Nov 2026 19:12:33 GMT
+      etag:
+      - '"0200b035-0000-2300-0000-6af36ca10000"'
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo billing-configuration snapshot list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.14.9 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/billingConfigurations/default/snapshots?api-version=2026-09-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/billingConfigurations/default/snapshots/51f982d2-51d2-4400-82e6-52c084031f61_639299347529073958","name":"51f982d2-51d2-4400-82e6-52c084031f61_639299347529073958","type":"microsoft.edgeoperator/billingconfigurations/snapshots","etag":"\"0200ad35-0000-2300-0000-6af36ca10000\"","systemData":{"createdBy":"04a9ff50-f3ec-4a57-83d1-b4883758d7c9","createdByType":"Application","createdAt":"2026-11-10T19:12:33.1403426Z","lastModifiedBy":"04a9ff50-f3ec-4a57-83d1-b4883758d7c9","lastModifiedByType":"Application","lastModifiedAt":"2026-11-10T19:12:33.1403426Z"},"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-billing-test/providers/Microsoft.Edge/disconnectedOperations/billing-test","resourceName":"billing-test","stampId":"401ECB09-83EC-4777-A56C-6FFF26BCC815","location":"eastus","billingModel":"Capacity","connectionIntent":"Connected","cloud":"Public","billingConfiguration":{"autoRenew":"Enabled","billingStatus":"Enabled","current":{"cores":12,"pricingModel":"Trial","startDate":"2025-11-01","endDate":"2025-12-31"},"upcoming":{"cores":24,"pricingModel":"Annual","startDate":"2026-01-01"}},"benefitPlans":{"azureHybridWindowsServerBenefit":"Enabled","windowsServerVmCount":5},"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/billingConfigurations/default/snapshots/0200aa35-0000-2300-0000-6af36ca10000_639299347537038231","name":"0200aa35-0000-2300-0000-6af36ca10000_639299347537038231","type":"microsoft.edgeoperator/billingconfigurations/snapshots","etag":"\"0200b135-0000-2300-0000-6af36ca10000\"","systemData":{"createdBy":"04a9ff50-f3ec-4a57-83d1-b4883758d7c9","createdByType":"Application","createdAt":"2026-11-10T19:12:33.7788532Z","lastModifiedBy":"04a9ff50-f3ec-4a57-83d1-b4883758d7c9","lastModifiedByType":"Application","lastModifiedAt":"2026-11-10T19:12:33.7788532Z"},"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-billing-test/providers/Microsoft.Edge/disconnectedOperations/billing-test","resourceName":"billing-test","stampId":"401ECB09-83EC-4777-A56C-6FFF26BCC815","location":"eastus","billingModel":"Capacity","connectionIntent":"Connected","billingConfiguration":{"autoRenew":"Enabled","billingStatus":"Enabled","current":{"cores":12,"pricingModel":"Annual","startDate":"2026-01-01"}},"licenses":[{"benefitType":"AzureHybridBenefit","benefitName":"WindowsServer","current":{"unit":"CoresManaged","quantity":12}}],"signatures":[{"name":"primary","signedHash":"c2lnbmF0dXJl","signingPublicKey":"Y2VydGlmaWNhdGU="}],"provisioningState":"Succeeded"}}]}'
+    headers:
+      content-length:
+      - '2745'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Nov 2026 19:12:33 GMT
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - aldo billing-configuration snapshot show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name
+      User-Agent:
+      - python/3.14.9 (Windows-11-10.0.26300-SP0) AZURECLI/2.92.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/billingConfigurations/default/snapshots/51f982d2-51d2-4400-82e6-52c084031f61_639299347529073958?api-version=2026-09-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/billingConfigurations/default/snapshots/51f982d2-51d2-4400-82e6-52c084031f61_639299347529073958","name":"51f982d2-51d2-4400-82e6-52c084031f61_639299347529073958","type":"microsoft.edgeoperator/billingconfigurations/snapshots","etag":"\"0200ad35-0000-2300-0000-6af36ca10000\"","systemData":{"createdBy":"04a9ff50-f3ec-4a57-83d1-b4883758d7c9","createdByType":"Application","createdAt":"2026-11-10T19:12:33.1403426Z","lastModifiedBy":"04a9ff50-f3ec-4a57-83d1-b4883758d7c9","lastModifiedByType":"Application","lastModifiedAt":"2026-11-10T19:12:33.1403426Z"},"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-billing-test/providers/Microsoft.Edge/disconnectedOperations/billing-test","resourceName":"billing-test","stampId":"401ECB09-83EC-4777-A56C-6FFF26BCC815","location":"eastus","billingModel":"Capacity","connectionIntent":"Connected","cloud":"Public","billingConfiguration":{"autoRenew":"Enabled","billingStatus":"Enabled","current":{"cores":12,"pricingModel":"Trial","startDate":"2025-11-01","endDate":"2025-12-31"},"upcoming":{"cores":24,"pricingModel":"Annual","startDate":"2026-01-01"}},"benefitPlans":{"azureHybridWindowsServerBenefit":"Enabled","windowsServerVmCount":5},"provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '1351'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Nov 2026 19:12:33 GMT
+      etag:
+      - '"0200ad35-0000-2300-0000-6af36ca10000"'
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+version: 1
