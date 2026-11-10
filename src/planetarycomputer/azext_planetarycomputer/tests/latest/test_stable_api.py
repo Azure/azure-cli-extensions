@@ -20,6 +20,9 @@ from azure.cli.testsdk.patches import (
     patch_retrieve_token_for_user,
 )
 from azure.cli.testsdk.scenario_tests.const import MOCKED_SUBSCRIPTION_ID
+from vcr.request import Request
+
+from azext_planetarycomputer.tests.latest.test_planetarycomputer import _CatalogRecordingProcessor
 
 
 def _response(status, body):
@@ -113,3 +116,58 @@ class PlanetarycomputerStableApiSmoke(unittest.TestCase):
         self.assertEqual(shown['properties']['state'], 'Stopped')
         self.assertEqual(shown['properties']['stoppedSinceUtc'], '2026-10-01T00:00:00Z')
         self.assertEqual(links, [])
+
+    def test_recording_privacy(self):
+        """Catches fail-open recording leaks that successful live requests cannot detect."""
+        fixture_id = '/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.Orbital/geoCatalogs/fixture'
+        processor = _CatalogRecordingProcessor(lambda: fixture_id)
+        url = (
+            'https://eastus2euap.management.azure.com/operations/operation-id'
+            '?api-version=2026-10-01&t=deadline&c=certificate%2Bdata&s=signature&h=hash&other=keep'
+        )
+        expected = (
+            'https://eastus2euap.management.azure.com/operations/operation-id'
+            '?api-version=2026-10-01&t=sanitized&c=sanitized&s=sanitized&h=sanitized&other=keep'
+        )
+        self.assertEqual(processor.process_request(Request('GET', url, None, {})).uri, expected)
+        request = processor.process_request(Request(
+            'PUT', url, b'{"tags": {"owner": "owner@contoso.com"}, "properties": {"tier": "Basic"}}',
+            {'Content-Type': 'application/json'},
+        ))
+        self.assertEqual(json.loads(request.body), {
+            'tags': {'owner': 'user@example.com'}, 'properties': {'tier': 'Basic'},
+        })
+        body = {'value': [
+            {'id': fixture_id.upper(), 'name': 'fixture',
+             'systemData': {'createdBy': 'owner@contoso.com', 'lastModifiedBy': 'object-id'},
+             'identity': {'principalId': 'principal-id', 'tenantId': 'tenant-id'},
+             'properties': {
+                 'catalogUri': 'https://fixture.real-domain.eastus2euap.geocatalog.spatio.azure.com',
+                 'managedStorageResourceIds': [
+                     '/resourceGroups/real-managed-group/providers/Microsoft.Storage/storageAccounts/realstorage',
+                 ],
+                 'managedResourceGroupId': '/resourceGroups/another-managed-group',
+             }},
+            {'name': 'unrelated-customer-catalog'},
+            {'id': fixture_id.replace('test-rg', 'customer-rg'), 'name': 'fixture'},
+            {'id': fixture_id.replace('test-sub', 'customer-sub'), 'name': 'fixture'},
+        ], 'nextLink': url}
+        response = processor.process_response({
+            'headers': {'Azure-AsyncOperation': [url], 'Location': [url]},
+            'body': {'string': json.dumps(body)},
+        })
+        self.assertEqual(response['headers'], {'Azure-AsyncOperation': [expected], 'Location': [expected]})
+        data = json.loads(response['body']['string'])
+        self.assertEqual(data['nextLink'], expected)
+        self.assertEqual([item['name'] for item in data['value']], ['fixture'])
+        serialized = response['body']['string']
+        for secret in ('owner@contoso.com', 'object-id', 'principal-id', 'tenant-id',
+                       'real-domain', 'real-managed-group', 'realstorage', 'unrelated-customer-catalog',
+                       'another-managed-group', 'customer-rg', 'customer-sub'):
+            self.assertNotIn(secret, serialized)
+        self.assertEqual(processor.redact_operation_url(expected), expected)
+        self.assertEqual(processor.scrub_metadata({'principalId': None, 'tenantId': ''}),
+                         {'principalId': None, 'tenantId': ''})
+        self.assertEqual(processor.process_response({
+            'headers': {}, 'body': {'string': '{"value": []}'},
+        })['body']['string'], '{"value": []}')

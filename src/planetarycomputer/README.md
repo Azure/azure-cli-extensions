@@ -84,9 +84,8 @@ python -m unittest discover -s src/planetarycomputer/azext_planetarycomputer/tes
 ```
 
 This offline smoke test invokes the CLI with mocked HTTP responses; it does not
-validate the live service. The existing scenario recordings still target
-`2026-04-15` and need refreshing before the full playback suite and pre-push gate
-can pass.
+validate the live service. Run scenario playback separately; passing this smoke
+test does not establish that the full integration suite passes.
 
 ## GeoCatalog integration tests ##
 
@@ -104,11 +103,17 @@ export PLANETARYCOMPUTER_TEST_LOCATION="eastus2euap"
 AZURE_TEST_RUN_LIVE=true python -m unittest discover -s src/planetarycomputer/azext_planetarycomputer/tests/latest -p test_planetarycomputer.py -v
 ```
 
-The test patches only its process-local ARM endpoint, defaulting to
-`https://eastus2euap.management.azure.com/`; set
-`PLANETARYCOMPUTER_TEST_ARM_ENDPOINT` to override it for live runs. The
-authentication audience is unchanged. Recordings sanitize the supplied resource
+Live catalog tests use the configured cloud's standard ARM endpoint; set
+`PLANETARYCOMPUTER_TEST_ARM_ENDPOINT` only to explicitly override it. Playback
+uses the endpoint saved in each recording, so older regional recordings remain
+replayable without rewriting their URLs. Endpoint changes are process-local and
+the authentication audience is unchanged. Recordings sanitize the supplied resource
 names and subscription IDs and match request bodies as well as URLs.
+List recordings retain only the scenario's authorized catalogs, while preserving
+pagination links. User identities, generated domain labels, and managed storage
+names are scrubbed. Signed operation URL query values `t`, `c`, `s`, and `h` are
+redacted consistently in response headers and polling requests; operation paths,
+API versions, and other query parameters remain unchanged.
 
 For playback, unset `AZURE_TEST_RUN_LIVE` and run the same command without the
 assignment. Playback uses sanitized fixtures and does not require the fixture
@@ -145,5 +150,5 @@ unset AZURE_TEST_RUN_LIVE
 python -m unittest discover -s src/planetarycomputer/azext_planetarycomputer/tests/latest -p test_private_link.py -v
 ```
 
-The existing general GeoCatalog scenario recordings still require a separate
-refresh; this focused private-link test does not make the entire suite pass.
+Run the catalog scenarios as well as this focused private-link test to validate
+CRUD, identity, creation options, and no-wait behavior.
