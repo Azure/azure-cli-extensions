@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Firewall Rules for a HorizonDB Pool
+    """Manage Firewall Rule
     """
     pass
 

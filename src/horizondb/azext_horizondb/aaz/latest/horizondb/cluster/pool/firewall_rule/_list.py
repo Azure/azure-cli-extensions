@@ -17,9 +17,6 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all HorizonDB firewall rules in a pool.
-
-    :example: List firewall rules in a HorizonDB pool
-        az horizondb cluster pool firewall-rule list --resource-group example-resource-group --cluster-name example-cluster --pool-name example-pool-01
     """
 
     _aaz_info = {

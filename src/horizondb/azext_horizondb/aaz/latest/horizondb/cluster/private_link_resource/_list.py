@@ -17,9 +17,6 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List private link resources in a HorizonDB cluster.
-
-    :example: List HorizonDB private link resources
-        az horizondb cluster private-link-resource list --resource-group example-resource-group --cluster-name example-cluster
     """
 
     _aaz_info = {

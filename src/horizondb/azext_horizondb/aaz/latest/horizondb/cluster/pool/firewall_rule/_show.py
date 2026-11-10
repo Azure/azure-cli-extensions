@@ -58,7 +58,7 @@ class Show(AAZCommand):
         )
         _args_schema.firewall_rule_name = AAZStrArg(
             options=["-n", "--name", "--firewall-rule-name"],
-            help="The name of the HorizonDB pool firewall rule.",
+            help="The name of the HorizonDB pool firewall rule. The name must be 1 through 80 characters, contain only ASCII letters, digits, underscores, periods, and hyphens, start with a letter or digit, and end with a letter, digit, or underscore.",
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(

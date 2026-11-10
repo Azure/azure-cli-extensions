@@ -45,6 +45,10 @@ az horizondb cluster create --resource-group example-resource-group --cluster-na
 The command returns the provisioned cluster. If cluster provisioning fails or
 times out, the command reports the error. Create pools separately using
 `az horizondb cluster pool create`.
+Use `--no-wait` to return after submitting the create request without waiting for provisioning.
+
+Set backup retention with `--backup-retention-days` (default: 7 days).
+The existing `--retention-days` alias remains supported on create.
 
 To enable customer-managed data encryption, supply both `--primary-key-uri`
 (a versionless Azure Key Vault key URI) and `--primary-user-assigned-identity-id`
@@ -87,7 +91,7 @@ supplied. PostgreSQL version and geo-redundancy are always inherited from the so
 The service inherits the PostgreSQL version; `postgreSqlVersion` is not sent
 in the restore request.
 Backup retention days are not inherited or sent to the API during restore;
-`--version`, `--geo-redundancy`, and `--retention-days` are not available
+`--version`, `--geo-redundancy`, `--backup-retention-days`, and `--retention-days` are not available
 on restore. `--location` can only be specified for a geo-redundant restore when
 the source cluster has geo-redundancy enabled. Otherwise, omit `--location` to
 use the source cluster location.

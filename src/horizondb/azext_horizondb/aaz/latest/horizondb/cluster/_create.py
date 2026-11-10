@@ -18,7 +18,7 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a new HorizonDB cluster.
 
-    :example: Create a HorizonDB cluster with customer-managed key data encryption
+    :example: Create a HorizonDB cluster
         az horizondb cluster create --resource-group example-resource-group --cluster-name example-cluster --location eastus2 --version 17 --geo-redundancy Enabled
     """
 
@@ -29,10 +29,11 @@ class Create(AAZCommand):
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -65,11 +66,11 @@ class Create(AAZCommand):
         _args_schema.geo_redundancy = AAZStrArg(
             options=["--geo-redundancy"],
             arg_group="Backup",
-            help="The geo-redundancy state. Geo-redundant backup is not supported when dataEncryption.type is AzureKeyVault.",
+            help="The geo-redundancy state. When creationMode is PointInTimeRestore, the service ignores the requested value during cluster creation and configures the new cluster with the same geo-redundancy setting as the source cluster, for both same-location and cross-location restores. The response reports the inherited setting. Geo-redundant backup is not supported when dataEncryption.type is AzureKeyVault.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
-        _args_schema.retention_days = AAZIntArg(
-            options=["--retention-days"],
+        _args_schema.backup_retention_days = AAZIntArg(
+            options=["--backup-retention-days"],
             arg_group="Backup",
             help="The number of days that automatic backups are retained. The service defaults to 7 days when this property is omitted.",
             default=7,
@@ -77,6 +78,23 @@ class Create(AAZCommand):
                 maximum=35,
                 minimum=1,
             ),
+        )
+
+        # define Arg Group "DataEncryption"
+
+        _args_schema = cls._args_schema
+        _args_schema.primary_key_uri = AAZStrArg(
+            options=["--primary-key-uri"],
+            arg_group="DataEncryption",
+            help="The versionless Azure Key Vault key URI used to encrypt the cluster's primary storage. Key version paths are not supported. During initial cluster creation, this property can be provided together with primaryUserAssignedIdentityId. For updates to an existing cluster through PUT or PATCH, this property and primaryUserAssignedIdentityId cannot both change in the same request; the first update must complete before submitting a separate update for the other property.",
+            fmt=AAZStrArgFormat(
+                pattern="^https://[A-Za-z0-9-]+[.]vault([.]azure[.]net|[.]usgovcloudapi[.]net|[.]azure[.]cn)/keys/[A-Za-z0-9-]+/?$",
+            ),
+        )
+        _args_schema.primary_user_assigned_identity_id = AAZResourceIdArg(
+            options=["--primary-user-assigned-identity-id"],
+            arg_group="DataEncryption",
+            help="The Azure resource ID of the user-assigned managed identity used to access the primary encryption key. The identity must also be assigned to the Cluster through its top-level identity property. During initial cluster creation, this property can be provided together with primaryKeyUri. For updates to an existing cluster through PUT or PATCH, this property and primaryKeyUri cannot both change in the same request; the first update must complete before submitting a separate update for the other property.",
         )
 
         # define Arg Group "Identity"
@@ -95,37 +113,11 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.data_encryption = AAZObjectArg(
-            options=["--data-encryption"],
-            arg_group="Properties",
-            help="The data encryption configuration for the cluster. When omitted during initial cluster creation, the service uses SystemManaged encryption. When supplied during initial cluster creation, type is required. For PUT updates of an existing cluster, type may be omitted; if provided, it must match the existing encryption type. The encryption type is selected at cluster creation; switching between SystemManaged and AzureKeyVault after creation is not supported.",
-        )
         _args_schema.version = AAZStrArg(
             options=["--version"],
             arg_group="Properties",
-            help="The PostgreSQL major version used by the HorizonDB cluster. Currently supports versions 17 and 18.",
+            help="The PostgreSQL major version used by the HorizonDB cluster. API version 2026-10-01-preview supports versions 17 and 18. For ordinary cluster creation, the version is supplied in the request and is immutable after creation. For point-in-time restore, the service obtains the version from the source backup metadata and the request must omit this property. This API version does not support in-place PostgreSQL major-version upgrades.",
             enum={"17": "17", "18": "18"},
-        )
-
-        data_encryption = cls._args_schema.data_encryption
-        data_encryption.primary_key_uri = AAZStrArg(
-            options=["primary-key-uri"],
-            help="The versionless Azure Key Vault key URI used to encrypt the cluster's primary storage. Key version paths are not supported. During initial cluster creation, this property can be provided together with primaryUserAssignedIdentityId. For updates to an existing cluster through PUT or PATCH, this property and primaryUserAssignedIdentityId cannot both change in the same request; the first update must complete before submitting a separate update for the other property.",
-            fmt=AAZStrArgFormat(
-                pattern="^https://[A-Za-z0-9-]+[.]vault([.]azure[.]net|[.]usgovcloudapi[.]net|[.]azure[.]cn)/keys/[A-Za-z0-9-]+/?$",
-            ),
-        )
-        data_encryption.primary_user_assigned_identity_id = AAZResourceIdArg(
-            options=["primary-user-assigned-identity-id"],
-            help="The Azure resource ID of the user-assigned managed identity used to access the primary encryption key. The identity must also be assigned to the Cluster through its top-level identity property. During initial cluster creation, this property can be provided together with primaryKeyUri. For updates to an existing cluster through PUT or PATCH, this property and primaryKeyUri cannot both change in the same request; the first update must complete before submitting a separate update for the other property.",
-            fmt=AAZResourceIdArgFormat(
-                template="/subscriptions/{}/resourceGroups/{}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}",
-            ),
-        )
-        data_encryption.type = AAZStrArg(
-            options=["type"],
-            help="The type of data encryption used by the cluster. When the data encryption configuration is supplied during initial cluster creation, this property is required. For PUT updates of an existing cluster, this property may be omitted; if provided, it must match the existing encryption type. This value is selected at cluster creation and cannot later be changed from SystemManaged to AzureKeyVault or from AzureKeyVault to SystemManaged.",
-            enum={"AzureKeyVault": "AzureKeyVault", "SystemManaged": "SystemManaged"},
         )
 
         # define Arg Group "Resource"
@@ -151,7 +143,7 @@ class Create(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ClustersCreateOrReplace(ctx=self.ctx)()
+        yield self.ClustersCreateOrReplace(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -172,8 +164,24 @@ class Create(AAZCommand):
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
@@ -247,20 +255,19 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("backup", AAZObjectType)
-                properties.set_prop("dataEncryption", AAZObjectType, ".data_encryption")
+                properties.set_prop("dataEncryption", AAZObjectType)
                 properties.set_prop("network", AAZObjectType)
                 properties.set_prop("postgreSqlVersion", AAZStrType, ".version")
 
             backup = _builder.get(".properties.backup")
             if backup is not None:
                 backup.set_prop("geoRedundancy", AAZStrType, ".geo_redundancy", typ_kwargs={"flags": {"required": True}})
-                backup.set_prop("retentionDays", AAZIntType, ".retention_days")
+                backup.set_prop("retentionDays", AAZIntType, ".backup_retention_days")
 
             data_encryption = _builder.get(".properties.dataEncryption")
             if data_encryption is not None:
                 data_encryption.set_prop("primaryKeyUri", AAZStrType, ".primary_key_uri")
                 data_encryption.set_prop("primaryUserAssignedIdentityId", AAZStrType, ".primary_user_assigned_identity_id")
-                data_encryption.set_prop("type", AAZStrType, ".type")
 
             network = _builder.get(".properties.network")
             if network is not None:

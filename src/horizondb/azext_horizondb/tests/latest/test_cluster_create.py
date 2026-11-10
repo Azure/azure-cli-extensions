@@ -3,8 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from argparse import ArgumentParser
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from knack.util import CLIError
 from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
@@ -57,6 +58,20 @@ class ClusterCreateTests(TestCase):
         self.assertIsInstance(table['horizondb cluster create'], ClusterCreate)
         self.assertIsInstance(table['horizondb cluster pool create'], CustomPoolCreate)
         self.assertIsInstance(table['horizondb cluster pool update'], PoolUpdate)
+        for name, command in table.items():
+            with self.subTest(command=name):
+                command.load_arguments()
+
+    def test_create_retention_options_set_request_backup_retention(self):
+        self.command.load_arguments()
+        settings = self.command.arguments['backup_retention_days'].type.settings
+        parser = ArgumentParser()
+        parser.add_argument(*settings['options_list'], dest='backup_retention_days', action=settings['action'])
+        for option in ['--backup-retention-days', '--retention-days']:
+            with self.subTest(option=option):
+                args = vars(parser.parse_args([option, '14']))
+                content = self.build_content(**args)
+                self.assertEqual(content['properties']['backup']['retentionDays'], 14)
 
     def test_cluster_create_does_not_expose_pool_arguments(self):
         self.command.load_arguments()
@@ -108,7 +123,7 @@ class ClusterCreateTests(TestCase):
                 command = ClusterCreate(cli_ctx=self.command.cli_ctx)
                 with patch.object(command, 'ClustersCreateOrReplace') as create:
                     with self.assertRaisesRegex(InvalidArgumentValueError, '--primary-key-uri'):
-                        command(command_args=dict(self.args, **changes))
+                        command(command_args=dict(self.args, **changes)).result()
                 create.assert_not_called()
         self.show_cluster.assert_not_called()
 
@@ -148,11 +163,15 @@ class ClusterCreateTests(TestCase):
 
         self.show_cluster.side_effect = show_cluster
 
+        def create_cluster():
+            events.append('cluster')
+            return Mock()
+
         with patch.object(self.command, 'ClustersCreateOrReplace') as cluster_operation, \
                 patch('time.sleep') as sleep, \
                 patch.object(cluster_custom, 'logger') as logger:
-            cluster_operation.return_value.side_effect = lambda: events.append('cluster')
-            result = self.command(command_args=self.args)
+            cluster_operation.return_value.side_effect = create_cluster
+            result = self.command(command_args=self.args).result()
 
         self.assertEqual(events, ['cluster', 'not-found', 'Creating', 'Succeeded', 'final-get'])
         cluster_operation.return_value.assert_called_once_with()
@@ -162,18 +181,26 @@ class ClusterCreateTests(TestCase):
         )
         self.assertEqual(result, updated_cluster)
 
+    def test_cluster_create_no_wait_does_not_poll_or_get_cluster(self):
+        with patch.object(self.command, 'ClustersCreateOrReplace') as create:
+            result = self.command(command_args=dict(self.args, no_wait=True))
+        self.assertIsNone(result)
+        create.return_value.assert_called_once_with()
+        create.return_value.return_value.run.assert_not_called()
+        self.show_cluster.assert_not_called()
+
     def test_cluster_failure_does_not_poll(self):
         with patch.object(self.command, 'ClustersCreateOrReplace') as cluster_operation:
             cluster_operation.return_value.side_effect = CLIError('cluster failed')
             with self.assertRaisesRegex(CLIError, 'cluster failed'):
-                self.command(command_args=self.args)
+                self.command(command_args=self.args).result()
         self.show_cluster.assert_not_called()
 
     def test_failed_cluster_provisioning_is_reported(self):
         self.show_cluster.return_value = dict(self.cluster, provisioningState='Failed')
         with patch.object(self.command, 'ClustersCreateOrReplace'):
             with self.assertRaisesRegex(CLIError, 'operation failed'):
-                self.command(command_args=self.args)
+                self.command(command_args=self.args).result()
 
     def test_cluster_polling_error_is_reported(self):
         error = HttpResponseError('Access denied')
@@ -181,14 +208,14 @@ class ClusterCreateTests(TestCase):
         self.show_cluster.side_effect = error
         with patch.object(self.command, 'ClustersCreateOrReplace'):
             with self.assertRaisesRegex(HttpResponseError, 'Access denied'):
-                self.command(command_args=self.args)
+                self.command(command_args=self.args).result()
 
     def test_cluster_provisioning_timeout_is_reported(self):
         with patch.object(self.command, 'ClustersCreateOrReplace'), \
                 patch.object(cluster_custom.WaitCommandOperation, 'wait',
                       return_value=CLIError('Wait operation timed-out')) as wait:
             with self.assertRaisesRegex(CLIError, 'timed-out'):
-                self.command(command_args=self.args)
+                self.command(command_args=self.args).result()
         self.assertTrue(wait.call_args.kwargs['command_args']['created'])
         self.show_cluster.assert_not_called()
 
@@ -199,5 +226,5 @@ class ClusterCreateTests(TestCase):
         ]
         with patch.object(self.command, 'ClustersCreateOrReplace'):
             with self.assertRaisesRegex(HttpResponseError, 'Cannot read completed cluster'):
-                self.command(command_args=self.args)
+                self.command(command_args=self.args).result()
         self.assertEqual(self.show_cluster.call_count, 2)

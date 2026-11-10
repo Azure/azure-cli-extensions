@@ -19,7 +19,7 @@ class Show(AAZCommand):
     """Get a private link resource.
 
     :example: Get a HorizonDB private link resource
-        az horizondb cluster private-link-resource show --resource-group example-resource-group --cluster-name example-cluster --group-name example-cluster
+        az horizondb cluster private-link-resource show --resource-group example-resource-group --cluster-name example-cluster --resource-name example-cluster
     """
 
     _aaz_info = {
@@ -56,8 +56,8 @@ class Show(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.group_name = AAZStrArg(
-            options=["-n", "--name", "--group-name"],
+        _args_schema.resource_name = AAZStrArg(
+            options=["-n", "--name", "--resource-name"],
             help="The name of the private link resource.",
             required=True,
             id_part="child_name_1",
@@ -123,7 +123,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "groupName", self.ctx.args.group_name,
+                    "groupName", self.ctx.args.resource_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update an existing HorizonDB cluster.
 
-    :example: Rotate the customer-managed key used by a HorizonDB cluster
-        az horizondb cluster update --resource-group example-resource-group --cluster-name example-cluster --backup-retention-days 14
+    :example: Disable public access network settings.
+        az horizondb cluster update --resource-group example-resource-group --cluster-name example-cluster --public-access Disabled
     """
 
     _aaz_info = {
@@ -95,33 +95,10 @@ class Update(AAZCommand):
             help="Specifies whether AI Model Management is enabled for the cluster.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
-        _args_schema.data_encryption = AAZObjectArg(
-            options=["--data-encryption"],
-            arg_group="Properties",
-            help="The data encryption configuration to update for the cluster. Omitted properties preserve their current values. Updates can modify settings within the existing encryption type, but switching between SystemManaged and AzureKeyVault after cluster creation is not supported.",
-        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Properties",
             help="Resource tags.",
-        )
-
-        data_encryption = cls._args_schema.data_encryption
-        data_encryption.primary_key_uri = AAZStrArg(
-            options=["primary-key-uri"],
-            help="The versionless Azure Key Vault key URI used to encrypt the cluster's primary storage. Key version paths are not supported. This property and primaryUserAssignedIdentityId cannot both change in the same update; the first update must complete before submitting a separate update for the other property.",
-            fmt=AAZStrArgFormat(
-                pattern="^https://[A-Za-z0-9-]+[.]vault([.]azure[.]net|[.]usgovcloudapi[.]net|[.]azure[.]cn)/keys/[A-Za-z0-9-]+/?$",
-            ),
-        )
-        data_encryption.primary_user_assigned_identity_id = AAZResourceIdArg(
-            options=["primary-user-assigned-identity-id"],
-            help="The Azure resource ID of the user-assigned managed identity used to access the primary encryption key. The identity must also be assigned to the Cluster through its top-level identity property. This property and primaryKeyUri cannot both change in the same update; the first update must complete before submitting a separate update for the other property.",
-        )
-        data_encryption.type = AAZStrArg(
-            options=["type"],
-            help="The existing data encryption type used by the cluster. PATCH is a sparse update, so this property may be omitted. If provided, it must match the existing encryption type. This value cannot be changed from SystemManaged to AzureKeyVault or from AzureKeyVault to SystemManaged after cluster creation.",
-            enum={"AzureKeyVault": "AzureKeyVault", "SystemManaged": "SystemManaged"},
         )
 
         tags = cls._args_schema.tags
@@ -242,18 +219,11 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("aiModelManagement", AAZStrType, ".ai_model_management")
                 properties.set_prop("backup", AAZObjectType)
-                properties.set_prop("dataEncryption", AAZObjectType, ".data_encryption")
                 properties.set_prop("network", AAZObjectType)
 
             backup = _builder.get(".properties.backup")
             if backup is not None:
                 backup.set_prop("retentionDays", AAZIntType, ".backup_retention_days")
-
-            data_encryption = _builder.get(".properties.dataEncryption")
-            if data_encryption is not None:
-                data_encryption.set_prop("primaryKeyUri", AAZStrType, ".primary_key_uri")
-                data_encryption.set_prop("primaryUserAssignedIdentityId", AAZStrType, ".primary_user_assigned_identity_id")
-                data_encryption.set_prop("type", AAZStrType, ".type")
 
             network = _builder.get(".properties.network")
             if network is not None:

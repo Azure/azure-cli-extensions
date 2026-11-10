@@ -77,12 +77,8 @@ class HorizonDBPrivateConnectivityScenarioTest(ScenarioTest):
                 self.check('properties.privateLinkServiceConnectionState.status', 'Pending'),
             ],
         )
-
-
-
-        #REVIEW
         self.cmd(
-            'horizondb cluster private-endpoint-connection create -g {rg} --cluster-name {cluster} '
+            'horizondb cluster private-endpoint-connection update -g {rg} --cluster-name {cluster} '
             '-n {connection} --status Approved --description "Scenario approval"',
         )
         self.cmd(

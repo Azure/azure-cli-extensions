@@ -180,7 +180,6 @@ class Wait(AAZWaitCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -200,7 +199,6 @@ class Wait(AAZWaitCommand):
             )
             properties.parameter_group = AAZObjectType(
                 serialized_name="parameterGroup",
-                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -274,9 +272,6 @@ class Wait(AAZWaitCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 

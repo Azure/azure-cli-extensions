@@ -17,9 +17,6 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List private endpoint connections in a HorizonDB cluster.
-
-    :example: List private endpoint connections on a HorizonDB cluster
-        az horizondb cluster private-endpoint-connection list --resource-group example-resource-group --cluster-name example-cluster
     """
 
     _aaz_info = {
@@ -177,7 +174,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},

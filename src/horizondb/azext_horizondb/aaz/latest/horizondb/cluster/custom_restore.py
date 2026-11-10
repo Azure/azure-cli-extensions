@@ -56,14 +56,14 @@ class ClusterRestore(ClusterCreate):
         )
         args_schema.geo_redundancy._registered = False  # pylint: disable=protected-access
         args_schema.version._registered = False  # pylint: disable=protected-access
-        args_schema.retention_days._registered = False  # pylint: disable=protected-access
+        args_schema.backup_retention_days._registered = False  # pylint: disable=protected-access
         args_schema.location._required = False  # pylint: disable=protected-access
         args_schema.location._fmt = AAZResourceLocationArgFormat()  # pylint: disable=protected-access
         args_schema.location._help['short-summary'] = (  # pylint: disable=protected-access
             'Location of the restored cluster. Can only be specified for a geo-redundant restore '
             'when the source cluster has geo-redundancy enabled. Defaults to the source cluster location.'
         )
-        for name in ['retention_days', 'public_access']:
+        for name in ['backup_retention_days', 'public_access']:
             getattr(args_schema, name)._default = None  # pylint: disable=protected-access
         return args_schema
 
@@ -101,24 +101,23 @@ class ClusterRestore(ClusterCreate):
         }.items():
             if getattr(args, name).to_serialized_data() == AAZUndefined and value != AAZUndefined:
                 setattr(args, name, value)
-        if args.data_encryption.to_serialized_data() == AAZUndefined:
-            encryption = properties.get('dataEncryption') or {}
-            for name, key in {
-                'type': 'type',
-                'primary_key_uri': 'primaryKeyUri',
-                'primary_user_assigned_identity_id': 'primaryUserAssignedIdentityId',
-            }.items():
-                if key in encryption:
-                    setattr(args.data_encryption, name, encryption[key])
 
     class ClustersCreateOrReplace(ClusterCreate.ClustersCreateOrReplace):
 
         @property
         def content(self):
             content = super().content
-            encryption_identity = content.get('identity')
             source = self.ctx.vars.restore_source.to_serialized_data()
             properties = content['properties']
+            if 'dataEncryption' not in properties:
+                source_encryption = source.get('properties', {}).get('dataEncryption') or {}
+                encryption = {
+                    key: source_encryption[key]
+                    for key in ['type', 'primaryKeyUri', 'primaryUserAssignedIdentityId']
+                    if key in source_encryption
+                }
+                if encryption:
+                    properties['dataEncryption'] = encryption
             properties['creationMode'] = 'PointInTimeRestore'
             properties['creationSourceClusterResourceId'] = (
                 self.ctx.args.creation_source_cluster_resource_id.to_serialized_data()
@@ -134,11 +133,11 @@ class ClusterRestore(ClusterCreate):
                     content['identity']['userAssignedIdentities'] = {
                         resource_id: {} for resource_id in identity['userAssignedIdentities']
                     }
-                if encryption_identity is not None:
-                    content['identity']['type'] = (
-                        'SystemAssigned, UserAssigned' if 'SystemAssigned' in identity['type'] else 'UserAssigned'
-                    )
-                    content['identity'].setdefault('userAssignedIdentities', {}).update(
-                        encryption_identity['userAssignedIdentities']
-                    )
+            identity_id = properties.get('dataEncryption', {}).get('primaryUserAssignedIdentityId')
+            if identity_id is not None:
+                identity = content.setdefault('identity', {'type': 'UserAssigned'})
+                identity['type'] = (
+                    'SystemAssigned, UserAssigned' if 'SystemAssigned' in identity['type'] else 'UserAssigned'
+                )
+                identity.setdefault('userAssignedIdentities', {})[identity_id] = {}
             return content

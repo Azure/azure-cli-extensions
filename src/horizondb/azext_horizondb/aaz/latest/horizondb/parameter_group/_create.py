@@ -79,7 +79,7 @@ class Create(AAZCommand):
         _args_schema.version = AAZStrArg(
             options=["--version"],
             arg_group="Properties",
-            help={"short-summary": "The PostgreSQL major version for the parameter group.", "long-summary": "This property is required during creation and is immutable thereafter. The service selects the unique location-scoped default parameter group for this version in the resource location. The DefaultParameterGroups APIs return at most one default parameter group for each PostgreSQL version in a location, so this selection is unambiguous."},
+            help="The PostgreSQL major version used by the HorizonDB cluster. API version 2026-10-01-preview supports versions 17 and 18. For ordinary cluster creation, the version is supplied in the request and is immutable after creation. For point-in-time restore, the service obtains the version from the source backup metadata and the request must omit this property. This API version does not support in-place PostgreSQL major-version upgrades.",
             enum={"17": "17", "18": "18"},
         )
 

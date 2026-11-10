@@ -16,10 +16,10 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List all HorizonDB clusters in a subscription.
+    """List HorizonDB clusters.
 
-    :example: List HorizonDB clusters in a subscription
-        az horizondb cluster list
+    :example: List HorizonDB clusters in a resource group
+        az horizondb cluster list --resource-group example-resource-group
     """
 
     _aaz_info = {

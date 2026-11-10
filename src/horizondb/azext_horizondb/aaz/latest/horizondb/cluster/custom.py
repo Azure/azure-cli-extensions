@@ -19,16 +19,17 @@ from ._update import Update as _ClusterUpdate
 logger = get_logger(__name__)
 
 
-def _split_encryption_arguments(args_schema):
-    args_schema.data_encryption._registered = False  # pylint: disable=protected-access
+def _add_encryption_arguments(args_schema):
+    create_schema = _ClusterCreate._build_arguments_schema()  # pylint: disable=protected-access
     for name in ['primary_key_uri', 'primary_user_assigned_identity_id']:
-        argument = deepcopy(getattr(args_schema.data_encryption, name))
+        if not hasattr(args_schema, name):
+            setattr(args_schema, name, deepcopy(getattr(create_schema, name)))
+        argument = getattr(args_schema, name)
         options = ['--' + name.replace('_', '-')]
         if name == 'primary_user_assigned_identity_id':
             options.append('--primary-user-id')
         argument._options = options  # pylint: disable=protected-access
         argument._help['name'] = ' '.join(options)  # pylint: disable=protected-access
-        setattr(args_schema, name, argument)
     return args_schema
 
 
@@ -50,7 +51,11 @@ class ClusterCreate(_ClusterCreate):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = _split_encryption_arguments(super()._build_arguments_schema(*args, **kwargs))
+        args_schema = _add_encryption_arguments(super()._build_arguments_schema(*args, **kwargs))
+        retention = args_schema.backup_retention_days
+        if '--retention-days' not in retention._options:  # pylint: disable=protected-access
+            retention._options.append('--retention-days')  # pylint: disable=protected-access
+        retention._help['name'] = ' '.join(retention._options)  # pylint: disable=protected-access
         for name, summary in {
             'primary_key_uri': (
                 'Versionless Azure Key Vault key URI. Must be supplied together with '
@@ -76,12 +81,6 @@ class ClusterCreate(_ClusterCreate):
                 '--primary-key-uri and --primary-user-assigned-identity-id '
                 'must both be supplied with non-empty values to enable data encryption.'
             )
-        if has_key:
-            args.data_encryption = {
-                'primary_key_uri': key_uri,
-                'primary_user_assigned_identity_id': identity_id,
-                'type': 'AzureKeyVault',
-            }
 
     class ClustersCreateOrReplace(_ClusterCreate.ClustersCreateOrReplace):
 
@@ -90,6 +89,7 @@ class ClusterCreate(_ClusterCreate):
             content = super().content
             identity_id = content['properties'].get('dataEncryption', {}).get('primaryUserAssignedIdentityId')
             if identity_id is not None:
+                content['properties']['dataEncryption']['type'] = 'AzureKeyVault'
                 content['identity'] = {
                     'type': 'UserAssigned',
                     'userAssignedIdentities': {identity_id: {}},
@@ -156,15 +156,27 @@ class ClusterUpdate(_ClusterUpdate):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        return _split_encryption_arguments(super()._build_arguments_schema(*args, **kwargs))
+        return _add_encryption_arguments(super()._build_arguments_schema(*args, **kwargs))
 
     def pre_operations(self):
-        encryption = {}
         for name in ['primary_key_uri', 'primary_user_assigned_identity_id']:
             value = getattr(self.ctx.args, name).to_serialized_data()
             if value == '':
                 raise InvalidArgumentValueError(f"--{name.replace('_', '-')} must not be empty.")
-            if value not in (AAZUndefined, None):
-                encryption[name] = value
-        if encryption:
-            self.ctx.args.data_encryption = encryption
+
+    class ClustersUpdate(_ClusterUpdate.ClustersUpdate):
+
+        @property
+        def content(self):
+            content = super().content
+            encryption = {}
+            for name, key in {
+                'primary_key_uri': 'primaryKeyUri',
+                'primary_user_assigned_identity_id': 'primaryUserAssignedIdentityId',
+            }.items():
+                value = getattr(self.ctx.args, name).to_serialized_data()
+                if value not in (AAZUndefined, None):
+                    encryption[key] = value
+            if encryption:
+                content.setdefault('properties', {})['dataEncryption'] = encryption
+            return content

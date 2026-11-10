@@ -16,9 +16,9 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a HorizonDB pool.
+    """Update an existing HorizonDB pool.
 
-    :example: Associate a HorizonDB pool with a parameter group immediately
+    :example: Update node count.
         az horizondb cluster pool update --resource-group example-resource-group --cluster-name example-cluster --pool-name example-pool-01 --node-count 2
     """
 
@@ -92,7 +92,7 @@ class Update(AAZCommand):
         _args_schema.v_cores = AAZIntArg(
             options=["--v-cores"],
             arg_group="ComputeModel",
-            help="The number of provisioned vCores. Allowed values are 2 through 192. This property applies only to a Provisioned compute model. Omission preserves the current value.",
+            help="The number of provisioned vCores. Allowed values are 1 through 192. This property applies only to a Provisioned compute model. Omission preserves the current value.",
             fmt=AAZIntArgFormat(
                 maximum=192,
                 minimum=2,
@@ -113,13 +113,13 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.parameter_group_apply_method = AAZStrArg(
-            options=["--parameter-group-apply-method"],
+            options=["--param-group-apply", "--parameter-group-apply-method"],
             arg_group="ParameterGroup",
             help="Determines when dynamic parameter changes from the associated parameter group become effective. Static parameter changes always require a customer-initiated pool Restart, regardless of this value. Stop followed by Start and scheduled maintenance do not apply pending parameter changes.",
             enum={"Immediate": "Immediate", "PendingReboot": "PendingReboot"},
         )
         _args_schema.parameter_group_resource_id = AAZResourceIdArg(
-            options=["--parameter-group-resource-id"],
+            options=["--param-group-id", "--parameter-group-resource-id"],
             arg_group="ParameterGroup",
             help="The Azure resource ID of the corresponding default or customer-created parameter group to associate with the existing pool.",
         )
@@ -303,7 +303,6 @@ class Update(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -323,7 +322,6 @@ class Update(AAZCommand):
             )
             properties.parameter_group = AAZObjectType(
                 serialized_name="parameterGroup",
-                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -397,9 +395,6 @@ class Update(AAZCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 

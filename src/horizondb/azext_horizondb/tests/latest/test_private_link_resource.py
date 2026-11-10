@@ -31,14 +31,22 @@ class PrivateLinkResourceTests(TestCase):
     def test_loader_registers_custom_show_with_resource_name_option(self):
         self.assertIsInstance(self.command, PrivateLinkResourceShow)
         self.assertEqual(
-            self.command.arguments['group_name'].type.settings['options_list'],
+            self.command.arguments['resource_name'].type.settings['options_list'],
             ['-n', '--name', '--resource-name'],
         )
 
+    def test_private_endpoint_connections_expose_management_without_create(self):
+        table = self.loader.load_command_table(None)
+        prefix = 'horizondb cluster private-endpoint-connection '
+        self.assertNotIn(prefix + 'create', table)
+        for operation in ['delete', 'list', 'show', 'update', 'wait']:
+            with self.subTest(operation=operation):
+                self.assertIn(prefix + operation, table)
+
     def test_resource_name_and_existing_aliases_select_request_resource(self):
-        settings = self.command.arguments['group_name'].type.settings
+        settings = self.command.arguments['resource_name'].type.settings
         parser = ArgumentParser()
-        parser.add_argument(*settings['options_list'], dest='group_name', action=settings['action'], required=True)
+        parser.add_argument(*settings['options_list'], dest='resource_name', action=settings['action'], required=True)
         for option in ['--resource-name', '--name', '-n']:
             with self.subTest(option=option):
                 args = vars(parser.parse_args([option, 'test-resource']))

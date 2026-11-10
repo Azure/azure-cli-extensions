@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a new HorizonDB pool.
 
-    :example: Create a minimum provisioned HorizonDB pool
-        az horizondb cluster pool create --resource-group example-resource-group --cluster-name example-cluster --pool-name example-pool-01 --type Provisioned --compute-processor AMD --compute-generation 3 --v-cores 2 --parameter-group-resource-id /subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/providers/Microsoft.HorizonDb/locations/eastus2/parameterGroups/default-postgresql-17-provisioned --parameter-group-apply-method Immediate --node-count 1 --high-availability-mode Disabled
+    :example: Create a minimum provisioned HorizonDB pool using the default parameter group
+        az horizondb cluster pool create --resource-group example-resource-group --cluster-name example-cluster --pool-name example-pool-01 --compute-processor AMD --compute-generation 3 --v-cores 2 --node-count 1 --high-availability-mode Disabled
     """
 
     _aaz_info = {
@@ -109,19 +109,6 @@ class Create(AAZCommand):
 
         # define Arg Group "ParameterGroup"
 
-        _args_schema = cls._args_schema
-        _args_schema.parameter_group_apply_method = AAZStrArg(
-            options=["--parameter-group-apply-method"],
-            arg_group="ParameterGroup",
-            help="Determines when dynamic parameter changes from the associated parameter group become effective. Static parameter changes always require a customer-initiated pool Restart, regardless of this value. Stop followed by Start and scheduled maintenance do not apply pending parameter changes.",
-            enum={"Immediate": "Immediate", "PendingReboot": "PendingReboot"},
-        )
-        _args_schema.parameter_group_resource_id = AAZResourceIdArg(
-            options=["--parameter-group-resource-id"],
-            arg_group="ParameterGroup",
-            help="The Azure resource ID of the associated parameter group. Initial pool creation in this API version requires the corresponding Microsoft.HorizonDb/locations/parameterGroups resource. For an existing pool, PUT can specify either the corresponding default group or a customer-created Microsoft.HorizonDb/parameterGroups resource.",
-        )
-
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -134,29 +121,6 @@ class Create(AAZCommand):
                 minimum=1,
             ),
         )
-        _args_schema.scheduled_maintenance = AAZObjectArg(
-            options=["--scheduled-maintenance"],
-            arg_group="Properties",
-            help="The scheduled maintenance configuration for the pool. The properties available depend on the selected maintenance management type.",
-        )
-
-        scheduled_maintenance = cls._args_schema.scheduled_maintenance
-        scheduled_maintenance.system = AAZObjectArg(
-            options=["system"],
-            blank={},
-        )
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -270,15 +234,13 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("properties", AAZObjectType)
-            _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("computeModel", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("highAvailability", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("nodeCount", AAZIntType, ".node_count", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("parameterGroup", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("scheduledMaintenance", AAZObjectType, ".scheduled_maintenance")
+                properties.set_prop("parameterGroup", AAZObjectType)
 
             compute_model = _builder.get(".properties.computeModel")
             if compute_model is not None:
@@ -289,20 +251,6 @@ class Create(AAZCommand):
             high_availability = _builder.get(".properties.highAvailability")
             if high_availability is not None:
                 high_availability.set_prop("mode", AAZStrType, ".high_availability_mode", typ_kwargs={"flags": {"required": True}})
-
-            parameter_group = _builder.get(".properties.parameterGroup")
-            if parameter_group is not None:
-                parameter_group.set_prop("applyMethod", AAZStrType, ".parameter_group_apply_method", typ_kwargs={"flags": {"required": True}})
-                parameter_group.set_prop("parameterGroupResourceId", AAZStrType, ".parameter_group_resource_id", typ_kwargs={"flags": {"required": True}})
-
-            scheduled_maintenance = _builder.get(".properties.scheduledMaintenance")
-            if scheduled_maintenance is not None:
-                scheduled_maintenance.set_const("maintenanceManagementType", "System", AAZStrType, ".system", typ_kwargs={"flags": {"required": True}})
-                scheduled_maintenance.discriminate_by("maintenanceManagementType", "System")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -335,7 +283,6 @@ class Create(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -355,7 +302,6 @@ class Create(AAZCommand):
             )
             properties.parameter_group = AAZObjectType(
                 serialized_name="parameterGroup",
-                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -429,9 +375,6 @@ class Create(AAZCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
-
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
 

@@ -6,7 +6,7 @@
 from copy import deepcopy
 from datetime import datetime, timezone
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from knack.util import CLIError
 from azure.core.exceptions import HttpResponseError
@@ -102,7 +102,7 @@ class ClusterRestoreTests(TestCase):
         ])
         self.assertNotIn('geo_redundancy', self.command.arguments)
         self.assertNotIn('version', self.command.arguments)
-        self.assertNotIn('retention_days', self.command.arguments)
+        self.assertNotIn('backup_retention_days', self.command.arguments)
         self.assertNotIn('data_encryption', self.command.arguments)
         self.assertIn('primary_key_uri', self.command.arguments)
         self.assertIn('primary_user_assigned_identity_id', self.command.arguments)
@@ -116,9 +116,9 @@ class ClusterRestoreTests(TestCase):
         self.assertNotIn('point_in_time_utc', create.arguments)
         self.assertIn('geo_redundancy', create.arguments)
         self.assertIn('version', create.arguments)
-        self.assertIn('retention_days', create.arguments)
+        self.assertIn('backup_retention_days', create.arguments)
         self.assertTrue(create.get_arguments_schema().location._required)  # pylint: disable=protected-access
-        self.assertEqual(create.get_arguments_schema().retention_days._default, 7)  # pylint: disable=protected-access
+        self.assertEqual(create.get_arguments_schema().backup_retention_days._default, 7)  # pylint: disable=protected-access
 
     def test_restore_inherits_writable_settings_and_excludes_read_only_properties(self):
         original_source = deepcopy(self.source)
@@ -212,7 +212,7 @@ class ClusterRestoreTests(TestCase):
                 with patch.object(cluster_custom._ClusterShow, '__call__', return_value=self.source) as show, \
                         patch.object(command, 'ClustersCreateOrReplace') as create:
                     with self.assertRaisesRegex(InvalidArgumentValueError, '--primary-key-uri'):
-                        command(command_args=dict(self.args, **changes))
+                        command(command_args=dict(self.args, **changes)).result()
                 show.assert_not_called()
                 create.assert_not_called()
 
@@ -233,7 +233,7 @@ class ClusterRestoreTests(TestCase):
                 command = ClusterRestore(cli_ctx=self.command.cli_ctx)
                 with patch.object(cluster_custom._ClusterShow, '__call__') as show:
                     with self.assertRaises(CLIError):
-                        command(command_args=dict(self.args, **changes))
+                        command(command_args=dict(self.args, **changes)).result()
                 show.assert_not_called()
 
     def test_restore_without_time_defaults_to_five_minutes_ago_once(self):
@@ -266,7 +266,7 @@ class ClusterRestoreTests(TestCase):
                 with patch.object(cluster_custom._ClusterShow, '__call__', return_value=source), \
                         patch.object(command, 'ClustersCreateOrReplace') as create:
                     with self.assertRaisesRegex(InvalidArgumentValueError, '--location.*geo-redundancy enabled'):
-                        command(command_args=dict(self.args, location=location))
+                        command(command_args=dict(self.args, location=location)).result()
                 create.assert_not_called()
 
     def test_source_get_failure_prevents_restore(self):
@@ -274,7 +274,7 @@ class ClusterRestoreTests(TestCase):
                           side_effect=HttpResponseError('Source access denied')), \
                 patch.object(self.command, 'ClustersCreateOrReplace') as create:
             with self.assertRaisesRegex(HttpResponseError, 'Source access denied'):
-                self.command(command_args=self.args)
+                self.command(command_args=self.args).result()
         create.assert_not_called()
 
     def test_restore_waits_and_returns_final_get_of_target_cluster(self):
@@ -290,10 +290,27 @@ class ClusterRestoreTests(TestCase):
             })
             return restored
 
+        def restore_cluster():
+            events.append('restore')
+            return Mock()
+
         with patch.object(cluster_custom._ClusterShow, '__call__', side_effect=show_cluster), \
                 patch.object(self.command, 'ClustersCreateOrReplace') as create:
-            create.return_value.side_effect = lambda: events.append('restore')
-            result = self.command(command_args=self.args)
+            create.return_value.side_effect = restore_cluster
+            result = self.command(command_args=self.args).result()
 
         self.assertEqual(events, ['source-cluster', 'restore', 'restored-cluster', 'restored-cluster'])
         self.assertEqual(result, restored)
+
+    def test_restore_no_wait_only_gets_source_cluster(self):
+        with patch.object(cluster_custom._ClusterShow, '__call__', return_value=self.source) as show, \
+                patch.object(self.command, 'ClustersCreateOrReplace') as create:
+            result = self.command(command_args=dict(self.args, no_wait=True))
+        self.assertIsNone(result)
+        create.return_value.assert_called_once_with()
+        create.return_value.return_value.run.assert_not_called()
+        show.assert_called_once_with(command_args={
+            'subscription': '00000000-0000-0000-0000-000000000002',
+            'resource_group': 'source-rg',
+            'cluster_name': 'source-cluster',
+        })

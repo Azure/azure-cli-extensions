@@ -17,9 +17,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a HorizonDB parameter group.
-
-    Deletion fails with a conflict when the parameter group is associated with one or more pools.
+    """Delete a HorizonDB parameter group. Deletion fails with a conflict when the parameter group is associated with one or more pools.
 
     :example: Delete a HorizonDB parameter group
         az horizondb parameter-group delete --resource-group example-resource-group --parameter-group-name production-parameters

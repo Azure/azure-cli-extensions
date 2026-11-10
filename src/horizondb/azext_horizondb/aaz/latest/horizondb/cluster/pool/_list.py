@@ -182,7 +182,6 @@ class List(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -202,7 +201,6 @@ class List(AAZCommand):
             )
             properties.parameter_group = AAZObjectType(
                 serialized_name="parameterGroup",
-                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -276,9 +274,6 @@ class List(AAZCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
-
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 

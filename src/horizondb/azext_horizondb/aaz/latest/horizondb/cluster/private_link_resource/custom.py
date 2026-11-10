@@ -15,14 +15,3 @@ class PrivateLinkResourceShow(_PrivateLinkResourceShow):
                     '--cluster-name example-cluster --resource-name example-resource',
         }],
     }
-
-    _arguments_schema = None
-    _args_schema = None
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        options = ['-n', '--name', '--resource-name']
-        args_schema.group_name._options = options  # pylint: disable=protected-access
-        args_schema.group_name._help['name'] = ' '.join(options)  # pylint: disable=protected-access
-        return args_schema
