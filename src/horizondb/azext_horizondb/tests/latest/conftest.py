@@ -7,6 +7,7 @@ import pytest
 
 
 def pytest_configure(config):
+    config.addinivalue_line('python_files', 'unittest_*.py')
     forked = config.pluginmanager.get_plugin('pytest_forked')
     if forked is None:
         return

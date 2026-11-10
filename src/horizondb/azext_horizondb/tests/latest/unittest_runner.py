@@ -16,8 +16,8 @@ class TestRunnerTests(TestCase):
         for outcome, longrepr in [('passed', None), ('failed', 'Expected assertion failure')]:
             with self.subTest(outcome=outcome):
                 report = Report(
-                    nodeid='test_pool.py::PoolTests::test_pool_update_sends_only_node_count_in_patch',
-                    location=('test_pool.py', 0, 'PoolTests.test_pool_update_sends_only_node_count_in_patch'),
+                    nodeid='unittest_pool.py::PoolTests::test_pool_update_sends_only_node_count_in_patch',
+                    location=('unittest_pool.py', 0, 'PoolTests.test_pool_update_sends_only_node_count_in_patch'),
                     keywords={},
                     outcome=outcome,
                     longrepr=longrepr,
