@@ -19,3 +19,19 @@ This command uses PUT, not PATCH: omitted writable fields are not preserved. Sup
 values on every PUT; the service requires all four. Both commands require the Operator subscription.
 
 The commands use the public `Microsoft.EdgeOperator SystemConfiguration REST API specification <https://github.com/Azure/azure-rest-api-specs/tree/main/specification/edgeoperator/resource-manager/Microsoft.EdgeOperator/SystemConfiguration>`_.
+
+Use ``az aldo log-collection collect`` or ``az aldo log-collection collect-indirect`` to collect logs for a
+time range. Both commands wait for the job to finish and return it; with ``--no-wait``, use
+``az aldo log-collection list --from-date`` to find the job and ``az aldo log-collection wait`` to wait for it.
+Use ``az aldo log-collection show`` to retrieve a job by its GUID.
+
+The commands use the `Microsoft.EdgeOperator LogCollections REST API specification <https://github.com/Azure/azure-rest-api-specs/tree/main/specification/edgeoperator/resource-manager/Microsoft.EdgeOperator/LogCollections>`_.
+
+Use ``az aldo billing-configuration show`` to retrieve the active billing configuration, and
+``az aldo billing-configuration create`` to create or fully replace it. Pass the Azure-issued billing
+configuration with ``--manifest`` to send it unchanged, which is required when it includes licenses or
+signatures; otherwise, provide the individual billing arguments. Each replacement creates an immutable
+snapshot; use ``az aldo billing-configuration snapshot list`` and ``snapshot show`` to view them.
+
+The commands use the `Microsoft.EdgeOperator BillingConfigurations REST API specification <https://github.com/Azure/azure-rest-api-specs/tree/main/specification/edgeoperator/resource-manager/Microsoft.EdgeOperator/BillingConfigurations>`_.
+Log collection and billing commands require the Operator subscription.
