@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import re
-import json
 import requests
 import uuid
 from knack.log import get_logger
@@ -149,33 +148,6 @@ def get_folder_permissions(uid, grafana_url, http_get_headers):
                                               http_get_headers)
     logger.info("query folder permissions:%s, status:%s", uid, status_code)
     return (status_code, content)
-
-
-def get_folder_id(dashboard, grafana_url, http_post_headers):
-    folder_uid = ""
-    try:
-        folder_uid = dashboard['meta']['folderUid']
-    except KeyError:
-        matches = re.search('dashboards/f/(.*)/.*', dashboard['meta']['folderUrl'])
-        if matches is not None:
-            folder_uid = matches.group(1)
-        else:
-            folder_uid = '0'
-
-    if folder_uid != "":
-        logger.debug("debug: quering with uid %s", folder_uid)
-        response = get_folder(folder_uid, grafana_url, http_post_headers)
-        if isinstance(response[1], dict):
-            folder_data = response[1]
-        else:
-            folder_data = json.loads(response[1])
-
-        try:
-            return folder_data['id']
-        except KeyError:
-            return 0
-    else:
-        return 0
 
 
 def get_health_endpoint(grafana_url, http_get_headers):

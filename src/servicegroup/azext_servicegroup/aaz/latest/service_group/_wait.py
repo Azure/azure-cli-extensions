@@ -19,9 +19,8 @@ class Wait(AAZWaitCommand):
     """
 
     _aaz_info = {
-        "version": "2024-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.management/servicegroups/{}", "2024-02-01-preview"],
+            ["mgmt-plane", "/providers/microsoft.management/servicegroups/{}", "2026-08-01"],
         ]
     }
 
@@ -41,12 +40,12 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.service_group_name = AAZStrArg(
+        _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
             help="ServiceGroup Name.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern=r"^[a-zA-Z0-9\-_().]{1,90}$",
+                pattern="^[a-zA-Z0-9\\-_().]{1,90}$",
             ),
         )
         return cls._args_schema
@@ -98,7 +97,7 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "serviceGroupName", self.ctx.args.service_group_name,
+                    "serviceGroupName", self.ctx.args.name,
                     required=True,
                 ),
             }
@@ -108,7 +107,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-02-01-preview",
+                    "api-version", "2026-08-01",
                     required=True,
                 ),
             }
@@ -161,6 +160,7 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.attributes = AAZObjectType()
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
             )
@@ -169,6 +169,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            attributes = cls._schema_on_200.properties.attributes
+            attributes.criticality = AAZFloatType()
 
             parent = cls._schema_on_200.properties.parent
             parent.resource_id = AAZStrType(

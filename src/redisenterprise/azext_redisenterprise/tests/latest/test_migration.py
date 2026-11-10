@@ -3,182 +3,157 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
+from dateutil.parser import isoparse
 
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.core.exceptions import HttpResponseError
+from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
-from .. import (
-    try_manual,
-    raise_if,
-    calc_coverage
-)
-
-TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-
-# Step: Create the source Azure Cache for Redis instance to migrate from
-@try_manual
-def step_source_redis_create(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az redis create '
-             '--name "{source_redis}" '
-             '--sku "Premium" '
-             '--vm-size "P1" '
-             '--location "centralindia" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# Step: Create the target Azure Managed Redis (redisenterprise) cluster
-@try_manual
-def step_target_cluster_create(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az redisenterprise create '
-             '--cluster-name "{cluster}" '
-             '--sku "Balanced_B1" '
-             '--location "centralindia" '
-             '--clustering-policy "NoCluster" '
-             '--public-network-access "Enabled" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# Step: Validate the migration
-@try_manual
-def step_migration_validate(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az redisenterprise migration validate '
-             '--cluster-name "{cluster}" '
-             '--source-resource-id "{source_id}" '
-             '--skip-data-migration true '
-             '--force-migrate true '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# Step: Start the migration (flat source args from the custom flatten override)
-@try_manual
-def step_migration_start(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az redisenterprise migration start '
-             '--cluster-name "{cluster}" '
-             '--source-resource-id "{source_id}" '
-             '--skip-data-migration true '
-             '--switch-dns true '
-             '--force-migrate true '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# Step: Wait for the migration to reach a terminal provisioning state
-@try_manual
-def step_migration_wait(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az redisenterprise migration wait '
-             '--cluster-name "{cluster}" '
-             '--resource-group "{rg}" '
-             '--custom "properties.provisioningState==\'Succeeded\' || properties.provisioningState==\'Completed\'"',
-             checks=checks)
-
-
-# Step: List migrations for the cluster
-@try_manual
-def step_migration_list(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az redisenterprise migration list '
-             '--cluster-name "{cluster}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# Step: Show the migration
-@try_manual
-def step_migration_show(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az redisenterprise migration show '
-             '--cluster-name "{cluster}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# Step: Undo (roll back) the migration
-@try_manual
-def step_migration_undo(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az redisenterprise migration undo '
-             '--cluster-name "{cluster}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# Step: (teardown handled by ResourceGroupPreparer)
-
-
-def call_migration_scenario(test, rg):
-    step_source_redis_create(test, checks=[
-        test.check("name", "{source_redis}"),
-        test.check("provisioningState", "Succeeded"),
-    ])
-    step_target_cluster_create(test, checks=[
-        test.check("name", "default"),
-        test.check("provisioningState", "Succeeded"),
-    ])
-
-    step_migration_validate(test, checks=[
-        test.check("isValid", True),
-    ])
-    step_migration_start(test, checks=[
-        test.check("properties.sourceType", "AzureCacheForRedis"),
-        test.check("properties.sourceResourceId", "{source_id}", case_sensitive=False),
-        test.check("properties.provisioningState", "Succeeded"),
-    ])
-    step_migration_wait(test, checks=[])
-    step_migration_list(test, checks=[
-        test.check("length(@)", 1),
-        test.check("[0].properties.sourceType", "AzureCacheForRedis"),
-        test.check("[0].properties.sourceResourceId", "{source_id}", case_sensitive=False),
-    ])
-    step_migration_show(test, checks=[
-        test.check("properties.sourceType", "AzureCacheForRedis"),
-        test.check("properties.sourceResourceId", "{source_id}", case_sensitive=False),
-        test.check("properties.targetResourceId", "{target_id}", case_sensitive=False),
-        test.check("properties.provisioningState", "Succeeded"),
-    ])
-    step_migration_undo(test, checks=[])
-    step_migration_show(test, checks=[
-        test.check("properties.provisioningState", "Cancelled"),
-    ])
+from .recording_processors import RedisEnterpriseKeyReplacer
 
 
 class RedisEnterpriseMigrationScenarioTest(ScenarioTest):
 
     def __init__(self, *args, **kwargs):
-        super(RedisEnterpriseMigrationScenarioTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
+        self.recording_processors.append(RedisEnterpriseKeyReplacer())
         self.kwargs.update({
             'cluster': self.create_random_name(prefix='clitest-mig-', length=21),
             'source_redis': self.create_random_name(prefix='clitest-src-', length=21),
+            'location': 'eastus2euap',
         })
 
-    @AllowLargeResponse(size_kb=9999)
-    @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-mig-', key='rg', parameter_name='rg',
-                           location='centralindia', random_name_length=34)
-    def test_redisenterprise_migration(self, rg):
-        subscription = self.get_subscription_id()
+    def _create_target(self):
+        self.cmd('redisenterprise create -g {rg} --cluster-name {cluster} '
+                 '--location {location} --sku Balanced_B1 --clustering-policy NoCluster '
+                 '--high-availability Disabled --minimum-tls-version 1.2 --eviction-policy NoEviction '
+                 '--access-keys-auth Enabled --public-network-access Enabled', checks=[
+                     self.check('name', 'default'),
+                     self.check('provisioningState', 'Succeeded'),
+                 ])
+
+    def _prepare_oss_migration(self):
+        self.cmd('redis create -g {rg} -n {source_redis} --location {location} '
+                 '--sku Basic --vm-size C0 --minimum-tls-version 1.2', checks=[
+                     self.check('provisioningState', 'Succeeded'),
+                 ])
+        self._create_target()
         self.kwargs.update({
             'source_id': '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Cache/redis/{}'.format(
-                subscription, self.kwargs['rg'], self.kwargs['source_redis']),
+                self.get_subscription_id(), self.kwargs['rg'], self.kwargs['source_redis']),
             'target_id': '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Cache/redisEnterprise/{}'.format(
-                subscription, self.kwargs['rg'], self.kwargs['cluster']),
+                self.get_subscription_id(), self.kwargs['rg'], self.kwargs['cluster']),
         })
-        call_migration_scenario(self, rg)
-        calc_coverage(__file__)
-        raise_if()
+        self.cmd('redisenterprise migration validate -g {rg} --cluster-name {cluster} '
+                 '--source-resource-id {source_id} --skip-data-migration true', checks=[
+                     self.check('isValid', True),
+                     self.check('length(errors[].disparities[])', 0),
+                     self.check('length(warnings[].disparities[])', 0),
+                 ])
+
+    def _assert_migration_timestamps(self, properties, rollback_eligible):
+        created = isoparse(properties['creationTime'])
+        modified = isoparse(properties['lastModifiedTime'])
+        self.assertGreaterEqual(modified, created)
+        if rollback_eligible:
+            deadline = isoparse(properties['rollbackEligibleUntil'])
+            self.assertGreater(deadline, modified)
+        else:
+            self.assertIsNone(properties.get('rollbackEligibleUntil'))
+
+    def _start_migration(self, no_wait=False):
+        command = ('redisenterprise migration start -g {rg} --cluster-name {cluster} '
+                   '--source-resource-id {source_id} --skip-data-migration true '
+                   '--switch-dns true --force-migrate true')
+        self.cmd(command + (' --no-wait' if no_wait else ''))
+        self.cmd('redisenterprise migration wait -g {rg} --cluster-name {cluster} '
+                 '--custom "properties.provisioningState==\'Succeeded\'" --timeout 1800 --interval 10')
+        migration = self.cmd('redisenterprise migration show -g {rg} --cluster-name {cluster}', checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('properties.sourceType', 'AzureCacheForRedis'),
+            self.check('properties.sourceResourceId', '{source_id}', case_sensitive=False),
+            self.check('properties.targetResourceId', '{target_id}', case_sensitive=False),
+            self.check('properties.skipDataMigration', True),
+            self.check('properties.switchDns', True),
+        ]).get_output_in_json()
+        self._assert_migration_timestamps(migration['properties'], rollback_eligible=True)
+
+    @AllowLargeResponse(size_kb=9999)
+    @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-undo-', location='eastus2euap')
+    def test_redisenterprise_migration_rollback(self, resource_group):
+        self._prepare_oss_migration()
+        self._start_migration(no_wait=True)
+        self.cmd('redisenterprise migration list -g {rg} --cluster-name {cluster}', checks=[
+            self.check('length(@)', 1),
+            self.check('[0].properties.sourceResourceId', '{source_id}', case_sensitive=False),
+            self.check('[0].properties.provisioningState', 'Succeeded'),
+        ])
+        self.cmd('redisenterprise migration undo -g {rg} --cluster-name {cluster} --rollback-reason testing')
+        migration = self.cmd('redisenterprise migration show -g {rg} --cluster-name {cluster}', checks=[
+            self.check('properties.provisioningState', 'Cancelled'),
+            self.check('properties.sourceResourceId', '{source_id}', case_sensitive=False),
+            self.check('properties.targetResourceId', '{target_id}', case_sensitive=False),
+        ]).get_output_in_json()
+        self._assert_migration_timestamps(migration['properties'], rollback_eligible=False)
+        self.cmd('redis show -g {rg} -n {source_redis}', checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+    @AllowLargeResponse(size_kb=9999)
+    @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-unlink-', location='eastus2euap')
+    def test_redisenterprise_migration_unlink(self, resource_group):
+        self._prepare_oss_migration()
+        self._start_migration()
+        for command in (
+                'redisenterprise migration unlink-migrated-endpoint -g {rg} --cluster-name {cluster}',
+                'redisenterprise unlink-migrated-endpoint -g {rg} --cluster-name {cluster}'):
+            with self.assertRaises(HttpResponseError) as error:
+                self.cmd(command)
+            self.assertEqual(error.exception.status_code, 400)
+            self.assertEqual(error.exception.error.code, 'BadRequest')
+        # Unlink is allowed only after the migrated OSS source has been deleted.
+        self.cmd('redis delete -g {rg} -n {source_redis} -y')
+        self.cmd('redisenterprise migration unlink-migrated-endpoint -g {rg} --cluster-name {cluster} '
+                 '--no-wait')
+        self.cmd('redisenterprise migration wait -g {rg} --cluster-name {cluster} '
+                 '--custom "properties.provisioningState==\'Unlinked\'" --timeout 1800 --interval 10')
+        migration = self.cmd('redisenterprise migration show -g {rg} --cluster-name {cluster}', checks=[
+            self.check('properties.provisioningState', 'Unlinked'),
+            self.check('properties.sourceType', 'AzureCacheForRedis'),
+            self.check('properties.targetResourceId', '{target_id}', case_sensitive=False),
+        ]).get_output_in_json()
+        self._assert_migration_timestamps(migration['properties'], rollback_eligible=False)
+        self.cmd('redisenterprise database show -g {rg} --cluster-name {cluster}', checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+    @AllowLargeResponse(size_kb=9999)
+    @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-acre-', location='eastus2euap')
+    def test_redisenterprise_cluster_unlink(self, resource_group):
+        self.cmd('redisenterprise create -g {rg} --cluster-name {cluster} --location {location} '
+                 '--sku Enterprise_E1 --capacity 2 --clustering-policy EnterpriseCluster '
+                 '--access-keys-auth Enabled --public-network-access Enabled', checks=[
+                     self.check('provisioningState', 'Succeeded'),
+                 ])
+        original = self.cmd('redisenterprise show -g {rg} --cluster-name {cluster}', checks=[
+            self.check('hostName', '{cluster}.{location}.redisenterprise.cache.azure.net'),
+        ]).get_output_in_json()
+        self.kwargs['original_host'] = original['hostName']
+        migrated = self.cmd('redisenterprise update -g {rg} --cluster-name {cluster} '
+                            '--sku Balanced_B1 --tags amr-migration-data-preserve=false', checks=[
+                                self.check('sku.name', 'Balanced_B1'),
+                                self.check('provisioningState', 'Succeeded'),
+                                self.check('hostName', '{cluster}.{location}.redis.azure.net'),
+                                self.check('migratedEndpoint', '{original_host}:10000'),
+                            ]).get_output_in_json()
+        self.kwargs['migrated_host'] = migrated['hostName']
+        self.cmd('redisenterprise unlink-migrated-endpoint -g {rg} --cluster-name {cluster}')
+        self.cmd('redisenterprise show -g {rg} --cluster-name {cluster}', checks=[
+            self.check('sku.name', 'Balanced_B1'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check("migratedEndpoint || ''", ''),
+            self.check('hostName', '{migrated_host}'),
+        ])
+        self.cmd('redisenterprise database show -g {rg} --cluster-name {cluster}', checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "redisenterprise database access-policy-assignment show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get information about access policy assignment for database.
@@ -23,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-01-preview",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2026-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2026-09-01"],
         ]
     }
 
@@ -150,7 +149,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01-preview",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
@@ -203,13 +202,7 @@ class Show(AAZCommand):
             properties = cls._schema_on_200.properties
             properties.access_policy_name = AAZStrType(
                 serialized_name="accessPolicyName",
-            )
-            properties.access_string = AAZStrType(
-                serialized_name="accessString",
-            )
-            properties.provisioning_error = AAZObjectType(
-                serialized_name="provisioningError",
-                flags={"read_only": True},
+                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -218,15 +211,6 @@ class Show(AAZCommand):
             properties.user = AAZObjectType(
                 flags={"required": True},
             )
-
-            provisioning_error = cls._schema_on_200.properties.provisioning_error
-            provisioning_error.code = AAZStrType(
-                flags={"required": True},
-            )
-            provisioning_error.message = AAZStrType(
-                flags={"required": True},
-            )
-            provisioning_error.target = AAZStrType()
 
             user = cls._schema_on_200.properties.user
             user.object_id = AAZStrType(

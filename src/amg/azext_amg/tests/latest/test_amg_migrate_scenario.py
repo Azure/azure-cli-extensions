@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import copy
 import os
 import tempfile
 import time
@@ -25,13 +26,20 @@ class AmgMigrateScenarioTest(ScenarioTest):
             ApiKeyServiceAccountTokenReplacer()
         ])
 
+    def setUp(self):
+        super().setUp()
+        endpoint_cache = unittest.mock.patch.dict('azext_amg.custom.grafana_endpoints', {}, clear=True)
+        endpoint_cache.start()
+        self.addCleanup(endpoint_cache.stop)
+
     def _setup_migrate_instances(self):
         # migrate from amg1 to amg2
         amg1 = self.cmd('grafana create -g {rg} -n {name} -l {location}').get_output_in_json()
         amg2 = self.cmd('grafana create -g {rg} -n {name2} -l {location}').get_output_in_json()
 
         # Ensure RBAC changes are propagated
-        time.sleep(120)
+        if self.in_recording:
+            time.sleep(120)
 
         # enable service accounts so I can create service tokens
         self.cmd('grafana update -g {rg} -n {name} --service-account Enabled')
@@ -47,7 +55,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
 
         # set up data source
         self.kwargs.update({
-            'dataSourceDefinition': test_data_source,
+            'dataSourceDefinition': copy.deepcopy(test_data_source),
             'dataSourceName': test_data_source["name"]
         })
         ds1 = self.cmd('grafana data-source create -g {rg} -n {name} --definition "{dataSourceDefinition}"').get_output_in_json()
@@ -60,7 +68,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
         slug = dashboard_title.lower().replace(' ', '-')
 
         self.kwargs.update({
-            'dashboardDefinition': test_dashboard,
+            'dashboardDefinition': copy.deepcopy(test_dashboard),
             'dashboardTitle': dashboard_title,
             'dashboardTitle2': dashboard_title + '2',
             'dashboardTitle3': dashboard_title + '3',
@@ -125,7 +133,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
             folder_list_output = self.cmd('grafana folder list -g {rg} -n {name2}').get_output_in_json()
             dashboard_list_output = self.cmd('grafana dashboard list -g {rg} -n {name2}').get_output_in_json()
 
-            with unittest.mock.patch('azext_amg.utils.search_annotations', side_effect=self._return_200_and_empty_list):
+            with unittest.mock.patch('azext_amg.backup_core.search_annotations', side_effect=self._return_200_and_empty_list):
                 # now migrate to new instance 2.
                 self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken} --dry-run')
 
@@ -160,16 +168,16 @@ class AmgMigrateScenarioTest(ScenarioTest):
         with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
             amg1, amg2 = self._setup_migrate_instances()
 
-            test_dashboard2 = test_dashboard
+            test_dashboard2 = copy.deepcopy(test_dashboard)
             test_dashboard2["dashboard"]["title"] = test_dashboard2["dashboard"]["title"] + '2_amg'
-            dashboard_title = test_dashboard["dashboard"]["title"]
+            dashboard_title = test_dashboard2["dashboard"]["title"]
             self.kwargs.update({
                 'dashboardTitle2_amg': dashboard_title,
                 'dashboardDefinition2': test_dashboard2
             })
 
             # recreate the second dashboard in amg2: keeping the same uid
-            self.kwargs['dashboardDefinition']['dashboard']['uid'] = 'mg2OAlTVb'
+            self.kwargs['dashboardDefinition2']['dashboard']['uid'] = 'mg2OAlTVb'
             response_create = self.cmd('grafana dashboard create -g {rg} -n {name2}  --definition "{dashboardDefinition2}" --title "{dashboardTitle2_amg}"').get_output_in_json()
             self.kwargs.update({
                 'dashboardUid2_amg2': response_create["uid"],
@@ -195,7 +203,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 self.check("[dashboard.uid]", "['{dashboardUid2_amg2}']"),
                 self.check("[meta.folderTitle]", "['General']")])
 
-            with unittest.mock.patch('azext_amg.utils.search_annotations', side_effect=self._return_200_and_empty_list):
+            with unittest.mock.patch('azext_amg.backup_core.search_annotations', side_effect=self._return_200_and_empty_list):
                 # now migrate to new instance 2.
                 self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
 
@@ -205,7 +213,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 self.check("[dashboard.uid]", "['{dashboardUid2_amg2}']"),
                 self.check("[meta.folderTitle]", "['General']")])
 
-            with unittest.mock.patch('azext_amg.utils.search_annotations', side_effect=self._return_200_and_empty_list):
+            with unittest.mock.patch('azext_amg.backup_core.search_annotations', side_effect=self._return_200_and_empty_list):
                 self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken} --overwrite')
 
             # the uid should stay the same, but the title & other properies should be updated.
@@ -239,13 +247,13 @@ class AmgMigrateScenarioTest(ScenarioTest):
 
             dashboard_title = test_dashboard_with_datasource["dashboard"]["title"]
             self.kwargs.update({
-                'dashboardDefinitionDatasource': test_dashboard_with_datasource,
+                'dashboardDefinitionDatasource': copy.deepcopy(test_dashboard_with_datasource),
                 'dashboardTitle4': dashboard_title + '4',
-                'dataSourceDefinitionDifferentUid': test_data_source_different_uid,
-                'dashboardDefinitionDatasourceShortUid': test_dashboard_with_datasource_short_uid,
+                'dataSourceDefinitionDifferentUid': copy.deepcopy(test_data_source_different_uid),
+                'dashboardDefinitionDatasourceShortUid': copy.deepcopy(test_dashboard_with_datasource_short_uid),
                 'dashboardTitle5': dashboard_title + '5',
-                'dataSourceDefinitionLongUid2': test_data_source_long_uid2,
-                'dataSourceDefinitionShortUid2': test_data_source_short_uid2,
+                'dataSourceDefinitionLongUid2': copy.deepcopy(test_data_source_long_uid2),
+                'dataSourceDefinitionShortUid2': copy.deepcopy(test_data_source_short_uid2),
             })
             self.kwargs['dashboardDefinitionDatasource']['dashboard']['uid'] = 'mg2OAlTVd'  # control the uid to prevent auto generated uid with possible '-' that breaks the command
             self.kwargs['dashboardDefinitionDatasourceShortUid']['dashboard']['uid'] = 'mg2OAlTVe'  # control the uid to prevent auto generated uid with possible '-' that breaks the command
@@ -290,7 +298,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 'serviceAccountToken': service_account_token['key']
             })
 
-            with unittest.mock.patch('azext_amg.utils.search_annotations', side_effect=self._return_200_and_empty_list):
+            with unittest.mock.patch('azext_amg.backup_core.search_annotations', side_effect=self._return_200_and_empty_list):
                 # now migrate to new instance 2.
                 self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
 
@@ -343,7 +351,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 'serviceAccountToken': service_account_token['key']
             })
 
-            with unittest.mock.patch('azext_amg.utils.search_annotations', side_effect=self._return_200_and_empty_list):
+            with unittest.mock.patch('azext_amg.backup_core.search_annotations', side_effect=self._return_200_and_empty_list):
                 # now migrate to new instance 2.
                 self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
 

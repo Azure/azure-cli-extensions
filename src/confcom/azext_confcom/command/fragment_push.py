@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import subprocess
 import sys
 import tempfile
 from typing import Optional
 
+from azext_confcom import oras_proxy
 from azext_confcom.errors import eprint
 
 
@@ -16,7 +16,7 @@ def oras_push(
     signed_fragment_path: str,
     manifest_tag: str,
 ) -> None:
-    subprocess.run(
+    oras_proxy.call_oras_cli(
         [
             "oras",
             "push",
@@ -25,7 +25,7 @@ def oras_push(
             os.path.relpath(signed_fragment_path, start=os.getcwd()),
         ],
         check=True,
-        timeout=120,
+        capture_output=False,
     )
 
 

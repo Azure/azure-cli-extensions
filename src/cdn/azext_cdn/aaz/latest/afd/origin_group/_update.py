@@ -19,12 +19,15 @@ class Update(AAZCommand):
 
     :example: AFDOriginGroups_Create
         az afd origin-group update --resource-group RG --profile-name profile1 --origin-group-name origingroup1 --authentication "{type:UserAssignedIdentity,scope:'https://www.contoso.com/.default',user-assigned-identity:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/user-assigned-id-1}}" --probe-interval-in-seconds 10 --probe-path /path2 --probe-protocol NotSet --probe-request-type NotSet --additional-latency-in-milliseconds 1000 --sample-size 3 --successful-samples-required 3 --traffic-restoration-time-to-healed-or-new-endpoints-in-minutes 5
+
+    :example: Configure capacity-aware load balancing and gRPC health probes
+        az afd origin-group update --resource-group MyResourceGroup --profile-name MyProfile --origin-group-name MyOriginGroup --probe-protocol Grpc --capacity-distribution-settings "{capacity-conscious-threshold:50,distribution-type:DynamicWeights}"
     """
 
     _aaz_info = {
-        "version": "2026-04-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2026-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -92,7 +95,7 @@ class Update(AAZCommand):
             arg_group="HealthProbeSettings",
             help="Protocol to use for health probe.",
             nullable=True,
-            enum={"Http": "Http", "Https": "Https", "NotSet": "NotSet"},
+            enum={"Grpc": "Grpc", "Http": "Http", "Https": "Https", "NotSet": "NotSet"},
         )
         _args_schema.probe_request_type = AAZStrArg(
             options=["--probe-request-type"],
@@ -111,6 +114,12 @@ class Update(AAZCommand):
             help="The additional latency in milliseconds for probes to fall into the lowest latency bucket",
             nullable=True,
         )
+        _args_schema.capacity_distribution_settings = AAZObjectArg(
+            options=["--capacity-settings", "--capacity-distribution-settings"],
+            arg_group="LoadBalancingSettings",
+            help="Capacity based round-robin load balancing settings",
+            nullable=True,
+        )
         _args_schema.sample_size = AAZIntArg(
             options=["--sample-size"],
             arg_group="LoadBalancingSettings",
@@ -122,6 +131,23 @@ class Update(AAZCommand):
             arg_group="LoadBalancingSettings",
             help="The number of samples within the sample period that must succeed",
             nullable=True,
+        )
+
+        capacity_distribution_settings = cls._args_schema.capacity_distribution_settings
+        capacity_distribution_settings.capacity_conscious_threshold = AAZIntArg(
+            options=["capacity-conscious-threshold"],
+            help="Threshold at which additional backends are added for capacity based load balancing. Default is 80 percent.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                maximum=100,
+                minimum=20,
+            ),
+        )
+        capacity_distribution_settings.distribution_type = AAZStrArg(
+            options=["distribution-type"],
+            help="Type of distribution used in capacity based load balancing.",
+            nullable=True,
+            enum={"DynamicWeights": "DynamicWeights", "StaticWeights": "StaticWeights"},
         )
 
         # define Arg Group "Properties"
@@ -248,7 +274,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -351,7 +377,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -438,8 +464,14 @@ class Update(AAZCommand):
             load_balancing_settings = _builder.get(".properties.loadBalancingSettings")
             if load_balancing_settings is not None:
                 load_balancing_settings.set_prop("additionalLatencyInMilliseconds", AAZIntType, ".additional_latency_in_milliseconds")
+                load_balancing_settings.set_prop("capacityDistributionSettings", AAZObjectType, ".capacity_distribution_settings")
                 load_balancing_settings.set_prop("sampleSize", AAZIntType, ".sample_size")
                 load_balancing_settings.set_prop("successfulSamplesRequired", AAZIntType, ".successful_samples_required")
+
+            capacity_distribution_settings = _builder.get(".properties.loadBalancingSettings.capacityDistributionSettings")
+            if capacity_distribution_settings is not None:
+                capacity_distribution_settings.set_prop("capacityConsciousThreshold", AAZIntType, ".capacity_conscious_threshold")
+                capacity_distribution_settings.set_prop("distributionType", AAZStrType, ".distribution_type")
 
             return _instance_value
 
@@ -545,11 +577,22 @@ class _UpdateHelper:
         load_balancing_settings.additional_latency_in_milliseconds = AAZIntType(
             serialized_name="additionalLatencyInMilliseconds",
         )
+        load_balancing_settings.capacity_distribution_settings = AAZObjectType(
+            serialized_name="capacityDistributionSettings",
+        )
         load_balancing_settings.sample_size = AAZIntType(
             serialized_name="sampleSize",
         )
         load_balancing_settings.successful_samples_required = AAZIntType(
             serialized_name="successfulSamplesRequired",
+        )
+
+        capacity_distribution_settings = _schema_afd_origin_group_read.properties.load_balancing_settings.capacity_distribution_settings
+        capacity_distribution_settings.capacity_conscious_threshold = AAZIntType(
+            serialized_name="capacityConsciousThreshold",
+        )
+        capacity_distribution_settings.distribution_type = AAZStrType(
+            serialized_name="distributionType",
         )
 
         system_data = _schema_afd_origin_group_read.system_data

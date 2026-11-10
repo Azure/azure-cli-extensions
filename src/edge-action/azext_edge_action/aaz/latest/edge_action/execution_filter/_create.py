@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "edge-action execution-filter create",
 )
 class Create(AAZCommand):
-    """Create EdgeActionExecutionFilter resource
+    """Create an EdgeActionExecutionFilter
 
     :example: CreateEdgeActionExecutionFilter
         az edge-action execution-filter create --resource-group testrg --edge-action-name edgeAction1 --execution-filter executionFilter1 --location global --version-id /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/testrg/providers/Microsoft.Cdn/EdgeActions/edgeAction1/versions/version1 --execution-filter-identifier-header-name header-key --execution-filter-identifier-header-value header-value
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/edgeactions/{}/executionfilters/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/edgeactions/{}/executionfilters/{}", "2026-10-01"],
         ]
     }
 
@@ -192,7 +192,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
