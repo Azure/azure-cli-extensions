@@ -61,6 +61,40 @@ dependency/runtime commands are explicit operations, not part of validation
 or the testing foundation. Never put secret values in `--parameter` or
 `--app-setting`; local connection secrets are read from standard input.
 
+## Discover built-in connector action inputs
+
+Operation list and default operation show return descriptive metadata. Request
+the selected runtime's full operation manifest explicitly to discover input
+names, required fields, nested schemas, constraints and defaults:
+
+```powershell
+az logicapp connector operation show --local --port 7071 --connector serviceBus --operation sendMessage --include-manifest --query properties.manifest.inputs --output json
+az logicapp connector operation show --local --port 7071 --connector AzureBlob --operation uploadBlob --include-manifest --query properties.manifest.inputs --output json
+az logicapp connector operation show -g my-rg -n my-app --connector AzureBlob --operation uploadBlob --include-manifest --output json
+```
+
+The option makes one metadata GET with `$expand=properties/manifest`, the
+[same expansion used by the Logic Apps Standard designer](https://github.com/Azure/LogicAppsUX/blob/e7b33649963fb9a4e4efae59d231e370198994ff/libs/logic-apps-shared/src/designer-client-services/lib/standard/operationmanifest.ts#L165-L223).
+The complete operation response is preserved at its original paths. Input
+schemas are at `properties.manifest.inputs`; use the manifest's `inputsLocation`
+and other binding metadata when mapping them into workflow JSON. Fields such as
+Azure Blob's `containerName`, `blobName`, `content` and optional
+`overrideIfExists`, and Service Bus's nested message fields, come from the
+runtime, not CLI-maintained templates. Availability varies with connector and
+runtime versions. This does not validate or author a workflow or prove a
+connection works. For example, `inputsLocation: ["inputs", "parameters"]` means
+the input schema describes `inputs.parameters` in the workflow action. Preserve
+string enums as strings and unconstrained content schemas as returned; do not
+infer missing types or defaults.
+
+Missing, empty or non-object manifests are errors, never silently replaced
+with metadata or invented schemas. Dynamic schema/value references and schema
+references are preserved but not invoked, fetched or resolved. No action,
+workflow, connection test or data-plane operation runs. Local host keys remain
+headers, and deployed requests use the existing ARM authentication path.
+Default show and list output, list filtering/pagination and request counts are
+unchanged; there is no per-operation manifest fan-out on list.
+
 ## Create, plan and run local workflow tests
 
 `test create` scaffolds native SDK/MSTest source. The separate `test run`

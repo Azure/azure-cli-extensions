@@ -576,9 +576,21 @@ def connector_operation_list(cmd, connector, resource_group_name=None, name=None
 
 
 def connector_operation_show(cmd, connector, operation, resource_group_name=None, name=None, local=False,
-                             port=None, host_key=None, context=None):
+                             port=None, host_key=None, context=None, include_manifest=False):
     client, _ = _client_from_target(cmd, resource_group_name, name, local, port, host_key, context)
-    return client.get(operation_group_operation_path(connector, operation))
+    path = operation_group_operation_path(connector, operation)
+    if not include_manifest:
+        return client.get(path)
+    payload = client.get(path, params={"$expand": "properties/manifest"})
+    properties = payload.get("properties") if isinstance(payload, dict) else None
+    manifest = properties.get("manifest") if isinstance(properties, dict) else None
+    if not isinstance(manifest, dict) or not manifest:
+        raise ClientRequestError(
+            "The site runtime did not return a non-empty operation manifest. "
+            "Input schemas cannot be discovered from this response.",
+            recommendation="Check that this runtime and operation support $expand=properties/manifest. "
+                           "Omit --include-manifest to inspect descriptive metadata only.")
+    return payload
 
 
 def connector_managed_list(cmd, location, search=None, max_items=None, next_token=None):

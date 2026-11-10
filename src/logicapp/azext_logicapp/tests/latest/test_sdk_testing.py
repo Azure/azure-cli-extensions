@@ -265,7 +265,7 @@ class SdkTestingTests(unittest.TestCase):
 
     def test_first_native_producer_remains_inspectable_without_approving_future_execution(self):
         report = successful_record()
-        for version in ("0.1.25", "0.1.26", "1.0.0b1"):
+        for version in ("0.1.25", "0.1.26", "1.0.0b1", "1.0.0b2"):
             with self.subTest(version=version):
                 report["provenance"]["cliVersion"] = version
                 self.assertTrue(sdk.validate_report(report))
@@ -275,7 +275,7 @@ class SdkTestingTests(unittest.TestCase):
                 self.assertEqual("nativeTestsPassed", inspected["inspection"]["sourceOutcome"])
                 self.assertEqual(2, inspected["summary"]["passed"])
                 self.assertEqual("notAttested", inspected["coverage"]["workflowExecution"])
-                with mock.patch.object(sdk, "VERSION", "1.0.0b3"):
+                with mock.patch.object(sdk, "VERSION", "1.0.0b4"):
                     self.assertTrue(sdk.validate_report(report))
         changed = copy.deepcopy(report)
         changed["provenance"]["cliVersion"] = "99.0.0"

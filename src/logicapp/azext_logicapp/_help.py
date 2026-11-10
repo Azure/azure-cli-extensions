@@ -793,7 +793,8 @@ long-summary: >
   operation list in one response and emits no continuation token, so --kind,
   --search, --max-items and --next-token are all applied by the CLI after
   the full response is received. Operations are classified as triggers using the
-  runtime's own trigger field rather than inferred.
+  runtime's own trigger field rather than inferred. This is descriptive metadata;
+  use operation show --include-manifest for an operation's input schemas.
 examples:
   - name: List every operation on a built-in connector.
     text: az logicapp connector operation list --local --port 7071 --connector /serviceProviders/serviceBus
@@ -808,10 +809,25 @@ type: command
 short-summary: Show one operation exposed by a built-in (service provider) connector.
 long-summary: >
   --operation accepts either the bare operation name or the full operation id
-  reported by az logicapp connector operation list.
+  reported by az logicapp connector operation list. By default this returns
+  descriptive metadata. --include-manifest requests $expand=properties/manifest
+  from the same runtime GET route and preserves the complete response, including
+  properties.manifest.inputs, required fields, nested schemas and runtime defaults.
+  Available fields depend on the selected runtime and connector version.
+  Missing, empty or non-object manifests fail explicitly; there is no fallback
+  to guessed schemas. Dynamic schema/value references are returned unchanged,
+  not invoked or resolved. This does not execute the connector operation or
+  validate a workflow or connection. The option works with local and deployed
+  runtime targets; list does not request manifest expansion.
 examples:
   - name: Show one operation on a local runtime.
     text: az logicapp connector operation show --local --port 7071 --connector /serviceProviders/serviceBus --operation sendMessage
+  - name: Discover Service Bus action inputs, including nested message fields.
+    text: az logicapp connector operation show --local --port 7071 --connector serviceBus --operation sendMessage --include-manifest --query properties.manifest.inputs --output json
+  - name: Discover the Azure Blob upload action's complete runtime manifest.
+    text: az logicapp connector operation show --local --port 7071 --connector AzureBlob --operation uploadBlob --include-manifest --output json
+  - name: Discover one deployed runtime action's input schema.
+    text: az logicapp connector operation show -g my-rg -n my-app --connector AzureBlob --operation uploadBlob --include-manifest --query properties.manifest.inputs --output json
 """
 
 helps['logicapp connector managed list'] = """

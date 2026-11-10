@@ -258,6 +258,8 @@ def load_arguments(self, _):
     with self.argument_context('logicapp connector operation show') as c:
         c.argument('connector', options_list=['--connector'], required=True, help='Connector id or name.')
         c.argument('operation', options_list=['--operation'], required=True, help='Operation id or name.')
+        c.argument('include_manifest', options_list=['--include-manifest'], action='store_true',
+                   help='Include the runtime operation manifest and input schemas at properties.manifest.')
         _target_args(c, resource_group_name_type, app_name_type, port_type, host_key_type, target_context_type)
 
     with self.argument_context('logicapp connector managed list') as c:

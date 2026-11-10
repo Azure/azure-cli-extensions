@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.0.0b3
++++++++
+
+* Add ``connector operation show --include-manifest`` for read-only built-in
+  operation input schema discovery on local and deployed runtimes. Preserve the
+  complete runtime manifest without resolving dynamic references or executing
+  connector operations; report unavailable manifests explicitly.
+
 1.0.0b2
 +++++++
 
