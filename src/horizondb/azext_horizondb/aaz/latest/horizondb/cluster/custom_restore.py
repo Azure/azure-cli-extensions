@@ -91,7 +91,6 @@ class ClusterRestore(ClusterCreate):
                 'when the source cluster has geo-redundancy enabled.'
             )
         args.geo_redundancy = geo_redundancy
-        args.version = properties.get('postgreSqlVersion', AAZUndefined)
         for name, value in {
             'location': source.get('location', AAZUndefined),
             'tags': source.get('tags', AAZUndefined),

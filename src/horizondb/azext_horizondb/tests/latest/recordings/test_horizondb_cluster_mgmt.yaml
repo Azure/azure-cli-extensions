@@ -1,0 +1,1612 @@
+interactions:
+- request:
+    body: '{"location": "japaneast", "properties": {"backup": {"geoRedundancy": "Disabled",
+      "retentionDays": 7}, "network": {"publicAccess": "Disabled"}, "postgreSqlVersion":
+      "17"}, "tags": {"scenario": "cluster"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '203'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7},"provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/0f32b45f-dab5-4c2c-bf6a-bfbb803a030c?api-version=2026-10-01-preview&t=639298583025646928&c=MIIHlDCCBnygAwIBAgIQd-4eEYTzNod0dXNPV_1VbTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MTAyOTE2MzIwOVoXDTI3MDEyNDIyMzIwOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC6inEBmRkmV7jwezrNwI2YhwpLi46ufRLkZnWZW-Td_8RCpZgvihiFerPFJycNgXXQ-KH5kpfyeFiaLU-GfnoerVyFRoYwV628eYsuia38zkORS3DR8OyHUjN53o4wUpsACeyV5MdfJALMBdjhSbyNoij84l6DMydHnElno_3c7VcD3eyddHmfnNIbITufEDN8KA8ggn6xb9LOD5ovMC0_pyLQE0m4CKiBf_MfsP5KX7oZhf6z-TlWmNJZLRIqfIn3iH7QJ8K919yZ90GK_YTedF2qHbjIKWSHC4_M5IN1-zSTlbm6NcqN7hNGuyotDEeqLcSdkXvZE5AQJEzFgDrdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTFO5yAfwRTEt09sEmA-FxZ5qRtpjAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzY2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAjsr5BeDr5Cfgjpjsk7NxA4d5YZJ3Y07Em31K7UGqaLxOtZyocNmIds901ysHCmbI_r4iX3nRMoBdtESPzwwSU9-FjnZQmosxmFw8Z_OZeEJZaBynJs_Zr8mduCvYRA7S2FcndLqqoDFxubEpyQbHUMCd9p2K3KcYR0nM6q2hcOhDMehrq5WGQWSfE8uzALMoRPjtwVkc7SrV-9qnCbnb45qaP-GSBpQAZc_460anO7JjbrJsIxQ2zCePzskQDsRZ3tKB4ThoBHgp9etJ8_lcDWPcGPukDr6dlMeeu2PL7PbuZEL27gYKLSxPv-gN33cOu-N68KvGAobAg25BNLVjt&s=t8b_y5kCog-wNhihZat-CaXtyW9aTY5e3g-kummyQ1sMuHvp5XuJNI8NY4f7poBMtF2cZAy5GERdwTnuLwdhkj1oZ1pgB7BnjpQ7lyWEvLx0trPIFMFDyg5entq7yCPHZ55nG7pg2P_Mym7FP5l3Vhv5QMvUByHCqWe0tVokEsfoZv1OjaXtkaP84fjw3OYp1uvyPD-0Vj0V9s4tph8NgGwAw8tXTY8ZpQWmnt-LSko73Lgl26eZ59YPeIkrmiiJ68lKrBMj5fvA5msrx3ZIU9YC2otupP4Qi01FU3WRXRbUMmVgobmTewYtjtIrXZLDPJVrZYDjbAz66-iOqcqiDw&h=bpjWR48JgwXHvGC6fTjm99H82I16WjR45CB_PMJrZP8
+      cache-control:
+      - no-cache
+      content-length:
+      - '483'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 21:58:21 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/operationResults/0f32b45f-dab5-4c2c-bf6a-bfbb803a030c?api-version=2026-10-01-preview&t=639298583025803186&c=MIIHlDCCBnygAwIBAgIQd-4eEYTzNod0dXNPV_1VbTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MTAyOTE2MzIwOVoXDTI3MDEyNDIyMzIwOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC6inEBmRkmV7jwezrNwI2YhwpLi46ufRLkZnWZW-Td_8RCpZgvihiFerPFJycNgXXQ-KH5kpfyeFiaLU-GfnoerVyFRoYwV628eYsuia38zkORS3DR8OyHUjN53o4wUpsACeyV5MdfJALMBdjhSbyNoij84l6DMydHnElno_3c7VcD3eyddHmfnNIbITufEDN8KA8ggn6xb9LOD5ovMC0_pyLQE0m4CKiBf_MfsP5KX7oZhf6z-TlWmNJZLRIqfIn3iH7QJ8K919yZ90GK_YTedF2qHbjIKWSHC4_M5IN1-zSTlbm6NcqN7hNGuyotDEeqLcSdkXvZE5AQJEzFgDrdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTFO5yAfwRTEt09sEmA-FxZ5qRtpjAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzY2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAjsr5BeDr5Cfgjpjsk7NxA4d5YZJ3Y07Em31K7UGqaLxOtZyocNmIds901ysHCmbI_r4iX3nRMoBdtESPzwwSU9-FjnZQmosxmFw8Z_OZeEJZaBynJs_Zr8mduCvYRA7S2FcndLqqoDFxubEpyQbHUMCd9p2K3KcYR0nM6q2hcOhDMehrq5WGQWSfE8uzALMoRPjtwVkc7SrV-9qnCbnb45qaP-GSBpQAZc_460anO7JjbrJsIxQ2zCePzskQDsRZ3tKB4ThoBHgp9etJ8_lcDWPcGPukDr6dlMeeu2PL7PbuZEL27gYKLSxPv-gN33cOu-N68KvGAobAg25BNLVjt&s=eMwKh3VFX_aUa0-HnSfK_bRs7_nObQRmFEYHJ6xYJO6ltOBeIoyg3nBHGs_qwNP9gSjedP57KfqH_taxZ2Q-urDGHReVcrLTYt11F-Amzw4YvbRepv0qfP1AMzXi_MfLEJ8wjD2ZcuXs2iviGx-DNiRu3k4WVQhfk3BsbqNo1QGTeqLGO1lHEMqWfnCMpvcB35CY-CoCOf2elkChvI7sckYphvv9dFyu75PUL0b6BT1CNx722-YK6D0gAwnMI7HAKuGIKjuncJNzTp0Tod9W1SJOLSaUdxIuRF_3In6dVjC2kQRxihx7jFURhOf5lXy00VfwT8USg9cABBoPhKd_3Q&h=tNM4vjPVt5uZBGbpcE8wrVXLqtHtvvyt2AjEStwlR0o
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f57d2932-2a78-450f-958a-e65997c3253b/japaneast/2a74656a-050d-46c3-9ee3-a3ddeee4b53c
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 97BFA168A0024AA186019320D50B4965 Ref B: SN4AA2022402025 Ref C: 2026-11-09T21:58:21Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The requested resource
+        of type ''Microsoft.HorizonDb/clusters'' with name ''cli-horizondb-000002''
+        was not found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '159'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 21:58:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: FF83FE08EE7843B3B33E341A8E95731B Ref B: SN4AA2022401027 Ref C: 2026-11-09T21:58:23Z'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 21:58:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5D81A2283077426F944BCB73D2DD0DEF Ref B: SN4AA2022403035 Ref C: 2026-11-09T21:58:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 21:59:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 8715236D24524B9989B931B2A6D942AB Ref B: SN4AA2022403037 Ref C: 2026-11-09T21:59:26Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 21:59:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A1394114992B4DF584BF2DE707B77005 Ref B: SN4AA2022304035 Ref C: 2026-11-09T21:59:57Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:00:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CEF5A0D3A9364751B4C5CDF274586331 Ref B: SN4AA2022301037 Ref C: 2026-11-09T22:00:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:00:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 8F00D982AFC64F6BB87A94489EBC9F0D Ref B: SN4AA2022304025 Ref C: 2026-11-09T22:01:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:01:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F397F5D75F3843DD911FEAD897B61E06 Ref B: SN4AA2022301047 Ref C: 2026-11-09T22:01:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:02:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: FEFDE5333D4C4BE09DCC1CD11AC7E499 Ref B: SN4AA2022402037 Ref C: 2026-11-09T22:02:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:02:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0BB7FF778B4D4D0D9AF3CB44E8D545FB Ref B: SN4AA2022402047 Ref C: 2026-11-09T22:02:33Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:03:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 4270A9D8EE354E21B5ADF7A5A478B9C2 Ref B: SN4AA2022303021 Ref C: 2026-11-09T22:03:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:03:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: BDA8803C778E4D96B3EB683556E176EC Ref B: SN4AA2022301053 Ref C: 2026-11-09T22:03:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:04:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F1FD49F7E6B64493B6A47562F85D7D0F Ref B: SN4AA2022303035 Ref C: 2026-11-09T22:04:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:04:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: FBA2CE0F716C48D88AC3DF3D91ED2DA9 Ref B: SN4AA2022303033 Ref C: 2026-11-09T22:04:38Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:05:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A38592F65A844CCCBD1BA71C114E870E Ref B: SN4AA2022403047 Ref C: 2026-11-09T22:05:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:05:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A02C9CED548941ED803FFCDF4BB4BE0A Ref B: SN4AA2022403047 Ref C: 2026-11-09T22:05:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:06:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 401E84A4FF9843DA99B1FEBB8BA566FD Ref B: SN4AA2022402045 Ref C: 2026-11-09T22:06:13Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:06:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 155C5C34B8EB4A7AAE2E4F961C8B63B4 Ref B: SN4AA2022401017 Ref C: 2026-11-09T22:06:45Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:07:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 597EFA2CFDCF48FDB70A8849FEF2E919 Ref B: SN4AA2022403027 Ref C: 2026-11-09T22:07:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:07:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CD236A058BF4457B9A625C64F8AF546A Ref B: SN4AA2022402045 Ref C: 2026-11-09T22:07:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Provisioning","provisioningState":"Provisioning"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '645'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:08:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: ED714FDCE44444C9890061FBC7AB26F9 Ref B: SN4AA2022403037 Ref C: 2026-11-09T22:08:18Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Ready","provisioningState":"Succeeded"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '635'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:08:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1906BF4F2E9D4499BD3A1BAD0B11300E Ref B: SN4AA2022305053 Ref C: 2026-11-09T22:08:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --version --geo-redundancy --public-access --tags
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Ready","provisioningState":"Succeeded"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '635'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:08:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: D6FB6F3D7DE547AFAA2244E295954124 Ref B: SN4AA2022304051 Ref C: 2026-11-09T22:08:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Ready","provisioningState":"Succeeded"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '635'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:08:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: BDC385EEE8DE45488B579899DC21956D Ref B: SN4AA2022302035 Ref C: 2026-11-09T22:08:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","creationMode":"Create","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":7,"earliestRestorePointUtc":"2026-11-09T21:58:25.4340894+00:00"},"aiModelManagement":"Disabled","readWritePool":{},"state":"Ready","provisioningState":"Succeeded"},"location":"japaneast","tags":{"scenario":"cluster"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002","name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '647'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:08:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 94c51017-945b-4111-9094-28d20bb9d60d
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 278E114F780D40789789D88D85722DBC Ref B: SN4AA2022302011 Ref C: 2026-11-09T22:08:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"backup": {"retentionDays": 9}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '48'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --backup-retention-days
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/22d630a3-0636-4eae-8dea-4eb18aad9d2e?api-version=2026-10-01-preview&t=639298589362273040&c=MIIHlDCCBnygAwIBAgIQd-4eEYTzNod0dXNPV_1VbTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MTAyOTE2MzIwOVoXDTI3MDEyNDIyMzIwOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC6inEBmRkmV7jwezrNwI2YhwpLi46ufRLkZnWZW-Td_8RCpZgvihiFerPFJycNgXXQ-KH5kpfyeFiaLU-GfnoerVyFRoYwV628eYsuia38zkORS3DR8OyHUjN53o4wUpsACeyV5MdfJALMBdjhSbyNoij84l6DMydHnElno_3c7VcD3eyddHmfnNIbITufEDN8KA8ggn6xb9LOD5ovMC0_pyLQE0m4CKiBf_MfsP5KX7oZhf6z-TlWmNJZLRIqfIn3iH7QJ8K919yZ90GK_YTedF2qHbjIKWSHC4_M5IN1-zSTlbm6NcqN7hNGuyotDEeqLcSdkXvZE5AQJEzFgDrdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTFO5yAfwRTEt09sEmA-FxZ5qRtpjAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzY2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAjsr5BeDr5Cfgjpjsk7NxA4d5YZJ3Y07Em31K7UGqaLxOtZyocNmIds901ysHCmbI_r4iX3nRMoBdtESPzwwSU9-FjnZQmosxmFw8Z_OZeEJZaBynJs_Zr8mduCvYRA7S2FcndLqqoDFxubEpyQbHUMCd9p2K3KcYR0nM6q2hcOhDMehrq5WGQWSfE8uzALMoRPjtwVkc7SrV-9qnCbnb45qaP-GSBpQAZc_460anO7JjbrJsIxQ2zCePzskQDsRZ3tKB4ThoBHgp9etJ8_lcDWPcGPukDr6dlMeeu2PL7PbuZEL27gYKLSxPv-gN33cOu-N68KvGAobAg25BNLVjt&s=pn8a0oyHvaIgYWQ8zLuAe-FAFUsUll7s5C0RN8rz86F0uIFVyiSq5dYxzBf1RRVv4WROEzekHVLzGHROtfWCQd8EobRKE0qYiiQMLwkk7T7GyRBJwCRJUJmBG-DF9ORBOiWGWkZcre6ohhnubgt6aim13Wh_YZXlIqGPiZ8BkHdzenIggUJh9k6zm25XIBMteMISszCZtnodrTuINbakIio2a24mghYTxTTcWpsp_BYxMqZaB2SlXKYJ0iFdcM2KnBE3qpYI4IRREgw9PYe4X86LXR-JU0LxCYb1U3R-jjdKNsnnq0zi7-c1FiYLCOmesMMlq1ggYRvY1j49sCQqkw&h=zY2twxX58COxB9goS5NDfjE-jB0_bqavOuxIZggoQ0A
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 09 Nov 2026 22:08:55 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/operationResults/22d630a3-0636-4eae-8dea-4eb18aad9d2e?api-version=2026-10-01-preview&t=639298589362273040&c=MIIHlDCCBnygAwIBAgIQd-4eEYTzNod0dXNPV_1VbTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MTAyOTE2MzIwOVoXDTI3MDEyNDIyMzIwOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC6inEBmRkmV7jwezrNwI2YhwpLi46ufRLkZnWZW-Td_8RCpZgvihiFerPFJycNgXXQ-KH5kpfyeFiaLU-GfnoerVyFRoYwV628eYsuia38zkORS3DR8OyHUjN53o4wUpsACeyV5MdfJALMBdjhSbyNoij84l6DMydHnElno_3c7VcD3eyddHmfnNIbITufEDN8KA8ggn6xb9LOD5ovMC0_pyLQE0m4CKiBf_MfsP5KX7oZhf6z-TlWmNJZLRIqfIn3iH7QJ8K919yZ90GK_YTedF2qHbjIKWSHC4_M5IN1-zSTlbm6NcqN7hNGuyotDEeqLcSdkXvZE5AQJEzFgDrdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTFO5yAfwRTEt09sEmA-FxZ5qRtpjAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzY2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAjsr5BeDr5Cfgjpjsk7NxA4d5YZJ3Y07Em31K7UGqaLxOtZyocNmIds901ysHCmbI_r4iX3nRMoBdtESPzwwSU9-FjnZQmosxmFw8Z_OZeEJZaBynJs_Zr8mduCvYRA7S2FcndLqqoDFxubEpyQbHUMCd9p2K3KcYR0nM6q2hcOhDMehrq5WGQWSfE8uzALMoRPjtwVkc7SrV-9qnCbnb45qaP-GSBpQAZc_460anO7JjbrJsIxQ2zCePzskQDsRZ3tKB4ThoBHgp9etJ8_lcDWPcGPukDr6dlMeeu2PL7PbuZEL27gYKLSxPv-gN33cOu-N68KvGAobAg25BNLVjt&s=GZ8zwzU2BICp4viM2L5aRO0T7Ft-jqWRO2lf2zc5cs1elgJYlqKx6nklig7VgwRnzCPH2JqTkSXJI2uBjmrfyRdH7RjZCu-cUISolBH0LWUknbm8bAnV7jweZkFOTPYAT0E6ICe1Gq07qnRSKSUW5YsvQLU6KOxkZj3FLlbaFRNCXMRL-2zyq9giPEu5VLNpgYvvDWczK5h_Q_IDYHmaB0LMDu4kJAIvCprMyax5i4rt-2SuG4cumzMXLAG-bCDFiZ26Tk-gkwVzLlekGSp-v9Zy_jP2s9XNY06JOTsN0F-8mAWOcNBZpvQfdpqJcIB36brv0CFHiLPmK1wrEgShUg&h=eOWWx_b1yh2-p1RvXYwV-XApoKgHK9uXWbe4aX_g2Mk
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f57d2932-2a78-450f-958a-e65997c3253b/japaneast/613c0c3b-fb44-464e-af1a-b6db23cd5ea8
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: EE2E9B9D06F44B4989C2F141CE7F51D1 Ref B: SN4AA2022304021 Ref C: 2026-11-09T22:08:55Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --backup-retention-days
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/22d630a3-0636-4eae-8dea-4eb18aad9d2e?api-version=2026-10-01-preview&t=639298589362273040&c=MIIHlDCCBnygAwIBAgIQd-4eEYTzNod0dXNPV_1VbTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MTAyOTE2MzIwOVoXDTI3MDEyNDIyMzIwOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC6inEBmRkmV7jwezrNwI2YhwpLi46ufRLkZnWZW-Td_8RCpZgvihiFerPFJycNgXXQ-KH5kpfyeFiaLU-GfnoerVyFRoYwV628eYsuia38zkORS3DR8OyHUjN53o4wUpsACeyV5MdfJALMBdjhSbyNoij84l6DMydHnElno_3c7VcD3eyddHmfnNIbITufEDN8KA8ggn6xb9LOD5ovMC0_pyLQE0m4CKiBf_MfsP5KX7oZhf6z-TlWmNJZLRIqfIn3iH7QJ8K919yZ90GK_YTedF2qHbjIKWSHC4_M5IN1-zSTlbm6NcqN7hNGuyotDEeqLcSdkXvZE5AQJEzFgDrdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTFO5yAfwRTEt09sEmA-FxZ5qRtpjAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzY2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAjsr5BeDr5Cfgjpjsk7NxA4d5YZJ3Y07Em31K7UGqaLxOtZyocNmIds901ysHCmbI_r4iX3nRMoBdtESPzwwSU9-FjnZQmosxmFw8Z_OZeEJZaBynJs_Zr8mduCvYRA7S2FcndLqqoDFxubEpyQbHUMCd9p2K3KcYR0nM6q2hcOhDMehrq5WGQWSfE8uzALMoRPjtwVkc7SrV-9qnCbnb45qaP-GSBpQAZc_460anO7JjbrJsIxQ2zCePzskQDsRZ3tKB4ThoBHgp9etJ8_lcDWPcGPukDr6dlMeeu2PL7PbuZEL27gYKLSxPv-gN33cOu-N68KvGAobAg25BNLVjt&s=pn8a0oyHvaIgYWQ8zLuAe-FAFUsUll7s5C0RN8rz86F0uIFVyiSq5dYxzBf1RRVv4WROEzekHVLzGHROtfWCQd8EobRKE0qYiiQMLwkk7T7GyRBJwCRJUJmBG-DF9ORBOiWGWkZcre6ohhnubgt6aim13Wh_YZXlIqGPiZ8BkHdzenIggUJh9k6zm25XIBMteMISszCZtnodrTuINbakIio2a24mghYTxTTcWpsp_BYxMqZaB2SlXKYJ0iFdcM2KnBE3qpYI4IRREgw9PYe4X86LXR-JU0LxCYb1U3R-jjdKNsnnq0zi7-c1FiYLCOmesMMlq1ggYRvY1j49sCQqkw&h=zY2twxX58COxB9goS5NDfjE-jB0_bqavOuxIZggoQ0A
+  response:
+    body:
+      string: '{"name":"22d630a3-0636-4eae-8dea-4eb18aad9d2e","status":"InProgress","startTime":"2026-11-09T22:08:56.187Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:08:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f57d2932-2a78-450f-958a-e65997c3253b/southcentralus/4d00b928-c425-484e-9c5c-9f77df33efc5
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B452E95916B841E68BFDB1EFC7678BE3 Ref B: SN4AA2022303053 Ref C: 2026-11-09T22:08:57Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --backup-retention-days
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/azureAsyncOperation/22d630a3-0636-4eae-8dea-4eb18aad9d2e?api-version=2026-10-01-preview&t=639298589362273040&c=MIIHlDCCBnygAwIBAgIQd-4eEYTzNod0dXNPV_1VbTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MTAyOTE2MzIwOVoXDTI3MDEyNDIyMzIwOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC6inEBmRkmV7jwezrNwI2YhwpLi46ufRLkZnWZW-Td_8RCpZgvihiFerPFJycNgXXQ-KH5kpfyeFiaLU-GfnoerVyFRoYwV628eYsuia38zkORS3DR8OyHUjN53o4wUpsACeyV5MdfJALMBdjhSbyNoij84l6DMydHnElno_3c7VcD3eyddHmfnNIbITufEDN8KA8ggn6xb9LOD5ovMC0_pyLQE0m4CKiBf_MfsP5KX7oZhf6z-TlWmNJZLRIqfIn3iH7QJ8K919yZ90GK_YTedF2qHbjIKWSHC4_M5IN1-zSTlbm6NcqN7hNGuyotDEeqLcSdkXvZE5AQJEzFgDrdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTFO5yAfwRTEt09sEmA-FxZ5qRtpjAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzY2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAjsr5BeDr5Cfgjpjsk7NxA4d5YZJ3Y07Em31K7UGqaLxOtZyocNmIds901ysHCmbI_r4iX3nRMoBdtESPzwwSU9-FjnZQmosxmFw8Z_OZeEJZaBynJs_Zr8mduCvYRA7S2FcndLqqoDFxubEpyQbHUMCd9p2K3KcYR0nM6q2hcOhDMehrq5WGQWSfE8uzALMoRPjtwVkc7SrV-9qnCbnb45qaP-GSBpQAZc_460anO7JjbrJsIxQ2zCePzskQDsRZ3tKB4ThoBHgp9etJ8_lcDWPcGPukDr6dlMeeu2PL7PbuZEL27gYKLSxPv-gN33cOu-N68KvGAobAg25BNLVjt&s=pn8a0oyHvaIgYWQ8zLuAe-FAFUsUll7s5C0RN8rz86F0uIFVyiSq5dYxzBf1RRVv4WROEzekHVLzGHROtfWCQd8EobRKE0qYiiQMLwkk7T7GyRBJwCRJUJmBG-DF9ORBOiWGWkZcre6ohhnubgt6aim13Wh_YZXlIqGPiZ8BkHdzenIggUJh9k6zm25XIBMteMISszCZtnodrTuINbakIio2a24mghYTxTTcWpsp_BYxMqZaB2SlXKYJ0iFdcM2KnBE3qpYI4IRREgw9PYe4X86LXR-JU0LxCYb1U3R-jjdKNsnnq0zi7-c1FiYLCOmesMMlq1ggYRvY1j49sCQqkw&h=zY2twxX58COxB9goS5NDfjE-jB0_bqavOuxIZggoQ0A
+  response:
+    body:
+      string: '{"name":"22d630a3-0636-4eae-8dea-4eb18aad9d2e","status":"Succeeded","startTime":"2026-11-09T22:08:56.187Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:09:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f57d2932-2a78-450f-958a-e65997c3253b/southcentralus/7db9bef1-0a9f-42a6-94e3-74a99fe26a6c
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CD9E0678173947B6B3B5ECD42E09CBD9 Ref B: SN4AA2022303017 Ref C: 2026-11-09T22:09:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --backup-retention-days
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/japaneast/operationResults/22d630a3-0636-4eae-8dea-4eb18aad9d2e?api-version=2026-10-01-preview&t=639298589362273040&c=MIIHlDCCBnygAwIBAgIQd-4eEYTzNod0dXNPV_1VbTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MTAyOTE2MzIwOVoXDTI3MDEyNDIyMzIwOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC6inEBmRkmV7jwezrNwI2YhwpLi46ufRLkZnWZW-Td_8RCpZgvihiFerPFJycNgXXQ-KH5kpfyeFiaLU-GfnoerVyFRoYwV628eYsuia38zkORS3DR8OyHUjN53o4wUpsACeyV5MdfJALMBdjhSbyNoij84l6DMydHnElno_3c7VcD3eyddHmfnNIbITufEDN8KA8ggn6xb9LOD5ovMC0_pyLQE0m4CKiBf_MfsP5KX7oZhf6z-TlWmNJZLRIqfIn3iH7QJ8K919yZ90GK_YTedF2qHbjIKWSHC4_M5IN1-zSTlbm6NcqN7hNGuyotDEeqLcSdkXvZE5AQJEzFgDrdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTFO5yAfwRTEt09sEmA-FxZ5qRtpjAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzY2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAjsr5BeDr5Cfgjpjsk7NxA4d5YZJ3Y07Em31K7UGqaLxOtZyocNmIds901ysHCmbI_r4iX3nRMoBdtESPzwwSU9-FjnZQmosxmFw8Z_OZeEJZaBynJs_Zr8mduCvYRA7S2FcndLqqoDFxubEpyQbHUMCd9p2K3KcYR0nM6q2hcOhDMehrq5WGQWSfE8uzALMoRPjtwVkc7SrV-9qnCbnb45qaP-GSBpQAZc_460anO7JjbrJsIxQ2zCePzskQDsRZ3tKB4ThoBHgp9etJ8_lcDWPcGPukDr6dlMeeu2PL7PbuZEL27gYKLSxPv-gN33cOu-N68KvGAobAg25BNLVjt&s=GZ8zwzU2BICp4viM2L5aRO0T7Ft-jqWRO2lf2zc5cs1elgJYlqKx6nklig7VgwRnzCPH2JqTkSXJI2uBjmrfyRdH7RjZCu-cUISolBH0LWUknbm8bAnV7jweZkFOTPYAT0E6ICe1Gq07qnRSKSUW5YsvQLU6KOxkZj3FLlbaFRNCXMRL-2zyq9giPEu5VLNpgYvvDWczK5h_Q_IDYHmaB0LMDu4kJAIvCprMyax5i4rt-2SuG4cumzMXLAG-bCDFiZ26Tk-gkwVzLlekGSp-v9Zy_jP2s9XNY06JOTsN0F-8mAWOcNBZpvQfdpqJcIB36brv0CFHiLPmK1wrEgShUg&h=eOWWx_b1yh2-p1RvXYwV-XApoKgHK9uXWbe4aX_g2Mk
+  response:
+    body:
+      string: '{"identity":{"type":"None"},"properties":{"postgreSqlVersion":"17","network":{"publicAccess":"Disabled"},"backup":{"geoRedundancy":"Disabled","retentionDays":9}},"location":"japaneast","tags":{"scenario":"cluster"},"name":"cli-horizondb-000002","type":"Microsoft.HorizonDb/clusters"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '283'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:09:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f57d2932-2a78-450f-958a-e65997c3253b/southcentralus/d7fbda6f-47a0-4490-84ab-4a5226f5849a
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F5DA0F0430B9434DBEACDC3C0676E989 Ref B: SN4AA2022305053 Ref C: 2026-11-09T22:10:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters/cli-horizondb-000002?api-version=2026-10-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/Japan%20East/azureAsyncOperation/1809e301-5058-4faf-bd79-7d707fccc5c9?api-version=2026-10-01-preview&t=639298590036392186&c=MIIHlDCCBnygAwIBAgIQd-4eEYTzNod0dXNPV_1VbTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MTAyOTE2MzIwOVoXDTI3MDEyNDIyMzIwOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC6inEBmRkmV7jwezrNwI2YhwpLi46ufRLkZnWZW-Td_8RCpZgvihiFerPFJycNgXXQ-KH5kpfyeFiaLU-GfnoerVyFRoYwV628eYsuia38zkORS3DR8OyHUjN53o4wUpsACeyV5MdfJALMBdjhSbyNoij84l6DMydHnElno_3c7VcD3eyddHmfnNIbITufEDN8KA8ggn6xb9LOD5ovMC0_pyLQE0m4CKiBf_MfsP5KX7oZhf6z-TlWmNJZLRIqfIn3iH7QJ8K919yZ90GK_YTedF2qHbjIKWSHC4_M5IN1-zSTlbm6NcqN7hNGuyotDEeqLcSdkXvZE5AQJEzFgDrdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTFO5yAfwRTEt09sEmA-FxZ5qRtpjAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzY2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAjsr5BeDr5Cfgjpjsk7NxA4d5YZJ3Y07Em31K7UGqaLxOtZyocNmIds901ysHCmbI_r4iX3nRMoBdtESPzwwSU9-FjnZQmosxmFw8Z_OZeEJZaBynJs_Zr8mduCvYRA7S2FcndLqqoDFxubEpyQbHUMCd9p2K3KcYR0nM6q2hcOhDMehrq5WGQWSfE8uzALMoRPjtwVkc7SrV-9qnCbnb45qaP-GSBpQAZc_460anO7JjbrJsIxQ2zCePzskQDsRZ3tKB4ThoBHgp9etJ8_lcDWPcGPukDr6dlMeeu2PL7PbuZEL27gYKLSxPv-gN33cOu-N68KvGAobAg25BNLVjt&s=Ziiuzxck9IqgOrRLzPjzVcj40g2BOuko4MzKvFSkaPszEde-jH1MFds7NpAOmvTsnbjYFft0ZnfeRl8DB4GKweT0tWDRJr7psO3XqZG13rReC1ac7Ipd0FIp2K0E83gmXCKAXVKYjhklJj0UfGamA8lrAUymObZrI9PLecE-eqf8v-srCaGN6FqjAyrYfI8zdIwfD-czpIULhVW8yfHMVoFHEfrYHvtp-HsqhYuz1zH2bgjtbIL9ryaBFRi_zNvlvUxmaJNFnKlWyYYaqkWoGSo-Llo1LzjDCBw-3Q8aXn24VeNwSrScjnySDw_69qpa_7g5pAq9LCbiBYbWFrTGwg&h=Q_i2HHrqTLAmNDayZc1wtI-72FeufV24B6GA5hThPME
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 09 Nov 2026 22:10:03 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/Japan%20East/operationResults/1809e301-5058-4faf-bd79-7d707fccc5c9?api-version=2026-10-01-preview&t=639298590036392186&c=MIIHlDCCBnygAwIBAgIQd-4eEYTzNod0dXNPV_1VbTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MTAyOTE2MzIwOVoXDTI3MDEyNDIyMzIwOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC6inEBmRkmV7jwezrNwI2YhwpLi46ufRLkZnWZW-Td_8RCpZgvihiFerPFJycNgXXQ-KH5kpfyeFiaLU-GfnoerVyFRoYwV628eYsuia38zkORS3DR8OyHUjN53o4wUpsACeyV5MdfJALMBdjhSbyNoij84l6DMydHnElno_3c7VcD3eyddHmfnNIbITufEDN8KA8ggn6xb9LOD5ovMC0_pyLQE0m4CKiBf_MfsP5KX7oZhf6z-TlWmNJZLRIqfIn3iH7QJ8K919yZ90GK_YTedF2qHbjIKWSHC4_M5IN1-zSTlbm6NcqN7hNGuyotDEeqLcSdkXvZE5AQJEzFgDrdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTFO5yAfwRTEt09sEmA-FxZ5qRtpjAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzY2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAjsr5BeDr5Cfgjpjsk7NxA4d5YZJ3Y07Em31K7UGqaLxOtZyocNmIds901ysHCmbI_r4iX3nRMoBdtESPzwwSU9-FjnZQmosxmFw8Z_OZeEJZaBynJs_Zr8mduCvYRA7S2FcndLqqoDFxubEpyQbHUMCd9p2K3KcYR0nM6q2hcOhDMehrq5WGQWSfE8uzALMoRPjtwVkc7SrV-9qnCbnb45qaP-GSBpQAZc_460anO7JjbrJsIxQ2zCePzskQDsRZ3tKB4ThoBHgp9etJ8_lcDWPcGPukDr6dlMeeu2PL7PbuZEL27gYKLSxPv-gN33cOu-N68KvGAobAg25BNLVjt&s=edM_mpPKmU48RXrrEcruA_RO2hKeh7W7_XT7VJbPdEnMG9ABCrYT4mk3sqKgNqXNQqE7_3RF7W-9ILct6pXkDkzhjeTqgWRNTqsmCFusXmHrScnICzirXSw8J-ZCCbCtCBolUAp7iUNsYKJqHvfOJ9OWffaIA3c5AtrgSu13TyUyQ65bAqoMXU3QI2azVh34G8WqPtmPbv8l46ZAtAdwYzPRlNuQhDXTAFDop245wADhsk1xTh4-GKlNOMLDTy-amr-wZ30u9mW4BLKKHM9YUHMM2vuHxmwCaF-EHWDHOS5TWQ9T3JNodXyHyFd1OwESoDma9NMalkcDQbQezpTtSA&h=zWBkOuuUiZT8t-hIWQ2-4dGjiN4PI0tD_lInrAepRMw
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f57d2932-2a78-450f-958a-e65997c3253b/japaneast/88704d89-97f6-4ca6-a889-a4f1fabeda6a
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 634CD108715D448CA96C44C7D58CD890 Ref B: SN4AA2022302009 Ref C: 2026-11-09T22:10:03Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/Japan%20East/azureAsyncOperation/1809e301-5058-4faf-bd79-7d707fccc5c9?api-version=2026-10-01-preview&t=639298590036392186&c=MIIHlDCCBnygAwIBAgIQd-4eEYTzNod0dXNPV_1VbTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MTAyOTE2MzIwOVoXDTI3MDEyNDIyMzIwOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC6inEBmRkmV7jwezrNwI2YhwpLi46ufRLkZnWZW-Td_8RCpZgvihiFerPFJycNgXXQ-KH5kpfyeFiaLU-GfnoerVyFRoYwV628eYsuia38zkORS3DR8OyHUjN53o4wUpsACeyV5MdfJALMBdjhSbyNoij84l6DMydHnElno_3c7VcD3eyddHmfnNIbITufEDN8KA8ggn6xb9LOD5ovMC0_pyLQE0m4CKiBf_MfsP5KX7oZhf6z-TlWmNJZLRIqfIn3iH7QJ8K919yZ90GK_YTedF2qHbjIKWSHC4_M5IN1-zSTlbm6NcqN7hNGuyotDEeqLcSdkXvZE5AQJEzFgDrdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTFO5yAfwRTEt09sEmA-FxZ5qRtpjAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzY2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAjsr5BeDr5Cfgjpjsk7NxA4d5YZJ3Y07Em31K7UGqaLxOtZyocNmIds901ysHCmbI_r4iX3nRMoBdtESPzwwSU9-FjnZQmosxmFw8Z_OZeEJZaBynJs_Zr8mduCvYRA7S2FcndLqqoDFxubEpyQbHUMCd9p2K3KcYR0nM6q2hcOhDMehrq5WGQWSfE8uzALMoRPjtwVkc7SrV-9qnCbnb45qaP-GSBpQAZc_460anO7JjbrJsIxQ2zCePzskQDsRZ3tKB4ThoBHgp9etJ8_lcDWPcGPukDr6dlMeeu2PL7PbuZEL27gYKLSxPv-gN33cOu-N68KvGAobAg25BNLVjt&s=Ziiuzxck9IqgOrRLzPjzVcj40g2BOuko4MzKvFSkaPszEde-jH1MFds7NpAOmvTsnbjYFft0ZnfeRl8DB4GKweT0tWDRJr7psO3XqZG13rReC1ac7Ipd0FIp2K0E83gmXCKAXVKYjhklJj0UfGamA8lrAUymObZrI9PLecE-eqf8v-srCaGN6FqjAyrYfI8zdIwfD-czpIULhVW8yfHMVoFHEfrYHvtp-HsqhYuz1zH2bgjtbIL9ryaBFRi_zNvlvUxmaJNFnKlWyYYaqkWoGSo-Llo1LzjDCBw-3Q8aXn24VeNwSrScjnySDw_69qpa_7g5pAq9LCbiBYbWFrTGwg&h=Q_i2HHrqTLAmNDayZc1wtI-72FeufV24B6GA5hThPME
+  response:
+    body:
+      string: '{"name":"1809e301-5058-4faf-bd79-7d707fccc5c9","status":"InProgress","startTime":"2026-11-09T22:10:03.567Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:10:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f57d2932-2a78-450f-958a-e65997c3253b/southcentralus/852e212d-cd4c-4c0f-8292-4ac4403d622f
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: E5EE1EDC2B504994A0950EF7DD8CEC0F Ref B: SN4AA2022302051 Ref C: 2026-11-09T22:10:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/Japan%20East/azureAsyncOperation/1809e301-5058-4faf-bd79-7d707fccc5c9?api-version=2026-10-01-preview&t=639298590036392186&c=MIIHlDCCBnygAwIBAgIQd-4eEYTzNod0dXNPV_1VbTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MTAyOTE2MzIwOVoXDTI3MDEyNDIyMzIwOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC6inEBmRkmV7jwezrNwI2YhwpLi46ufRLkZnWZW-Td_8RCpZgvihiFerPFJycNgXXQ-KH5kpfyeFiaLU-GfnoerVyFRoYwV628eYsuia38zkORS3DR8OyHUjN53o4wUpsACeyV5MdfJALMBdjhSbyNoij84l6DMydHnElno_3c7VcD3eyddHmfnNIbITufEDN8KA8ggn6xb9LOD5ovMC0_pyLQE0m4CKiBf_MfsP5KX7oZhf6z-TlWmNJZLRIqfIn3iH7QJ8K919yZ90GK_YTedF2qHbjIKWSHC4_M5IN1-zSTlbm6NcqN7hNGuyotDEeqLcSdkXvZE5AQJEzFgDrdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTFO5yAfwRTEt09sEmA-FxZ5qRtpjAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzY2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAjsr5BeDr5Cfgjpjsk7NxA4d5YZJ3Y07Em31K7UGqaLxOtZyocNmIds901ysHCmbI_r4iX3nRMoBdtESPzwwSU9-FjnZQmosxmFw8Z_OZeEJZaBynJs_Zr8mduCvYRA7S2FcndLqqoDFxubEpyQbHUMCd9p2K3KcYR0nM6q2hcOhDMehrq5WGQWSfE8uzALMoRPjtwVkc7SrV-9qnCbnb45qaP-GSBpQAZc_460anO7JjbrJsIxQ2zCePzskQDsRZ3tKB4ThoBHgp9etJ8_lcDWPcGPukDr6dlMeeu2PL7PbuZEL27gYKLSxPv-gN33cOu-N68KvGAobAg25BNLVjt&s=Ziiuzxck9IqgOrRLzPjzVcj40g2BOuko4MzKvFSkaPszEde-jH1MFds7NpAOmvTsnbjYFft0ZnfeRl8DB4GKweT0tWDRJr7psO3XqZG13rReC1ac7Ipd0FIp2K0E83gmXCKAXVKYjhklJj0UfGamA8lrAUymObZrI9PLecE-eqf8v-srCaGN6FqjAyrYfI8zdIwfD-czpIULhVW8yfHMVoFHEfrYHvtp-HsqhYuz1zH2bgjtbIL9ryaBFRi_zNvlvUxmaJNFnKlWyYYaqkWoGSo-Llo1LzjDCBw-3Q8aXn24VeNwSrScjnySDw_69qpa_7g5pAq9LCbiBYbWFrTGwg&h=Q_i2HHrqTLAmNDayZc1wtI-72FeufV24B6GA5hThPME
+  response:
+    body:
+      string: '{"name":"1809e301-5058-4faf-bd79-7d707fccc5c9","status":"Succeeded","startTime":"2026-11-09T22:10:03.567Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:10:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f57d2932-2a78-450f-958a-e65997c3253b/southcentralus/1b0e0617-5010-4bac-a88f-96f62f2ebf8a
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 011B9F80DE1A45998AC6D6396FC38490 Ref B: SN4AA2022301039 Ref C: 2026-11-09T22:10:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HorizonDb/locations/Japan%20East/operationResults/1809e301-5058-4faf-bd79-7d707fccc5c9?api-version=2026-10-01-preview&t=639298590036392186&c=MIIHlDCCBnygAwIBAgIQd-4eEYTzNod0dXNPV_1VbTANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVVMyIENBIDAxMB4XDTI2MTAyOTE2MzIwOVoXDTI3MDEyNDIyMzIwOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC6inEBmRkmV7jwezrNwI2YhwpLi46ufRLkZnWZW-Td_8RCpZgvihiFerPFJycNgXXQ-KH5kpfyeFiaLU-GfnoerVyFRoYwV628eYsuia38zkORS3DR8OyHUjN53o4wUpsACeyV5MdfJALMBdjhSbyNoij84l6DMydHnElno_3c7VcD3eyddHmfnNIbITufEDN8KA8ggn6xb9LOD5ovMC0_pyLQE0m4CKiBf_MfsP5KX7oZhf6z-TlWmNJZLRIqfIn3iH7QJ8K919yZ90GK_YTedF2qHbjIKWSHC4_M5IN1-zSTlbm6NcqN7hNGuyotDEeqLcSdkXvZE5AQJEzFgDrdAgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTFO5yAfwRTEt09sEmA-FxZ5qRtpjAfBgNVHSMEGDAWgBT87D7bqnwfgh4FuKEG-UPnArMKuTCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czIvY3Jscy9jY21lZWFzdHVzMnBraS9jY21lZWFzdHVzMmljYTAxLzY2L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMi9jcmxzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvNjYvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21lZWFzdHVzMnBraS5lYXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJpY2EwMS82Ni9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMi9jYWNlcnRzL2NjbWVlYXN0dXMycGtpL2NjbWVlYXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyL2NhY2VydHMvY2NtZWVhc3R1czJwa2kvY2NtZWVhc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWVlYXN0dXMycGtpLmVhc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAjsr5BeDr5Cfgjpjsk7NxA4d5YZJ3Y07Em31K7UGqaLxOtZyocNmIds901ysHCmbI_r4iX3nRMoBdtESPzwwSU9-FjnZQmosxmFw8Z_OZeEJZaBynJs_Zr8mduCvYRA7S2FcndLqqoDFxubEpyQbHUMCd9p2K3KcYR0nM6q2hcOhDMehrq5WGQWSfE8uzALMoRPjtwVkc7SrV-9qnCbnb45qaP-GSBpQAZc_460anO7JjbrJsIxQ2zCePzskQDsRZ3tKB4ThoBHgp9etJ8_lcDWPcGPukDr6dlMeeu2PL7PbuZEL27gYKLSxPv-gN33cOu-N68KvGAobAg25BNLVjt&s=edM_mpPKmU48RXrrEcruA_RO2hKeh7W7_XT7VJbPdEnMG9ABCrYT4mk3sqKgNqXNQqE7_3RF7W-9ILct6pXkDkzhjeTqgWRNTqsmCFusXmHrScnICzirXSw8J-ZCCbCtCBolUAp7iUNsYKJqHvfOJ9OWffaIA3c5AtrgSu13TyUyQ65bAqoMXU3QI2azVh34G8WqPtmPbv8l46ZAtAdwYzPRlNuQhDXTAFDop245wADhsk1xTh4-GKlNOMLDTy-amr-wZ30u9mW4BLKKHM9YUHMM2vuHxmwCaF-EHWDHOS5TWQ9T3JNodXyHyFd1OwESoDma9NMalkcDQbQezpTtSA&h=zWBkOuuUiZT8t-hIWQ2-4dGjiN4PI0tD_lInrAepRMw
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 09 Nov 2026 22:10:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f57d2932-2a78-450f-958a-e65997c3253b/southcentralus/ca354368-94f7-4312-9c5e-5420b2bcb59f
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 514B594E159E43278E6D7BDCB767CEA1 Ref B: SN4AA2022304037 Ref C: 2026-11-09T22:10:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - horizondb cluster list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_horizondb_cluster_000001/providers/Microsoft.HorizonDb/clusters?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Nov 2026 22:10:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CC4CCB90AE3E420CBE4499965EAC4063 Ref B: SN4AA2022303021 Ref C: 2026-11-09T22:10:24Z'
+    status:
+      code: 200
+      message: OK
+version: 1

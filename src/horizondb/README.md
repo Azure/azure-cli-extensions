@@ -84,6 +84,8 @@ returns a final GET of the restored cluster. It does not create a pool.
 
 `--point-in-time-utc` defaults to the current UTC time if not supplied. PostgreSQL
 version and geo-redundancy are always inherited from the source cluster.
+The service inherits the PostgreSQL version; `postgreSqlVersion` is not sent
+in the restore request.
 Backup retention days are not inherited or sent to the API during restore;
 `--version`, `--geo-redundancy`, and `--retention-days` are not available
 on restore. `--location` can only be specified for a geo-redundant restore when

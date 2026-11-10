@@ -137,7 +137,6 @@ class ClusterRestoreTests(TestCase):
                 'userAssignedIdentities': {self.identity_id: {}},
             },
             'properties': {
-                'postgreSqlVersion': '17',
                 'backup': {'geoRedundancy': 'Enabled'},
                 'network': {'publicAccess': 'Enabled'},
                 'dataEncryption': {
@@ -167,7 +166,7 @@ class ClusterRestoreTests(TestCase):
         content = operation.content
         self.assertEqual(content['location'], 'eastus2')
         self.assertEqual(content['tags'], {})
-        self.assertEqual(content['properties']['postgreSqlVersion'], '17')
+        self.assertNotIn('postgreSqlVersion', content['properties'])
         self.assertEqual(content['properties']['backup'], {'geoRedundancy': 'Enabled'})
         self.assertEqual(content['properties']['network'], {'publicAccess': 'Disabled'})
         self.assertEqual(content['properties']['dataEncryption'], {
