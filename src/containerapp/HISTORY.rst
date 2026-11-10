@@ -7,6 +7,10 @@ upcoming
 * 'az containerapp function list/show': Raise a clear error when ingress is disabled instead of a generic server error
 * 'az containerapp env create': Pre-announce the future change of the '--logs-destination' default from 'log-analytics' to 'azure-monitor'. The current default remains 'log-analytics'; specify '--logs-destination log-analytics' to retain this behavior after the change.
 
+1.3.1b1
+++++++
+* `az containerapp up`: Fix app recreation after a failed existence lookup and preserve ingress settings on image-only updates
+
 1.3.0b5
 ++++++
 * 'az containerapp env storage set': Support Azure Files authentication with an Azure Key Vault secret or managed identity
