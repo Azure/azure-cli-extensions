@@ -5,9 +5,14 @@
 # pylint: disable=too-many-statements
 
 import logging
+import os
+import subprocess
+import sys
 
 from knack.util import CLIError  # pylint: disable=unused-import
 from knack.log import get_logger
+
+from azext_nexusidentity._ssh_keygen import get_windows_ssh_keygen_path
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -16,15 +21,17 @@ logger = get_logger(__name__)
 
 def generate_nexus_identity_keys(algorithm=None):
 
-    import os
-    import subprocess
-    import sys
     import requests
     import json
     import shutil
 
     # Generate SSH key
     if sys.platform.startswith("win") or sys.platform.startswith("linux"):
+        ssh_keygen_path = (
+            get_windows_ssh_keygen_path()
+            if sys.platform.startswith("win")
+            else "ssh-keygen"
+        )
 
         algoToBeUsed = "ed25519-sk"
         key_name = "id_ed25519_sk"
@@ -47,23 +54,33 @@ def generate_nexus_identity_keys(algorithm=None):
                 logger.error("Error creating directory: %s", e)
                 raise CLIError(f"Error creating directory: {e}") from e
 
-        # Generate ed25519-sk key
-        subprocess.run(
-            [
-                "ssh-keygen",
-                "-t",
-                algoToBeUsed,
-                "-O",
-                "resident",
-                "-O",
-                "verify-required",
-                "-C",
-                "NexusIdentitySSHKey",
-                "-f",
-                os.path.join(dir_path, key_name),
-            ],
-            check=False,
-        )
+        try:
+            logger.info(
+                "Generating NexusIdentity SSH key using executable: %s", ssh_keygen_path
+            )
+            subprocess.run(
+                [
+                    ssh_keygen_path,
+                    "-t",
+                    algoToBeUsed,
+                    "-O",
+                    "resident",
+                    "-O",
+                    "verify-required",
+                    "-C",
+                    "NexusIdentitySSHKey",
+                    "-f",
+                    os.path.join(dir_path, key_name),
+                ],
+                check=True,
+                shell=False,
+            )
+        except (OSError, subprocess.CalledProcessError) as error:
+            raise CLIError(
+                f"SSH key generation failed using '{ssh_keygen_path}': {error}. "
+                "Ensure OpenSSH 9.4 or later is installed and your FIDO2 "
+                "security key is available."
+            ) from error
 
         # read the key from the file
         try:

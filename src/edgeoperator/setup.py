@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import find_packages, setup
 
-VERSION = "1.0.0b2"
+VERSION = "1.0.0b3"
 
 with open("README.rst", "r", encoding="utf-8") as f:
     README = f.read()
@@ -18,7 +18,7 @@ with open("HISTORY.rst", "r", encoding="utf-8") as f:
 setup(
     name="edgeoperator",
     version=VERSION,
-    description="Support for Azure Local Disconnected Operations, including system readiness and observability configuration.",
+    description="Support for Azure Local Disconnected Operations system readiness, observability and system configuration.",
     author="Microsoft Corporation",
     author_email="azpycli@microsoft.com",
     url="https://github.com/Azure/azure-cli-extensions/tree/main/src/edgeoperator",

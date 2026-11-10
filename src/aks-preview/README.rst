@@ -14,6 +14,73 @@ Install this extension using the following CLI command `az extension add --name 
 
 Remove this extension using the following CLI command `az extension remove --name aks-preview`.
 
+Upgrade Insights
+================
+
+Evaluate upgrade readiness without upgrading the cluster or node pool::
+
+    az aks upgrade-insights create -g MyResourceGroup --name MyCluster --target-kubernetes-ver 1.35.1
+    az aks upgrade-insights create -g MyResourceGroup --name MyCluster --upgrade-type ControlPlane --target-kubernetes-ver 1.35.1
+    az aks nodepool upgrade-insights create -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --target-kubernetes-ver 1.35.1
+    az aks nodepool upgrade-insights create -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --upgrade-type NodeImage
+    az aks nodepool upgrade-insights create -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --upgrade-type NodeImage --target-node-image-ver NODE_IMAGE_VERSION
+
+Cluster evaluations default to ``ControlPlaneAndAgentPools``; node pool evaluations
+default to ``AgentPool``. Kubernetes evaluations require ``--target-kubernetes-ver``.
+``NodeImage`` accepts an optional ``--target-node-image-ver``; omitting it evaluates
+the latest available image and the report shows the resolved target. The two target
+flags cannot be mixed.
+
+Read stored results using the insight name returned by ``create`` or ``list``::
+
+    az aks upgrade-insights list -g MyResourceGroup --name MyCluster
+    az aks upgrade-insights show -g MyResourceGroup --name MyCluster --insight-name INSIGHT_NAME
+    az aks nodepool upgrade-insights show -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --insight-name INSIGHT_NAME
+
+``list`` is cluster-level only and includes all stored scopes. Node pool ``show``
+requires a single-pool ``AgentPool`` or ``NodeImage`` insight belonging to that pool;
+use cluster ``show`` for combined insights. Reading does not regenerate an evaluation,
+and expired or missing insights return a not-found error.
+
+By default, the human-readable readiness report nests issue messages, affected resources,
+and recommended actions under the scope that produced them. ``list`` shows scoped issue
+summaries. A failed readiness check is an evaluation result, not a failure to run the
+command. API and authentication errors still fail the command.
+
+Use ``--output json`` for complete structured results, or ``--output table`` for scoped
+issue rows. Explicit output settings, a configured ``core.output``, and ``--query``
+retain standard Azure CLI formatting and query behavior, including parser-accepted
+abbreviations such as ``--out json``, ``--out=json``, and ``--que``.
+
+If a combined response omits agent-pool evaluations, the report and table explicitly
+show that the agent pools were not evaluated; a passed control-plane result alone
+does not make the combined readiness report pass. Structured JSON is left unchanged.
+
+Live validation
+---------------
+
+``UpgradeInsightsScenarioTest.test_aks_upgrade_insights_scopes`` uses the repository's
+``ScenarioTest`` and ``AKSCustomResourceGroupPreparer`` conventions. It creates a
+temporary single-pool cluster and tests all four upgrade scopes, latest and explicit
+node-image targets, stored reads, cluster listing, and an unsupported agent-pool version blocker
+with a scope-indented report. It never upgrades the cluster or pool. The preparer
+cleans up the temporary resource group. Its cluster needs no SSH key and explicitly
+enables KMS infrastructure encryption to match the live service's encryption requirements.
+
+The scenario is marked ``live_only`` because the preview API requires an enabled test
+subscription and no live recording is available yet. Standard offline CI skips it before
+resource preparation. This skip is not evidence that live API validation passed; the
+scenario still runs under ``azdev test --live``.
+
+The live-test subscription must have ``Microsoft.ContainerService/AKSUpgradeInsightsPreview``
+registered, and the API must be enabled in the test region. Missing preview registration
+fails explicitly rather than reporting a skipped or successful live validation.
+
+For the repository-managed live workflow, publish a PR and dispatch
+``Azure/issue-sentinel/.github/workflows/live-test.yml`` for its head SHA. The workflow
+sets up ``aks-preview`` and runs changed test selectors with ``azdev test --live --series``
+using runner-owned Azure credentials. It uploads the results and recordings.
+
 Dependency between aks-preview and azure-cli/acs (azure-cli-core)
 =================================================================
 
@@ -248,6 +315,9 @@ Released version and adopted API version
     * - 22.0.0b5 ~ 22.0.0b9
       - 2026-06-02-preview
       -
-    * - 22.0.0b10 ~ latest
+    * - 22.0.0b10 ~ 22.0.0b13
       - 2026-07-02-preview
+      -
+    * - 22.0.0b14 ~ latest
+      - 2026-08-02-preview
       -

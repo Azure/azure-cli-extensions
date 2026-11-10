@@ -15,11 +15,11 @@ from azure.cli.core.azclierror import ArgumentUsageError
 from azure.cli.core.style import print_styled_text, Style
 from knack.log import get_logger
 
-from .utils import (get_folder_id, send_grafana_post, send_grafana_patch, send_grafana_put, send_grafana_delete,
+from .utils import (send_grafana_post, send_grafana_patch, send_grafana_put, send_grafana_delete,
                     send_grafana_get, create_datasource_mapping, remap_datasource_uids, get_snapshot,
                     search_annotations)
 from .dashboard_v2 import (is_v2_dashboard_definition, require_dashboard_v2_api_version,
-                           create_dashboard_v2, remap_v2_datasource_uids)
+                           create_dashboard_v2, remap_v2_datasource_uids, dashboard_folder_uid)
 
 logger = get_logger(__name__)
 
@@ -102,7 +102,7 @@ def create_dashboard(grafana_url, content, http_headers, overwrite):
 
     payload = {
         'dashboard': content['dashboard'],
-        'folderId': get_folder_id(content, grafana_url, http_post_headers=http_headers),
+        'folderUid': dashboard_folder_uid(content),
         'overwrite': overwrite
     }
 
@@ -166,8 +166,8 @@ def _load_and_create_library_panel(grafana_url, file_path, http_headers):
 
 
 def create_library_panel(grafana_url, payload, http_headers, overwrite):
-    # set the folder id of the library panel
-    payload['folderId'] = get_folder_id(payload, grafana_url, http_post_headers=http_headers)
+    payload['folderUid'] = dashboard_folder_uid(payload)
+    payload.pop('folderId', None)
 
     datasources_missed = set()
     remap_datasource_uids(payload, uid_mapping, datasources_missed)
@@ -186,7 +186,8 @@ def create_library_panel(grafana_url, payload, http_headers, overwrite):
                     'name': panel_name,
                     'model': payload['model'],
                     'version': content['result']['version'],
-                    'kind': payload['kind']
+                    'kind': payload['kind'],
+                    'folderUid': payload['folderUid']
                 }
                 (status, content) = send_grafana_patch(f'{grafana_url}/api/library-elements/{uid}',
                                                        json.dumps(patch_payload), http_headers)
