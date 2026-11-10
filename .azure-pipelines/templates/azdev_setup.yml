@@ -19,6 +19,8 @@ steps:
       pip install build wheel
       azdev --version
       azdev setup -c $CLI_REPO_PATH -r $CLI_EXT_REPO_PATH --debug
+      # pytest-forked 1.7.5 cannot serialize pytest 9.2's NodeId report field.
+      python -m pip install "pytest<9.2"
       pip list -v
       az --version
     displayName: 'azdev setup'
