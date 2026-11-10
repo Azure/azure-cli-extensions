@@ -67,6 +67,10 @@ for a different API version does not match. There is no separate Swagger snapsho
 or schema validator to maintain. Focused mocked-transport unit tests cover customization failure and
 polling variants without requiring live service failures or synthetic cassettes.
 
+Playback also skips `AAZBasePolling._delay` through a replay-only patch, in addition
+to the test SDK's standard playback hooks. The original method is restored after
+each test; live polling and recorded `Retry-After` headers remain unchanged.
+
 The JavaScript upload fixture is pinned to CRLF by `test_files/.gitattributes`
 because deployment reads and base64-encodes its raw bytes. This preserves the
 recorded payload on both Linux and Windows; an offline check compares the JS/ZIP

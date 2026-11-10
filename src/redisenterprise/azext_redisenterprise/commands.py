@@ -16,8 +16,9 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         g.custom_command('create', 'redisenterprise_create', supports_no_wait=True)
         g.custom_command('list', 'redisenterprise_list')
         g.custom_show_command('show', 'redisenterprise_show')
-        from .custom import RedisEnterpriseUpdate
+        from .custom import RedisEnterpriseUpdate, ClusterUnlink
         self.command_table["redisenterprise update"] = RedisEnterpriseUpdate(loader=self)
+        self.command_table["redisenterprise unlink-migrated-endpoint"] = ClusterUnlink(loader=self)
         g.custom_command('test-connection', 'redisenterprise_test_connection')
     with self.command_group("redisenterprise database"):
         from .custom import DatabaseFlush, DatabaseCreate, DatabaseDelete, DatabaseExport, DatabaseForceUnlink
@@ -35,6 +36,7 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         self.command_table["redisenterprise database update"] = DatabaseUpdate(loader=self)
         self.command_table["redisenterprise database wait"] = DatabaseWait(loader=self)
     with self.command_group("redisenterprise migration"):
-        from .custom import MigrationStart, MigrationUndo
+        from .custom import MigrationStart, MigrationUndo, MigrationUnlink
         self.command_table["redisenterprise migration start"] = MigrationStart(loader=self)
         self.command_table["redisenterprise migration undo"] = MigrationUndo(loader=self)
+        self.command_table["redisenterprise migration unlink-migrated-endpoint"] = MigrationUnlink(loader=self)

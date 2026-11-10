@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default", "2026-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default", "2026-09-01"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01-preview",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
@@ -180,12 +180,17 @@ class Wait(AAZWaitCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.rollback_eligible_until = AAZStrType(
+                serialized_name="rollbackEligibleUntil",
+                flags={"read_only": True},
+            )
             properties.source_type = AAZStrType(
                 serialized_name="sourceType",
                 flags={"required": True},
             )
             properties.status_details = AAZStrType(
                 serialized_name="statusDetails",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.target_resource_id = AAZStrType(

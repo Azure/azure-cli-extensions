@@ -22,9 +22,9 @@ class GetProvisioningRecommendation(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-01",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.fileshares/locations/{}/getprovisioningrecommendation", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.fileshares/locations/{}/getprovisioningrecommendation", "2026-09-01"],
         ]
     }
 
@@ -52,11 +52,29 @@ class GetProvisioningRecommendation(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.media_tier = AAZStrArg(
+            options=["--media-tier"],
+            arg_group="Properties",
+            help="The storage media tier. Defaults to SSD.",
+            enum={"HDD": "HDD", "SSD": "SSD"},
+        )
+        _args_schema.protocol = AAZStrArg(
+            options=["--protocol"],
+            arg_group="Properties",
+            help="The file sharing protocol. Defaults to NFS.",
+            enum={"NFS": "NFS"},
+        )
         _args_schema.provisioned_storage_gi_b = AAZIntArg(
             options=["--storage-gib", "--provisioned-storage-gib", "--provisioned-storage-gi-b"],
             arg_group="Properties",
             help="The desired provisioned storage size of the share in GiB. Will be use to calculate the values of remaining provisioning parameters.",
             required=True,
+        )
+        _args_schema.scale_mode = AAZStrArg(
+            options=["--scale-mode"],
+            arg_group="Properties",
+            help="The scale mode. Defaults to Compatibility.",
+            enum={"Compatibility": "Compatibility", "Scale": "Scale"},
         )
         return cls._args_schema
 
@@ -121,7 +139,7 @@ class GetProvisioningRecommendation(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
@@ -150,7 +168,10 @@ class GetProvisioningRecommendation(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("mediaTier", AAZStrType, ".media_tier")
+                properties.set_prop("protocol", AAZStrType, ".protocol")
                 properties.set_prop("provisionedStorageGiB", AAZIntType, ".provisioned_storage_gi_b", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("scaleMode", AAZStrType, ".scale_mode")
 
             return self.serialize_content(_content_value)
 

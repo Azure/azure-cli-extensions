@@ -15,16 +15,18 @@ from azure.cli.core.aaz import *
     "redisenterprise migration start",
 )
 class Start(AAZCommand):
-    """Create a new migration
+    """Start migration from Azure Cache for Redis Basic, Standard, or Premium tiers to Azure Managed Redis.
+
+    These commands apply only to migrations from the Basic, Standard, and Premium tiers of Azure Cache for Redis to Azure Managed Redis.
 
     :example: Start a migration from an Azure Cache for Redis source
         az redisenterprise migration start --cluster-name cache1 --resource-group rg1 --source-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Cache/Redis/source-cache --skip-data-migration true --switch-dns true
     """
 
     _aaz_info = {
-        "version": "2026-06-01-preview",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default", "2026-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default", "2026-09-01"],
         ]
     }
 
@@ -73,7 +75,7 @@ class Start(AAZCommand):
         )
         azure_cache_for_redis.skip_data_migration = AAZBoolArg(
             options=["skip-data-migration"],
-            help="Sets whether the data is migrated from source to target or not. This property must be true during the preview.",
+            help="Sets whether the data is migrated from source to target or not. Set this property to true to skip data migration.",
             required=True,
         )
         azure_cache_for_redis.source_resource_id = AAZResourceIdArg(
@@ -169,7 +171,7 @@ class Start(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01-preview",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
@@ -256,12 +258,17 @@ class Start(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.rollback_eligible_until = AAZStrType(
+                serialized_name="rollbackEligibleUntil",
+                flags={"read_only": True},
+            )
             properties.source_type = AAZStrType(
                 serialized_name="sourceType",
                 flags={"required": True},
             )
             properties.status_details = AAZStrType(
                 serialized_name="statusDetails",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.target_resource_id = AAZStrType(
