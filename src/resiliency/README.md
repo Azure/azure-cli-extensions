@@ -192,7 +192,7 @@ az resiliency operation-status show --location <location> --operation-id <id>
 
 ## API Version
 
-This extension supports API version `2026-10-01` (stable GA) for `Microsoft.AzureResilienceManagement`.
+This extension supports the stable API version `2026-10-01` for `Microsoft.AzureResilienceManagement`. The extension itself is in preview, so commands may change in later releases.
 
 ## Documentation
 
