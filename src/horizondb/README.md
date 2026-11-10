@@ -82,8 +82,8 @@ The command sends
 `creationMode` as `PointInTimeRestore`, waits for cluster provisioning, and
 returns a final GET of the restored cluster. It does not create a pool.
 
-`--point-in-time-utc` defaults to the current UTC time if not supplied. PostgreSQL
-version and geo-redundancy are always inherited from the source cluster.
+`--point-in-time-utc` defaults to five minutes before the current UTC time if not
+supplied. PostgreSQL version and geo-redundancy are always inherited from the source cluster.
 The service inherits the PostgreSQL version; `postgreSqlVersion` is not sent
 in the restore request.
 Backup retention days are not inherited or sent to the API during restore;

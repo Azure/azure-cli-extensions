@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from azure.cli.core.aaz import (
     AAZDateTimeArg,
@@ -51,7 +51,8 @@ class ClusterRestore(ClusterCreate):
         )
         args_schema.point_in_time_utc = AAZDateTimeArg(
             options=['--point-in-time-utc'],
-            help='UTC restore time, for example 2026-07-27T12:00:00Z. Defaults to the current UTC time.',
+            help='UTC restore time, for example 2026-07-27T12:00:00Z. '
+                 'Defaults to five minutes before the current UTC time.',
         )
         args_schema.geo_redundancy._registered = False  # pylint: disable=protected-access
         args_schema.version._registered = False  # pylint: disable=protected-access
@@ -72,7 +73,9 @@ class ClusterRestore(ClusterCreate):
         if args.creation_source_cluster_resource_id.to_serialized_data() in (AAZUndefined, None):
             raise RequiredArgumentMissingError('--source-cluster-id is required.')
         if args.point_in_time_utc.to_serialized_data() in (AAZUndefined, None):
-            args.point_in_time_utc = datetime.now(timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
+            args.point_in_time_utc = (
+                (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat().replace('+00:00', 'Z')
+            )
         source_id = parse_resource_id(args.creation_source_cluster_resource_id.to_serialized_data())
         source = _ClusterShow(cli_ctx=self.cli_ctx)(command_args={
             'subscription': source_id['subscription'],

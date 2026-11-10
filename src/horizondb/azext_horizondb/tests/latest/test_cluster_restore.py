@@ -236,22 +236,22 @@ class ClusterRestoreTests(TestCase):
                         command(command_args=dict(self.args, **changes))
                 show.assert_not_called()
 
-    def test_restore_without_time_defaults_to_current_utc_time_once(self):
+    def test_restore_without_time_defaults_to_five_minutes_ago_once(self):
         self.args.pop('point_in_time_utc')
         with patch.object(restore_custom, 'datetime') as clock:
-            clock.now.return_value = datetime(2026, 11, 2, 22, 49, 20, 138000, tzinfo=timezone.utc)
+            clock.now.return_value = datetime(2026, 11, 2, 22, 49, 20, 138123, tzinfo=timezone.utc)
             operation = self.build_operation()
             content = operation.content
-            self.assertEqual(content['properties']['pointInTimeUtc'], '2026-11-02T22:49:20.138Z')
-            self.assertEqual(operation.content['properties']['pointInTimeUtc'], '2026-11-02T22:49:20.138Z')
+            self.assertEqual(content['properties']['pointInTimeUtc'], '2026-11-02T22:44:20.138123Z')
+            self.assertEqual(operation.content['properties']['pointInTimeUtc'], '2026-11-02T22:44:20.138123Z')
         clock.now.assert_called_once_with(timezone.utc)
         self.assertEqual(content['properties']['creationMode'], 'PointInTimeRestore')
 
-    def test_restore_with_null_time_defaults_to_current_utc_time(self):
+    def test_restore_with_null_time_defaults_to_five_minutes_ago_across_midnight(self):
         with patch.object(restore_custom, 'datetime') as clock:
-            clock.now.return_value = datetime(2026, 11, 2, 22, 49, 21, tzinfo=timezone.utc)
+            clock.now.return_value = datetime(2026, 11, 3, 0, 2, 21, tzinfo=timezone.utc)
             content = self.build_operation(point_in_time_utc=None).content
-        self.assertEqual(content['properties']['pointInTimeUtc'], '2026-11-02T22:49:21.000Z')
+        self.assertEqual(content['properties']['pointInTimeUtc'], '2026-11-02T23:57:21Z')
 
     def test_location_requires_geo_redundancy_enabled_on_source(self):
         for geo_redundancy, location in [

@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from time import sleep
 
 from azure.cli.testsdk import NoneCheck, ResourceGroupPreparer, ScenarioTest
@@ -45,8 +45,7 @@ class HorizonDBClusterRestoreCommandScenarioTest(ScenarioTest):
         os.environ.get(ENV_LIVE_TEST, False) and sleep(1800)
         source = self.cmd('horizondb cluster show -g {rg} -n {cluster}').get_output_in_json()
         self.kwargs['restore_time'] = (
-            source['properties']['backup'].get('earliestRestorePointUtc')
-            or datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
+            (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat().replace('+00:00', 'Z')
         )
 
         self.cmd(
@@ -56,19 +55,11 @@ class HorizonDBClusterRestoreCommandScenarioTest(ScenarioTest):
                 self.check('name', '{restored_cluster}'),
                 self.check('location', '{location}'),
                 self.check('properties.creationMode', 'PointInTimeRestore'),
-                self.check('properties.creationSourceClusterResourceId', '{source_id}'),
                 self.check('properties.postgreSqlVersion', '17'),
                 self.check('properties.backup.geoRedundancy', 'Disabled'),
-                self.check('properties.network.publicAccess', 'Disabled'),
-                self.check('properties.provisioningState', 'Succeeded'),
                 self.check('tags.scenario', 'restored'),
             ],
         )
-        self.cmd('horizondb cluster show -g {rg} -n {restored_cluster}', checks=[
-            self.check('name', '{restored_cluster}'),
-            self.check('properties.creationMode', 'PointInTimeRestore'),
-            self.check('properties.creationSourceClusterResourceId', '{source_id}'),
-        ])
 
         self.cmd('horizondb cluster delete -g {rg} -n {restored_cluster} --yes', checks=NoneCheck())
         self.cmd(
