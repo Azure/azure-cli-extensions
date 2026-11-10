@@ -19,7 +19,7 @@ class Recommendvmsku(AAZCommand):
     """Recommends Azure virtual machine sizes for an AI workload in the specified subscription and azure location.
 
     :example: Recommend virtual machine sizes for an AI inference workload
-        az aiinfraoptimization recommendvmsku --location eastus2 --model "{hugging-face-model-id:meta-llama/Llama-3.1-70B-Instruct,parameter-count:70553706496,weight-precision:FP16,num-layers:80,num-key-value-heads:8,head-dim:128,max-context-length:131072}" --workload "{max-concurrent-requests-per-replica:1,token-budget:{prompt-tokens:8000,max-output-tokens:1024}}" --deployment "{replica-count:1,procurement-option:OnDemand}" --optimization "{ranking-preference:Cost,max-deployment-cost-per-hour:{amount:50,currency-code:USD}}" --target-vm-sizes "[Standard_NC48ads_A100_v4,Standard_ND96asr_v4]" --subscription-options "{include-quota:True,include-placement:True,include-pricing:True}"
+        az aiinfraoptimization recommendvmsku --location eastus2 --model "{hugging-face-model-id:meta-llama/Llama-3.1-70B-Instruct,parameter-count:70000000000,weight-precision:FP16,num-layers:80,num-key-value-heads:8,head-dim:128,max-context-length:131072}" --workload "{max-concurrent-requests-per-replica:1,token-budget:{prompt-tokens:8000,max-output-tokens:1024}}" --deployment "{replica-count:1,procurement-option:OnDemand}" --optimization "{ranking-preference:Cost,max-deployment-cost-per-hour:{amount:50,currency-code:USD}}" --target-vm-sizes "[Standard_NC48ads_A100_v4,Standard_ND96asr_v4]" --subscription-options "{include-quota:True,include-placement:True,include-pricing:True}"
     """
 
     _aaz_info = {
@@ -215,7 +215,7 @@ class Recommendvmsku(AAZCommand):
             options=["max-output-tokens"],
             help="The maximum number of generated output tokens per inference request. Must be supplied together with `promptTokens`, and the two must total from 1 through 131072.",
             fmt=AAZIntArgFormat(
-                maximum=131072,
+                maximum=2147483647,
                 minimum=0,
             ),
         )
@@ -223,7 +223,7 @@ class Recommendvmsku(AAZCommand):
             options=["prompt-tokens"],
             help="The number of prompt, or input, tokens per inference request. Must be supplied together with `maxOutputTokens`, and the two must total from 1 through 131072.",
             fmt=AAZIntArgFormat(
-                maximum=131072,
+                maximum=2147483647,
                 minimum=0,
             ),
         )
