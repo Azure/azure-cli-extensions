@@ -17,16 +17,16 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List members of an Agent Fabric.
 
-    Members are children of an Agent Fabric and require the parent Fabric name. This command lists Agent Fabric sandbox members.
+    Members are children of an Agent Fabric and require the parent Fabric name. API version 2026-11-03-preview supports AKS, ACI, and Agent Fabric sandbox workload responses.
 
     :example: List Agent Fabric members
         az agentfabric member list --resource-group rgnetworksecurity --fabric-name testAIFabric
     """
 
     _aaz_info = {
-        "version": "2026-10-07-preview",
+        "version": "2026-11-03-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/members", "2026-10-07-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networksecurity/agentfabrics/{}/members", "2026-11-03-preview"],
         ]
     }
 
@@ -52,7 +52,7 @@ class List(AAZCommand):
             help="Name of the parent Agent Fabric.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,24}$",
+                pattern="^[a-zA-Z0-9-]{3,256}$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -126,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-10-07-preview",
+                    "api-version", "2026-11-03-preview",
                     required=True,
                 ),
             }
@@ -208,9 +208,71 @@ class List(AAZCommand):
             workload.type = AAZStrType(
                 flags={"required": True},
             )
-            workload.workload_id = AAZStrType(
+
+            disc_aci = cls._schema_on_200.value.Element.properties.workload.discriminate_by("type", "ACI")
+            disc_aci.agent_identity = AAZObjectType(
+                serialized_name="agentIdentity",
+            )
+            _ListHelper._build_schema_agent_identity_read(disc_aci.agent_identity)
+            disc_aci.resource_id = AAZStrType(
+                serialized_name="resourceId",
+                flags={"required": True},
+            )
+            disc_aci.workload_id = AAZStrType(
+                serialized_name="workloadId",
+                flags={"required": True},
+            )
+
+            disc_aks = cls._schema_on_200.value.Element.properties.workload.discriminate_by("type", "AKS")
+            disc_aks.cluster_association_id = AAZStrType(
+                serialized_name="clusterAssociationId",
+                flags={"required": True},
+            )
+            disc_aks.cluster_resource_id = AAZStrType(
+                serialized_name="clusterResourceId",
+                flags={"required": True},
+            )
+            disc_aks.endpoints = AAZListType()
+            disc_aks.workload = AAZObjectType(
+                flags={"required": True},
+            )
+            disc_aks.workload_id = AAZStrType(
                 serialized_name="workloadId",
                 flags={"read_only": True},
+            )
+
+            endpoints = cls._schema_on_200.value.Element.properties.workload.discriminate_by("type", "AKS").endpoints
+            endpoints.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.workload.discriminate_by("type", "AKS").endpoints.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.protocol = AAZStrType(
+                flags={"required": True},
+            )
+            _element.service_port = AAZIntType(
+                serialized_name="servicePort",
+                flags={"required": True},
+            )
+            _element.target_port = AAZIntType(
+                serialized_name="targetPort",
+                flags={"required": True},
+            )
+
+            workload = cls._schema_on_200.value.Element.properties.workload.discriminate_by("type", "AKS").workload
+            workload.api_version = AAZStrType(
+                serialized_name="apiVersion",
+                flags={"required": True},
+            )
+            workload.kind = AAZStrType(
+                flags={"required": True},
+            )
+            workload.name = AAZStrType(
+                flags={"required": True},
+            )
+            workload.namespace = AAZStrType(
+                flags={"required": True},
             )
 
             disc_agent_fabric_sandbox = cls._schema_on_200.value.Element.properties.workload.discriminate_by("type", "AgentFabricSandbox")
@@ -227,6 +289,10 @@ class List(AAZCommand):
             )
             disc_agent_fabric_sandbox.resources = AAZObjectType(
                 flags={"required": True},
+            )
+            disc_agent_fabric_sandbox.workload_id = AAZStrType(
+                serialized_name="workloadId",
+                flags={"read_only": True},
             )
 
             endpoints = cls._schema_on_200.value.Element.properties.workload.discriminate_by("type", "AgentFabricSandbox").endpoints

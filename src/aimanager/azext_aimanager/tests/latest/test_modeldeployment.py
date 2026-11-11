@@ -5,9 +5,11 @@
 
 import unittest
 from types import SimpleNamespace
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
+from azure.cli.core.azclierror import ClientRequestError, InvalidArgumentValueError, UnauthorizedError
+from azure.cli.core.util import todict
 
 from azext_aimanager import custom
 from azext_aimanager._params import load_arguments
@@ -39,6 +41,59 @@ class TestModelDeployment(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             custom._construct_scaling_profile(
                 self.cmd, max_replicas=3, required=True)
+
+    def test_scaling_rejects_invalid_values(self):
+        cases = [
+            ({"replicas": -1}, "--replicas must be zero or greater"),
+            ({"min_replicas": 0}, "--min-replicas must be at least 1"),
+            ({"min_replicas": 3, "max_replicas": 2},
+             "--max-replicas must be greater than or equal to --min-replicas"),
+            ({"required": True}, "Specify either --replicas or --min-replicas"),
+            ({"replicas": 1, "max_replicas": 3}, "--replicas cannot be combined"),
+        ]
+        for kwargs, message in cases:
+            with self.subTest(**kwargs):
+                with self.assertRaisesRegex(InvalidArgumentValueError, message):
+                    custom._construct_scaling_profile(self.cmd, **kwargs)
+
+    def test_scaling_is_optional_when_not_required(self):
+        self.assertIsNone(custom._construct_scaling_profile(self.cmd))
+
+    def test_partial_autoscale_updates_preserve_omitted_bound(self):
+        existing = models.ScalingProfile(
+            autoscale=models.AutoscaleProfile(min_replicas=2, max_replicas=5))
+        for kwargs, expected in [
+                ({"max_replicas": 8}, (2, 8)),
+                ({"min_replicas": 3}, (3, 5))]:
+            with self.subTest(**kwargs):
+                scale = custom._construct_scaling_profile(
+                    self.cmd, existing_scale=existing, **kwargs)
+                self.assertIsNone(scale.manual)
+                self.assertEqual(
+                    (scale.autoscale.min_replicas, scale.autoscale.max_replicas), expected)
+                self.assertEqual(
+                    (existing.autoscale.min_replicas, existing.autoscale.max_replicas), (2, 5))
+
+    def test_autoscale_rejects_minimum_above_preserved_maximum(self):
+        existing = models.ScalingProfile(
+            autoscale=models.AutoscaleProfile(min_replicas=2, max_replicas=5))
+        with self.assertRaisesRegex(
+                InvalidArgumentValueError, "--max-replicas must be greater"):
+            custom._construct_scaling_profile(
+                self.cmd, min_replicas=6, existing_scale=existing)
+
+    def test_scaling_switches_between_manual_and_autoscale(self):
+        manual = models.ScalingProfile(manual=models.ManualScalingProfile(replicas=2))
+        autoscale = custom._construct_scaling_profile(
+            self.cmd, min_replicas=1, max_replicas=4, existing_scale=manual)
+        self.assertIsNone(autoscale.manual)
+        self.assertEqual(autoscale.autoscale.min_replicas, 1)
+        self.assertEqual(autoscale.autoscale.max_replicas, 4)
+
+        manual = custom._construct_scaling_profile(
+            self.cmd, replicas=0, existing_scale=autoscale)
+        self.assertIsNone(manual.autoscale)
+        self.assertEqual(manual.manual.replicas, 0)
 
     def test_namespace_name_options_list(self):
         class ArgumentContext:
@@ -105,14 +160,15 @@ class TestModelDeployment(unittest.TestCase):
 
         self.assertEqual(["d1", "d2", "d3"], result)
         namespaces_client.list_by_ai_manager.assert_called_once_with("rg", "mgr")
-        self.assertEqual(2, client.list_by_ai_manager_namespace.call_count)
+        self.assertEqual(
+            [call("rg", "mgr", "ns1"), call("rg", "mgr", "ns2")],
+            client.list_by_ai_manager_namespace.call_args_list)
+        _annotate.assert_called_once_with(self.cmd, ["d1", "d2", "d3"])
 
     @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
     @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
     def test_list_without_namespace_skips_forbidden_namespaces(
             self, cf_namespaces, _annotate):
-        from azure.core.exceptions import HttpResponseError
-
         namespaces_client = MagicMock()
         namespaces_client.list_by_ai_manager.return_value = [
             SimpleNamespace(name="ns1"), SimpleNamespace(name="ns2")]
@@ -139,8 +195,6 @@ class TestModelDeployment(unittest.TestCase):
     @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
     def test_list_without_namespace_reraises_non_auth_errors(
             self, cf_namespaces, _annotate):
-        from azure.core.exceptions import HttpResponseError
-
         namespaces_client = MagicMock()
         namespaces_client.list_by_ai_manager.return_value = [SimpleNamespace(name="ns1")]
         cf_namespaces.return_value = namespaces_client
@@ -159,9 +213,6 @@ class TestModelDeployment(unittest.TestCase):
     @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
     def test_list_without_namespace_propagates_namespace_list_unauthorized(
             self, cf_namespaces, _annotate):
-        from azure.core.exceptions import HttpResponseError
-        from azure.cli.core.azclierror import UnauthorizedError
-
         unauthorized = HttpResponseError(message="Forbidden")
         unauthorized.status_code = 403
 
@@ -188,9 +239,6 @@ class TestModelDeployment(unittest.TestCase):
     @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
     def test_list_without_namespace_all_forbidden_raises(
             self, cf_namespaces, _annotate):
-        from azure.core.exceptions import HttpResponseError
-        from azure.cli.core.azclierror import UnauthorizedError
-
         namespaces_client = MagicMock()
         namespaces_client.list_by_ai_manager.return_value = [
             SimpleNamespace(name="ns1"), SimpleNamespace(name="ns2")]
@@ -217,6 +265,93 @@ class TestModelDeployment(unittest.TestCase):
             recs)
         self.assertNotIn("--namespace", recs)
         self.assertEqual(2, client.list_by_ai_manager_namespace.call_count)
+
+    @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
+    @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
+    def test_list_without_namespaces_returns_empty(self, cf_namespaces, annotate):
+        self.cmd.cli_ctx = MagicMock()
+        cf_namespaces.return_value.list_by_ai_manager.return_value = []
+        client = MagicMock()
+
+        self.assertEqual([], custom.list_modeldeployment(self.cmd, client, "rg", "mgr"))
+
+        client.list_by_ai_manager_namespace.assert_not_called()
+        annotate.assert_called_once_with(self.cmd, [])
+
+    @patch.object(custom, "_annotate_model_ids", side_effect=lambda _cmd, d: d)
+    @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
+    def test_list_readable_empty_namespace_and_forbidden_returns_empty(
+            self, cf_namespaces, annotate):
+        self.cmd.cli_ctx = MagicMock()
+        cf_namespaces.return_value.list_by_ai_manager.return_value = [
+            SimpleNamespace(name="ns1"), SimpleNamespace(name="ns2")]
+        for status in (401, 403):
+            for forbidden_first in (True, False):
+                with self.subTest(status=status, forbidden_first=forbidden_first):
+                    error = HttpResponseError(message="Denied")
+                    error.status_code = status
+                    client = MagicMock()
+                    client.list_by_ai_manager_namespace.side_effect = (
+                        [error, []] if forbidden_first else [[], error])
+                    with self.assertLogs(custom.logger, level="WARNING"):
+                        result = custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
+                    self.assertEqual([], result)
+                    self.assertEqual(
+                        [call("rg", "mgr", "ns1"), call("rg", "mgr", "ns2")],
+                        client.list_by_ai_manager_namespace.call_args_list)
+                    annotate.assert_called_with(self.cmd, [])
+
+    @patch.object(custom, "_annotate_model_ids")
+    @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
+    def test_list_namespace_enumeration_errors(self, cf_namespaces, annotate):
+        self.cmd.cli_ctx = MagicMock()
+        client = MagicMock()
+        for status in (401, 500):
+            with self.subTest(status=status):
+                error = HttpResponseError(message="Enumeration failed")
+                error.status_code = status
+                cf_namespaces.return_value.list_by_ai_manager.side_effect = error
+                expected_error = UnauthorizedError if status == 401 else HttpResponseError
+                with self.assertRaises(expected_error) as ctx:
+                    custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
+                if status == 401:
+                    self.assertIn(
+                        "requires namespace read permission",
+                        " ".join(ctx.exception.recommendations))
+                else:
+                    self.assertIs(ctx.exception, error)
+        client.list_by_ai_manager_namespace.assert_not_called()
+        annotate.assert_not_called()
+
+    @patch.object(custom, "_annotate_model_ids")
+    def test_list_single_namespace_propagates_auth_errors(self, annotate):
+        for status in (401, 403):
+            with self.subTest(status=status):
+                error = HttpResponseError(message="Denied")
+                error.status_code = status
+                client = MagicMock()
+                client.list_by_ai_manager_namespace.side_effect = error
+                with self.assertRaises(HttpResponseError) as ctx:
+                    custom.list_modeldeployment(
+                        self.cmd, client, "rg", "mgr", namespace_name="ns1")
+                self.assertIs(ctx.exception, error)
+                client.list_by_ai_manager_namespace.assert_called_once_with("rg", "mgr", "ns1")
+        annotate.assert_not_called()
+
+    @patch("azext_aimanager._client_factory.cf_ai_manager_namespaces")
+    def test_list_all_namespaces_unauthorized_raises(self, cf_namespaces):
+        self.cmd.cli_ctx = MagicMock()
+        cf_namespaces.return_value.list_by_ai_manager.return_value = [
+            SimpleNamespace(name="ns1")]
+        error = HttpResponseError(message="Unauthorized")
+        error.status_code = 401
+        client = MagicMock()
+        client.list_by_ai_manager_namespace.side_effect = error
+        with self.assertLogs(custom.logger, level="WARNING"):
+            with self.assertRaises(UnauthorizedError) as ctx:
+                custom.list_modeldeployment(self.cmd, client, "rg", "mgr")
+        self.assertIn(
+            "model deployment read access", " ".join(ctx.exception.recommendations))
 
     @patch.object(custom, "_annotate_model_id_on_completion", side_effect=lambda _cmd, p, _nw: p)
     @patch.object(custom, "sdk_no_wait")
@@ -268,6 +403,143 @@ class TestModelDeployment(unittest.TestCase):
             deployment,
             headers={},
         )
+
+    @patch.object(custom, "_annotate_model_id_on_completion", return_value="annotated")
+    @patch.object(custom, "sdk_no_wait", return_value="poller")
+    def test_update_applies_explicit_changes_and_preserves_omitted_properties(
+            self, sdk_no_wait, annotate):
+        for changes in (
+                {"performance_mode": "Throughput"},
+                {"replicas": 0},
+                {"overrides": ["engine=new", "setting=a=b"]},
+                {"performance_mode": "Throughput", "replicas": 0,
+                 "overrides": ["engine=new", "setting=a=b"]}):
+            with self.subTest(changes=changes):
+                client = MagicMock()
+                existing_scale = models.ScalingProfile(
+                    manual=models.ManualScalingProfile(replicas=2))
+                client.get.return_value = SimpleNamespace(properties=SimpleNamespace(
+                    model_resource_id="/models/model-a",
+                    model_source_resource_id="/sources/source-a",
+                    vm_size="Standard_NC24ads_A100_v4",
+                    performance_mode="Latency",
+                    scale=existing_scale,
+                    overrides=models.ModelDeploymentOverrides(
+                        values_property={"engine": "old"}),
+                ))
+
+                result = custom.update_modeldeployment(
+                    self.cmd, client, "rg", "manager", "namespace", "deployment", **changes)
+
+                self.assertEqual(result, "annotated")
+                client.get.assert_called_once_with("rg", "manager", "namespace", "deployment")
+                properties = sdk_no_wait.call_args.args[-1].properties
+                self.assertEqual(properties.model_resource_id, "/models/model-a")
+                self.assertEqual(properties.model_source_resource_id, "/sources/source-a")
+                self.assertEqual(properties.vm_size, "Standard_NC24ads_A100_v4")
+                self.assertEqual(
+                    properties.performance_mode, changes.get("performance_mode", "Latency"))
+                self.assertEqual(properties.scale.manual.replicas, changes.get("replicas", 2))
+                self.assertEqual(
+                    properties.overrides.values_property,
+                    {"engine": "new", "setting": "a=b"} if "overrides" in changes
+                    else {"engine": "old"})
+                annotate.assert_called_with(self.cmd, "poller", False)
+
+    @patch.object(custom, "_annotate_model_id_on_completion", return_value="annotated")
+    @patch.object(custom, "sdk_no_wait", return_value="poller")
+    def test_update_forwards_explicit_if_match_instead_of_fetched_etag(
+            self, sdk_no_wait, _annotate):
+        client = MagicMock()
+        client.get.return_value = SimpleNamespace(
+            e_tag='"fetched-etag"',
+            properties=SimpleNamespace(
+                model_resource_id="/models/model-a", vm_size="Standard_NC24ads_A100_v4",
+                model_source_resource_id=None, performance_mode=None, scale=None,
+                overrides=None))
+
+        custom.update_modeldeployment(
+            self.cmd, client, "rg", "manager", "namespace", "deployment",
+            custom_headers='If-Match="caller-etag"')
+
+        deployment = sdk_no_wait.call_args.args[-1]
+        self.assertIsNone(deployment.properties.overrides)
+        sdk_no_wait.assert_called_once_with(
+            False, client.begin_create_or_update, "rg", "manager", "namespace",
+            "deployment", deployment, headers={"If-Match": '"caller-etag"'})
+
+    @patch.object(custom, "sdk_no_wait")
+    def test_update_missing_deployment_raises_without_writing(self, sdk_no_wait):
+        client = MagicMock()
+        client.get.side_effect = ResourceNotFoundError(message="Not found")
+
+        with self.assertRaises(ClientRequestError) as ctx:
+            custom.update_modeldeployment(
+                self.cmd, client, "rg", "manager", "namespace", "deployment")
+
+        self.assertIn("Model deployment 'deployment' doesn't exist.", str(ctx.exception))
+        self.assertIn("az aimanager namespace modeldeployment list", str(ctx.exception))
+        sdk_no_wait.assert_not_called()
+        client.begin_create_or_update.assert_not_called()
+
+    @patch.object(custom, "_annotate_model_id_on_completion", return_value="poller")
+    @patch.object(custom, "sdk_no_wait", return_value="poller")
+    def test_create_and_update_forward_no_wait(self, sdk_no_wait, annotate):
+        for operation in ("create", "update"):
+            with self.subTest(operation=operation):
+                sdk_no_wait.reset_mock()
+                annotate.reset_mock()
+                client = MagicMock()
+                client.get.return_value = SimpleNamespace(properties=SimpleNamespace(
+                    model_resource_id="/models/model-a", vm_size="Standard_NC24ads_A100_v4",
+                    model_source_resource_id=None, performance_mode=None,
+                    scale=models.ScalingProfile(manual=models.ManualScalingProfile(replicas=1)),
+                    overrides=None))
+                if operation == "create":
+                    result = custom.create_modeldeployment(
+                        self.cmd, client, "rg", "manager", "namespace", "deployment",
+                        "/models/model-a", "Standard_NC24ads_A100_v4",
+                        replicas=1, no_wait=True)
+                else:
+                    result = custom.update_modeldeployment(
+                        self.cmd, client, "rg", "manager", "namespace", "deployment",
+                        no_wait=True)
+
+                self.assertEqual(result, "poller")
+                deployment = sdk_no_wait.call_args.args[-1]
+                sdk_no_wait.assert_called_once_with(
+                    True, client.begin_create_or_update, "rg", "manager", "namespace",
+                    "deployment", deployment, headers={})
+                annotate.assert_called_once_with(self.cmd, "poller", True)
+
+    @patch.object(custom, "_annotate_model_id_on_completion", return_value="annotated")
+    @patch.object(custom, "sdk_no_wait", return_value="poller")
+    def test_create_builds_payload_and_forwards_headers(self, sdk_no_wait, annotate):
+        client = MagicMock()
+
+        result = custom.create_modeldeployment(
+            self.cmd, client, "rg", "manager", "namespace", "deployment",
+            "/models/model-a", "Standard_NC24ads_A100_v4",
+            model_source_resource_id="/sources/source-a", performance_mode="Latency",
+            min_replicas=2, max_replicas=5, overrides=["engine=vllm", "setting=a=b"],
+            custom_headers="x-custom=value")
+
+        self.assertEqual(result, "annotated")
+        deployment = sdk_no_wait.call_args.args[-1]
+        self.assertIsInstance(deployment, models.ModelDeployment)
+        properties = deployment.properties
+        self.assertEqual(properties.model_resource_id, "/models/model-a")
+        self.assertEqual(properties.model_source_resource_id, "/sources/source-a")
+        self.assertEqual(properties.vm_size, "Standard_NC24ads_A100_v4")
+        self.assertEqual(properties.performance_mode, "Latency")
+        self.assertIsNone(properties.scale.manual)
+        self.assertEqual(properties.scale.autoscale.min_replicas, 2)
+        self.assertEqual(properties.scale.autoscale.max_replicas, 5)
+        self.assertEqual(properties.overrides.values_property, {"engine": "vllm", "setting": "a=b"})
+        sdk_no_wait.assert_called_once_with(
+            False, client.begin_create_or_update, "rg", "manager", "namespace",
+            "deployment", deployment, headers={"x-custom": "value"})
+        annotate.assert_called_once_with(self.cmd, "poller", False)
 
     @patch.object(custom, "_annotate_model_id_on_completion", return_value="annotated")
     @patch.object(custom, "sdk_no_wait", return_value="poller")
@@ -374,6 +646,87 @@ class TestModelDeployment(unittest.TestCase):
         # No modelId injected; formatter will render a blank column.
         self.assertIsInstance(results[0], dict)
         self.assertNotIn("modelId", results[0])
+        self.assertEqual(results, [todict(deployment)])
+
+    @patch("azext_aimanager._client_factory.cf_ai_models")
+    def test_annotate_model_ids_skips_missing_or_malformed_resource_ids(self, cf_ai_models):
+        for properties in (
+                None, {}, {"modelResourceId": ""},
+                {"modelResourceId": "not-a-resource-id"},
+                {"modelResourceId": "/subscriptions/s/resourceGroups/rg"}):
+            with self.subTest(properties=properties):
+                deployment = {"name": "md1", "properties": properties}
+                results = custom._annotate_model_ids(
+                    SimpleNamespace(cli_ctx=object()), [deployment])
+                self.assertEqual(results, [deployment])
+        cf_ai_models.assert_not_called()
+
+    @patch("azext_aimanager._client_factory.cf_ai_models")
+    def test_annotate_model_ids_leaves_deployment_unchanged_without_resolved_id(
+            self, cf_ai_models):
+        deployment = models.ModelDeployment({
+            "name": "md1",
+            "properties": {"modelResourceId": (
+                "/subscriptions/s/providers/Microsoft.ContainerService"
+                "/locations/westus2/aiModels/llama3")},
+        })
+        for properties in (None, {}, {"modelId": ""}):
+            with self.subTest(properties=properties):
+                cf_ai_models.return_value.get.return_value = {"properties": properties}
+                results = custom._annotate_model_ids(
+                    SimpleNamespace(cli_ctx=object()), [deployment])
+                self.assertEqual(results, [todict(deployment)])
+
+    @patch("azext_aimanager._client_factory.cf_ai_models")
+    def test_annotate_model_ids_resolves_distinct_models(self, cf_ai_models):
+        cf_ai_models.return_value.get.side_effect = [
+            {"properties": {"modelId": "model-a"}},
+            {"properties": {"modelId": "model-b"}},
+            {"properties": {"modelId": "model-c"}},
+        ]
+        deployments = [
+            {"name": name, "properties": {"modelResourceId": (
+                "/subscriptions/s/providers/Microsoft.ContainerService"
+                f"/locations/{location}/aiModels/{model}")}}
+            for name, location, model in (
+                ("md1", "westus2", "llama3"), ("md2", "eastus", "llama3"),
+                ("md3", "westus2", "other"), ("md4", "westus2", "llama3"))
+        ]
+        cmd = SimpleNamespace(cli_ctx=object())
+
+        results = custom._annotate_model_ids(cmd, deployments)
+
+        self.assertEqual(
+            [r["modelId"] for r in results], ["model-a", "model-b", "model-c", "model-a"])
+        cf_ai_models.assert_called_once_with(cmd.cli_ctx)
+        self.assertEqual(
+            [call("westus2", "llama3"), call("eastus", "llama3"), call("westus2", "other")],
+            cf_ai_models.return_value.get.call_args_list)
+
+    @patch("azext_aimanager._client_factory.cf_ai_models")
+    def test_annotate_model_ids_continues_after_one_lookup_fails(self, cf_ai_models):
+        cf_ai_models.return_value.get.side_effect = [
+            HttpResponseError(message="Lookup failed"),
+            {"properties": {"modelId": "model-b"}},
+        ]
+        deployments = [
+            {"name": name, "properties": {"modelResourceId": (
+                "/subscriptions/s/providers/Microsoft.ContainerService"
+                f"/locations/westus2/aiModels/{model}")}}
+            for name, model in (("md1", "model-a"), ("md2", "model-b"))
+        ]
+
+        with self.assertLogs(custom.logger, level="DEBUG") as logs:
+            results = custom._annotate_model_ids(
+                SimpleNamespace(cli_ctx=object()), deployments)
+
+        self.assertEqual(results[0], deployments[0])
+        self.assertEqual(results[1], {**deployments[1], "modelId": "model-b"})
+        self.assertTrue(any("Failed to resolve human-readable modelId" in line
+                            for line in logs.output))
+        self.assertEqual(
+            [call("westus2", "model-a"), call("westus2", "model-b")],
+            cf_ai_models.return_value.get.call_args_list)
 
 
 if __name__ == '__main__':

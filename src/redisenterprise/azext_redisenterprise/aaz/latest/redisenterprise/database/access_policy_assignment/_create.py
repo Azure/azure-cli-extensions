@@ -18,14 +18,14 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create access policy assignment for database
 
-    :example: Configure Redis User for role based access control
-        az redisenterprise database access-policy-assignment create --resource-group rg1 --cluster-name cache1 --database-name default --access-policy-assignment-name defaultTestEntraApp1 --access-policy-name default --object-id 6497c918-11ad-41e7-1b0f-7c518a87d0b0
+    :example: Assign a read-only Redis ACL to an Entra object
+        az redisenterprise database access-policy-assignment create --cluster-name cache1 --resource-group rg1 --database-name default --access-policy-assignment-name reader --object-id 00000000-0000-0000-0000-000000000001 --access-string '+@read ~cache:*'
     """
 
     _aaz_info = {
-        "version": "2026-06-01-preview",
+        "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2026-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2026-10-01-preview"],
         ]
     }
 
@@ -89,7 +89,10 @@ class Create(AAZCommand):
         _args_schema.access_string = AAZStrArg(
             options=["--access-string"],
             arg_group="Properties",
-            help="The Redis ACL permissions string applied to this assignment, for example `+@read ~cache:*`. Defaults to `+@all ~*` if not specified.",
+            help=(
+                "The Redis ACL permissions string applied to this assignment, for example `+@read ~cache:*`. Defaults "
+                "to `+@all ~*` if not specified."
+            ),
         )
 
         # define Arg Group "User"
@@ -191,7 +194,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01-preview",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }

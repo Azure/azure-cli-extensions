@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b31
+++++++++++++++
+* Made ``--storage-account`` optional for ``az quantum workspace create``. When omitted, Azure Quantum provisions managed storage.
+* Made ``az quantum workspace create`` wait for provisioning to finish, including when ``--skip-role-assignment`` is used with a user-provided storage account. Using that flag without ``--storage-account`` reports a missing required argument.
+
 1.0.0b30
 ++++++++++++++
 * Fixed crashes in ``az quantum offerings list -o table`` and ``az quantum workspace create`` when a V2-only provider lacks a legacy marketplace ManagedApplication association.
