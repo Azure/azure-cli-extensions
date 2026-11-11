@@ -143,7 +143,8 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument(
             'storage_account_type',
             options_list=['--storage-account-type'],
-            help='Storage account type (e.g., AzureStorageAccount)')
+            help='Storage account type: Azure_BlobStorage, Azure_BlobStorage_DataLakeGen2, '
+            'Azure_OneLake or Aws_S3')
         c.argument(
             'encryption_mode',
             options_list=['--encryption-mode'],
@@ -158,17 +159,18 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument(
             'schema_format',
             options_list=['--schema-format'],
-            help='Schema format (default: Delta)')
+            help='Schema format: csv, json or parquet. Overrides the format in the schema file')
 
         # Access policy parameters
         c.argument(
             'access_mode',
             options_list=['--access-mode'],
-            help='Access mode (e.g., ReadWrite)')
+            arg_type=get_enum_type(['read', 'write']),
+            help='Access mode for the dataset')
         c.argument(
             'allowed_fields',
             options_list=['--allowed-fields'],
-            help='Comma-separated list of allowed field names')
+            help='Comma-separated list of allowed field names (required)')
 
         # Identity parameters
         c.argument(
@@ -186,7 +188,9 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument(
             'identity_issuer_url',
             options_list=['--identity-issuer-url'],
-            help='OIDC issuer URL (HTTPS)')
+            deprecate_info=c.deprecate(target='--identity-issuer-url', hide=True),
+            help='Deprecated and ignored. Configure the OIDC issuer through governance '
+            '(az managedcleanroom frontend oidc set-issuer-url).')
 
         # CPK DEK parameters
         c.argument(

@@ -282,16 +282,17 @@ def frontend_collaboration_dataset_publish(
     :param body: Publish configuration JSON (string, dict, or @file) - legacy mode
     :param storage_account_url: Azure Storage account URL
     :param container_name: Blob container name
-    :param storage_account_type: Storage account type
+    :param storage_account_type: Storage account type (e.g., Azure_BlobStorage)
     :param encryption_mode: Encryption mode (SSE or CPK)
     :param schema_file: Path to schema file (@path/to/schema.json)
-    :param schema_format: Schema format (default: Delta)
-    :param access_mode: Access mode
+    :param schema_format: Schema format (csv, json, or parquet); overrides the schema file
+    :param access_mode: Access mode (read or write)
     :param allowed_fields: Comma-separated allowed field names
     :param identity_name: Managed identity name
     :param identity_client_id: Client ID
     :param identity_tenant_id: Tenant ID
-    :param identity_issuer_url: OIDC issuer URL
+    :param identity_issuer_url: Deprecated and ignored. The frontend rejects issuerUrl on
+        datasets; configure the OIDC issuer through governance instead.
     :param dek_keyvault_url: DEK Key Vault URL (CPK mode)
     :param dek_secret_id: DEK secret ID (CPK mode)
     :param kek_keyvault_url: KEK Key Vault URL (CPK mode)
@@ -307,7 +308,8 @@ def frontend_collaboration_dataset_publish(
     import json
     from azure.cli.core.util import CLIError
 
-    # Check for mutual exclusion: body vs parameters
+    # Check for mutual exclusion: body vs parameters. Every parameter-mode flag is
+    # listed so none is silently ignored when combined with --body.
     has_params = any(
         [
             storage_account_url,
@@ -315,11 +317,20 @@ def frontend_collaboration_dataset_publish(
             storage_account_type,
             encryption_mode,
             schema_file,
+            schema_format,
             access_mode,
+            allowed_fields,
             identity_name,
             identity_client_id,
             identity_tenant_id,
             identity_issuer_url,
+            dek_keyvault_url,
+            dek_secret_id,
+            kek_keyvault_url,
+            kek_secret_id,
+            kek_authority_type,
+            kek_authority_endpoint,
+            subdirectory,
         ]
     )
 
@@ -353,16 +364,25 @@ def frontend_collaboration_dataset_publish(
         "encryption_mode": encryption_mode,
         "schema_file": schema_file,
         "access_mode": access_mode,
+        "allowed_fields": allowed_fields,
         "identity_name": identity_name,
         "identity_client_id": identity_client_id,
         "identity_tenant_id": identity_tenant_id,
-        "identity_issuer_url": identity_issuer_url,
     }
 
     missing = [k for k, v in required_params.items() if v is None]
     if missing:
         missing_params = ", ".join(f"--{k.replace('_', '-')}" for k in missing)
         raise CLIError(f"Missing required parameters: {missing_params}")
+
+    parsed_allowed_fields = _parse_allowed_fields(allowed_fields)
+
+    if identity_issuer_url:
+        logger.warning(
+            "--identity-issuer-url is deprecated and ignored: the frontend no longer "
+            "accepts an issuer URL on datasets. Configure the OIDC issuer through "
+            "governance, e.g. 'az managedcleanroom frontend oidc set-issuer-url'."
+        )
 
     # Validate CPK parameters if encryption_mode is CPK
     kek_authority = None
@@ -415,11 +435,10 @@ def frontend_collaboration_dataset_publish(
         schema_content["format"] = schema_format
 
     # Build datasetAccessPolicy
-    dataset_access_policy = {"accessMode": access_mode}
-    if allowed_fields:
-        dataset_access_policy["allowedFields"] = [
-            f.strip() for f in allowed_fields.split(",")
-        ]
+    dataset_access_policy = {
+        "accessMode": access_mode,
+        "allowedFields": parsed_allowed_fields,
+    }
 
     # Build store configuration
     store = {
@@ -436,7 +455,6 @@ def frontend_collaboration_dataset_publish(
         "name": identity_name,
         "clientId": identity_client_id,
         "tenantId": identity_tenant_id,
-        "issuerUrl": identity_issuer_url,
     }
 
     # Construct final body
@@ -464,6 +482,21 @@ def frontend_collaboration_dataset_publish(
     return client.collaboration.analytics_datasets_document_id_publish_post(
         collaboration_id, document_id, body
     )
+
+
+def _parse_allowed_fields(allowed_fields):
+    """Split a comma-separated --allowed-fields value into trimmed, non-empty field names.
+
+    :param allowed_fields: Comma-separated field names.
+    :return: List of field names.
+    :raises CLIError: If no field name is supplied.
+    """
+    from azure.cli.core.util import CLIError
+
+    fields = [f.strip() for f in allowed_fields.split(",") if f.strip()]
+    if not fields:
+        raise CLIError("--allowed-fields must contain at least one field name.")
+    return fields
 
 
 def _build_skr_authority(authority_type, authority_endpoint):

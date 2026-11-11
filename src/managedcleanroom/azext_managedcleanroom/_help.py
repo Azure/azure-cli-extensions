@@ -369,7 +369,9 @@ helps['managedcleanroom frontend analytics dataset publish'] = """
     long-summary: |
         Publish a dataset configuration with storage, schema, access policy, and identity information.
         Supports both SSE (Server-Side Encryption) and CPK (Customer-Provided Key) encryption modes.
-        You can use either individual parameters or a JSON body file for configuration.
+        Use either individual parameters or a JSON body (--body); the two cannot be combined.
+        The dataset identity's OIDC issuer is configured through governance
+        (az managedcleanroom frontend oidc set-issuer-url), not on the dataset.
     parameters:
         - name: --collaboration-id -c
           type: string
@@ -388,7 +390,7 @@ helps['managedcleanroom frontend analytics dataset publish'] = """
           short-summary: Blob container name
         - name: --storage-account-type
           type: string
-          short-summary: Storage account type (e.g., AzureStorageAccount)
+          short-summary: Storage account type (Azure_BlobStorage, Azure_BlobStorage_DataLakeGen2, Azure_OneLake, or Aws_S3)
         - name: --encryption-mode
           type: string
           short-summary: Encryption mode (SSE or CPK)
@@ -397,13 +399,13 @@ helps['managedcleanroom frontend analytics dataset publish'] = """
           short-summary: Path to schema file (@path/to/schema.json) containing field definitions
         - name: --schema-format
           type: string
-          short-summary: Schema format (default is Delta)
+          short-summary: Schema format (csv, json, or parquet). Overrides the format in the schema file
         - name: --access-mode
           type: string
-          short-summary: Access mode (e.g., ReadWrite)
+          short-summary: Access mode (read or write)
         - name: --allowed-fields
           type: string
-          short-summary: Comma-separated list of allowed field names
+          short-summary: Comma-separated list of allowed field names (required)
         - name: --identity-name
           type: string
           short-summary: Managed identity name
@@ -413,9 +415,6 @@ helps['managedcleanroom frontend analytics dataset publish'] = """
         - name: --identity-tenant-id
           type: string
           short-summary: Tenant ID (GUID)
-        - name: --identity-issuer-url
-          type: string
-          short-summary: OIDC issuer URL (HTTPS)
         - name: --dek-keyvault-url
           type: string
           short-summary: Key Vault URL for DEK (CPK mode only)
@@ -445,15 +444,14 @@ helps['managedcleanroom frontend analytics dataset publish'] = """
               --document-id my-dataset \
               --storage-account-url https://mystorageaccount.blob.core.windows.net \
               --container-name datasets \
-              --storage-account-type AzureStorageAccount \
+              --storage-account-type Azure_BlobStorage \
               --encryption-mode SSE \
               --schema-file @schema.json \
-              --access-mode ReadWrite \
+              --access-mode read \
               --allowed-fields "customer_id,revenue,date" \
               --identity-name northwind-identity \
               --identity-client-id fb907136-1234-5678-9abc-def012345678 \
-              --identity-tenant-id 72f988bf-1234-5678-9abc-def012345678 \
-              --identity-issuer-url https://oidc.example.com/issuer
+              --identity-tenant-id 72f988bf-1234-5678-9abc-def012345678
         - name: Publish a dataset using CPK encryption with CGS as the KEK authority
           text: |
             az managedcleanroom frontend analytics dataset publish \
@@ -461,14 +459,14 @@ helps['managedcleanroom frontend analytics dataset publish'] = """
               --document-id my-dataset \
               --storage-account-url https://mystorageaccount.blob.core.windows.net \
               --container-name datasets \
-              --storage-account-type AzureStorageAccount \
+              --storage-account-type Azure_BlobStorage \
               --encryption-mode CPK \
               --schema-file @schema.json \
-              --access-mode ReadWrite \
+              --access-mode read \
+              --allowed-fields "customer_id,revenue,date" \
               --identity-name northwind-identity \
               --identity-client-id fb907136-1234-5678-9abc-def012345678 \
               --identity-tenant-id 72f988bf-1234-5678-9abc-def012345678 \
-              --identity-issuer-url https://oidc.example.com/issuer \
               --dek-keyvault-url https://mykeyvault.vault.azure.net \
               --dek-secret-id dek-secret-123 \
               --kek-keyvault-url https://mykeyvault.vault.azure.net \
@@ -481,14 +479,14 @@ helps['managedcleanroom frontend analytics dataset publish'] = """
               --document-id my-dataset \
               --storage-account-url https://mystorageaccount.blob.core.windows.net \
               --container-name datasets \
-              --storage-account-type AzureStorageAccount \
+              --storage-account-type Azure_BlobStorage \
               --encryption-mode CPK \
               --schema-file @schema.json \
-              --access-mode ReadWrite \
+              --access-mode read \
+              --allowed-fields "customer_id,revenue,date" \
               --identity-name northwind-identity \
               --identity-client-id fb907136-1234-5678-9abc-def012345678 \
               --identity-tenant-id 72f988bf-1234-5678-9abc-def012345678 \
-              --identity-issuer-url https://oidc.example.com/issuer \
               --dek-keyvault-url https://mykeyvault.vault.azure.net \
               --dek-secret-id dek-secret-123 \
               --kek-keyvault-url https://mykeyvault.vault.azure.net \
@@ -508,14 +506,14 @@ helps['managedcleanroom frontend analytics dataset publish'] = """
               --document-id my-dataset \
               --storage-account-url https://mystorageaccount.blob.core.windows.net \
               --container-name datasets \
-              --storage-account-type AzureStorageAccount \
+              --storage-account-type Azure_BlobStorage \
               --encryption-mode SSE \
               --schema-file @schema.json \
-              --access-mode ReadWrite \
+              --access-mode read \
+              --allowed-fields "customer_id,revenue,date" \
               --identity-name northwind-identity \
               --identity-client-id fb907136-1234-5678-9abc-def012345678 \
               --identity-tenant-id 72f988bf-1234-5678-9abc-def012345678 \
-              --identity-issuer-url https://oidc.example.com/issuer \
               --subdirectory year=2026/month=05
 """
 

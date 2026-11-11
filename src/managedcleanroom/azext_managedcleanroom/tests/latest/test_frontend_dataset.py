@@ -166,16 +166,15 @@ class TestFrontendDataset(unittest.TestCase):
                 body=None,
                 storage_account_url="https://mystorageaccount.blob.core.windows.net",
                 container_name="datasets",
-                storage_account_type="AzureStorageAccount",
+                storage_account_type="Azure_BlobStorage",
                 encryption_mode="SSE",
                 schema_file="@schema.json",
                 schema_format=None,
-                access_mode="ReadWrite",
+                access_mode="read",
                 allowed_fields="customer_id,revenue",
                 identity_name="northwind-identity",
                 identity_client_id="fb907136-1234-5678-9abc-def012345678",
                 identity_tenant_id="72f988bf-1234-5678-9abc-def012345678",
-                identity_issuer_url="https://oidc.example.com/issuer",
                 dek_keyvault_url=None,
                 dek_secret_id=None,
                 kek_keyvault_url=None,
@@ -196,6 +195,10 @@ class TestFrontendDataset(unittest.TestCase):
             "https://mystorageaccount.blob.core.windows.net")
         self.assertEqual(body["store"]["encryptionMode"], "SSE")
         self.assertEqual(body["identity"]["name"], "northwind-identity")
+        self.assertNotIn("issuerUrl", body["identity"])
+        self.assertEqual(
+            body["datasetAccessPolicy"],
+            {"accessMode": "read", "allowedFields": ["customer_id", "revenue"]})
         self.assertNotIn("dek", body)
         self.assertNotIn("kek", body)
 
@@ -227,16 +230,15 @@ class TestFrontendDataset(unittest.TestCase):
                 body=None,
                 storage_account_url="https://mystorageaccount.blob.core.windows.net",
                 container_name="datasets",
-                storage_account_type="AzureStorageAccount",
+                storage_account_type="Azure_BlobStorage",
                 encryption_mode="CPK",
                 schema_file="@schema.json",
                 schema_format=None,
-                access_mode="ReadWrite",
-                allowed_fields=None,
+                access_mode="read",
+                allowed_fields="id",
                 identity_name="northwind-identity",
                 identity_client_id="fb907136-1234-5678-9abc-def012345678",
                 identity_tenant_id="72f988bf-1234-5678-9abc-def012345678",
-                identity_issuer_url="https://oidc.example.com/issuer",
                 dek_keyvault_url="https://mykeyvault.vault.azure.net",
                 dek_secret_id="dek-secret-123",
                 kek_keyvault_url="https://mykeyvault.vault.azure.net",
@@ -277,14 +279,14 @@ class TestFrontendDataset(unittest.TestCase):
                 document_id="test-dataset-cpk",
                 storage_account_url="https://mystorageaccount.blob.core.windows.net",
                 container_name="datasets",
-                storage_account_type="AzureStorageAccount",
+                storage_account_type="Azure_BlobStorage",
                 encryption_mode="CPK",
                 schema_file="@schema.json",
-                access_mode="ReadWrite",
+                access_mode="read",
+                allowed_fields="id",
                 identity_name="northwind-identity",
                 identity_client_id="fb907136-1234-5678-9abc-def012345678",
                 identity_tenant_id="72f988bf-1234-5678-9abc-def012345678",
-                identity_issuer_url="https://oidc.example.com/issuer",
                 dek_keyvault_url="https://mykeyvault.vault.azure.net",
                 dek_secret_id="dek-secret-123",
                 kek_keyvault_url="https://mykeyvault.vault.azure.net",
@@ -381,6 +383,115 @@ class TestFrontendDataset(unittest.TestCase):
             "Cannot use --body together with individual parameters", str(context.exception))
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_publish_dataset_body_conflicts_with_every_parameter_flag(self, mock_get_client):
+        """Test that no parameter-mode flag is silently ignored when combined with --body"""
+        from azure.cli.core.util import CLIError
+
+        mock_client = Mock()
+        mock_get_client.return_value = mock_client
+
+        parameter_flags = {
+            "kek_authority_type": "CGS",
+            "kek_authority_endpoint": "https://sharedeus.eus.attest.azure.net",
+            "dek_keyvault_url": "https://mykeyvault.vault.azure.net",
+            "dek_secret_id": "dek-secret-123",
+            "kek_keyvault_url": "https://mykeyvault.vault.azure.net",
+            "kek_secret_id": "kek-secret-123",
+            "schema_format": "Delta",
+            "allowed_fields": "id",
+            "subdirectory": "year=2026",
+            "identity_issuer_url": "https://oidc.example.com/issuer",
+        }
+        for flag, value in parameter_flags.items():
+            with self.subTest(flag=flag):
+                with self.assertRaises(CLIError) as context:
+                    frontend_collaboration_dataset_publish(
+                        cmd=Mock(),
+                        collaboration_id="test-collab-123",
+                        document_id="test-dataset-123",
+                        body={"data": "test"},
+                        **{flag: value})
+                self.assertIn(
+                    "Cannot use --body together with individual parameters",
+                    str(context.exception))
+
+        mock_client.collaboration.analytics_datasets_document_id_publish_post.assert_not_called()
+
+    def _publish_sse(self, mock_get_client, **overrides):
+        mock_client = Mock()
+        mock_client.collaboration.analytics_datasets_document_id_publish_post.return_value = {}
+        mock_get_client.return_value = mock_client
+
+        kwargs = {
+            "storage_account_url": "https://mystorageaccount.blob.core.windows.net",
+            "container_name": "datasets",
+            "storage_account_type": "Azure_BlobStorage",
+            "encryption_mode": "SSE",
+            "schema_file": "@schema.json",
+            "access_mode": "read",
+            "allowed_fields": "id",
+            "identity_name": "northwind-identity",
+            "identity_client_id": "fb907136-1234-5678-9abc-def012345678",
+            "identity_tenant_id": "72f988bf-1234-5678-9abc-def012345678",
+        }
+        kwargs.update(overrides)
+
+        test_schema = {"fields": [{"fieldName": "id", "fieldType": "string"}]}
+        with patch('builtins.open', unittest.mock.mock_open(read_data=json.dumps(test_schema))):
+            frontend_collaboration_dataset_publish(
+                cmd=Mock(),
+                collaboration_id="test-collab-123",
+                document_id="test-dataset-sse",
+                **kwargs)
+
+        call_args = mock_client.collaboration.analytics_datasets_document_id_publish_post.call_args
+        return call_args[0][2]
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_publish_dataset_requires_allowed_fields(self, mock_get_client):
+        """Test that --allowed-fields is required because the frontend requires allowedFields"""
+        from azure.cli.core.util import CLIError
+
+        with self.assertRaises(CLIError) as context:
+            self._publish_sse(mock_get_client, allowed_fields=None)
+
+        self.assertIn("Missing required parameters: --allowed-fields", str(context.exception))
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_publish_dataset_rejects_empty_allowed_fields(self, mock_get_client):
+        """Test that --allowed-fields must contain at least one field name"""
+        from azure.cli.core.util import CLIError
+
+        with self.assertRaises(CLIError) as context:
+            self._publish_sse(mock_get_client, allowed_fields=" , ")
+
+        self.assertIn("--allowed-fields must contain at least one field name", str(context.exception))
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_publish_dataset_allowed_fields_are_trimmed(self, mock_get_client):
+        """Test that allowed field names are trimmed and empty entries dropped"""
+        body = self._publish_sse(mock_get_client, allowed_fields=" id , name ,")
+
+        self.assertEqual(body["datasetAccessPolicy"]["allowedFields"], ["id", "name"])
+
+    @patch('azext_managedcleanroom._frontend_custom.logger')
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_publish_dataset_identity_issuer_url_is_ignored(self, mock_get_client, mock_logger):
+        """Test that deprecated --identity-issuer-url is not sent and a warning is logged"""
+        body = self._publish_sse(
+            mock_get_client, identity_issuer_url="https://oidc.example.com/issuer")
+
+        self.assertEqual(
+            body["identity"],
+            {
+                "name": "northwind-identity",
+                "clientId": "fb907136-1234-5678-9abc-def012345678",
+                "tenantId": "72f988bf-1234-5678-9abc-def012345678",
+            })
+        mock_logger.warning.assert_called_once()
+        self.assertIn("--identity-issuer-url", mock_logger.warning.call_args[0][0])
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_publish_dataset_missing_required_parameters(
             self, mock_get_client):
         """Test validation of required parameters"""
@@ -423,14 +534,14 @@ class TestFrontendDataset(unittest.TestCase):
                     body=None,
                     storage_account_url="https://mystorageaccount.blob.core.windows.net",
                     container_name="datasets",
-                    storage_account_type="AzureStorageAccount",
+                    storage_account_type="Azure_BlobStorage",
                     encryption_mode="CPK",
                     schema_file="@schema.json",
-                    access_mode="ReadWrite",
+                    access_mode="read",
+                    allowed_fields="id",
                     identity_name="northwind-identity",
                     identity_client_id="fb907136-1234-5678-9abc-def012345678",
                     identity_tenant_id="72f988bf-1234-5678-9abc-def012345678",
-                    identity_issuer_url="https://oidc.example.com/issuer"
                     # Missing DEK/KEK params
                 )
 
@@ -456,14 +567,14 @@ class TestFrontendDataset(unittest.TestCase):
                 body=None,
                 storage_account_url="https://mystorageaccount.blob.core.windows.net",
                 container_name="datasets",
-                storage_account_type="AzureStorageAccount",
+                storage_account_type="Azure_BlobStorage",
                 encryption_mode="SSE",
                 schema_file="@schema.json",
-                access_mode="ReadWrite",
+                access_mode="read",
+                allowed_fields="id",
                 identity_name="northwind-identity",
                 identity_client_id="fb907136-1234-5678-9abc-def012345678",
                 identity_tenant_id="72f988bf-1234-5678-9abc-def012345678",
-                identity_issuer_url="https://oidc.example.com/issuer",
                 subdirectory="year=2026/month=05",
             )
 
@@ -489,14 +600,14 @@ class TestFrontendDataset(unittest.TestCase):
                 body=None,
                 storage_account_url="https://mystorageaccount.blob.core.windows.net",
                 container_name="datasets",
-                storage_account_type="AzureStorageAccount",
+                storage_account_type="Azure_BlobStorage",
                 encryption_mode="SSE",
                 schema_file="@schema.json",
-                access_mode="ReadWrite",
+                access_mode="read",
+                allowed_fields="id",
                 identity_name="northwind-identity",
                 identity_client_id="fb907136-1234-5678-9abc-def012345678",
                 identity_tenant_id="72f988bf-1234-5678-9abc-def012345678",
-                identity_issuer_url="https://oidc.example.com/issuer",
             )
 
         call_args = mock_client.collaboration.analytics_datasets_document_id_publish_post.call_args
