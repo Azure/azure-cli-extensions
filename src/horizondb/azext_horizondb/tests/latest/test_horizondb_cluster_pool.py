@@ -6,17 +6,17 @@
 from azure.cli.testsdk import NoneCheck, ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
-from .constants import DEFAULT_LOCATION, CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH
+from .constants import INDIASOUTHCENTRAL, CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH
 
 
 class HorizonDBPoolMgmtScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_horizondb_pool_', location=DEFAULT_LOCATION)
+    @ResourceGroupPreparer(name_prefix='cli_test_horizondb_pool_', location=INDIASOUTHCENTRAL)
     def test_horizondb_cluster_pool_mgmt(self, resource_group):
         self.kwargs.update({
             'rg': resource_group,
-            'location': DEFAULT_LOCATION,
+            'location': INDIASOUTHCENTRAL,
             'cluster': self.create_random_name(CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH),
             'pool': self.create_random_name('pool-', 24),
             'rule': self.create_random_name('rule-', 24),

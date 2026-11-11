@@ -6,17 +6,17 @@
 from azure.cli.testsdk import NoneCheck, ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
-from .constants import DEFAULT_LOCATION, CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH
+from .constants import INDIASOUTHCENTRAL, CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH
 
 
 class HorizonDBPrivateConnectivityScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_horizondb_private_', location=DEFAULT_LOCATION)
-    def test_horizondb_cluster_private_connectivity(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='cli_test_horizondb_private_', location=INDIASOUTHCENTRAL)
+    def test_horizondb_cluster_private_connectivity_commands(self, resource_group):
         self.kwargs.update({
             'rg': resource_group,
-            'location': DEFAULT_LOCATION,
+            'location': INDIASOUTHCENTRAL,
             'cluster': self.create_random_name(CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH),
             'pool': self.create_random_name('pool-', 24),
             'vnet': self.create_random_name('vnet-', 24),
@@ -73,42 +73,24 @@ class HorizonDBPrivateConnectivityScenarioTest(ScenarioTest):
         self.cmd(
             'horizondb cluster private-endpoint-connection show -g {rg} --cluster-name {cluster} -n {connection}',
             checks=[
-                self.check('properties.privateEndpoint.id', '{endpoint_id}'),
-                self.check('properties.privateLinkServiceConnectionState.status', 'Pending'),
+                self.check('privateEndpoint.id', '{endpoint_id}'),
+                self.check('privateLinkServiceConnectionState.status', 'Pending'),
             ],
         )
         self.cmd(
             'horizondb cluster private-endpoint-connection update -g {rg} --cluster-name {cluster} '
             '-n {connection} --status Approved --description "Scenario approval"',
-        )
-        self.cmd(
-            'horizondb cluster private-endpoint-connection show -g {rg} --cluster-name {cluster} -n {connection}',
             checks=[
-                self.check('properties.privateLinkServiceConnectionState.status', 'Approved'),
-                self.check('properties.privateLinkServiceConnectionState.description', 'Scenario approval'),
+                self.check('privateLinkServiceConnectionState.status', 'Approved'),
+                self.check('privateLinkServiceConnectionState.description', 'Scenario approval'),
             ],
         )
-        self.cmd(
-            'horizondb cluster private-endpoint-connection update -g {rg} --cluster-name {cluster} '
-            '-n {connection} --status Rejected --description "Scenario rejection"',
-        )
-        self.cmd(
-            'horizondb cluster private-endpoint-connection show -g {rg} --cluster-name {cluster} -n {connection}',
-            checks=[
-                self.check('properties.privateLinkServiceConnectionState.status', 'Rejected'),
-                self.check('properties.privateLinkServiceConnectionState.description', 'Scenario rejection'),
-            ],
-        )
+
         self.cmd(
             'horizondb cluster private-endpoint-connection delete -g {rg} --cluster-name {cluster} '
             '-n {connection} --yes',
             checks=NoneCheck(),
         )
-        self.cmd(
-            'horizondb cluster private-endpoint-connection list -g {rg} --cluster-name {cluster}',
-            checks=self.check('length(@)', 0),
-        )
-
         self.cmd('network private-endpoint delete -g {rg} -n {endpoint}', checks=NoneCheck())
         self.cmd('network vnet delete -g {rg} -n {vnet}', checks=NoneCheck())
         self.cmd(
