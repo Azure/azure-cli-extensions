@@ -13,19 +13,15 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "durabletask scheduler transparent-data-encryption create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a Transparent Data Encryption
-
-    :example: Configure Transparent Data Encryption
-        az durabletask scheduler transparent-data-encryption create --resource-group rgdurabletask --scheduler-name testscheduler --key-source CustomerManaged --key-vault-key-uri https://myencryption.vault.azure.net/keys/encryptionKey
     """
 
     _aaz_info = {
-        "version": "2026-05-01-preview",
+        "version": "2026-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/transparentdataencryptions/default", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/transparentdataencryptions/default", "2026-07-01-preview"],
         ]
     }
 
@@ -61,12 +57,17 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.auto_rotation_enabled = AAZBoolArg(
+            options=["--auto-rotation-enabled"],
+            arg_group="Properties",
+            help="Indicates whether auto-rotation of the customer-managed keys is enabled for transparent data encryption",
+        )
         _args_schema.key_source = AAZStrArg(
             options=["--key-source"],
             arg_group="Properties",
             help="The key source for the transparent data encryption",
-            default="CustomerManaged",
             enum={"CustomerManaged": "CustomerManaged", "MicrosoftManaged": "MicrosoftManaged"},
+            default="CustomerManaged",
         )
         _args_schema.key_vault_key_uri = AAZStrArg(
             options=["--key-vault-key-uri"],
@@ -156,7 +157,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-07-01-preview",
                     required=True,
                 ),
             }
@@ -185,6 +186,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("autoRotationEnabled", AAZBoolType, ".auto_rotation_enabled")
                 properties.set_prop("keySource", AAZStrType, ".key_source", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("keyVaultKeyUri", AAZStrType, ".key_vault_key_uri")
 
@@ -224,6 +226,9 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.auto_rotation_enabled = AAZBoolType(
+                serialized_name="autoRotationEnabled",
+            )
             properties.key_source = AAZStrType(
                 serialized_name="keySource",
                 flags={"required": True},

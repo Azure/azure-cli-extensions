@@ -15,7 +15,7 @@ from azext_confcom.config import (
     ACI_FIELD_CONTAINERS, ACI_FIELD_SCENARIO, ACI_FIELD_VERSION,
     DEFAULT_REGO_FRAGMENTS, KUBE_PROXY_REGO_FRAGMENT,
     POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS,
-    REGO_IMPORT_FILE_STRUCTURE, VN2)
+    REGO_IMPORT_FILE_STRUCTURE, VN2, get_default_rego_fragments)
 from azext_confcom.cose_proxy import CoseSignToolProxy
 from azext_confcom.errors import eprint
 from azext_confcom.fragment_util import get_all_fragment_contents
@@ -95,6 +95,7 @@ def acipolicygen_confcom(
     enable_stdio: Optional[bool] = None,
     print_existing_policy: bool = False,
     faster_hashing: bool = False,
+    skip_win_ver_check: bool = False,
     omit_id: bool = False,
     include_fragments: bool = False,
     fragments_json: str = None,
@@ -227,6 +228,10 @@ def acipolicygen_confcom(
             disable_stdio=disable_stdio,
             container_definitions=container_definitions,
             prerelease_policy_api=prerelease_policy_api,
+            platform=platform,
+            rego_fragments=copy.deepcopy(
+                get_default_rego_fragments(platform, prerelease_policy_api=prerelease_policy_api)
+            ),
         )
 
     exit_code = 0
@@ -250,7 +255,7 @@ def acipolicygen_confcom(
             for container in policy.get_images():
                 container_names.append(container.get_container_image())
         # get all the fragments that are being used in the policy
-        fragment_policy_list = get_all_fragment_contents(container_names, fragment_imports)
+        fragment_policy_list = get_all_fragment_contents(container_names, fragment_imports, platform=platform)
         for policy in container_group_policies:
             policy.set_fragment_contents(fragment_policy_list)
 
@@ -259,7 +264,8 @@ def acipolicygen_confcom(
 
     for count, policy in enumerate(container_group_policies):
         policy.populate_policy_content_for_all_images(
-            individual_image=bool(image_name), tar_mapping=tar_mapping, faster_hashing=faster_hashing
+            individual_image=bool(image_name), tar_mapping=tar_mapping, faster_hashing=faster_hashing,
+            skip_win_ver_check=skip_win_ver_check,
         )
 
         if validate_sidecar:
@@ -325,6 +331,9 @@ def acifragmentgen_confcom(
     no_print: bool = False,
     fragments_json: str = "",
     out_signed_fragment: bool = False,
+    skip_win_ver_check: bool = False,
+    platform: str = "linux/amd64",
+    prerelease_policy_api: bool = False,
 ):
     if container_definitions is None:
         container_definitions = []
@@ -348,7 +357,9 @@ def acifragmentgen_confcom(
                 os_util.clean_up_temp_folder(fragment_path)
 
         elif image_name:
-            import_statements = oras_proxy.generate_imports_from_image_name(image_name, minimum_svn=minimum_svn)
+            import_statements = oras_proxy.generate_imports_from_image_name(
+                image_name, minimum_svn=minimum_svn, platform=platform
+            )
 
         fragments_file_contents = {}
         fragments_list = []
@@ -386,6 +397,8 @@ def acifragmentgen_confcom(
         policy = security_policy.load_policy_from_image_name(
             image_name, debug_mode=debug_mode, disable_stdio=(not stdio_enabled),
             tar_mapping=tar_mapping,
+            platform=platform,
+            prerelease_policy_api=prerelease_policy_api,
         )
     elif input_path:
         # this is using --input
@@ -394,6 +407,8 @@ def acifragmentgen_confcom(
         policy = security_policy.load_policy_from_json_file(
             input_path, debug_mode=debug_mode, disable_stdio=(not stdio_enabled),
             tar_mapping=tar_mapping,
+            platform=platform,
+            prerelease_policy_api=prerelease_policy_api,
         )
     elif container_definitions:
         policy = AciPolicy(
@@ -404,6 +419,11 @@ def acifragmentgen_confcom(
             debug_mode=debug_mode,
             disable_stdio=disable_stdio,
             container_definitions=container_definitions,
+            prerelease_policy_api=prerelease_policy_api,
+            platform=platform,
+            rego_fragments=copy.deepcopy(
+                get_default_rego_fragments(platform, prerelease_policy_api=prerelease_policy_api)
+            ),
         )
     else:
         eprint("Either --image-name, --input, or --container-definitions must be provided", exit_code=2)
@@ -416,10 +436,11 @@ def acifragmentgen_confcom(
     fragment_imports = policy.get_fragments()
     for container in policy.get_images():
         container_names.append(container.get_container_image())
-    fragment_policy_list = get_all_fragment_contents(container_names, fragment_imports)
+    fragment_policy_list = get_all_fragment_contents(container_names, fragment_imports, platform=platform)
     policy.set_fragment_contents(fragment_policy_list)
     policy.populate_policy_content_for_all_images(
-        individual_image=bool(image_name), tar_mapping=tar_mapping
+        individual_image=bool(image_name), tar_mapping=tar_mapping,
+        skip_win_ver_check=skip_win_ver_check,
     )
 
     # make sure we have images to generate a fragment

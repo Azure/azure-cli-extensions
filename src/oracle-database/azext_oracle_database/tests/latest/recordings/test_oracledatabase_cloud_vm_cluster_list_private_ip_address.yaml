@@ -1,0 +1,63 @@
+interactions:
+- request:
+    body: '{"subnetId": "ocid1.subnet.oc1.uk-london-1.aaaaaaaaequboxnii6bxqgkhvabu4hmsywaz5msdd4es4crvpxfqif6ahrnq",
+      "vnicId": "ocid1.vnic.oc1.uk-london-1.abwgiljswbwvdpkhucoaztvv24rkri6toyo4mvkandol5h7zognd7tnycc5q"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database cloud-vm-cluster list-private-ip-address
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '206'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --cloudvmclustername --subnet-id --vnic-id
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.3 (macOS-26.7.1-arm64-arm-64bit-Mach-O)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/advancedNetworkingTest/providers/Oracle.Database/cloudVmClusters/DataGuardTest0504/listPrivateIpAddresses?api-version=2026-07-01-preview
+  response:
+    body:
+      string: '{"value":[{"displayName":"dataguardtest-7vmff2-vip","hostnameLabel":"dataguardtest-7vmff2-vip","ipAddress":"10.0.1.232","ocid":"ocid1.privateip.oc1.uk-london-1.aaaaaaaabzrtdqptg5h3g6f7c7lpfs7ps7vqpimuyhjbmdbonf5nthdubjsq","subnetId":"ocid1.subnet.oc1.uk-london-1.aaaaaaaaequboxnii6bxqgkhvabu4hmsywaz5msdd4es4crvpxfqif6ahrnq"},{"displayName":"dataguardtest-7vmff-scan-0","hostnameLabel":"","ipAddress":"10.0.1.195","ocid":"ocid1.privateip.oc1.uk-london-1.aaaaaaaadumrne6zk5y7rb7np425esjralbxjmdk74rqvyoigmsjky3nxvbq","subnetId":"ocid1.subnet.oc1.uk-london-1.aaaaaaaaequboxnii6bxqgkhvabu4hmsywaz5msdd4es4crvpxfqif6ahrnq"},{"displayName":"dataguardtest-7vmff2","hostnameLabel":"dataguardtest-7vmff2","ipAddress":"10.0.1.164","ocid":"ocid1.privateip.oc1.uk-london-1.aaaaaaaammhumrkjjefvo5iaipmd7ezrfh2itw35ketajeync7l7v33vblja","subnetId":"ocid1.subnet.oc1.uk-london-1.aaaaaaaaequboxnii6bxqgkhvabu4hmsywaz5msdd4es4crvpxfqif6ahrnq"},{"displayName":"ocid1.dbnode.oc1.uk-london-1.anwgiljs2edokzyafrndhxrytvfrg3xto2jxhj2c3f52mavzeetc3kvinuwq-dataguardtest-7vmff2-client1","hostnameLabel":"dataguardtest-7vmff2-client1","ipAddress":"10.0.1.210","ocid":"ocid1.privateip.oc1.uk-london-1.abwgiljsockazxrkvcg6es7lbplt55u4gghn6piceeac6x4nwbr5ubx5ovcq","subnetId":"ocid1.subnet.oc1.uk-london-1.aaaaaaaaequboxnii6bxqgkhvabu4hmsywaz5msdd4es4crvpxfqif6ahrnq"}],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1359'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 15 Oct 2026 17:17:57 GMT
+      expires:
+      - '-1'
+      opc-request-id:
+      - oci-6149484495C1B14-202610151717/667A29D3E9A69142C40AD16A4C485272/8014486A6A85A90A86519691A6DD9DC6
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Origin,Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=9ef05df2-ad7c-4737-aba9-a5e1b3fa5ae1,objectId=ed0404db-6d52-44c6-a09d-182ac122b912/uksouth/435a1a2d-938a-49bb-ba0d-875a31d66474
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 3725DD5E2C224528ADF9D6FD3DCF8A7A Ref B: BY1AA1072318031 Ref C: 2026-10-15T17:17:50Z'
+    status:
+      code: 200
+      message: OK
+version: 1

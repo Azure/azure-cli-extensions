@@ -3,6 +3,9 @@
 Release History
 ===============
 
+3.0.1
+++++++
+* Update list private IPs command for cloud vm cluster operations to API version 2026-07-01-preview
 
 3.0.0
 ++++++

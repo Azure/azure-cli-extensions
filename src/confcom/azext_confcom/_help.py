@@ -113,6 +113,10 @@ helps[
           type: boolean
           short-summary: 'Include the ACI kube-proxy image-attached fragment reference in a Linux VN2 policy'
 
+        - name: --skip-win-ver-check
+          type: boolean
+          short-summary: 'When enabled, skips the host Windows version check in dmverity-vhd while hashing Windows images. Only affects windows/amd64 and is intended for debugging on hosts that do not produce deterministic layer hashes'
+
     examples:
         - name: Input an ARM Template file to inject a base64 encoded Confidential Container Security Policy into the ARM Template
           text: az confcom acipolicygen --template-file "./template.json"
@@ -208,6 +212,10 @@ helps[
         - name: --fragments-json -j
           type: string
           short-summary: 'Path to a JSON file that will store the fragment import information generated when using --generate-import. This file can later be fed into the policy generation command (acipolicygen) to include the fragment in a new or existing policy. If not specified, the import statement will be printed to the console instead of being saved to a file'
+
+        - name: --skip-win-ver-check
+          type: boolean
+          short-summary: 'When enabled, skips the host Windows version check in dmverity-vhd while hashing Windows images. Only affects windows/amd64 and is intended for debugging on hosts that do not produce deterministic layer hashes'
 
     examples:
         - name: Input an image name to generate a simple fragment

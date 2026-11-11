@@ -13,15 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "redisenterprise update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update an existing (overwrite/recreate, with potential downtime) cache cluster
     """
 
     _aaz_info = {
-        "version": "2026-06-01-preview",
+        "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2026-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2026-10-01-preview"],
         ]
     }
 
@@ -135,6 +136,19 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.firewall_rules = AAZListArg(
+            options=["--firewall-rules"],
+            arg_group="Properties",
+            help=(
+                "The complete set of firewall rules for an Azure Managed Redis cluster. At most 250 rules are "
+                "supported. Omitting --firewall-rules preserves existing rules while public network access remains "
+                "enabled. A supplied array replaces all rules; [] or null clears them. Non-empty rules require "
+                "--public-network-access Enabled. Disabling public network access clears existing rules automatically. "
+                "With public access enabled, an empty rule set allows all public traffic. On existing clusters, "
+                "firewall rule changes cannot be combined with scaling or encryption changes in the same update."
+            ),
+            nullable=True,
+        )
         _args_schema.high_availability = AAZStrArg(
             options=["--high-availability"],
             arg_group="Properties",
@@ -161,6 +175,27 @@ class Update(AAZCommand):
             help="Whether or not public network traffic can access the Redis cluster. Only 'Enabled' or 'Disabled' can be set. null is returned only for clusters created using an old API version which do not have this property and cannot be set.",
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
+        firewall_rules = cls._args_schema.firewall_rules
+        firewall_rules.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.firewall_rules.Element
+        _element.name = AAZStrArg(
+            options=["name"],
+            help=(
+                "The name of the firewall rule, unique within the cluster ignoring case. Must be 1-80 characters and "
+                "contain only letters, numbers, hyphens, or underscores."
+            ),
+        )
+        _element.source_address_prefix = AAZStrArg(
+            options=["source-address-prefix"],
+            help=(
+                "An IPv4 address (for example, \"203.0.113.1\"), IPv4 CIDR prefix (for example, \"203.0.113.0/24\"), or "
+                "Azure service tag (for example, \"AzureCloud\"). IPv6 addresses are not supported."
+            ),
         )
 
         maintenance_configuration = cls._args_schema.maintenance_configuration
@@ -301,7 +336,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01-preview",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }
@@ -400,7 +435,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01-preview",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }
@@ -476,6 +511,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("encryption", AAZObjectType)
+                properties.set_prop("firewallRules", AAZListType, ".firewall_rules")
                 properties.set_prop("highAvailability", AAZStrType, ".high_availability")
                 properties.set_prop("maintenanceConfiguration", AAZObjectType, ".maintenance_configuration")
                 properties.set_prop("minimumTlsVersion", AAZStrType, ".minimum_tls_version")
@@ -494,6 +530,15 @@ class Update(AAZCommand):
             if key_encryption_key_identity is not None:
                 key_encryption_key_identity.set_prop("identityType", AAZStrType, ".key_encryption_identity_type")
                 key_encryption_key_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".user_assigned_identity_resource_id")
+
+            firewall_rules = _builder.get(".properties.firewallRules")
+            if firewall_rules is not None:
+                firewall_rules.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.firewallRules[]")
+            if _elements is not None:
+                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("sourceAddressPrefix", AAZStrType, ".source_address_prefix", typ_kwargs={"flags": {"required": True}})
 
             maintenance_configuration = _builder.get(".properties.maintenanceConfiguration")
             if maintenance_configuration is not None:
@@ -623,6 +668,9 @@ class _UpdateHelper:
 
         properties = _schema_cluster_read.properties
         properties.encryption = AAZObjectType()
+        properties.firewall_rules = AAZListType(
+            serialized_name="firewallRules",
+        )
         properties.high_availability = AAZStrType(
             serialized_name="highAvailability",
         )
@@ -685,6 +733,18 @@ class _UpdateHelper:
         )
         key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrType(
             serialized_name="userAssignedIdentityResourceId",
+        )
+
+        firewall_rules = _schema_cluster_read.properties.firewall_rules
+        firewall_rules.Element = AAZObjectType()
+
+        _element = _schema_cluster_read.properties.firewall_rules.Element
+        _element.name = AAZStrType(
+            flags={"required": True},
+        )
+        _element.source_address_prefix = AAZStrType(
+            serialized_name="sourceAddressPrefix",
+            flags={"required": True},
         )
 
         maintenance_configuration = _schema_cluster_read.properties.maintenance_configuration

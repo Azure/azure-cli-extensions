@@ -197,7 +197,9 @@ helps['aks create'] = f"""
         - name: --enable-azure-monitor-logs
           type: bool
           short-summary: Enable Azure Monitor logs for the cluster.
-          long-summary: This is equivalent to using "--enable-addons monitoring". Turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
+          long-summary: |
+            Enables Log Analytics monitoring for the cluster through the Azure Monitor profile. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+            Requires the cluster to use a managed identity; clusters created with service principal authentication are not supported.
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -303,7 +305,7 @@ helps['aks create'] = f"""
             operating system, addons, and managed containerized components
             (https://aka.ms/aks/components/docs). See Enable cluster-wide FIPS
             (https://aka.ms/aks/fips) for more details.
-            Requires Kubernetes version 1.34 or later and the
+            Requires Kubernetes version 1.35 or later and the
             Microsoft.ContainerService/EnableFIPSPreview feature to be registered
             on the subscription. All node pools must be FIPS-enabled; this command
             enables FIPS on the default node pool during cluster creation. Some
@@ -338,6 +340,16 @@ helps['aks create'] = f"""
         - name: --ampls-resource-id
           type: string
           short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
+        - name: --syslog-port
+          type: int
+          short-summary: Host port used by the Azure Monitor agent to collect syslog. Defaults to 28330 when unset.
+          long-summary: Applies to the Azure Monitor profile, configured with --enable-azure-monitor-logs. Distinct from --enable-syslog, which toggles syslog collection itself.
+        - name: --enable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Enable Prometheus metrics scraping by the Azure Monitor agent. Applies to the Azure Monitor profile.
+        - name: --disable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Disable Prometheus metrics scraping by the Azure Monitor agent. Applies to the Azure Monitor profile.
         - name: --enable-cluster-autoscaler
           type: bool
           short-summary: Enable cluster autoscaler, default value is false.
@@ -541,6 +553,7 @@ helps['aks create'] = f"""
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.
+          long-summary: An unversioned key identifier (for example `https://myvault.vault.azure.net/keys/mykey`) uses the new KMS experience, where key versions are rotated automatically. A versioned key identifier (for example `https://myvault.vault.azure.net/keys/mykey/<version>`) uses the legacy KMS experience, where key versions must be rotated manually. For more information see https://learn.microsoft.com/en-us/azure/aks/kms-data-encryption-concepts.
         - name: --azure-keyvault-kms-key-vault-network-access
           type: string
           short-summary: Network Access of Azure Key Vault.
@@ -551,7 +564,7 @@ helps['aks create'] = f"""
         - name: --kms-infrastructure-encryption
           type: string
           short-summary: Enable encryption at rest of Kubernetes resource objects using service-managed keys.
-          long-summary: Enable infrastructure encryption for Kubernetes resource objects. This feature provides encryption at rest for cluster secrets and configuration using service-managed keys. For more information see https://aka.ms/aks/kubernetesResourceObjectEncryption.
+          long-summary: Enable infrastructure encryption for Kubernetes resource objects. This feature provides encryption at rest for cluster secrets and configuration using service-managed keys. "Enabled" is the only accepted value, since the feature cannot be turned off once it has been turned on. For more information see https://aka.ms/aks/kubernetesResourceObjectEncryption.
         - name: --enable-image-cleaner
           type: bool
           short-summary: Enable ImageCleaner Service.
@@ -879,6 +892,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs-traces --enable-addons monitoring
         - name: Create a kubernetes cluster with Azure Monitor logs enabled (shorthand)
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-logs
+        - name: Create a kubernetes cluster with Azure Monitor logs, Prometheus scraping disabled and a custom syslog port
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-logs --disable-prometheus-metrics-scraping --syslog-port 28331
         - name: Create a kubernetes cluster with OpenTelemetry metrics on custom port
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-metrics --opentelemetry-metrics-port-http 8888 --enable-azure-monitor-metrics
         - name: Create a kubernetes cluster with OpenTelemetry logs and traces on custom ports
@@ -1161,11 +1176,16 @@ helps['aks update'] = """
         - name: --enable-azure-monitor-logs
           type: bool
           short-summary: Enable Azure Monitor logs for the cluster.
-          long-summary: This is equivalent to using "az aks enable-addons -a monitoring". Enables Log Analytics monitoring for the cluster. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
+          long-summary: |
+            Enables Log Analytics monitoring for the cluster through the Azure Monitor profile. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+            Requires the cluster to use a managed identity; clusters using service principal authentication are not supported.
+            Fails if Azure Monitor logs is already enabled on the cluster, or if the cluster was onboarded with legacy (non-managed-identity) authentication. To change the configuration, run "az aks update --disable-azure-monitor-logs" first.
         - name: --disable-azure-monitor-logs
           type: bool
           short-summary: Disable Azure Monitor logs for the cluster.
-          long-summary: This is equivalent to using "az aks disable-addons -a monitoring". Disables Log Analytics monitoring for the cluster.
+          long-summary: |
+            Disables Log Analytics monitoring for the cluster, removes the data collection rule association, and resets the Container Insights settings (syslog port, Prometheus scraping and container network logs) back to their defaults. The workspace is left recorded on the profile but is unused while disabled, and is replaced on the next enable.
+            If OpenTelemetry logs and traces are enabled they are disabled as well, and confirmation is requested first unless "--yes" is specified.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
@@ -1184,6 +1204,16 @@ helps['aks update'] = """
         - name: --ampls-resource-id
           type: string
           short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
+        - name: --syslog-port
+          type: int
+          short-summary: Host port used by the Azure Monitor agent to collect syslog. Defaults to 28330 when unset.
+          long-summary: Applies to the Azure Monitor profile, configured with --enable-azure-monitor-logs. Distinct from --enable-syslog, which toggles syslog collection itself.
+        - name: --enable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Enable Prometheus metrics scraping by the Azure Monitor agent. Applies to the Azure Monitor profile.
+        - name: --disable-prometheus-metrics-scraping
+          type: bool
+          short-summary: Disable Prometheus metrics scraping by the Azure Monitor agent. Applies to the Azure Monitor profile.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
@@ -1318,6 +1348,7 @@ helps['aks update'] = """
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.
+          long-summary: An unversioned key identifier (for example `https://myvault.vault.azure.net/keys/mykey`) uses the new KMS experience, where key versions are rotated automatically. A versioned key identifier (for example `https://myvault.vault.azure.net/keys/mykey/<version>`) uses the legacy KMS experience, where key versions must be rotated manually. For more information see https://learn.microsoft.com/en-us/azure/aks/kms-data-encryption-concepts.
         - name: --azure-keyvault-kms-key-vault-network-access
           type: string
           short-summary: Network Access of Azure Key Vault.
@@ -1328,7 +1359,7 @@ helps['aks update'] = """
         - name: --kms-infrastructure-encryption
           type: string
           short-summary: Enable encryption at rest of Kubernetes resource objects using service-managed keys.
-          long-summary: Enable infrastructure encryption for Kubernetes resource objects. This feature provides encryption at rest for cluster secrets and configuration using service-managed keys. For more information see https://aka.ms/aks/kubernetesResourceObjectEncryption.
+          long-summary: Enable infrastructure encryption for Kubernetes resource objects. This feature provides encryption at rest for cluster secrets and configuration using service-managed keys. "Enabled" is the only accepted value, since the feature cannot be turned off once it has been turned on. For more information see https://aka.ms/aks/kubernetesResourceObjectEncryption.
         - name: --enable-image-cleaner
           type: bool
           short-summary: Enable ImageCleaner Service.
@@ -1352,7 +1383,7 @@ helps['aks update'] = """
             operating system, addons, and managed containerized components
             (https://aka.ms/aks/components/docs). See Enable cluster-wide FIPS
             (https://aka.ms/aks/fips) for more details.
-            Requires Kubernetes version 1.34 or later and the
+            Requires Kubernetes version 1.35 or later and the
             Microsoft.ContainerService/EnableFIPSPreview feature to be registered
             on the subscription. Existing node pools must already be FIPS-enabled
             before enabling this cluster-level setting, and future node pools must
@@ -1735,6 +1766,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --safeguards-excluded-ns ns1,ns2
       - name: Enable Azure Monitor logs for a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-logs
+      - name: Re-enable Prometheus scraping and change the syslog port on a cluster with Azure Monitor logs enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-prometheus-metrics-scraping --syslog-port 29000
       - name: Enable Azure Backup for a kubernetes cluster (default Week strategy). Requires the 'dataprotection' extension.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-backup --yes
       - name: Enable Azure Backup with a custom strategy using an existing vault and policy
@@ -2766,6 +2799,90 @@ helps['aks nodepool scale'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+"""
+
+helps['aks upgrade-insights'] = """
+    type: group
+    short-summary: Evaluate upgrade readiness and read stored insights for an AKS cluster.
+    long-summary: >
+        These commands do not upgrade the cluster. By default, results are displayed as a
+        human-readable report with issues nested under their control-plane or agent-pool scope.
+        Use --output json for complete structured results. Explicit output settings and --query
+        retain standard Azure CLI output behavior.
+"""
+
+helps['aks upgrade-insights create'] = """
+    type: command
+    short-summary: Generate or refresh a stored upgrade readiness evaluation.
+    long-summary: >
+        This command does not upgrade the cluster. Displays a scope-nested readiness report
+        by default. Use --output json for complete structured results; explicit output settings,
+        core.output configuration, and --query retain standard Azure CLI formatting.
+    examples:
+        - name: Evaluate the control plane and all agent pools (the default upgrade type).
+          text: az aks upgrade-insights create -g MyResourceGroup --name MyCluster --target-kubernetes-ver 1.35.1
+        - name: Evaluate only the control plane.
+          text: az aks upgrade-insights create -g MyResourceGroup --name MyCluster --upgrade-type ControlPlane --target-kubernetes-ver 1.35.1
+"""
+
+helps['aks upgrade-insights show'] = """
+    type: command
+    short-summary: Read a stored upgrade insight without regenerating its evaluation.
+    long-summary: >
+        Displays issue messages, affected resources, and recommended actions under their
+        evaluated scope by default. Use --output json for complete structured results.
+    examples:
+        - name: Read an insight using its server-generated name.
+          text: az aks upgrade-insights show -g MyResourceGroup --name MyCluster --insight-name INSIGHT_NAME
+"""
+
+helps['aks upgrade-insights list'] = """
+    type: command
+    short-summary: List all stored upgrade insights for a cluster, including agent-pool and node-image insights.
+    long-summary: >
+        Displays insight names and issue summaries nested under each evaluated scope by default.
+        Use --output json for complete structured results. This does not regenerate evaluations.
+    examples:
+        - name: List insights with issue summaries nested under each evaluated scope.
+          text: az aks upgrade-insights list -g MyResourceGroup --name MyCluster
+        - name: List complete structured insights.
+          text: az aks upgrade-insights list -g MyResourceGroup --name MyCluster --output json
+"""
+
+helps['aks nodepool upgrade-insights'] = """
+    type: group
+    short-summary: Evaluate Kubernetes or node-image upgrade readiness for one node pool.
+    long-summary: >
+        These commands do not upgrade the pool. Issues are nested under the selected agent pool
+        in the default readiness report. Use --output json for complete structured results.
+        List all pool insights with az aks upgrade-insights list.
+"""
+
+helps['aks nodepool upgrade-insights create'] = """
+    type: command
+    short-summary: Generate or refresh an upgrade readiness evaluation for one node pool.
+    long-summary: >
+        This command does not upgrade the pool. Displays a readiness report with issues nested
+        under the selected pool by default. Use --output json for complete structured results.
+    examples:
+        - name: Evaluate a Kubernetes version upgrade (the default upgrade type is AgentPool).
+          text: az aks nodepool upgrade-insights create -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --target-kubernetes-ver 1.35.1
+        - name: Evaluate the latest available node image.
+          text: az aks nodepool upgrade-insights create -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --upgrade-type NodeImage
+        - name: Evaluate a specific node image.
+          text: az aks nodepool upgrade-insights create -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --upgrade-type NodeImage --target-node-image-ver NODE_IMAGE_VERSION
+"""
+
+helps['aks nodepool upgrade-insights show'] = """
+    type: command
+    short-summary: Read a stored AgentPool or NodeImage insight for the specified node pool.
+    long-summary: >
+        The insight must belong to the selected pool. To read a combined control-plane and
+        agent-pools insight, use az aks upgrade-insights show. Displays a pool-nested readiness
+        report by default; use --output json for complete structured results.
+    examples:
+        - name: Read a stored node pool insight without regenerating it.
+          text: az aks nodepool upgrade-insights show -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --insight-name INSIGHT_NAME
 """
 
 helps['aks nodepool upgrade'] = """

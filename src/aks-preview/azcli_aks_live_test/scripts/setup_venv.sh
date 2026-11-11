@@ -32,10 +32,7 @@ setupAZ(){
     ext_repo=${2:-""}
 
     # install azdev, used later to install azcli and extension
-    pip install azdev==0.2.8
-
-    # fix setuptools to 77.0.3 as a workaround for "No module named azure.cli.__main__; 'azure.cli' is a package and cannot be directly executed"
-    pip install setuptools==77.0.3
+    pip install azdev==0.2.13
 
     # pre-install-az: check existing az
     which az || az version || az extension list || true
@@ -59,8 +56,8 @@ setupAZ(){
 
 # need to be executed in a venv
 installTestPackages(){
-    # install pytest plugins
-    pip install pytest-json-report==1.5.0 pytest-rerunfailures==11.0 pytest-cov==4.0.0 pytest-forked==1.6.0
+    # pytest 9.2 report objects cannot be serialized by pytest-forked 1.6.0.
+    pip install pytest==9.1.1 pytest-json-report==1.5.0 pytest-rerunfailures==11.0 pytest-cov==4.0.0 pytest-forked==1.6.0
 
     # install coverage for measuring code coverage
     pip install coverage

@@ -481,6 +481,93 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
 
         track_job_to_completion(test)
 
+    # Uses persistent vault, policy, backup instance and Cosmos DB accounts pre-provisioned in
+    # rg-cosmos-ilr-ecy-b4e7e093 (eastus2euap) in the subscription the test runs under:
+    #   - source 'cosilrecyb4e7e093src' with databases db1 (col1, col2), db2 (c1, c2) and db3 (control)
+    #   - target 'cosilrecyb4e7e093tgt', which must be empty because item-level restore needs an empty account
+    #   - backup vault 'cosilrecyb4e7e093-vault' + policy 'CosmosWeeklyPolicy'
+    # Marked @live_only() because it drives a real item-level restore against live Cosmos DB accounts.
+    @live_only()
+    @AllowLargeResponse()
+    def test_dataprotection_backup_and_restore_cosmosdb_item_level(test):
+        test.kwargs.update({
+            'restoreLocation': 'eastus2euap',
+            'rg': 'rg-cosmos-ilr-ecy-b4e7e093',
+            'vaultName': 'cosilrecyb4e7e093-vault',
+            'dataSourceType': 'AzureCosmosDB',
+            'sourceDataStore': 'VaultStore',
+            'permissionsScope': 'Resource',
+            'restoreOperation': 'Restore',
+            'policyRuleName': 'BackupWeekly',
+            'backupInstanceName': 'cosilrecyb4e7e093src-cosilrecyb4e7e093src-1f881bee-cbe8-11f1-8146-7ced8d285cbf',
+            'targetCosmosDbName': 'cosilrecyb4e7e093tgt',
+            'targetCosmosDbId': f'/subscriptions/{test.get_subscription_id()}/resourceGroups/rg-cosmos-ilr-ecy-b4e7e093/providers/Microsoft.DocumentDB/databaseAccounts/cosilrecyb4e7e093tgt',
+        })
+
+        backup_instance_validate_create(test, reuse_existing=True)
+
+        test.cmd('az cosmosdb sql database list -g "{rg}" -a "{targetCosmosDbName}"', checks=[
+            test.check('length(@)', 0)
+        ])
+
+        # Ensure no other jobs running on datasource. Required to avoid operation clashes.
+        wait_for_job_exclusivity_on_datasource(test)
+
+        adhoc_backup_response = test.cmd('az dataprotection backup-instance adhoc-backup '
+                                         '-n "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}" '
+                                         '--rule-name "{policyRuleName}"').get_output_in_json()
+        test.kwargs.update({"jobId": adhoc_backup_response["jobId"]})
+        track_job_to_completion(test)
+
+        recovery_point = test.cmd('az dataprotection recovery-point list --backup-instance-name '
+                                  '"{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}"', checks=[
+                                      test.greater_than('length([])', 0)
+                                  ]).get_output_in_json()
+        test.kwargs.update({'recoveryPointId': recovery_point[0]['name']})
+
+        # Select one container of db1 and all of db2; db1/col2 and db3 must not be restored.
+        restore_config = test.cmd('az dataprotection backup-instance initialize-restoreconfig '
+                                  '--datasource-type "{dataSourceType}" --resource-identifiers db1/col1 db2').get_output_in_json()
+        test.kwargs.update({'restoreConfig': restore_config})
+
+        restore_request = test.cmd('az dataprotection backup-instance restore initialize-for-item-recovery '
+                                   '--datasource-type "{dataSourceType}" --restore-location "{restoreLocation}" '
+                                   '--source-datastore "{sourceDataStore}" --recovery-point-id "{recoveryPointId}" '
+                                   '--target-resource-id "{targetCosmosDbId}" --restore-configuration "{restoreConfig}" '
+                                   '--mi-system-assigned true').get_output_in_json()
+        test.kwargs.update({"restoreRequest": restore_request})
+
+        # Grant restore permissions (Cosmos DB Operator on the target account).
+        test.cmd('az dataprotection backup-instance update-msi-permissions '
+                 '-g "{rg}" --vault-name "{vaultName}" --datasource-type "{dataSourceType}" '
+                 '--operation "{restoreOperation}" --permissions-scope "{permissionsScope}" '
+                 '--restore-request-object "{restoreRequest}" --yes')
+
+        test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" --vault-name "{vaultName}" '
+                 '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}"')
+
+        # Ensure no other jobs running on datasource. Required to avoid operation clashes.
+        wait_for_job_exclusivity_on_datasource(test)
+
+        restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}" '
+                                        '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}"').get_output_in_json()
+        test.kwargs.update({"jobId": restore_trigger_json["jobId"]})
+        track_job_to_completion(test)
+
+        # Empty the target again so the next run can restore into it.
+        test.addCleanup(test.cmd, 'az cosmosdb sql database delete -g "{rg}" -a "{targetCosmosDbName}" -n db1 --yes')
+        test.addCleanup(test.cmd, 'az cosmosdb sql database delete -g "{rg}" -a "{targetCosmosDbName}" -n db2 --yes')
+
+        test.cmd('az cosmosdb sql database list -g "{rg}" -a "{targetCosmosDbName}"', checks=[
+            test.check('sort([].name)', ['db1', 'db2'])
+        ])
+        test.cmd('az cosmosdb sql container list -g "{rg}" -a "{targetCosmosDbName}" -d db1', checks=[
+            test.check('[].name', ['col1'])
+        ])
+        test.cmd('az cosmosdb sql container list -g "{rg}" -a "{targetCosmosDbName}" -d db2', checks=[
+            test.check('sort([].name)', ['c1', 'c2'])
+        ])
+
     # Uses persistent vault, policy, Elastic SAN + volume group + source volume pre-provisioned in
     # esan-bugbash-CLIrg-1 (subscription 97cda027-4279-4cde-b4ff-19afa0021d87). Create these in the SAME
     # subscription, a DIFFERENT resource group, following the Cosmos convention:

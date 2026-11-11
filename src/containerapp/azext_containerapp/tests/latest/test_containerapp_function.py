@@ -155,6 +155,38 @@ class ContainerappFunctionTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_function_list_show_ingress_disabled(self, resource_group):
+        """Functions cannot be listed/shown while ingress is disabled; a clear, actionable error should be raised."""
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus2"
+        self.cmd('configure --defaults location={}'.format(location))
+
+        ca_func_name = self.create_random_name(prefix='functionapp', length=24)
+        function_image = "mcr.microsoft.com/azure-functions/dotnet8-quickstart-demo:1.0"
+        function_name = "HttpExample"
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
+
+        # Create a function app WITHOUT ingress (no --ingress/--target-port), so ingress is disabled.
+        self.cmd(f'containerapp create -g {resource_group} -n {ca_func_name} --image {function_image} --environment {env} --kind functionapp', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("kind", "functionapp"),
+            JMESPathCheck("properties.configuration.ingress", None)
+        ])
+        time.sleep(30)
+
+        # Listing functions must fail fast with the actionable ingress-disabled message.
+        with self.assertRaisesRegex(ValidationError, "Ingress must be enabled"):
+            self.cmd(f'containerapp function list -g {resource_group} -n {ca_func_name}')
+
+        # Showing a function must fail with the same message.
+        with self.assertRaisesRegex(ValidationError, "Ingress must be enabled"):
+            self.cmd(f'containerapp function show -g {resource_group} -n {ca_func_name} --function-name {function_name}')
+
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_function_list_show_multirevision_scenarios(self, resource_group):
         """Test multiple revisions scenarios for function list command"""
         location = TEST_LOCATION

@@ -7,6 +7,12 @@ upcoming
 * Resolve Docker with Azure CLI's safe executable lookup before invoking it from local build and patch flows
 * Require Azure CLI 2.92.0 or later
 
+1.3.0b6
+++++++
+* 'az containerapp function list/show': Raise a clear error when ingress is disabled instead of a generic server error
+* 'az containerapp env create': Pre-announce the future change of the '--logs-destination' default from 'log-analytics' to 'azure-monitor'. The current default remains 'log-analytics'; specify '--logs-destination log-analytics' to retain this behavior after the change.
+* 'az containerapp up': Validate registry server before getting ACR credentials
+
 1.3.0b5
 ++++++
 * 'az containerapp env storage set': Support Azure Files authentication with an Azure Key Vault secret or managed identity

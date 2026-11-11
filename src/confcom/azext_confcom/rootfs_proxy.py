@@ -31,7 +31,7 @@ _binaries_dir = get_binaries_dir()
 # package bundles the binaries for every supported platform, so we always fetch
 # all of them here.
 
-_INTEGRITY_VHD_VERSION = "v2.2"
+_INTEGRITY_VHD_VERSION = "v2.4"
 _INTEGRITY_VHD_RELEASE_URL = (
     f"https://github.com/microsoft/integrity-vhd/releases/download/{_INTEGRITY_VHD_VERSION}"
 )
@@ -40,13 +40,13 @@ _dmverity_vhd_binaries = [
     {
         "path": _binaries_dir / "dmverity-vhd",
         "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd",
-        "sha256": "85b383bcce609e7acf0b0eae4b6e214d795b30c4d9d96c21377ab97ea3161a28",
+        "sha256": "00ee109bdc250f93a82d341859a78eff4e8f0ac8746722118ff27fbc2ab81daa",
     },
     # Windows
     {
         "path": _binaries_dir / "dmverity-vhd.exe",
         "url": f"{_INTEGRITY_VHD_RELEASE_URL}/dmverity-vhd.exe",
-        "sha256": "83681d2e26b8406098e06e24db80c8eaf7b17eee08a5f8b313c88620f0612b66",
+        "sha256": "a00429b781883b304839e14c01ec9788912fef7e016d0ee8b6fad7571a330f08",
     },
     {
         "path": _binaries_dir / "CimWriter.dll",
@@ -113,7 +113,8 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
         tag: str,
         platform: str = "linux/amd64",
         tar_location: str = "",
-        faster_hashing=False
+        faster_hashing=False,
+        skip_win_ver_check=False,
     ) -> Dict[str, List[str]]:
         image_name = f"{image}:{tag}"
         # populate layer info
@@ -135,6 +136,12 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
 
         if not tar_location and faster_hashing:
             arg_list += ["-b"]
+
+        # The host Windows version check only guards the deterministic registry-hive
+        # merge on the Windows CIM path, so only pass this global debug flag for
+        # Windows. It must precede the "roothash" subcommand since it is a global flag.
+        if skip_win_ver_check and platform.startswith("windows"):
+            arg_list += ["--debug-skip-version-check"]
 
         # add the image to the end of the parameter list
         arg_list += ["roothash", "-i", f"{image_name}"]

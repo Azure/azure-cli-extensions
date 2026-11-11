@@ -45,7 +45,7 @@ class CdnAfdRouteScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         route_name = self.create_random_name(prefix='route', length=16)
         create_options = f"--origin-group {origin_group_name} " \
                          + "--supported-protocols Https Http --link-to-default-domain Enabled " \
-                         + "--https-redirect Enabled --forwarding-protocol MatchRequest"
+                         + "--https-redirect Enabled --forwarding-protocol MatchRequest --grpc-state Disabled"
        
         create_checks = [JMESPathCheck('supportedProtocols[0]', "Https"),
                          JMESPathCheck('supportedProtocols[1]', "Http"),
@@ -53,6 +53,7 @@ class CdnAfdRouteScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('forwardingProtocol', "MatchRequest"),
                          JMESPathCheck('httpsRedirect', "Enabled"),
                          JMESPathCheck('enabledState', "Enabled"),
+                         JMESPathCheck('grpcState', 'Disabled'),
                          JMESPathCheck('cacheConfiguration.queryStringCachingBehavior', None),
                          JMESPathCheck('originGroup.id', origin_group_id)]
         self.afd_route_create_cmd(resource_group,
@@ -61,6 +62,36 @@ class CdnAfdRouteScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                                   route_name,
                                   create_options,
                                   create_checks)
+        self.afd_route_show_cmd(resource_group, profile_name, endpoint_name, route_name, checks=create_checks)
+
+        grpc_checks = [
+            JMESPathCheck('grpcState', 'Enabled'),
+            JMESPathCheck('supportedProtocols', ['Https']),
+            JMESPathCheck('forwardingProtocol', 'HttpsOnly'),
+            JMESPathCheck('httpsRedirect', 'Disabled'),
+            JMESPathCheck('linkToDefaultDomain', 'Enabled'),
+            JMESPathCheck('enabledState', 'Enabled'),
+            JMESPathCheck('originGroup.id', origin_group_id),
+            JMESPathCheck('cacheConfiguration', None),
+        ]
+        self.afd_route_update_cmd(
+            resource_group, profile_name, endpoint_name, route_name,
+            options='--grpc-state Enabled --supported-protocols Https '
+                    '--forwarding-protocol HttpsOnly --https-redirect Disabled',
+            checks=grpc_checks)
+        self.afd_route_show_cmd(resource_group, profile_name, endpoint_name, route_name, checks=grpc_checks)
+        self.afd_route_list_cmd(resource_group, profile_name, endpoint_name, checks=[
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].grpcState', 'Enabled'),
+            JMESPathCheck('[0].originGroup.id', origin_group_id),
+        ])
+
+        self.afd_route_update_cmd(
+            resource_group, profile_name, endpoint_name, route_name,
+            options='--grpc-state Disabled --supported-protocols Https Http '
+                    '--forwarding-protocol MatchRequest --https-redirect Enabled',
+            checks=create_checks)
+        self.afd_route_show_cmd(resource_group, profile_name, endpoint_name, route_name, checks=create_checks)
 
         custom_domain_name = self.create_random_name(prefix='customdomain', length=24)
         custom_domain_id = f'/subscriptions/{self.get_subscription_id()}/resourceGroups/{resource_group}/providers/Microsoft.Cdn/profiles/{profile_name}/customDomains/{custom_domain_name}'

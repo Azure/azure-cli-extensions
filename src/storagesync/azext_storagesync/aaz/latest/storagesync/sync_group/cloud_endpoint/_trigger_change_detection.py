@@ -19,9 +19,9 @@ class TriggerChangeDetection(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-06-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagesync/storagesyncservices/{}/syncgroups/{}/cloudendpoints/{}/triggerchangedetection", "2022-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagesync/storagesyncservices/{}/syncgroups/{}/cloudendpoints/{}/triggerchangedetection", "2025-12-01"],
         ]
     }
 
@@ -47,6 +47,9 @@ class TriggerChangeDetection(AAZCommand):
             help="Name of Cloud Endpoint object.",
             required=True,
             id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -56,12 +59,18 @@ class TriggerChangeDetection(AAZCommand):
             help="Name of Storage Sync Service resource.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="",
+            ),
         )
         _args_schema.sync_group_name = AAZStrArg(
             options=["--sync-group-name"],
             help="Name of Sync Group resource.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="",
+            ),
         )
 
         # define Arg Group "Parameters"
@@ -113,7 +122,7 @@ class TriggerChangeDetection(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -122,7 +131,7 @@ class TriggerChangeDetection(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -173,7 +182,7 @@ class TriggerChangeDetection(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-06-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }

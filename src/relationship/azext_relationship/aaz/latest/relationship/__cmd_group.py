@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "relationship",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Relationships
+    """Manage Azure Relationships.
     """
     pass
 
