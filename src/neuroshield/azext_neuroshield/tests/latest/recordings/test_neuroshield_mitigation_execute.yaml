@@ -1,0 +1,714 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource finding show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","name":"CVE-2026-24061-satya-rpaas-ns3","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/findings","properties":{"cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","severity":"High","description":"GNU
+        Inetutils telnetd allows unauthenticated remote attackers to supply a malicious
+        username environment variable and bypass authentication to obtain root access.","reason":"Installed
+        version is below the vendor fix.\n- inetutils-telnetd 2:2.5-3ubuntu4: Installed
+        version is below the vendor fix.","detectedTime":"2026-10-20T19:56:07.2702343+00:00","status":"Active"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '975'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:08:23 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c85c03e5-610d-4470-8cc5-0a2629fd49e8
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '19'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/a9fd4ccf-5c01-4180-aa70-7ed54c6cef05
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F724595115774F3BA28F004A5FF7FEF2 Ref B: SG2AA1070305052 Ref C: 2026-11-11T04:08:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
+        all incoming traffic to the locally registered Telnet port, including local
+        connections to that port. Legitimate Telnet access on that port stops, while
+        other services remain available; custom Telnet listeners on other ports are
+        not covered.","isRollbackable":true,"status":"AwaitingApproval"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1210'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:08:26 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 3b9d4d23-0564-47d7-b828-02952f986831
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '24'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/928f2827-61f7-4e7a-a0ea-69a2505efb73
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 4324705F13C041818F224383E0F0741C Ref B: SG2AA1040518025 Ref C: 2026-11-11T04:08:25Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation execute
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource --mitigation-id
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port/execute?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
+        all incoming traffic to the locally registered Telnet port, including local
+        connections to that port. Legitimate Telnet access on that port stops, while
+        other services remain available; custom Telnet listeners on other ports are
+        not covered.","isRollbackable":true,"status":"Queued"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:08:28.5652773+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1334'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:08:29 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 74fd240d-d76d-4574-b1eb-e8b5d50b24ec
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '64'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/835306ac-e92b-4745-99a6-c531406f4a6f
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: EF897338FEBA4B72BF192A14E2F1D6B6 Ref B: SG2AA1070304025 Ref C: 2026-11-11T04:08:28Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:08:28.5652773Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
+        all incoming traffic to the locally registered Telnet port, including local
+        connections to that port. Legitimate Telnet access on that port stops, while
+        other services remain available; custom Telnet listeners on other ports are
+        not covered.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1291'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:08:31 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 8ede5480-57ac-471f-885e-97654639e32a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '25'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/2686b5c9-683e-45b1-b43a-84bfa73a7b95
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CB66F8CF90084EF4B07A777686E5DF70 Ref B: SG2AA1040515060 Ref C: 2026-11-11T04:08:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:08:28.5652773Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
+        all incoming traffic to the locally registered Telnet port, including local
+        connections to that port. Legitimate Telnet access on that port stops, while
+        other services remain available; custom Telnet listeners on other ports are
+        not covered.","isRollbackable":true,"status":"Succeeded","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1398'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:09:04 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 93076469-783b-4b75-a226-9f947f4ea6df
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '21'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/ea4cde23-6bcd-4171-9255-5f57a66c5bdd
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1B077803C19F44B99F7EB84E41B80520 Ref B: SG2AA1070302029 Ref C: 2026-11-11T04:09:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation rollback
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource --mitigation-id
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port/rollback?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
+        all incoming traffic to the locally registered Telnet port, including local
+        connections to that port. Legitimate Telnet access on that port stops, while
+        other services remain available; custom Telnet listeners on other ports are
+        not covered.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:09:06.4303534+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1450'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:09:06 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - b0ea4724-afaa-41db-93eb-afe4cb69246b
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '58'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/0b4b0b9f-7f64-4708-9b5d-ff5e56c2c843
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 3593E2F11D2144C289B698B42B596691 Ref B: SG2AA1070302025 Ref C: 2026-11-11T04:09:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:09:06.4303534Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
+        all incoming traffic to the locally registered Telnet port, including local
+        connections to that port. Legitimate Telnet access on that port stops, while
+        other services remain available; custom Telnet listeners on other ports are
+        not covered.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:09:09 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 07d1bead-5eda-4029-bed2-44e8d0204398
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '14'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/bcd22c69-b6e8-4cd2-8acb-8cb9c2168e6f
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 105FC626745D4D0381D1C5A667AACF56 Ref B: SG2AA1040517023 Ref C: 2026-11-11T04:09:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:09:06.4303534Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
+        all incoming traffic to the locally registered Telnet port, including local
+        connections to that port. Legitimate Telnet access on that port stops, while
+        other services remain available; custom Telnet listeners on other ports are
+        not covered.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:09:42 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 57343133-63af-4c3a-8fb5-7fa325b26774
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '10'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/f8377177-182d-462a-8c4b-d64ca4dea075
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 32B3A46E3AEA4CBD888EE0A04EF48039 Ref B: SG2AA1070305025 Ref C: 2026-11-11T04:09:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:09:06.4303534Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
+        all incoming traffic to the locally registered Telnet port, including local
+        connections to that port. Legitimate Telnet access on that port stops, while
+        other services remain available; custom Telnet listeners on other ports are
+        not covered.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:10:14 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 7f794423-8850-4ca0-b1cb-869481acfd5c
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '10'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/c2017daa-035a-4f39-9742-9013befc5596
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6919D19DD80E4BB8B7379D1909F0333D Ref B: SG2AA1040517052 Ref C: 2026-11-11T04:10:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:09:06.4303534Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
+        all incoming traffic to the locally registered Telnet port, including local
+        connections to that port. Legitimate Telnet access on that port stops, while
+        other services remain available; custom Telnet listeners on other ports are
+        not covered.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:10:48 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 607d636b-1944-463d-8642-55fda2cfe75d
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '9'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/cc26ff03-44a0-4a57-a3ba-cac74723682b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3DB252244C324F5ABE74BC3C380E5070 Ref B: SG2AA1070301040 Ref C: 2026-11-11T04:10:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:09:06.4303534Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
+        all incoming traffic to the locally registered Telnet port, including local
+        connections to that port. Legitimate Telnet access on that port stops, while
+        other services remain available; custom Telnet listeners on other ports are
+        not covered.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:11:20 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 2907c1c9-485d-46f6-b9d5-c412dcc85b28
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '19'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/e95cc780-11b8-41e7-bae9-05063cf9e00f
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 803D2AF5AC804666AC8767CCD69CA0C4 Ref B: SG2AA1070306023 Ref C: 2026-11-11T04:11:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:09:06.4303534Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
+        all incoming traffic to the locally registered Telnet port, including local
+        connections to that port. Legitimate Telnet access on that port stops, while
+        other services remain available; custom Telnet listeners on other ports are
+        not covered.","isRollbackable":true,"status":"RolledBack","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
+        reported RolledBack."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1391'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:11:53 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 0525e3c9-bf7b-4b4a-8bec-2836e77f07b3
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '10'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/d671923b-b47f-49be-a324-011e50afb9ff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F326C4D1485A4E12B7DDF435F2799A18 Ref B: SG2AA1070304042 Ref C: 2026-11-11T04:11:53Z'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -129,19 +129,21 @@ class NeuroshieldScenario(ScenarioTest):
                 time.sleep(30)
         self.fail(f"mitigation {name} did not reach {done}")
 
-    # Findings are produced by the Neuron agent on a real VM, so this test runs against a
+    # Findings are produced by the Neuron agent on a real VM, so these tests run against a
     # service-provided NeuroShield (Manual response mode) that already has findings.
     # Mitigations are one-shot, so a live run needs fresh AwaitingApproval mitigations.
-    def test_neuroshield_finding_mitigation(self):
+    def _use_finding(self, pr, finding):
         self.kwargs.update({
             "rg": os.environ.get("AZURE_TEST_NEUROSHIELD_FINDING_RG", "satyaTestRG"),
-            "ns": os.environ.get("AZURE_TEST_NEUROSHIELD_FINDING_NS", "ns-tool-validation-westus"),
-            "pr": os.environ.get("AZURE_TEST_NEUROSHIELD_FINDING_PR", "ns-tool-vm-westus-2-vm4jm3"),
-            "finding": os.environ.get("AZURE_TEST_NEUROSHIELD_FINDING", "CVE-2026-43284-ns-tool-vm-westus-2"),
-            "mitigation": os.environ.get("AZURE_TEST_NEUROSHIELD_MITIGATION",
-                                         "CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces"),
+            "ns": os.environ.get("AZURE_TEST_NEUROSHIELD_FINDING_NS", "Satya-NS-Manual-1"),
+            "pr": pr,
+            "finding": finding,
         })
-        pr_args = "-g {rg} --neuroshield-name {ns} --protected-resource {pr}"
+        return "-g {rg} --neuroshield-name {ns} --protected-resource {pr}"
+
+    def test_neuroshield_mitigation_execute(self):
+        pr_args = self._use_finding("satya-rpaas-ns3-br41x5", "CVE-2026-24061-satya-rpaas-ns3")
+        self.kwargs["mitigation"] = "CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port"
 
         self.cmd("neuroshield protected-resource finding show " + pr_args + " -n {finding}", checks=[
             self.check("name", "{finding}"),
@@ -162,12 +164,24 @@ class NeuroshieldScenario(ScenarioTest):
         self.assertEqual(self._wait_mitigation(self.kwargs["mitigation"], ("RolledBack", "RollbackFailed")),
                          "RolledBack")
 
-        # Mitigating a finding queues its remaining AwaitingApproval mitigations. Rollback only
-        # targets succeeded mitigations, so it is a no-op while they are still queued.
-        self.cmd("neuroshield protected-resource finding mitigate " + pr_args + " --finding-id {finding}", checks=[
-            self.check("length(value)", 2),
-            self.check("value[?properties.status=='Queued'] | length(@)", 2),
-            self.check("value[?properties.findingId] | length(@)", 2),
-        ])
+    # Mitigating a finding approves all its AwaitingApproval mitigations, but only one runs at a
+    # time and the rest stay queued once it succeeds. Rollback then targets the succeeded one.
+    def test_neuroshield_finding_mitigation(self):
+        pr_args = self._use_finding("danlope-scale-vm-01-k8ex8x", "CVE-2026-43284-danlope-scale-vm-01")
+
+        queued = self.cmd("neuroshield protected-resource finding mitigate " + pr_args + " --finding-id {finding}",
+                          checks=[self.check("length(value) > `0`", True)]).get_output_in_json()["value"]
+        names = {m["name"] for m in queued}
+        for _ in range(60):
+            mitigations = self.cmd("neuroshield protected-resource mitigation list " + pr_args).get_output_in_json()
+            succeeded = [m["name"] for m in mitigations
+                         if m["name"] in names and m["properties"]["status"] == "Succeeded"]
+            if succeeded:
+                break
+            if self.is_live:
+                time.sleep(30)
+        else:
+            self.fail(f"no mitigation of {self.kwargs['finding']} succeeded")
         self.cmd("neuroshield protected-resource finding rollback " + pr_args + " --finding-id {finding}",
-                 checks=[self.check("length(value)", 0)])
+                 checks=[self.check("value[].name", succeeded)])
+        self.assertEqual(self._wait_mitigation(succeeded[0], ("RolledBack", "RollbackFailed")), "RolledBack")
