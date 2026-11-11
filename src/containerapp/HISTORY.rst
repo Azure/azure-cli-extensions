@@ -5,6 +5,7 @@ Release History
 upcoming
 ++++++
 * Resolve Docker with Azure CLI's safe executable lookup before invoking it from local build and patch flows
+* Require Azure CLI 2.92.0 or later
 
 1.3.0b5
 ++++++
