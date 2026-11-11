@@ -1,0 +1,2427 @@
+interactions:
+- request:
+    body: '{"location": "northcentralus", "properties": {"ipAllowlist": [], "sku":
+      {"name": "Consumption"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '97'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --sku-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002?api-version=2026-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","name":"dts000002","type":"microsoft.durabletask/schedulers","location":"northcentralus","tags":{},"systemData":{"createdBy":"00000000-0000-0000-0000-000000000000","createdByType":"User","createdAt":"2026-10-27T16:29:42.8388831Z","lastModifiedBy":"00000000-0000-0000-0000-000000000000","lastModifiedByType":"User","lastModifiedAt":"2026-10-27T16:29:42.8388831Z"},"properties":{"provisioningState":"Accepted","endpoint":"https://scheduler.northcentralus.durabletask.io","ipAllowlist":[],"sku":{"name":"Consumption","redundancyState":"None"},"publicNetworkAccess":"Enabled"}}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      cache-control:
+      - no-cache
+      content-length:
+      - '728'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:29:43 GMT
+      etag:
+      - '"a107006e-0000-0100-0000-6ae0d1770000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT2H
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/northcentralus/f8178a27-c5d9-4916-8903-97b90bc8e8e4
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: F510D9538AD34CB5A338238D7A479101 Ref B: CO1AA3060820031 Ref C: 2026-10-27T16:29:41Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --sku-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Accepted","startTime":"2026-10-27T16:29:43.1901085Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:29:43 GMT
+      etag:
+      - '"2000bb29-0000-0100-0000-6ae0d1770000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/01c9f904-422e-4d2b-90ce-7e71d023bb89
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 9C952FABA2F44D7D88E45D2FED4EA289 Ref B: MWH011020807060 Ref C: 2026-10-27T16:29:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --sku-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Provisioning","startTime":"2026-10-27T16:29:43.1901085Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:30:14 GMT
+      etag:
+      - '"2000c029-0000-0100-0000-6ae0d17f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/31e3082a-ec81-4874-b1c2-b994c29f4e36
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B4699E0A19254CFE8A44CC986915D412 Ref B: CO1AA3060815029 Ref C: 2026-10-27T16:30:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --sku-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Provisioning","startTime":"2026-10-27T16:29:43.1901085Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:30:45 GMT
+      etag:
+      - '"2000c029-0000-0100-0000-6ae0d17f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/3e6e5d52-eb8e-4df0-8632-4b0851d1dba2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0F40AA3BD98A498A8F13205EB8441482 Ref B: MWH011020807031 Ref C: 2026-10-27T16:30:45Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --sku-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Provisioning","startTime":"2026-10-27T16:29:43.1901085Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:31:15 GMT
+      etag:
+      - '"2000c029-0000-0100-0000-6ae0d17f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/623100e2-6830-47e3-91da-ebb7709de0bc
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: D167492ABA914A6CAD2B92A0026F12EC Ref B: CO1AA3060816054 Ref C: 2026-10-27T16:31:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --sku-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Provisioning","startTime":"2026-10-27T16:29:43.1901085Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:31:46 GMT
+      etag:
+      - '"2000c029-0000-0100-0000-6ae0d17f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/9c80dccf-11b8-4d2c-9c36-1f21001fbdd2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 2E0E43EDF8B64026A5D21ED1AC7B39DF Ref B: MWH011020809034 Ref C: 2026-10-27T16:31:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --sku-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Provisioning","startTime":"2026-10-27T16:29:43.1901085Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:32:16 GMT
+      etag:
+      - '"2000c029-0000-0100-0000-6ae0d17f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/d9796bf9-540d-4632-9164-13148e501878
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: AFF53FDFF76645BFA1B16602F325846D Ref B: CO1AA3060818040 Ref C: 2026-10-27T16:32:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --sku-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Provisioning","startTime":"2026-10-27T16:29:43.1901085Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:32:47 GMT
+      etag:
+      - '"2000c029-0000-0100-0000-6ae0d17f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/db80b4f4-264f-4bfc-9b73-e8496b3396d8
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 38725A1695B84C45B73999964D3BEB0B Ref B: CO1AA3060820036 Ref C: 2026-10-27T16:32:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --sku-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Provisioning","startTime":"2026-10-27T16:29:43.1901085Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:33:17 GMT
+      etag:
+      - '"2000c029-0000-0100-0000-6ae0d17f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/08b2f95a-a518-476d-a39c-418819b321bb
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0F4A519A471B46DCB6BB01D5BEA4FB2E Ref B: CO1AA3060816031 Ref C: 2026-10-27T16:33:18Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --sku-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"9b016bea-f019-4906-b832-b8cb6e037959*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Succeeded","startTime":"2026-10-27T16:29:43.1901085Z","endTime":"2026-10-27T16:33:19.1790614Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '633'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:33:49 GMT
+      etag:
+      - '"2000fd2a-0000-0100-0000-6ae0d24f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/06d1828e-c3c0-43a3-a201-6018c93f6b31
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 76BC026CAE874A218373AF3961BA7245 Ref B: MWH011020806034 Ref C: 2026-10-27T16:33:48Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --sku-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002?api-version=2026-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","name":"dts000002","type":"microsoft.durabletask/schedulers","location":"northcentralus","tags":{},"systemData":{"createdBy":"00000000-0000-0000-0000-000000000000","createdByType":"User","createdAt":"2026-10-27T16:29:42.8388831Z","lastModifiedBy":"00000000-0000-0000-0000-000000000000","lastModifiedByType":"User","lastModifiedAt":"2026-10-27T16:29:42.8388831Z"},"properties":{"provisioningState":"Succeeded","endpoint":"https://scheduler.northcentralus.durabletask.io","ipAllowlist":[],"sku":{"name":"Consumption","redundancyState":"None"},"publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '729'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:33:49 GMT
+      etag:
+      - '"a107947b-0000-0100-0000-6ae0d24f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 437784608A4B4411B454CBCE52A65B5B Ref B: CO1AA3060815029 Ref C: 2026-10-27T16:33:49Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask taskhub create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002/taskHubs/hub000003?api-version=2026-07-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002/taskHubs/hub000003","name":"hub000003","type":"microsoft.durabletask/schedulers/taskhubs","systemData":{"createdBy":"00000000-0000-0000-0000-000000000000","createdByType":"User","createdAt":"2026-10-27T16:33:50.9713907Z","lastModifiedBy":"00000000-0000-0000-0000-000000000000","lastModifiedByType":"User","lastModifiedAt":"2026-10-27T16:33:50.9713907Z"},"properties":{"provisioningState":"Accepted","dashboardUrl":"https://dashboard.durabletask.io/subscriptions/00000000-0000-0000-0000-000000000000/schedulers/dts000002/taskhubs/hub000003?endpoint=https%3a%2f%scheduler.northcentralus.durabletask.io&tenantId=00000000-0000-0000-0000-000000000000","capabilities":[]}}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/d076044f-6daf-44f4-8342-9f464be5d934*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055?api-version=2026-07-01-preview&t=redacted&c=redacted&s=redacted&h=redacted
+      cache-control:
+      - no-cache
+      content-length:
+      - '820'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:33:51 GMT
+      etag:
+      - '"3a04026c-0000-0100-0000-6ae0d26f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT30M
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/northcentralus/e4482c1c-6822-44b6-b85f-39a3c6263f5f
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 7910092FD16B4CFBA7CB9D59D75AB78A Ref B: CO6AA3150218031 Ref C: 2026-10-27T16:33:50Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask taskhub create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/d076044f-6daf-44f4-8342-9f464be5d934*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055?api-version=2026-07-01-preview&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/d076044f-6daf-44f4-8342-9f464be5d934*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055","name":"d076044f-6daf-44f4-8342-9f464be5d934*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002/taskHubs/hub000003","status":"Accepted","startTime":"2026-10-27T16:33:51.3324472Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '592'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:33:51 GMT
+      etag:
+      - '"20000c2b-0000-0100-0000-6ae0d26f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/45f33cc5-d463-4ffd-a4bc-ac5601da5170
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F4376EF6134945018B8B32B9EF20D031 Ref B: CO6AA3150219017 Ref C: 2026-10-27T16:33:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask taskhub create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/d076044f-6daf-44f4-8342-9f464be5d934*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055?api-version=2026-07-01-preview&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/d076044f-6daf-44f4-8342-9f464be5d934*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055","name":"d076044f-6daf-44f4-8342-9f464be5d934*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002/taskHubs/hub000003","status":"Succeeded","startTime":"2026-10-27T16:33:51.3324472Z","endTime":"2026-10-27T16:34:10.8419096Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '652'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:34:22 GMT
+      etag:
+      - '"2000162b-0000-0100-0000-6ae0d2830000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/35717067-f2bc-415f-96d2-cd053af2aed4
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 4666BCD294174997B31D342C2E575C28 Ref B: CO6AA3150218009 Ref C: 2026-10-27T16:34:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask taskhub create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002/taskHubs/hub000003?api-version=2026-07-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002/taskHubs/hub000003","name":"hub000003","properties":{"provisioningState":"Succeeded","dashboardUrl":"https://dashboard.durabletask.io/subscriptions/00000000-0000-0000-0000-000000000000/schedulers/dts000002/taskhubs/hub000003?endpoint=https%3a%2f%scheduler.northcentralus.durabletask.io&tenantId=00000000-0000-0000-0000-000000000000","capabilities":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '506'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:34:23 GMT
+      etag:
+      - '"3a04876d-0000-0100-0000-6ae0d2830000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/0e60550e-c5be-47c1-a08b-a9e1457cc720
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 695FC1F5DBAC4299ADECF03E16DC178A Ref B: MWH011020808023 Ref C: 2026-10-27T16:34:23Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "northcentralus", "properties": {"perSiteScaling": false,
+      "reserved": true}, "sku": {"capacity": 1, "name": "B1", "tier": "BASIC"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - appservice plan create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '144'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --sku --is-linux
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/serverfarms/dtsplan000005?api-version=2025-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/serverfarms/dtsplan000005","name":"dtsplan000005","type":"Microsoft.Web/serverfarms","kind":"linux","location":"northcentralus","properties":{"serverFarmId":51195,"name":"dtsplan000005","sku":{"name":"B1","tier":"Basic","size":"B1","family":"B","capacity":1},"workerSize":"Small","workerSizeId":0,"workerTierName":null,"numberOfWorkers":1,"currentWorkerSize":"Small","currentWorkerSizeId":0,"currentNumberOfWorkers":1,"status":"Ready","webSpace":"clitest-durabletask-000001-NorthCentralUSwebspace-Linux","subscription":"00000000-0000-0000-0000-000000000000","adminSiteName":null,"hostingEnvironment":null,"hostingEnvironmentProfile":null,"maximumNumberOfWorkers":0,"planName":"VirtualDedicatedPlan","adminRuntimeSiteName":null,"computeMode":"Dedicated","siteMode":null,"geoRegion":"North
+        Central US","perSiteScaling":false,"elasticScaleEnabled":false,"maximumElasticWorkerCount":1,"numberOfSites":0,"hostingEnvironmentId":null,"isSpot":false,"spotExpirationTime":null,"freeOfferExpirationTime":"2026-11-26T16:34:25.86","tags":null,"kind":"linux","resourceGroup":"clitest-durabletask-000001","reserved":true,"isXenon":false,"hyperV":false,"mdmId":"waws-prod-ch1-079_51195","targetWorkerCount":0,"targetWorkerSizeId":0,"targetWorkerSku":null,"provisioningState":"Succeeded","webSiteId":null,"existingServerFarmIds":null,"kubeEnvironmentProfile":null,"zoneRedundant":false,"maximumNumberOfZones":1,"currentNumberOfZonesUtilized":1,"migrateToVMSS":null,"vnetConnectionsUsed":null,"vnetConnectionsMax":null,"createdTime":"2026-10-27T16:34:28.5933333","asyncScalingEnabled":false,"isCustomMode":false,"powerState":"Running","eligibleLogCategories":"","activeBackupHomeServerFarmName":null,"allowEquivalentSku":false},"sku":{"name":"B1","tier":"Basic","size":"B1","family":"B","capacity":1}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1909'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Oct 2026 16:34:29 GMT
+      etag:
+      - 1DD663109CB5215
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/northcentralus/ab5baa9e-a9be-4ffa-82c7-91c8cd24b08a
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 097B9A615421490899FCDF5D78DA6E96 Ref B: CO6AA3150219033 Ref C: 2026-10-27T16:34:25Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "northcentralus", "properties": {"serverFarmId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/serverfarms/dtsplan000005",
+      "reserved": true}, "kind": "functionapp,linux", "identity": {"type": "SystemAssigned"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resource create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '296'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --resource-type --api-version --is-full-object --properties
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004","name":"dtsfunc000004","type":"Microsoft.Web/sites","kind":"functionapp,linux","location":"northcentralus","properties":{"name":"dtsfunc000004","state":"Running","hostNames":["dtsfunc000004.azurewebsites.net"],"webSpace":"clitest-durabletask-000001-NorthCentralUSwebspace-Linux","selfLink":"https://waws-prod-ch1-079.api.azurewebsites.windows.net:454/subscriptions/00000000-0000-0000-0000-000000000000/webspaces/clitest-durabletask-000001-NorthCentralUSwebspace-Linux/sites/dtsfunc000004","repositorySiteName":"dtsfunc000004","owner":null,"usageState":"Normal","enabled":true,"adminEnabled":true,"siteScopedCertificatesEnabled":false,"afdEnabled":false,"enabledHostNames":["dtsfunc000004.azurewebsites.net","dtsfunc000004.scm.azurewebsites.net"],"siteProperties":{"metadata":null,"properties":[{"name":"LinuxFxVersion","value":""},{"name":"WindowsFxVersion","value":null}],"appSettings":null},"availabilityState":"Normal","sslCertificates":null,"csrs":[],"cers":null,"siteMode":null,"hostNameSslStates":[{"name":"dtsfunc000004.azurewebsites.net","sslState":"Disabled","ipBasedSslResult":null,"virtualIP":null,"virtualIPv6":null,"thumbprint":null,"certificateResourceId":null,"toUpdate":null,"toUpdateIpBasedSsl":null,"ipBasedSslState":"NotConfigured","hostType":"Standard"},{"name":"dtsfunc000004.scm.azurewebsites.net","sslState":"Disabled","ipBasedSslResult":null,"virtualIP":null,"virtualIPv6":null,"thumbprint":null,"certificateResourceId":null,"toUpdate":null,"toUpdateIpBasedSsl":null,"ipBasedSslState":"NotConfigured","hostType":"Repository"}],"hostNamePrivateStates":[],"computeMode":null,"serverFarm":null,"serverFarmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/serverfarms/dtsplan000005","reserved":true,"isXenon":false,"hyperV":false,"sandboxType":null,"lastModifiedTimeUtc":"2026-10-27T16:34:34.4933333","storageRecoveryDefaultState":"Running","contentAvailabilityState":"Normal","runtimeAvailabilityState":"Normal","dnsConfiguration":{},"vnetRouteAllEnabled":false,"containerAllocationSubnet":null,"useContainerLocalhostBindings":null,"vnetImagePullEnabled":false,"vnetContentShareEnabled":false,"legacyServiceEndpointTrafficEvaluation":null,"siteConfig":{"numberOfWorkers":1,"defaultDocuments":null,"netFrameworkVersion":null,"phpVersion":null,"pythonVersion":null,"nodeVersion":null,"powerShellVersion":null,"linuxFxVersion":"","windowsFxVersion":null,"sandboxType":null,"windowsConfiguredStacks":null,"requestTracingEnabled":null,"remoteDebuggingEnabled":null,"remoteDebuggingVersion":null,"httpLoggingEnabled":null,"azureMonitorLogCategories":null,"acrUseManagedIdentityCreds":false,"acrUserManagedIdentityID":null,"logsDirectorySizeLimit":null,"detailedErrorLoggingEnabled":null,"publishingUsername":null,"publishingPassword":null,"appSettings":null,"metadata":null,"connectionStrings":null,"machineKey":null,"handlerMappings":null,"documentRoot":null,"scmType":null,"use32BitWorkerProcess":null,"webSocketsEnabled":null,"alwaysOn":false,"javaVersion":null,"javaContainer":null,"javaContainerVersion":null,"appCommandLine":null,"managedPipelineMode":null,"virtualApplications":null,"winAuthAdminState":null,"winAuthTenantState":null,"customAppPoolIdentityAdminState":null,"customAppPoolIdentityTenantState":null,"runtimeADUser":null,"runtimeADUserPassword":null,"loadBalancing":null,"routingRules":null,"experiments":null,"limits":null,"autoHealEnabled":null,"autoHealRules":null,"tracingOptions":null,"vnetName":null,"vnetRouteAllEnabled":null,"vnetPrivatePortsCount":null,"publicNetworkAccess":null,"cors":null,"push":null,"apiDefinition":null,"apiManagementConfig":null,"autoSwapSlotName":null,"localMySqlEnabled":null,"managedServiceIdentityId":null,"xManagedServiceIdentityId":null,"keyVaultReferenceIdentity":null,"ipSecurityRestrictions":[{"ipAddress":"Any","action":"Allow","priority":2147483647,"name":"Allow
+        all","description":"Allow all access"}],"ipSecurityRestrictionsDefaultAction":null,"scmIpSecurityRestrictions":[{"ipAddress":"Any","action":"Allow","priority":2147483647,"name":"Allow
+        all","description":"Allow all access"}],"scmIpSecurityRestrictionsDefaultAction":null,"scmIpSecurityRestrictionsUseMain":null,"http20Enabled":false,"minTlsVersion":null,"minTlsCipherSuite":null,"scmMinTlsCipherSuite":null,"supportedTlsCipherSuites":null,"scmSupportedTlsCipherSuites":null,"scmMinTlsVersion":null,"ftpsState":null,"preWarmedInstanceCount":null,"functionAppScaleLimit":0,"elasticWebAppScaleLimit":null,"healthCheckPath":null,"fileChangeAuditEnabled":null,"functionsRuntimeScaleMonitoringEnabled":null,"websiteTimeZone":null,"minimumElasticInstanceCount":0,"azureStorageAccounts":null,"http20ProxyFlag":null,"sitePort":null,"antivirusScanEnabled":null,"storageType":null,"sitePrivateLinkHostEnabled":null,"clusteringEnabled":false,"webJobsEnabled":false},"functionAppConfig":null,"daprConfig":null,"aiIntegration":null,"deploymentId":"dtsfunc000004","slotName":null,"trafficManagerHostNames":null,"sku":"Basic","scmSiteAlsoStopped":false,"targetSwapSlot":null,"hostingEnvironment":null,"hostingEnvironmentProfile":null,"clientAffinityEnabled":false,"clientAffinityProxyEnabled":false,"useQueryStringAffinity":false,"blockPathTraversal":false,"jA4Forwarding":false,"clientCertEnabled":false,"clientCertMode":"Required","clientCertExclusionPaths":null,"clientCertExclusionEndPoints":null,"hostNamesDisabled":false,"ipMode":"IPv4","vnetBackupRestoreEnabled":false,"domainVerificationIdentifiers":null,"customDomainVerificationId":"776132C3B892BCCAC6722D55C52C09ED9E8EB466C99502359A1D9AF1AE08FAAE","kind":"functionapp,linux","managedEnvironmentId":null,"workloadProfileName":null,"resourceConfig":null,"inboundIpAddress":"52.162.107.35","possibleInboundIpAddresses":"52.162.107.35,52.162.107.84","inboundIpv6Address":"2603:1030:608:2::6","possibleInboundIpv6Addresses":"2603:1030:608:2::6","ftpUsername":"dtsfunc000004\\$dtsfunc000004","ftpsHostName":"ftps://waws-prod-ch1-079.ftp.azurewebsites.windows.net/site/wwwroot","outboundIpAddresses":"65.52.12.97,65.52.12.155,65.52.12.204,65.52.12.207,65.52.12.228,65.52.13.24,20.221.250.252,20.221.251.236,20.221.252.85,52.159.93.251,52.159.94.157,20.221.194.68,52.162.107.35","possibleOutboundIpAddresses":"65.52.12.97,65.52.12.155,65.52.12.204,65.52.12.207,65.52.12.228,65.52.13.24,20.221.250.252,20.221.251.236,20.221.252.85,52.159.93.251,52.159.94.157,20.221.194.68,20.221.252.143,20.221.251.183,52.159.91.21,20.221.252.247,20.221.252.253,20.221.253.27,20.221.250.98,20.221.253.134,20.221.254.156,20.221.254.170,20.221.254.202,20.221.254.205,20.221.254.214,20.221.254.245,20.221.195.35,20.221.195.235,20.221.255.21,20.221.255.245,52.162.107.35","outboundIpv6Addresses":"2a01:111:f100:1004::9d38:1c25,2a01:111:f100:1004::9d38:1c26,2a01:111:f100:1004::9d38:1c27,2a01:111:f100:1004::4134:f6a2,2a01:111:f100:1004::9d38:1c28,2a01:111:f100:1004::9d38:1c29,2a01:111:f100:1004::9d38:1fd8,2a01:111:f100:1004::9d38:1fd1,2a01:111:f100:1004::9d38:1fd5,2a01:111:f100:1004::9d38:1fd7,2a01:111:f100:1004::9d38:1c11,2a01:111:f100:1004::9d38:1c13,2603:1030:608:2::6,2603:10e1:100:2::34a2:6b23,2603:1030:608:2::3c,2603:10e1:100:2::34a2:6b54","possibleOutboundIpv6Addresses":"2a01:111:f100:1004::9d38:1c25,2a01:111:f100:1004::9d38:1c26,2a01:111:f100:1004::9d38:1c27,2a01:111:f100:1004::4134:f6a2,2a01:111:f100:1004::9d38:1c28,2a01:111:f100:1004::9d38:1c29,2a01:111:f100:1004::9d38:1fd8,2a01:111:f100:1004::9d38:1fd1,2a01:111:f100:1004::9d38:1fd5,2a01:111:f100:1004::9d38:1fd7,2a01:111:f100:1004::9d38:1c11,2a01:111:f100:1004::9d38:1c13,2a01:111:f100:1004::4134:f67b,2a01:111:f100:1004::4134:f67e,2a01:111:f100:1004::4134:f682,2a01:111:f100:1004::4134:f686,2a01:111:f100:1004::9d38:1c1b,2a01:111:f100:1004::4134:f68b,2a01:111:f100:1004::4134:f690,2a01:111:f100:1004::9d38:1fc2,2a01:111:f100:1004::9d38:1fc4,2a01:111:f100:1004::4134:f696,2a01:111:f100:1004::9d38:1fcd,2a01:111:f100:1004::9d38:1fcf,2a01:111:f100:1004::4134:f69b,2a01:111:f100:1004::4134:f69d,2a01:111:f100:1004::4134:f69f,2a01:111:f100:1004::9d38:1c23,2a01:111:f100:1004::4134:f6a0,2a01:111:f100:1004::4134:f6a1,2603:1030:608:2::6,2603:10e1:100:2::34a2:6b23,2603:1030:608:2::3c,2603:10e1:100:2::34a2:6b54","containerSize":0,"dailyMemoryTimeQuota":0,"suspendedTill":null,"siteDisabledReason":0,"functionExecutionUnitsCache":null,"maxNumberOfWorkers":null,"homeStamp":"waws-prod-ch1-079","cloningInfo":null,"hostingEnvironmentId":null,"tags":null,"resourceGroup":"clitest-durabletask-000001","defaultHostName":"dtsfunc000004.azurewebsites.net","slotSwapStatus":null,"httpsOnly":false,"endToEndEncryptionEnabled":false,"functionsRuntimeAdminIsolationEnabled":false,"redundancyMode":"None","inProgressOperationId":null,"geoDistributions":null,"privateEndpointConnections":null,"publicNetworkAccess":null,"buildVersion":null,"targetBuildVersion":null,"migrationState":null,"eligibleLogCategories":"FunctionAppLogs,AppServiceAuthenticationLogs,AppServiceAuditLogs,AppServiceIPSecAuditLogs","inFlightFeatures":null,"platformVersion":null,"storageAccountRequired":false,"virtualNetworkSubnetId":null,"keyVaultReferenceIdentity":"SystemAssigned","autoGeneratedDomainNameLabelScope":null,"privateLinkIdentifiers":null,"sshEnabled":null,"maintenanceEnabled":false},"identity":{"type":"SystemAssigned","tenantId":"00000000-0000-0000-0000-000000000000","principalId":"00000000-0000-0000-0000-000000000000"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9541'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Oct 2026 16:34:54 GMT
+      etag:
+      - '"1DD66310CED6CA0"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/northcentralus/90295133-16e0-4903-a3e5-c1439615cef5
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-msedge-ref:
+      - 'Ref A: CEA6002402B2405284B315AE951CC4A9 Ref B: CO1AA3060814036 Ref C: 2026-10-27T16:34:31Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler attach
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --task-hub-name --target --role-type
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002?api-version=2026-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","name":"dts000002","type":"microsoft.durabletask/schedulers","location":"northcentralus","tags":{},"systemData":{"createdBy":"00000000-0000-0000-0000-000000000000","createdByType":"User","createdAt":"2026-10-27T16:29:42.8388831Z","lastModifiedBy":"00000000-0000-0000-0000-000000000000","lastModifiedByType":"User","lastModifiedAt":"2026-10-27T16:29:42.8388831Z"},"properties":{"provisioningState":"Succeeded","endpoint":"https://scheduler.northcentralus.durabletask.io","ipAllowlist":[],"sku":{"name":"Consumption","redundancyState":"None"},"publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '729'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:34:55 GMT
+      etag:
+      - '"a107947b-0000-0100-0000-6ae0d24f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 91DF68E418C34149A01325FEFC0783A9 Ref B: CO1AA3060813054 Ref C: 2026-10-27T16:34:55Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler attach
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --task-hub-name --target --role-type
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002/taskHubs/hub000003?api-version=2026-07-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002/taskHubs/hub000003","name":"hub000003","properties":{"provisioningState":"Succeeded","dashboardUrl":"https://dashboard.durabletask.io/subscriptions/00000000-0000-0000-0000-000000000000/schedulers/dts000002/taskhubs/hub000003?endpoint=https%3a%2f%scheduler.northcentralus.durabletask.io&tenantId=00000000-0000-0000-0000-000000000000","capabilities":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '506'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:34:55 GMT
+      etag:
+      - '"3a04876d-0000-0100-0000-6ae0d2830000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/northcentralus/716a5c58-3b00-4fda-8967-5b2c4d75d83f
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: EBCEA061F3184E36BFF02700E9BF2E22 Ref B: CO1AA3060816060 Ref C: 2026-10-27T16:34:56Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler attach
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --task-hub-name --target --role-type
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004?api-version=2025-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004","name":"dtsfunc000004","type":"Microsoft.Web/sites","kind":"functionapp,linux","location":"North
+        Central US","properties":{"name":"dtsfunc000004","state":"Running","hostNames":["dtsfunc000004.azurewebsites.net"],"webSpace":"clitest-durabletask-000001-NorthCentralUSwebspace-Linux","selfLink":"https://waws-prod-ch1-079.api.azurewebsites.windows.net:455/subscriptions/00000000-0000-0000-0000-000000000000/webspaces/clitest-durabletask-000001-NorthCentralUSwebspace-Linux/sites/dtsfunc000004","repositorySiteName":"dtsfunc000004","owner":null,"usageState":"Normal","enabled":true,"adminEnabled":true,"siteScopedCertificatesEnabled":false,"afdEnabled":false,"enabledHostNames":["dtsfunc000004.azurewebsites.net","dtsfunc000004.scm.azurewebsites.net"],"siteProperties":{"metadata":null,"properties":[{"name":"LinuxFxVersion","value":""},{"name":"WindowsFxVersion","value":null}],"appSettings":null},"availabilityState":"Normal","sslCertificates":null,"csrs":[],"cers":null,"siteMode":null,"hostNameSslStates":[{"name":"dtsfunc000004.azurewebsites.net","sslState":"Disabled","ipBasedSslResult":null,"virtualIP":null,"virtualIPv6":null,"thumbprint":null,"certificateResourceId":null,"toUpdate":null,"toUpdateIpBasedSsl":null,"ipBasedSslState":"NotConfigured","hostType":"Standard"},{"name":"dtsfunc000004.scm.azurewebsites.net","sslState":"Disabled","ipBasedSslResult":null,"virtualIP":null,"virtualIPv6":null,"thumbprint":null,"certificateResourceId":null,"toUpdate":null,"toUpdateIpBasedSsl":null,"ipBasedSslState":"NotConfigured","hostType":"Repository"}],"hostNamePrivateStates":[],"computeMode":null,"serverFarm":null,"serverFarmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/serverfarms/dtsplan000005","reserved":true,"isXenon":false,"hyperV":false,"sandboxType":null,"lastModifiedTimeUtc":"2026-10-27T16:34:55.18","storageRecoveryDefaultState":"Running","contentAvailabilityState":"Normal","runtimeAvailabilityState":"Normal","dnsConfiguration":{},"containerAllocationSubnet":null,"useContainerLocalhostBindings":null,"outboundVnetRouting":{"allTraffic":false,"applicationTraffic":false,"contentShareTraffic":false,"imagePullTraffic":false,"backupRestoreTraffic":false,"managedIdentityTraffic":false},"legacyServiceEndpointTrafficEvaluation":null,"siteConfig":{"numberOfWorkers":1,"defaultDocuments":null,"netFrameworkVersion":null,"phpVersion":null,"pythonVersion":null,"nodeVersion":null,"powerShellVersion":null,"linuxFxVersion":"","windowsFxVersion":null,"sandboxType":null,"windowsConfiguredStacks":null,"requestTracingEnabled":null,"remoteDebuggingEnabled":null,"remoteDebuggingVersion":null,"httpLoggingEnabled":null,"azureMonitorLogCategories":null,"acrUseManagedIdentityCreds":false,"acrUserManagedIdentityID":null,"logsDirectorySizeLimit":null,"detailedErrorLoggingEnabled":null,"publishingUsername":null,"publishingPassword":null,"appSettings":null,"metadata":null,"connectionStrings":null,"machineKey":null,"handlerMappings":null,"documentRoot":null,"scmType":null,"use32BitWorkerProcess":null,"webSocketsEnabled":null,"alwaysOn":false,"javaVersion":null,"javaContainer":null,"javaContainerVersion":null,"appCommandLine":null,"managedPipelineMode":null,"virtualApplications":null,"winAuthAdminState":null,"winAuthTenantState":null,"customAppPoolIdentityAdminState":null,"customAppPoolIdentityTenantState":null,"runtimeADUser":null,"runtimeADUserPassword":null,"loadBalancing":null,"routingRules":null,"experiments":null,"limits":null,"autoHealEnabled":null,"autoHealRules":null,"tracingOptions":null,"vnetName":null,"vnetRouteAllEnabled":null,"vnetPrivatePortsCount":null,"publicNetworkAccess":null,"cors":null,"push":null,"apiDefinition":null,"apiManagementConfig":null,"autoSwapSlotName":null,"localMySqlEnabled":null,"managedServiceIdentityId":null,"xManagedServiceIdentityId":null,"keyVaultReferenceIdentity":null,"ipSecurityRestrictions":null,"ipSecurityRestrictionsDefaultAction":null,"scmIpSecurityRestrictions":null,"scmIpSecurityRestrictionsDefaultAction":null,"scmIpSecurityRestrictionsUseMain":null,"http20Enabled":false,"minTlsVersion":null,"minTlsCipherSuite":null,"scmMinTlsCipherSuite":null,"supportedTlsCipherSuites":null,"scmSupportedTlsCipherSuites":null,"scmMinTlsVersion":null,"ftpsState":null,"preWarmedInstanceCount":null,"functionAppScaleLimit":0,"elasticWebAppScaleLimit":null,"healthCheckPath":null,"fileChangeAuditEnabled":null,"functionsRuntimeScaleMonitoringEnabled":null,"websiteTimeZone":null,"minimumElasticInstanceCount":0,"azureStorageAccounts":null,"http20ProxyFlag":null,"sitePort":null,"antivirusScanEnabled":null,"storageType":null,"sitePrivateLinkHostEnabled":null,"clusteringEnabled":false,"webJobsEnabled":false},"functionAppConfig":null,"daprConfig":null,"aiIntegration":null,"deploymentId":"dtsfunc000004","slotName":null,"trafficManagerHostNames":null,"sku":"Basic","scmSiteAlsoStopped":false,"targetSwapSlot":null,"hostingEnvironment":null,"hostingEnvironmentProfile":null,"clientAffinityEnabled":false,"clientAffinityProxyEnabled":false,"useQueryStringAffinity":false,"blockPathTraversal":false,"jA4Forwarding":false,"clientCertEnabled":false,"clientCertMode":"Required","clientCertExclusionPaths":null,"clientCertExclusionEndPoints":null,"hostNamesDisabled":false,"ipMode":"IPv4","domainVerificationIdentifiers":null,"customDomainVerificationId":"776132C3B892BCCAC6722D55C52C09ED9E8EB466C99502359A1D9AF1AE08FAAE","kind":"functionapp,linux","managedEnvironmentId":null,"workloadProfileName":null,"resourceConfig":null,"inboundIpAddress":"52.162.107.35","possibleInboundIpAddresses":"52.162.107.35,52.162.107.84","inboundIpv6Address":"2603:1030:608:2::6","possibleInboundIpv6Addresses":"2603:1030:608:2::6","ftpUsername":"dtsfunc000004\\$dtsfunc000004","ftpsHostName":"ftps://waws-prod-ch1-079.ftp.azurewebsites.windows.net/site/wwwroot","outboundIpAddresses":"65.52.12.97,65.52.12.155,65.52.12.204,65.52.12.207,65.52.12.228,65.52.13.24,20.221.250.252,20.221.251.236,20.221.252.85,52.159.93.251,52.159.94.157,20.221.194.68,52.162.107.35","possibleOutboundIpAddresses":"65.52.12.97,65.52.12.155,65.52.12.204,65.52.12.207,65.52.12.228,65.52.13.24,20.221.250.252,20.221.251.236,20.221.252.85,52.159.93.251,52.159.94.157,20.221.194.68,20.221.252.143,20.221.251.183,52.159.91.21,20.221.252.247,20.221.252.253,20.221.253.27,20.221.250.98,20.221.253.134,20.221.254.156,20.221.254.170,20.221.254.202,20.221.254.205,20.221.254.214,20.221.254.245,20.221.195.35,20.221.195.235,20.221.255.21,20.221.255.245,52.162.107.35","outboundIpv6Addresses":"2a01:111:f100:1004::9d38:1c25,2a01:111:f100:1004::9d38:1c26,2a01:111:f100:1004::9d38:1c27,2a01:111:f100:1004::4134:f6a2,2a01:111:f100:1004::9d38:1c28,2a01:111:f100:1004::9d38:1c29,2a01:111:f100:1004::9d38:1fd8,2a01:111:f100:1004::9d38:1fd1,2a01:111:f100:1004::9d38:1fd5,2a01:111:f100:1004::9d38:1fd7,2a01:111:f100:1004::9d38:1c11,2a01:111:f100:1004::9d38:1c13,2603:1030:608:2::6,2603:10e1:100:2::34a2:6b23,2603:1030:608:2::3c,2603:10e1:100:2::34a2:6b54","possibleOutboundIpv6Addresses":"2a01:111:f100:1004::9d38:1c25,2a01:111:f100:1004::9d38:1c26,2a01:111:f100:1004::9d38:1c27,2a01:111:f100:1004::4134:f6a2,2a01:111:f100:1004::9d38:1c28,2a01:111:f100:1004::9d38:1c29,2a01:111:f100:1004::9d38:1fd8,2a01:111:f100:1004::9d38:1fd1,2a01:111:f100:1004::9d38:1fd5,2a01:111:f100:1004::9d38:1fd7,2a01:111:f100:1004::9d38:1c11,2a01:111:f100:1004::9d38:1c13,2a01:111:f100:1004::4134:f67b,2a01:111:f100:1004::4134:f67e,2a01:111:f100:1004::4134:f682,2a01:111:f100:1004::4134:f686,2a01:111:f100:1004::9d38:1c1b,2a01:111:f100:1004::4134:f68b,2a01:111:f100:1004::4134:f690,2a01:111:f100:1004::9d38:1fc2,2a01:111:f100:1004::9d38:1fc4,2a01:111:f100:1004::4134:f696,2a01:111:f100:1004::9d38:1fcd,2a01:111:f100:1004::9d38:1fcf,2a01:111:f100:1004::4134:f69b,2a01:111:f100:1004::4134:f69d,2a01:111:f100:1004::4134:f69f,2a01:111:f100:1004::9d38:1c23,2a01:111:f100:1004::4134:f6a0,2a01:111:f100:1004::4134:f6a1,2603:1030:608:2::6,2603:10e1:100:2::34a2:6b23,2603:1030:608:2::3c,2603:10e1:100:2::34a2:6b54","containerSize":0,"dailyMemoryTimeQuota":0,"suspendedTill":null,"siteDisabledReason":0,"functionExecutionUnitsCache":null,"maxNumberOfWorkers":null,"homeStamp":"waws-prod-ch1-079","cloningInfo":null,"hostingEnvironmentId":null,"tags":null,"resourceGroup":"clitest-durabletask-000001","defaultHostName":"dtsfunc000004.azurewebsites.net","slotSwapStatus":null,"httpsOnly":false,"endToEndEncryptionEnabled":false,"functionsRuntimeAdminIsolationEnabled":false,"redundancyMode":"None","inProgressOperationId":null,"geoDistributions":null,"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","buildVersion":null,"targetBuildVersion":null,"migrationState":null,"eligibleLogCategories":"FunctionAppLogs,AppServiceAuthenticationLogs,AppServiceAuditLogs,AppServiceIPSecAuditLogs","inFlightFeatures":["SiteContainers"],"platformVersion":"110.0.7.48","storageAccountRequired":false,"virtualNetworkSubnetId":null,"keyVaultReferenceIdentity":"SystemAssigned","autoGeneratedDomainNameLabelScope":null,"privateLinkIdentifiers":null,"sshEnabled":null,"maintenanceEnabled":false},"identity":{"type":"SystemAssigned","tenantId":"00000000-0000-0000-0000-000000000000","principalId":"00000000-0000-0000-0000-000000000000"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9408'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Oct 2026 16:34:56 GMT
+      etag:
+      - 1DD6631191DD8C0
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: DBA1288DD181461AB73D403B2C9BC673 Ref B: CO1AA3060819031 Ref C: 2026-10-27T16:34:56Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"Subject": {"ObjectId": "00000000-0000-0000-0000-000000000000"}, "Actions":
+      [{"Id": "Microsoft.Web/sites/config/list/action"}, {"Id": "Microsoft.Web/sites/config/write"}]}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler attach
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '172'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --task-hub-name --target --role-type
+      User-Agent:
+      - python/3.13.13 (Windows-11-10.0.26300-SP0) AZURECLI/2.91.0
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004/providers/Microsoft.Authorization/checkAccess?api-version=2022-04-01
+  response:
+    body:
+      string: '{"error":{"code":"NoRegisteredProviderFound","message":"No registered
+        resource provider found for location ''northcentralus'' and API version ''2022-04-01''
+        for type ''checkAccess''. The supported api-versions are ''2018-09-01-preview''.
+        The supported locations are ''''."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '264'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:34:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 8F628314432D4816B9FFE62C88702C58 Ref B: CO1AA3060819029 Ref C: 2026-10-27T16:34:57Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"Subject": {"ObjectId": "00000000-0000-0000-0000-000000000000"}, "Actions":
+      [{"Id": "Microsoft.Authorization/roleAssignments/write"}]}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler attach
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '135'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --task-hub-name --target --role-type
+      User-Agent:
+      - python/3.13.13 (Windows-11-10.0.26300-SP0) AZURECLI/2.91.0
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002/providers/Microsoft.Authorization/checkAccess?api-version=2022-04-01
+  response:
+    body:
+      string: '{"error":{"code":"NoRegisteredProviderFound","message":"No registered
+        resource provider found for location ''northcentralus'' and API version ''2022-04-01''
+        for type ''checkAccess''. The supported api-versions are ''2018-09-01-preview''.
+        The supported locations are ''''."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '264'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:34:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 4CCD7AEE66DB44FB970A738F58E3FC33 Ref B: CO1AA3060817029 Ref C: 2026-10-27T16:34:58Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler attach
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --task-hub-name --target --role-type
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions?api-version=2022-05-01-preview&$filter=roleName%20eq%20%27Durable%20Task%20Worker%27
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Durable Task Worker","type":"BuiltInRole","description":"Used
+        by worker applications to interact with the Durable Task service","assignableScopes":["/"],"permissions":[{"actions":[],"notActions":[],"dataActions":["Microsoft.DurableTask/schedulers/taskhubs/orchestrations/execute/action"],"notDataActions":[]}],"createdOn":"2024-10-03T12:27:54.5224925Z","updatedOn":"2025-07-09T20:27:18.5515841Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/80d0d6b0-f522-40a4-8886-a5a11720c375","type":"Microsoft.Authorization/roleDefinitions","name":"80d0d6b0-f522-40a4-8886-a5a11720c375"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '711'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:34:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/44aec054-052e-49d3-8e8a-a5673bb0ce0a
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 97D29DA88D174F6A9B663B440D2D071E Ref B: MWH011020808060 Ref C: 2026-10-27T16:34:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"principalId": "00000000-0000-0000-0000-000000000000",
+      "roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/80d0d6b0-f522-40a4-8886-a5a11720c375",
+      "principalType": "ServicePrincipal"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler attach
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '270'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --task-hub-name --target --role-type
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002/providers/Microsoft.Authorization/roleAssignments/00000000-0000-0000-0000-000000000000?api-version=2022-04-01
+  response:
+    body:
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/80d0d6b0-f522-40a4-8886-a5a11720c375","principalId":"00000000-0000-0000-0000-000000000000","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","condition":null,"conditionVersion":null,"createdOn":"2026-10-27T16:34:59.6722317Z","updatedOn":"2026-10-27T16:34:59.8112293Z","createdBy":null,"updatedBy":"00000000-0000-0000-0000-000000000000","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002/providers/Microsoft.Authorization/roleAssignments/8d47b7d7-efd0-4dd0-b5dd-bf6fa94dd862","type":"Microsoft.Authorization/roleAssignments","name":"8d47b7d7-efd0-4dd0-b5dd-bf6fa94dd862"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1013'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:35:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/northcentralus/2707dfd0-a5b7-42f5-b158-29f4dfa8a64b
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 31C1ECD6AAF14F31B1717AF820F59ED7 Ref B: CO1AA3060819023 Ref C: 2026-10-27T16:34:59Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler attach
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --task-hub-name --target --role-type
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004/config/appsettings/list?api-version=2025-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004/config/appsettings","name":"appsettings","type":"Microsoft.Web/sites/config","location":"North
+        Central US","properties":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '268'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Oct 2026 16:35:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/northcentralus/179fcf0b-c09c-432a-ad98-5838fa864252
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: AC62CB3532DE4A7D9217026015108CD8 Ref B: CO1AA3060816023 Ref C: 2026-10-27T16:35:02Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"DURABLE_TASK_SCHEDULER_CONNECTION_STRING": "Endpoint=https://scheduler.northcentralus.durabletask.io;Authentication=ManagedIdentity",
+      "TASKHUB_NAME": "hub000003"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler attach
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '180'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --task-hub-name --target --role-type
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004/config/appsettings?api-version=2025-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004/config/appsettings","name":"appsettings","type":"Microsoft.Web/sites/config","location":"North
+        Central US","properties":{"DURABLE_TASK_SCHEDULER_CONNECTION_STRING":"Endpoint=https://scheduler.northcentralus.durabletask.io;Authentication=ManagedIdentity","TASKHUB_NAME":"hub000003"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '427'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Oct 2026 16:35:06 GMT
+      etag:
+      - 1DD66311A635E15
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/northcentralus/72c06e5d-9165-4c55-b1b5-1418b60c42da
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: DA96DF24755A4E4CAF7D8997D3B05358 Ref B: CO1AA3060814054 Ref C: 2026-10-27T16:35:03Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - functionapp config appsettings list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004/config/appsettings/list?api-version=2025-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004/config/appsettings","name":"appsettings","type":"Microsoft.Web/sites/config","location":"North
+        Central US","properties":{"DURABLE_TASK_SCHEDULER_CONNECTION_STRING":"Endpoint=https://scheduler.northcentralus.durabletask.io;Authentication=ManagedIdentity","TASKHUB_NAME":"hub000003"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '427'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Oct 2026 16:35:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/northcentralus/ed25f96b-8b37-403d-aa40-bc80a54535b4
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: BC464B1158DE420DA5B1DBEFE32B1BB8 Ref B: CO1AA3060818036 Ref C: 2026-10-27T16:35:09Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - functionapp config appsettings list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004?api-version=2025-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004","name":"dtsfunc000004","type":"Microsoft.Web/sites","kind":"functionapp,linux","location":"North
+        Central US","properties":{"name":"dtsfunc000004","state":"Running","hostNames":["dtsfunc000004.azurewebsites.net"],"webSpace":"clitest-durabletask-000001-NorthCentralUSwebspace-Linux","selfLink":"https://waws-prod-ch1-079.api.azurewebsites.windows.net:455/subscriptions/00000000-0000-0000-0000-000000000000/webspaces/clitest-durabletask-000001-NorthCentralUSwebspace-Linux/sites/dtsfunc000004","repositorySiteName":"dtsfunc000004","owner":null,"usageState":"Normal","enabled":true,"adminEnabled":true,"siteScopedCertificatesEnabled":false,"afdEnabled":false,"enabledHostNames":["dtsfunc000004.azurewebsites.net","dtsfunc000004.scm.azurewebsites.net"],"siteProperties":{"metadata":null,"properties":[{"name":"LinuxFxVersion","value":""},{"name":"WindowsFxVersion","value":null}],"appSettings":null},"availabilityState":"Normal","sslCertificates":null,"csrs":[],"cers":null,"siteMode":null,"hostNameSslStates":[{"name":"dtsfunc000004.azurewebsites.net","sslState":"Disabled","ipBasedSslResult":null,"virtualIP":null,"virtualIPv6":null,"thumbprint":null,"certificateResourceId":null,"toUpdate":null,"toUpdateIpBasedSsl":null,"ipBasedSslState":"NotConfigured","hostType":"Standard"},{"name":"dtsfunc000004.scm.azurewebsites.net","sslState":"Disabled","ipBasedSslResult":null,"virtualIP":null,"virtualIPv6":null,"thumbprint":null,"certificateResourceId":null,"toUpdate":null,"toUpdateIpBasedSsl":null,"ipBasedSslState":"NotConfigured","hostType":"Repository"}],"hostNamePrivateStates":[],"computeMode":null,"serverFarm":null,"serverFarmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/serverfarms/dtsplan000005","reserved":true,"isXenon":false,"hyperV":false,"sandboxType":null,"lastModifiedTimeUtc":"2026-10-27T16:35:06.36","storageRecoveryDefaultState":"Running","contentAvailabilityState":"Normal","runtimeAvailabilityState":"Normal","dnsConfiguration":{},"containerAllocationSubnet":null,"useContainerLocalhostBindings":null,"outboundVnetRouting":{"allTraffic":false,"applicationTraffic":false,"contentShareTraffic":false,"imagePullTraffic":false,"backupRestoreTraffic":false,"managedIdentityTraffic":false},"legacyServiceEndpointTrafficEvaluation":null,"siteConfig":{"numberOfWorkers":1,"defaultDocuments":null,"netFrameworkVersion":null,"phpVersion":null,"pythonVersion":null,"nodeVersion":null,"powerShellVersion":null,"linuxFxVersion":"","windowsFxVersion":null,"sandboxType":null,"windowsConfiguredStacks":null,"requestTracingEnabled":null,"remoteDebuggingEnabled":null,"remoteDebuggingVersion":null,"httpLoggingEnabled":null,"azureMonitorLogCategories":null,"acrUseManagedIdentityCreds":false,"acrUserManagedIdentityID":null,"logsDirectorySizeLimit":null,"detailedErrorLoggingEnabled":null,"publishingUsername":null,"publishingPassword":null,"appSettings":null,"metadata":null,"connectionStrings":null,"machineKey":null,"handlerMappings":null,"documentRoot":null,"scmType":null,"use32BitWorkerProcess":null,"webSocketsEnabled":null,"alwaysOn":false,"javaVersion":null,"javaContainer":null,"javaContainerVersion":null,"appCommandLine":null,"managedPipelineMode":null,"virtualApplications":null,"winAuthAdminState":null,"winAuthTenantState":null,"customAppPoolIdentityAdminState":null,"customAppPoolIdentityTenantState":null,"runtimeADUser":null,"runtimeADUserPassword":null,"loadBalancing":null,"routingRules":null,"experiments":null,"limits":null,"autoHealEnabled":null,"autoHealRules":null,"tracingOptions":null,"vnetName":null,"vnetRouteAllEnabled":null,"vnetPrivatePortsCount":null,"publicNetworkAccess":null,"cors":null,"push":null,"apiDefinition":null,"apiManagementConfig":null,"autoSwapSlotName":null,"localMySqlEnabled":null,"managedServiceIdentityId":null,"xManagedServiceIdentityId":null,"keyVaultReferenceIdentity":null,"ipSecurityRestrictions":null,"ipSecurityRestrictionsDefaultAction":null,"scmIpSecurityRestrictions":null,"scmIpSecurityRestrictionsDefaultAction":null,"scmIpSecurityRestrictionsUseMain":null,"http20Enabled":false,"minTlsVersion":null,"minTlsCipherSuite":null,"scmMinTlsCipherSuite":null,"supportedTlsCipherSuites":null,"scmSupportedTlsCipherSuites":null,"scmMinTlsVersion":null,"ftpsState":null,"preWarmedInstanceCount":null,"functionAppScaleLimit":0,"elasticWebAppScaleLimit":null,"healthCheckPath":null,"fileChangeAuditEnabled":null,"functionsRuntimeScaleMonitoringEnabled":null,"websiteTimeZone":null,"minimumElasticInstanceCount":0,"azureStorageAccounts":null,"http20ProxyFlag":null,"sitePort":null,"antivirusScanEnabled":null,"storageType":null,"sitePrivateLinkHostEnabled":null,"clusteringEnabled":false,"webJobsEnabled":false},"functionAppConfig":null,"daprConfig":null,"aiIntegration":null,"deploymentId":"dtsfunc000004","slotName":null,"trafficManagerHostNames":null,"sku":"Basic","scmSiteAlsoStopped":false,"targetSwapSlot":null,"hostingEnvironment":null,"hostingEnvironmentProfile":null,"clientAffinityEnabled":false,"clientAffinityProxyEnabled":false,"useQueryStringAffinity":false,"blockPathTraversal":false,"jA4Forwarding":false,"clientCertEnabled":false,"clientCertMode":"Required","clientCertExclusionPaths":null,"clientCertExclusionEndPoints":null,"hostNamesDisabled":false,"ipMode":"IPv4","domainVerificationIdentifiers":null,"customDomainVerificationId":"776132C3B892BCCAC6722D55C52C09ED9E8EB466C99502359A1D9AF1AE08FAAE","kind":"functionapp,linux","managedEnvironmentId":null,"workloadProfileName":null,"resourceConfig":null,"inboundIpAddress":"52.162.107.35","possibleInboundIpAddresses":"52.162.107.35,52.162.107.84","inboundIpv6Address":"2603:1030:608:2::6","possibleInboundIpv6Addresses":"2603:1030:608:2::6","ftpUsername":"dtsfunc000004\\$dtsfunc000004","ftpsHostName":"ftps://waws-prod-ch1-079.ftp.azurewebsites.windows.net/site/wwwroot","outboundIpAddresses":"65.52.12.97,65.52.12.155,65.52.12.204,65.52.12.207,65.52.12.228,65.52.13.24,20.221.250.252,20.221.251.236,20.221.252.85,52.159.93.251,52.159.94.157,20.221.194.68,52.162.107.35","possibleOutboundIpAddresses":"65.52.12.97,65.52.12.155,65.52.12.204,65.52.12.207,65.52.12.228,65.52.13.24,20.221.250.252,20.221.251.236,20.221.252.85,52.159.93.251,52.159.94.157,20.221.194.68,20.221.252.143,20.221.251.183,52.159.91.21,20.221.252.247,20.221.252.253,20.221.253.27,20.221.250.98,20.221.253.134,20.221.254.156,20.221.254.170,20.221.254.202,20.221.254.205,20.221.254.214,20.221.254.245,20.221.195.35,20.221.195.235,20.221.255.21,20.221.255.245,52.162.107.35","outboundIpv6Addresses":"2a01:111:f100:1004::9d38:1c25,2a01:111:f100:1004::9d38:1c26,2a01:111:f100:1004::9d38:1c27,2a01:111:f100:1004::4134:f6a2,2a01:111:f100:1004::9d38:1c28,2a01:111:f100:1004::9d38:1c29,2a01:111:f100:1004::9d38:1fd8,2a01:111:f100:1004::9d38:1fd1,2a01:111:f100:1004::9d38:1fd5,2a01:111:f100:1004::9d38:1fd7,2a01:111:f100:1004::9d38:1c11,2a01:111:f100:1004::9d38:1c13,2603:1030:608:2::6,2603:10e1:100:2::34a2:6b23,2603:1030:608:2::3c,2603:10e1:100:2::34a2:6b54","possibleOutboundIpv6Addresses":"2a01:111:f100:1004::9d38:1c25,2a01:111:f100:1004::9d38:1c26,2a01:111:f100:1004::9d38:1c27,2a01:111:f100:1004::4134:f6a2,2a01:111:f100:1004::9d38:1c28,2a01:111:f100:1004::9d38:1c29,2a01:111:f100:1004::9d38:1fd8,2a01:111:f100:1004::9d38:1fd1,2a01:111:f100:1004::9d38:1fd5,2a01:111:f100:1004::9d38:1fd7,2a01:111:f100:1004::9d38:1c11,2a01:111:f100:1004::9d38:1c13,2a01:111:f100:1004::4134:f67b,2a01:111:f100:1004::4134:f67e,2a01:111:f100:1004::4134:f682,2a01:111:f100:1004::4134:f686,2a01:111:f100:1004::9d38:1c1b,2a01:111:f100:1004::4134:f68b,2a01:111:f100:1004::4134:f690,2a01:111:f100:1004::9d38:1fc2,2a01:111:f100:1004::9d38:1fc4,2a01:111:f100:1004::4134:f696,2a01:111:f100:1004::9d38:1fcd,2a01:111:f100:1004::9d38:1fcf,2a01:111:f100:1004::4134:f69b,2a01:111:f100:1004::4134:f69d,2a01:111:f100:1004::4134:f69f,2a01:111:f100:1004::9d38:1c23,2a01:111:f100:1004::4134:f6a0,2a01:111:f100:1004::4134:f6a1,2603:1030:608:2::6,2603:10e1:100:2::34a2:6b23,2603:1030:608:2::3c,2603:10e1:100:2::34a2:6b54","containerSize":0,"dailyMemoryTimeQuota":0,"suspendedTill":null,"siteDisabledReason":0,"functionExecutionUnitsCache":null,"maxNumberOfWorkers":null,"homeStamp":"waws-prod-ch1-079","cloningInfo":null,"hostingEnvironmentId":null,"tags":null,"resourceGroup":"clitest-durabletask-000001","defaultHostName":"dtsfunc000004.azurewebsites.net","slotSwapStatus":null,"httpsOnly":false,"endToEndEncryptionEnabled":false,"functionsRuntimeAdminIsolationEnabled":false,"redundancyMode":"None","inProgressOperationId":null,"geoDistributions":null,"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","buildVersion":null,"targetBuildVersion":null,"migrationState":null,"eligibleLogCategories":"FunctionAppLogs,AppServiceAuthenticationLogs,AppServiceAuditLogs,AppServiceIPSecAuditLogs","inFlightFeatures":["SiteContainers"],"platformVersion":"110.0.7.48","storageAccountRequired":false,"virtualNetworkSubnetId":null,"keyVaultReferenceIdentity":"SystemAssigned","autoGeneratedDomainNameLabelScope":null,"privateLinkIdentifiers":null,"sshEnabled":null,"maintenanceEnabled":false},"identity":{"type":"SystemAssigned","tenantId":"00000000-0000-0000-0000-000000000000","principalId":"00000000-0000-0000-0000-000000000000"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9408'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Oct 2026 16:35:09 GMT
+      etag:
+      - 1DD66311FC7C780
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 7968C1E42F6946C6A7C59BB016000B26 Ref B: CO1AA3060819031 Ref C: 2026-10-27T16:35:09Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - functionapp config appsettings list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.13.13 (Windows-11-10.0.26300-SP0) AZURECLI/2.91.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004?api-version=2023-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004","name":"dtsfunc000004","type":"Microsoft.Web/sites","kind":"functionapp,linux","location":"North
+        Central US","properties":{"name":"dtsfunc000004","state":"Running","hostNames":["dtsfunc000004.azurewebsites.net"],"webSpace":"clitest-durabletask-000001-NorthCentralUSwebspace-Linux","selfLink":"https://waws-prod-ch1-079.api.azurewebsites.windows.net:455/subscriptions/00000000-0000-0000-0000-000000000000/webspaces/clitest-durabletask-000001-NorthCentralUSwebspace-Linux/sites/dtsfunc000004","repositorySiteName":"dtsfunc000004","owner":null,"usageState":"Normal","enabled":true,"adminEnabled":true,"siteScopedCertificatesEnabled":false,"afdEnabled":false,"enabledHostNames":["dtsfunc000004.azurewebsites.net","dtsfunc000004.scm.azurewebsites.net"],"siteProperties":{"metadata":null,"properties":[{"name":"LinuxFxVersion","value":""},{"name":"WindowsFxVersion","value":null}],"appSettings":null},"availabilityState":"Normal","sslCertificates":null,"csrs":[],"cers":null,"siteMode":null,"hostNameSslStates":[{"name":"dtsfunc000004.azurewebsites.net","sslState":"Disabled","ipBasedSslResult":null,"virtualIP":null,"virtualIPv6":null,"thumbprint":null,"certificateResourceId":null,"toUpdate":null,"toUpdateIpBasedSsl":null,"ipBasedSslState":"NotConfigured","hostType":"Standard"},{"name":"dtsfunc000004.scm.azurewebsites.net","sslState":"Disabled","ipBasedSslResult":null,"virtualIP":null,"virtualIPv6":null,"thumbprint":null,"certificateResourceId":null,"toUpdate":null,"toUpdateIpBasedSsl":null,"ipBasedSslState":"NotConfigured","hostType":"Repository"}],"hostNamePrivateStates":[],"computeMode":null,"serverFarm":null,"serverFarmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/serverfarms/dtsplan000005","reserved":true,"isXenon":false,"hyperV":false,"sandboxType":null,"lastModifiedTimeUtc":"2026-10-27T16:35:10.2833333","storageRecoveryDefaultState":"Running","contentAvailabilityState":"Normal","runtimeAvailabilityState":"Normal","dnsConfiguration":{},"vnetRouteAllEnabled":false,"containerAllocationSubnet":null,"useContainerLocalhostBindings":null,"vnetImagePullEnabled":false,"vnetContentShareEnabled":false,"legacyServiceEndpointTrafficEvaluation":null,"siteConfig":{"numberOfWorkers":1,"defaultDocuments":null,"netFrameworkVersion":null,"phpVersion":null,"pythonVersion":null,"nodeVersion":null,"powerShellVersion":null,"linuxFxVersion":"","windowsFxVersion":null,"sandboxType":null,"windowsConfiguredStacks":null,"requestTracingEnabled":null,"remoteDebuggingEnabled":null,"remoteDebuggingVersion":null,"httpLoggingEnabled":null,"azureMonitorLogCategories":null,"acrUseManagedIdentityCreds":false,"acrUserManagedIdentityID":null,"logsDirectorySizeLimit":null,"detailedErrorLoggingEnabled":null,"publishingUsername":null,"publishingPassword":null,"appSettings":null,"metadata":null,"connectionStrings":null,"machineKey":null,"handlerMappings":null,"documentRoot":null,"scmType":null,"use32BitWorkerProcess":null,"webSocketsEnabled":null,"alwaysOn":false,"javaVersion":null,"javaContainer":null,"javaContainerVersion":null,"appCommandLine":null,"managedPipelineMode":null,"virtualApplications":null,"winAuthAdminState":null,"winAuthTenantState":null,"customAppPoolIdentityAdminState":null,"customAppPoolIdentityTenantState":null,"runtimeADUser":null,"runtimeADUserPassword":null,"loadBalancing":null,"routingRules":null,"experiments":null,"limits":null,"autoHealEnabled":null,"autoHealRules":null,"tracingOptions":null,"vnetName":null,"vnetRouteAllEnabled":null,"vnetPrivatePortsCount":null,"publicNetworkAccess":null,"cors":null,"push":null,"apiDefinition":null,"apiManagementConfig":null,"autoSwapSlotName":null,"localMySqlEnabled":null,"managedServiceIdentityId":null,"xManagedServiceIdentityId":null,"keyVaultReferenceIdentity":null,"ipSecurityRestrictions":null,"ipSecurityRestrictionsDefaultAction":null,"scmIpSecurityRestrictions":null,"scmIpSecurityRestrictionsDefaultAction":null,"scmIpSecurityRestrictionsUseMain":null,"http20Enabled":false,"minTlsVersion":null,"minTlsCipherSuite":null,"scmMinTlsCipherSuite":null,"supportedTlsCipherSuites":null,"scmSupportedTlsCipherSuites":null,"scmMinTlsVersion":null,"ftpsState":null,"preWarmedInstanceCount":null,"functionAppScaleLimit":0,"elasticWebAppScaleLimit":null,"healthCheckPath":null,"fileChangeAuditEnabled":null,"functionsRuntimeScaleMonitoringEnabled":null,"websiteTimeZone":null,"minimumElasticInstanceCount":0,"azureStorageAccounts":null,"http20ProxyFlag":null,"sitePort":null,"antivirusScanEnabled":null,"storageType":null,"sitePrivateLinkHostEnabled":null,"clusteringEnabled":false,"webJobsEnabled":false},"functionAppConfig":null,"daprConfig":null,"aiIntegration":null,"deploymentId":"dtsfunc000004","slotName":null,"trafficManagerHostNames":null,"sku":"Basic","scmSiteAlsoStopped":false,"targetSwapSlot":null,"hostingEnvironment":null,"hostingEnvironmentProfile":null,"clientAffinityEnabled":false,"clientAffinityProxyEnabled":false,"useQueryStringAffinity":false,"blockPathTraversal":false,"jA4Forwarding":false,"clientCertEnabled":false,"clientCertMode":"Required","clientCertExclusionPaths":null,"clientCertExclusionEndPoints":null,"hostNamesDisabled":false,"ipMode":"IPv4","vnetBackupRestoreEnabled":false,"domainVerificationIdentifiers":null,"customDomainVerificationId":"776132C3B892BCCAC6722D55C52C09ED9E8EB466C99502359A1D9AF1AE08FAAE","kind":"functionapp,linux","managedEnvironmentId":null,"workloadProfileName":null,"resourceConfig":null,"inboundIpAddress":"52.162.107.35","possibleInboundIpAddresses":"52.162.107.35,52.162.107.84","inboundIpv6Address":"2603:1030:608:2::6","possibleInboundIpv6Addresses":"2603:1030:608:2::6","ftpUsername":"dtsfunc000004\\$dtsfunc000004","ftpsHostName":"ftps://waws-prod-ch1-079.ftp.azurewebsites.windows.net/site/wwwroot","outboundIpAddresses":"65.52.12.97,65.52.12.155,65.52.12.204,65.52.12.207,65.52.12.228,65.52.13.24,20.221.250.252,20.221.251.236,20.221.252.85,52.159.93.251,52.159.94.157,20.221.194.68,52.162.107.35","possibleOutboundIpAddresses":"65.52.12.97,65.52.12.155,65.52.12.204,65.52.12.207,65.52.12.228,65.52.13.24,20.221.250.252,20.221.251.236,20.221.252.85,52.159.93.251,52.159.94.157,20.221.194.68,20.221.252.143,20.221.251.183,52.159.91.21,20.221.252.247,20.221.252.253,20.221.253.27,20.221.250.98,20.221.253.134,20.221.254.156,20.221.254.170,20.221.254.202,20.221.254.205,20.221.254.214,20.221.254.245,20.221.195.35,20.221.195.235,20.221.255.21,20.221.255.245,52.162.107.35","outboundIpv6Addresses":"2a01:111:f100:1004::9d38:1c25,2a01:111:f100:1004::9d38:1c26,2a01:111:f100:1004::9d38:1c27,2a01:111:f100:1004::4134:f6a2,2a01:111:f100:1004::9d38:1c28,2a01:111:f100:1004::9d38:1c29,2a01:111:f100:1004::9d38:1fd8,2a01:111:f100:1004::9d38:1fd1,2a01:111:f100:1004::9d38:1fd5,2a01:111:f100:1004::9d38:1fd7,2a01:111:f100:1004::9d38:1c11,2a01:111:f100:1004::9d38:1c13,2603:1030:608:2::6,2603:10e1:100:2::34a2:6b23,2603:1030:608:2::3c,2603:10e1:100:2::34a2:6b54","possibleOutboundIpv6Addresses":"2a01:111:f100:1004::9d38:1c25,2a01:111:f100:1004::9d38:1c26,2a01:111:f100:1004::9d38:1c27,2a01:111:f100:1004::4134:f6a2,2a01:111:f100:1004::9d38:1c28,2a01:111:f100:1004::9d38:1c29,2a01:111:f100:1004::9d38:1fd8,2a01:111:f100:1004::9d38:1fd1,2a01:111:f100:1004::9d38:1fd5,2a01:111:f100:1004::9d38:1fd7,2a01:111:f100:1004::9d38:1c11,2a01:111:f100:1004::9d38:1c13,2a01:111:f100:1004::4134:f67b,2a01:111:f100:1004::4134:f67e,2a01:111:f100:1004::4134:f682,2a01:111:f100:1004::4134:f686,2a01:111:f100:1004::9d38:1c1b,2a01:111:f100:1004::4134:f68b,2a01:111:f100:1004::4134:f690,2a01:111:f100:1004::9d38:1fc2,2a01:111:f100:1004::9d38:1fc4,2a01:111:f100:1004::4134:f696,2a01:111:f100:1004::9d38:1fcd,2a01:111:f100:1004::9d38:1fcf,2a01:111:f100:1004::4134:f69b,2a01:111:f100:1004::4134:f69d,2a01:111:f100:1004::4134:f69f,2a01:111:f100:1004::9d38:1c23,2a01:111:f100:1004::4134:f6a0,2a01:111:f100:1004::4134:f6a1,2603:1030:608:2::6,2603:10e1:100:2::34a2:6b23,2603:1030:608:2::3c,2603:10e1:100:2::34a2:6b54","containerSize":0,"dailyMemoryTimeQuota":0,"suspendedTill":null,"siteDisabledReason":0,"functionExecutionUnitsCache":null,"maxNumberOfWorkers":null,"homeStamp":"waws-prod-ch1-079","cloningInfo":null,"hostingEnvironmentId":null,"tags":null,"resourceGroup":"clitest-durabletask-000001","defaultHostName":"dtsfunc000004.azurewebsites.net","slotSwapStatus":null,"httpsOnly":false,"endToEndEncryptionEnabled":false,"functionsRuntimeAdminIsolationEnabled":false,"redundancyMode":"None","inProgressOperationId":null,"geoDistributions":null,"privateEndpointConnections":[],"publicNetworkAccess":null,"buildVersion":null,"targetBuildVersion":null,"migrationState":null,"eligibleLogCategories":"FunctionAppLogs,AppServiceAuthenticationLogs,AppServiceAuditLogs,AppServiceIPSecAuditLogs","inFlightFeatures":["SiteContainers"],"platformVersion":"110.0.7.48","storageAccountRequired":false,"virtualNetworkSubnetId":null,"keyVaultReferenceIdentity":"SystemAssigned","autoGeneratedDomainNameLabelScope":null,"privateLinkIdentifiers":null,"sshEnabled":null,"maintenanceEnabled":false},"identity":{"type":"SystemAssigned","tenantId":"00000000-0000-0000-0000-000000000000","principalId":"00000000-0000-0000-0000-000000000000"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9347'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Oct 2026 16:35:10 GMT
+      etag:
+      - 1DD6631221E6EB5
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 2B6853FA44EF4EF8BA7BE86F9C386F66 Ref B: CO6AA3150217039 Ref C: 2026-10-27T16:35:10Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - functionapp config appsettings list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.Web/sites/dtsfunc000004/config/slotConfigNames?api-version=2025-05-01
+  response:
+    body:
+      string: '{"id":null,"name":"dtsfunc000004","type":"Microsoft.Web/sites","location":"North
+        Central US","properties":{"connectionStringNames":null,"appSettingNames":null,"azureStorageConfigNames":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json
+      date:
+      - Tue, 27 Oct 2026 16:35:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/2787ff91-6183-4855-829a-8aa865ea922d
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C2F472E26CAB4B91B9C779EF7F2633C0 Ref B: MWH011020807034 Ref C: 2026-10-27T16:35:11Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask taskhub delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -s -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002/taskHubs/hub000003?api-version=2026-07-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/f5e54fa2-7cd2-4748-a6fe-590ffbaa8f6c*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055?api-version=2026-07-01-preview&t=redacted&c=redacted&s=redacted&h=redacted
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:35:13 GMT
+      etag:
+      - '"3a04b16e-0000-0100-0000-6ae0d2c10000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/f5e54fa2-7cd2-4748-a6fe-590ffbaa8f6c*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055?api-version=2026-07-01-preview&t=redacted&c=redacted&s=redacted&h=redacted
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/northcentralus/928c5823-b8dc-479d-ab38-5782633755d8
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 32B2BC8494664B1E9FD8C47AC81904A6 Ref B: CO1AA3060817031 Ref C: 2026-10-27T16:35:12Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask taskhub delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/f5e54fa2-7cd2-4748-a6fe-590ffbaa8f6c*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055?api-version=2026-07-01-preview&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/f5e54fa2-7cd2-4748-a6fe-590ffbaa8f6c*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055","name":"f5e54fa2-7cd2-4748-a6fe-590ffbaa8f6c*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002/taskHubs/hub000003","status":"Deleting","startTime":"2026-10-27T16:35:13.621186Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/f5e54fa2-7cd2-4748-a6fe-590ffbaa8f6c*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055?api-version=2026-07-01-preview&t=redacted&c=redacted&s=redacted&h=redacted
+      cache-control:
+      - no-cache
+      content-length:
+      - '591'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:35:13 GMT
+      etag:
+      - '"2000332b-0000-0100-0000-6ae0d2c10000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/f5e54fa2-7cd2-4748-a6fe-590ffbaa8f6c*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055?api-version=2026-07-01-preview&t=redacted&c=redacted&s=redacted&h=redacted
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/9ea8fe58-589f-4fc7-84c1-03d7e366b1e1
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 562AF74BB3744DBEBBA4B12DD5D64FDE Ref B: CO1AA3060816060 Ref C: 2026-10-27T16:35:14Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask taskhub delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/f5e54fa2-7cd2-4748-a6fe-590ffbaa8f6c*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055?api-version=2026-07-01-preview&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/f5e54fa2-7cd2-4748-a6fe-590ffbaa8f6c*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055","name":"f5e54fa2-7cd2-4748-a6fe-590ffbaa8f6c*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002/taskHubs/hub000003","status":"Succeeded","startTime":"2026-10-27T16:35:13.621186Z","endTime":"2026-10-27T16:35:27.0292344Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '651'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:35:44 GMT
+      etag:
+      - '"2000432b-0000-0100-0000-6ae0d2cf0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/8c8e02a7-3e33-4e3c-b5c4-4c2bac54db83
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 519167A272BD418EA7F78A6902D9AC8F Ref B: CO6AA3150220037 Ref C: 2026-10-27T16:35:44Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask taskhub delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/f5e54fa2-7cd2-4748-a6fe-590ffbaa8f6c*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055?api-version=2026-07-01-preview&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/f5e54fa2-7cd2-4748-a6fe-590ffbaa8f6c*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055","name":"f5e54fa2-7cd2-4748-a6fe-590ffbaa8f6c*C31556C9C72EDBD10D064181A79F92D5BA4232094F839BC635D91F9407A6C055","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002/taskHubs/hub000003","status":"Succeeded","startTime":"2026-10-27T16:35:13.621186Z","endTime":"2026-10-27T16:35:27.0292344Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '651'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:35:45 GMT
+      etag:
+      - '"2000432b-0000-0100-0000-6ae0d2cf0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/c40174b1-35d1-469c-b700-c79dc4405fc0
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 40A81F8A3AA94B578B2879D0EC563A8D Ref B: CO6AA3150218035 Ref C: 2026-10-27T16:35:45Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002?api-version=2026-02-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:35:47 GMT
+      etag:
+      - '"a107ef92-0000-0100-0000-6ae0d2e30000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/northcentralus/2eadc357-0c6c-43d9-a784-1cacaff304af
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: F08C636213814236877999D41DBAA6E1 Ref B: CO6AA3150219025 Ref C: 2026-10-27T16:35:46Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Deleting","startTime":"2026-10-27T16:35:47.1319734Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      cache-control:
+      - no-cache
+      content-length:
+      - '573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:35:47 GMT
+      etag:
+      - '"2000492b-0000-0100-0000-6ae0d2e30000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/ecb4e498-4df0-47e0-b162-ed3bdc1bcbc2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: EF079940FC97487AAB16C8C42E091BC6 Ref B: MWH011020807023 Ref C: 2026-10-27T16:35:47Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Deleting","startTime":"2026-10-27T16:35:47.1319734Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      cache-control:
+      - no-cache
+      content-length:
+      - '573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:36:18 GMT
+      etag:
+      - '"2000492b-0000-0100-0000-6ae0d2e30000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/f2785b30-9015-4625-aa6f-878ab8c4509c
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: D2DFF1D941094947B03C29065396CFC4 Ref B: CO1AA3060819062 Ref C: 2026-10-27T16:36:18Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Deleting","startTime":"2026-10-27T16:35:47.1319734Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      cache-control:
+      - no-cache
+      content-length:
+      - '573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:36:49 GMT
+      etag:
+      - '"2000492b-0000-0100-0000-6ae0d2e30000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/0754630e-452d-4dab-adaa-b294ea99afad
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 5E9553D7AC6D4E40B9A1F6D229A5F10D Ref B: CO6AA3150220011 Ref C: 2026-10-27T16:36:49Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Deleting","startTime":"2026-10-27T16:35:47.1319734Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      cache-control:
+      - no-cache
+      content-length:
+      - '573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:37:19 GMT
+      etag:
+      - '"2000492b-0000-0100-0000-6ae0d2e30000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/01096bce-7d34-4f67-958f-e26b6271d309
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 8E78A435AED0454D8EDBB87F5A4E54D2 Ref B: CO6AA3150219033 Ref C: 2026-10-27T16:37:19Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Deleting","startTime":"2026-10-27T16:35:47.1319734Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      cache-control:
+      - no-cache
+      content-length:
+      - '573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:37:50 GMT
+      etag:
+      - '"2000492b-0000-0100-0000-6ae0d2e30000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/8a4273dc-270e-488c-baa8-2adb9e2f518e
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 604A272D456C486E9E249875D1B2F21F Ref B: MWH011020806025 Ref C: 2026-10-27T16:37:50Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Deleting","startTime":"2026-10-27T16:35:47.1319734Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      cache-control:
+      - no-cache
+      content-length:
+      - '573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:38:20 GMT
+      etag:
+      - '"2000492b-0000-0100-0000-6ae0d2e30000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/9faca897-3f2b-4126-aaa1-92fa7cea02d4
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: AC95E96F07A34E429EE190C5FB40C51A Ref B: CO6AA3150217031 Ref C: 2026-10-27T16:38:21Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Deleting","startTime":"2026-10-27T16:35:47.1319734Z"}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      cache-control:
+      - no-cache
+      content-length:
+      - '573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:38:51 GMT
+      etag:
+      - '"2000492b-0000-0100-0000-6ae0d2e30000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/northcentralus/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/5d906179-e85b-4e3a-a18d-da56a563015c
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 76F4A4AA75014E1DB3DEB9D6F5EB9CDE Ref B: CO1AA3060820023 Ref C: 2026-10-27T16:38:51Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Succeeded","startTime":"2026-10-27T16:35:47.1319734Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '592'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:39:22 GMT
+      etag:
+      - '"bf00e6d1-0000-0800-0000-6ae0d39c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/418a776c-4f07-4c52-a1b9-3c57b0900c34
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6A1FD747B9A04686A2D4BDF22B33B618 Ref B: CO6AA3150219025 Ref C: 2026-10-27T16:39:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - durabletask scheduler delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7?api-version=2026-02-01&t=redacted&c=redacted&s=redacted&h=redacted
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DurableTask/locations/NORTHCENTRALUS/operationStatuses/465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","name":"465bd682-7f32-4cdd-a2bd-2bd81dced0e2*03171C80A109E549BB6F71E46570F602FEC1651A451DFD17290BC1C177DFD1A7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-durabletask-000001/providers/Microsoft.DurableTask/schedulers/dts000002","status":"Succeeded","startTime":"2026-10-27T16:35:47.1319734Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '592'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 27 Oct 2026 16:39:22 GMT
+      etag:
+      - '"bf00e6d1-0000-0800-0000-6ae0d39c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=00000000-0000-0000-0000-000000000000/westus2/ee7951b0-7cd4-4d1c-9097-0a64f60eed79
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 2EA36D29A9AD45AFBAABAF44BE154A7F Ref B: CO1AA3060819040 Ref C: 2026-10-27T16:39:23Z'
+    status:
+      code: 200
+      message: OK
+version: 1

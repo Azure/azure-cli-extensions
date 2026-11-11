@@ -3,6 +3,16 @@
 Release History
 ===============
 
+1.0.0b9
++++++++
+* Add `az durabletask taskqueue` commands to manage task queues and configure their throughput.
+* Add `az durabletask scheduler failover-instance` commands to configure partner schedulers and perform graceful or forced failover.
+* Update ARM API version to `2026-07-01-preview` for task hub create, delete, list, show, and wait operations, scheduler restart, and transparent data encryption commands.
+* Add `--auto-rotation-enabled` support to scheduler transparent data encryption create and update commands.
+* Preserve the scheduler restart success response, including support for `--query status`.
+* Preserve other managed identities when removing selected scheduler user-assigned identities.
+* Add Python 3.15 support.
+
 1.0.0b8
 +++++
 * Update ARM API version to `2026-05-01-preview` for task hub commands.

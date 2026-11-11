@@ -2,6 +2,21 @@
 
 Release History
 ===============
+1.6.0b1
+- Updated to API version 2026-10-01-preview.
+- Added `--firewall-rules` to cluster create and update.
+- Restored `--access-string` on access policy assignment create/update and `provisioningError` in responses.
+
+1.5.0
+- Updated Redis Enterprise commands to stable API version 2026-09-01.
+- Added `az redisenterprise migration unlink-migrated-endpoint` for OSS-to-AMR migrations and `az redisenterprise unlink-migrated-endpoint` for Enterprise-to-AMR migrations.
+- Added `--rollback-reason` to `az redisenterprise migration undo`.
+- Migration responses include `rollbackEligibleUntil` and support nullable `statusDetails`.
+- Removed preview-only `--access-string` support. Use `--access-policy-name` for access policy assignments.
+- Restored existing GA access policy assignment behavior.
+- Removed `--force-migrate` from migration validation; migration start continues to support it.
+- Retained migration action polling customizations to handle resource responses from the final Location URL.
+
 1.5.0b1
 - Preview release. Adds support for the 2025-08-01-preview, 2026-02-01-preview, and 2026-06-01-preview API versions.
 - Added a new command group `az redisenterprise migration` to migrate an existing Azure Cache for Redis instance into an Azure Managed Redis (Redis Enterprise) cluster:

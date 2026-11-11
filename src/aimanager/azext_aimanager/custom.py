@@ -8,7 +8,6 @@ import os
 from azure.cli.core.azclierror import ClientRequestError, InvalidArgumentValueError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.util import sdk_no_wait
-from azure.core import MatchConditions
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 from knack.util import CLIError
@@ -17,6 +16,7 @@ from azext_aimanager._client_factory import CUSTOM_MGMT_AIMANAGER
 from azext_aimanager._helpers import (
     get_custom_headers,
     parse_key_value_list,
+    convert_kubelogin_devicecode,
     print_or_merge_credentials,
 )
 from azext_aimanager._roleassignments import assign_caller_roles, warn_roles_skipped_no_wait
@@ -188,6 +188,7 @@ def _write_kubeconfig(credential_results, path, overwrite_existing, context_name
     try:
         kubeconfig = credential_results.kubeconfigs[0].value.decode(encoding='UTF-8')
         print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
+        convert_kubelogin_devicecode(path, kubeconfig)
     except (IndexError, ValueError) as exc:
         raise CLIError(
             "Failed to extract the kubeconfig from the service response. "
@@ -557,12 +558,9 @@ def update_modeldeployment(cmd, client, resource_group_name, ai_manager_name, na
         cmd, properties.model_resource_id, properties.vm_size,
         properties.model_source_resource_id, performance_mode, scale, override_values)
     headers = get_custom_headers(custom_headers)
-    etag = existing.e_tag
-    match_condition = MatchConditions.IfNotModified if etag is not None else None
     poller = sdk_no_wait(
         no_wait, client.begin_create_or_update, resource_group_name, ai_manager_name,
-        namespace_name, model_deployment_name, deployment, headers=headers,
-        etag=etag, match_condition=match_condition)
+        namespace_name, model_deployment_name, deployment, headers=headers)
     return _annotate_model_id_on_completion(cmd, poller, no_wait)
 
 

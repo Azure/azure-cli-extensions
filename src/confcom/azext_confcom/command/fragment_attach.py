@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import subprocess
 import sys
 import tempfile
 from typing import Optional
@@ -50,11 +49,7 @@ def oras_attach(
         os.path.relpath(signed_fragment_path, start=os.getcwd()) + ":application/cose-x509+rego",
     ])
 
-    subprocess.run(
-        cmd,
-        check=True,
-        timeout=120,
-    )
+    oras_proxy.call_oras_cli(cmd, check=True, capture_output=False)
 
 
 def fragment_attach(

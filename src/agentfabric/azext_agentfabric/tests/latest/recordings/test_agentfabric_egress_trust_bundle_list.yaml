@@ -1,0 +1,114 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric egress-trust-bundle list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription -g --fabric-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafetblist000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliafetb000002/egressTrustBundles?api-version=2026-11-03-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafetblist000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliafetb000002/egressTrustBundles/default","name":"default","type":"Microsoft.NetworkSecurity/agentFabrics/egressTrustBundles","properties":{"certificates":[{"certificateId":"sha256-45dc1f6e51e446da","pem":"-----BEGIN
+        CERTIFICATE-----\nMIIB0TCCAXegAwIBAgIQV9wgbSSHtVuzz6KmEmCE8DAKBggqhkjOPQQDAjBHMUUw\nQwYDVQQDEzxBZ2VudEZhYnJpYyBFZ3Jlc3MgUm9vdCA0Y2U5ODk1Mi00MTNkLTQy\nMDctYmY2Ny1lYTgxMGJhMTAxZTkwHhcNMjYxMTAxMDAzNzIyWhcNMzYxMDI5MDA0\nMjIyWjBHMUUwQwYDVQQDEzxBZ2VudEZhYnJpYyBFZ3Jlc3MgUm9vdCA0Y2U5ODk1\nMi00MTNkLTQyMDctYmY2Ny1lYTgxMGJhMTAxZTkwWTATBgcqhkjOPQIBBggqhkjO\nPQMBBwNCAAR9r+dvOAD0MI4ndPQwx44BCAGQtxBMxtfrX06QJqX4CzyR90lU6Y5N\nzPPY8a13FHL4f0pZv2U12/VvzHbtpPp7o0UwQzASBgNVHRMBAf8ECDAGAQH/AgEB\nMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQUFGW2bg4SfVhcqF8f3J25Rk3K8SMw\nCgYIKoZIzj0EAwIDSAAwRQIhALvWZVO//i7DiGGanaMo6fFPeAdoNdmFHRIYmEFc\nlHV3AiAPPv9BC2+IhR/18gdnexJEPo0oIvn68leARrA0qqdeyw==\n-----END
+        CERTIFICATE-----","thumbprintSha256":"45dc1f6e51e446da4e367cb0ffa1fe6f8ca66fd0a14f187c493f04f2c0522803","notBefore":"2026-11-01T00:37:22+00:00","notAfter":"2036-10-29T00:42:22+00:00"}],"bundleVersion":"sha256:f6dfd4acbceb1b64","cacheValiditySeconds":1295999,"cacheExpiresAt":"2026-11-17T20:20:23.8205773+00:00","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1395'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:20:23 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - ddf3d8c5-c663-45ce-9289-e62eeb5089bd
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/eastus2euap/e66ed11b-798a-4811-aff0-6619b258ba29
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: 56CCEC80AAEC48B09CAE72ABFD652F0B Ref B: SN4AA2022402039 Ref C: 2026-11-02T20:20:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric egress-trust-bundle show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription -g --fabric-name
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafetblist000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliafetb000002/egressTrustBundles/default?api-version=2026-11-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafetblist000001/providers/Microsoft.NetworkSecurity/agentFabrics/cliafetb000002/egressTrustBundles/default","name":"default","type":"Microsoft.NetworkSecurity/agentFabrics/egressTrustBundles","properties":{"certificates":[{"certificateId":"sha256-45dc1f6e51e446da","pem":"-----BEGIN
+        CERTIFICATE-----\nMIIB0TCCAXegAwIBAgIQV9wgbSSHtVuzz6KmEmCE8DAKBggqhkjOPQQDAjBHMUUw\nQwYDVQQDEzxBZ2VudEZhYnJpYyBFZ3Jlc3MgUm9vdCA0Y2U5ODk1Mi00MTNkLTQy\nMDctYmY2Ny1lYTgxMGJhMTAxZTkwHhcNMjYxMTAxMDAzNzIyWhcNMzYxMDI5MDA0\nMjIyWjBHMUUwQwYDVQQDEzxBZ2VudEZhYnJpYyBFZ3Jlc3MgUm9vdCA0Y2U5ODk1\nMi00MTNkLTQyMDctYmY2Ny1lYTgxMGJhMTAxZTkwWTATBgcqhkjOPQIBBggqhkjO\nPQMBBwNCAAR9r+dvOAD0MI4ndPQwx44BCAGQtxBMxtfrX06QJqX4CzyR90lU6Y5N\nzPPY8a13FHL4f0pZv2U12/VvzHbtpPp7o0UwQzASBgNVHRMBAf8ECDAGAQH/AgEB\nMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQUFGW2bg4SfVhcqF8f3J25Rk3K8SMw\nCgYIKoZIzj0EAwIDSAAwRQIhALvWZVO//i7DiGGanaMo6fFPeAdoNdmFHRIYmEFc\nlHV3AiAPPv9BC2+IhR/18gdnexJEPo0oIvn68leARrA0qqdeyw==\n-----END
+        CERTIFICATE-----","thumbprintSha256":"45dc1f6e51e446da4e367cb0ffa1fe6f8ca66fd0a14f187c493f04f2c0522803","notBefore":"2026-11-01T00:37:22+00:00","notAfter":"2036-10-29T00:42:22+00:00"}],"bundleVersion":"sha256:f6dfd4acbceb1b64","cacheValiditySeconds":1295999,"cacheExpiresAt":"2026-11-17T20:20:24.7667536+00:00","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1383'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:20:24 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 8e84bdf1-b83b-4521-a2b9-41afc3a2f31b
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/eastus2euap/4bd6e7f2-5b70-457c-a31d-bd96b7a81449
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-throttling-version:
+      - v1
+      x-msedge-ref:
+      - 'Ref A: C9CCDB67BBDC491CB44DADA9735EC6ED Ref B: SN4AA2022403049 Ref C: 2026-11-02T20:20:24Z'
+    status:
+      code: 200
+      message: OK
+version: 1

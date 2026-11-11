@@ -2346,7 +2346,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                 {
                     "enable_azure_keyvault_kms": True,
                     "azure_keyvault_kms_key_id": versioned_key_id,
-                    "kms_infrastructure_encryption": "Disabled",
                 }
             ),
             self.models,
@@ -2363,7 +2362,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                 {
                     "enable_azure_keyvault_kms": True,
                     "azure_keyvault_kms_key_id": versionless_key_id,
-                    "kms_infrastructure_encryption": "Disabled",
                 }
             ),
             self.models,
@@ -2662,7 +2660,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             {
                 "enable_azure_keyvault_kms": True,
                 "azure_keyvault_kms_key_id": versioned_key_id,
-                "kms_infrastructure_encryption": "Disabled",
             }
         )
         self.assertEqual(
@@ -2674,7 +2671,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             {
                 "enable_azure_keyvault_kms": True,
                 "azure_keyvault_kms_key_id": versionless_key_id,
-                "kms_infrastructure_encryption": "Disabled",
             }
         )
         # No exception should be raised since PMK validation was removed
@@ -2860,7 +2856,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ctx_no_pmk_optional = self._create_kms_context(
             {
                 "enable_azure_keyvault_kms": True,
-                "kms_infrastructure_encryption": "Disabled",
             }
         )
         self.assertIsNone(
@@ -2871,7 +2866,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ctx_no_pmk_with_resource = self._create_kms_context(
             {
                 "enable_azure_keyvault_kms": True,
-                "kms_infrastructure_encryption": "Disabled",
                 "azure_keyvault_kms_key_vault_resource_id": key_vault_resource_id_1,
             }
         )
@@ -2928,7 +2922,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertIsNone(ctx_0.get_kms_infrastructure_encryption())
 
-        # with explicit Disabled value
+        # explicitly disabling is rejected, PMK cannot be turned off once turned on
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
@@ -2939,7 +2933,8 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_kms_infrastructure_encryption(), "Disabled")
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_1.get_kms_infrastructure_encryption()
 
         # with Enabled value
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -3156,7 +3151,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             AKSManagedClusterParamDict(
                 {
                     "enable_fips": True,
-                    "kubernetes_version": "1.34.0",
+                    "kubernetes_version": "1.35.0",
                 }
             ),
             self.models,
@@ -3170,7 +3165,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             AKSManagedClusterParamDict(
                 {
                     "enable_fips": True,
-                    "kubernetes_version": "1.33.9",
+                    "kubernetes_version": "1.34.9",
                 }
             ),
             self.models,
@@ -3188,7 +3183,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         mc_4 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
         )
         mc_4.properties["enableFIPS"] = True
         ctx_4.attach_mc(mc_4)
@@ -3208,7 +3203,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                 {
                     "enable_fips": True,
                     "disable_fips": True,
-                    "kubernetes_version": "1.34.0",
+                    "kubernetes_version": "1.35.0",
                 }
             ),
             self.models,
@@ -7779,7 +7774,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-        # test with Disabled
+        # test that explicitly disabling is rejected
         dec_2 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
@@ -7790,10 +7785,8 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.set_up_kms_pmk_and_cmk(mc_2)
-        # no change expected
-        ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
-        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_2.set_up_kms_pmk_and_cmk(mc_2)
 
         # test with Enabled
         dec_3 = AKSPreviewManagedClusterCreateDecorator(
@@ -8434,7 +8427,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "enable_fips": True,
-                "kubernetes_version": "1.34.0",
+                "kubernetes_version": "1.35.0",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -8444,7 +8437,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         mc_2 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
             agent_pool_profiles=[agentpool_profile],
         )
         dec_2.context.attach_mc(mc_2)
@@ -8455,7 +8448,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
             agent_pool_profiles=[ground_truth_agentpool_profile],
         )
         ground_truth_mc_2.enable_fips = True
@@ -8470,13 +8463,13 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "enable_fips": True,
-                "kubernetes_version": "1.33.9",
+                "kubernetes_version": "1.34.9",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_3 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.33.9",
+            kubernetes_version="1.34.9",
         )
         dec_3.context.attach_mc(mc_3)
         with self.assertRaises(InvalidArgumentValueError):
@@ -12467,7 +12460,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-        # test no change when Disabled
+        # test that explicitly disabling is rejected
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -12478,10 +12471,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
         dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.update_kms_pmk_cmk(mc_2)
-        # no change expected
-        ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
-        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_2.update_kms_pmk_cmk(mc_2)
 
         # test with Enabled on new cluster
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
@@ -15656,7 +15647,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_1 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
         )
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.update_enable_fips(mc_1)
@@ -15674,14 +15665,14 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_2 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
             agent_pool_profiles=[agentpool_profile],
         )
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.update_enable_fips(mc_2)
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
             agent_pool_profiles=[agentpool_profile],
         )
         ground_truth_mc_2.enable_fips = True
@@ -15703,7 +15694,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_3 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
             agent_pool_profiles=[non_fips_agentpool_profile],
         )
         dec_3.context.attach_mc(mc_3)
@@ -15718,7 +15709,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_4 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.33.9",
+            kubernetes_version="1.34.9",
         )
         dec_4.context.attach_mc(mc_4)
         with self.assertRaises(InvalidArgumentValueError):
@@ -15736,7 +15727,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_5 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
             agent_pool_profiles=[agentpool_profile_5],
         )
         mc_5.properties["enableFIPS"] = True
@@ -15744,7 +15735,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_mc_5 = dec_5.update_enable_fips(mc_5)
         ground_truth_mc_5 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
             agent_pool_profiles=[agentpool_profile_5],
         )
         ground_truth_mc_5.enable_fips = False
@@ -15765,7 +15756,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         mc_6 = self.models.ManagedCluster(
             location="test_location",
-            kubernetes_version="1.34.0",
+            kubernetes_version="1.35.0",
         )
         dec_6.context.attach_mc(mc_6)
         with self.assertRaises(MutuallyExclusiveArgumentError):

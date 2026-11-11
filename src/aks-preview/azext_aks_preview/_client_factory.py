@@ -42,6 +42,10 @@ def cf_agent_pools(cli_ctx, *_):
     return get_container_service_client(cli_ctx).agent_pools
 
 
+def cf_upgrade_insights(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).upgrade_insights
+
+
 def cf_managed_namespaces(cli_ctx, *_):
     return get_container_service_client(cli_ctx).managed_namespaces
 

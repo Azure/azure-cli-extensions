@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-01",
+        "version": "2026-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.fileshares/fileshares/{}", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.fileshares/fileshares/{}", "2026-09-01"],
         ]
     }
 
@@ -60,6 +60,25 @@ class Create(AAZCommand):
             ),
         )
 
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Identity",
+            help="Set the system managed identity.",
+            blank="True",
+        )
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Identity",
+            help="Set the user managed identities.",
+            blank=[],
+        )
+
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
+
         # define Arg Group "NfsProtocolProperties"
 
         _args_schema = cls._args_schema
@@ -79,11 +98,16 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.encryption = AAZObjectArg(
+            options=["--encryption"],
+            arg_group="Properties",
+            help="Encryption settings for the file share.",
+        )
         _args_schema.media_tier = AAZStrArg(
             options=["--media-tier"],
             arg_group="Properties",
             help="The storage media tier of the file share.",
-            enum={"SSD": "SSD"},
+            enum={"HDD": "HDD", "SSD": "SSD"},
         )
         _args_schema.mount_name = AAZStrArg(
             options=["--mount-name"],
@@ -122,6 +146,52 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The chosen redundancy level of the file share.",
             enum={"Local": "Local", "Zone": "Zone"},
+        )
+        _args_schema.scale_mode = AAZStrArg(
+            options=["--scale-mode"],
+            arg_group="Properties",
+            help="The scale mode selected when the file share is created.",
+            enum={"Compatibility": "Compatibility", "Scale": "Scale"},
+        )
+
+        encryption = cls._args_schema.encryption
+        encryption.customer_managed_key_encryption = AAZObjectArg(
+            options=["customer-managed-key-encryption"],
+            help="All Customer-managed key encryption properties for the resource.",
+        )
+        encryption.infrastructure_encryption = AAZStrArg(
+            options=["infrastructure-encryption"],
+            help="Values are enabled and disabled.",
+            enum={"disabled": "disabled", "enabled": "enabled"},
+        )
+
+        customer_managed_key_encryption = cls._args_schema.encryption.customer_managed_key_encryption
+        customer_managed_key_encryption.key_encryption_key_identity = AAZObjectArg(
+            options=["key-encryption-key-identity"],
+            help="All identity configuration for Customer-managed key settings defining which identity should be used to auth to Key Vault.",
+        )
+        customer_managed_key_encryption.key_encryption_key_url = AAZStrArg(
+            options=["key-encryption-key-url"],
+            help="key encryption key Url, versioned or non-versioned. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78 or https://contosovault.vault.azure.net/keys/contosokek.",
+        )
+
+        key_encryption_key_identity = cls._args_schema.encryption.customer_managed_key_encryption.key_encryption_key_identity
+        key_encryption_key_identity.delegated_identity_client_id = AAZUuidArg(
+            options=["delegated-identity-client-id"],
+            help="delegated identity to use for accessing key encryption key Url. Ex: /subscriptions/fa5fc227-a624-475e-b696-cdd604c735bc/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId. Mutually exclusive with identityType systemAssignedIdentity and userAssignedIdentity - internal use only.",
+        )
+        key_encryption_key_identity.federated_client_id = AAZUuidArg(
+            options=["federated-client-id"],
+            help="application client identity to use for accessing key encryption key Url in a different tenant. Ex: f83c6b1b-4d34-47e4-bb34-9d83df58b540",
+        )
+        key_encryption_key_identity.identity_type = AAZStrArg(
+            options=["identity-type"],
+            help="The type of identity to use. Values can be systemAssignedIdentity, userAssignedIdentity, or delegatedResourceIdentity.",
+            enum={"delegatedResourceIdentity": "delegatedResourceIdentity", "systemAssignedIdentity": "systemAssignedIdentity", "userAssignedIdentity": "userAssignedIdentity"},
+        )
+        key_encryption_key_identity.user_assigned_identity_resource_id = AAZResourceIdArg(
+            options=["user-assigned-identity-resource-id"],
+            help="User assigned identity to use for accessing key encryption key Url. Ex: /subscriptions/fa5fc227-a624-475e-b696-cdd604c735bc/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId. Mutually exclusive with identityType systemAssignedIdentity.",
         )
 
         # define Arg Group "PublicAccessProperties"
@@ -238,7 +308,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-09-01",
                     required=True,
                 ),
             }
@@ -263,12 +333,23 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
+
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("encryption", AAZObjectType, ".encryption")
                 properties.set_prop("mediaTier", AAZStrType, ".media_tier")
                 properties.set_prop("mountName", AAZStrType, ".mount_name")
                 properties.set_prop("nfsProtocolProperties", AAZObjectType)
@@ -279,6 +360,24 @@ class Create(AAZCommand):
                 properties.set_prop("publicAccessProperties", AAZObjectType)
                 properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
                 properties.set_prop("redundancy", AAZStrType, ".redundancy")
+                properties.set_prop("scaleMode", AAZStrType, ".scale_mode")
+
+            encryption = _builder.get(".properties.encryption")
+            if encryption is not None:
+                encryption.set_prop("customerManagedKeyEncryption", AAZObjectType, ".customer_managed_key_encryption")
+                encryption.set_prop("infrastructureEncryption", AAZStrType, ".infrastructure_encryption")
+
+            customer_managed_key_encryption = _builder.get(".properties.encryption.customerManagedKeyEncryption")
+            if customer_managed_key_encryption is not None:
+                customer_managed_key_encryption.set_prop("keyEncryptionKeyIdentity", AAZObjectType, ".key_encryption_key_identity")
+                customer_managed_key_encryption.set_prop("keyEncryptionKeyUrl", AAZStrType, ".key_encryption_key_url")
+
+            key_encryption_key_identity = _builder.get(".properties.encryption.customerManagedKeyEncryption.keyEncryptionKeyIdentity")
+            if key_encryption_key_identity is not None:
+                key_encryption_key_identity.set_prop("delegatedIdentityClientId", AAZStrType, ".delegated_identity_client_id")
+                key_encryption_key_identity.set_prop("federatedClientId", AAZStrType, ".federated_client_id")
+                key_encryption_key_identity.set_prop("identityType", AAZStrType, ".identity_type")
+                key_encryption_key_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".user_assigned_identity_resource_id")
 
             nfs_protocol_properties = _builder.get(".properties.nfsProtocolProperties")
             if nfs_protocol_properties is not None:
@@ -320,6 +419,7 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200_201.identity = AAZIdentityObjectType()
             _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
@@ -337,7 +437,39 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200_201.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200_201.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200_201.properties
+            properties.encryption = AAZObjectType()
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
                 flags={"read_only": True},
@@ -352,6 +484,10 @@ class Create(AAZCommand):
             )
             properties.media_tier = AAZStrType(
                 serialized_name="mediaTier",
+            )
+            properties.migration_state = AAZObjectType(
+                serialized_name="migrationState",
+                flags={"read_only": True},
             )
             properties.mount_name = AAZStrType(
                 serialized_name="mountName",
@@ -396,6 +532,58 @@ class Create(AAZCommand):
                 serialized_name="publicNetworkAccess",
             )
             properties.redundancy = AAZStrType()
+            properties.scale_mode = AAZStrType(
+                serialized_name="scaleMode",
+            )
+
+            encryption = cls._schema_on_200_201.properties.encryption
+            encryption.auto_key_rotation_error = AAZObjectType(
+                serialized_name="autoKeyRotationError",
+                flags={"read_only": True},
+            )
+            _CreateHelper._build_schema_error_detail_read(encryption.auto_key_rotation_error)
+            encryption.current_key_encryption_key_url = AAZStrType(
+                serialized_name="currentKeyEncryptionKeyUrl",
+                flags={"read_only": True},
+            )
+            encryption.customer_managed_key_encryption = AAZObjectType(
+                serialized_name="customerManagedKeyEncryption",
+            )
+            encryption.infrastructure_encryption = AAZStrType(
+                serialized_name="infrastructureEncryption",
+            )
+            encryption.last_key_rotation_timestamp = AAZStrType(
+                serialized_name="lastKeyRotationTimestamp",
+                flags={"read_only": True},
+            )
+
+            customer_managed_key_encryption = cls._schema_on_200_201.properties.encryption.customer_managed_key_encryption
+            customer_managed_key_encryption.key_encryption_key_identity = AAZObjectType(
+                serialized_name="keyEncryptionKeyIdentity",
+            )
+            customer_managed_key_encryption.key_encryption_key_url = AAZStrType(
+                serialized_name="keyEncryptionKeyUrl",
+            )
+
+            key_encryption_key_identity = cls._schema_on_200_201.properties.encryption.customer_managed_key_encryption.key_encryption_key_identity
+            key_encryption_key_identity.delegated_identity_client_id = AAZStrType(
+                serialized_name="delegatedIdentityClientId",
+            )
+            key_encryption_key_identity.federated_client_id = AAZStrType(
+                serialized_name="federatedClientId",
+            )
+            key_encryption_key_identity.identity_type = AAZStrType(
+                serialized_name="identityType",
+            )
+            key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
+            )
+
+            migration_state = cls._schema_on_200_201.properties.migration_state
+            migration_state.redundancy_conversion_in_progress = AAZBoolType(
+                serialized_name="redundancyConversionInProgress",
+                flags={"read_only": True},
+            )
 
             nfs_protocol_properties = cls._schema_on_200_201.properties.nfs_protocol_properties
             nfs_protocol_properties.encryption_in_transit_required = AAZStrType(
@@ -475,6 +663,64 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
+
+    _schema_error_detail_read = None
+
+    @classmethod
+    def _build_schema_error_detail_read(cls, _schema):
+        if cls._schema_error_detail_read is not None:
+            _schema.additional_info = cls._schema_error_detail_read.additional_info
+            _schema.code = cls._schema_error_detail_read.code
+            _schema.details = cls._schema_error_detail_read.details
+            _schema.message = cls._schema_error_detail_read.message
+            _schema.target = cls._schema_error_detail_read.target
+            return
+
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        error_detail_read = _schema_error_detail_read
+        error_detail_read.additional_info = AAZListType(
+            serialized_name="additionalInfo",
+            flags={"read_only": True},
+        )
+        error_detail_read.code = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.details = AAZListType(
+            flags={"read_only": True},
+        )
+        error_detail_read.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.target = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        additional_info = _schema_error_detail_read.additional_info
+        additional_info.Element = AAZObjectType()
+
+        _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZDictType(
+            flags={"read_only": True},
+        )
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
+
+        details = _schema_error_detail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_error_detail_read(details.Element)
+
+        _schema.additional_info = cls._schema_error_detail_read.additional_info
+        _schema.code = cls._schema_error_detail_read.code
+        _schema.details = cls._schema_error_detail_read.details
+        _schema.message = cls._schema_error_detail_read.message
+        _schema.target = cls._schema_error_detail_read.target
 
     _schema_system_data_read = None
 

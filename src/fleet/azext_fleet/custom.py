@@ -244,10 +244,11 @@ def _convert_kubeconfig_to_azurecli(path):
     if is_stdout_path(path):
         return
 
-    if shutil.which("kubelogin"):
+    kubelogin_path = shutil.which("kubelogin")
+    if kubelogin_path:
         try:
             subprocess.run(
-                ["kubelogin", "convert-kubeconfig", "-l", "azurecli", "--kubeconfig", path],
+                [kubelogin_path, "convert-kubeconfig", "-l", "azurecli", "--kubeconfig", path],
                 check=True,
                 capture_output=True,
                 text=True,

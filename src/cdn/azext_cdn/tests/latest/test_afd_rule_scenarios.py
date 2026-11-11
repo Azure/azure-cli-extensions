@@ -43,6 +43,19 @@ def _conditions_option(condition):
 def _route_override_actions_option():
     return "--actions '[{\"route-configuration-override\":{\"parameters\":{\"cache-configuration\":{\"cache-behavior\":\"HonorOrigin\",\"query-string-caching-behavior\":\"UseQueryString\",\"is-compression-enabled\":\"Disabled\"}}}}]'"
 
+
+def _client_response_edge_action(subscription_id):
+    # Existing shared fixture: reference only, never update or delete the EdgeAction.
+    edge_action_id = (
+        f'/subscriptions/{subscription_id}/resourceGroups/FDQuickstart-zf'
+        '/providers/Microsoft.Cdn/edgeActions/EdgeActionTest'
+    )
+    return {'edge-action': {'parameters': {
+        'edge-action-reference': {'id': edge_action_id},
+        'invocation-point': 'ClientResponse',
+    }}}
+
+
 class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(additional_tags={'owner': 'jingnanxu'})
     def test_rule_set_crud(self, resource_group):
@@ -94,6 +107,67 @@ class CdnAfdRuleScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
 
         list_checks = [JMESPathCheck('length(@)', 0)]
         self.afd_rule_set_list_cmd(resource_group, profile_name, checks=list_checks)
+
+    @ResourceGroupPreparer(additional_tags={'owner': 'zhefeng'})
+    def test_afd_rule_client_response(self, resource_group):
+        profile_name = self.create_random_name(prefix='profile', length=16)
+        self.afd_nonproduction_profile_create_cmd(resource_group, profile_name)
+        rule_set_name = self.create_random_name(prefix='ruleset', length=16)
+        self.afd_rule_set_add_cmd(resource_group, rule_set_name, profile_name)
+        rule_name = self.create_random_name(prefix='response', length=16)
+        edge_action = _client_response_edge_action(self.get_subscription_id())
+        edge_parameters = edge_action['edge-action']['parameters']
+        edge_action_id = edge_parameters['edge-action-reference']['id']
+        rule_checks = [
+            JMESPathCheck('name', rule_name),
+            JMESPathCheck('order', 1),
+            JMESPathCheck('length(conditions)', 0),
+            JMESPathCheck('length(actions)', 1),
+            JMESPathCheck('actions[0].name', 'EdgeAction'),
+            JMESPathCheck('actions[0].parameters.edgeActionReference.id', edge_action_id),
+            JMESPathCheck('actions[0].parameters.invocationPoint', 'ClientResponse'),
+        ]
+        self.afd_rule_add_cmd(
+            resource_group, rule_set_name, rule_name, profile_name,
+            options=f'--order 1 --actions {_json_arg([edge_action])}',
+            checks=rule_checks)
+        self.afd_rule_show_cmd(resource_group, rule_set_name, rule_name, profile_name, checks=rule_checks)
+        rule_args = (f'-g {resource_group} --profile-name {profile_name} '
+                     f'--rule-set-name {rule_set_name} --rule-name {rule_name}')
+        update_checks = rule_checks + [JMESPathCheck('matchProcessingBehavior', 'Stop')]
+        self.cmd(f'afd rule update {rule_args} --match-processing-behavior Stop', checks=update_checks)
+        self.afd_rule_show_cmd(resource_group, rule_set_name, rule_name, profile_name, checks=update_checks)
+
+        action_args = f'{rule_args} --action-name EdgeAction'
+        action_checks = [
+            JMESPathCheck('name', 'EdgeAction'),
+            JMESPathCheck('parameters.edgeActionReference.id', edge_action_id),
+            JMESPathCheck('parameters.invocationPoint', 'ClientResponse'),
+        ]
+        self.cmd(f'afd rule action list {rule_args}', checks=[
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].name', 'EdgeAction'),
+            JMESPathCheck('[0].parameters.edgeActionReference.id', edge_action_id),
+            JMESPathCheck('[0].parameters.invocationPoint', 'ClientResponse'),
+        ])
+        self.cmd(f'afd rule action show {action_args}', checks=action_checks)
+        for invocation_point in ('ClientRequest', 'ClientResponse'):
+            parameters = dict(edge_parameters, **{'invocation-point': invocation_point})
+            self.cmd(
+                f'afd rule action update {action_args} '
+                f'--edge-action {_json_arg({"parameters": parameters})}',
+                checks=[
+                    JMESPathCheck('name', 'EdgeAction'),
+                    JMESPathCheck('parameters.edgeActionReference.id', edge_action_id),
+                    JMESPathCheck('parameters.invocationPoint', invocation_point),
+                ])
+            self.cmd(f'afd rule action show {action_args}', checks=[
+                JMESPathCheck('parameters.edgeActionReference.id', edge_action_id),
+                JMESPathCheck('parameters.invocationPoint', invocation_point),
+            ])
+        self.afd_rule_show_cmd(resource_group, rule_set_name, rule_name, profile_name, checks=update_checks)
+        self.afd_rule_delete_cmd(resource_group, rule_set_name, rule_name, profile_name)
+        self.afd_rule_set_delete_cmd(resource_group, rule_set_name, profile_name)
 
     @ResourceGroupPreparer(additional_tags={'owner': 'jingnanxu'})
     def test_afd_rule_crud(self, resource_group):

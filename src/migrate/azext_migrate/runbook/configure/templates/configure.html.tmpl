@@ -479,7 +479,47 @@ const ORIGINAL = JSON.parse(JSON.stringify(DOC.stepInputs));
 
 // ---- helpers --------------------------------------------------------------
 const stepType = sid => sid.replace(/-\d+$/, '');
-const rulesFor = sid => DOC.schema[stepType(sid)] || {};
+const PREPARED_SCHEMAS = new Map(), ISSUE_CACHE = new Map();
+const isObject = v => v !== null && typeof v === 'object' && !Array.isArray(v);
+const has = (o, k) => !!(o && Object.prototype.hasOwnProperty.call(o, k));
+function preparedSchema(sid) {
+  const type = stepType(sid);
+  if (PREPARED_SCHEMAS.has(type)) return PREPARED_SCHEMAS.get(type);
+  const raw = DOC.schema[type] || {};
+  const entries = Object.entries(raw);
+  const fieldEntries = entries.filter(([k, v]) => k !== 'allOf' && isObject(v) &&
+    (typeof v.type === 'string' || Array.isArray(v.type)));
+  const fields = Object.fromEntries(fieldEntries);
+  const result = { fields, conditions: [], error: null };
+  try {
+    const metadata = ['$schema', '$id', '$comment', 'title', 'description'];
+    const unsupported = entries.find(([k]) => !has(fields, k) && k !== 'allOf' && !metadata.includes(k));
+    if (unsupported) throw new Error(`Unsupported input rule: ${unsupported[0]}.`);
+    const namedFields = names => Array.isArray(names) && names.every(k => typeof k === 'string' && has(fields, k));
+    const keysOnly = (value, keys) => isObject(value) && Object.keys(value).every(k => keys.includes(k));
+    if (has(raw, 'allOf')) {
+      if (!Array.isArray(raw.allOf)) throw new Error('allOf must be an array of conditional input rules.');
+      raw.allOf.forEach((rule, i) => {
+        const valid = keysOnly(rule, ['if', 'then']) &&
+          keysOnly(rule.if, ['properties', 'required']) && keysOnly(rule.then, ['properties', 'required']) &&
+          (!has(rule.if, 'required') || namedFields(rule.if.required)) &&
+          (!has(rule.then, 'required') || namedFields(rule.then.required)) &&
+          (!has(rule.if, 'properties') || (isObject(rule.if.properties) &&
+            Object.entries(rule.if.properties).every(([k, v]) => has(fields, k) &&
+              keysOnly(v, ['const']) && has(v, 'const') && !isObject(v.const) && !Array.isArray(v.const)))) &&
+          (!has(rule.then, 'properties') || (isObject(rule.then.properties) &&
+            Object.entries(rule.then.properties).every(([k, v]) => has(fields, k) && typeof v === 'boolean')));
+        if (!valid) throw new Error(`Unsupported or malformed allOf rule ${i + 1}. Use if properties/const and required, then required and boolean properties.`);
+      });
+      result.conditions = raw.allOf;
+    }
+  } catch (e) {
+    result.error = e.message;
+  }
+  PREPARED_SCHEMAS.set(type, result);
+  return result;
+}
+const rulesFor = sid => preparedSchema(sid).fields;
 const stepFields = sid => Object.keys(rulesFor(sid));
 // A step is entity-level if any input is entity-scoped; then EVERY input is
 // overridable per entity (no mixed steps). Otherwise all inputs are appliance-level.
@@ -487,7 +527,6 @@ const stepIsEntity = sid => stepFields(sid).some(f => rulesFor(sid)[f].scope ===
 const entityFields = sid => stepIsEntity(sid) ? stepFields(sid) : [];
 const applianceFields = sid => stepIsEntity(sid) ? [] : stepFields(sid);
 const isEmpty = v => v === null || v === undefined || v === '';
-const has = (o, k) => !!(o && Object.prototype.hasOwnProperty.call(o, k));
 const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
   .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 const short = (s, n) => { s = String(s); return s.length > n ? s.slice(0, n - 1) + '\u2026' : s; };
@@ -554,11 +593,39 @@ function hasOverride(sid, eid, f) { const w = woFor(sid, eid); return has(w, f) 
 // An empty per-workload override inherits the step input; only a non-empty
 // override actually overrides, so a filled step input satisfies every workload
 // and the per-workload (third) pane stays optional.
-function effective(sid, eid, f) { return hasOverride(sid, eid, f) ? woFor(sid, eid)[f] : DOC.stepInputs[sid][f]; }
-function overrideCount(sid, f) { return entitiesFor(sid).filter(e => hasOverride(sid, e.id, f)).length; }
+function effective(sid, eid, f) {
+  return hasOverride(sid, eid, f) ? woFor(sid, eid)[f] :
+    (has(DOC.stepInputs[sid], f) ? DOC.stepInputs[sid][f] : undefined);
+}
+function inputState(sid, eid = null) {
+  const prepared = preparedSchema(sid), required = new Set(), excluded = new Set();
+  const value = f => effective(sid, eid, f);
+  prepared.conditions.forEach(rule => {
+    const matches = (rule.if.required || []).every(f => !isEmpty(value(f))) &&
+      Object.entries(rule.if.properties || {}).every(([f, test]) => value(f) === test.const);
+    if (!matches) return;
+    (rule.then.required || []).forEach(f => required.add(f));
+    Object.entries(rule.then.properties || {}).forEach(([f, allowed]) => { if (!allowed) excluded.add(f); });
+  });
+  return { required, excluded };
+}
+function contextRules(sid, eid = null) {
+  const state = inputState(sid, eid);
+  return Object.fromEntries(Object.entries(rulesFor(sid)).filter(([f]) => !state.excluded.has(f))
+    .map(([f, r]) => [f, { ...r, required: !!r.required || state.required.has(f) }]));
+}
+function inputLayout(sid) {
+  return JSON.stringify([contextRules(sid), ...entitiesFor(sid).map(e => contextRules(sid, e.id))]
+    .map(rules => Object.entries(rules).map(([f, r]) => [f, r.required])));
+}
+function overrideCount(sid, f) {
+  return entitiesFor(sid).filter(e => !inputState(sid, e.id).excluded.has(f) && hasOverride(sid, e.id, f)).length;
+}
 const overrideLabel = (c, n) => `Overridden for ${c} out of ${n} workload${n === 1 ? '' : 's'}`;
-function entityOverrideCount(sid, eid) { return entityFields(sid).filter(f => hasOverride(sid, eid, f)).length; }
-function entityErrors(sid, eid) { return entityFields(sid).filter(f => fieldError(rulesFor(sid)[f], effective(sid, eid, f))).length; }
+function entityOverrideCount(sid, eid) {
+  return entityFields(sid).filter(f => !inputState(sid, eid).excluded.has(f) && hasOverride(sid, eid, f)).length;
+}
+function entityErrors(sid, eid) { return new Set(stepIssues(sid).filter(i => i.eid === eid).map(i => i.f || i.msg)).size; }
 function fmt(v) { return v == null ? '(empty)' : (typeof v === 'object' ? JSON.stringify(v) : String(v)); }
 // Raw JSON is unreadable in a one-line hint, and inputs.json seeds arrays with
 // an all-null placeholder row, so describe the shape instead.
@@ -582,13 +649,31 @@ function summarise(v, rule) {
   }
   return short(fmt(v), 90);
 }
-function stepErrors(sid) {
-  let n = 0; const data = DOC.stepInputs[sid], rules = rulesFor(sid);
-  applianceFields(sid).forEach(f => { if (fieldError(rules[f], data[f])) n++; });
-  // A pending entity field counts once for the step, not once per entity.
-  entityFields(sid).forEach(f => { if (entitiesFor(sid).some(e => fieldError(rules[f], effective(sid, e.id, f)))) n++; });
-  return n;
+function stepIssues(sid) {
+  const stamp = JSON.stringify(DOC.stepInputs[sid]);
+  const cached = ISSUE_CACHE.get(sid);
+  if (cached && cached.stamp === stamp) return cached.issues;
+  const issues = [], data = DOC.stepInputs[sid];
+  const add = (f, msg, e, condition = false) => {
+    if (msg) issues.push({ sid, f, eid: e.id, name: e.name, msg, condition });
+  };
+  const base = { id: null, name: null };
+  const entities = entitiesFor(sid);
+  if (preparedSchema(sid).error) add(null, preparedSchema(sid).error, base, true);
+  const contexts = stepIsEntity(sid) && entities.length ? entities : [base];
+  contexts.forEach(e => {
+    const state = inputState(sid, e.id);
+    Object.entries(contextRules(sid, e.id)).forEach(([f, rule]) => {
+      // Preserve the legacy no-entity behavior unless this field is conditional.
+      if (stepIsEntity(sid) && !entities.length && !state.required.has(f)) return;
+      add(f, fieldError(rule, e.id === null ? data[f] : effective(sid, e.id, f)), e, state.required.has(f));
+    });
+  });
+  ISSUE_CACHE.set(sid, { stamp, issues });
+  return issues;
 }
+function stepErrors(sid) { return new Set(stepIssues(sid).map(i => i.f || i.msg)).size; }
+function uploadBlocked() { return allIssues().some(i => i.condition); }
 const eqv = (a, b) => JSON.stringify(a === undefined ? null : a) === JSON.stringify(b === undefined ? null : b);
 function dirtyTop(sid, f) { return !eqv(DOC.stepInputs[sid][f], (ORIGINAL[sid] || {})[f]); }
 function dirtyOverride(sid, eid, f) {
@@ -623,6 +708,7 @@ function ruleForPath(path) { const p = path.split('|'); return rulesFor(p[1])[p[
 let current = Object.keys(DOC.stepInputs)[0];
 let selEntity = null;
 let fieldFilter = '';
+let displayedLayout;
 let savedSnapshot = JSON.stringify(DOC.stepInputs);
 const matchField = (rules, f) => {
   if (!fieldFilter) return true;
@@ -656,7 +742,7 @@ function renderTabs() {
   nav.setAttribute('aria-orientation', 'vertical');
   nav.innerHTML = Object.keys(DOC.stepInputs).map((sid, i) => {
     const n = stepErrors(sid), on = sid === current;
-    const badge = n > 0 && stepFields(sid).length
+    const badge = n > 0
       ? `<span class="badge err" title="${n} input(s) still needed">${n}</span>` : '';
     return `<div class="steptab ${on ? 'on' : ''}" role="tab" tabindex="${on ? 0 : -1}"
       id="steptab-${i}" aria-controls="form" aria-selected="${on}" data-sid="${esc(sid)}" title="${esc(sid)}">
@@ -849,7 +935,7 @@ function renderGroup(title, sub, sid, kind, fields, rules, data) {
   if (!fields.length) return '';
   const req = fields.filter(f => rules[f].required), opt = fields.filter(f => !rules[f].required);
   // Empty because the schema says so, or because the search hid them?
-  const all = kind === 'A' ? applianceFields(sid) : entityFields(sid);
+  const all = (kind === 'A' ? applianceFields(sid) : entityFields(sid)).filter(f => has(rules, f));
   const noneRequired = !all.some(f => rules[f].required);
   const noneOptional = !all.some(f => !rules[f].required);
   const note = (schemaEmpty, word) => `<p class="note-row">${schemaEmpty
@@ -880,17 +966,19 @@ function renderForm() {
     sync();
     return;
   }
-  const sid = current, rules = rulesFor(sid), data = DOC.stepInputs[sid];
-  const es = entitiesFor(sid), all = stepFields(sid);
+  const sid = current, rules = contextRules(sid), data = DOC.stepInputs[sid];
+  const es = entitiesFor(sid), all = Object.keys(rules);
+  displayedLayout = inputLayout(sid);
   let html = `<h2 class="step-h">${esc(stepLabel(sid))}</h2>
     <p class="step-sub">Step id <code>${esc(sid)}</code> &middot; ${
-      es.length ? `${es.length} ${es.length === 1 ? 'workload' : 'workloads'}` : 'no per-workload inputs'}</p>`;
+      es.length ? `${es.length} ${es.length === 1 ? 'workload' : 'workloads'}` : 'no per-workload inputs'}</p>
+    <div class="err" id="stepConditions" role="status"></div>`;
   if (!all.length) {
     host.innerHTML = html + `<p class="step-sub">This step has no configurable inputs.</p>`;
     renderOverrides(); refreshValidation(); return;
   }
-  const app = applianceFields(sid).filter(f => matchField(rules, f));
-  const ent = entityFields(sid).filter(f => matchField(rules, f));
+  const app = applianceFields(sid).filter(f => has(rules, f) && matchField(rules, f));
+  const ent = entityFields(sid).filter(f => has(rules, f) && matchField(rules, f));
   html += `<div class="filterbar">
     ${searchBox('fldFilter', fieldFilter, 'Search inputs by name or description', 'Search inputs')}
     <span class="count" id="fldCount" role="status">${app.length + ent.length} of ${all.length} inputs shown</span>
@@ -934,7 +1022,7 @@ function overrideRow(sid, eid, f, r, data, sect) {
 }
 function renderOverrides() {
   const pane = document.getElementById('ovPane');
-  const sid = current, rules = rulesFor(sid), data = DOC.stepInputs[sid];
+  const sid = current, data = DOC.stepInputs[sid];
   const head = '<h2 class="aside-h" id="asideH">Workload level overrides</h2>';
   const fields = entityFields(sid);
   if (!fields.length) { pane.innerHTML = head + `<section class="card"><div class="ov-empty">This step has no per-workload inputs.</div></section>`; return; }
@@ -942,13 +1030,14 @@ function renderOverrides() {
   if (!es.length) { pane.innerHTML = head + `<section class="card"><div class="ov-empty">This step has no workloads.</div></section>`; return; }
   const cur = es.find(e => e.id === selEntity) || es[0];
   selEntity = cur.id;
-  const vis = fields.filter(f => matchField(rules, f));
+  const rules = contextRules(sid, cur.id);
+  const vis = fields.filter(f => has(rules, f) && matchField(rules, f));
   const ovCount = entityOverrideCount(sid, cur.id);
   const ovF = vis.filter(f => hasOverride(sid, cur.id, f));
   const inhF = vis.filter(f => !hasOverride(sid, cur.id, f));
   // An inherited value can still be invalid for this workload, so surface that
   // on the collapsed section rather than hiding it.
-  const inhBad = inhF.filter(f => fieldError(rules[f], effective(sid, cur.id, f))).length;
+  const inhBad = inhF.filter(f => stepIssues(sid).some(i => i.eid === cur.id && i.f === f)).length;
   const sections = !vis.length
     ? `<div class="ov-empty">No inputs match &ldquo;${esc(fieldFilter)}&rdquo;.</div>`
     : `<details class="adv" data-sec="ov" open>
@@ -1070,6 +1159,18 @@ function setValue(path, raw) {
 // Refresh derived UI in place so typing never loses focus.
 function afterEdit(path) {
   const p = path.split('|');
+  if (inputLayout(p[1]) !== displayedLayout) {
+    const active = ctrlEl(path);
+    const selection = active && [active.selectionStart, active.selectionEnd];
+    if (document.querySelector('#form')) reRenderPreserving(renderForm, '#form');
+    else renderForm();
+    const replacement = ctrlEl(path);
+    if (replacement) {
+      replacement.focus();
+      if (selection && selection[0] !== null && replacement.setSelectionRange)
+        replacement.setSelectionRange(...selection);
+    }
+  }
   updateChips(p[1]);
   refreshValidation();
   renderTabs();
@@ -1105,14 +1206,14 @@ function mark(path, err) {
   const e = document.querySelector(`[data-err="${path}"]`); if (e) e.textContent = err || '';
 }
 function refreshValidation() {
-  const sid = current, rules = rulesFor(sid), data = DOC.stepInputs[sid];
-  applianceFields(sid).forEach(f => mark(`A|${sid}|${f}`, fieldError(rules[f], data[f])));
+  const sid = current, issues = stepIssues(sid);
+  const errorFor = (f, eid) => issues.filter(i => i.f === f && i.eid === eid).map(i => i.msg).join('; ');
+  const kind = stepIsEntity(sid) ? 'D' : 'A';
+  Object.entries(contextRules(sid)).forEach(([f, rule]) =>
+    mark(`${kind}|${sid}|${f}`, fieldError(rule, DOC.stepInputs[sid][f])));
   entityFields(sid).forEach(f => {
-    const r = rules[f];
-    const inheritingBad = entitiesFor(sid).some(e => !hasOverride(sid, e.id, f)) && !!fieldError(r, data[f]);
-    mark(`D|${sid}|${f}`, inheritingBad ? fieldError(r, data[f]) : null);
     // right pane shows the selected entity's inputs
-    const ov = hasOverride(sid, selEntity, f), err = fieldError(r, effective(sid, selEntity, f));
+    const ov = hasOverride(sid, selEntity, f), err = errorFor(f, selEntity);
     mark(`O|${sid}|${selEntity}|${f}`, ov ? err : null);
     const inh = document.querySelector(`[data-inh="${sid}|${selEntity}|${f}"]`);
     if (inh) {
@@ -1121,12 +1222,15 @@ function refreshValidation() {
       inh.style.color = 'var(--err)';
     }
   });
+  const summary = document.getElementById('stepConditions');
+  if (summary) summary.textContent = issues.filter(i => !i.f)
+    .map(i => `${i.name ? i.name + ': ' : ''}${i.msg}`).join('\n');
   updateRowState();
   sync();
 }
 function sync() {
   const m = META;
-  document.getElementById('json').textContent = JSON.stringify({ stepInputs: DOC.stepInputs }, null, 2);
+  document.getElementById('json').textContent = JSON.stringify({ stepInputs: exportedInputs() }, null, 2);
   const base = m.inputsPath || '';
   // Before any save, point at the inputs.json written next to this page. After
   // a save the browser never reveals the folder the user chose (even Chromium's
@@ -1138,8 +1242,11 @@ function sync() {
     filePath = `"<path you saved>/${saved.name || PARAM_FILE}"`;
     hint = 'Replace <path you saved> with the folder you saved to \u2014 your browser doesn\u2019t reveal it.';
   }
-  document.getElementById('cmd').textContent =
-    `az migrate runbook parameter upload -g ${m.resourceGroup} -p ${m.project} -n ${m.runbook} --file ${filePath}`;
+  const blocked = uploadBlocked();
+  document.getElementById('cmd').textContent = blocked
+    ? 'Fix schema validation errors before uploading.'
+    : `az migrate runbook parameter upload -g ${m.resourceGroup} -p ${m.project} -n ${m.runbook} --file ${filePath}`;
+  document.getElementById('copyBtn').disabled = blocked;
   const hintEl = document.getElementById('cmdHint');
   if (hintEl) hintEl.textContent = hint;
   const pending = Object.keys(DOC.stepInputs).filter(s => stepErrors(s) > 0).length;
@@ -1164,19 +1271,7 @@ function renderAll() { renderTabs(); renderForm(); }
 
 // ---- outstanding inputs, across every step --------------------------------
 function allIssues() {
-  const out = [];
-  Object.keys(DOC.stepInputs).forEach(sid => {
-    const rules = rulesFor(sid), data = DOC.stepInputs[sid];
-    applianceFields(sid).forEach(f => {
-      const msg = fieldError(rules[f], data[f]);
-      if (msg) out.push({ sid, f, eid: null, name: null, msg });
-    });
-    entityFields(sid).forEach(f => entitiesFor(sid).forEach(e => {
-      const msg = fieldError(rules[f], effective(sid, e.id, f));
-      if (msg) out.push({ sid, f, eid: e.id, name: e.name, msg });
-    }));
-  });
-  return out;
+  return Object.keys(DOC.stepInputs).flatMap(stepIssues);
 }
 function showIssues() {
   const list = allIssues();
@@ -1185,7 +1280,7 @@ function showIssues() {
     : 'Every input required by the schema is set.';
   document.getElementById('issueList').innerHTML = list.map((it, i) =>
     `<button type="button" class="issue" data-i="${i}">
-      <b>${esc(it.f)}</b> &mdash; ${esc(it.msg)}
+      <b>${esc(it.f || 'Step conditions')}</b> &mdash; ${esc(it.msg)}
       <div class="where">${esc(stepLabel(it.sid))}${it.name ? ' \u203A ' + esc(it.name) : ''}</div>
     </button>`).join('');
   document.querySelectorAll('#issueList .issue').forEach(b => b.addEventListener('click', () => {
@@ -1210,12 +1305,41 @@ function revealField(path, altPath) {
 }
 
 // ---- toolbar / popover ----------------------------------------------------
-function firstFailingStep() { return Object.keys(DOC.stepInputs).find(s => stepErrors(s) > 0); }// Rebuild the full inputs.json (only stepInputs are edited here) and export it
-// via a browser download; the file lands in your Downloads folder.
+function firstFailingStep() { return Object.keys(DOC.stepInputs).find(s => stepErrors(s) > 0); }
+function exportedInputs() {
+  const result = JSON.parse(JSON.stringify(DOC.stepInputs));
+  Object.keys(result).forEach(sid => {
+    if (!preparedSchema(sid).conditions.length) return;
+    const data = DOC.stepInputs[sid], output = result[sid];
+    const ids = [...new Set([...entitiesFor(sid).map(e => e.id), ...Object.keys(data.workloadOverrides || {})])];
+    const base = inputState(sid);
+    const overrides = Object.assign(Object.create(null), output.workloadOverrides || {});
+    const states = ids.map(eid => ({
+      eid, excluded: inputState(sid, eid).excluded,
+      values: Object.assign(Object.create(null), overrides[eid] || {})
+    }));
+    Object.keys(rulesFor(sid)).forEach(f => {
+      // Move shared values into allowed workloads to prevent excluded workloads
+      // from inheriting them.
+      if (!base.excluded.has(f) && !states.some(e => e.excluded.has(f))) return;
+      const value = output[f];
+      delete output[f];
+      states.forEach(({ eid, excluded, values }) => {
+        if (excluded.has(f)) delete values[f];
+        else if (!hasOverride(sid, eid, f) && !isEmpty(data[f])) values[f] = value;
+      });
+    });
+    states.forEach(({ eid, values }) => {
+      if (has(overrides, eid) || Object.keys(values).length) overrides[eid] = values;
+    });
+    if (has(output, 'workloadOverrides') || Object.keys(overrides).length) output.workloadOverrides = overrides;
+  });
+  return result;
+}
 function buildInputsJson() {
   const root = JSON.parse(JSON.stringify(BOOT.inputsRoot || {}));
-  if (root.inputs && typeof root.inputs === 'object') { root.inputs.stepInputs = DOC.stepInputs; }
-  else { root.stepInputs = DOC.stepInputs; }
+  if (root.inputs && typeof root.inputs === 'object') { root.inputs.stepInputs = exportedInputs(); }
+  else { root.stepInputs = exportedInputs(); }
   return JSON.stringify(root, null, 2);
 }
 function downloadInputs(text) {
@@ -1296,6 +1420,11 @@ function openPop(id) {
 // refers to; opened on demand and again right after a save.
 function showFile(savedMsg, warnSave) {
   sync();
+  const blocked = uploadBlocked();
+  if (savedMsg && blocked) {
+    savedMsg += ' Saved as a draft; fix schema validation errors before uploading.';
+    warnSave = true;
+  }
   const note = document.getElementById('savedNote');
   note.hidden = !savedMsg;
   note.classList.toggle('pop__ok', !warnSave);
@@ -1307,7 +1436,8 @@ function showFile(savedMsg, warnSave) {
   warn.hidden = !list.length;
   if (list.length) warn.textContent =
     `\u26A0 ${list.length} input${list.length === 1 ? '' : 's'} across ${steps} step${steps === 1 ? '' : 's'} ` +
-    `${list.length === 1 ? 'is' : 'are'} still missing or invalid. Uploading this file sends a partial update.`;
+    `${list.length === 1 ? 'is' : 'are'} still missing or invalid. ` +
+    (blocked ? 'Fix schema validation errors before uploading.' : 'Uploading this file sends a partial update.');
   openPop('jsonPop');
 }
 function closePop() {
@@ -1365,8 +1495,10 @@ function copyToClipboard(btn, text) {
     copyFeedback(btn, false);
   }
 }
-document.getElementById('copyBtn').addEventListener('click', e =>
-  copyToClipboard(e.currentTarget, document.getElementById('cmd').textContent));
+document.getElementById('copyBtn').addEventListener('click', e => {
+  if (uploadBlocked()) { showIssues(); return; }
+  copyToClipboard(e.currentTarget, document.getElementById('cmd').textContent);
+});
 // Edits only reach the CLI through a saved file, so guard against losing them.
 // hasEdits is measured against the download; isDirty against the last save.
 function hasEdits() { return JSON.stringify(DOC.stepInputs) !== JSON.stringify(ORIGINAL); }
