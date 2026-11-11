@@ -140,11 +140,13 @@ def load_arguments(self, _):
 
     with self.argument_context('logicapp connection managed create') as c:
         c.argument('name', options_list=['--name', '-n'], required=True, help='Managed API connection name.')
-        c.argument('logic_app_name', options_list=['--logic-app-name'], required=True, help='Logic App Standard site that will use the connection.')
-        c.argument('resource_group_name', arg_type=resource_group_name_type, required=True)
+        c.argument('logic_app_name', options_list=['--logic-app-name'], help='Deployed Logic App Standard site. Alternatively select a local --path or local/cloud --context.')
+        c.argument('path', arg_type=path_type, help='Existing local project to wire. Azure scope comes from command overrides or local.settings.json, not context metadata.')
+        c.argument('context', arg_type=target_context_type, help='Saved local project or deployed app. Defaults to the active context when no explicit target is supplied.')
+        c.argument('resource_group_name', arg_type=resource_group_name_type, help='Azure resource group for the connection. Required for a deployed target; overrides local WORKFLOWS_RESOURCE_GROUP_NAME.')
         c.argument('connector', options_list=['--connector'], required=True, help='Managed API connector name or ARM managedApis id.')
-        c.argument('location', options_list=['--location', '-l'], required=True)
-        c.argument('auth_mode', options_list=['--auth-mode'], required=True, choices=list(MANAGED_AUTH_MODES), help='Authentication used by the connection. OAuth requires browser consent; managed-identity uses an identity already assigned to the app.')
+        c.argument('location', options_list=['--location', '-l'], help='Azure connection location. Required for a deployed target; overrides local WORKFLOWS_LOCATION_NAME.')
+        c.argument('auth_mode', options_list=['--auth-mode'], required=True, choices=list(MANAGED_AUTH_MODES), help='Connector backend authentication. Local projects support raw, service-principal or oauth; runtime-to-connection authentication uses a separate development key.')
         c.argument('display_name', options_list=['--display-name'], help='Display name. Defaults to --name.')
         c.argument('parameter', options_list=['--parameter'], nargs='+', action='append', help='Non-secret NAME=VALUE connection parameter, repeatable.')
         c.argument('secret_parameter', options_list=['--secret-parameter'], help='Secret parameter name. The value is read from standard input, never the command line.')

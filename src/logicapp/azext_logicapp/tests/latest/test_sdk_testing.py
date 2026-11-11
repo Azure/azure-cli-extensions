@@ -275,7 +275,7 @@ class SdkTestingTests(unittest.TestCase):
                 self.assertEqual("nativeTestsPassed", inspected["inspection"]["sourceOutcome"])
                 self.assertEqual(2, inspected["summary"]["passed"])
                 self.assertEqual("notAttested", inspected["coverage"]["workflowExecution"])
-                with mock.patch.object(sdk, "VERSION", "1.0.0b2"):
+                with mock.patch.object(sdk, "VERSION", "1.0.0b3"):
                     self.assertTrue(sdk.validate_report(report))
         changed = copy.deepcopy(report)
         changed["provenance"]["cliVersion"] = "99.0.0"

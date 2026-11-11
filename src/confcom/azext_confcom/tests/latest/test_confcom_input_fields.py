@@ -165,6 +165,138 @@ class WindowsPolicyWiring(unittest.TestCase):
         self.assertIn("scratch_unmount := data.framework.scratch_unmount", boilerplate)
 
 
+class ExecProcessCommands(unittest.TestCase):
+    def _image(self, platform, processes):
+        policy = _load_policy(
+            WINDOWS_IMAGE if platform.startswith("windows") else LINUX_IMAGE,
+            platform,
+            container_props={config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: processes},
+        )
+        return policy.get_images()[0]
+
+    def test_linux_exec_commands_remain_argv(self):
+        processes = [{"command": ["/bin/sh", "-c", 'test -f "/healthy"'], "signals": []}]
+        image = self._image("linux/amd64", processes)
+        self.assertEqual(image.get_policy_json()["exec_processes"], processes)
+
+    def test_windows_exec_command_matches_sidecar_input(self):
+        processes = [{
+            "command": ["cmd", "/c", "if exist C:\\healthy (exit /b 0) else (exit /b 1)"],
+            "signals": [],
+        }]
+        image = self._image("windows/amd64", processes)
+        self.assertEqual(image.get_policy_json()["exec_processes"], processes + [{
+            "command": ['cmd /c "if exist C:\\healthy (exit /b 0) else (exit /b 1)"'],
+            "signals": [],
+        }])
+        self.assertEqual(image.get_policy_json()["command"], ["echo", "hello"])
+
+    def test_windows_exec_command_quoting(self):
+        cases = [
+            (["cmd.exe"], "cmd.exe"),
+            (["cmd", "/c", "cd"], "cmd /c cd"),
+            (["tool.exe", ""], 'tool.exe ""'),
+            (["tool.exe", "two words"], 'tool.exe "two words"'),
+            (["tool.exe", "tab\tvalue"], 'tool.exe "tab\tvalue"'),
+            (["tool.exe", 'say "hello"'], r'tool.exe "say \"hello\""'),
+            (["tool.exe", 'a"b'], r'tool.exe a\"b'),
+            (["tool.exe", "C:\\Program Files\\data\\"], 'tool.exe "C:\\Program Files\\data\\\\"'),
+            (["C:\\Program Files\\tool.exe", "plain"], '"C:\\Program Files\\tool.exe" plain'),
+        ]
+        for command, expected in cases:
+            with self.subTest(command=command):
+                image = self._image("windows/amd64", [{"command": command, "signals": []}])
+                expected_processes = [{"command": command, "signals": []}]
+                if command != [expected]:
+                    expected_processes.append({"command": [expected], "signals": []})
+                self.assertEqual(image.get_policy_json()["exec_processes"], expected_processes)
+
+    def test_windows_exec_serialization_preserves_source_and_deduplicates(self):
+        processes = [
+            {"command": ["cmd", "/c", "echo hello"], "signals": []},
+            {"command": ["cmd", "/c", "echo hello"], "signals": []},
+            {"command": ["cmd", "/c", "echo hello"], "signals": [9]},
+        ]
+        image = self._image("windows/amd64", processes)
+        expected = [
+            {"command": ["cmd", "/c", "echo hello"], "signals": []},
+            {"command": ['cmd /c "echo hello"'], "signals": []},
+            {"command": ["cmd", "/c", "echo hello"], "signals": [9]},
+            {"command": ['cmd /c "echo hello"'], "signals": [9]},
+        ]
+        self.assertEqual(image.get_policy_json()["exec_processes"], expected)
+        self.assertEqual(image.get_policy_json()["exec_processes"], expected)
+        self.assertEqual(image._exec_processes, processes)
+
+    def test_windows_exec_command_requires_all_arguments(self):
+        image = self._image("windows/amd64", [{"command": ["ls", "abc"], "signals": []}])
+        commands = [process["command"] for process in image.get_policy_json()["exec_processes"]]
+        self.assertEqual(commands, [["ls", "abc"], ["ls abc"]])
+        self.assertNotIn(["ls"], commands)
+
+    def test_empty_exec_processes_unchanged(self):
+        for platform in ("linux/amd64", "windows/amd64"):
+            with self.subTest(platform=platform):
+                self.assertEqual(self._image(platform, []).get_policy_json()["exec_processes"], [])
+
+    def test_arm_probes_use_platform_command_representation(self):
+        security_policy = importlib.import_module("azext_confcom.security_policy")
+        command = ["ping", "127.0.0.1"]
+        for platform, image, expected in (
+            ("linux/amd64", LINUX_IMAGE, [command]),
+            ("windows/amd64", WINDOWS_IMAGE, [command, ["ping 127.0.0.1"]]),
+        ):
+            for probe in ("readinessProbe", "livenessProbe"):
+                with self.subTest(platform=platform, probe=probe):
+                    template = {
+                        "resources": [{
+                            "type": "Microsoft.ContainerInstance/containerGroups",
+                            "name": "test-group",
+                            "properties": {"containers": [{
+                                "name": "test-container",
+                                "properties": {"image": image, probe: {"exec": {"command": command}}},
+                            }]},
+                        }],
+                    }
+                    with patch.object(security_policy, "validate_image_platform"):
+                        policy = security_policy.load_policy_from_arm_template_str(
+                            json.dumps(template), "", platform=platform,
+                        )[0]
+                    self.assertEqual(
+                        policy.get_images()[0].get_policy_json()["exec_processes"],
+                        [{"command": value, "signals": []} for value in expected],
+                    )
+
+    def test_vn2_probes_and_lifecycle_hooks_use_platform_command_representation(self):
+        security_policy = importlib.import_module("azext_confcom.security_policy")
+        command = ["ping", "127.0.0.1"]
+        for platform, image, expected in (
+            ("linux/amd64", LINUX_IMAGE, [command]),
+            ("windows/amd64", WINDOWS_IMAGE, [command, ["ping 127.0.0.1"]]),
+        ):
+            for hook in ("livenessProbe", "readinessProbe", "startupProbe", "postStart", "preStop"):
+                with self.subTest(platform=platform, hook=hook):
+                    container = {"name": "test-container", "image": image}
+                    if hook in ("postStart", "preStop"):
+                        container["lifecycle"] = {hook: {"exec": {"command": command}}}
+                    else:
+                        container[hook] = {"exec": {"command": command}}
+                    pod = {
+                        "apiVersion": "v1",
+                        "kind": "Pod",
+                        "metadata": {"name": "test-pod"},
+                        "spec": {"containers": [container]},
+                    }
+                    with patch.object(security_policy, "validate_image_platform"):
+                        policy = security_policy.load_policy_from_virtual_node_yaml_str(
+                            json.dumps(pod), platform=platform,
+                        )[0]
+                    self.assertEqual(
+                        policy.get_images()[0].get_policy_json()["exec_processes"],
+                        [{"command": value, "signals": []} for value in expected],
+                    )
+
+
 class RegistryChangesDroppingInput(unittest.TestCase):
     # allowRegistryChangesDropping is Windows-only and --input-only.
     def test_allow_registry_changes_dropping_true(self):

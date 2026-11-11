@@ -14,5 +14,6 @@ from ._delete import *
 from ._list import *
 from ._list_skus_for_scaling import *
 from ._show import *
+from ._unlink_migrated_endpoint import *
 from ._update import *
 from ._wait import *

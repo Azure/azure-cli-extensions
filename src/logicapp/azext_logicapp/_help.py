@@ -212,18 +212,33 @@ short-summary: Author local and inspect deployed Logic Apps Standard connections
 
 helps['logicapp connection managed'] = """
 type: group
-short-summary: Create managed API connections for deployed Logic Apps Standard sites.
+short-summary: Create Azure managed API connections for local projects or deployed Standard sites.
 """
 
 helps['logicapp connection managed create'] = """
 type: command
-short-summary: Create and wire a managed API connection using distinct connection and app names.
+short-summary: Create an Azure managed API connection and wire a local project or deployed app.
 long-summary: >
-  --name always names the connection; --logic-app-name names the consuming site.
-  Uses the same guarded managed API/OAuth/identity creation as legacy
+  --name always names the connection. Choose --path or a local --context for
+  local development; --logic-app-name or a cloud --context selects a deployed app.
+  With no explicit target the active context is used. Local Azure scope comes
+  from local.settings.json Values.WORKFLOWS_SUBSCRIPTION_ID,
+  WORKFLOWS_RESOURCE_GROUP_NAME and WORKFLOWS_LOCATION_NAME; explicit
+  --subscription, --resource-group and --location override those values without
+  changing settings or the default account. Azure login is still required.
+  Local projects use a seven-day development connection key stored only in
+  local.settings.json and referenced from connections.json. No deployed app,
+  managed identity or access-policy write is needed. Local auth-mode
+  managed-identity and user-assigned identities are unsupported; raw,
+  service-principal and oauth configure the connector's backend authentication,
+  independently of the local runtime key. Local settings must be unencrypted
+  and not tracked by Git; .gitignore protection is added. Force is required for
+  existing Azure resources, local wiring or the key setting. Failures may retain
+  Azure resources and partially updated local files; inspect before retrying.
+  Deployed targets retain the guarded managed API/OAuth/identity creation of legacy
   connection create --managed-api. That legacy mode is deprecated but retains
   its original --name meaning throughout this preview; removal requires an
-  announced breaking change. Does not broaden identity ownership or cleanup.
+  announced breaking change and it remains deployed-only.
   OAuth failures may retain connection/access-policy resources. Inspect the
   reported state before retrying; timeout does not promise resource removal.
 examples:
@@ -231,6 +246,10 @@ examples:
     text: az logicapp connection managed create -g my-rg --logic-app-name my-app -n blobProd --connector azureblob -l eastus --auth-mode managed-identity
   - name: Create an Office 365 connection with browser consent.
     text: az logicapp connection managed create -g my-rg --logic-app-name my-app -n outlook --connector office365 -l eastus --auth-mode oauth
+  - name: Create a connection for a local project using its Azure settings.
+    text: az logicapp connection managed create --path .\\orders -n outlook --connector office365 --auth-mode oauth
+  - name: Override Azure scope for a saved local project without changing its settings.
+    text: az logicapp connection managed create --context orders-local -n outlook --connector office365 --auth-mode oauth --subscription 11111111-1111-1111-1111-111111111111 -g dev-rg -l eastus
 """
 
 helps['logicapp context list'] = """

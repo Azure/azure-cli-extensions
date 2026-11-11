@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-04-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins", "2026-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins", "2026-09-01-preview"],
         ]
     }
 
@@ -135,7 +135,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -201,6 +201,12 @@ class List(AAZCommand):
                 serialized_name="azureOrigin",
             )
             _ListHelper._build_schema_resource_reference_read(properties.azure_origin)
+            properties.certificate_name_check_validation_mode = AAZStrType(
+                serialized_name="certificateNameCheckValidationMode",
+            )
+            properties.custom_certificate_subjects = AAZListType(
+                serialized_name="customCertificateSubjects",
+            )
             properties.deployment_status = AAZStrType(
                 serialized_name="deploymentStatus",
                 flags={"read_only": True},
@@ -236,6 +242,9 @@ class List(AAZCommand):
                 serialized_name="sharedPrivateLinkResource",
             )
             properties.weight = AAZIntType()
+
+            custom_certificate_subjects = cls._schema_on_200.value.Element.properties.custom_certificate_subjects
+            custom_certificate_subjects.Element = AAZStrType()
 
             shared_private_link_resource = cls._schema_on_200.value.Element.properties.shared_private_link_resource
             shared_private_link_resource.group_id = AAZStrType(

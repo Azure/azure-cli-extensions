@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins/{}", "2026-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}/origins/{}", "2026-09-01-preview"],
         ]
     }
 
@@ -141,7 +141,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }
@@ -196,6 +196,12 @@ class Wait(AAZWaitCommand):
                 serialized_name="azureOrigin",
             )
             _WaitHelper._build_schema_resource_reference_read(properties.azure_origin)
+            properties.certificate_name_check_validation_mode = AAZStrType(
+                serialized_name="certificateNameCheckValidationMode",
+            )
+            properties.custom_certificate_subjects = AAZListType(
+                serialized_name="customCertificateSubjects",
+            )
             properties.deployment_status = AAZStrType(
                 serialized_name="deploymentStatus",
                 flags={"read_only": True},
@@ -231,6 +237,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="sharedPrivateLinkResource",
             )
             properties.weight = AAZIntType()
+
+            custom_certificate_subjects = cls._schema_on_200.properties.custom_certificate_subjects
+            custom_certificate_subjects.Element = AAZStrType()
 
             shared_private_link_resource = cls._schema_on_200.properties.shared_private_link_resource
             shared_private_link_resource.group_id = AAZStrType(

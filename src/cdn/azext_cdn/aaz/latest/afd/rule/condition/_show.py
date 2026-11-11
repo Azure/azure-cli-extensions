@@ -19,9 +19,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-04-01-preview",
+        "version": "2026-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}/rules/{}", "2026-04-01-preview", "properties.conditions[]"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}/rules/{}", "2026-09-01-preview", "properties.conditions[]"],
         ]
     }
 
@@ -67,6 +67,7 @@ class Show(AAZCommand):
         )
         _args_schema.condition_name = AAZStrArg(
             options=["--condition-name"],
+            help="The name of the condition for the delivery rule.",
             required=True,
             enum={"ClientPort": "ClientPort", "Cookies": "Cookies", "HostName": "HostName", "HttpVersion": "HttpVersion", "IsDevice": "IsDevice", "PostArgs": "PostArgs", "QueryString": "QueryString", "RemoteAddress": "RemoteAddress", "RequestBody": "RequestBody", "RequestHeader": "RequestHeader", "RequestMethod": "RequestMethod", "RequestScheme": "RequestScheme", "RequestUri": "RequestUri", "ServerPort": "ServerPort", "SocketAddr": "SocketAddr", "SslProtocol": "SslProtocol", "UrlFileExtension": "UrlFileExtension", "UrlFileName": "UrlFileName", "UrlPath": "UrlPath"},
         )
@@ -170,7 +171,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-04-01-preview",
+                    "api-version", "2026-09-01-preview",
                     required=True,
                 ),
             }

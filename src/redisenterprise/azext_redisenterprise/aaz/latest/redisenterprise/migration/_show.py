@@ -13,15 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "redisenterprise migration show",
+    is_preview=True,
 )
 class Show(AAZCommand):
-    """Get information about a migration in a Redis Enterprise cluster.
+    """Get details of a migration from Azure Cache for Redis Basic, Standard, or Premium tiers to Azure Managed Redis.
+
+    These commands apply only to migrations from the Basic, Standard, and Premium tiers of Azure Cache for Redis to Azure Managed Redis.
     """
 
     _aaz_info = {
-        "version": "2026-06-01-preview",
+        "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default", "2026-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default", "2026-10-01-preview"],
         ]
     }
 
@@ -120,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01-preview",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }
@@ -181,12 +184,17 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.rollback_eligible_until = AAZStrType(
+                serialized_name="rollbackEligibleUntil",
+                flags={"read_only": True},
+            )
             properties.source_type = AAZStrType(
                 serialized_name="sourceType",
                 flags={"required": True},
             )
             properties.status_details = AAZStrType(
                 serialized_name="statusDetails",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.target_resource_id = AAZStrType(

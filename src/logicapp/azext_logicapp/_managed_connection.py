@@ -4,13 +4,15 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=import-error,no-name-in-module
 
-"""Managed API connections for a deployed Logic App Standard app.
+"""Managed API connections for deployed and local Logic Apps Standard projects.
 
-A managed API connection is three coupled resources, not one. Creating the ARM
+A deployed managed API connection is three coupled resources, not one. Creating the ARM
 ``Microsoft.Web/connections`` resource alone produces something the app cannot
 use: the app reaches the connection through its own managed identity, so the
 connection also needs an access policy naming that identity, and the app needs a
 ``managedApiConnections`` entry in ``connections.json`` pointing at both.
+Local projects instead use a development runtime key referenced from protected
+local settings; no deployed app identity or access-policy write is required.
 
 Two properties of the platform shape this module and were established live
 rather than read from source:
@@ -27,6 +29,7 @@ rather than read from source:
 import base64
 import copy
 import json
+from urllib.parse import urlsplit
 
 from azure.cli.core.azclierror import (
     CLIError, CLIInternalError, ClientRequestError, InvalidArgumentValueError,
@@ -56,7 +59,7 @@ def create_managed_connection(cmd, resource_group_name, name, connection_name, c
                               secret_value=None, parameter_set=None, user_assigned_identity=None,
                               force=False, no_browser=False, consent_timeout=None,
                               arm_sender=None, identity_sender=None, vfs_client=None,
-                              consent_runner=None, consent_principal=None):
+                              consent_runner=None, consent_principal=None, local_project=None):
     """Create and wire a connection, preserving ARM state on failure.
 
     Unconditional ARM upserts cannot establish exclusive compensation ownership.
@@ -72,9 +75,21 @@ def create_managed_connection(cmd, resource_group_name, name, connection_name, c
         raise InvalidArgumentValueError(
             "--auth-mode must be one of: {}.".format(", ".join(AUTH_MODES)))
 
-    connector_id = _resolve_connector(cmd, connector, location)
-    principal = _resolve_app_principal(cmd, resource_group_name, name, user_assigned_identity,
-                                       sender=identity_sender)
+    local = local_project is not None
+    if local:
+        if auth_mode == "managed-identity" or user_assigned_identity is not None:
+            raise ValidationError(
+                "Local managed connections use development runtime keys, not a deployed app identity. "
+                "--auth-mode managed-identity and --user-assigned-identity require a deployed app target.")
+        from ._local_managed_connection import LocalConnectionsFile
+        wiring = LocalConnectionsFile(cmd, local_project, connection_name, resource_group_name, location, force)
+        location = wiring.location
+        connector_id = wiring.connector_id(cmd, connector)
+        principal = None
+    else:
+        connector_id = _resolve_connector(cmd, connector, location)
+        principal = _resolve_app_principal(cmd, resource_group_name, name, user_assigned_identity,
+                                           sender=identity_sender)
 
     parameters = _parse_parameters(parameter)
     if secret_parameter:
@@ -87,15 +102,16 @@ def create_managed_connection(cmd, resource_group_name, name, connection_name, c
     if auth_mode == "managed-identity" and not value_set:
         value_set = _managed_identity_parameter_set(cmd, connector_id, arm_sender)
 
-    connection_id = _connection_id(cmd, resource_group_name, connection_name)
+    connection_id = wiring.connection_id if local else _connection_id(cmd, resource_group_name, connection_name)
     existing = _existing_resource(cmd, connection_id, arm_sender)
     if existing is not None and not force:
         _already_exists(connection_name)
 
-    wiring = _ConnectionsFile(cmd, resource_group_name, name, connection_name, vfs_client)
-    policy_name = access_policy_name(name, principal["objectId"])
-    policy_id = _access_policy_id(connection_id, policy_name)
-    if existing is not None:
+    if not local:
+        wiring = _ConnectionsFile(cmd, resource_group_name, name, connection_name, vfs_client)
+    policy_name = access_policy_name(name, principal["objectId"]) if not local else None
+    policy_id = _access_policy_id(connection_id, policy_name) if not local else None
+    if existing is not None and not local:
         _refuse_duplicate_principal(cmd, connection_id, connection_name, principal["objectId"],
                                     policy_name, arm_sender)
         existing_policy = _existing_resource(cmd, policy_id, arm_sender)
@@ -108,13 +124,17 @@ def create_managed_connection(cmd, resource_group_name, name, connection_name, c
     connection_put_completed = False
     policy_attempted = False
     try:
+        if local:
+            wiring.check_unchanged()
         created = _arm(cmd, "PUT", connection_id, body, arm_sender)
         connection_put_completed = True
         if auth_mode == "oauth":
             runner = consent_runner or _default_consent_runner
             # The consent link is requested as the caller, not as the app: the
             # service only issues links for the requester's own identity.
-            consenter = consent_principal or _resolve_consent_principal(cmd)
+            consenter = consent_principal or (
+                _resolve_consent_principal(cmd, subscription=wiring.subscription) if local
+                else _resolve_consent_principal(cmd))
             consent = runner(
                 cmd, connection_id,
                 object_id=consenter["objectId"], tenant_id=consenter["tenantId"],
@@ -123,26 +143,31 @@ def create_managed_connection(cmd, resource_group_name, name, connection_name, c
                 no_browser=no_browser,
                 timeout=consent_timeout or DEFAULT_CONSENT_TIMEOUT)
 
-        _refuse_duplicate_principal(cmd, connection_id, connection_name, principal["objectId"],
-                                    policy_name, arm_sender)
-        current_policy = _existing_resource(cmd, policy_id, arm_sender)
-        if current_policy is not None:
-            _validate_existing_policy(current_policy, principal)
-        policy_body = build_access_policy_body(location, principal["tenantId"], principal["objectId"])
-        policy_attempted = True
-        policy = _arm(cmd, "PUT", policy_id, policy_body, arm_sender)
+        policy = None
+        if not local:
+            _refuse_duplicate_principal(cmd, connection_id, connection_name, principal["objectId"],
+                                        policy_name, arm_sender)
+            current_policy = _existing_resource(cmd, policy_id, arm_sender)
+            if current_policy is not None:
+                _validate_existing_policy(current_policy, principal)
+            policy_body = build_access_policy_body(location, principal["tenantId"], principal["objectId"])
+            policy_attempted = True
+            policy = _arm(cmd, "PUT", policy_id, policy_body, arm_sender)
 
         # Read back after the policy write so the reported state is post-ACL, not the
         # pre-ACL body the create call happened to return.
         readback = _arm(cmd, "GET", connection_id, None, arm_sender)
-        if not isinstance(readback, dict) or not isinstance(policy, dict):
+        if not isinstance(readback, dict) or (not local and not isinstance(policy, dict)):
             raise CLIInternalError("ARM returned an invalid connection or access policy response.")
         if auth_mode == "oauth":
             verify_connected(readback, connection_name)
 
         runtime_url = _runtime_url(readback) or _runtime_url(created)
         entry = build_connections_entry(connector_id, connection_id, runtime_url, user_assigned_identity)
-        written = wiring.write(entry)
+        if local:
+            written = _write_local_connection(cmd, connection_id, runtime_url, entry, wiring, arm_sender)
+        else:
+            written = wiring.write(entry)
 
         return {
             "connection": {
@@ -161,7 +186,12 @@ def create_managed_connection(cmd, resource_group_name, name, connection_name, c
                 "id": policy.get("id"),
                 "name": policy.get("name") or policy_name,
                 "principal": {"objectId": principal["objectId"], "tenantId": principal["tenantId"]},
-            },
+            } if policy is not None else None,
+            **({"localProject": wiring.root,
+                "developmentKey": {"appSetting": wiring.key_setting, "validityDaysRequested": 7,
+                                   "secretStore": "local.settings.json"},
+                "protection": {"trackedByGit": wiring.tracked, "excludedFromPackage": True}}
+               if local else {}),
             "connectionRuntimeUrl": {"value": LOGICAPP_REDACTION_SENTINEL} if runtime_url else None,
             "connectionsJson": {
                 "class": MANAGED_CLASS,
@@ -170,31 +200,69 @@ def create_managed_connection(cmd, resource_group_name, name, connection_name, c
             },
         }
     except BaseException as error:
-        failures = []
-        _try_rollback(wiring.restore, "connections.json entry", failures)
-        unverified_creation = existing is None and not connection_put_completed
-        message = (
-            "Managed connection operation failed. No ARM connection or access policies were "
-            "deleted or restored: preflight absence does not establish ownership, and an "
-            "acknowledged upsert does not establish exclusive rollback ownership. Connection "
-            "properties, authentication or granted access may have changed; inspect retained "
-            "ARM state and perform intended manual recovery before retrying.")
-        if unverified_creation:
-            message += " The initial connection write was not acknowledged and may have committed."
-        if policy_attempted:
-            message += " An access policy write was attempted and may have granted or changed access."
-        if existing is not None:
-            message += (
-                " The pre-existing connection '{}' was retained, not deleted. ARM does not expose "
-                "all credentials, so the previous connection cannot be safely restored "
-                "automatically.".format(connection_name))
-        if failures:
-            message += " Could not restore {}; manual recovery is required.".format(", ".join(failures))
-        if isinstance(error, Exception) and (existing is not None or unverified_creation or failures):
-            raise CLIInternalError(message) from error
-        from knack.log import get_logger
-        get_logger(__name__).error(message)
+        _handle_creation_failure(
+            error, local, wiring, existing, connection_put_completed, policy_attempted, connection_name)
         raise
+
+
+def _write_local_connection(cmd, connection_id, runtime_url, entry, wiring, arm_sender):
+    try:
+        endpoint = urlsplit(runtime_url) if isinstance(runtime_url, str) else None
+        usable = (endpoint is not None and endpoint.scheme == "https" and endpoint.hostname
+                  and not endpoint.username and not endpoint.password and not endpoint.fragment
+                  and not any(ord(character) < 33 for character in runtime_url))
+    except ValueError:
+        usable = False
+    if not usable:
+        raise ValidationError("The managed connection did not return a usable runtime URL.")
+    keys = _arm(cmd, "POST", connection_id + "/listConnectionKeys", {"validityTimeSpan": "7"}, arm_sender)
+    key = keys.get("connectionKey") if isinstance(keys, dict) else None
+    if not isinstance(key, str) or not key.strip() or len(key) > 65536:
+        raise ValidationError("Azure did not return a valid development connection key.")
+    entry["authentication"] = {
+        "type": "Raw", "scheme": "Key",
+        "parameter": "@appsetting('{}')".format(wiring.key_setting),
+    }
+    return wiring.write(entry, key)
+
+
+def _handle_creation_failure(error, local, wiring, existing, connection_put_completed,
+                             policy_attempted, connection_name):
+    if local:
+        message = (
+            "Local managed connection creation did not complete. Azure connection properties or "
+            "authentication may have changed and local files may be partially updated. No ARM "
+            "resources were deleted, no file rollback or automatic retry was attempted. Inspect "
+            "the retained Azure connection and project files before retrying.")
+        if not isinstance(error, Exception):
+            from knack.log import get_logger
+            get_logger(__name__).error(message)
+            return
+        raise CLIInternalError(message) from error
+    failures = []
+    _try_rollback(wiring.restore, "connections.json entry", failures)
+    unverified_creation = existing is None and not connection_put_completed
+    message = (
+        "Managed connection operation failed. No ARM connection or access policies were "
+        "deleted or restored: preflight absence does not establish ownership, and an "
+        "acknowledged upsert does not establish exclusive rollback ownership. Connection "
+        "properties, authentication or granted access may have changed; inspect retained "
+        "ARM state and perform intended manual recovery before retrying.")
+    if unverified_creation:
+        message += " The initial connection write was not acknowledged and may have committed."
+    if policy_attempted:
+        message += " An access policy write was attempted and may have granted or changed access."
+    if existing is not None:
+        message += (
+            " The pre-existing connection '{}' was retained, not deleted. ARM does not expose "
+            "all credentials, so the previous connection cannot be safely restored "
+            "automatically.".format(connection_name))
+    if failures:
+        message += " Could not restore {}; manual recovery is required.".format(", ".join(failures))
+    if isinstance(error, Exception) and (existing is not None or unverified_creation or failures):
+        raise CLIInternalError(message) from error
+    from knack.log import get_logger
+    get_logger(__name__).error(message)
 
 
 def _default_consent_runner(cmd, connection_id, object_id, tenant_id, arm, no_browser, timeout):
@@ -526,7 +594,7 @@ def _jwt_claims(token):
             "Could not read the signed-in identity from the access token.") from ex
 
 
-def _resolve_consent_principal(cmd, claims_reader=None):
+def _resolve_consent_principal(cmd, claims_reader=None, subscription=None):
     """The object id that asks for the consent link.
 
     This is deliberately NOT the app's managed identity. The consent service
@@ -536,19 +604,21 @@ def _resolve_consent_principal(cmd, claims_reader=None):
     still what the access policy names, so the two principals differ by design.
     """
     read = claims_reader or _caller_claims
-    claims = read(cmd)
+    claims = read(cmd, subscription=subscription) if subscription is not None else read(cmd)
     object_id = claims.get("oid")
     if not object_id:
         raise CLIInternalError(
             "Could not determine the signed-in object id needed to request consent. Sign in with "
             "'az login' as a user or service principal and retry.")
-    return {"objectId": object_id, "tenantId": claims.get("tid") or _tenant_id(cmd)}
+    return {"objectId": object_id, "tenantId": claims.get("tid") or _tenant_id(cmd, subscription)}
 
 
-def _caller_claims(cmd):
+def _caller_claims(cmd, subscription=None):
     from azure.cli.core._profile import Profile
 
-    credential, _, _ = Profile(cli_ctx=cmd.cli_ctx).get_raw_token()
+    profile = Profile(cli_ctx=cmd.cli_ctx)
+    credential, _, _ = (profile.get_raw_token(subscription=subscription) if subscription is not None
+                        else profile.get_raw_token())
     return _jwt_claims(credential[1])
 
 
@@ -693,9 +763,11 @@ def _runtime_url(payload):
     return (payload.get("properties") or {}).get("connectionRuntimeUrl")
 
 
-def _tenant_id(cmd):
+def _tenant_id(cmd, subscription=None):
     from azure.cli.core._profile import Profile
-    return Profile(cli_ctx=cmd.cli_ctx).get_subscription().get("tenantId")
+    profile = Profile(cli_ctx=cmd.cli_ctx)
+    return (profile.get_subscription(subscription=subscription) if subscription is not None
+            else profile.get_subscription()).get("tenantId")
 
 
 def _connection_id(cmd, resource_group_name, connection_name):

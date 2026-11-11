@@ -19,6 +19,8 @@ from .encryption_types import Encryption
 from .exceptions import AzCommandError
 from .repair_utils import (
     _call_az_command,
+    _legacy_value,
+    _validate_legacy_values,
     _get_repair_resource_tag,
     _fetch_encryption_settings,
     _resolve_api_version,
@@ -193,7 +195,7 @@ def validate_reset_nic(cmd, namespace):
     if namespace._subscription:
         # setting subscription Id
         try:
-            set_sub_command = 'az account set --subscription {sid}'.format(sid=namespace._subscription)
+            set_sub_command = 'az account set --subscription {sid}'.format(sid=_legacy_value(namespace._subscription))
             logger.info('Setting the subscription...\n')
             _call_az_command(set_sub_command)
         except AzCommandError as azCommandError:
@@ -322,10 +324,11 @@ def _validate_resource_group_name(rg_name):
 
 def fetch_repair_vm(namespace):
     # Find repair VM
+    _validate_legacy_values(namespace.resource_group_name, namespace.vm_name)
     tag = _get_repair_resource_tag(namespace.resource_group_name, namespace.vm_name)
     try:
         find_repair_command = 'az resource list --tag {tag} --query "[?type==\'microsoft.compute/virtualmachines\' || type==\'Microsoft.Compute/virtualMachines\']" -o json' \
-                              .format(tag=tag)
+                              .format(tag=_legacy_value(tag))
         logger.info('Searching for repair-vm within subscription...')
         output = _call_az_command(find_repair_command)
     except AzCommandError as azCommandError:

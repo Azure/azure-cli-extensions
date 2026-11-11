@@ -207,6 +207,8 @@ helps['dataprotection backup-instance restore initialize-for-item-recovery'] = "
             --vaulted-blob-prefix-pattern '{"containers":[{"name":"container1","prefixmatch":["a","b"],"renameto":"container1renamed"},{"name":"container2","renameto":"container2renamed"}]}'
       - name: Initialize item-level restore request for an AzureElasticSAN volume group
         text: az dataprotection backup-instance restore initialize-for-item-recovery --datasource-type AzureElasticSAN --restore-location centraluseuap --source-datastore OperationalStore --recovery-point-id {recovery_point_id} --target-resource-id {target_volume_group_id} --restore-configuration {restore_configuration}
+      - name: Initialize item-level restore request for an AzureCosmosDB account
+        text: az dataprotection backup-instance restore initialize-for-item-recovery --datasource-type AzureCosmosDB --restore-location {restore_location} --source-datastore VaultStore --recovery-point-id {recovery_point_id} --target-resource-id {target_cosmosdb_account_id} --restore-configuration {restore_configuration} --mi-system-assigned true
 """
 
 helps['dataprotection resource-guard list-protected-operations'] = """
@@ -238,12 +240,14 @@ helps['dataprotection backup-instance initialize-backupconfig'] = """
 
 helps['dataprotection backup-instance initialize-restoreconfig'] = """
     type: command
-    short-summary: Initialize JSON request body for initializing and configuring restore of an AzureKubernetesService or AzureElasticSAN resource. The generated JSON is meant for use with other CLI commands, and may not work as an input for non-CLI scenarios without modification.
+    short-summary: Initialize JSON request body for initializing and configuring restore of an AzureKubernetesService, AzureElasticSAN or AzureCosmosDB resource. The generated JSON is meant for use with other CLI commands, and may not work as an input for non-CLI scenarios without modification.
     examples:
       - name: Initialize restore configuration
         text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureKubernetesService
       - name: Initialize restore configuration for AzureElasticSAN
         text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureElasticSAN --resource-identifiers source-vol1 source-vol2 --resource-name-overrides '{"source-vol1":"restored-vol1","source-vol2":"restored-vol2"}'
+      - name: Initialize restore configuration for AzureCosmosDB
+        text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureCosmosDB --resource-identifiers db1/container1 db2
 """
 
 helps['dataprotection backup-instance validate-for-backup'] = """
