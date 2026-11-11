@@ -13,15 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "redisenterprise database show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get information about a database in a RedisEnterprise cluster.
     """
 
     _aaz_info = {
-        "version": "2026-06-01-preview",
+        "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2026-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2026-10-01-preview"],
         ]
     }
 
@@ -134,7 +135,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01-preview",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }

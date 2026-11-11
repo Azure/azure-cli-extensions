@@ -13,18 +13,21 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "redisenterprise migration undo",
+    is_preview=True,
 )
 class Undo(AAZCommand):
-    """Cancel or rollback the migration operation in a Redis Enterprise cluster.
+    """Cancel or roll back a migration from Azure Cache for Redis Basic, Standard, or Premium tiers to Azure Managed Redis.
 
-    :example: Undo the migration on a Redis Enterprise cluster
-        az redisenterprise migration undo --cluster-name cache1 --resource-group rg1
+    These commands apply only to migrations from the Basic, Standard, and Premium tiers of Azure Cache for Redis to Azure Managed Redis.
+
+    :example: Undo a migration because of performance issues
+        az redisenterprise migration undo --cluster-name cache1 --resource-group rg1 --rollback-reason performance
     """
 
     _aaz_info = {
-        "version": "2026-06-01-preview",
+        "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default/cancel", "2026-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default/cancel", "2026-10-01-preview"],
         ]
     }
 
@@ -57,11 +60,21 @@ class Undo(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.rollback_reason = AAZStrArg(
+            options=["--rollback-reason"],
+            arg_group="Body",
+            help="The reason for undoing (rolling back) the migration. Choose the value that best describes why the rollback is needed. This information helps us improve the migration experience and does not change how the rollback is performed.",
+            enum={"clientConnection": "clientConnection", "compatibility": "compatibility", "cost": "cost", "dataLoss": "dataLoss", "other": "other", "performance": "performance", "stability": "stability", "testing": "testing"},
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.MigrationsCancel(ctx=self.ctx)()
+        yield self.MigrationsUndo(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,7 +85,7 @@ class Undo(AAZCommand):
     def post_operations(self):
         pass
 
-    class MigrationsCancel(AAZHttpOperation):
+    class MigrationsUndo(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -127,11 +140,31 @@ class Undo(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01-preview",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }
             return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+            }
+            return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"client_flatten": True}}
+            )
+            _builder.set_prop("rollbackReason", AAZStrType, ".rollback_reason")
+
+            return self.serialize_content(_content_value)
 
 
 class _UndoHelper:
