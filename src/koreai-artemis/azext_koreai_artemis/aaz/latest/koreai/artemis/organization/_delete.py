@@ -12,20 +12,23 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "artemis organization workspace link-saas",
+    "koreai artemis organization delete",
     is_preview=True,
+    confirmation="Are you sure you want to perform this operation?",
 )
-class LinkSaas(AAZCommand):
-    """Links SaaS resources to the workspace. Accepts the full list of SaaS assets to be linked.
+class Delete(AAZCommand):
+    """Delete a Kore.ai organization.
 
-    :example: Workspaces_LinkSaaS
-        az artemis organization workspace link-saas --resource-group contoso-rg --organization-name contoso-org --workspace-name contoso-prod --saas-resource-ids "[/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg/providers/Microsoft.SaaS/resources/kore-ai-saas-1,/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg/providers/Microsoft.SaaS/resources/kore-ai-saas-2]"
+    This operation permanently deletes the organization and cascades to all child workspaces. It cannot be undone.
+
+    :example: Organizations_Delete
+        az koreai artemis organization delete --resource-group contoso-rg --organization-name contoso-org
     """
 
     _aaz_info = {
         "version": "2026-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/kore.agentplatform/organizations/{}/workspaces/{}/linksaas", "2026-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/kore.agentplatform/organizations/{}", "2026-07-01-preview"],
         ]
     }
 
@@ -47,7 +50,7 @@ class LinkSaas(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.organization_name = AAZStrArg(
-            options=["--organization-name"],
+            options=["-n", "--name", "--organization-name"],
             help="Name of the Organization.",
             required=True,
             id_part="name",
@@ -60,35 +63,11 @@ class LinkSaas(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.workspace_name = AAZStrArg(
-            options=["--workspace-name"],
-            help="Name of the Workspace.",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{0,98}[a-zA-Z0-9]$",
-                max_length=100,
-                min_length=2,
-            ),
-        )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.saas_resource_ids = AAZListArg(
-            options=["--saas-resource-ids"],
-            arg_group="Body",
-            help="ARM resource IDs of the Microsoft.SaaS marketplace resources to link to this Workspace.",
-            required=True,
-        )
-
-        saas_resource_ids = cls._args_schema.saas_resource_ids
-        saas_resource_ids.Element = AAZResourceIdArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.WorkspacesLinkSaaS(ctx=self.ctx)()
+        yield self.OrganizationsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -99,7 +78,7 @@ class LinkSaas(AAZCommand):
     def post_operations(self):
         pass
 
-    class WorkspacesLinkSaaS(AAZHttpOperation):
+    class OrganizationsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -109,7 +88,25 @@ class LinkSaas(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    None,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [204]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -120,13 +117,13 @@ class LinkSaas(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Kore.AgentPlatform/organizations/{organizationName}/workspaces/{workspaceName}/linkSaaS",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Kore.AgentPlatform/organizations/{organizationName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -147,10 +144,6 @@ class LinkSaas(AAZCommand):
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
-                **self.serialize_url_param(
-                    "workspaceName", self.ctx.args.workspace_name,
-                    required=True,
-                ),
             }
             return parameters
 
@@ -164,33 +157,15 @@ class LinkSaas(AAZCommand):
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-            }
-            return parameters
+        def on_204(self, session):
+            pass
 
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("saaSResourceIds", AAZListType, ".saas_resource_ids", typ_kwargs={"flags": {"required": True}})
-
-            saa_s_resource_ids = _builder.get(".saaSResourceIds")
-            if saa_s_resource_ids is not None:
-                saa_s_resource_ids.set_elements(AAZStrType, ".")
-
-            return self.serialize_content(_content_value)
+        def on_200_201(self, session):
+            pass
 
 
-class _LinkSaasHelper:
-    """Helper class for LinkSaas"""
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
-__all__ = ["LinkSaas"]
+__all__ = ["Delete"]

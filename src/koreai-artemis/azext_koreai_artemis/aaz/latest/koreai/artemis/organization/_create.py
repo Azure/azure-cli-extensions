@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "artemis organization create",
+    "koreai artemis organization create",
     is_preview=True,
 )
 class Create(AAZCommand):
     """Create an Organization (long-running).
 
     :example: Organizations_Create
-        az artemis organization create --resource-group contoso-rg --organization-name contoso-org --location eastus2euap --tags "{environment:production}" --partner-properties "{organization-name:'Contoso AI Platform',billing-email:billing@contoso.com,owner-email:admin@contoso.com,default-workspace:{name:'my first workspace',product:aiforwork,marketplace-details:[{offer-details:{offer-id:kore-ai-platform,plan-id:business-monthly,publisher-id:kore-ai,plan-name:'Business Monthly',term-id:1m,term-unit:P1M},saas-resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg/providers/Microsoft.SaaS/resources/kore-ai-saas}]}}" --user "{first-name:Jane,last-name:Doe,email-address:jane.doe@contoso.com,upn:jane.doe@contoso.onmicrosoft.com,phone-number:+1-425-555-0100}" --company-details "{company-name:'Contoso Ltd.',country:US,domain:contoso.com,business-type:Technology,number-of-employees:500}"
+        az koreai artemis organization create --resource-group contoso-rg --organization-name contoso-org --location eastus2euap --tags "{environment:production}" --partner-properties "{organization-name:'Contoso AI Platform',billing-email:billing@contoso.com,owner-email:admin@contoso.com,default-workspace:{name:'my first workspace',product:aiforwork,marketplace-details:[{offer-details:{offer-id:kore-ai-platform,plan-id:business-monthly,publisher-id:kore-ai,plan-name:'Business Monthly',term-id:1m,term-unit:P1M},saas-resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg/providers/Microsoft.SaaS/resources/kore-ai-saas}]}}" --user "{first-name:Jane,last-name:Doe,email-address:jane.doe@contoso.com,upn:jane.doe@contoso.onmicrosoft.com,phone-number:+1-425-555-0100}" --company-details "{company-name:'Contoso Ltd.',country:US,domain:contoso.com,business-type:Technology,number-of-employees:500}"
     """
 
     _aaz_info = {

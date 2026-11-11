@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "artemis organization workspace create",
+    "koreai artemis organization workspace create",
     is_preview=True,
 )
 class Create(AAZCommand):
     """Create a Workspace under an Organization (long-running).
 
     :example: Workspaces_CreateOrUpdate
-        az artemis organization workspace create --resource-group contoso-rg --organization-name contoso-org --workspace-name contoso-prod --product aiforwork --partner-properties "{name:'Contoso Production',owner-email:owner@contoso.com}" --marketplace-details "[{offer-details:{offer-id:kore-ai-platform,plan-id:business-monthly,publisher-id:kore-ai,plan-name:'Business Monthly',term-id:1m,term-unit:P1M},saas-resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg/providers/Microsoft.SaaS/resources/kore-ai-saas}]"
+        az koreai artemis organization workspace create --resource-group contoso-rg --organization-name contoso-org --workspace-name contoso-prod --product aiforwork --partner-properties "{name:'Contoso Production',owner-email:owner@contoso.com}" --marketplace-details "[{offer-details:{offer-id:kore-ai-platform,plan-id:business-monthly,publisher-id:kore-ai,plan-name:'Business Monthly',term-id:1m,term-unit:P1M},saas-resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg/providers/Microsoft.SaaS/resources/kore-ai-saas}]"
     """
 
     _aaz_info = {

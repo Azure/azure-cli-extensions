@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "artemis activate-saas",
+    "koreai artemis saas activate",
     is_preview=True,
 )
-class ActivateSaas(AAZCommand):
+class Activate(AAZCommand):
     """Activate a Kore.ai SaaS marketplace resource.
 
     :example: SaaSOperationGroup_ActivateResource
-        az artemis activate-saas --saas-guid 12345678-1234-1234-1234-123456789012 --publisher-id kore-ai
+        az koreai artemis saas activate --saas-guid 12345678-1234-1234-1234-123456789012 --publisher-id kore-ai
     """
 
     _aaz_info = {
@@ -226,8 +226,8 @@ class ActivateSaas(AAZCommand):
             return cls._schema_on_200
 
 
-class _ActivateSaasHelper:
-    """Helper class for ActivateSaas"""
+class _ActivateHelper:
+    """Helper class for Activate"""
 
 
-__all__ = ["ActivateSaas"]
+__all__ = ["Activate"]

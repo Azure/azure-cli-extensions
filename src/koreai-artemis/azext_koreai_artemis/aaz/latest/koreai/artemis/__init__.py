@@ -8,17 +8,4 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "artemis organization workspace",
-    is_preview=True,
-)
-class __CMDGroup(AAZCommandGroup):
-    """Manage Kore.ai Artemis workspaces.
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *

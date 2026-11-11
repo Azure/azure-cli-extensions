@@ -12,20 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "artemis organization workspace show-details",
+    "koreai artemis organization workspace list-all",
     is_preview=True,
 )
-class ShowDetails(AAZCommand):
-    """Show detailed workspace information, including projects.
+class ListAll(AAZCommand):
+    """List all workspaces reported by a Kore.ai organization.
 
-    :example: Workspaces_GetDetails
-        az artemis organization workspace show-details --resource-group contoso-rg --organization-name contoso-org --workspace-name contoso-prod
+    Includes both ARM-managed workspaces and Kore-only workspaces that do not have an ARM resource ID.
+
+    :example: Organizations_ListWorkspaces
+        az koreai artemis organization workspace list-all --resource-group contoso-rg --organization-name contoso-org
     """
 
     _aaz_info = {
         "version": "2026-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/kore.agentplatform/organizations/{}/workspaces/{}/getworkspacedetails", "2026-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/kore.agentplatform/organizations/{}/listworkspaces", "2026-07-01-preview"],
         ]
     }
 
@@ -59,22 +61,11 @@ class ShowDetails(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.workspace_name = AAZStrArg(
-            options=["--workspace-name"],
-            help="Name of the Workspace.",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{0,98}[a-zA-Z0-9]$",
-                max_length=100,
-                min_length=2,
-            ),
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.WorkspacesGetDetails(ctx=self.ctx)()
+        self.OrganizationsListWorkspaces(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -89,7 +80,7 @@ class ShowDetails(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class WorkspacesGetDetails(AAZHttpOperation):
+    class OrganizationsListWorkspaces(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -103,7 +94,7 @@ class ShowDetails(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Kore.AgentPlatform/organizations/{organizationName}/workspaces/{workspaceName}/getWorkspaceDetails",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Kore.AgentPlatform/organizations/{organizationName}/listWorkspaces",
                 **self.url_parameters
             )
 
@@ -128,10 +119,6 @@ class ShowDetails(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "workspaceName", self.ctx.args.workspace_name,
                     required=True,
                 ),
             }
@@ -174,123 +161,86 @@ class ShowDetails(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.azure_resource_id = AAZStrType(
-                serialized_name="azureResourceId",
-                flags={"required": True},
-            )
-            _schema_on_200.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"required": True},
-            )
-            _schema_on_200.id = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.organization_id = AAZStrType(
-                serialized_name="organizationId",
-                flags={"required": True},
-            )
-            _schema_on_200.partner_properties = AAZObjectType(
-                serialized_name="partnerProperties",
-                flags={"required": True},
-            )
-            _schema_on_200.projects = AAZListType(
-                flags={"required": True},
-            )
-            _schema_on_200.status = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.updated_at = AAZStrType(
-                serialized_name="updatedAt",
+            _schema_on_200.value = AAZListType(
                 flags={"required": True},
             )
 
-            partner_properties = cls._schema_on_200.partner_properties
-            partner_properties.default = AAZBoolType(
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.arm_resource_id = AAZStrType(
+                serialized_name="armResourceId",
+            )
+            _element.is_default = AAZBoolType(
+                serialized_name="isDefault",
+            )
+            _element.is_managed_by_liftr = AAZBoolType(
+                serialized_name="isManagedByLiftr",
                 flags={"required": True},
             )
-            partner_properties.marketplace_details = AAZListType(
+            _element.marketplace_details = AAZListType(
                 serialized_name="marketplaceDetails",
-                flags={"required": True},
-            )
-            partner_properties.name = AAZStrType(
-                flags={"required": True},
-            )
-            partner_properties.owner_email = AAZStrType(
-                serialized_name="ownerEmail",
-                flags={"required": True},
-            )
-            partner_properties.retention_days = AAZIntType(
-                serialized_name="retentionDays",
-                flags={"required": True},
-            )
-
-            marketplace_details = cls._schema_on_200.partner_properties.marketplace_details
-            marketplace_details.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.partner_properties.marketplace_details.Element
-            _element.mp_id = AAZStrType(
-                serialized_name="mpId",
-                flags={"required": True},
-            )
-            _element.offer_id = AAZStrType(
-                serialized_name="offerId",
-                flags={"required": True},
-            )
-            _element.plan_id = AAZStrType(
-                serialized_name="planId",
-                flags={"required": True},
-            )
-            _element.plan_name = AAZStrType(
-                serialized_name="planName",
-            )
-            _element.publisher_id = AAZStrType(
-                serialized_name="publisherId",
-            )
-            _element.resource_id = AAZStrType(
-                serialized_name="resourceId",
-                flags={"required": True},
-            )
-            _element.status = AAZStrType()
-            _element.term_id = AAZStrType(
-                serialized_name="termId",
-            )
-
-            projects = cls._schema_on_200.projects
-            projects.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.projects.Element
-            _element.agent_count = AAZIntType(
-                serialized_name="agentCount",
-                flags={"required": True},
-            )
-            _element.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"required": True},
-            )
-            _element.created_by = AAZStrType(
-                serialized_name="createdBy",
-                flags={"required": True},
-            )
-            _element.description = AAZStrType()
-            _element.id = AAZStrType(
-                flags={"required": True},
             )
             _element.name = AAZStrType(
                 flags={"required": True},
             )
-            _element.status = AAZStrType(
+            _element.owner_email = AAZStrType(
+                serialized_name="ownerEmail",
+            )
+            _element.partner_resource_id = AAZStrType(
+                serialized_name="partnerResourceId",
                 flags={"required": True},
             )
-            _element.updated_at = AAZStrType(
-                serialized_name="updatedAt",
+            _element.product = AAZStrType()
+            _element.status = AAZStrType()
+
+            marketplace_details = cls._schema_on_200.value.Element.marketplace_details
+            marketplace_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.marketplace_details.Element
+            _element.offer_details = AAZObjectType(
+                serialized_name="offerDetails",
                 flags={"required": True},
+            )
+            _element.saas_resource_id = AAZStrType(
+                serialized_name="saasResourceId",
+            )
+            _element.subscription_id = AAZStrType(
+                serialized_name="subscriptionId",
+            )
+            _element.subscription_status = AAZStrType(
+                serialized_name="subscriptionStatus",
+                flags={"read_only": True},
+            )
+
+            offer_details = cls._schema_on_200.value.Element.marketplace_details.Element.offer_details
+            offer_details.offer_id = AAZStrType(
+                serialized_name="offerId",
+                flags={"required": True},
+            )
+            offer_details.plan_id = AAZStrType(
+                serialized_name="planId",
+            )
+            offer_details.plan_name = AAZStrType(
+                serialized_name="planName",
+            )
+            offer_details.publisher_id = AAZStrType(
+                serialized_name="publisherId",
+                flags={"required": True},
+            )
+            offer_details.term_id = AAZStrType(
+                serialized_name="termId",
+            )
+            offer_details.term_unit = AAZStrType(
+                serialized_name="termUnit",
             )
 
             return cls._schema_on_200
 
 
-class _ShowDetailsHelper:
-    """Helper class for ShowDetails"""
+class _ListAllHelper:
+    """Helper class for ListAll"""
 
 
-__all__ = ["ShowDetails"]
+__all__ = ["ListAll"]

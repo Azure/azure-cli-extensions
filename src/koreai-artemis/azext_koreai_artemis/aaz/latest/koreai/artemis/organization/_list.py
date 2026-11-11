@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "artemis organization list",
+    "koreai artemis organization list",
     is_preview=True,
 )
 class List(AAZCommand):
     """List Organizations in a Subscription.
 
     :example: Organizations_ListBySubscription
-        az artemis organization list
+        az koreai artemis organization list
 
     :example: Organizations_ListByResourceGroup
-        az artemis organization list --resource-group contoso-rg
+        az koreai artemis organization list --resource-group contoso-rg
     """
 
     _aaz_info = {

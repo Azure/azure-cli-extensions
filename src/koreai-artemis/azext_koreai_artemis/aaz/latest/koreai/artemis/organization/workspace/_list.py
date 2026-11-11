@@ -12,22 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "artemis organization wait",
+    "koreai artemis organization workspace list",
+    is_preview=True,
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class List(AAZCommand):
+    """List Workspaces under an Organization.
+
+    :example: Workspaces_ListByOrganization
+        az koreai artemis organization workspace list --resource-group contoso-rg --organization-name contoso-org
     """
 
     _aaz_info = {
+        "version": "2026-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/kore.agentplatform/organizations/{}", "2026-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/kore.agentplatform/organizations/{}/workspaces", "2026-07-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -41,10 +47,9 @@ class Wait(AAZWaitCommand):
 
         _args_schema = cls._args_schema
         _args_schema.organization_name = AAZStrArg(
-            options=["-n", "--name", "--organization-name"],
+            options=["--organization-name"],
             help="Name of the Organization.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{0,48}[a-zA-Z0-9]$",
                 max_length=50,
@@ -58,7 +63,7 @@ class Wait(AAZWaitCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.OrganizationsGet(ctx=self.ctx)()
+        self.WorkspacesListByOrganization(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,10 +75,11 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class OrganizationsGet(AAZHttpOperation):
+    class WorkspacesListByOrganization(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,7 +93,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Kore.AgentPlatform/organizations/{organizationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Kore.AgentPlatform/organizations/{organizationName}/workspaces",
                 **self.url_parameters
             )
 
@@ -154,105 +160,58 @@ class Wait(AAZWaitCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
             )
-            _schema_on_200.location = AAZStrType(
+            _schema_on_200.value = AAZListType(
                 flags={"required": True},
             )
-            _schema_on_200.name = AAZStrType(
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
-            properties.company_details = AAZObjectType(
-                serialized_name="companyDetails",
-            )
-            properties.default_workspace_id = AAZStrType(
-                serialized_name="defaultWorkspaceId",
+            properties = cls._schema_on_200.value.Element.properties
+            properties.is_default = AAZBoolType(
+                serialized_name="isDefault",
                 flags={"read_only": True},
+            )
+            properties.marketplace_details = AAZListType(
+                serialized_name="marketplaceDetails",
+                flags={"required": True},
             )
             properties.partner_properties = AAZObjectType(
                 serialized_name="partnerProperties",
                 flags={"required": True},
             )
+            properties.product = AAZStrType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.single_sign_on = AAZObjectType(
-                serialized_name="singleSignOn",
-                flags={"read_only": True},
-            )
-            properties.user = AAZObjectType(
-                flags={"required": True},
-            )
-            properties.workspace_count = AAZIntType(
-                serialized_name="workspaceCount",
+            properties.status = AAZStrType(
                 flags={"read_only": True},
             )
 
-            company_details = cls._schema_on_200.properties.company_details
-            company_details.business_type = AAZStrType(
-                serialized_name="businessType",
-            )
-            company_details.company_name = AAZStrType(
-                serialized_name="companyName",
-            )
-            company_details.country = AAZStrType()
-            company_details.domain = AAZStrType()
-            company_details.number_of_employees = AAZIntType(
-                serialized_name="numberOfEmployees",
-            )
-            company_details.office_address = AAZStrType(
-                serialized_name="officeAddress",
-            )
-
-            partner_properties = cls._schema_on_200.properties.partner_properties
-            partner_properties.billing_email = AAZStrType(
-                serialized_name="billingEmail",
-                flags={"required": True},
-            )
-            partner_properties.default_workspace = AAZObjectType(
-                serialized_name="defaultWorkspace",
-                flags={"required": True},
-            )
-            partner_properties.organization_name = AAZStrType(
-                serialized_name="organizationName",
-                flags={"required": True},
-            )
-            partner_properties.owner_email = AAZStrType(
-                serialized_name="ownerEmail",
-                flags={"required": True},
-            )
-            partner_properties.partner_resource_id = AAZStrType(
-                serialized_name="partnerResourceId",
-                flags={"read_only": True},
-            )
-
-            default_workspace = cls._schema_on_200.properties.partner_properties.default_workspace
-            default_workspace.marketplace_details = AAZListType(
-                serialized_name="marketplaceDetails",
-                flags={"required": True},
-            )
-            default_workspace.name = AAZStrType(
-                flags={"required": True},
-            )
-            default_workspace.product = AAZStrType()
-
-            marketplace_details = cls._schema_on_200.properties.partner_properties.default_workspace.marketplace_details
+            marketplace_details = cls._schema_on_200.value.Element.properties.marketplace_details
             marketplace_details.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.partner_properties.default_workspace.marketplace_details.Element
+            _element = cls._schema_on_200.value.Element.properties.marketplace_details.Element
             _element.offer_details = AAZObjectType(
                 serialized_name="offerDetails",
                 flags={"required": True},
@@ -268,7 +227,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
 
-            offer_details = cls._schema_on_200.properties.partner_properties.default_workspace.marketplace_details.Element.offer_details
+            offer_details = cls._schema_on_200.value.Element.properties.marketplace_details.Element.offer_details
             offer_details.offer_id = AAZStrType(
                 serialized_name="offerId",
                 flags={"required": True},
@@ -290,42 +249,19 @@ class Wait(AAZWaitCommand):
                 serialized_name="termUnit",
             )
 
-            single_sign_on = cls._schema_on_200.properties.single_sign_on
-            single_sign_on.aad_domains = AAZListType(
-                serialized_name="aadDomains",
-            )
-            single_sign_on.enterprise_app_id = AAZStrType(
-                serialized_name="enterpriseAppId",
-            )
-            single_sign_on.state = AAZStrType()
-            single_sign_on.type = AAZStrType(
+            partner_properties = cls._schema_on_200.value.Element.properties.partner_properties
+            partner_properties.name = AAZStrType(
                 flags={"required": True},
             )
-            single_sign_on.url = AAZStrType()
+            partner_properties.owner_email = AAZStrType(
+                serialized_name="ownerEmail",
+            )
+            partner_properties.partner_resource_id = AAZStrType(
+                serialized_name="partnerResourceId",
+                flags={"read_only": True},
+            )
 
-            aad_domains = cls._schema_on_200.properties.single_sign_on.aad_domains
-            aad_domains.Element = AAZStrType()
-
-            user = cls._schema_on_200.properties.user
-            user.address = AAZStrType()
-            user.alternate_email = AAZStrType(
-                serialized_name="alternateEmail",
-            )
-            user.email_address = AAZStrType(
-                serialized_name="emailAddress",
-            )
-            user.first_name = AAZStrType(
-                serialized_name="firstName",
-            )
-            user.last_name = AAZStrType(
-                serialized_name="lastName",
-            )
-            user.phone_number = AAZStrType(
-                serialized_name="phoneNumber",
-            )
-            user.upn = AAZStrType()
-
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -345,14 +281,11 @@ class Wait(AAZWaitCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Wait"]
+__all__ = ["List"]

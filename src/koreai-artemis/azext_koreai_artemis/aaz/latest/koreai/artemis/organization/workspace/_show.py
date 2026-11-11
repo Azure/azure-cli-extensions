@@ -12,28 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "artemis organization workspace list",
+    "koreai artemis organization workspace show",
     is_preview=True,
 )
-class List(AAZCommand):
-    """List Workspaces under an Organization.
+class Show(AAZCommand):
+    """Get a Workspace under an Organization.
 
-    :example: Workspaces_ListByOrganization
-        az artemis organization workspace list --resource-group contoso-rg --organization-name contoso-org
+    :example: Workspaces_Get
+        az koreai artemis organization workspace show --resource-group contoso-rg --organization-name contoso-org --workspace-name contoso-prod
     """
 
     _aaz_info = {
         "version": "2026-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/kore.agentplatform/organizations/{}/workspaces", "2026-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/kore.agentplatform/organizations/{}/workspaces/{}", "2026-07-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -50,6 +49,7 @@ class List(AAZCommand):
             options=["--organization-name"],
             help="Name of the Organization.",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{0,48}[a-zA-Z0-9]$",
                 max_length=50,
@@ -59,11 +59,22 @@ class List(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.workspace_name = AAZStrArg(
+            options=["-n", "--name", "--workspace-name"],
+            help="Name of the Workspace.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{0,98}[a-zA-Z0-9]$",
+                max_length=100,
+                min_length=2,
+            ),
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.WorkspacesListByOrganization(ctx=self.ctx)()
+        self.WorkspacesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,11 +86,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class WorkspacesListByOrganization(AAZHttpOperation):
+    class WorkspacesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -93,7 +103,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Kore.AgentPlatform/organizations/{organizationName}/workspaces",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Kore.AgentPlatform/organizations/{organizationName}/workspaces/{workspaceName}",
                 **self.url_parameters
             )
 
@@ -118,6 +128,10 @@ class List(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "workspaceName", self.ctx.args.workspace_name,
                     required=True,
                 ),
             }
@@ -160,33 +174,22 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.type = AAZStrType(
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
             properties.is_default = AAZBoolType(
                 serialized_name="isDefault",
                 flags={"read_only": True},
@@ -208,10 +211,10 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            marketplace_details = cls._schema_on_200.value.Element.properties.marketplace_details
+            marketplace_details = cls._schema_on_200.properties.marketplace_details
             marketplace_details.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.marketplace_details.Element
+            _element = cls._schema_on_200.properties.marketplace_details.Element
             _element.offer_details = AAZObjectType(
                 serialized_name="offerDetails",
                 flags={"required": True},
@@ -227,7 +230,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            offer_details = cls._schema_on_200.value.Element.properties.marketplace_details.Element.offer_details
+            offer_details = cls._schema_on_200.properties.marketplace_details.Element.offer_details
             offer_details.offer_id = AAZStrType(
                 serialized_name="offerId",
                 flags={"required": True},
@@ -249,7 +252,7 @@ class List(AAZCommand):
                 serialized_name="termUnit",
             )
 
-            partner_properties = cls._schema_on_200.value.Element.properties.partner_properties
+            partner_properties = cls._schema_on_200.properties.partner_properties
             partner_properties.name = AAZStrType(
                 flags={"required": True},
             )
@@ -261,7 +264,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -284,8 +287,8 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["List"]
+__all__ = ["Show"]

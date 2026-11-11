@@ -12,18 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "artemis organization workspace show",
-    is_preview=True,
+    "koreai artemis organization workspace wait",
 )
-class Show(AAZCommand):
-    """Get a Workspace under an Organization.
-
-    :example: Workspaces_Get
-        az artemis organization workspace show --resource-group contoso-rg --organization-name contoso-org --workspace-name contoso-prod
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2026-07-01-preview",
         "resources": [
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/kore.agentplatform/organizations/{}/workspaces/{}", "2026-07-01-preview"],
         ]
@@ -86,7 +81,7 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
     class WorkspacesGet(AAZHttpOperation):
@@ -287,8 +282,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
-__all__ = ["Show"]
+__all__ = ["Wait"]

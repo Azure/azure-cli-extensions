@@ -8,5 +8,17 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._activate_saas import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "koreai artemis organization",
+    is_preview=True,
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage Kore.ai Artemis organizations.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

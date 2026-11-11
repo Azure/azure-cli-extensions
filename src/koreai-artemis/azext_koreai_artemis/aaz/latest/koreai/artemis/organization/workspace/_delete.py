@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "artemis organization workspace delete",
+    "koreai artemis organization workspace delete",
     is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
@@ -20,7 +20,7 @@ class Delete(AAZCommand):
     """Delete a Workspace under an Organization (long-running).
 
     :example: Workspaces_Delete
-        az artemis organization workspace delete --resource-group contoso-rg --organization-name contoso-org --workspace-name contoso-prod
+        az koreai artemis organization workspace delete --resource-group contoso-rg --organization-name contoso-org --workspace-name contoso-prod
     """
 
     _aaz_info = {

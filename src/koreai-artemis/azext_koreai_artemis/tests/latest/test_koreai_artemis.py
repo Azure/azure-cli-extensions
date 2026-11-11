@@ -11,13 +11,13 @@ from azure.cli.testsdk import *
 class KoreaiArtemisScenario(ScenarioTest):
     def test_koreai_artemis_help(self):
         commands = (
-            'az artemis -h',
-            'az artemis activate-saas -h',
-            'az artemis organization -h',
-            'az artemis organization list-workspaces -h',
-            'az artemis organization workspace -h',
-            'az artemis organization workspace link-saas -h',
-            'az artemis organization workspace show-details -h',
+            'az koreai artemis -h',
+            'az koreai artemis saas activate -h',
+            'az koreai artemis organization -h',
+            'az koreai artemis organization workspace list-all -h',
+            'az koreai artemis organization workspace -h',
+            'az koreai artemis organization workspace saas link -h',
+            'az koreai artemis organization workspace show-details -h',
         )
 
         for command in commands:

@@ -130,7 +130,7 @@ class KoreaiArtemisOfflineScenario(ScenarioTest):
     def test_organization_create_waits_for_completion(self):
         self._async_put(ORG_PATH, ORG_BODY)
         result = self.invoke(
-            f'artemis organization create -g {RG} -n {ORG} -l eastus2euap --subscription {SUB} '
+            f'koreai artemis organization create -g {RG} -n {ORG} -l eastus2euap --subscription {SUB} '
             '--partner-properties "{organization-name:\'Contoso AI Platform\',billing-email:billing@contoso.com,'
             'owner-email:admin@contoso.com,default-workspace:{name:Default,product:aiforwork,marketplace-details:[{saas-resource-id:saas-1,offer-details:{publisher-id:kore-ai,offer-id:kore-offer}}]}}" '
             '--user "{first-name:Jane,last-name:Doe,email-address:jane.doe@contoso.com,'
@@ -147,7 +147,7 @@ class KoreaiArtemisOfflineScenario(ScenarioTest):
     def test_organization_create_no_wait_does_not_poll(self):
         self._async_put(ORG_PATH, ORG_BODY)
         self.invoke(
-            f'artemis organization create -g {RG} -n {ORG} -l eastus2euap --subscription {SUB} --no-wait '
+            f'koreai artemis organization create -g {RG} -n {ORG} -l eastus2euap --subscription {SUB} --no-wait '
             '--partner-properties "{organization-name:Contoso,billing-email:b@contoso.com,owner-email:o@contoso.com,default-workspace:{name:Default,product:aiforwork,marketplace-details:[{saas-resource-id:saas-1,offer-details:{publisher-id:kore-ai,offer-id:kore-offer}}]}}" '
             '--user "{first-name:Jane,last-name:Doe,email-address:j@contoso.com,upn:j@contoso.com,'
             'phone-number:+1-425-555-0100}"')
@@ -161,11 +161,11 @@ class KoreaiArtemisOfflineScenario(ScenarioTest):
         self.arm.route('GET', f'/subscriptions/{SUB}/resourceGroups/{RG}/providers/Kore.AgentPlatform/organizations',
                        200, {'value': [ORG_BODY]})
 
-        shown = self.invoke(f'artemis organization show -g {RG} -n {ORG} --subscription {SUB}').get_output_in_json()
+        shown = self.invoke(f'koreai artemis organization show -g {RG} -n {ORG} --subscription {SUB}').get_output_in_json()
         self.assertEqual(shown['name'], ORG)
-        self.assertEqual(len(self.invoke(f'artemis organization list --subscription {SUB}').get_output_in_json()), 1)
+        self.assertEqual(len(self.invoke(f'koreai artemis organization list --subscription {SUB}').get_output_in_json()), 1)
         self.assertEqual(
-            len(self.invoke(f'artemis organization list -g {RG} --subscription {SUB}').get_output_in_json()), 1)
+            len(self.invoke(f'koreai artemis organization list -g {RG} --subscription {SUB}').get_output_in_json()), 1)
         for _, _, query, _ in self.arm.calls:
             self.assertEqual(query['api-version'], ['2026-07-01-preview'])
 
@@ -175,7 +175,7 @@ class KoreaiArtemisOfflineScenario(ScenarioTest):
         updated['properties']['partnerProperties']['billingEmail'] = 'new-billing@contoso.com'
         self.arm.route('GET', ORG_PATH, 200, ORG_BODY)
 
-        self.invoke(f'artemis organization update -g {RG} -n {ORG} --subscription {SUB} '
+        self.invoke(f'koreai artemis organization update -g {RG} -n {ORG} --subscription {SUB} '
                  '--partner-properties billing-email=new-billing@contoso.com')
 
         self.assertEqual(self.arm.methods()[:2], [('GET', ORG_PATH), ('PUT', ORG_PATH)])
@@ -194,7 +194,7 @@ class KoreaiArtemisOfflineScenario(ScenarioTest):
         self.arm.route('DELETE', ORG_PATH, 202, None, {'Location': poll})
         self.arm.route('GET', OPERATION_PATH, 204)
 
-        self.invoke(f'artemis organization delete -g {RG} -n {ORG} --subscription {SUB} -y')
+        self.invoke(f'koreai artemis organization delete -g {RG} -n {ORG} --subscription {SUB} -y')
 
         self.assertEqual(self.arm.methods(), [('DELETE', ORG_PATH), ('GET', OPERATION_PATH)])
 
@@ -202,7 +202,7 @@ class KoreaiArtemisOfflineScenario(ScenarioTest):
         self._async_put(WS_PATH, WS_BODY)
         self.arm.route('GET', f'{ORG_PATH}/workspaces', 200, {'value': [WS_BODY]})
         self.invoke(
-            f'artemis organization workspace create -g {RG} --organization-name {ORG} -n {WS} '
+            f'koreai artemis organization workspace create -g {RG} --organization-name {ORG} -n {WS} '
             f'--subscription {SUB} --product aiforwork '
             '--partner-properties "{name:\'Contoso Production\',owner-email:owner@contoso.com}"')
         sent = self.arm.body_of('PUT', WS_PATH)
@@ -210,18 +210,18 @@ class KoreaiArtemisOfflineScenario(ScenarioTest):
         self.assertEqual(sent['properties']['partnerProperties']['ownerEmail'], 'owner@contoso.com')
 
         shown = self.invoke(
-            f'artemis organization workspace show -g {RG} --organization-name {ORG} -n {WS} '
+            f'koreai artemis organization workspace show -g {RG} --organization-name {ORG} -n {WS} '
             f'--subscription {SUB}').get_output_in_json()
         self.assertEqual(shown['name'], WS)
         listed = self.invoke(
-            f'artemis organization workspace list -g {RG} --organization-name {ORG} '
+            f'koreai artemis organization workspace list -g {RG} --organization-name {ORG} '
             f'--subscription {SUB}').get_output_in_json()
         self.assertEqual(len(listed), 1)
 
         poll = f'{ARM}{OPERATION_PATH}'
         self.arm.route('DELETE', WS_PATH, 202, None, {'Location': poll})
         self.arm.route('GET', OPERATION_PATH, 204)
-        self.invoke(f'artemis organization workspace delete -g {RG} --organization-name {ORG} -n {WS} '
+        self.invoke(f'koreai artemis organization workspace delete -g {RG} --organization-name {ORG} -n {WS} '
                  f'--subscription {SUB} -y')
         self.assertIn(('DELETE', WS_PATH), self.arm.methods())
 
@@ -230,7 +230,7 @@ class KoreaiArtemisOfflineScenario(ScenarioTest):
         poll = f'{ARM}{OPERATION_PATH}'
         self.arm.route('POST', path, 202, None, {'Location': poll})
         self.arm.route('GET', OPERATION_PATH, 200, {'status': 'Succeeded'})
-        command = f'artemis activate-saas --subscription {SUB} --publisher-id kore-ai --saas-guid {SUB}'
+        command = f'koreai artemis saas activate --subscription {SUB} --publisher-id kore-ai --saas-guid {SUB}'
 
         self.invoke(command)
         self.assertEqual(self.arm.methods(), [('POST', path), ('GET', OPERATION_PATH)])
@@ -246,7 +246,7 @@ class KoreaiArtemisOfflineScenario(ScenarioTest):
         saas_id = (f'/subscriptions/{SUB}/resourceGroups/{RG}/providers/Microsoft.SaaS/resources/kore-ai-saas-1')
         self.arm.route('POST', path, 202, None, {'Location': poll})
         self.arm.route('GET', OPERATION_PATH, 204)
-        command = (f'artemis organization workspace link-saas -g {RG} --organization-name {ORG} '
+        command = (f'koreai artemis organization workspace saas link -g {RG} --organization-name {ORG} '
                    f'--workspace-name {WS} --subscription {SUB} --saas-resource-ids {saas_id}')
 
         self.invoke(command)

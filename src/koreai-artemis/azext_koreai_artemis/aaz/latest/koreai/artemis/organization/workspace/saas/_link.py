@@ -12,27 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "artemis organization workspace list-linked-saas",
+    "koreai artemis organization workspace saas link",
     is_preview=True,
 )
-class ListLinkedSaas(AAZCommand):
-    """Returns the list of SaaS resources linked to the workspace.
+class Link(AAZCommand):
+    """Links SaaS resources to the workspace. Accepts the full list of SaaS assets to be linked.
 
-    :example: Workspaces_ListLinkedSaaS
-        az artemis organization workspace list-linked-saas --resource-group contoso-rg --organization-name contoso-org --workspace-name contoso-prod
+    :example: Workspaces_LinkSaaS
+        az koreai artemis organization workspace saas link --resource-group contoso-rg --organization-name contoso-org --workspace-name contoso-prod --saas-resource-ids "[/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg/providers/Microsoft.SaaS/resources/kore-ai-saas-1,/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg/providers/Microsoft.SaaS/resources/kore-ai-saas-2]"
     """
 
     _aaz_info = {
         "version": "2026-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/kore.agentplatform/organizations/{}/workspaces/{}/listlinkedsaas", "2026-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/kore.agentplatform/organizations/{}/workspaces/{}/linksaas", "2026-07-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -70,11 +71,24 @@ class ListLinkedSaas(AAZCommand):
                 min_length=2,
             ),
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.saas_resource_ids = AAZListArg(
+            options=["--saas-resource-ids"],
+            arg_group="Body",
+            help="ARM resource IDs of the Microsoft.SaaS marketplace resources to link to this Workspace.",
+            required=True,
+        )
+
+        saas_resource_ids = cls._args_schema.saas_resource_ids
+        saas_resource_ids.Element = AAZResourceIdArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.WorkspacesListLinkedSaaS(ctx=self.ctx)()
+        yield self.WorkspacesLinkSaaS(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -85,25 +99,28 @@ class ListLinkedSaas(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
-    class WorkspacesListLinkedSaaS(AAZHttpOperation):
+    class WorkspacesLinkSaaS(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    None,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Kore.AgentPlatform/organizations/{organizationName}/workspaces/{workspaceName}/listLinkedSaaS",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Kore.AgentPlatform/organizations/{organizationName}/workspaces/{workspaceName}/linkSaaS",
                 **self.url_parameters
             )
 
@@ -151,50 +168,29 @@ class ListLinkedSaas(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Accept", "application/json",
+                    "Content-Type", "application/json",
                 ),
             }
             return parameters
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("saaSResourceIds", AAZListType, ".saas_resource_ids", typ_kwargs={"flags": {"required": True}})
 
-        _schema_on_200 = None
+            saa_s_resource_ids = _builder.get(".saaSResourceIds")
+            if saa_s_resource_ids is not None:
+                saa_s_resource_ids.set_elements(AAZStrType, ".")
 
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.is_hidden_saa_s = AAZBoolType(
-                serialized_name="isHiddenSaaS",
-            )
-            _element.saa_s_resource_id = AAZStrType(
-                serialized_name="saaSResourceId",
-                flags={"required": True},
-            )
-
-            return cls._schema_on_200
+            return self.serialize_content(_content_value)
 
 
-class _ListLinkedSaasHelper:
-    """Helper class for ListLinkedSaas"""
+class _LinkHelper:
+    """Helper class for Link"""
 
 
-__all__ = ["ListLinkedSaas"]
+__all__ = ["Link"]
