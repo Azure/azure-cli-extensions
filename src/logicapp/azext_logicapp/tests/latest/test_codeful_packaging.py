@@ -5,6 +5,7 @@
 
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -49,12 +50,37 @@ class CodefulPackagingTests(unittest.TestCase):
         ])
 
     @staticmethod
-    def successful_publish(worker_path="App.dll", language="dotnet-isolated"):
+    def successful_publish(worker_path="App.dll", language="dotnet-isolated",
+                           dependency_path=None, optional_files=None):
         def publish(command, **_kwargs):
             output = Path(command[command.index("--output") + 1])
             output.mkdir(parents=True, exist_ok=True)
-            (output / worker_path).parent.mkdir(parents=True, exist_ok=True)
-            (output / worker_path).write_bytes(b"synthetic assembly")
+            worker = output / worker_path
+            worker.parent.mkdir(parents=True, exist_ok=True)
+            worker.write_bytes(b"synthetic assembly")
+            dependencies = {
+                "runtimeTarget": {"name": ".NETCoreApp,Version=v8.0"},
+                "targets": {
+                    ".NETCoreApp,Version=v8.0": {
+                        "App/1.0.0": {"runtime": {Path(worker_path).name: {}}}
+                    }
+                }
+            }
+            if dependency_path:
+                dependency = output / dependency_path
+                dependency.parent.mkdir(parents=True, exist_ok=True)
+                dependency.write_bytes(b"synthetic dependency")
+                dependencies["targets"][".NETCoreApp,Version=v8.0"]["Dependency/1.0.0"] = {
+                    "runtime": {dependency_path.replace("\\", "/"): {}}
+                }
+            worker.with_suffix(".deps.json").write_text(
+                json.dumps(dependencies), encoding="utf-8")
+            worker.with_suffix(".runtimeconfig.json").write_text(
+                json.dumps({"runtimeOptions": {"tfm": "net8.0"}}), encoding="utf-8")
+            for relative, content in (optional_files or {}).items():
+                path = output / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(content)
             (output / "worker.config.json").write_text(json.dumps({
                 "description": {
                     "language": language,
@@ -148,6 +174,8 @@ class CodefulPackagingTests(unittest.TestCase):
             self.assertIn("Artifacts/Maps/transform.xslt", names)
             self.assertIn("Artifacts/Schemas/order.xsd", names)
             self.assertIn("lib/codeful/App.dll", names)
+            self.assertIn("lib/codeful/App.deps.json", names)
+            self.assertIn("lib/codeful/App.runtimeconfig.json", names)
             self.assertIn("lib/codeful/worker.config.json", names)
             self.assertNotIn("Program.cs", names)
             self.assertNotIn("App.csproj", names)
@@ -167,27 +195,13 @@ class CodefulPackagingTests(unittest.TestCase):
         self.assertEqual("package-output", reasons["package.zip"])
         self.assertEqual("package-output", reasons["package.manifest.json"])
 
-    def test_source_ignore_rules_filter_publish_output_but_preserve_required_worker_files(self):
+    def test_source_ignore_rules_filter_optional_publish_output(self):
         self.write_codeful_project()
-        (self.root / ".funcignore").write_text(
-            "private.json\nworker.config.json\nApp.dll\n", encoding="utf-8")
-
-        def publish_with_private_content(command, **_kwargs):
-            output = Path(command[command.index("--output") + 1])
-            output.mkdir(parents=True, exist_ok=True)
-            (output / "App.dll").write_bytes(b"synthetic assembly")
-            (output / "private.json").write_text('{"secret":"synthetic"}', encoding="utf-8")
-            (output / "worker.config.json").write_text(json.dumps({
-                "description": {
-                    "language": "dotnet-isolated",
-                    "defaultExecutablePath": "dotnet",
-                    "defaultWorkerPath": "App.dll"
-                }
-            }), encoding="utf-8")
-            return subprocess.CompletedProcess(command, 0, "", "")
+        (self.root / ".funcignore").write_text("private.json\n", encoding="utf-8")
 
         with mock.patch("azext_logicapp._workflow.subprocess.run",
-                        side_effect=publish_with_private_content):
+                        side_effect=self.successful_publish(
+                            optional_files={"private.json": b'{"secret":"synthetic"}'})):
             result = custom.deployment_package(
                 None, path=str(self.root), output_path=str(self.archive),
                 manifest=str(self.manifest))
@@ -200,6 +214,71 @@ class CodefulPackagingTests(unittest.TestCase):
         self.assertIn(
             {"path": "lib/codeful/private.json", "reason": "ignoreFile"},
             result["excluded"])
+
+    def test_rejects_ignore_rules_that_remove_required_worker_closure(self):
+        self.write_codeful_project()
+        cases = [
+            ("worker.config.json\n", "worker.config.json"),
+            ("*.dll\n", "App.dll"),
+            ("*.deps.json\n", "App.deps.json"),
+            ("*.runtimeconfig.json\n", "App.runtimeconfig.json"),
+            ("Dependency.dll\n", "Dependency.dll")
+        ]
+        for rule, required_path in cases:
+            with self.subTest(rule=rule):
+                (self.root / ".funcignore").write_text(rule, encoding="utf-8")
+                with mock.patch(
+                        "azext_logicapp._workflow.subprocess.run",
+                        side_effect=self.successful_publish(
+                            dependency_path="Dependency.dll",
+                            optional_files={"optional.json": b"{}"})):
+                    with self.assertRaisesRegex(
+                            ValidationError,
+                            "required published worker output.*{}".format(
+                                required_path.replace(".", r"\."))):
+                        custom.deployment_package(
+                            None, path=str(self.root), output_path=str(self.archive),
+                            manifest=str(self.manifest), force=True)
+                self.assertFalse(self.archive.exists())
+                self.assertFalse(self.manifest.exists())
+
+    def test_repeated_package_excludes_only_exact_previous_outputs_from_publish(self):
+        self.write_codeful_project()
+        legitimate_zip = b"legitimate zip asset"
+        legitimate_json = b'{"legitimate":true}'
+
+        def publish_with_project_outputs(command, **kwargs):
+            completed = self.successful_publish(optional_files={
+                "assets/template.zip": legitimate_zip,
+                "assets/settings.json": legitimate_json
+            })(command, **kwargs)
+            output = Path(command[command.index("--output") + 1])
+            if self.archive.exists():
+                shutil.copyfile(self.archive, output / self.archive.name)
+            if self.manifest.exists():
+                shutil.copyfile(self.manifest, output / self.manifest.name)
+            return completed
+
+        with mock.patch("azext_logicapp._workflow.subprocess.run",
+                        side_effect=publish_with_project_outputs):
+            custom.deployment_package(
+                None, path=str(self.root), output_path=str(self.archive),
+                manifest=str(self.manifest))
+            first = self.archive.read_bytes()
+            second = custom.deployment_package(
+                None, path=str(self.root), output_path=str(self.archive),
+                manifest=str(self.manifest), force=True)
+
+        self.assertEqual(first, self.archive.read_bytes())
+        with zipfile.ZipFile(self.archive) as package:
+            names = set(package.namelist())
+            self.assertNotIn("lib/codeful/package.zip", names)
+            self.assertNotIn("lib/codeful/package.manifest.json", names)
+            self.assertEqual(legitimate_zip, package.read("lib/codeful/assets/template.zip"))
+            self.assertEqual(legitimate_json, package.read("lib/codeful/assets/settings.json"))
+        excluded = {(item["path"], item["reason"]) for item in second["excluded"]}
+        self.assertIn(("lib/codeful/package.zip", "package-output"), excluded)
+        self.assertIn(("lib/codeful/package.manifest.json", "package-output"), excluded)
 
     def test_escaped_bang_is_a_literal_exclusion_after_an_earlier_json_rule(self):
         (self.root / ".funcignore").write_text(

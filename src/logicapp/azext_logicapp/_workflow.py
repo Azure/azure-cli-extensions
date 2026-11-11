@@ -465,6 +465,7 @@ def _resolve_codeful_project(root, project):
 
 def _stage_codeful_project(root, staging, project, dotnet, output_path, manifest_path):
     ignore_patterns = _read_ignore_file(root)
+    output_counterparts = _package_output_counterparts(root, output_path, manifest_path)
     excluded = _copy_codeful_assets(
         root, staging, output_path, manifest_path, ignore_patterns)
     publish_dir = os.path.join(staging, "lib", "codeful")
@@ -484,7 +485,8 @@ def _stage_codeful_project(root, staging, project, dotnet, output_path, manifest
     if completed.returncode:
         raise ValidationError("dotnet publish failed with exit code {}.".format(completed.returncode))
     required_worker_files = _normalize_and_validate_worker(staging, publish_dir)
-    excluded.extend(_filter_published_content(publish_dir, ignore_patterns, required_worker_files))
+    excluded.extend(_filter_published_content(
+        publish_dir, ignore_patterns, required_worker_files, output_counterparts))
     return excluded
 
 
@@ -580,27 +582,133 @@ def _normalize_and_validate_worker(staging, publish_dir):
             handle.write("\n")
     except OSError as ex:
         raise FileOperationError("Could not normalize worker.config.json.") from ex
-    return {
+    return _required_worker_output(publish_dir, assembly_path)
+
+
+def _required_worker_output(publish_dir, assembly_path):
+    assembly_rel = os.path.relpath(assembly_path, publish_dir).replace(os.sep, "/")
+    assembly_stem = os.path.splitext(assembly_path)[0]
+    deps_path = assembly_stem + ".deps.json"
+    runtime_config_path = assembly_stem + ".runtimeconfig.json"
+    required_paths = {
         "worker.config.json",
-        os.path.relpath(assembly_path, publish_dir).replace(os.sep, "/")
+        assembly_rel,
+        os.path.relpath(deps_path, publish_dir).replace(os.sep, "/"),
+        os.path.relpath(runtime_config_path, publish_dir).replace(os.sep, "/")
     }
+    for path in (deps_path, runtime_config_path):
+        if not os.path.isfile(path):
+            raise ValidationError(
+                "dotnet publish did not produce required worker output: {}".format(
+                    os.path.relpath(path, publish_dir).replace(os.sep, "/")))
+    try:
+        with open(deps_path, "r", encoding="utf-8") as handle:
+            dependencies = json.load(handle)
+    except (OSError, UnicodeError, ValueError) as ex:
+        raise ValidationError("Published worker dependency metadata is invalid.") from ex
+    if not isinstance(dependencies, dict) or not isinstance(dependencies.get("targets"), dict):
+        raise ValidationError("Published worker dependency metadata is missing its targets object.")
+    published_files = []
+    for directory, _dirnames, filenames in os.walk(publish_dir, onerror=_package_walk_error):
+        for filename in filenames:
+            published_files.append(
+                os.path.relpath(os.path.join(directory, filename), publish_dir).replace(os.sep, "/"))
+    by_basename = {}
+    for rel in published_files:
+        by_basename.setdefault(os.path.basename(rel), []).append(rel)
+    runtime_target = dependencies.get("runtimeTarget")
+    target_name = runtime_target.get("name") if isinstance(runtime_target, dict) else None
+    targets = dependencies["targets"]
+    target_groups = [targets[target_name]] if target_name in targets else targets.values()
+    for target_group in target_groups:
+        if not isinstance(target_group, dict):
+            continue
+        for library in target_group.values():
+            if not isinstance(library, dict):
+                continue
+            for asset_group in ("runtime", "native", "resources", "runtimeTargets"):
+                assets = library.get(asset_group)
+                if not isinstance(assets, dict):
+                    continue
+                for asset in assets:
+                    normalized = asset.replace("\\", "/").lstrip("/")
+                    candidates = by_basename.get(os.path.basename(normalized), [])
+                    exact = [rel for rel in candidates
+                             if rel == normalized or normalized.endswith("/" + rel) or
+                             rel.endswith("/" + normalized)]
+                    if exact:
+                        required_paths.update(exact)
+                    elif len(candidates) == 1:
+                        required_paths.add(candidates[0])
+    return required_paths
 
 
-def _filter_published_content(publish_dir, ignore_patterns, required_worker_files):
+def _package_output_counterparts(root, output_path, manifest_path):
+    counterparts = {}
+    for path in (output_path, manifest_path):
+        if not os.path.isfile(path):
+            continue
+        try:
+            relative = os.path.relpath(path, root).replace(os.sep, "/")
+            if relative == ".." or relative.startswith("../"):
+                continue
+        except ValueError:
+            continue
+        try:
+            counterparts[relative] = {
+                "basename": os.path.basename(relative),
+                "sha256": _sha256_file(path)
+            }
+        except OSError as ex:
+            raise FileOperationError(
+                "Could not read existing package output: {}".format(path)) from ex
+    return counterparts
+
+
+def _matches_package_output_counterpart(rel, full, output_counterparts):
+    for source_rel, counterpart in output_counterparts.items():
+        if rel not in (source_rel, counterpart["basename"]):
+            continue
+        try:
+            if _sha256_file(full) == counterpart["sha256"]:
+                return True
+        except OSError as ex:
+            raise FileOperationError(
+                "Could not inspect published package content: {}".format(rel)) from ex
+    return False
+
+
+def _filter_published_content(publish_dir, ignore_patterns, required_worker_files,
+                              output_counterparts):
     excluded = []
+    ignored_required = sorted(
+        rel for rel in required_worker_files if _matches_ignore(rel, ignore_patterns))
+    if ignored_required:
+        raise ValidationError(
+            ".funcignore excludes required published worker output: {}. "
+            "Update .funcignore to retain these files.".format(", ".join(ignored_required)))
     for directory, _dirnames, filenames in os.walk(
             publish_dir, topdown=False, onerror=_package_walk_error):
         for filename in filenames:
             full = os.path.join(directory, filename)
             rel = os.path.relpath(full, publish_dir).replace(os.sep, "/")
-            if rel in required_worker_files or not _matches_ignore(rel, ignore_patterns):
+            package_output = _matches_package_output_counterpart(
+                rel, full, output_counterparts)
+            if rel in required_worker_files and package_output:
+                raise ValidationError(
+                    "A package output conflicts with required published worker output: {}".format(rel))
+            if rel in required_worker_files:
+                continue
+            reason = "package-output" if package_output else (
+                "ignoreFile" if _matches_ignore(rel, ignore_patterns) else None)
+            if not reason:
                 continue
             try:
                 os.remove(full)
             except OSError as ex:
                 raise FileOperationError(
                     "Could not exclude published package content: {}".format(rel)) from ex
-            excluded.append({"path": "lib/codeful/" + rel, "reason": "ignoreFile"})
+            excluded.append({"path": "lib/codeful/" + rel, "reason": reason})
     for rel in required_worker_files:
         full = os.path.join(publish_dir, rel.replace("/", os.sep))
         if not os.path.isfile(full):
