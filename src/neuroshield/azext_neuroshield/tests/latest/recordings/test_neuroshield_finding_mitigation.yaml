@@ -1,0 +1,1135 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource finding show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","name":"CVE-2026-43284-ns-tool-vm-westus-2","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/findings","properties":{"cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","severity":"High","description":"Linux
+        kernel encrypted-packet processing allows a low-privileged local attacker
+        who can configure a network security association, including through unprivileged
+        namespaces, to corrupt cached system files and gain root privileges.","reason":"The
+        VM is running the Linux kernel 7.0.0-1017-azure (normalized to 7.0.0). CVE-2026-43284
+        affects Linux kernel versions from 4.11 up to, but not including, the 7.0.5
+        fix on the 7.0 branch. 7.0.0 is below 7.0.5, so the host is affected.\n- linux-azure
+        kernel 7.0.0-1017-azure (normalized to 7.0.0): Installed kernel 7.0.0 falls
+        within the affected Linux kernel range and is below the explicit 7.0.* unaffected
+        boundary at 7.0.5.","detectedTime":"2026-11-11T03:05:01.8971502+00:00","status":"Active"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1351'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:22:02 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 5dbcc424-bd66-4b90-9558-f346d936c4c3
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '56'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/30f2ca12-9445-4932-9c6e-5aee48ac8870
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6FBD5839832F45838C55749177E285DE Ref B: SG2AA1070305062 Ref C: 2026-11-11T03:22:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"AwaitingApproval"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1290'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:22:04 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 284ed649-79df-461e-89bf-72176cb86002
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '61'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/b13a157d-a8a3-4be0-b9dd-0424c22a1f9c
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 9C2317D36C10470B8C06FD374215E76B Ref B: SG2AA1040517042 Ref C: 2026-11-11T03:22:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation execute
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource --mitigation-id
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces/execute?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"Queued"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:22:07.5440788+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1414'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:22:08 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 756f0c35-1575-40af-8bb0-16123b75cef4
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '136'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/74ad6060-5529-45ce-94d2-e5fd2f7e16bd
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: C8B13FBDA8BF4646BAE4B33C2BE923CE Ref B: SG2AA1070303054 Ref C: 2026-11-11T03:22:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:22:07.5440788Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:22:09 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 1a1efab2-ae3b-49f2-998b-4e74915e3dae
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '54'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/5a52e3d1-4fb1-4c83-b3d8-8a556703a4f3
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: FBD10787F1A0411490B9C230A00C156E Ref B: SG2AA1070306042 Ref C: 2026-11-11T03:22:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:22:07.5440788Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:22:42 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 19ffa651-f713-4473-8aad-cbaa588bc68e
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '51'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/db2fb34b-fe33-4800-b9f3-587e702746ed
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: E9DCB98B9C4F4D69A2EAC2DF2CF62134 Ref B: SG2AA1070305034 Ref C: 2026-11-11T03:22:42Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:22:07.5440788Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:23:15 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - ad3ad293-0b7e-4f28-a69c-5ef0b41ec6ef
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '83'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/a09c75fe-6d24-4082-a6be-70d41ec579e3
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5855EBD773C64E6B8095A7EC66C759CD Ref B: SG2AA1040513054 Ref C: 2026-11-11T03:23:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:22:07.5440788Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:23:48 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c127d9ab-704e-4b81-b780-3775b0fba389
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '58'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/8f71236e-2c0f-4105-acd6-cb7caecee50c
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C769750239584BD490D2C60A3802B6A3 Ref B: SG2AA1070303034 Ref C: 2026-11-11T03:23:48Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:22:07.5440788Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1371'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:24:20 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 52f86851-6e3f-49ec-8755-3ae935cd87b8
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '52'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/754bb9f3-6b46-4df9-b34c-18277430c904
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: BC6FE1C9C9474E5391E0637443B974A7 Ref B: SG2AA1070304029 Ref C: 2026-11-11T03:24:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:22:07.5440788Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"Succeeded","appliedTime":"2026-11-11T03:24:49.5808721+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1478'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:24:54 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 156c5563-8cf1-4298-abbd-3e40cc630708
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '78'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/b125b297-7f8a-49ff-88e2-95fb46f8b0da
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6F9517D23C72473681404DE6D2BC7B25 Ref B: SG2AA1070302042 Ref C: 2026-11-11T03:24:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation rollback
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource --mitigation-id
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces/rollback?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T03:24:49.5808721+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:24:56.5004837+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1530'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:24:57 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 46dbfbf5-7fef-4f2e-9a6d-58762c4bf6b9
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '127'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/611f11ed-2102-48f8-8ef4-4f4772d993b1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 5F36825E6E304506944C31B6FBF52425 Ref B: SG2AA1070305031 Ref C: 2026-11-11T03:24:56Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:24:56.5004837Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T03:24:49.5808721+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1487'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:24:59 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 82adefa0-ca5d-417f-b45d-8a71b7ef3467
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '50'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/d49a96d5-a309-40ca-ab44-e20257ebe2ea
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 802D2B7F6B764597912CF4E0D8330E5C Ref B: SG2AA1040515034 Ref C: 2026-11-11T03:24:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:24:56.5004837Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T03:24:49.5808721+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1487'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:25:31 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - feba1383-6bcf-4b99-8640-30ff86403992
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '61'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/cacabeb3-c1e0-4a72-8382-fcf397563aaf
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 4AB45273D7384FB18B4D54FF5FB21FEA Ref B: SG2AA1070304060 Ref C: 2026-11-11T03:25:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:24:56.5004837Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T03:24:49.5808721+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1487'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:26:04 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - e1c6a4a5-5be4-4d7f-a492-3bf19fd133c7
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '60'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/58a14e36-7e66-4062-b26e-0421ed989ba8
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: FB3016439C8D4CC5814C3D6B28D6C351 Ref B: SG2AA1070304025 Ref C: 2026-11-11T03:26:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:24:56.5004837Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T03:24:49.5808721+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1487'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:26:36 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - f0f6438f-24c4-44b3-99d1-57bb5095a7ac
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '85'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/480b7835-7ffb-43c5-80af-b021c0530337
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C2C3F02C2B39498C885668A140FECEAE Ref B: SG2AA1040513025 Ref C: 2026-11-11T03:26:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:24:56.5004837Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T03:24:49.5808721+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1487'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:27:09 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - a49f3e41-9a4c-4395-8938-09c041e2fafb
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '78'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/1edbce57-26c9-4c7b-84c3-3618f60fe2bd
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F233F24BF4F840CF8175413650EEA0E1 Ref B: SG2AA1070305034 Ref C: 2026-11-11T03:27:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:24:56.5004837Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T03:24:49.5808721+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1487'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:27:42 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 6019a701-814a-47f2-aea4-3229d48a8881
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '99'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/b83464a3-6650-45da-87ea-923528eef412
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A7E6FEB3E296469991CCFE6F59115A22 Ref B: SG2AA1070302060 Ref C: 2026-11-11T03:27:42Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","name":"CVE-2026-43284-ns-tool-vm-westus-2-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:24:56.5004837Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"RolledBack","appliedTime":"2026-11-11T03:24:49.5808721+00:00","statusDetails":"Neuron
+        reported RolledBack."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1471'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:28:14 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 3fc30ccb-5557-4484-b307-2d90241e92f4
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '93'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/bd48512d-2b47-4d88-8f2a-38cf02c4fd3a
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 100D2C57D2BD4D63876FEBBC3C59D6C0 Ref B: SG2AA1040519029 Ref C: 2026-11-11T03:28:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource finding mitigate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource --finding-id
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2/mitigate?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":78,"commandsSummary":"Prevent
+        sockets from enabling User Datagram Protocol encapsulation (UDP_ENCAP), blocking
+        new setup of the documented encrypted-packet attack path while preserving
+        ordinary datagram traffic. Legitimate applications that newly enable this
+        encapsulation will fail, and sockets configured before enforcement remain
+        exposed.","isRollbackable":true,"status":"Queued"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-block-new-udp-encapsulation","name":"CVE-2026-43284-ns-tool-vm-westus-2-block-new-udp-encapsulation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:28:17.9706223+00:00"}},{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/ns-tool-vm-westus-2","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"Queued"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/mitigations/CVE-2026-43284-ns-tool-vm-westus-2-disable-modular-esp","name":"CVE-2026-43284-ns-tool-vm-westus-2-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T03:28:17.9706223+00:00"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:28:18 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 5a88acc5-dc53-47c0-8c2a-be155ef174d0
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '209'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/c8622578-1eeb-46bc-a30e-d8f4c66d445b
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 3EEFF80F875545CEA96C56BDD0C47D24 Ref B: SG2AA1040515060 Ref C: 2026-11-11T03:28:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource finding rollback
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource --finding-id
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-tool-validation-westus/protectedResources/ns-tool-vm-westus-2-vm4jm3/findings/CVE-2026-43284-ns-tool-vm-westus-2/rollback?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 03:52:14 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 506292d4-4a02-453c-8f65-3f4347a56959
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '96'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/bcdad5a1-0712-4d66-a60b-f1d7b8bc83d3
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 3082C662724143FBBD5EADDCBFE88F67 Ref B: SG2AA1070304054 Ref C: 2026-11-11T03:52:14Z'
+    status:
+      code: 200
+      message: OK
+version: 1
