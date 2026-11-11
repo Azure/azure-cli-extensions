@@ -21,9 +21,9 @@ Returns 409 if there are active jobs using this connection.
     """
 
     _aaz_info = {
-        "version": "2025-12-01",
+        "version": "2026-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/connections/{}", "2025-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/connections/{}", "2026-05-01"],
         ]
     }
 
@@ -157,7 +157,7 @@ Returns 409 if there are active jobs using this connection.
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-12-01",
+                    "api-version", "2026-05-01",
                     required=True,
                 ),
             }
