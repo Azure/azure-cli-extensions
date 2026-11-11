@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.6.0b1
+- Updated to API version 2026-10-01-preview.
+- Added `--firewall-rules` to cluster create and update.
+- Restored `--access-string` on access policy assignment create/update and `provisioningError` in responses.
+
 1.5.0
 - Updated Redis Enterprise commands to stable API version 2026-09-01.
 - Added `az redisenterprise migration unlink-migrated-endpoint` for OSS-to-AMR migrations and `az redisenterprise unlink-migrated-endpoint` for Enterprise-to-AMR migrations.

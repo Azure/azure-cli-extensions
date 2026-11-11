@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "redisenterprise migration",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage migrations from Azure Cache for Redis Basic, Standard, and Premium tiers to Azure Managed Redis.

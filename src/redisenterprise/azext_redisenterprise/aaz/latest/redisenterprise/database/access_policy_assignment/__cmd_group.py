@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "redisenterprise database access-policy-assignment",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage database access policy assignment for redis enterprise databases

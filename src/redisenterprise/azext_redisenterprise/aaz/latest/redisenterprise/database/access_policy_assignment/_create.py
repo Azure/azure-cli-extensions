@@ -13,18 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "redisenterprise database access-policy-assignment create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create access policy assignment for database
 
-    :example: Configure Redis User for role based access control
-        az redisenterprise database access-policy-assignment create --resource-group rg1 --cluster-name cache1 --database-name default --access-policy-assignment-name defaultTestEntraApp1 --access-policy-name default --object-id 6497c918-11ad-41e7-1b0f-7c518a87d0b0
+    :example: Assign a read-only Redis ACL to an Entra object
+        az redisenterprise database access-policy-assignment create --cluster-name cache1 --resource-group rg1 --database-name default --access-policy-assignment-name reader --object-id 00000000-0000-0000-0000-000000000001 --access-string '+@read ~cache:*'
     """
 
     _aaz_info = {
-        "version": "2026-09-01",
+        "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2026-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2026-10-01-preview"],
         ]
     }
 
@@ -83,6 +84,14 @@ class Create(AAZCommand):
             default="default",
             fmt=AAZStrArgFormat(
                 pattern="^([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]|[a-zA-Z0-9])$",
+            ),
+        )
+        _args_schema.access_string = AAZStrArg(
+            options=["--access-string"],
+            arg_group="Properties",
+            help=(
+                "The Redis ACL permissions string applied to this assignment, for example `+@read ~cache:*`. Defaults "
+                "to `+@all ~*` if not specified."
             ),
         )
 
@@ -185,7 +194,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-01",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }
@@ -214,7 +223,8 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("accessPolicyName", AAZStrType, ".access_policy_name", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("accessPolicyName", AAZStrType, ".access_policy_name")
+                properties.set_prop("accessString", AAZStrType, ".access_string")
                 properties.set_prop("user", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             user = _builder.get(".properties.user")
@@ -261,7 +271,13 @@ class Create(AAZCommand):
             properties = cls._schema_on_200_201.properties
             properties.access_policy_name = AAZStrType(
                 serialized_name="accessPolicyName",
-                flags={"required": True},
+            )
+            properties.access_string = AAZStrType(
+                serialized_name="accessString",
+            )
+            properties.provisioning_error = AAZObjectType(
+                serialized_name="provisioningError",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -270,6 +286,15 @@ class Create(AAZCommand):
             properties.user = AAZObjectType(
                 flags={"required": True},
             )
+
+            provisioning_error = cls._schema_on_200_201.properties.provisioning_error
+            provisioning_error.code = AAZStrType(
+                flags={"required": True},
+            )
+            provisioning_error.message = AAZStrType(
+                flags={"required": True},
+            )
+            provisioning_error.target = AAZStrType()
 
             user = cls._schema_on_200_201.properties.user
             user.object_id = AAZStrType(

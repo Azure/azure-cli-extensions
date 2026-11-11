@@ -13,15 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "redisenterprise database access-policy-assignment update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update access policy assignment for database
     """
 
     _aaz_info = {
-        "version": "2026-09-01",
+        "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2026-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2026-10-01-preview"],
         ]
     }
 
@@ -82,9 +83,19 @@ class Update(AAZCommand):
             options=["--access-policy-name"],
             arg_group="Properties",
             help="Name of access policy under specific access policy assignment. Only \"default\" policy is supported for now.",
+            nullable=True,
             fmt=AAZStrArgFormat(
                 pattern="^([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]|[a-zA-Z0-9])$",
             ),
+        )
+        _args_schema.access_string = AAZStrArg(
+            options=["--access-string"],
+            arg_group="Properties",
+            help=(
+                "The Redis ACL permissions string applied to this assignment, for example `+@read ~cache:*`. Omitting "
+                "--access-string preserves the existing permissions."
+            ),
+            nullable=True,
         )
 
         # define Arg Group "User"
@@ -184,7 +195,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-01",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }
@@ -291,7 +302,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-01",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }
@@ -353,7 +364,8 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("accessPolicyName", AAZStrType, ".access_policy_name", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("accessPolicyName", AAZStrType, ".access_policy_name")
+                properties.set_prop("accessString", AAZStrType, ".access_string")
                 properties.set_prop("user", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             user = _builder.get(".properties.user")
@@ -409,7 +421,13 @@ class _UpdateHelper:
         properties = _schema_access_policy_assignment_read.properties
         properties.access_policy_name = AAZStrType(
             serialized_name="accessPolicyName",
-            flags={"required": True},
+        )
+        properties.access_string = AAZStrType(
+            serialized_name="accessString",
+        )
+        properties.provisioning_error = AAZObjectType(
+            serialized_name="provisioningError",
+            flags={"read_only": True},
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
@@ -418,6 +436,15 @@ class _UpdateHelper:
         properties.user = AAZObjectType(
             flags={"required": True},
         )
+
+        provisioning_error = _schema_access_policy_assignment_read.properties.provisioning_error
+        provisioning_error.code = AAZStrType(
+            flags={"required": True},
+        )
+        provisioning_error.message = AAZStrType(
+            flags={"required": True},
+        )
+        provisioning_error.target = AAZStrType()
 
         user = _schema_access_policy_assignment_read.properties.user
         user.object_id = AAZStrType(
