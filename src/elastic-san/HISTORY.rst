@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.4.0b1
+2.0.0b1
 ++++++
 * `az elastic-san`: Support the 2026-05-01-preview API version and Elastic SAN V2 capacity and performance settings.
 * `az elastic-san volume`: Support managed-by resource IDs and permanent deletion of soft-deleted volumes.

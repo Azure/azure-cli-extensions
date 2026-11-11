@@ -11,7 +11,7 @@ import time
 import unittest
 from unittest.mock import patch
 
-from azext_elastic_san.custom import VolumeGroupCreate, VolumeGroupUpdate
+from azext_elastic_san.custom import ElasticSanCreate, VolumeGroupCreate, VolumeGroupUpdate
 
 
 class ElasticSanScenario(ScenarioTest):
@@ -169,6 +169,46 @@ class ElasticSanScenario(ScenarioTest):
                 {"qualityOfService": "GeneralPurpose", "reservedIops": 10000, "reservedMBps": 200},
             )
         self.cmd('az elastic-san volume-group delete -e {san_name} -g {rg} -n {vg_name} -y')
+        self.cmd('az elastic-san delete -n {san_name} -g {rg} -y')
+
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.v2defaults.')
+    def test_elastic_san_v2_autoscale_defaults(self, resource_group):
+        self.kwargs.update({"san_name": self.create_random_name('elastic-san', 24)})
+        regional_limits = []
+        request_bodies = []
+        discover_limit = ElasticSanCreate._get_v2_regional_capacity_limit
+        make_request = ElasticSanCreate.ElasticSansCreate.make_request
+
+        def capture_limit(command):
+            limit = discover_limit(command)
+            regional_limits.append(limit)
+            return limit
+
+        def capture_request(operation):
+            request_bodies.append(operation.content)
+            return make_request(operation)
+
+        with patch.object(ElasticSanCreate, "_get_v2_regional_capacity_limit", capture_limit), \
+                patch.object(ElasticSanCreate.ElasticSansCreate, "make_request", capture_request):
+            result = self.cmd(
+                'az elastic-san create -n {san_name} -g {rg} -l eastus2euap '
+                '--sku {{name:ElasticSAN_LRS}} --version V2 '
+                '--total-iops 100000 --total-mbps 2000 --total-size-tib 25',
+                checks=[JMESPathCheck('version', 'V2'),
+                        JMESPathCheck('totalSizeTiB', 25)],
+            ).get_output_in_json()
+
+        self.assertEqual(len(regional_limits), 1)
+        self.assertEqual(len(request_bodies), 1)
+        expected = {
+            "autoScalePolicyEnforcement": "Enabled",
+            "capacityUnitScaleUpLimitTiB": min(125, regional_limits[0]),
+            "increaseCapacityUnitByTiB": 1,
+            "unusedSizeTiB": 1,
+        }
+        self.assertEqual(request_bodies[0]["properties"]["autoScaleProperties"]["scaleUpProperties"], expected)
+        for field, value in expected.items():
+            self.assertEqual(result["autoScaleProperties"]["scaleUpProperties"][field], value)
         self.cmd('az elastic-san delete -n {san_name} -g {rg} -y')
 
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.volumegroup')

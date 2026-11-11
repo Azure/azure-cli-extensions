@@ -555,6 +555,19 @@ class ElasticSanCreate(_ElasticSanCreate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.base_size_tib._required = False
         args_schema.extended_capacity_size_tib._required = False
+        args_schema.auto_scale_policy_enforcement._help["short-summary"] = (
+            "Enable or disable scale up. For V2 creation, defaults to Enabled; None and Disabled are unsupported."
+        )
+        args_schema.capacity_unit_scale_up_limit_tib._help["short-summary"] = (
+            "Maximum scale up size in TiB. For V2 creation, defaults to the smaller of five times "
+            "the total size and the regional SKU maximum, which requires an additional SKU lookup."
+        )
+        args_schema.increase_capacity_unit_by_tib._help["short-summary"] = (
+            "Unit to increase capacity in TiB. Defaults to 1 for V2 creation."
+        )
+        args_schema.unused_size_tib._help["short-summary"] = (
+            "Unused capacity threshold in TiB. Defaults to 1 for V2 creation."
+        )
         return args_schema
 
     def _handler(self, command_args):

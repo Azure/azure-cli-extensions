@@ -12,6 +12,7 @@ V2 creation defaults omitted autoscale enforcement to `Enabled`, increase capaci
 
 These defaults apply only during V2 creation and preserve explicit numeric inputs, including zero. V2 creation rejects enforcement `None` and `Disabled`, case-insensitively, before discovery or creation. Omitted enforcement defaults to `Enabled`. V1 and update behavior are unchanged.
 The separate `test_elastic_san_v2_scenarios` integration test covers V2 create, show, list, update, and delete in `eastus2euap`. Record it with `azdev test --live --discover test_elastic_san_v2_scenarios`, then verify playback with `azdev test --discover test_elastic_san_v2_scenarios`. A successful live recording requires V2 access on the target subscription and region; this test does not skip service feature-gate errors.
+The `test_elastic_san_v2_autoscale_defaults` scenario covers V2 creation with the autoscale options omitted and verifies SKU discovery and the resulting defaults. Record it with `azdev test azext_elastic_san --live --series -a -k test_elastic_san_v2_autoscale_defaults`, then verify playback with `azdev test azext_elastic_san --series -a -k test_elastic_san_v2_autoscale_defaults`.
 ### Delete an Elastic SAN.
 `az elastic-san delete -g {rg} -n {san_name}`
 ### Get a list of Elastic SANs in a subscription.
@@ -24,6 +25,7 @@ The separate `test_elastic_san_v2_scenarios` integration test covers V2 create, 
 `az elastic-san update -n {san_name} -g {rg} --tags "{key1710:bbbb}" --base-size-tib 25 --extended-capacity-size-tib 15`
 `--sku` and `--availability-zones` are also accepted for compatibility. When either is supplied, the command reads the existing resource and uses the API's PUT (create-or-replace) operation because these fields are not part of the PATCH update contract.
 SAN and volume-group updates support `--add`, `--set`, `--remove`, and `--force-string`. Custom code reads the resource, applies explicit options followed by generic updates, and sends writable PATCH fields (or PUT for the legacy SAN options above). This compatibility flow reuses the generated show operations and survives regeneration of the PATCH commands.
+The generated PATCH-only update commands do not implement generic updates. The compatibility overrides use GET to retain the current resource, apply generic edits, and serialize only PATCH-supported fields; SAN SKU and availability-zone edits use PUT because PATCH does not accept them. Explicit options are applied before generic edits. Whole-container removals are sent as explicit empty values where omission would leave the resource unchanged.
 Volume-group generic updates to `encryptionInTransit` and `qualityOfService` are rejected before sending a request because these fields are not supported by the PATCH contract.
 For PATCH updates, `az elastic-san update --remove tags` clears all tags. Volume-group updates with `--remove networkAcls` (or `network_acls`) clear all virtual network rules, and `--remove identity` clears both system-assigned and user-assigned identities. These whole-container removals send explicit empty values rather than omitting the fields; partial removals and containers re-added by later generic edits retain their resulting values.
 For legacy volume-group `--identity` updates, `type` is optional when the resource already has an identity type. For example, `--identity "{user-assigned-identity:<resource-id>}"` uses the retrieved identity type, preserving an existing system-assigned identity alongside user-assigned identities. If there is no existing identity type, specify `type` explicitly.
@@ -44,6 +46,7 @@ For legacy volume-group `--identity` updates, `type` is optional when the resour
 ### Create a Volume.
 `az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2`
 Volume create and update accept `--managed-by` as a legacy single-resource object or the current array of objects. Specify each field only once per object: aliases such as `resource-id` and `resource-ids` (including camelCase and snake_case spellings) cannot be combined.
+The legacy object is normalized to the new array for requests. Output retains the new `managedBy` array and adds `managedByResourceId` for its first resource ID; this alias cannot preserve the old `managedBy.resourceId` query path or represent additional IDs.
 ### Delete a Volume.
 `az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name}`
 ### List Volumes in a Volume Group.

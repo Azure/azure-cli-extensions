@@ -121,6 +121,14 @@ class ElasticSanUpdateCompatTest(unittest.TestCase):
                 self.assertEqual(body["properties"]["baseSizeTiB"], 20)
                 self.assertEqual(body["properties"]["extendedCapacitySizeTiB"], 0)
 
+    def test_v2_autoscale_defaults_are_documented_in_create_help(self):
+        schema = ElasticSanCreate._build_arguments_schema()
+        self.assertIn("defaults to Enabled", schema.auto_scale_policy_enforcement._help["short-summary"])
+        self.assertIn("five times", schema.capacity_unit_scale_up_limit_tib._help["short-summary"])
+        self.assertIn("SKU lookup", schema.capacity_unit_scale_up_limit_tib._help["short-summary"])
+        self.assertIn("Defaults to 1", schema.increase_capacity_unit_by_tib._help["short-summary"])
+        self.assertIn("Defaults to 1", schema.unused_size_tib._help["short-summary"])
+
     def test_create_preserves_explicit_capacities(self):
         for version in ("V1", "V2"):
             with self.subTest(version=version):
