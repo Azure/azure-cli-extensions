@@ -2,6 +2,11 @@
 Release History
 ===============
 
+2.0.0
+++++++
+* [BREAKING CHANGE] ``az cosmosdb copy create`` now defaults to hosting jobs on the source account. Use the source account's subscription and resource group, and grant its default managed identity read-write access to the destination for cross-account copies. Use ``--host-copy-on-src false`` to retain destination hosting, with the destination account's subscription, resource group, and default identity configured to access the source.
+* Expose ``--host-copy-on-src`` in command help and document managing jobs through their hosting account. MongoDB RU-to-vCore jobs remain source-hosted.
+
 1.7.2
 ++++++
 * Fix ``az cosmosdb sql container update`` to preserve existing computed properties when updating indexing policies or other container settings.
