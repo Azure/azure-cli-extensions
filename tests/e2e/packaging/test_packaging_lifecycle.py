@@ -16,8 +16,12 @@ import json
 import importlib.util
 import shutil
 import sys
+import zipfile
+from email.parser import BytesParser
 from functools import lru_cache
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
 import pytest
 
@@ -83,6 +87,112 @@ def _has_azure_cli_core() -> bool:
         return importlib.util.find_spec("azure.cli.core") is not None
     except ModuleNotFoundError:
         return False
+
+
+def _read_ml_wheel_metadata(wheel_path):
+    with zipfile.ZipFile(wheel_path) as wheel:
+        metadata_files = [name for name in wheel.namelist() if name.endswith(".dist-info/METADATA")]
+        assert len(metadata_files) == 1
+        package_metadata = BytesParser().parsebytes(wheel.read(metadata_files[0]))
+        extension_metadata = json.loads(wheel.read("azext_mlv2/azext_metadata.json"))
+    return package_metadata, extension_metadata
+
+
+@pytest.fixture(scope="module")
+def ml_metadata_wheel(packaging_fixtures, tmp_path_factory):
+    fixture = _get_fixture(packaging_fixtures, "machinelearningservices")
+    source_metadata = fixture.path / "azext_mlv2" / "azext_metadata.json"
+    wheel_dir = tmp_path_factory.mktemp("ml-metadata") / "wheels"
+    _, wheels = _build_wheel(
+        fixture.path, wheel_dir, no_build_isolation=fixture.requires_build_isolation_off
+    )
+    assert len(wheels) == 1
+    source_copy = wheel_dir.parent / ("src_" + fixture.path.name)
+    assert (source_copy / "azext_mlv2" / "azext_metadata.json").read_bytes() == source_metadata.read_bytes()
+    return wheels[0]
+
+
+@pytest.fixture(scope="module")
+def ml_metadata_install(ml_metadata_wheel, tmp_path_factory):
+    if not _has_azure_cli_core():
+        pytest.skip("azure.cli.core is not available in this environment")
+
+    root = tmp_path_factory.mktemp("ml-metadata-install")
+    extension_dir = root / "extensions"
+    installed_dir = extension_dir / "ml"
+    run_command([
+        sys.executable, "-m", "pip", "install", "--target",
+        str(installed_dir), str(ml_metadata_wheel),
+    ])
+    return installed_dir, {
+        "AZURE_CONFIG_DIR": str(root / "config"),
+        "AZURE_EXTENSION_DIR": str(extension_dir),
+        "AZURE_EXTENSION_SYS_DIR": str(root / "system-extensions"),
+        "AZURE_EXTENSION_DEV_SOURCES": "",
+        "AZURE_EXTENSION_USE_DYNAMIC_INSTALL": "no",
+        "AZURE_CORE_COLLECT_TELEMETRY": "no",
+    }
+
+
+@pytest.mark.e2e_packaging
+def test_ml_metadata_matches_package_identity(ml_metadata_wheel):
+    package_metadata, extension_metadata = _read_ml_wheel_metadata(ml_metadata_wheel)
+    assert package_metadata["Name"] == "ml"
+    assert package_metadata["Version"]
+    assert extension_metadata["name"] == package_metadata["Name"]
+    assert extension_metadata["version"] == package_metadata["Version"]
+    assert "azext.minCliCoreVersion" in extension_metadata
+
+
+@pytest.mark.e2e_packaging
+def test_ml_metadata_supports_legacy_reader(ml_metadata_wheel, ml_metadata_install):
+    from azure.cli.core.extension import WheelExtension
+
+    package_metadata, _ = _read_ml_wheel_metadata(ml_metadata_wheel)
+    installed_dir, _ = ml_metadata_install
+    # pkginfo 1.8.2 leaves name/version unset for Metadata-Version: 2.4.
+    unreadable_metadata = SimpleNamespace(name=None, version=None)
+    with patch("azure.cli.core.extension.pkginfo.Wheel", return_value=unreadable_metadata):
+        extension = WheelExtension("ml", str(installed_dir))
+        assert extension.version == package_metadata["Version"]
+        assert extension.metadata["name"] == "ml"
+
+
+@pytest.mark.e2e_packaging
+@pytest.mark.parametrize(
+    "arguments,version_path",
+    [
+        (["extension", "show", "--name", "ml"], ["version"]),
+        (["version"], ["extensions", "ml"]),
+    ],
+)
+def test_ml_metadata_cli_reports_version(ml_metadata_wheel, ml_metadata_install, arguments, version_path):
+    package_metadata, _ = _read_ml_wheel_metadata(ml_metadata_wheel)
+    _, env = ml_metadata_install
+    result = run_command(
+        [sys.executable, "-m", "azure.cli", *arguments, "--output", "json"], env=env
+    )
+    value = json.loads(result.stdout)
+    for key in version_path:
+        value = value[key]
+    assert value == package_metadata["Version"]
+
+
+@pytest.mark.e2e_packaging
+def test_ml_metadata_refreshes_on_incremental_build(ml_metadata_wheel, tmp_path):
+    source_copy = ml_metadata_wheel.parent.parent / "src_machinelearningservices"
+    run_command(
+        [
+            sys.executable, "setup.py", "egg_info", "--tag-build", ".dev1",
+            "bdist_wheel", "--dist-dir", str(tmp_path),
+        ],
+        cwd=source_copy,
+    )
+    wheels = list(tmp_path.glob("*.whl"))
+    assert len(wheels) == 1
+    package_metadata, extension_metadata = _read_ml_wheel_metadata(wheels[0])
+    assert package_metadata["Version"].endswith(".dev1")
+    assert extension_metadata["version"] == package_metadata["Version"]
 
 
 # Stderr fragments azdev emits when no extension repo is configured.
