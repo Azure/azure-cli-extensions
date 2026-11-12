@@ -321,6 +321,9 @@ def create_and_verify_containerapp_up_for_default_registry_image(
 
 
 def create_extension_and_custom_location(test_cls, resource_group, connected_cluster_name, custom_location_name):
+    if not (test_cls.is_live or test_cls.in_recording):
+        return
+
     connected_cluster = test_cls.cmd(
         f'az connectedk8s show --resource-group {resource_group} '
         f'--name {connected_cluster_name}').get_output_in_json()
