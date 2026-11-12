@@ -1522,13 +1522,26 @@ class ExecutionStepCommandTests(unittest.TestCase):
 
     def test_approve_posts_provide_approval(self):
         self.client.post_action.return_value = {"ok": True}
-        execution_step_cmds.approve(
-            mock.Mock(), RG, PROJECT, RUNBOOK, "e1", "step1",
-            entities=["ent1"])
+        with mock.patch.object(execution_step_cmds.logger, 'warning') as warning:
+            self.client.post_action.side_effect = lambda *args: (
+                warning.assert_not_called() or {"ok": True})
+            result = execution_step_cmds.approve(
+                mock.Mock(), RG, PROJECT, RUNBOOK, "e1", "step1",
+                entities=["ent1"])
+            warning.assert_called_once_with("Step approval recorded.")
+        self.assertEqual(result, {"ok": True})
         self.client.post_action.assert_called_once_with(
             self._execution_id(), 'ProvideApproval',
             {"action": "Approve", "targetId": "step1",
              "entities": ["ent1"]})
+
+    def test_approve_failure_does_not_log_success(self):
+        self.client.post_action.side_effect = RuntimeError("Approval failed")
+        with mock.patch.object(execution_step_cmds.logger, 'warning') as warning:
+            with self.assertRaisesRegex(RuntimeError, "Approval failed"):
+                execution_step_cmds.approve(
+                    mock.Mock(), RG, PROJECT, RUNBOOK, "e1", "step1")
+            warning.assert_not_called()
 
     def test_complete_posts_update_step_status(self):
         self.client.post_action.return_value = {"ok": True}
@@ -1803,6 +1816,13 @@ class ExecutionParameterCommandTests(unittest.TestCase):
 
 
 class ConfigureRendererTests(unittest.TestCase):
+
+    def test_render_bulk_clear_preserves_non_editable_overrides(self):
+        html_text = configure_renderer.render(_CFG_INPUTS, None, {"runbook": "r"})
+        self.assertIn(
+            'entityFields(sid).filter(f => rules[f].isEditable !== false)'
+            '.forEach(f => delete ov[f]);', html_text)
+        self.assertNotIn('entityFields(sid).forEach(f => delete ov[f]);', html_text)
 
     def test_build_meta_parses_ids_when_args_absent(self):
         meta = configure_renderer.build_meta(
