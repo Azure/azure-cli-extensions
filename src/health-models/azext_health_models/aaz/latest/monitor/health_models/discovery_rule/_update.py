@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models discovery-rule update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a DiscoveryRule
@@ -23,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-05-01-preview",
+        "version": "2026-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/discoveryrules/{}", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/discoveryrules/{}", "2026-11-01"],
         ]
     }
 
@@ -223,7 +222,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-11-01",
                     required=True,
                 ),
             }
@@ -326,7 +325,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-11-01",
                     required=True,
                 ),
             }

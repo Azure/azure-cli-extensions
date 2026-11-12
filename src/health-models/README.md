@@ -2,6 +2,8 @@
 This is the extension for Azure Health Models.
 Azure Health Models (`Microsoft.CloudHealth`) represent the operational health of a workload as an entity graph. Entities are services or components, edges are parent-child relationships, and each entity carries health signals derived from metrics or logs. Signals roll up through the graph. Alerts can be configured to get notified on health changes.
 
+Version 1.0.0 uses the stable `2026-11-01` API. Entity create and update accept `--signal-aggregation-groups`. Signal recommendations return kind-specific fields under `configuration`, identified by `configuration.signalKind`. Threshold rules no longer accept `lookBackWindow`.
+
 ### How to use ###
 Install this extension using the below CLI command
 ```

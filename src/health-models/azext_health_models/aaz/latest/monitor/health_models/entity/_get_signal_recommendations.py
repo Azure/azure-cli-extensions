@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "monitor health-models entity get-signal-recommendations",
-    is_preview=True,
 )
 class GetSignalRecommendations(AAZCommand):
     """Get recommended signal configurations for a given Entity (only applicable for Entities representing Azure resources)
@@ -23,9 +22,9 @@ class GetSignalRecommendations(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-05-01-preview",
+        "version": "2026-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}/getsignalrecommendations", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}/getsignalrecommendations", "2026-11-01"],
         ]
     }
 
@@ -137,7 +136,7 @@ class GetSignalRecommendations(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2026-11-01",
                     required=True,
                 ),
             }
@@ -198,42 +197,117 @@ class _GetSignalRecommendationsHelper:
     @classmethod
     def _build_schema_signal_configuration_read(cls, _schema):
         if cls._schema_signal_configuration_read is not None:
-            _schema.aggregation_type = cls._schema_signal_configuration_read.aggregation_type
-            _schema.dimension_filter = cls._schema_signal_configuration_read.dimension_filter
+            _schema.applicable_resource_types = cls._schema_signal_configuration_read.applicable_resource_types
+            _schema.configuration = cls._schema_signal_configuration_read.configuration
+            _schema.data_unit = cls._schema_signal_configuration_read.data_unit
+            _schema.description = cls._schema_signal_configuration_read.description
+            _schema.display_name = cls._schema_signal_configuration_read.display_name
             _schema.evaluation_rules = cls._schema_signal_configuration_read.evaluation_rules
-            _schema.metric_name = cls._schema_signal_configuration_read.metric_name
-            _schema.metric_namespace = cls._schema_signal_configuration_read.metric_namespace
+            _schema.refresh_interval = cls._schema_signal_configuration_read.refresh_interval
             _schema.signal_id = cls._schema_signal_configuration_read.signal_id
-            _schema.time_grain = cls._schema_signal_configuration_read.time_grain
-            _schema.unit = cls._schema_signal_configuration_read.unit
             return
 
         cls._schema_signal_configuration_read = _schema_signal_configuration_read = AAZObjectType()
 
         signal_configuration_read = _schema_signal_configuration_read
-        signal_configuration_read.aggregation_type = AAZStrType(
-            serialized_name="aggregationType",
+        signal_configuration_read.applicable_resource_types = AAZListType(
+            serialized_name="applicableResourceTypes",
         )
-        signal_configuration_read.dimension_filter = AAZStrType(
-            serialized_name="dimensionFilter",
+        signal_configuration_read.configuration = AAZObjectType(
+            flags={"required": True},
+        )
+        signal_configuration_read.data_unit = AAZStrType(
+            serialized_name="dataUnit",
+        )
+        signal_configuration_read.description = AAZStrType()
+        signal_configuration_read.display_name = AAZStrType(
+            serialized_name="displayName",
         )
         signal_configuration_read.evaluation_rules = AAZObjectType(
             serialized_name="evaluationRules",
         )
-        signal_configuration_read.metric_name = AAZStrType(
-            serialized_name="metricName",
-        )
-        signal_configuration_read.metric_namespace = AAZStrType(
-            serialized_name="metricNamespace",
+        signal_configuration_read.refresh_interval = AAZStrType(
+            serialized_name="refreshInterval",
         )
         signal_configuration_read.signal_id = AAZStrType(
             serialized_name="signalId",
             flags={"required": True},
         )
-        signal_configuration_read.time_grain = AAZStrType(
+
+        applicable_resource_types = _schema_signal_configuration_read.applicable_resource_types
+        applicable_resource_types.Element = AAZStrType()
+
+        configuration = _schema_signal_configuration_read.configuration
+        configuration.signal_kind = AAZStrType(
+            serialized_name="signalKind",
+            flags={"required": True},
+        )
+
+        disc_azure_resource_metric = _schema_signal_configuration_read.configuration.discriminate_by("signal_kind", "AzureResourceMetric")
+        disc_azure_resource_metric.aggregation_type = AAZStrType(
+            serialized_name="aggregationType",
+            flags={"required": True},
+        )
+        disc_azure_resource_metric.dimension_filter = AAZStrType(
+            serialized_name="dimensionFilter",
+        )
+        disc_azure_resource_metric.metric_name = AAZStrType(
+            serialized_name="metricName",
+            flags={"required": True},
+        )
+        disc_azure_resource_metric.metric_namespace = AAZStrType(
+            serialized_name="metricNamespace",
+            flags={"required": True},
+        )
+        disc_azure_resource_metric.time_grain = AAZStrType(
+            serialized_name="timeGrain",
+            flags={"required": True},
+        )
+
+        disc_log_analytics_query = _schema_signal_configuration_read.configuration.discriminate_by("signal_kind", "LogAnalyticsQuery")
+        disc_log_analytics_query.query_text = AAZStrType(
+            serialized_name="queryText",
+            flags={"required": True},
+        )
+        disc_log_analytics_query.required_diagnostic_setting_categories = AAZListType(
+            serialized_name="requiredDiagnosticSettingCategories",
+        )
+        disc_log_analytics_query.required_tables = AAZListType(
+            serialized_name="requiredTables",
+        )
+        disc_log_analytics_query.time_grain = AAZStrType(
             serialized_name="timeGrain",
         )
-        signal_configuration_read.unit = AAZStrType()
+        disc_log_analytics_query.value_column_name = AAZStrType(
+            serialized_name="valueColumnName",
+        )
+
+        required_diagnostic_setting_categories = _schema_signal_configuration_read.configuration.discriminate_by("signal_kind", "LogAnalyticsQuery").required_diagnostic_setting_categories
+        required_diagnostic_setting_categories.Element = AAZStrType()
+
+        required_tables = _schema_signal_configuration_read.configuration.discriminate_by("signal_kind", "LogAnalyticsQuery").required_tables
+        required_tables.Element = AAZStrType()
+
+        disc_prometheus_metrics_query = _schema_signal_configuration_read.configuration.discriminate_by("signal_kind", "PrometheusMetricsQuery")
+        disc_prometheus_metrics_query.query_text = AAZStrType(
+            serialized_name="queryText",
+            flags={"required": True},
+        )
+        disc_prometheus_metrics_query.required_metrics = AAZListType(
+            serialized_name="requiredMetrics",
+        )
+        disc_prometheus_metrics_query.required_scrape_targets = AAZListType(
+            serialized_name="requiredScrapeTargets",
+        )
+        disc_prometheus_metrics_query.time_grain = AAZStrType(
+            serialized_name="timeGrain",
+        )
+
+        required_metrics = _schema_signal_configuration_read.configuration.discriminate_by("signal_kind", "PrometheusMetricsQuery").required_metrics
+        required_metrics.Element = AAZStrType()
+
+        required_scrape_targets = _schema_signal_configuration_read.configuration.discriminate_by("signal_kind", "PrometheusMetricsQuery").required_scrape_targets
+        required_scrape_targets.Element = AAZStrType()
 
         evaluation_rules = _schema_signal_configuration_read.evaluation_rules
         evaluation_rules.degraded_rule = AAZObjectType(
@@ -246,21 +320,20 @@ class _GetSignalRecommendationsHelper:
         )
         cls._build_schema_threshold_rule_v2_read(evaluation_rules.unhealthy_rule)
 
-        _schema.aggregation_type = cls._schema_signal_configuration_read.aggregation_type
-        _schema.dimension_filter = cls._schema_signal_configuration_read.dimension_filter
+        _schema.applicable_resource_types = cls._schema_signal_configuration_read.applicable_resource_types
+        _schema.configuration = cls._schema_signal_configuration_read.configuration
+        _schema.data_unit = cls._schema_signal_configuration_read.data_unit
+        _schema.description = cls._schema_signal_configuration_read.description
+        _schema.display_name = cls._schema_signal_configuration_read.display_name
         _schema.evaluation_rules = cls._schema_signal_configuration_read.evaluation_rules
-        _schema.metric_name = cls._schema_signal_configuration_read.metric_name
-        _schema.metric_namespace = cls._schema_signal_configuration_read.metric_namespace
+        _schema.refresh_interval = cls._schema_signal_configuration_read.refresh_interval
         _schema.signal_id = cls._schema_signal_configuration_read.signal_id
-        _schema.time_grain = cls._schema_signal_configuration_read.time_grain
-        _schema.unit = cls._schema_signal_configuration_read.unit
 
     _schema_threshold_rule_v2_read = None
 
     @classmethod
     def _build_schema_threshold_rule_v2_read(cls, _schema):
         if cls._schema_threshold_rule_v2_read is not None:
-            _schema.look_back_window = cls._schema_threshold_rule_v2_read.look_back_window
             _schema.operator = cls._schema_threshold_rule_v2_read.operator
             _schema.sensitivity = cls._schema_threshold_rule_v2_read.sensitivity
             _schema.threshold = cls._schema_threshold_rule_v2_read.threshold
@@ -269,16 +342,12 @@ class _GetSignalRecommendationsHelper:
         cls._schema_threshold_rule_v2_read = _schema_threshold_rule_v2_read = AAZObjectType()
 
         threshold_rule_v2_read = _schema_threshold_rule_v2_read
-        threshold_rule_v2_read.look_back_window = AAZStrType(
-            serialized_name="lookBackWindow",
-        )
         threshold_rule_v2_read.operator = AAZStrType(
             flags={"required": True},
         )
         threshold_rule_v2_read.sensitivity = AAZStrType()
         threshold_rule_v2_read.threshold = AAZFloatType()
 
-        _schema.look_back_window = cls._schema_threshold_rule_v2_read.look_back_window
         _schema.operator = cls._schema_threshold_rule_v2_read.operator
         _schema.sensitivity = cls._schema_threshold_rule_v2_read.sensitivity
         _schema.threshold = cls._schema_threshold_rule_v2_read.threshold
