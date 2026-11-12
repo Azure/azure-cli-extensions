@@ -10,6 +10,8 @@ az extension add --name oracle-database
 Provision and Manage Oracle Databases, Exadata, Resource Anchors, Network Anchors, and Autonomous Databases
 Create a Resource Anchor
 
+The Autonomous Database commands `create`, `show`, `list`, `update`, `wait`, `action`, `restore`, `shrink`, `switchover`, `failover`, and `change-disaster-recovery-configuration` use API version `2026-07-01-preview`. This update adds support for `properties.localDataGuardZone` and `properties.localStandbyDb.zone`. The `delete` command, backup commands, and other Autonomous Database utility commands retain their existing API versions.
+
 #### Create an Autonomous Database ####
 az oracle-database autonomous-database create --resource-group MyResourceGroup --location eastus --autonomousdatabasename MyAutoDB --display-name MyAutoDB --db-version 19c --admin-password <password> --compute-model ECPU --compute-count 2 --data-storage-size-in-gbs 1024 --license-model LicenseIncluded --db-workload OLTP --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <vnet_id> --subnet-id <subnet_id> --regular
 
@@ -68,6 +70,20 @@ Use this command to shrink the current allocated storage down to the current act
 az oracle-database autonomous-database update --resource-group MyResourceGroup --autonomousdatabasename MyAutoDB --local-data-guard true --local-adg-auto-failover-max-data-loss-limit 0
 
 Use `--local-data-guard true` to enable local, in-region Autonomous Data Guard for an existing Autonomous Database. Use `--local-adg-auto-failover-max-data-loss-limit` to set the maximum data loss limit, in seconds, for local Autonomous Data Guard automatic failover when supported.
+
+To choose the standby's logical zone when enabling local Data Guard, use `--local-data-guard-zone` (1–255 characters):
+
+```bash
+az oracle-database autonomous-database update --resource-group MyResourceGroup --autonomousdatabasename MyAutoDB --local-data-guard true --local-data-guard-zone 2
+```
+
+This option uses API version `2026-07-01-preview` and applies only when enabling local Data Guard on an existing database. It is unavailable on `create` and cannot move an existing standby to another zone. Omit it to keep the service's default placement behavior.
+
+In resource responses, `properties.localDataGuardZone` is the requested local Data Guard zone configuration. `properties.localStandbyDb.zone` is the actual standby logical zone reported by the service. These fields can be absent when the service has no value to return. Read both values with:
+
+```bash
+az oracle-database autonomous-database show --resource-group MyResourceGroup --autonomousdatabasename MyAutoDB --query "{requestedZone:properties.localDataGuardZone,standbyZone:properties.localStandbyDb.zone}" --output json
+```
 
 #### Switchover an Autonomous Database disaster recovery peer ####
 az oracle-database autonomous-database switchover --resource-group MyResourceGroup --autonomousdatabasename MyAutoDB --peer-db-id <peer_database_id> --peer-db-location <peer_region>

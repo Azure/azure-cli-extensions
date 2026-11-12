@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}", "2026-07-01-preview"],
         ]
     }
 
@@ -121,7 +121,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-07-01-preview",
                     required=True,
                 ),
             }
@@ -442,6 +442,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="whitelistedIps",
             )
             properties.zone = AAZStrType()
+            properties.local_data_guard_zone = AAZStrType(
+                serialized_name="localDataGuardZone",
+            )
 
             apex_details = cls._schema_on_200.properties.apex_details
             apex_details.apex_version = AAZStrType(
@@ -552,6 +555,7 @@ class Wait(AAZWaitCommand):
             local_standby_db.time_disaster_recovery_role_changed = AAZStrType(
                 serialized_name="timeDisasterRecoveryRoleChanged",
             )
+            local_standby_db.zone = AAZStrType()
 
             long_term_backup_schedule = cls._schema_on_200.properties.long_term_backup_schedule
             long_term_backup_schedule.is_disabled = AAZBoolType(
