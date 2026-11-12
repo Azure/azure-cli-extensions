@@ -12,12 +12,13 @@ from msrest.exceptions import DeserializationError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.command_modules.containerapp._utils import (
     clean_null_values, safe_get, _convert_object_from_snake_to_camel_case,
-    _object_to_dict, _remove_additional_attributes, _remove_readonly_attributes)
+    _remove_additional_attributes, _remove_readonly_attributes)
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError)
 from azure.cli.core.commands import AzCliCommand
 
 from ._clients import ContainerAppsResiliencyPreviewClient
 from ._client_factory import handle_raw_exception
+from ._utils import _object_to_dict
 
 from ._constants import (DEFAULT_INTERVAL, DEFAULT_MAX_EJECTION, DEFAULT_HTTP2_MAX_REQ, DEFAULT_RESPONSE_TIMEOUT,
                          DEFAULT_CONNECTION_TIMEOUT, DEFAULT_HTTP_RETRY_MAX,
