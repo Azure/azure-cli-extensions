@@ -106,7 +106,7 @@ def build_get_request(
             "str",
             max_length=63,
             min_length=1,
-            pattern=r"^[a-z][a-z0-9]{0,63}$",
+            pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
         ),
     }
 
@@ -157,7 +157,7 @@ def build_create_or_update_request(
             "str",
             max_length=63,
             min_length=1,
-            pattern=r"^[a-z][a-z0-9]{0,63}$",
+            pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
         ),
     }
 
@@ -212,7 +212,7 @@ def build_delete_request(
             "str",
             max_length=63,
             min_length=1,
-            pattern=r"^[a-z][a-z0-9]{0,63}$",
+            pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
         ),
     }
 
@@ -263,7 +263,7 @@ def build_apply_request(
             "str",
             max_length=63,
             min_length=1,
-            pattern=r"^[a-z][a-z0-9]{0,63}$",
+            pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
         ),
     }
 

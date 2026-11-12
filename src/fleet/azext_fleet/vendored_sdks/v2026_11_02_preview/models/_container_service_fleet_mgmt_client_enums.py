@@ -148,15 +148,6 @@ class FleetManagedNamespaceProvisioningState(str, Enum, metaclass=CaseInsensitiv
     """The provisioning state of a fleet managed namespace being deleted."""
 
 
-class FleetMemberCredentialStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The credential retrieval status for a Fleet member."""
-
-    SUCCEEDED = "Succeeded"
-    """The credential request succeeded."""
-    FAILED = "Failed"
-    """The credential request failed."""
-
-
 class FleetMemberProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The provisioning state of the last accepted operation."""
 

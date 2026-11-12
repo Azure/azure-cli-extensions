@@ -1119,58 +1119,6 @@ class FleetManagedNamespace(TrackedResource):
         self.e_tag: Optional[str] = None
 
 
-class FleetManagedNamespaceCredentialResult(_serialization.Model):
-    """One managed namespace credential result item.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar name: The name of the credential.
-    :vartype name: str
-    :ivar value: Base64-encoded Kubernetes configuration file.
-    :vartype value: str
-    """
-
-    _validation = {
-        "name": {"readonly": True},
-        "value": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "name": {"key": "name", "type": "str"},
-        "value": {"key": "value", "type": "str"},
-    }
-
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
-        super().__init__(**kwargs)
-        self.name: Optional[str] = None
-        self.value: Optional[str] = None
-
-
-class FleetManagedNamespaceCredentialResults(_serialization.Model):
-    """The managed namespace credential results.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar kubeconfigs: Array of base64-encoded Kubernetes configuration files.
-    :vartype kubeconfigs:
-     list[~azure.mgmt.containerservicefleet.models.FleetManagedNamespaceCredentialResult]
-    """
-
-    _validation = {
-        "kubeconfigs": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "kubeconfigs": {"key": "kubeconfigs", "type": "[FleetManagedNamespaceCredentialResult]"},
-    }
-
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
-        super().__init__(**kwargs)
-        self.kubeconfigs: Optional[list["_models.FleetManagedNamespaceCredentialResult"]] = None
-
-
 class FleetManagedNamespaceListResult(_serialization.Model):
     """The response of a FleetManagedNamespace list operation.
 
@@ -1265,12 +1213,6 @@ class FleetManagedNamespaceProperties(_serialization.Model):
     :vartype status: ~azure.mgmt.containerservicefleet.models.FleetManagedNamespaceStatus
     :ivar portal_fqdn: The Azure Portal FQDN of the Fleet hub.
     :vartype portal_fqdn: str
-    :ivar placed_member_ids: The resource IDs of the Fleet members where the current-generation
-     ClusterResourcePlacement status reports the managed namespace as successfully applied. This
-     property is omitted while current-generation placement status is unavailable, including while
-     an update is being scheduled. An empty array indicates that current-generation placement status
-     is available but the managed namespace is not successfully applied to any members.
-    :vartype placed_member_ids: list[str]
     """
 
     _validation = {
@@ -1279,7 +1221,6 @@ class FleetManagedNamespaceProperties(_serialization.Model):
         "delete_policy": {"required": True},
         "status": {"readonly": True},
         "portal_fqdn": {"readonly": True},
-        "placed_member_ids": {"readonly": True},
     }
 
     _attribute_map = {
@@ -1290,7 +1231,6 @@ class FleetManagedNamespaceProperties(_serialization.Model):
         "propagation_policy": {"key": "propagationPolicy", "type": "PropagationPolicy"},
         "status": {"key": "status", "type": "FleetManagedNamespaceStatus"},
         "portal_fqdn": {"key": "portalFqdn", "type": "str"},
-        "placed_member_ids": {"key": "placedMemberIds", "type": "[str]"},
     }
 
     def __init__(
@@ -1324,7 +1264,6 @@ class FleetManagedNamespaceProperties(_serialization.Model):
         self.propagation_policy = propagation_policy
         self.status: Optional["_models.FleetManagedNamespaceStatus"] = None
         self.portal_fqdn: Optional[str] = None
-        self.placed_member_ids: Optional[list[str]] = None
 
 
 class FleetManagedNamespacePropertiesPatch(_serialization.Model):
@@ -1501,124 +1440,6 @@ class FleetMember(ProxyResource):
         self.mesh_properties: Optional["_models.MeshProperties"] = None
 
 
-class FleetMemberCredentialRequest(_serialization.Model):
-    """The request for Fleet member credentials. Specify memberNames to retrieve credentials for up to
-    100 explicitly selected members in one response. Omit memberNames to retrieve credentials for
-    all applicable members with continuationToken used for subsequent pages.
-
-    :ivar member_names: The names of the Fleet members for which credentials are requested. Specify
-     between 1 and 100 unique names. Requests that specify memberNames are not paginated. When
-     omitted from an initial request, all applicable Fleet members are selected using server-side
-     pagination. This property must be omitted when continuationToken is provided.
-    :vartype member_names: list[str]
-    :ivar continuation_token: The opaque continuation token from a previous request that omitted
-     memberNames. When provided, this must be the only field in the request body because it
-     preserves the resource scope and cursor state for the all-members enumeration.
-    :vartype continuation_token: str
-    """
-
-    _validation = {
-        "member_names": {"max_items": 100, "min_items": 1, "unique": True},
-    }
-
-    _attribute_map = {
-        "member_names": {"key": "memberNames", "type": "[str]"},
-        "continuation_token": {"key": "continuationToken", "type": "str"},
-    }
-
-    def __init__(
-        self, *, member_names: Optional[list[str]] = None, continuation_token: Optional[str] = None, **kwargs: Any
-    ) -> None:
-        """
-        :keyword member_names: The names of the Fleet members for which credentials are requested.
-         Specify between 1 and 100 unique names. Requests that specify memberNames are not paginated.
-         When omitted from an initial request, all applicable Fleet members are selected using
-         server-side pagination. This property must be omitted when continuationToken is provided.
-        :paramtype member_names: list[str]
-        :keyword continuation_token: The opaque continuation token from a previous request that omitted
-         memberNames. When provided, this must be the only field in the request body because it
-         preserves the resource scope and cursor state for the all-members enumeration.
-        :paramtype continuation_token: str
-        """
-        super().__init__(**kwargs)
-        self.member_names = member_names
-        self.continuation_token = continuation_token
-
-
-class FleetMemberCredentialResult(_serialization.Model):
-    """The credential request result for a Fleet member.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    All required parameters must be populated in order to send to server.
-
-    :ivar name: The name of the Fleet member. Required.
-    :vartype name: str
-    :ivar status: The status of the credential request. Required. Known values are: "Succeeded" and
-     "Failed".
-    :vartype status: str or ~azure.mgmt.containerservicefleet.models.FleetMemberCredentialStatus
-    :ivar kubeconfig: The base64-encoded Kubernetes configuration file when credential retrieval
-     succeeds.
-    :vartype kubeconfig: str
-    :ivar error: The error details when credential retrieval fails.
-    :vartype error: ~azure.mgmt.containerservicefleet.models.ErrorDetail
-    """
-
-    _validation = {
-        "name": {"required": True, "readonly": True},
-        "status": {"required": True, "readonly": True},
-        "kubeconfig": {"readonly": True},
-        "error": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "name": {"key": "name", "type": "str"},
-        "status": {"key": "status", "type": "str"},
-        "kubeconfig": {"key": "kubeconfig", "type": "str"},
-        "error": {"key": "error", "type": "ErrorDetail"},
-    }
-
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
-        super().__init__(**kwargs)
-        self.name: Optional[str] = None
-        self.status: Optional[Union[str, "_models.FleetMemberCredentialStatus"]] = None
-        self.kubeconfig: Optional[str] = None
-        self.error: Optional["_models.ErrorDetail"] = None
-
-
-class FleetMemberCredentialResults(_serialization.Model):
-    """The Fleet member credential results.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    All required parameters must be populated in order to send to server.
-
-    :ivar value: The Fleet member credential results for this response. Required.
-    :vartype value: list[~azure.mgmt.containerservicefleet.models.FleetMemberCredentialResult]
-    :ivar continuation_token: The opaque continuation token to use in a subsequent request when the
-     initial request omitted memberNames. This property is omitted for explicit memberNames requests
-     and when there are no more results.
-    :vartype continuation_token: str
-    """
-
-    _validation = {
-        "value": {"required": True, "readonly": True},
-        "continuation_token": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "value": {"key": "value", "type": "[FleetMemberCredentialResult]"},
-        "continuation_token": {"key": "continuationToken", "type": "str"},
-    }
-
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
-        super().__init__(**kwargs)
-        self.value: Optional[list["_models.FleetMemberCredentialResult"]] = None
-        self.continuation_token: Optional[str] = None
-
-
 class FleetMemberListResult(_serialization.Model):
     """The response of a FleetMember list operation.
 
@@ -1649,81 +1470,6 @@ class FleetMemberListResult(_serialization.Model):
         super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
-
-
-class FleetMemberManagedNamespaceCredentialResult(_serialization.Model):  # pylint: disable=name-too-long
-    """The credential request result for a Fleet member scoped to a managed namespace.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    All required parameters must be populated in order to send to server.
-
-    :ivar name: The name of the Fleet member. Required.
-    :vartype name: str
-    :ivar status: The status of the credential request. Required. Known values are: "Succeeded" and
-     "Failed".
-    :vartype status: str or ~azure.mgmt.containerservicefleet.models.FleetMemberCredentialStatus
-    :ivar kubeconfig: The base64-encoded Kubernetes configuration file when credential retrieval
-     succeeds.
-    :vartype kubeconfig: str
-    :ivar error: The error details when credential retrieval fails.
-    :vartype error: ~azure.mgmt.containerservicefleet.models.ErrorDetail
-    """
-
-    _validation = {
-        "name": {"required": True, "readonly": True},
-        "status": {"required": True, "readonly": True},
-        "kubeconfig": {"readonly": True},
-        "error": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "name": {"key": "name", "type": "str"},
-        "status": {"key": "status", "type": "str"},
-        "kubeconfig": {"key": "kubeconfig", "type": "str"},
-        "error": {"key": "error", "type": "ErrorDetail"},
-    }
-
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
-        super().__init__(**kwargs)
-        self.name: Optional[str] = None
-        self.status: Optional[Union[str, "_models.FleetMemberCredentialStatus"]] = None
-        self.kubeconfig: Optional[str] = None
-        self.error: Optional["_models.ErrorDetail"] = None
-
-
-class FleetMemberManagedNamespaceCredentialResults(_serialization.Model):  # pylint: disable=name-too-long
-    """The Fleet member credential results scoped to a managed namespace.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    All required parameters must be populated in order to send to server.
-
-    :ivar value: The Fleet member credential results for this response. Required.
-    :vartype value:
-     list[~azure.mgmt.containerservicefleet.models.FleetMemberManagedNamespaceCredentialResult]
-    :ivar continuation_token: The opaque continuation token to use in a subsequent request when the
-     initial request omitted memberNames. This property is omitted for explicit memberNames requests
-     and when there are no more results.
-    :vartype continuation_token: str
-    """
-
-    _validation = {
-        "value": {"required": True, "readonly": True},
-        "continuation_token": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "value": {"key": "value", "type": "[FleetMemberManagedNamespaceCredentialResult]"},
-        "continuation_token": {"key": "continuationToken", "type": "str"},
-    }
-
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
-        super().__init__(**kwargs)
-        self.value: Optional[list["_models.FleetMemberManagedNamespaceCredentialResult"]] = None
-        self.continuation_token: Optional[str] = None
 
 
 class FleetMemberStatus(_serialization.Model):
@@ -2284,7 +2030,8 @@ class IdentityBindingLabelSelectorRequirement(_serialization.Model):
      "DoesNotExist".
     :vartype operator: str or
      ~azure.mgmt.containerservicefleet.models.IdentityBindingLabelSelectorOperator
-    :ivar values: values is an array of string values, the values array must be non-empty.
+    :ivar values: values is an array of string values. For In or NotIn, the array must be
+     non-empty. For Exists or DoesNotExist, the array must be empty or omitted.
     :vartype values: list[str]
     """
 
@@ -2310,7 +2057,8 @@ class IdentityBindingLabelSelectorRequirement(_serialization.Model):
          "DoesNotExist".
         :paramtype operator: str or
          ~azure.mgmt.containerservicefleet.models.IdentityBindingLabelSelectorOperator
-        :keyword values: values is an array of string values, the values array must be non-empty.
+        :keyword values: values is an array of string values. For In or NotIn, the array must be
+         non-empty. For Exists or DoesNotExist, the array must be empty or omitted.
         :paramtype values: list[str]
         """
         super().__init__(**kwargs)
@@ -2326,7 +2074,7 @@ class IdentityBindingManagedIdentityProfile(_serialization.Model):
 
     All required parameters must be populated in order to send to server.
 
-    :ivar resource_id: The resource ID of the managed identity. Required.
+    :ivar resource_id: The resource ID of the user-assigned managed identity. Required.
     :vartype resource_id: str
     :ivar object_id: The object ID of the managed identity.
     :vartype object_id: str
@@ -2337,10 +2085,7 @@ class IdentityBindingManagedIdentityProfile(_serialization.Model):
     """
 
     _validation = {
-        "resource_id": {
-            "required": True,
-            "pattern": r"^/subscriptions/[a-zA-Z0-9-]+/resourceGroups/[a-zA-Z0-9-]+/providers/Microsoft.ManagedIdentity/userAssignedIdentities/[a-zA-Z0-9-]+$",
-        },
+        "resource_id": {"required": True},
         "object_id": {
             "readonly": True,
             "max_length": 36,
@@ -2370,7 +2115,7 @@ class IdentityBindingManagedIdentityProfile(_serialization.Model):
 
     def __init__(self, *, resource_id: str, **kwargs: Any) -> None:
         """
-        :keyword resource_id: The resource ID of the managed identity. Required.
+        :keyword resource_id: The resource ID of the user-assigned managed identity. Required.
         :paramtype resource_id: str
         """
         super().__init__(**kwargs)
