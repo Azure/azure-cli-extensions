@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update the L2 Isolation Domain resource.
 
     :example: Update the L2 Isolation Domain
-        az networkfabric l2domain update --resource-group "example-rg" --resource-name "example-l2domain" --mtu 1500
+        az networkfabric l2domain update --resource-group "example-rg" --resource-name "example-l2domain" --mtu "1500"
     """
 
     _aaz_info = {
