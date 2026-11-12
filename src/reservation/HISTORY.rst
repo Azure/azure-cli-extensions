@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.2
+++++++
+* Fix duplicated ``az`` in the ``az reservations list`` filter example.
+
 0.3.1
 ++++++
 * Add support for Location parameter in --renewal-properties for command "az reservations reservation update".
