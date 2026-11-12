@@ -24,13 +24,13 @@ class Create(AAZCommand):
         az elastic-san volume-group create -e "san_name" -n "vg_name" -g "rg" --encryption EncryptionAtRestWithCustomerManagedKey --protocol-type Iscsi --identity '{type:UserAssigned,user-assigned-identity:"uai_id"}' --encryption-properties '{key-vault-properties:{key-name:"key_name",key-vault-uri:"vault_uri"},identity:{user-assigned-identity:"uai_id"}}'
 
     :example: Create a volume group with delete retention policy params
-        az elastic-san volume-group create -e san_name -n volume_group_name -g rg_name --encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi --network-acls '{virtual-network-rules:[{id:{subnet_id},action:Allow}]}' --delete-retention-policy-state Enabled --delete-retention-period-days 7
+        az elastic-san volume-group create --resource-group rg --elastic-san-name esanname --volume-group-name vgname --identity "{type:None,user-assigned-identities:{key2350:{}}}" --delete-retention-policy "{policy-state:Enabled,retention-period-days:14}" --encryption EncryptionAtRestWithPlatformKey --encryption-properties "{identity:{user-assigned-identity:identityname},key-vault-properties:{key-name:keyvaultname,key-vault-uri:'https://microsoft.com/at',key-version:keyver}}" --enforce-data-integrity-check-for-iscsi True --encryption-in-transit True --network-acls "{virtual-network-rules:[{action:Allow,id:fhhawhc}]}" --protocol-type Iscsi
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -104,11 +104,21 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.delete_retention_policy = AAZObjectArg(
+            options=["--delete-retention-policy"],
+            arg_group="Properties",
+            help="The retention policy for the soft deleted volume group and its associated resources.",
+        )
         _args_schema.encryption = AAZStrArg(
             options=["--encryption"],
             arg_group="Properties",
             help="Type of encryption",
             enum={"EncryptionAtRestWithCustomerManagedKey": "EncryptionAtRestWithCustomerManagedKey", "EncryptionAtRestWithPlatformKey": "EncryptionAtRestWithPlatformKey"},
+        )
+        _args_schema.encryption_in_transit = AAZBoolArg(
+            options=["--encryption-in-transit"],
+            arg_group="Properties",
+            help="A boolean indicating whether or not Encryption in Transit is enabled, supported only for ISCSI protocol.",
         )
         _args_schema.encryption_properties = AAZObjectArg(
             options=["--encryption-properties"],
@@ -129,7 +139,42 @@ class Create(AAZCommand):
             options=["--protocol-type"],
             arg_group="Properties",
             help="Type of storage target",
-            enum={"Iscsi": "Iscsi", "None": "None"},
+            enum={"DirectAttach": "DirectAttach", "Iscsi": "Iscsi", "None": "None"},
+        )
+        _args_schema.quality_of_service = AAZStrArg(
+            options=["--quality-of-service"],
+            arg_group="Properties",
+            help="Quality of Service tier for the volume group, applicable for ElasticSanVersion V2 only.",
+            enum={"GeneralPurpose": "GeneralPurpose", "PerformanceCritical": "PerformanceCritical"},
+        )
+        _args_schema.reserved_iops = AAZIntArg(
+            options=["--reserved-iops"],
+            arg_group="Properties",
+            help="Reserved IOPS allocated for this volume group, applicable for QualityOfService PerformanceCritical only.",
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
+        )
+        _args_schema.reserved_mbps = AAZIntArg(
+            options=["--reserved-mbps"],
+            arg_group="Properties",
+            help="Reserved MBps allocated for this volume group, applicable for QualityOfService PerformanceCritical only.",
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
+        )
+
+        delete_retention_policy = cls._args_schema.delete_retention_policy
+        delete_retention_policy.policy_state = AAZStrArg(
+            options=["policy-state"],
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        delete_retention_policy.retention_period_days = AAZIntArg(
+            options=["retention-period-days"],
+            help="The number of days to retain the resources after deletion.",
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
         )
 
         encryption_properties = cls._args_schema.encryption_properties
@@ -270,7 +315,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -309,11 +354,21 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("deleteRetentionPolicy", AAZObjectType, ".delete_retention_policy")
                 properties.set_prop("encryption", AAZStrType, ".encryption")
+                properties.set_prop("encryptionInTransit", AAZBoolType, ".encryption_in_transit")
                 properties.set_prop("encryptionProperties", AAZObjectType, ".encryption_properties")
                 properties.set_prop("enforceDataIntegrityCheckForIscsi", AAZBoolType, ".enforce_data_integrity_check_for_iscsi")
                 properties.set_prop("networkAcls", AAZObjectType, ".network_acls")
                 properties.set_prop("protocolType", AAZStrType, ".protocol_type")
+                properties.set_prop("qualityOfService", AAZStrType, ".quality_of_service")
+                properties.set_prop("reservedIops", AAZIntType, ".reserved_iops")
+                properties.set_prop("reservedMBps", AAZIntType, ".reserved_mbps")
+
+            delete_retention_policy = _builder.get(".properties.deleteRetentionPolicy")
+            if delete_retention_policy is not None:
+                delete_retention_policy.set_prop("policyState", AAZStrType, ".policy_state")
+                delete_retention_policy.set_prop("retentionPeriodDays", AAZIntType, ".retention_period_days")
 
             encryption_properties = _builder.get(".properties.encryptionProperties")
             if encryption_properties is not None:
@@ -412,7 +467,13 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.delete_retention_policy = AAZObjectType(
+                serialized_name="deleteRetentionPolicy",
+            )
             properties.encryption = AAZStrType()
+            properties.encryption_in_transit = AAZBoolType(
+                serialized_name="encryptionInTransit",
+            )
             properties.encryption_properties = AAZObjectType(
                 serialized_name="encryptionProperties",
             )
@@ -432,6 +493,23 @@ class Create(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.quality_of_service = AAZStrType(
+                serialized_name="qualityOfService",
+            )
+            properties.reserved_iops = AAZIntType(
+                serialized_name="reservedIops",
+            )
+            properties.reserved_m_bps = AAZIntType(
+                serialized_name="reservedMBps",
+            )
+
+            delete_retention_policy = cls._schema_on_200_201.properties.delete_retention_policy
+            delete_retention_policy.policy_state = AAZStrType(
+                serialized_name="policyState",
+            )
+            delete_retention_policy.retention_period_days = AAZIntType(
+                serialized_name="retentionPeriodDays",
             )
 
             encryption_properties = cls._schema_on_200_201.properties.encryption_properties

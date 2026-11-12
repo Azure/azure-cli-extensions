@@ -553,6 +553,7 @@ helps['aks create'] = f"""
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.
+          long-summary: An unversioned key identifier (for example `https://myvault.vault.azure.net/keys/mykey`) uses the new KMS experience, where key versions are rotated automatically. A versioned key identifier (for example `https://myvault.vault.azure.net/keys/mykey/<version>`) uses the legacy KMS experience, where key versions must be rotated manually. For more information see https://learn.microsoft.com/en-us/azure/aks/kms-data-encryption-concepts.
         - name: --azure-keyvault-kms-key-vault-network-access
           type: string
           short-summary: Network Access of Azure Key Vault.
@@ -563,7 +564,7 @@ helps['aks create'] = f"""
         - name: --kms-infrastructure-encryption
           type: string
           short-summary: Enable encryption at rest of Kubernetes resource objects using service-managed keys.
-          long-summary: Enable infrastructure encryption for Kubernetes resource objects. This feature provides encryption at rest for cluster secrets and configuration using service-managed keys. For more information see https://aka.ms/aks/kubernetesResourceObjectEncryption.
+          long-summary: Enable infrastructure encryption for Kubernetes resource objects. This feature provides encryption at rest for cluster secrets and configuration using service-managed keys. "Enabled" is the only accepted value, since the feature cannot be turned off once it has been turned on. For more information see https://aka.ms/aks/kubernetesResourceObjectEncryption.
         - name: --enable-image-cleaner
           type: bool
           short-summary: Enable ImageCleaner Service.
@@ -1347,6 +1348,7 @@ helps['aks update'] = """
         - name: --azure-keyvault-kms-key-id
           type: string
           short-summary: Identifier of Azure Key Vault key.
+          long-summary: An unversioned key identifier (for example `https://myvault.vault.azure.net/keys/mykey`) uses the new KMS experience, where key versions are rotated automatically. A versioned key identifier (for example `https://myvault.vault.azure.net/keys/mykey/<version>`) uses the legacy KMS experience, where key versions must be rotated manually. For more information see https://learn.microsoft.com/en-us/azure/aks/kms-data-encryption-concepts.
         - name: --azure-keyvault-kms-key-vault-network-access
           type: string
           short-summary: Network Access of Azure Key Vault.
@@ -1357,7 +1359,7 @@ helps['aks update'] = """
         - name: --kms-infrastructure-encryption
           type: string
           short-summary: Enable encryption at rest of Kubernetes resource objects using service-managed keys.
-          long-summary: Enable infrastructure encryption for Kubernetes resource objects. This feature provides encryption at rest for cluster secrets and configuration using service-managed keys. For more information see https://aka.ms/aks/kubernetesResourceObjectEncryption.
+          long-summary: Enable infrastructure encryption for Kubernetes resource objects. This feature provides encryption at rest for cluster secrets and configuration using service-managed keys. "Enabled" is the only accepted value, since the feature cannot be turned off once it has been turned on. For more information see https://aka.ms/aks/kubernetesResourceObjectEncryption.
         - name: --enable-image-cleaner
           type: bool
           short-summary: Enable ImageCleaner Service.
@@ -2797,6 +2799,90 @@ helps['aks nodepool scale'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+"""
+
+helps['aks upgrade-insights'] = """
+    type: group
+    short-summary: Evaluate upgrade readiness and read stored insights for an AKS cluster.
+    long-summary: >
+        These commands do not upgrade the cluster. By default, results are displayed as a
+        human-readable report with issues nested under their control-plane or agent-pool scope.
+        Use --output json for complete structured results. Explicit output settings and --query
+        retain standard Azure CLI output behavior.
+"""
+
+helps['aks upgrade-insights create'] = """
+    type: command
+    short-summary: Generate or refresh a stored upgrade readiness evaluation.
+    long-summary: >
+        This command does not upgrade the cluster. Displays a scope-nested readiness report
+        by default. Use --output json for complete structured results; explicit output settings,
+        core.output configuration, and --query retain standard Azure CLI formatting.
+    examples:
+        - name: Evaluate the control plane and all agent pools (the default upgrade type).
+          text: az aks upgrade-insights create -g MyResourceGroup --name MyCluster --target-kubernetes-ver 1.35.1
+        - name: Evaluate only the control plane.
+          text: az aks upgrade-insights create -g MyResourceGroup --name MyCluster --upgrade-type ControlPlane --target-kubernetes-ver 1.35.1
+"""
+
+helps['aks upgrade-insights show'] = """
+    type: command
+    short-summary: Read a stored upgrade insight without regenerating its evaluation.
+    long-summary: >
+        Displays issue messages, affected resources, and recommended actions under their
+        evaluated scope by default. Use --output json for complete structured results.
+    examples:
+        - name: Read an insight using its server-generated name.
+          text: az aks upgrade-insights show -g MyResourceGroup --name MyCluster --insight-name INSIGHT_NAME
+"""
+
+helps['aks upgrade-insights list'] = """
+    type: command
+    short-summary: List all stored upgrade insights for a cluster, including agent-pool and node-image insights.
+    long-summary: >
+        Displays insight names and issue summaries nested under each evaluated scope by default.
+        Use --output json for complete structured results. This does not regenerate evaluations.
+    examples:
+        - name: List insights with issue summaries nested under each evaluated scope.
+          text: az aks upgrade-insights list -g MyResourceGroup --name MyCluster
+        - name: List complete structured insights.
+          text: az aks upgrade-insights list -g MyResourceGroup --name MyCluster --output json
+"""
+
+helps['aks nodepool upgrade-insights'] = """
+    type: group
+    short-summary: Evaluate Kubernetes or node-image upgrade readiness for one node pool.
+    long-summary: >
+        These commands do not upgrade the pool. Issues are nested under the selected agent pool
+        in the default readiness report. Use --output json for complete structured results.
+        List all pool insights with az aks upgrade-insights list.
+"""
+
+helps['aks nodepool upgrade-insights create'] = """
+    type: command
+    short-summary: Generate or refresh an upgrade readiness evaluation for one node pool.
+    long-summary: >
+        This command does not upgrade the pool. Displays a readiness report with issues nested
+        under the selected pool by default. Use --output json for complete structured results.
+    examples:
+        - name: Evaluate a Kubernetes version upgrade (the default upgrade type is AgentPool).
+          text: az aks nodepool upgrade-insights create -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --target-kubernetes-ver 1.35.1
+        - name: Evaluate the latest available node image.
+          text: az aks nodepool upgrade-insights create -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --upgrade-type NodeImage
+        - name: Evaluate a specific node image.
+          text: az aks nodepool upgrade-insights create -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --upgrade-type NodeImage --target-node-image-ver NODE_IMAGE_VERSION
+"""
+
+helps['aks nodepool upgrade-insights show'] = """
+    type: command
+    short-summary: Read a stored AgentPool or NodeImage insight for the specified node pool.
+    long-summary: >
+        The insight must belong to the selected pool. To read a combined control-plane and
+        agent-pools insight, use az aks upgrade-insights show. Displays a pool-nested readiness
+        report by default; use --output json for complete structured results.
+    examples:
+        - name: Read a stored node pool insight without regenerating it.
+          text: az aks nodepool upgrade-insights show -g MyResourceGroup --cluster-name MyCluster --name nodepool1 --insight-name INSIGHT_NAME
 """
 
 helps['aks nodepool upgrade'] = """

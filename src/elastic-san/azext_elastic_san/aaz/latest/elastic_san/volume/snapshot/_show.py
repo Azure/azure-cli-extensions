@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/snapshots/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/snapshots/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -155,7 +155,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -206,12 +206,20 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.completion_percent = AAZFloatType(
+                serialized_name="completionPercent",
+                flags={"read_only": True},
+            )
             properties.creation_data = AAZObjectType(
                 serialized_name="creationData",
                 flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.snapshot_access_state = AAZStrType(
+                serialized_name="snapshotAccessState",
                 flags={"read_only": True},
             )
             properties.source_volume_size_gi_b = AAZIntType(

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "edge-action version swap-default",
 )
 class SwapDefault(AAZCommand):
-    """A long-running resource action.
+    """Swap the default version for the edge action.
 
     :example: SwapDefaultEdgeActionVersion
         az edge-action version swap-default --resource-group myResourceGroup --edge-action-name myEdgeAction --version v2
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/edgeactions/{}/versions/{}/swapdefault", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/edgeactions/{}/versions/{}/swapdefault", "2026-10-01"],
         ]
     }
 
@@ -93,7 +93,7 @@ class SwapDefault(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    None,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -151,31 +151,11 @@ class SwapDefault(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-10-01",
                     required=True,
                 ),
             }
             return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
-                    "Accept", "application/json, text/plain, */*",
-                ),
-            }
-            return parameters
-
-        @property
-        def content(self):
-            # Return empty JSON object as bytes (required by the API)
-            return b'{}'
-
-        def on_200(self, session):
-            pass
 
         def on_204(self, session):
             pass

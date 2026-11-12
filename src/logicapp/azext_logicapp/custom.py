@@ -412,9 +412,11 @@ def workflow_validate(cmd, path=None, workflow=None, all=False, with_runtime=Fal
     return report
 
 
-def deployment_package(cmd, path=None, output_path=None, manifest=None, force=False):
+def deployment_package(cmd, path=None, output_path=None, manifest=None, force=False,
+                       project=None, dotnet="dotnet"):
     del cmd
-    return deterministic_package(path or os.curdir, output_path, manifest_path=manifest, force=force)
+    return deterministic_package(path or os.curdir, output_path, manifest_path=manifest, force=force,
+                                 project=project, dotnet=dotnet)
 
 
 def dependency_check(cmd, kind=None, path=None, context=None):

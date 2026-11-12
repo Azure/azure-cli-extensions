@@ -1596,6 +1596,7 @@ def cli_cosmosdb_sql_container_update(client,
     sql_container_resource.default_ttl = sql_container.resource.default_ttl
     sql_container_resource.unique_key_policy = sql_container.resource.unique_key_policy
     sql_container_resource.conflict_resolution_policy = sql_container.resource.conflict_resolution_policy
+    sql_container_resource.computed_properties = sql_container.resource.computed_properties
     sql_container_resource.materialized_view_definition = materialized_view_definition
 
     # client encryption policy is immutable
@@ -1705,7 +1706,7 @@ def cosmosdb_copy_job(client,
                       dest_mongo_vcore=None,
                       job_name=None,
                       worker_count=0,
-                      host_copy_on_src=False,
+                      host_copy_on_src=True,
                       mode="Offline"):
     job_create_properties = {}
     if dest_account is None and dest_mongo_vcore is None:
@@ -1748,7 +1749,6 @@ def cosmosdb_copy_job(client,
     if dest_cassandra is not None:
         if destination is not None:
             raise CLIError('Invalid input: multiple destination components')
-        destination = dest_cassandra
         if is_cross_account and host_copy_on_src:
             destination = CosmosCassandraDataTransferDataSourceSink(keyspace_name=dest_cassandra.keyspace_name, table_name=dest_cassandra.table_name, remote_account_name=remote_account_name)
         else:
