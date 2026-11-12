@@ -84,12 +84,12 @@ class OracleDatabaseAdbsDisasterRecoveryActionsScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs_change_disaster_recovery_configuration(self, resource_group):
         resource_group_name = 'PowerShellTestRg'
-        source_database_name = 'ADBScrdrc2buoxjojjil'
+        source_database_name = 'DNDAdbsTets'
 
         self.cmd('az oracle-database autonomous-database change-disaster-recovery-configuration '
                  '--resource-group {} '
                  '--autonomousdatabasename {} '
-                 '--disaster-recovery-type Adg '
+                 '--disaster-recovery-type ADG '
                  '--is-replicate-automatic-backups false '.format(resource_group_name, source_database_name))
 
     @live_only()
@@ -98,15 +98,15 @@ class OracleDatabaseAdbsDisasterRecoveryActionsScenario(ScenarioTest):
     def test_oracledatabase_adbs_switchover(self, resource_group):
         subscription_id = self.get_subscription_id()
         resource_group_name = 'PowerShellTestRg'
-        source_database_name = 'tetscrdr'
-        cross_region_dr_location = 'germanywestcentral'
-        cross_region_dr_name = os.environ.get('AZURE_ORACLE_DATABASE_ADBS_CRDR_NAME', 'ADBScrdrno7geovodtnk')
-        peer_args = self._get_peer_args(subscription_id, resource_group_name, cross_region_dr_name, cross_region_dr_location)
+        source_database_name = 'DNDAdbsTets'
+        cross_region_dr_location = 'eastus'
+        cross_region_dr_name = os.environ.get('AZURE_ORACLE_DATABASE_ADBS_CRDR_NAME', 'ADBScrdr42hklazr3pho')
+        peer_args = self._get_peer_args(subscription_id, resource_group_name, source_database_name, cross_region_dr_location)
 
         self.cmd('az oracle-database autonomous-database switchover '
                  '--resource-group {} '
                  '--autonomousdatabasename {} '
-                 '{}'.format(resource_group_name, source_database_name, peer_args))
+                 '{}'.format(resource_group_name, cross_region_dr_name, peer_args))
 
     @live_only()
     @AllowLargeResponse(size_kb=10240)
@@ -114,7 +114,7 @@ class OracleDatabaseAdbsDisasterRecoveryActionsScenario(ScenarioTest):
     def test_oracledatabase_adbs_failover(self, resource_group):
         subscription_id = self.get_subscription_id()
         resource_group_name = 'PowerShellTestRg'
-        source_database_name = 'ADBScrdrno7geovodtnk'
+        source_database_name = 'ADBScrdr42hklazr3pho'
         cross_region_dr_location = 'eastus'
         cross_region_dr_name = os.environ.get('AZURE_ORACLE_DATABASE_ADBS_CRDR_NAME', 'tetscrdr')
         peer_args = self._get_peer_args(subscription_id, resource_group_name, cross_region_dr_name, cross_region_dr_location)

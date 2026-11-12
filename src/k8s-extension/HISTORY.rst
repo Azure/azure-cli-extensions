@@ -2,6 +2,31 @@
 
 Release History
 ===============
+1.9.5
++++++++++++++++++++
+* Microsoft.ChaosStudio: intentionally retain release namespaces and their remaining Kubernetes resources on uninstall. Automatic namespace removal and its fenced/recoverable cleanup contract are deferred, not claimed as clean-namespace or GA cleanup acceptance.
+* Microsoft.ChaosStudio: validate and retain immutable legacy-role cleanup IDs before any teardown, and reconcile the built-in assignment after a pending active installation completes successfully.
+* Microsoft.ChaosStudio: assign the built-in Chaos Kubernetes Extension Operator role instead of provisioning or validating custom roles. Create and update add a separate built-in assignment; existing owned legacy assignments stay until uninstall to avoid interrupting authorization during migration. Delete removes both owned assignments but never role definitions.
+* Microsoft.ChaosStudio: retain namespace creation metadata for compatible charts. Uninstall does not evaluate ownership markers or remove namespaces.
+* Microsoft.ChaosStudio: record namespace creation ownership before bootstrap and preserve it on resumed installs. Callers can't override namespaceLifecycle.createdByInstall.
+* Microsoft.ChaosStudio: require confirmed raw synchronous extension deletion success even when the CLI progress helper suppresses a failed HTTP 404 poller result. An absent ARM extension does not imply namespace absence or resume Kubernetes cleanup.
+* Microsoft.ChaosStudio: the bounded installation namespace check uses AKS user credentials and namespace GET, not the current kube context or admin credentials. Uninstall adds no post-delete credential, inventory, namespace DELETE or finalization operation. Engine-name reclamation and deleting the chaosengines CRD while engines remain aren't implemented.
+* Microsoft.ChaosStudio: normalize fetched kubelogin exec users to the signed-in Azure CLI identity, and report namespace-inspection connection failures and timeouts with installation retry guidance rather than treating them as absence.
+* Fix extension installation on 32-bit Windows Azure CLI by allowing compatible Kubernetes and Oras dependency versions (``kubernetes>=24.2.0,<36`` and ``oras>=0.2.25,<0.3``) instead of requiring their older exact pins.
+
+1.9.4
++++++++++++++++++++
+* Microsoft.ChaosStudio: create the workspace operator role with a per-subscription role ID and name so installs in more than one subscription of a tenant no longer fail with RoleDefinitionWithSameNameExists. Existing roles named 'Chaos Studio Kubernetes Operator' are still reused, and explicit roles may have any name.
+* Microsoft.ChaosStudio: detect AKS Deployment Safeguards at Enforce and set chaosDaemon.enabled=false unless the release namespace is excluded, with a warning about which faults are unavailable. Install and update now need Microsoft.ContainerService/deploymentSafeguards/read on the cluster (included in Reader), and the Safeguards check runs before any role definition or assignment is written.
+
+1.9.3
++++++++++++++++++++
+* Reject unsupported Fleet extension types before sending extension create, update, or discovery requests.
+
+1.9.2
++++++++++++++++++++
+* Microsoft.ChaosStudio: pass --version through to the extension service; default to the latest registered version instead of pinning chart 0.1.6.
+
 1.9.1
 +++++++++++++++++++
 * Add Fleet support for Kubernetes extension and cluster-scoped extension type commands.

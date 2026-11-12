@@ -46,8 +46,9 @@ def ml_serverless_endpoint_create(
     name=None,
     no_wait=False,
     params_override=None,
-    **kwargs,  # pylint: disable=unused-argument
+    **kwargs,
 ):
+    # pylint: disable=unused-argument
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )
@@ -125,8 +126,9 @@ def _ml_serverless_endpoint_update(
     workspace_name,
     parameters=None,
     no_wait=False,
-    **kwargs,  # pylint: disable=unused-argument
+    **kwargs,
 ) -> None:
+    # pylint: disable=unused-argument
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, resource_group_name=resource_group_name, workspace_name=workspace_name
     )

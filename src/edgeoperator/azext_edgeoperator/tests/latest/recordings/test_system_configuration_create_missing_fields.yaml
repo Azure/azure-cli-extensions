@@ -1,0 +1,33 @@
+interactions:
+- request:
+    body: '{"properties": {}}'
+    headers:
+      Accept:
+      - application/json
+      CommandName:
+      - aldo system-configuration create
+      Content-Type:
+      - application/json
+      User-Agent:
+      - AZURECLI
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeOperator/systemConfiguration/default?api-version=2026-06-01-preview
+  response:
+    body:
+      string: '{"error": {"code": "InvalidRequest", "message": "The request contains
+        missing required fields.", "details": [{"code": "InvalidField", "target":
+        "Properties.StampId", "message": "The request contains missing required fields."},
+        {"code": "InvalidField", "target": "Properties.ConnectionIntent", "message":
+        "The request contains missing required fields."}, {"code": "InvalidField",
+        "target": "Properties.DeviceResourceId", "message": "The request contains
+        missing required fields."}, {"code": "InvalidField", "target": "Properties.DnsForwarderIpAddress",
+        "message": "The request contains missing required fields."}]}}'
+    headers:
+      content-length:
+      - '614'
+      content-type:
+      - application/json; charset=utf-8
+    status:
+      code: 400
+      message: Bad Request
+version: 1

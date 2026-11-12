@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "documentdb mongocluster microsoft-entra-user assign",
+    is_preview=True,
 )
 class Assign(AAZCommand):
     """Grant a Microsoft Entra ID principal access to a mongo cluster by assigning it database roles.
@@ -22,9 +23,9 @@ class Assign(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-06-01",
+        "version": "2026-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}/users/{}", "2026-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.documentdb/mongoclusters/{}/users/{}", "2026-06-15-preview"],
         ]
     }
 
@@ -201,7 +202,7 @@ class Assign(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-06-01",
+                    "api-version", "2026-06-15-preview",
                     required=True,
                 ),
             }

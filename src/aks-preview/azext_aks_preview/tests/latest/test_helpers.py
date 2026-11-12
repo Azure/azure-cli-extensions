@@ -3,6 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import ntpath
+import os
+import tempfile
 import unittest
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
@@ -19,6 +22,7 @@ from azext_aks_preview._helpers import (
     filter_hard_taints,
     reset_agentpool_to_name_and_mode,
     validate_flexnodes_options,
+    which,
 )
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
@@ -36,6 +40,104 @@ from azure.cli.core.azclierror import (
 )
 from azure.core.exceptions import AzureError, HttpResponseError
 from azext_aks_preview.tests.latest.mocks import MockCLI, MockCmd
+
+
+class TestWhich(unittest.TestCase):
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        self.directory = directory.name
+        self.tools = os.path.join(self.directory, "installed tools")
+        self.working_directory = os.path.join(self.directory, "working")
+        os.mkdir(self.tools)
+        os.mkdir(self.working_directory)
+        self.binary = "test-tool.exe" if os.name == "nt" else "test-tool"
+        self.installed_binary = self._make_executable(self.tools)
+        self.local_binary = self._make_executable(self.working_directory)
+        old_cwd = os.getcwd()
+        os.chdir(self.working_directory)
+        self.addCleanup(os.chdir, old_cwd)
+
+    def _make_executable(self, directory):
+        path = os.path.join(directory, self.binary)
+        with open(path, "w"):
+            pass
+        os.chmod(path, 0o700)
+        return path
+
+    def test_selects_absolute_path_installation_not_working_directory(self):
+        with patch.dict(os.environ, {"PATH": self.tools}):
+            self.assertEqual(which(self.binary), self.installed_binary)
+
+    def test_ignores_empty_and_relative_path_entries(self):
+        os.mkdir("relative")
+        self._make_executable("relative")
+        path = os.pathsep.join(("", ".", "relative", self.tools))
+        with patch.dict(os.environ, {"PATH": path}):
+            self.assertEqual(which(self.binary), self.installed_binary)
+
+    def test_missing_or_empty_path_does_not_search_working_directory(self):
+        for path in (None, "", ".", os.pathsep):
+            with self.subTest(path=path), patch.dict(os.environ):
+                if path is None:
+                    os.environ.pop("PATH", None)
+                else:
+                    os.environ["PATH"] = path
+                self.assertIsNone(which(self.binary))
+
+    def test_preserves_explicit_absolute_and_relative_paths(self):
+        with patch.dict(os.environ, {"PATH": self.tools}):
+            for path in (self.local_binary, os.path.join(".", self.binary)):
+                with self.subTest(path=path):
+                    self.assertEqual(which(path), self.local_binary)
+
+    def test_missing_explicit_path_does_not_fall_back_to_path(self):
+        with patch.dict(os.environ, {"PATH": self.tools}):
+            self.assertIsNone(which(os.path.join(self.directory, "missing", self.binary)))
+
+    def test_missing_path_installation_does_not_fall_back_to_working_directory(self):
+        with patch.dict(os.environ, {"PATH": self.directory}):
+            self.assertIsNone(which(self.binary))
+
+    def test_ignores_directories_named_like_executables(self):
+        os.remove(self.installed_binary)
+        os.mkdir(self.installed_binary)
+        with patch.dict(os.environ, {"PATH": self.tools}):
+            self.assertIsNone(which(self.binary))
+
+    def test_preserves_path_order(self):
+        with patch.dict(os.environ, {"PATH": os.pathsep.join((self.tools, self.working_directory))}):
+            self.assertEqual(which(self.binary), self.installed_binary)
+
+    @unittest.skipIf(os.name == "nt", "Windows does not use POSIX executable permission bits")
+    def test_ignores_non_executable_files(self):
+        os.chmod(self.installed_binary, 0o600)
+        with patch.dict(os.environ, {"PATH": self.tools}):
+            self.assertIsNone(which(self.binary))
+
+    def test_windows_path_and_extensions(self):
+        environment = {
+            "PATH": ';.;relative;C:relative;\\rooted;"C:\\Program Files\\Tools"',
+            "PATHEXT": ".EXE;.CMD",
+        }
+        for binary, expected in (
+            ("kubectl", r"C:\Program Files\Tools\kubectl.EXE"),
+            ("kubectl.exe", r"C:\Program Files\Tools\kubectl.exe"),
+            ("az.cmd", r"C:\Program Files\Tools\az.cmd"),
+            ("pwsh", r"C:\Program Files\Tools\pwsh.CMD"),
+        ):
+            with self.subTest(binary=binary):
+                mock_os = Mock()
+                mock_os.getenv.side_effect = lambda name, default=None: environment.get(name, default)
+                mock_os.path = Mock(wraps=ntpath)
+                mock_os.path.isfile.side_effect = lambda path: path.lower() == expected.lower()
+                mock_os.access.return_value = True
+                with patch("azext_aks_preview._helpers.platform.system", return_value="Windows"), patch(
+                    "azext_aks_preview._helpers.os", mock_os
+                ):
+                    self.assertEqual(which(binary), expected)
+                for call in mock_os.path.isfile.call_args_list:
+                    self.assertTrue(call.args[0].startswith("C:\\Program Files\\Tools\\"))
 
 
 class TestFuzzyMatch(unittest.TestCase):

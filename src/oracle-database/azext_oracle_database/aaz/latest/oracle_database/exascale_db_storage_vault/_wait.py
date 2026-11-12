@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/exascaledbstoragevaults/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/exascaledbstoragevaults/{}", "2026-06-01"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -161,7 +161,9 @@ class Wait(AAZWaitCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -180,6 +182,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="attachedShapeAttributes",
                 flags={"read_only": True},
             )
+            properties.autoscale_limit_in_gbs = AAZIntType(
+                serialized_name="autoscaleLimitInGbs",
+            )
             properties.description = AAZStrType()
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
@@ -191,6 +196,9 @@ class Wait(AAZWaitCommand):
             properties.high_capacity_database_storage = AAZObjectType(
                 serialized_name="highCapacityDatabaseStorage",
                 flags={"read_only": True},
+            )
+            properties.is_autoscale_enabled = AAZBoolType(
+                serialized_name="isAutoscaleEnabled",
             )
             properties.lifecycle_details = AAZStrType(
                 serialized_name="lifecycleDetails",

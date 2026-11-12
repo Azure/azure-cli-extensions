@@ -7,6 +7,7 @@ from azure.cli.core.commands import CliCommandType
 
 from azext_aks_preview._client_factory import (
     cf_agent_pools,
+    cf_upgrade_insights,
     cf_managed_namespaces,
     cf_maintenance_configurations,
     cf_maintenance_windows,
@@ -59,6 +60,8 @@ from azext_aks_preview._format import (
     aks_alert_config_list_table_format,
     aks_alert_config_show_table_format,
 )
+
+from azext_aks_preview.upgrade_insights import aks_upgrade_insights_table_format
 
 from knack.log import get_logger
 
@@ -301,6 +304,27 @@ def load_command_table(self, _):
         g.custom_command("list", "aks_namespace_list", table_transformer=aks_namespace_list_table_format)
         g.custom_command("delete", "aks_namespace_delete", supports_no_wait=True)
         g.custom_command("get-credentials", "aks_namespace_get_credentials")
+
+    insights_custom = CliCommandType(operations_tmpl="azext_aks_preview.upgrade_insights#{}")
+    with self.command_group(
+        "aks upgrade-insights", custom_command_type=insights_custom,
+        client_factory=cf_upgrade_insights, is_preview=True,
+    ) as g:
+        g.custom_command("create", "aks_upgrade_insights_create",
+                         table_transformer=aks_upgrade_insights_table_format)
+        g.custom_show_command("show", "aks_upgrade_insights_show",
+                              table_transformer=aks_upgrade_insights_table_format)
+        g.custom_command("list", "aks_upgrade_insights_list",
+                         table_transformer=aks_upgrade_insights_table_format)
+
+    with self.command_group(
+        "aks nodepool upgrade-insights", custom_command_type=insights_custom,
+        client_factory=cf_upgrade_insights, is_preview=True,
+    ) as g:
+        g.custom_command("create", "aks_nodepool_upgrade_insights_create",
+                         table_transformer=aks_upgrade_insights_table_format)
+        g.custom_show_command("show", "aks_nodepool_upgrade_insights_show",
+                              table_transformer=aks_upgrade_insights_table_format)
 
     # AKS agent pool commands
     with self.command_group(

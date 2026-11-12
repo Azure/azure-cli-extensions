@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
+
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request
 
@@ -21,4 +23,48 @@ def _system_readiness_url(cmd):
 
 def show_system_readiness(cmd):
     response = send_raw_request(cmd.cli_ctx, "GET", _system_readiness_url(cmd))
+    return response.json()
+
+
+def _observability_configuration_url(cmd):
+    endpoint = cmd.cli_ctx.cloud.endpoints.resource_manager.rstrip("/")
+    subscription_id = get_subscription_id(cmd.cli_ctx)
+    return (
+        "{}/subscriptions/{}/providers/Microsoft.EdgeOperator/"
+        "observabilityConfiguration/default?api-version={}"
+    ).format(endpoint, subscription_id, API_VERSION)
+
+
+def show_observability_configuration(cmd):
+    response = send_raw_request(cmd.cli_ctx, "GET", _observability_configuration_url(cmd))
+    return response.json()
+
+
+def _system_configuration_url(cmd):
+    endpoint = cmd.cli_ctx.cloud.endpoints.resource_manager.rstrip("/")
+    subscription_id = get_subscription_id(cmd.cli_ctx)
+    return (
+        "{}/subscriptions/{}/providers/Microsoft.EdgeOperator/"
+        "systemConfiguration/default?api-version={}"
+    ).format(endpoint, subscription_id, API_VERSION)
+
+
+def show_system_configuration(cmd):
+    response = send_raw_request(cmd.cli_ctx, "GET", _system_configuration_url(cmd))
+    return response.json()
+
+
+def create_system_configuration(cmd, dns_forwarder_ip_address=None, connection_intent=None,
+                                stamp_id=None, device_resource_id=None):
+    properties = {
+        key: value for key, value in {
+            "dnsForwarderIpAddress": dns_forwarder_ip_address,
+            "connectionIntent": connection_intent,
+            "stampId": stamp_id,
+            "deviceResourceId": device_resource_id,
+        }.items() if value is not None
+    }
+    response = send_raw_request(
+        cmd.cli_ctx, "PUT", _system_configuration_url(cmd), body=json.dumps({"properties": properties})
+    )
     return response.json()

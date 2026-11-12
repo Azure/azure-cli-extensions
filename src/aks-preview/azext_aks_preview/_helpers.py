@@ -136,17 +136,31 @@ def reset_agentpool_to_name_and_mode(agentpool, mode):
 
 
 def which(binary):
-    path_var = os.getenv('PATH')
-    if platform.system() == 'Windows':
-        binary = binary + '.exe'
-        parts = path_var.split(';')
+    """Resolve an explicit executable path or search absolute directories in PATH."""
+    is_windows = platform.system() == 'Windows'
+    binaries = [binary]
+    if is_windows and not os.path.splitext(binary)[1]:
+        extensions = os.getenv('PATHEXT') or '.COM;.EXE;.BAT;.CMD'
+        binaries = [binary + extension for extension in extensions.split(';') if extension]
+
+    explicit_path = bool(os.path.dirname(binary))
+    if explicit_path:
+        parts = ['']
     else:
-        parts = path_var.split(':')
+        parts = os.getenv('PATH', '').split(';' if is_windows else ':')
 
     for part in parts:
-        bin_path = os.path.join(part, binary)
-        if os.path.exists(bin_path) and os.path.isfile(bin_path) and os.access(bin_path, os.X_OK):
-            return bin_path
+        if is_windows:
+            part = part.strip('"')
+        # Empty, relative and drive-relative entries depend on the working directory.
+        if not explicit_path and (
+            not os.path.isabs(part) or (is_windows and not os.path.splitdrive(part)[0])
+        ):
+            continue
+        for executable in binaries:
+            bin_path = os.path.abspath(os.path.join(part, executable))
+            if os.path.isfile(bin_path) and os.access(bin_path, os.X_OK):
+                return bin_path
 
     return None
 

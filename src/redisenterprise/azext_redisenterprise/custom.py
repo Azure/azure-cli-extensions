@@ -27,6 +27,8 @@ from .aaz.latest.redisenterprise import Wait as _DatabaseWait
 from .aaz.latest.redisenterprise import Update as _Update
 from .aaz.latest.redisenterprise.migration import Start as _MigrationStart
 from .aaz.latest.redisenterprise.migration import Undo as _MigrationUndo
+from .aaz.latest.redisenterprise.migration import UnlinkMigratedEndpoint as _MigrationUnlink
+from .aaz.latest.redisenterprise import UnlinkMigratedEndpoint as _ClusterUnlink
 from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
 )
@@ -39,15 +41,55 @@ class RedisEnterpriseUpdate(_Update):
 
     def pre_instance_update(self, instance):
         """Called before the instance is updated"""
+        from azure.cli.core.aaz import has_value
+        if has_value(self.ctx.args.firewall_rules):
+            self.ctx.redisenterprise_original = _Update.RedisEnterpriseCreate.serialize_content(instance)
+        self.ctx.redisenterprise_generic_firewall_rules = False
+        for action, values in (self.ctx.generic_update_args or {}).get("actions", []):
+            for value in (values if action == "set" else values[:1]):
+                path = self.InstanceUpdateByGeneric._get_internal_path(value.split("=", 1)[0])
+                if path and path[0] in ("firewallRules", "firewall_rules"):
+                    self.ctx.redisenterprise_generic_firewall_rules = True
         try:
             current_sku = str(instance.sku.name) if hasattr(instance, 'sku') and instance.sku else None
         except (AttributeError, TypeError):
             current_sku = None
 
+        self.ctx.redisenterprise_legacy_sku = bool(current_sku and current_sku.startswith('Enterprise'))
         new_sku = str(self.ctx.args.sku) if self.ctx.args.sku is not None else None
 
         if new_sku and current_sku and new_sku != current_sku:
             self._handle_sku_change(current_sku, new_sku, instance)
+
+    class RedisEnterpriseCreate(_Update.RedisEnterpriseCreate):
+
+        @property
+        def method(self):
+            from azure.cli.core.aaz import has_value
+            return "PATCH" if has_value(self.ctx.args.firewall_rules) else super().method
+
+        @property
+        def content(self):
+            from azure.cli.core.aaz import has_value
+            content = super().content
+            if not has_value(self.ctx.args.firewall_rules):
+                if (not self.ctx.redisenterprise_generic_firewall_rules
+                        and (self.ctx.redisenterprise_legacy_sku
+                             or content.get("properties", {}).get("publicNetworkAccess") == "Disabled")):
+                    content.get("properties", {}).pop("firewallRules", None)
+                return content
+            # Do not replay unchanged SKU/encryption fields alongside a firewall change.
+            original = self.ctx.redisenterprise_original
+            patch = {key: value for key, value in content.items()
+                     if key != "properties" and original.get(key) != value}
+            if "tags" in original and "tags" not in content:
+                patch["tags"] = {}
+            properties = {key: value for key, value in content.get("properties", {}).items()
+                          if key == "firewallRules" or original.get("properties", {}).get(key) != value}
+            if self.ctx.args.firewall_rules.to_serialized_data() is None:
+                properties["firewallRules"] = None
+            patch["properties"] = properties
+            return patch
 
     def _handle_sku_change(self, current_sku, new_sku, instance):
         """Handle SKU change logic for capacity and zones"""
@@ -480,13 +522,13 @@ class MigrationStart(_MigrationStart):
         args_schema.skip_data_migration = AAZBoolArg(
             options=["--skip-data-migration"],
             arg_group="Properties",
-            help="Sets whether the data is migrated from source to target or not. This property must be true during the preview.",
+            help="Sets whether the data is migrated from source to target or not. Set this property to true to skip data migration.",
             required=True,
         )
         args_schema.switch_dns = AAZBoolArg(
             options=["--switch-dns"],
             arg_group="Properties",
-            help="Sets whether the DNS is switched automatically after the data is transferred from the source cache to the target cache. This property must be true during the preview.",
+            help="Sets whether the DNS is switched automatically after the data is transferred from the source cache to the target cache.",
             required=True,
         )
         args_schema.force_migrate = AAZBoolArg(
@@ -508,44 +550,42 @@ class MigrationStart(_MigrationStart):
             args.azure_cache_for_redis.force_migrate = args.force_migrate
 
 
+class _MigrationAction:
+    # AAZ emits no deserializer for these bodyless actions, but Location returns a resource.
+    def __call__(self, *args, **kwargs):
+        request = self.make_request()
+        session = self.client.send_request(request=request, stream=False, **kwargs)
+        if session.http_response.status_code == 202:
+            return self.client.build_lro_polling(
+                self.ctx.args.no_wait,
+                session,
+                self.on_200,
+                self.on_error,
+                lro_options={"final-state-via": "location"},
+                path_format_arguments=self.url_parameters,
+            )
+        return self.on_error(session.http_response)
+
+    def on_200(self, session):
+        pass
+
+
 class MigrationUndo(_MigrationUndo):
-    """Override ``redisenterprise migration undo`` to avoid an AAZ-generated
-    ``NoneType`` crash on successful LRO completion.
 
-    The service's ``Migrations_Cancel`` operation is a 202 LRO declared with
-    ``final-state-via: location`` in swagger, but the ``Location`` header points
-    at the migration resource itself, so the final GET returns a non-empty body.
-    The generated ``MigrationsCancel.__call__`` passes ``None`` as the LRO
-    success deserializer to ``build_lro_polling``; azure-core's
-    ``base_polling._parse_resource`` then tries to call that ``None`` on the
-    non-empty final response and raises
-    ``TypeError: 'NoneType' object is not callable``. The cancel returns no
-    resource of interest, so we pass a no-op deserializer (``on_200``) instead,
-    mirroring how the generated ``delete`` handles its empty response.
+    class MigrationsUndo(_MigrationAction, _MigrationUndo.MigrationsUndo):
+        pass
 
-    Remove this subclass (and the ``commands.py`` registration) once the
-    ``Migrations_Cancel`` swagger contract is fixed to use
-    ``final-state-via: azure-async-operation`` like the other bodyless actions.
-    """
 
-    class MigrationsCancel(_MigrationUndo.MigrationsCancel):
+class MigrationUnlink(_MigrationUnlink):
 
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            return self.on_error(session.http_response)
+    class MigrationsUnlinkMigratedEndpoint(_MigrationAction, _MigrationUnlink.MigrationsUnlinkMigratedEndpoint):
+        pass
 
-        def on_200(self, session):
-            pass
+
+class ClusterUnlink(_ClusterUnlink):
+
+    class ClustersUnlinkMigratedEndpoint(_MigrationAction, _ClusterUnlink.ClustersUnlinkMigratedEndpoint):
+        pass
 
 
 def _get_cluster_with_databases(cluster,
@@ -602,6 +642,7 @@ def redisenterprise_create(cmd,
                            zones=None,
                            high_availability=None,
                            public_network_access=None,
+                           firewall_rules=None,
                            maintenance_configuration=None,
                            key_encryption_key_url=None,
                            identity_type=None,
@@ -676,6 +717,7 @@ def redisenterprise_create(cmd,
             "zones": zones,
             "high_availability": high_availability,
             "public_network_access": public_network_access,
+            "firewall_rules": firewall_rules,
             "maintenance_configuration": maintenance_configuration,
             "minimum_tls_version": minimum_tls_version,
             "key_encryption_key_url": key_encryption_key_url,
@@ -697,6 +739,7 @@ def redisenterprise_create(cmd,
         "zones": zones,
         "high_availability": high_availability,
         "public_network_access": public_network_access,
+        "firewall_rules": firewall_rules,
         "maintenance_configuration": maintenance_configuration,
         "minimum_tls_version": minimum_tls_version,
         "key_encryption_key_url": key_encryption_key_url,

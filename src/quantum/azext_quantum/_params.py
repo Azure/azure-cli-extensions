@@ -157,7 +157,7 @@ class QuotaAction(argparse._AppendAction):
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals
     workspace_name_type = CLIArgumentType(options_list=['--workspace-name', '-w'], help='Name of the Quantum Workspace. You can configure the default workspace using `az quantum workspace set`.', configured_default='workspace', id_part=None)
-    storage_account_name_type = CLIArgumentType(options_list=['--storage-account', '-a'], help='Name of the storage account to be used by a quantum workspace.')
+    storage_account_name_type = CLIArgumentType(options_list=['--storage-account', '-a'], help='Name of the storage account to be used by a quantum workspace. If omitted, Azure Quantum provisions managed storage.')
     target_id_type = CLIArgumentType(options_list=['--target-id', '-t'], help='Execution engine for quantum computing jobs. When a workspace is configured with a set of providers, they each enable one or more targets. You can configure the default target using `az quantum target set`.', configured_default='target_id')
     job_name_type = CLIArgumentType(help='A friendly name to give to this run of the program.')
     job_name_filter_type = CLIArgumentType(help='Job name to be listed (search by prefix), example "My Job".')
@@ -173,7 +173,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     storage_type = CLIArgumentType(help='If specified, the ConnectionString of an Azure Storage is used to store job data and results.')
     max_poll_wait_secs_type = CLIArgumentType(help='Poll time in seconds to query Azure Quantum for results of the corresponding job.')
     tag_type = CLIArgumentType(help='Show only quantum workspaces that have associated the specified tag.')
-    skip_role_assignment_type = CLIArgumentType(help='Skip the role assignment step for the quantum workspace in the storage account.')
+    skip_role_assignment_type = CLIArgumentType(help='Skip the CLI role assignment for a user-provided storage account. Requires --storage-account (-a). Azure Quantum configures role assignments for managed storage automatically.')
     provider_id_type = CLIArgumentType(options_list=['--provider-id', '-p'], help='Identifier of an Azure Quantum provider.')
     sku_type = CLIArgumentType(options_list=['--sku', '-k'], help='Identify a plan or SKU offered by an Azure Quantum provider.')
     provider_sku_list_type = CLIArgumentType(options_list=['--provider-sku-list', '-r'], help='Comma separated list of Provider/SKU pairs. Separate the Provider and SKU with a slash. Enclose the entire list in quotes. Values from `az quantum offerings list -l <location> -o table`')
@@ -184,7 +184,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     job_output_format_type = CLIArgumentType(help='The expected job output format')
     entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for some provider QIR jobs.')
     skip_autoadd_type = CLIArgumentType(help='If specified, the plans that offer free credits will not automatically be added.')
-    workspace_kind_type = CLIArgumentType(options_list=['--workspace-kind'], help='The kind of the workspace to create.', arg_type=get_enum_type(['V1', 'V2']))
+    workspace_kind_type = CLIArgumentType(options_list=['--workspace-kind'], help='The kind of workspace to create. Use V2 for V2 providers and per-target quota allocation.', arg_type=get_enum_type(['V1', 'V2']))
     quota_type = CLIArgumentType(options_list=['--quota'], help='Target quota allocation for a V2 workspace as provider-id, target-id, standard-minutes-lifetime, and optional high-minutes-lifetime key=value pairs, a JSON object or array, or `@{file}` with JSON content. Use --workspace-kind V2 when creating a workspace. Values are absolute and cannot exceed the suite target allocation or, when updating, be below current workspace usage. standard-minutes-lifetime is required for a new allocation. camelCase keys (providerId, targetId, ...) are also accepted. Repeat --quota once per target.', action=QuotaAction, nargs='+')
     key_type = CLIArgumentType(options_list=['--key-type'], help='The api keys to be regenerated, should be Primary and/or Secondary.')
     enable_key_type = CLIArgumentType(options_list=['--enable-api-key'], help='Enable or disable API key authentication.')

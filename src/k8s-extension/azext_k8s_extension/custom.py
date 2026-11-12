@@ -27,12 +27,14 @@ from azure.cli.core.azclierror import (
     ClientRequestError,
     CLIInternalError,
     FileOperationError,
+    InvalidArgumentValueError,
     ResourceNotFoundError,
     ManualInterrupt,
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.util import sdk_no_wait
 from azure.core.exceptions import HttpResponseError
 from .vendored_sdks.models import Identity, Scope
@@ -120,6 +122,17 @@ def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_
         raise ex
 
 
+def _validate_fleet_extension_type(cluster_type_lower, extension_type_lower):
+    if (
+        cluster_type_lower == consts.FLEET_TYPE
+        and extension_type_lower != consts.FLEET_EXTENSION_TYPE
+    ):
+        raise InvalidArgumentValueError(
+            "Extension type '{}' is not supported for cluster type 'fleets'. "
+            "The supported extension type is 'microsoft.flux'.".format(extension_type_lower)
+        )
+
+
 def create_k8s_extension(
     cmd,
     client,
@@ -148,6 +161,7 @@ def create_k8s_extension(
     """Create a new Extension Instance."""
 
     extension_type_lower = extension_type.lower()
+    _validate_fleet_extension_type(cluster_type.lower(), extension_type_lower)
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_resource_provider)
 
     # Configuration Settings & Configuration Protected Settings
@@ -317,6 +331,7 @@ def update_k8s_extension(
         client, resource_group_name, cluster_name, name, cluster_type, cluster_rp
     )
     extension_type_lower = extension.extension_type.lower()
+    _validate_fleet_extension_type(cluster_type.lower(), extension_type_lower)
 
     config_settings = {}
     config_protected_settings = {}
@@ -394,7 +409,9 @@ def delete_k8s_extension(
         extension = client.get(
             resource_group_name, cluster_rp, cluster_type, cluster_name, name
         )
-    except HttpResponseError:
+    except HttpResponseError as error:
+        if error.status_code != 404:
+            raise
         logger.warning(
             "No extension with name '%s' found on cluster '%s', so nothing to delete",
             name,
@@ -408,7 +425,7 @@ def delete_k8s_extension(
         cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp, yes
     )
 
-    return sdk_no_wait(
+    result = sdk_no_wait(
         no_wait,
         client.begin_delete,
         resource_group_name,
@@ -418,6 +435,21 @@ def delete_k8s_extension(
         name,
         force_delete=force,
     )
+    if isinstance(extension_class, ChaosStudio):
+        if no_wait or force:
+            logger.warning(
+                "The CLI retains release namespaces and their remaining Kubernetes resources. "
+                "--no-wait/--force does not run namespace cleanup."
+            )
+        else:
+            LongRunningOperation(cmd.cli_ctx)(result)
+            # The progress helper can suppress 404 failures for delete commands.
+            result.result()
+            extension_class.PostDelete(
+                cmd, resource_group_name, cluster_name, extension.name or name, extension
+            )
+            return None
+    return result
 
 
 # list by location
@@ -463,6 +495,10 @@ def list_extension_type_versions_by_location(
 
     """ List available versions for a Cluster Extension Type versions in a region. """
 
+    _validate_fleet_extension_type(
+        cluster_type.lower() if cluster_type else None,
+        extension_type.lower(),
+    )
     versions_list = client.list_versions(
         location,
         extension_type,
@@ -522,6 +558,7 @@ def show_extension_type_by_cluster(
         extension_type):
 
     """ Get properties for a Cluster Extension Type for an existing cluster"""
+    _validate_fleet_extension_type(cluster_type.lower(), extension_type.lower())
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
 
     return client.get(
@@ -544,6 +581,7 @@ def list_extension_type_versions_by_cluster(
         show_latest=False):
 
     """ List available versions for a Cluster Extension Type for a given cluster."""
+    _validate_fleet_extension_type(cluster_type.lower(), extension_type.lower())
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
 
     return client.cluster_list_versions(
@@ -568,6 +606,7 @@ def show_extension_type_version_by_cluster(
 
     """ Get properties associated with a Cluster Extension Type version for an existing cluster"""
 
+    _validate_fleet_extension_type(cluster_type.lower(), extension_type.lower())
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
 
     return client.cluster_get_version(

@@ -188,6 +188,14 @@ CONST_MONITORING_ADDON_NAME_CAMELCASE = "omsAgent"
 CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = "logAnalyticsWorkspaceResourceID"
 CONST_MONITORING_USING_AAD_MSI_AUTH = "useAADAuth"
 
+# container network logs (azureMonitorProfile.containerInsights.containerNetworkLogs)
+CONST_CONTAINER_NETWORK_LOGS_ENABLED = "Enabled"
+CONST_CONTAINER_NETWORK_LOGS_DISABLED = "Disabled"
+# legacy omsagent addon config key, superseded by containerNetworkLogs on the AMP path
+CONST_MONITORING_ENABLE_RETINA_NETWORK_FLAGS = "enableRetinaNetworkFlags"
+# server-side default for azureMonitorProfile.containerInsights.syslogPort
+CONST_CONTAINER_INSIGHTS_DEFAULT_SYSLOG_PORT = 28330
+
 # virtual node
 CONST_VIRTUAL_NODE_ADDON_NAME = "aciConnector"
 CONST_VIRTUAL_NODE_SUBNET_NAME = "SubnetName"
@@ -299,6 +307,11 @@ CONST_PERISCOPE_NAMESPACE = "aks-periscope"
 
 CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC = "Public"
 CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE = "Private"
+
+# Encryption at rest of Kubernetes resource objects using service-managed keys (PMK).
+# Starting with API version 2026-07-01/2026-07-02-preview, "Enabled" is the only accepted
+# value, i.e. the feature cannot be turned off once it has been turned on.
+CONST_KMS_INFRASTRUCTURE_ENCRYPTION_ENABLED = "Enabled"
 
 # refer https://api.github.com/repos/Azure/draft/releases/latest
 # tag_name gives latest version released.

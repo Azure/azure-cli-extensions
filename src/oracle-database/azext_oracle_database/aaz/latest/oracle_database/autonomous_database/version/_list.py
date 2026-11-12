@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database version list",
 )
 class List(AAZCommand):
-    """List Autonomous Database version resources by location
+    """List AutonomousDbVersion resources by Location
 
     :example: List ADBS versions
         az oracle-database autonomous-database version list --location <location>
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/autonomousdbversions", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/autonomousdbversions", "2026-06-01"],
         ]
     }
 
@@ -112,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -162,7 +162,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},

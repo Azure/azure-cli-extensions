@@ -52,6 +52,7 @@ from azext_aks_preview._consts import (
     CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
+    CONST_KMS_INFRASTRUCTURE_ENCRYPTION_ENABLED,
     CONST_NAMESPACE_ADOPTION_POLICY_NEVER,
     CONST_NAMESPACE_ADOPTION_POLICY_IFIDENTICAL,
     CONST_NAMESPACE_ADOPTION_POLICY_ALWAYS,
@@ -202,6 +203,8 @@ from azext_aks_preview._validators import (
     validate_azure_keyvault_kms_key_vault_resource_id,
     validate_azure_monitor_and_opentelemetry_for_create,
     validate_azure_monitor_and_opentelemetry_for_update,
+    validate_container_insights_settings_for_create,
+    validate_container_insights_settings_for_update,
     validate_azure_monitor_logs_and_enable_addons,
     validate_azure_monitor_logs_enable_disable,
     validate_azuremonitorworkspaceresourceid,
@@ -257,6 +260,7 @@ from azext_aks_preview._validators import (
     validate_system_node_subnet_id,
     validate_node_subnet_id,
     validate_force_upgrade_disable_and_enable_parameters,
+    validate_upgrade_gate_disable_and_enable_parameters,
     validate_azure_service_mesh_revision,
     validate_artifact_streaming,
     validate_os_disk_full_caching,
@@ -296,6 +300,7 @@ from .action import (
     AddConfigurationSettings,
     AddConfigurationProtectedSettings,
 )
+from .upgrade_insights import validate_upgrade_insights_create
 
 from knack.arguments import CLIArgumentType
 from knack.deprecation import Deprecated
@@ -324,6 +329,31 @@ def _deprecate_option(c, target, redirect):
     deprecated = c.deprecate(target=target, redirect=redirect)
     if deprecated is not None:
         deprecated.__class__ = _SizedDeprecated
+    return deprecated
+
+
+def _legacy_monitoring_auth_message(_deprecated):
+    """Build the deprecation message for --enable-msi-auth-for-monitoring."""
+    return (
+        "Argument '--enable-msi-auth-for-monitoring' has been deprecated and will be removed in a "
+        "future release. Container Insights onboarding is moving to the Azure Monitor profile, "
+        "which supports managed identity authentication only. Use 'az aks create' or "
+        "'az aks update' with '--enable-azure-monitor-logs' instead."
+    )
+
+
+def _deprecate_legacy_monitoring_auth(c):
+    """Deprecate --enable-msi-auth-for-monitoring on the legacy addon commands.
+
+    knack only invokes a deprecated argument's action when the option is actually present on the
+    command line, so the warning is emitted once on explicit use and never for the default value.
+
+    ArgumentsContext.deprecate() overwrites any message_func it is given with its own generic
+    text, so the custom message is attached to the returned object instead.
+    """
+    deprecated = c.deprecate(target="--enable-msi-auth-for-monitoring")
+    if deprecated is not None:
+        deprecated._get_message = _legacy_monitoring_auth_message  # pylint: disable=protected-access
     return deprecated
 
 
@@ -854,6 +884,7 @@ def load_arguments(self, _):
         c.argument("k8s_support_plan", arg_type=get_enum_type(k8s_support_plans))
         c.argument("enable_defender", action="store_true")
         c.argument("defender_config", validator=validate_defender_config_parameter)
+        c.argument("enable_disk_driver", action="store_true")
         c.argument("disable_disk_driver", action="store_true")
         c.argument("disable_file_driver", action="store_true")
         c.argument("enable_blob_driver", action="store_true")
@@ -873,8 +904,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "kms_infrastructure_encryption",
-            arg_type=get_enum_type(["Enabled", "Disabled"]),
-            default="Disabled",
+            arg_type=get_enum_type([CONST_KMS_INFRASTRUCTURE_ENCRYPTION_ENABLED]),
             is_preview=True,
         )
         c.argument("http_proxy_config")
@@ -911,6 +941,12 @@ def load_arguments(self, _):
         c.argument("data_collection_settings", is_preview=True)
         c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("ampls_resource_id", is_preview=True)
+        c.argument("syslog_port",
+                   type=int,
+                   is_preview=True,
+                   validator=validate_container_insights_settings_for_create)
+        c.argument("enable_prometheus_metrics_scraping", action="store_true", is_preview=True)
+        c.argument("disable_prometheus_metrics_scraping", action="store_true", is_preview=True)
         c.argument("aci_subnet_name")
         c.argument("appgw_name", arg_group="Application Gateway")
         c.argument("appgw_subnet_cidr", arg_group="Application Gateway")
@@ -932,7 +968,7 @@ def load_arguments(self, _):
         c.argument(
             "nodepool_name",
             default="nodepool1",
-            help="Node pool name, upto 12 alphanumeric characters",
+            help="Node pool name, alphanumeric characters only. See https://aka.ms/aks-naming-rules for length limits.",
             validator=validate_nodepool_name,
         )
         c.argument(
@@ -1477,6 +1513,8 @@ def load_arguments(self, _):
             help='The resource ID of the prepared image specification to use for provisioning nodes in the default '
                  'node pool.'
         )
+        # upgrade gate
+        c.argument("enable_upgrade_gate", action="store_true", is_preview=True)
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1583,6 +1621,19 @@ def load_arguments(self, _):
             validator=validate_force_upgrade_disable_and_enable_parameters,
         )
         c.argument("upgrade_override_until", is_preview=True)
+        # upgrade gate
+        c.argument(
+            "enable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
+        c.argument(
+            "disable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
         c.argument(
             "cluster_autoscaler_profile",
             nargs="+",
@@ -1651,7 +1702,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "kms_infrastructure_encryption",
-            arg_type=get_enum_type(["Enabled", "Disabled"]),
+            arg_type=get_enum_type([CONST_KMS_INFRASTRUCTURE_ENCRYPTION_ENABLED]),
             is_preview=True,
         )
         c.argument("http_proxy_config")
@@ -1867,6 +1918,20 @@ def load_arguments(self, _):
         c.argument("ampls_resource_id",
                    is_preview=True,
                    help="Resource ID of the Azure Monitor Private Link Scope to associate with the cluster")
+        c.argument("syslog_port",
+                   type=int,
+                   is_preview=True,
+                   validator=validate_container_insights_settings_for_update,
+                   help="Host port used by the Azure Monitor agent to collect syslog. "
+                        "Defaults to 28330 when unset.")
+        c.argument("enable_prometheus_metrics_scraping",
+                   action="store_true",
+                   is_preview=True,
+                   help="Enable Prometheus metrics scraping by the Azure Monitor agent")
+        c.argument("disable_prometheus_metrics_scraping",
+                   action="store_true",
+                   is_preview=True,
+                   help="Disable Prometheus metrics scraping by the Azure Monitor agent")
         # OpenTelemetry parameters
         c.argument("enable_opentelemetry_metrics",
                    is_preview=True,
@@ -2275,9 +2340,46 @@ def load_arguments(self, _):
     with self.argument_context("aks scale") as c:
         c.argument(
             "nodepool_name",
-            help="Node pool name, upto 12 alphanumeric characters",
+            help="Node pool name, alphanumeric characters only. See https://aka.ms/aks-naming-rules for length limits.",
             validator=validate_nodepool_name,
         )
+
+    with self.argument_context("aks upgrade-insights") as c:
+        c.argument("name", name_type, help="The managed cluster name.", required=True)
+
+    with self.argument_context("aks upgrade-insights create") as c:
+        c.argument(
+            "upgrade_type", arg_type=get_enum_type(["ControlPlane", "ControlPlaneAndAgentPools"]),
+            default="ControlPlaneAndAgentPools", validator=validate_upgrade_insights_create,
+            help="The upgrade scope to evaluate. Defaults to the control plane and all agent pools.",
+        )
+        c.argument(
+            "target_kubernetes_ver", required=True,
+            help="The target Kubernetes version to evaluate. This command does not upgrade the cluster.",
+        )
+
+    with self.argument_context("aks nodepool upgrade-insights") as c:
+        c.argument("cluster_name", required=True, help="The managed cluster name.")
+        c.argument(
+            "nodepool_name", options_list=["--name", "-n"], required=True,
+            validator=validate_nodepool_name, help="The node pool name.",
+        )
+
+    with self.argument_context("aks nodepool upgrade-insights create") as c:
+        c.argument(
+            "upgrade_type", arg_type=get_enum_type(["AgentPool", "NodeImage"]),
+            default="AgentPool", validator=validate_upgrade_insights_create,
+            help="The upgrade scope to evaluate. Defaults to an agent pool Kubernetes version upgrade.",
+        )
+        c.argument("target_kubernetes_ver", help="The target Kubernetes version. Required for AgentPool.")
+        c.argument(
+            "target_node_image_ver",
+            help="The target node image version. Only valid for NodeImage; omitted means the latest available image.",
+        )
+
+    for scope in ["aks upgrade-insights show", "aks nodepool upgrade-insights show"]:
+        with self.argument_context(scope) as c:
+            c.argument("insight_name", required=True, help="The stored insight name returned by create or list.")
 
     # managed namespace
     with self.argument_context("aks namespace") as c:
@@ -2516,6 +2618,13 @@ def load_arguments(self, _):
             is_preview=True,
             help="Specify the GPU Multi-Instance GPU (MIG) strategy. Allowed values: Single, Mixed.",
         )
+        c.argument(
+            "gpu_mig_profiles",
+            arg_type=get_enum_type(gpu_instance_profiles),
+            nargs="+",
+            is_preview=True,
+            help="Space-separated ordered list of GPU MIG profiles. Allowed values: MIG1g, MIG2g, MIG3g, MIG4g, MIG7g.",
+        )
         # in creation scenario, use "localuser" as default
         c.argument(
             'ssh_access',
@@ -2570,8 +2679,30 @@ def load_arguments(self, _):
             validator=validate_prepared_image_specification_id,
             help='The resource ID of the prepared image specification to use for provisioning nodes in the node pool.'
         )
+        # upgrade gate
+        c.argument(
+            "enable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
+        c.argument(
+            "disable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
 
     with self.argument_context("aks nodepool update") as c:
+        c.argument(
+            "node_public_ip_prefix_ids",
+            validator=validate_node_public_ip_prefix_ids,
+            help="Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs "
+                 "(IPv4 and/or IPv6). At most one IPv4 and one IPv6 prefix may be specified. "
+                 "On an existing node pool this adds or replaces the assigned prefixes; an accepted change "
+                 "rolls the pool so existing nodes are recreated with the new public IPs. "
+                 "Requires the NodePublicIPv6PrefixPreview feature flag to be registered.",
+        )
         c.argument(
             "enable_cluster_autoscaler",
             options_list=["--enable-cluster-autoscaler", "-e"],
@@ -2714,6 +2845,13 @@ def load_arguments(self, _):
             is_preview=True,
             help="Specify the GPU Multi-Instance GPU (MIG) strategy. Allowed values: Single, Mixed.",
         )
+        c.argument(
+            "gpu_mig_profiles",
+            arg_type=get_enum_type(gpu_instance_profiles),
+            nargs="+",
+            is_preview=True,
+            help="Space-separated ordered list of GPU MIG profiles. Allowed values: MIG1g, MIG2g, MIG3g, MIG4g, MIG7g.",
+        )
         # prepared image specification
         c.argument(
             'prepared_image_specification_id',
@@ -2721,6 +2859,19 @@ def load_arguments(self, _):
             is_preview=True,
             validator=validate_prepared_image_specification_id,
             help='The resource ID of the prepared image specification to use for provisioning nodes in the node pool.'
+        )
+        # upgrade gate
+        c.argument(
+            "enable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
+        )
+        c.argument(
+            "disable_upgrade_gate",
+            action="store_true",
+            is_preview=True,
+            validator=validate_upgrade_gate_disable_and_enable_parameters,
         )
 
     with self.argument_context("aks nodepool upgrade") as c:
@@ -2770,18 +2921,36 @@ def load_arguments(self, _):
             "use_patch_api",
             action="store_true",
             is_preview=True,
-            help="Scale a VMSS node pool using the preview PATCH agent pool API instead of the default PUT API.",
+            help="Scale a node pool using the preview PATCH agent pool API instead of the default PUT API.",
         )
 
     with self.argument_context("aks nodepool manual-scale add") as c:
         c.argument("vm_sizes", is_preview=True)
+        c.argument(
+            "use_patch_api",
+            action="store_true",
+            is_preview=True,
+            help="Manage the manual scale profiles using the preview PATCH agent pool API instead of the default PUT API.",
+        )
 
     with self.argument_context("aks nodepool manual-scale update") as c:
         c.argument("current_vm_sizes", is_preview=True)
         c.argument("vm_sizes", is_preview=True)
+        c.argument(
+            "use_patch_api",
+            action="store_true",
+            is_preview=True,
+            help="Manage the manual scale profiles using the preview PATCH agent pool API instead of the default PUT API.",
+        )
 
     with self.argument_context("aks nodepool manual-scale delete") as c:
         c.argument("current_vm_sizes", is_preview=True)
+        c.argument(
+            "use_patch_api",
+            action="store_true",
+            is_preview=True,
+            help="Manage the manual scale profiles using the preview PATCH agent pool API instead of the default PUT API.",
+        )
 
     with self.argument_context("aks nodepool auto-scale add") as c:
         c.argument("node_vm_size", is_preview=True)
@@ -3157,6 +3326,7 @@ def load_arguments(self, _):
             "enable_msi_auth_for_monitoring",
             arg_type=get_three_state_flag(),
             is_preview=True,
+            deprecate_info=_deprecate_legacy_monitoring_auth(c),
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
@@ -3214,6 +3384,7 @@ def load_arguments(self, _):
             "enable_msi_auth_for_monitoring",
             arg_type=get_three_state_flag(),
             is_preview=True,
+            deprecate_info=_deprecate_legacy_monitoring_auth(c),
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
@@ -3231,6 +3402,12 @@ def load_arguments(self, _):
 
     with self.argument_context("aks disable-addons") as c:
         c.argument("addons", options_list=["--addons", "-a"], validator=validate_addons)
+        c.argument(
+            "yes",
+            options_list=["--yes", "-y"],
+            help="Do not prompt for confirmation.",
+            action="store_true",
+        )
 
     with self.argument_context("aks enable-addons") as c:
         c.argument("addons", options_list=["--addons", "-a"], validator=validate_addons)
@@ -3254,6 +3431,7 @@ def load_arguments(self, _):
             "enable_msi_auth_for_monitoring",
             arg_type=get_three_state_flag(),
             is_preview=True,
+            deprecate_info=_deprecate_legacy_monitoring_auth(c),
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)

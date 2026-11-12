@@ -19,6 +19,7 @@ HYBRIDCONTAINERSERVICE_RP = "microsoft.hybridcontainerservice"
 CONNECTED_CLUSTER_TYPE = "connectedclusters"
 MANAGED_CLUSTER_TYPE = "managedclusters"
 FLEET_TYPE = "fleets"
+FLEET_EXTENSION_TYPE = "microsoft.flux"
 APPLIANCE_TYPE = "appliances"
 PROVISIONED_CLUSTER_TYPE = "provisionedclusters"
 

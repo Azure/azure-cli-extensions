@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/networkanchors/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/networkanchors/{}", "2026-06-01"],
         ]
     }
 
@@ -193,7 +193,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -224,118 +224,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.zones = AAZListType()
-
-            properties = cls._schema_on_200.properties
-            properties.cidr_block = AAZStrType(
-                serialized_name="cidrBlock",
-                flags={"read_only": True},
-            )
-            properties.dns_forwarding_endpoint_ip_address = AAZStrType(
-                serialized_name="dnsForwardingEndpointIpAddress",
-                flags={"read_only": True},
-            )
-            properties.dns_forwarding_endpoint_nsg_rules_url = AAZStrType(
-                serialized_name="dnsForwardingEndpointNsgRulesUrl",
-                flags={"read_only": True},
-            )
-            properties.dns_forwarding_rules_url = AAZStrType(
-                serialized_name="dnsForwardingRulesUrl",
-                flags={"read_only": True},
-            )
-            properties.dns_listening_endpoint_ip_address = AAZStrType(
-                serialized_name="dnsListeningEndpointIpAddress",
-                flags={"read_only": True},
-            )
-            properties.dns_listening_endpoint_nsg_rules_url = AAZStrType(
-                serialized_name="dnsListeningEndpointNsgRulesUrl",
-                flags={"read_only": True},
-            )
-            properties.is_oracle_dns_forwarding_endpoint_enabled = AAZBoolType(
-                serialized_name="isOracleDnsForwardingEndpointEnabled",
-            )
-            properties.is_oracle_dns_listening_endpoint_enabled = AAZBoolType(
-                serialized_name="isOracleDnsListeningEndpointEnabled",
-            )
-            properties.is_oracle_to_azure_dns_zone_sync_enabled = AAZBoolType(
-                serialized_name="isOracleToAzureDnsZoneSyncEnabled",
-            )
-            properties.oci_backup_cidr_block = AAZStrType(
-                serialized_name="ociBackupCidrBlock",
-            )
-            properties.oci_subnet_id = AAZStrType(
-                serialized_name="ociSubnetId",
-                flags={"read_only": True},
-            )
-            properties.oci_vcn_dns_label = AAZStrType(
-                serialized_name="ociVcnDnsLabel",
-            )
-            properties.oci_vcn_id = AAZStrType(
-                serialized_name="ociVcnId",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.resource_anchor_id = AAZStrType(
-                serialized_name="resourceAnchorId",
-                flags={"required": True},
-            )
-            properties.subnet_id = AAZStrType(
-                serialized_name="subnetId",
-                flags={"required": True},
-            )
-            properties.vnet_id = AAZStrType(
-                serialized_name="vnetId",
-                flags={"read_only": True},
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
-            zones = cls._schema_on_200.zones
-            zones.Element = AAZStrType()
+            _UpdateHelper._build_schema_network_anchor_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -403,7 +292,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -446,118 +335,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200_201.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.properties = AAZObjectType()
-            _schema_on_200_201.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.tags = AAZDictType()
-            _schema_on_200_201.type = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200_201.zones = AAZListType()
-
-            properties = cls._schema_on_200_201.properties
-            properties.cidr_block = AAZStrType(
-                serialized_name="cidrBlock",
-                flags={"read_only": True},
-            )
-            properties.dns_forwarding_endpoint_ip_address = AAZStrType(
-                serialized_name="dnsForwardingEndpointIpAddress",
-                flags={"read_only": True},
-            )
-            properties.dns_forwarding_endpoint_nsg_rules_url = AAZStrType(
-                serialized_name="dnsForwardingEndpointNsgRulesUrl",
-                flags={"read_only": True},
-            )
-            properties.dns_forwarding_rules_url = AAZStrType(
-                serialized_name="dnsForwardingRulesUrl",
-                flags={"read_only": True},
-            )
-            properties.dns_listening_endpoint_ip_address = AAZStrType(
-                serialized_name="dnsListeningEndpointIpAddress",
-                flags={"read_only": True},
-            )
-            properties.dns_listening_endpoint_nsg_rules_url = AAZStrType(
-                serialized_name="dnsListeningEndpointNsgRulesUrl",
-                flags={"read_only": True},
-            )
-            properties.is_oracle_dns_forwarding_endpoint_enabled = AAZBoolType(
-                serialized_name="isOracleDnsForwardingEndpointEnabled",
-            )
-            properties.is_oracle_dns_listening_endpoint_enabled = AAZBoolType(
-                serialized_name="isOracleDnsListeningEndpointEnabled",
-            )
-            properties.is_oracle_to_azure_dns_zone_sync_enabled = AAZBoolType(
-                serialized_name="isOracleToAzureDnsZoneSyncEnabled",
-            )
-            properties.oci_backup_cidr_block = AAZStrType(
-                serialized_name="ociBackupCidrBlock",
-            )
-            properties.oci_subnet_id = AAZStrType(
-                serialized_name="ociSubnetId",
-                flags={"read_only": True},
-            )
-            properties.oci_vcn_dns_label = AAZStrType(
-                serialized_name="ociVcnDnsLabel",
-            )
-            properties.oci_vcn_id = AAZStrType(
-                serialized_name="ociVcnId",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.resource_anchor_id = AAZStrType(
-                serialized_name="resourceAnchorId",
-                flags={"required": True},
-            )
-            properties.subnet_id = AAZStrType(
-                serialized_name="subnetId",
-                flags={"required": True},
-            )
-            properties.vnet_id = AAZStrType(
-                serialized_name="vnetId",
-                flags={"read_only": True},
-            )
-
-            system_data = cls._schema_on_200_201.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200_201.tags
-            tags.Element = AAZStrType()
-
-            zones = cls._schema_on_200_201.zones
-            zones.Element = AAZStrType()
+            _UpdateHelper._build_schema_network_anchor_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -572,7 +350,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
             _builder.set_prop("zones", AAZListType, ".zones")
 
@@ -604,6 +382,162 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    _schema_network_anchor_read = None
+
+    @classmethod
+    def _build_schema_network_anchor_read(cls, _schema):
+        if cls._schema_network_anchor_read is not None:
+            _schema.id = cls._schema_network_anchor_read.id
+            _schema.location = cls._schema_network_anchor_read.location
+            _schema.name = cls._schema_network_anchor_read.name
+            _schema.properties = cls._schema_network_anchor_read.properties
+            _schema.system_data = cls._schema_network_anchor_read.system_data
+            _schema.tags = cls._schema_network_anchor_read.tags
+            _schema.type = cls._schema_network_anchor_read.type
+            _schema.zones = cls._schema_network_anchor_read.zones
+            return
+
+        cls._schema_network_anchor_read = _schema_network_anchor_read = AAZObjectType()
+
+        network_anchor_read = _schema_network_anchor_read
+        network_anchor_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        network_anchor_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        network_anchor_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        network_anchor_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        network_anchor_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        network_anchor_read.tags = AAZDictType()
+        network_anchor_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+        network_anchor_read.zones = AAZListType()
+
+        properties = _schema_network_anchor_read.properties
+        properties.cidr_block = AAZStrType(
+            serialized_name="cidrBlock",
+            flags={"read_only": True},
+        )
+        properties.dns_forwarding_endpoint_ip_address = AAZStrType(
+            serialized_name="dnsForwardingEndpointIpAddress",
+            flags={"read_only": True},
+        )
+        properties.dns_forwarding_endpoint_nsg_rules_url = AAZStrType(
+            serialized_name="dnsForwardingEndpointNsgRulesUrl",
+            flags={"read_only": True},
+        )
+        properties.dns_forwarding_rules_url = AAZStrType(
+            serialized_name="dnsForwardingRulesUrl",
+            flags={"read_only": True},
+        )
+        properties.dns_listening_endpoint_ip_address = AAZStrType(
+            serialized_name="dnsListeningEndpointIpAddress",
+            flags={"read_only": True},
+        )
+        properties.dns_listening_endpoint_nsg_rules_url = AAZStrType(
+            serialized_name="dnsListeningEndpointNsgRulesUrl",
+            flags={"read_only": True},
+        )
+        properties.is_oracle_dns_forwarding_endpoint_enabled = AAZBoolType(
+            serialized_name="isOracleDnsForwardingEndpointEnabled",
+        )
+        properties.is_oracle_dns_listening_endpoint_enabled = AAZBoolType(
+            serialized_name="isOracleDnsListeningEndpointEnabled",
+        )
+        properties.is_oracle_to_azure_dns_zone_sync_enabled = AAZBoolType(
+            serialized_name="isOracleToAzureDnsZoneSyncEnabled",
+        )
+        properties.oci_backup_cidr_block = AAZStrType(
+            serialized_name="ociBackupCidrBlock",
+        )
+        properties.oci_subnet_id = AAZStrType(
+            serialized_name="ociSubnetId",
+            flags={"read_only": True},
+        )
+        properties.oci_vcn_dns_label = AAZStrType(
+            serialized_name="ociVcnDnsLabel",
+        )
+        properties.oci_vcn_id = AAZStrType(
+            serialized_name="ociVcnId",
+            flags={"read_only": True},
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.proximity_placement_group = AAZObjectType(
+            serialized_name="proximityPlacementGroup",
+        )
+        properties.resource_anchor_id = AAZStrType(
+            serialized_name="resourceAnchorId",
+            flags={"required": True},
+        )
+        properties.subnet_id = AAZStrType(
+            serialized_name="subnetId",
+            flags={"required": True},
+        )
+        properties.vnet_id = AAZStrType(
+            serialized_name="vnetId",
+            flags={"read_only": True},
+        )
+
+        proximity_placement_group = _schema_network_anchor_read.properties.proximity_placement_group
+        proximity_placement_group.entity_type_intended_to_use = AAZStrType(
+            serialized_name="entityTypeIntendedToUse",
+            flags={"required": True},
+        )
+        proximity_placement_group.proximity_anchor_id = AAZStrType(
+            serialized_name="proximityAnchorId",
+        )
+        proximity_placement_group.proximity_placement_group_id = AAZStrType(
+            serialized_name="proximityPlacementGroupId",
+            flags={"required": True},
+        )
+
+        system_data = _schema_network_anchor_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        tags = _schema_network_anchor_read.tags
+        tags.Element = AAZStrType()
+
+        zones = _schema_network_anchor_read.zones
+        zones.Element = AAZStrType()
+
+        _schema.id = cls._schema_network_anchor_read.id
+        _schema.location = cls._schema_network_anchor_read.location
+        _schema.name = cls._schema_network_anchor_read.name
+        _schema.properties = cls._schema_network_anchor_read.properties
+        _schema.system_data = cls._schema_network_anchor_read.system_data
+        _schema.tags = cls._schema_network_anchor_read.tags
+        _schema.type = cls._schema_network_anchor_read.type
+        _schema.zones = cls._schema_network_anchor_read.zones
 
 
 __all__ = ["Update"]

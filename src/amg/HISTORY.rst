@@ -172,3 +172,8 @@ Release History
 3.1.0
 ++++++
 * Support dynamic dashboards schema
+
+3.1.1
+++++++
+* `az grafana dashboard`, `az grafana restore`, `az grafana migrate`: use folder UIDs instead of numeric IDs to preserve dashboard and library panel folder placement
+* `az grafana restore`, `az grafana migrate`: preserve library panel folders when overwriting existing panels

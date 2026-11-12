@@ -16,15 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a DbSystem
-
-    :example: DbSystems_CreateOrUpdate_MaximumSet
-        az oracle-database db-system update --resource-group rg --db-system-name dbsystem1 --zones "[2]" --tags "{example:test}"
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-06-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/dbsystems/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/dbsystems/{}", "2026-06-01"],
         ]
     }
 
@@ -165,7 +162,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -264,7 +261,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-06-01",
                     required=True,
                 ),
             }
@@ -388,6 +385,9 @@ class _UpdateHelper:
         db_system_read.zones = AAZListType()
 
         properties = _schema_db_system_read.properties
+        properties.character_set = AAZStrType(
+            serialized_name="characterSet",
+        )
         properties.cluster_name = AAZStrType(
             serialized_name="clusterName",
         )
@@ -396,6 +396,9 @@ class _UpdateHelper:
         )
         properties.compute_model = AAZStrType(
             serialized_name="computeModel",
+        )
+        properties.data_collection_options = AAZObjectType(
+            serialized_name="dataCollectionOptions",
         )
         properties.data_storage_size_in_gbs = AAZIntType(
             serialized_name="dataStorageSizeInGbs",
@@ -443,6 +446,9 @@ class _UpdateHelper:
         properties.memory_size_in_gbs = AAZIntType(
             serialized_name="memorySizeInGbs",
             flags={"read_only": True},
+        )
+        properties.ncharacter_set = AAZStrType(
+            serialized_name="ncharacterSet",
         )
         properties.network_anchor_id = AAZStrType(
             serialized_name="networkAnchorId",
@@ -492,6 +498,17 @@ class _UpdateHelper:
         )
         properties.version = AAZStrType(
             flags={"read_only": True},
+        )
+
+        data_collection_options = _schema_db_system_read.properties.data_collection_options
+        data_collection_options.is_diagnostics_events_enabled = AAZBoolType(
+            serialized_name="isDiagnosticsEventsEnabled",
+        )
+        data_collection_options.is_health_monitoring_enabled = AAZBoolType(
+            serialized_name="isHealthMonitoringEnabled",
+        )
+        data_collection_options.is_incident_logs_enabled = AAZBoolType(
+            serialized_name="isIncidentLogsEnabled",
         )
 
         db_system_options = _schema_db_system_read.properties.db_system_options

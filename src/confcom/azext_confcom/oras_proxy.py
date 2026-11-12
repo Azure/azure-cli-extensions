@@ -6,11 +6,12 @@
 import json
 import os
 import re
+import shutil
 import subprocess
 from tempfile import mkdtemp
 from typing import List, Optional
 
-from azext_confcom.config import ARTIFACT_TYPE, DEFAULT_REGO_FRAGMENTS
+from azext_confcom.config import ARTIFACT_TYPE, get_all_default_rego_fragments
 from azext_confcom.cose_proxy import CoseSignToolProxy
 from azext_confcom.errors import eprint
 from azext_confcom.os_util import clean_up_temp_folder, delete_silently
@@ -53,8 +54,15 @@ def prepend_docker_registry(image_name: str) -> str:
     return f"{registry}{image_name}"
 
 
-def call_oras_cli(args, check=False):
-    return subprocess.run(args, check=check, capture_output=True, timeout=120)
+def call_oras_cli(args, check=False, **kwargs):
+    if shutil.which("oras") is None:
+        eprint(
+            "The 'oras' CLI was not found in PATH. Install oras and make sure the "
+            "'oras' executable is on your PATH, then try again."
+        )
+    kwargs.setdefault("capture_output", True)
+    kwargs.setdefault("timeout", 120)
+    return subprocess.run(args, check=check, **kwargs)
 
 
 def manifest_fetch(image_tag: str) -> Optional[dict]:
@@ -63,9 +71,8 @@ def manifest_fetch(image_tag: str) -> Optional[dict]:
     Returns the parsed JSON manifest or None if operation fails.
     """
     try:
-        result = subprocess.run(
+        result = call_oras_cli(
             ["oras", "manifest", "fetch", "--format", "json", image_tag],
-            capture_output=True,
             text=True,
             timeout=30,
             check=True,
@@ -85,9 +92,8 @@ def manifest_fetch_config(image_tag: str) -> Optional[dict]:
     Returns the parsed JSON config or None if operation fails.
     """
     try:
-        result = subprocess.run(
+        result = call_oras_cli(
             ["oras", "manifest", "fetch-config", image_tag],
-            capture_output=True,
             text=True,
             timeout=30,
             check=True,
@@ -234,7 +240,7 @@ def pull(
     elif artifact and hash_val:
         # response from discover function includes "sha256:" but not "@"
         full_path = f"{artifact}@{hash_val}"
-    elif ":" in artifact:
+    elif ":" in artifact.rsplit("/", maxsplit=1)[-1]:
         artifact, tag = artifact.rsplit(":", maxsplit=1)
         full_path = f"{artifact}:{tag}"
     else:
@@ -269,10 +275,10 @@ def pull(
     return out_filename
 
 
-def pull_all_image_attached_fragments(image):
+def pull_all_image_attached_fragments(image, platform=None):
     # TODO: be smart about if we're pulling a fragment directly or trying to discover them from an image tag
     # TODO: this will be for standalone fragments
-    image_exists, fragments = discover(image, platform=FRAGMENT_DISCOVERY_PLATFORM)
+    image_exists, fragments = discover(image, platform=platform or FRAGMENT_DISCOVERY_PLATFORM)
     fragment_contents = []
     feeds = []
     if image_exists:
@@ -308,7 +314,7 @@ def pull_all_standalone_fragments(fragment_imports):
     for fragment in fragment_imports:
         if any(
             fragment["feed"] == default["feed"] and fragment["issuer"] == default["issuer"]
-            for default in DEFAULT_REGO_FRAGMENTS
+            for default in get_all_default_rego_fragments()
         ):
             continue
         path = fragment.get("path")
@@ -319,6 +325,16 @@ def pull_all_standalone_fragments(fragment_imports):
         if path:
             text = proxy.extract_payload_from_path(path)
         else:
+            # A feed is only an identifier matched against the signed fragment; it is
+            # pullable only when it carries a digest or tag
+            # a colon in the registry host (port) is not a tag separator
+            if SHA256_PREFIX not in feed and ":" not in feed.rsplit("/", maxsplit=1)[-1]:
+                logger.warning(
+                    "No attached fragment found for feed %s and it is not a pullable reference. "
+                    "Keeping the import without fragment contents.",
+                    feed
+                )
+                continue
             filename = pull(artifact=feed)
             text = proxy.extract_payload_from_path(filename)
             svn = extract_svn_from_text(text)
@@ -382,9 +398,11 @@ def attach_fragment_to_image(image_name: str, filename: str, platform: Optional[
     print(f"Fragment attached to image '{image_name}' with Digest:{digest}")
 
 
-def generate_imports_from_image_name(image_name: str, minimum_svn: str) -> List[dict]:
+def generate_imports_from_image_name(
+    image_name: str, minimum_svn: str, platform: str = FRAGMENT_DISCOVERY_PLATFORM
+) -> List[dict]:
     cose_proxy = CoseSignToolProxy()
-    image_exists, fragment_hashes = discover(image_name, platform=FRAGMENT_DISCOVERY_PLATFORM)
+    image_exists, fragment_hashes = discover(image_name, platform=platform)
     import_list = []
 
     if image_exists:

@@ -454,15 +454,14 @@ class DocumentdbScenario(ScenarioTest):
 
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
 
-    # ---- test 8: replica promote (forced switchover to primary) ----
+    # ---- tests 8-9: replica promote (forced and planned) ----
 
-    @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_promote', location='eastus2')
-    def test_documentdb_mongocluster_replica_promote(self, resource_group):
+    def _test_replica_promote(self, promote_option):
         self._base_kwargs()
         self.kwargs.update({
             'replica': self.create_random_name('cli-mc-rep', 20),
             'replica_loc': 'westus2',
+            'promote_option': promote_option,
         })
 
         # A source cluster and a cross-region replica are the starting topology
@@ -478,20 +477,21 @@ class DocumentdbScenario(ScenarioTest):
             ],
         )
 
-        # A --source-cluster that does not match the replica's actual source is
-        # rejected by the guard before any switchover is attempted.
-        self.cmd(
-            'documentdb mongocluster replica promote -n {replica} -g {rg} '
-            '--source-cluster wrong-source-cluster --mode Switchover '
-            '--promote-option Forced --yes',
-            expect_failure=True,
-        )
+        if promote_option == 'Forced':
+            # A --source-cluster that does not match the replica's actual source
+            # is rejected before any emergency promotion is attempted.
+            self.cmd(
+                'documentdb mongocluster replica promote -n {replica} -g {rg} '
+                '--source-cluster wrong-source-cluster --mode Switchover '
+                '--promote-option Forced --yes',
+                expect_failure=True,
+            )
 
-        # Promote the replica to primary with a forced switchover. The former
-        # replica settles into the primary role once the operation completes.
+        # Exercise the selected promotion option through the service request.
         self._cmd_retry(
             'documentdb mongocluster replica promote -n {replica} -g {rg} '
-            '--source-cluster {cluster} --mode Switchover --promote-option Forced --yes'
+            '--source-cluster {cluster} --mode Switchover '
+            '--promote-option {promote_option} --yes'
         )
         self.cmd(
             'documentdb mongocluster wait -n {replica} -g {rg} '
@@ -510,7 +510,17 @@ class DocumentdbScenario(ScenarioTest):
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
         self._cmd_retry('documentdb mongocluster delete -n {replica} -g {rg} --yes')
 
-    # ---- test 9: additional cluster properties (create + update coverage) ----
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_promote', location='eastus2')
+    def test_documentdb_mongocluster_replica_promote(self, resource_group):
+        self._test_replica_promote('Forced')
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_promote', location='eastus2')
+    def test_documentdb_mongocluster_replica_promote_planned(self, resource_group):
+        self._test_replica_promote('Planned')
+
+    # ---- test 10: additional cluster properties (create + update coverage) ----
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_documentdb_props', location='eastus2')
@@ -617,7 +627,7 @@ class DocumentdbScenario(ScenarioTest):
 
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
 
-    # ---- test 10: negative cases (validation + service rejections) ----
+    # ---- test 11: negative cases (validation + service rejections) ----
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_documentdb_neg', location='eastus2')

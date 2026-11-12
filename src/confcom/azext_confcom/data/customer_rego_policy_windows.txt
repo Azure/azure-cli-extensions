@@ -8,6 +8,8 @@ framework_version := %s
 
 fragments := %s
 
+# Windows exec_processes retain argv for corrected hcsshim and also include a
+# serialized command line to work around hcsshim passing CommandLine as one argument.
 containers := %s
 
 allow_properties_access := %s

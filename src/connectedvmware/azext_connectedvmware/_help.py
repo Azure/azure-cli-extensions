@@ -448,6 +448,12 @@ helps[
       - name: Create VMware resources from all Arc for Servers machines in the specified subscription belonging to that vCenter
         text: |-
                 az connectedvmware vm create-from-machines \
+--subscription 01234567-89ab-cdef-0123-456789abcdef \
+--vcenter-id /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg-2/providers/Microsoft.ConnectedVMwareVsphere/vcenters/contoso-vcenter
+
+      - name: Create VMware resources using the machine subscription name
+        text: |-
+                az connectedvmware vm create-from-machines \
 --subscription contoso-sub \
 --vcenter-id /subscriptions/fedcba98-7654-3210-0123-456789abcdef/resourceGroups/contoso-rg-2/providers/Microsoft.ConnectedVMwareVsphere/vcenters/contoso-vcenter
 """

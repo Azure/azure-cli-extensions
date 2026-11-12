@@ -670,7 +670,7 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
             # Determine overall readiness
             if status["deployments"]:
                 all_deployments_ready = all(
-                    dep["ready_replicas"] == dep["replicas"] and dep["replicas"] > 0
+                    0 < dep["replicas"] == dep["ready_replicas"]
                     for dep in status["deployments"]
                 )
                 status["ready"] = all_deployments_ready

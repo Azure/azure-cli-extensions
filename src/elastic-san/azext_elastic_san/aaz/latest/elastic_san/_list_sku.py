@@ -22,9 +22,9 @@ class ListSku(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elasticsan/skus", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elasticsan/skus", "2026-05-01-preview"],
         ]
     }
 
@@ -110,7 +110,7 @@ class ListSku(AAZCommand):
                     "$filter", self.ctx.args.filter,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -175,14 +175,7 @@ class ListSku(AAZCommand):
 
             capabilities = cls._schema_on_200.value.Element.capabilities
             capabilities.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.capabilities.Element
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.value = AAZStrType(
-                flags={"read_only": True},
-            )
+            _ListSkuHelper._build_schema_sku_capability_read(capabilities.Element)
 
             location_info = cls._schema_on_200.value.Element.location_info
             location_info.Element = AAZObjectType()
@@ -191,9 +184,31 @@ class ListSku(AAZCommand):
             _element.location = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.zone_details = AAZListType(
+                serialized_name="zoneDetails",
+                flags={"read_only": True},
+            )
             _element.zones = AAZListType(
                 flags={"read_only": True},
             )
+
+            zone_details = cls._schema_on_200.value.Element.location_info.Element.zone_details
+            zone_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.location_info.Element.zone_details.Element
+            _element.capabilities = AAZListType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZListType(
+                flags={"read_only": True},
+            )
+
+            capabilities = cls._schema_on_200.value.Element.location_info.Element.zone_details.Element.capabilities
+            capabilities.Element = AAZObjectType()
+            _ListSkuHelper._build_schema_sku_capability_read(capabilities.Element)
+
+            name = cls._schema_on_200.value.Element.location_info.Element.zone_details.Element.name
+            name.Element = AAZStrType()
 
             zones = cls._schema_on_200.value.Element.location_info.Element.zones
             zones.Element = AAZStrType()
@@ -206,6 +221,28 @@ class ListSku(AAZCommand):
 
 class _ListSkuHelper:
     """Helper class for ListSku"""
+
+    _schema_sku_capability_read = None
+
+    @classmethod
+    def _build_schema_sku_capability_read(cls, _schema):
+        if cls._schema_sku_capability_read is not None:
+            _schema.name = cls._schema_sku_capability_read.name
+            _schema.value = cls._schema_sku_capability_read.value
+            return
+
+        cls._schema_sku_capability_read = _schema_sku_capability_read = AAZObjectType()
+
+        sku_capability_read = _schema_sku_capability_read
+        sku_capability_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        sku_capability_read.value = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        _schema.name = cls._schema_sku_capability_read.name
+        _schema.value = cls._schema_sku_capability_read.value
 
 
 __all__ = ["ListSku"]

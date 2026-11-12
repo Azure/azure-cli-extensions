@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.1.0b1
++++++++
+* Regenerate the extension with the ``2026-06-15-preview`` API.
+* Return the extension and its command surface to Preview status while using
+  the Preview API.
+* Add the ``Planned`` replica promotion option, which waits for the replica to
+  catch up before switching roles to avoid data loss.
+
 1.0.0
 ++++++
 * Stable release of the Azure DocumentDB extension.
