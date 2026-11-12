@@ -10,13 +10,20 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     tags_type,
 )
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
     with self.argument_context('workload-manager workload-space up') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('space_name', options_list=['--space-name', '--name', '-n'], help='Name of the workload space.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+        c.argument(
+            'location',
+            arg_type=get_location_type(self.cli_ctx),
+            required=False,
+            validator=get_default_location_from_resource_group,
+            help='Deployment location. Defaults to the configured location or the resource group location.',
+        )
         c.argument('tags', arg_type=tags_type)
         c.argument('deployment_name', validator=None, help='ARM deployment name. Defaults to the workload-space name.')
         c.argument(

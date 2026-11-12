@@ -82,7 +82,7 @@ class Create(AAZCommand):
             options=["--kind"],
             arg_group="Resource",
             help="Metadata used by portal/tooling/etc to render different UX experiences for resources of the same type; e.g. ApiApps are a kind of Microsoft.Web/sites type.  If supported, the resource provider must validate and persist this value.",
-            enum={"AgentSandbox": "AgentSandbox", "PodSnapshotRestore": "PodSnapshotRestore"},
+            enum={"AgentSandbox": "AgentSandbox"},
             fmt=AAZStrArgFormat(
                 pattern="^[-\\w\\._,\\(\\\\\\)]+$",
             ),

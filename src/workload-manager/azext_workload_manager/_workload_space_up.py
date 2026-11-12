@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 _API_VERSION = '2026-11-01-preview'
 
 
-def workload_space_up(cmd, resource_group_name, space_name, location, tags=None, deployment_name=None,
+def workload_space_up(cmd, resource_group_name, space_name, location=None, tags=None, deployment_name=None,
                       managed_cluster_resource_id=None, workload_execution_subnet_id=None,
                       runtime_link_subnet_id=None, no_wait=False):
     if not re.fullmatch(r'(?![.-])[A-Za-z0-9_.-]{1,64}', space_name):

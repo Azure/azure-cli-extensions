@@ -7,7 +7,7 @@ import io
 import itertools
 import unittest
 from types import SimpleNamespace
-from unittest.mock import Mock, patch
+from unittest.mock import ANY, Mock, patch
 
 from azure.core.exceptions import HttpResponseError
 from azure.cli.core import MainCommandsLoader, get_default_cli
@@ -61,6 +61,13 @@ class WorkloadSpaceUpTest(unittest.TestCase):
 
     def _deployment(self):
         return self.client.deployments.begin_create_or_update.call_args.kwargs["parameters"].serialize()
+
+    @staticmethod
+    def _load_workload_commands(main_loader, args):
+        loader = WorkloadManagerCommandsLoader(cli_ctx=main_loader.cli_ctx)
+        main_loader.command_table = loader.load_command_table(args)
+        main_loader.cmd_to_loader_map = {name: [loader] for name in main_loader.command_table}
+        return main_loader.command_table
 
     def test_managed_composition_submits_one_incremental_deployment(self):
         result = self._invoke(tags={"environment": "test", "literal": "[not-an-expression]"})
@@ -246,12 +253,6 @@ class WorkloadSpaceUpTest(unittest.TestCase):
         self.factory.assert_called_once_with(self.cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
 
     def test_cli_arguments_submit_the_composition_with_a_stable_deployment_name(self):
-        def load_workload_commands(main_loader, args):
-            loader = WorkloadManagerCommandsLoader(cli_ctx=main_loader.cli_ctx)
-            main_loader.command_table = loader.load_command_table(args)
-            main_loader.cmd_to_loader_map = {name: [loader] for name in main_loader.command_table}
-            return main_loader.command_table
-
         self.client.deployments.begin_create_or_update.return_value = {"properties": {"provisioningState": "Accepted"}}
         cases = (
             ["-n", "my-space"],
@@ -264,7 +265,7 @@ class WorkloadSpaceUpTest(unittest.TestCase):
              "--execution-subnet-id", self._REFERENCES["workload_execution_subnet_id"],
              "--runtime-link-subnet-id", self._REFERENCES["runtime_link_subnet_id"]],
         )
-        with patch.object(MainCommandsLoader, "load_command_table", load_workload_commands), patch(
+        with patch.object(MainCommandsLoader, "load_command_table", self._load_workload_commands), patch(
                 "socket.socket.connect", side_effect=AssertionError("Unexpected network request")):
             for options in cases:
                 with self.subTest(options=options):
@@ -288,6 +289,50 @@ class WorkloadSpaceUpTest(unittest.TestCase):
                         resources[1]["properties"]["provisioningMode"],
                         "Referenced" if len(options) > 2 else "Managed",
                     )
+
+    def test_cli_location_uses_explicit_configured_or_resource_group_value(self):
+        self.client.deployments.begin_create_or_update.return_value = {"properties": {"provisioningState": "Accepted"}}
+        resource_client = Mock()
+        resource_client.resource_groups.get.return_value = SimpleNamespace(name="workload-rg", location="westus2")
+        cases = (
+            ([], None, "westus2"),
+            ([], "centralus", "centralus"),
+            (["-l", "eastus2"], "centralus", "eastus2"),
+        )
+        with patch.object(MainCommandsLoader, "load_command_table", self._load_workload_commands), patch(
+                "azure.cli.core.commands.client_factory.get_mgmt_service_client",
+                return_value=resource_client) as resource_factory, patch(
+                "socket.socket.connect", side_effect=AssertionError("Unexpected network request")):
+            for options, configured_location, expected_location in cases:
+                with self.subTest(options=options, configured_location=configured_location):
+                    self.client.reset_mock()
+                    resource_client.reset_mock()
+                    resource_factory.reset_mock()
+                    cli = get_default_cli()
+                    read_config = cli.config.get
+
+                    def get_config(section, option, *args, **kwargs):
+                        if section == cli.config.defaults_section_name and option == "location":
+                            return configured_location
+                        return read_config(section, option, *args, **kwargs)
+
+                    arguments = [
+                        "workload-manager", "workload-space", "up", "-g", "workload-rg", "-n", "my-space",
+                        "--no-wait", "--only-show-errors", "-o", "none",
+                    ] + options
+                    with patch.object(cli.config, "get", side_effect=get_config):
+                        self.assertEqual(cli.invoke(arguments, out_file=io.StringIO()), 0)
+                    self.client.deployments.begin_create_or_update.assert_called_once()
+                    self.assertEqual(
+                        self._deployment()["properties"]["parameters"]["location"]["value"],
+                        expected_location,
+                    )
+                    if not options and configured_location is None:
+                        resource_client.resource_groups.get.assert_called_once_with("workload-rg")
+                        resource_factory.assert_called_once_with(ANY, ResourceType.MGMT_RESOURCE_RESOURCES)
+                    else:
+                        resource_client.resource_groups.get.assert_not_called()
+                        resource_factory.assert_not_called()
 
 
 if __name__ == "__main__":
