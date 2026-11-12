@@ -42,6 +42,16 @@ az logicapp workflow validate --path .\orders --workflow hello
 az logicapp deployment package --path .\orders --output-path .\orders.zip
 ```
 
+`deployment package` auto-detects a unique SDK-based codeful `.csproj` that
+references both `Microsoft.Azure.Workflows.Sdk` and
+`Microsoft.Azure.Functions.Worker.Sdk`. It runs an isolated Release/net8.0
+`dotnet publish`, normalizes and validates the worker metadata, and places the
+published worker under `lib/codeful` while retaining deployment-safe root assets.
+Use `--project` to select among multiple eligible projects and `--dotnet` to
+choose the executable. Traditional `Microsoft.NET.Sdk.Functions` /
+`Microsoft.Azure.Workflows.WebJobs.Extension` projects continue through the
+existing file-packaging path.
+
 The original capabilities remain part of this contribution:
 
 | Command group | Purpose |
