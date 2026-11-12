@@ -152,6 +152,99 @@ def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, p
            resource_type, ssh_proxy_folder, winrdp, yes_without_prompt, ssh_args)
 
 
+def ssh_cert_create(cmd, vault_name, resource_id):
+    """Create a short-lived SSH certificate signed by a private CA in Key Vault.
+
+    Step 1 - Prepare certificate metadata:
+        Generate ephemeral key pair, resolve PIM role, build metadata:
+        { user_public_key, username, role, expiry }
+        Expiry is derived from the PIM activation's remaining duration.
+
+    Step 2 - Sign via Key Vault:
+        Send signing request to Key Vault Sign API using az login context.
+        CA private key never leaves Key Vault.
+
+    Step 3 - Return to user:
+        Signed SSH user certificate + freshly generated user_private key.
+    """
+    from . import provisioned_machine_utils as pm
+
+    telemetry.set_command_details('ssh cert-create')
+
+    # Validate inputs.
+    pm.validate_resource_id(resource_id)
+    pm.validate_vault_name(vault_name)
+
+    private_key_path = None
+    cert_path = None
+    try:
+        # -- Step 1: Prepare certificate metadata --------------------------
+        # Derive username from az login (Entra) context.
+        username = pm.get_current_user_principal(cmd)
+        logger.info("Derived username: %s", username)
+
+        # Verify the user has an active PIM assignment (JIT activated).
+        # startTime/endTime are derived from the PIM activation window.
+        _pim_instances, start_time, end_time = pm.check_pim_eligibility(cmd, resource_id)
+        logger.info("PIM eligibility confirmed for resource: %s (valid %s to %s)",
+                    resource_id, start_time, end_time)
+
+        # Resolve role from PIM assignment on the ProvisionedMachine resource.
+        # Reader role is blocked — only Contributor and Administrator can
+        # generate SSH certificates.
+        role = pm.resolve_user_role(cmd, resource_id)
+        logger.info("Resolved PIM role: %s", role)
+
+        # Determine which certificate types this role can generate.
+        role_perms = pm.ROLE_PERMISSIONS.get(role, {})
+        cert_types = role_perms.get("certificate_types", [])
+        logger.info("Allowed certificate types for %s: %s", role, cert_types)
+
+        # Generate fresh ephemeral SSH key pair.
+        private_key_path, public_key_path = pm.generate_ephemeral_keypair()
+        with open(public_key_path, "r", encoding="utf-8") as f:
+            user_public_key = f.read().strip()
+
+        certificate_metadata = {
+            "userPublicKey": user_public_key,
+            "username": username,
+            "role": role,
+            "startTime": start_time,
+            "endTime": end_time,
+        }
+
+        # -- Step 2: Sign via Key Vault ------------------------------------
+        # AZ CLI sends signing request using az login context.
+        # CA private key never leaves Key Vault.
+        signed_certificate = pm.sign_certificate_metadata(
+            cmd, vault_name, certificate_metadata
+        )
+        cert_path = signed_certificate["certificatePath"]
+
+        # -- Step 3: Return to user ----------------------------------------
+        result = {
+            "privateKeyPath": private_key_path,
+            "certificatePath": cert_path,
+        }
+
+        print_styled_text((Style.SUCCESS,
+                           f"SSH certificate created successfully.\n"
+                           f"  Private key : {private_key_path}\n"
+                           f"  Certificate : {cert_path}"))
+
+        logger.warning("The private key at %s is sensitive. "
+                       "Delete it once the certificate expires.",
+                       os.path.dirname(private_key_path))
+
+        telemetry.set_success()
+        return result
+
+    except Exception:
+        # Clean up sensitive ephemeral files on failure.
+        pm.cleanup_ephemeral_files(private_key_path, cert_path)
+        raise
+
+
 def _do_ssh_op(cmd, op_info, op_call):
     # Get ssh_ip before getting public key to avoid getting "ResourceNotFound" exception after creating the keys
     if not op_info.is_arc():
