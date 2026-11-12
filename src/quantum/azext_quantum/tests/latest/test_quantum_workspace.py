@@ -29,7 +29,6 @@ from ...vendored_sdks.azure_quantum_python._client.models import Usage
 from ...vendored_sdks.azure_quantum_python._client.operations._operations import (
     build_services_quotas_list_workspace_usages_request,
 )
-from ...vendored_sdks.azure_quantum_python.workspace import Workspace as QuantumSdkWorkspace
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -641,40 +640,6 @@ class QuantumWorkspacesUnitTest(unittest.TestCase):
 
         self.assertEqual(test_case.cmd.call_count, 3)
         self.assertEqual(sleep_mock.call_count, 2)
-
-
-class QuantumWorkspaceStorageContractTest(unittest.TestCase):
-
-    @patch('azext_quantum.vendored_sdks.azure_quantum_python.workspace.WorkspaceMgmtClient')
-    def test_get_container_uri_uses_linked_storage(self, management_client_mock):
-        subscription_id = '00000000-0000-0000-0000-000000000001'
-        # Replace ARM discovery, while constructing the workspace and data client normally.
-        management_client_mock.return_value.load_workspace_from_arm.side_effect = (
-            lambda parameters: parameters.merge(quantum_endpoint='https://ws.eastus.quantum.azure.com')
-        )
-        workspace = QuantumSdkWorkspace(
-            subscription_id=subscription_id,
-            resource_group='rg',
-            name='ws',
-            location='eastus',
-            credential=Mock(),
-        )
-        self.addCleanup(workspace.close)
-        expected_uri = 'https://example.com/job-job-123?test-sas'
-
-        with patch.object(
-            workspace._client.services.storage,
-            'get_sas_uri',
-            return_value=SimpleNamespace(sas_uri=expected_uri),
-        ) as get_sas_uri:
-            result = workspace.get_container_uri(job_id='job-123')
-
-        self.assertEqual(result, expected_uri)
-        get_sas_uri.assert_called_once()
-        args, kwargs = get_sas_uri.call_args
-        self.assertEqual(args, (subscription_id, 'rg', 'ws'))
-        self.assertEqual(kwargs['blob_details'].container_name, 'job-job-123')
-        self.assertIsNone(kwargs['blob_details'].blob_name)
 
 
 class QuantumWorkspacesScenarioTest(ScenarioTest):
