@@ -1,0 +1,462 @@
+interactions:
+- request:
+    body: '{"location": "eastus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002?api-version=2026-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","name":"storage-mover000002","type":"microsoft.storagemover/storagemovers","location":"eastus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-28T10:13:13.5787078Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-28T10:13:13.5787078Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '525'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Oct 2026 10:13:13 GMT
+      etag:
+      - '"ad00ad70-0000-0100-0000-6ae1cab90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/southindia/498c5422-8182-4905-8745-9e06b8a0bb87
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 63536EEBD5EC4143AE0294CC6E9FBF15 Ref B: PNQ231110906042 Ref C: 2026-10-28T10:13:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover project create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --storage-mover-name -n
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/xtproject?api-version=2026-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/xtproject","name":"xtproject","type":"microsoft.storagemover/storagemovers/projects","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-28T10:13:14.9495223Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-28T10:13:14.9495223Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '523'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Oct 2026 10:13:15 GMT
+      etag:
+      - '"0901a344-0000-0100-0000-6ae1cabb0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus/342d583e-d222-49db-bb4a-8692ee5842c4
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 00B52EE4FEFF4C868F3F6E48A55756BC Ref B: PNQ231110907060 Ref C: 2026-10-28T10:13:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "properties": {"endpointKind":
+      "Source", "endpointType": "AzureStorageBlobContainer", "allowedStorageAccounts":
+      ["/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/partner/providers/Microsoft.Storage/storageAccounts/partneraccount"],
+      "blobContainerName": "sourcecontainer", "enableCrossTenantTransfer": true, "storageAccountResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/source/providers/Microsoft.Storage/storageAccounts/sourceaccount"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint create-for-storage-container
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '530'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --storage-mover-name -n --container-name --storage-account-id --endpoint-kind
+        --enable-cross-tenant-transfer --allowed-storage-accounts
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-xt-source000003?api-version=2026-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-xt-source000003","name":"test-xt-source000003","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-28T10:13:16.1361002Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-28T10:13:16.1361002Z"},"identity":{"principalId":"e8d9eca6-e0fe-44c0-85b1-93e1f47e0dc8","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/source/providers/Microsoft.Storage/storageAccounts/sourceaccount","blobContainerName":"sourcecontainer","enableCrossTenantTransfer":true,"allowedStorageAccounts":["/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/partner/providers/Microsoft.Storage/storageAccounts/partneraccount"],"endpointType":"AzureStorageBlobContainer","endpointKind":"Source","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1149'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Oct 2026 10:13:17 GMT
+      etag:
+      - '"030399b8-0000-0100-0000-6ae1cabd0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus/9eedd3ed-68d8-4d37-91ca-57a4c0eff3d7
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 6B3C001F405E49D6882EB8FCA5D68484 Ref B: PNQ231110906025 Ref C: 2026-10-28T10:13:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"copyMode": "Additive", "crossTenantEndpointResourceId":
+      "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/partner/providers/Microsoft.StorageMover/storageMovers/partner/endpoints/test-target",
+      "crossTenantEndpointTenantId": "22222222-2222-2222-2222-222222222222", "dataIntegrityValidation":
+      "None", "isCrossTenantJob": true, "jobType": "CloudToCloud", "preservePermissions":
+      true, "sourceName": "test-xt-source000003", "targetName": "test-target"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover job-definition create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '483'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --storage-mover-name --project-name -n --job-type --copy-mode --source-name
+        --target-name --is-cross-tenant-job --cross-tenant-endpoint-tenant-id --cross-tenant-endpoint-resource-id
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/xtproject/jobDefinitions/jobdef-xt000004?api-version=2026-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/xtproject/jobDefinitions/jobdef-xt000004","name":"jobdef-xt000004","type":"microsoft.storagemover/storagemovers/projects/jobdefinitions","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-28T10:13:18.6821731Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-28T10:13:18.6821731Z"},"properties":{"jobType":"CloudToCloud","copyMode":"Additive","sourceName":"test-xt-source000003","sourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-xt-source000003","targetName":"test-target","targetResourceId":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/partner/providers/Microsoft.StorageMover/storageMovers/partner/endpoints/test-target","schedule":{"isActive":false,"frequency":"None"},"isCrossTenantJob":true,"crossTenantEndpointTenantId":"22222222-2222-2222-2222-222222222222","crossTenantEndpointResourceId":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/partner/providers/Microsoft.StorageMover/storageMovers/partner/endpoints/test-target","preservePermissions":true,"dataIntegrityValidation":"None","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1449'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Oct 2026 10:13:20 GMT
+      etag:
+      - '"db00416b-0000-0100-0000-6ae1cac00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus/22ace4bc-f9fb-4b8c-97ae-6966d55e8ccc
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 2A57E39710544D6A9FCFDBCA622F0E76 Ref B: PNQ231110909054 Ref C: 2026-10-28T10:13:18Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover job-definition show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name --project-name -n
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/xtproject/jobDefinitions/jobdef-xt000004?api-version=2026-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/xtproject/jobDefinitions/jobdef-xt000004","name":"jobdef-xt000004","type":"microsoft.storagemover/storagemovers/projects/jobdefinitions","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-28T10:13:18.6821731Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-28T10:13:18.6821731Z"},"properties":{"jobType":"CloudToCloud","copyMode":"Additive","sourceName":"test-xt-source000003","sourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-xt-source000003","targetName":"test-target","targetResourceId":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/partner/providers/Microsoft.StorageMover/storageMovers/partner/endpoints/test-target","schedule":{"isActive":false,"frequency":"None"},"isCrossTenantJob":true,"crossTenantEndpointTenantId":"22222222-2222-2222-2222-222222222222","crossTenantEndpointResourceId":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/partner/providers/Microsoft.StorageMover/storageMovers/partner/endpoints/test-target","preservePermissions":true,"dataIntegrityValidation":"None","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1449'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Oct 2026 10:13:21 GMT
+      etag:
+      - '"db00416b-0000-0100-0000-6ae1cac00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus/d012feec-542e-440d-bd81-d2707f4f7951
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 610581C6126A47D58E430C3B7EF04FF0 Ref B: PNQ231110907042 Ref C: 2026-10-28T10:13:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover job-definition update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name --project-name -n --description
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/xtproject/jobDefinitions/jobdef-xt000004?api-version=2026-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/xtproject/jobDefinitions/jobdef-xt000004","name":"jobdef-xt000004","type":"microsoft.storagemover/storagemovers/projects/jobdefinitions","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-28T10:13:18.6821731Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-28T10:13:18.6821731Z"},"properties":{"jobType":"CloudToCloud","copyMode":"Additive","sourceName":"test-xt-source000003","sourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-xt-source000003","targetName":"test-target","targetResourceId":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/partner/providers/Microsoft.StorageMover/storageMovers/partner/endpoints/test-target","schedule":{"isActive":false,"frequency":"None"},"isCrossTenantJob":true,"crossTenantEndpointTenantId":"22222222-2222-2222-2222-222222222222","crossTenantEndpointResourceId":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/partner/providers/Microsoft.StorageMover/storageMovers/partner/endpoints/test-target","preservePermissions":true,"dataIntegrityValidation":"None","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1449'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Oct 2026 10:13:21 GMT
+      etag:
+      - '"db00416b-0000-0100-0000-6ae1cac00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus/fc3895a9-7b50-4cc1-b19b-3d850e4a1893
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 918A3B6B9B4C4A268F465C259F7E2423 Ref B: PNQ231110908025 Ref C: 2026-10-28T10:13:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"copyMode": "Additive", "crossTenantEndpointResourceId":
+      "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/partner/providers/Microsoft.StorageMover/storageMovers/partner/endpoints/test-target",
+      "crossTenantEndpointTenantId": "22222222-2222-2222-2222-222222222222", "dataIntegrityValidation":
+      "None", "description": "updated-cross-tenant-job", "isCrossTenantJob": true,
+      "jobType": "CloudToCloud", "preservePermissions": true, "schedule": {"frequency":
+      "None", "isActive": false}, "sourceName": "test-xt-source000003", "targetName":
+      "test-target"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover job-definition update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '580'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --storage-mover-name --project-name -n --description
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/xtproject/jobDefinitions/jobdef-xt000004?api-version=2026-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/xtproject/jobDefinitions/jobdef-xt000004","name":"jobdef-xt000004","type":"microsoft.storagemover/storagemovers/projects/jobdefinitions","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-28T10:13:18.6821731Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-28T10:13:22.2547717Z"},"properties":{"jobType":"CloudToCloud","copyMode":"Additive","sourceName":"test-xt-source000003","sourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-xt-source000003","targetName":"test-target","targetResourceId":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/partner/providers/Microsoft.StorageMover/storageMovers/partner/endpoints/test-target","schedule":{"isActive":false,"frequency":"None"},"isCrossTenantJob":true,"crossTenantEndpointTenantId":"22222222-2222-2222-2222-222222222222","crossTenantEndpointResourceId":"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/partner/providers/Microsoft.StorageMover/storageMovers/partner/endpoints/test-target","preservePermissions":true,"dataIntegrityValidation":"None","description":"updated-cross-tenant-job","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1490'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Oct 2026 10:13:22 GMT
+      etag:
+      - '"db00616b-0000-0100-0000-6ae1cac30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus/53d85281-d650-4321-8ca4-46004e3e11de
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 7CDC1F34B4434073AF1BCC9E553F545A Ref B: PNQ231110909054 Ref C: 2026-10-28T10:13:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover job-definition delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --storage-mover-name --project-name -n -y
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/projects/xtproject/jobDefinitions/jobdef-xt000004?api-version=2026-05-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      date:
+      - Wed, 28 Oct 2026 10:13:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=00000000-0000-0000-0000-000000000000,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus/9260fc60-8fce-4130-8637-7ea6bf8d2e91
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 39638218C76248CDA194D05A5232F5EA Ref B: PNQ231110908029 Ref C: 2026-10-28T10:13:23Z'
+    status:
+      code: 204
+      message: No Content
+version: 1

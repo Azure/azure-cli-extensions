@@ -9,3 +9,43 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+
+helps['workload-manager workload-space up'] = """
+type: command
+short-summary: Provision a workload space with runtime bindings, a runtime link, and capabilities.
+long-summary: |
+    Deploy a workload space, managed AKS and ACI runtime bindings, a runtime link,
+    and AgentSandbox and PodSnapshotRestore capabilities. Use an existing resource
+    group with the required provider registrations and service permissions configured.
+
+    Location defaults to your configured location, or the resource group's location
+    if no default is configured. Use --location to select another supported location.
+
+    Supply --managed-cluster-resource-id, --workload-execution-subnet-id and
+    --runtime-link-subnet-id together to use an existing AKS cluster. The cluster
+    must be in the selected subscription and location. Both subnets must be in
+    that subscription and the cluster's VNet; the runtime-link subnet must be empty
+    and separate from the AKS and ACI subnets. The service validates cluster topology.
+
+    Child names are aks, aci, link, agent-sandbox and pod-snapshot-restore.
+    Reruns update the same resources and reapply the supplied configuration.
+    Existing bindings must retain their managed or referenced mode. Unrelated
+    resources are preserved. If deployment fails, resources already created remain
+    available; review deployment errors before retrying.
+
+    Return the ARM deployment result, with the workload-space ID in its outputs.
+    --no-wait returns after submission; ARM continues the entire deployment.
+    Use az deployment group show to inspect deployment progress or failures.
+examples:
+  - name: Provision a managed runtime composition using the default location.
+    text: az workload-manager workload-space up --resource-group MyResourceGroup --name MySpace
+  - name: Use an existing AKS cluster with separate ACI and runtime-link subnets.
+    text: >-
+        az workload-manager workload-space up --resource-group MyResourceGroup --name MySpace --location eastus2
+        --managed-cluster-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ClusterRG/providers/Microsoft.ContainerService/managedClusters/MyCluster
+        --workload-execution-subnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkRG/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/aci
+        --runtime-link-subnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/NetworkRG/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/link
+  - name: Submit a named deployment without waiting for completion.
+    text: az workload-manager workload-space up -g MyResourceGroup -n MySpace -l eastus2 --deployment-name MyDeployment --tags environment=dev --no-wait
+"""

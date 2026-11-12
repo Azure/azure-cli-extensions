@@ -308,6 +308,11 @@ CONST_PERISCOPE_NAMESPACE = "aks-periscope"
 CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC = "Public"
 CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE = "Private"
 
+# Encryption at rest of Kubernetes resource objects using service-managed keys (PMK).
+# Starting with API version 2026-07-01/2026-07-02-preview, "Enabled" is the only accepted
+# value, i.e. the feature cannot be turned off once it has been turned on.
+CONST_KMS_INFRASTRUCTURE_ENCRYPTION_ENABLED = "Enabled"
+
 # refer https://api.github.com/repos/Azure/draft/releases/latest
 # tag_name gives latest version released.
 # Moving away from 1:n release to avoid unwanted breaking changes with auto upgrades.

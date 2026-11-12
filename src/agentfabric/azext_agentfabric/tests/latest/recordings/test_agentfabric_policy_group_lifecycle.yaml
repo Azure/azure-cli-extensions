@@ -1,12 +1,12 @@
 interactions:
 - request:
-    body: '{"location": "centraluseuap", "properties": {"description": "Disposable CLI test", "displayName": "CLI scenario
-      policy group", "priority": 100}}'
+    body: '{"location": "westcentralus", "properties": {"description": "Disposable
+      CLI test", "displayName": "CLI scenario policy group", "priority": 100}}'
     headers:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - agentfabric policy-group create
       Connection:
@@ -18,32 +18,32 @@ interactions:
       ParameterSetName:
       - -g -n -l --display-name --description --priority
       User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-10-07-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-19T23:42:24.8773518Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-19T23:42:24.8773518Z"},"properties":{"displayName":"CLI
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:29:37.532431Z"},"properties":{"displayName":"CLI
         scenario policy group","description":"Disposable CLI test","priority":100,"networkSecurityPolicies":null,"provisioningState":"Accepted"}}'
     headers:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/4e711625-59c1-42f2-9904-6045b581cf10*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=639280501453616991&c=MIIH8TCCBtmgAwIBAgIRAPJpd3xVinKSJ9wNON3aJq0wDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA5MTIxODI3MTRaFw0yNjEyMDgwMDI3MTRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtrq-nGtYhHBtWDz9tdA3lHltyOBzRSJah13j9T-Z2JjGFq5D1tO1AVMbEyroXTXr9B63Ev_xfAuI_cdCm6hmJnM_5Z5s44PX-qVkI4G_q-AhN1uHwzkp4Z6q0IOgVXI0fW6OasIqmMu2BEKZpC9_TgySSmnDIVDvTT1yAEc_z7SbpQ7t0995w3KE76oD7XJz2dDGplUDGO97ZWN7Cs9vSR3SvEmhfGAv5_6JkIfCX-qzre86nwGbyBq5vTJhKnoDvCISUyNOY6-S6PJhQJ5-xUQUZ0v8k5WUKUEQREUJx9krbphTzjjEWK-4pmI-BbZXwn7c1A9F0Qx0haYziFmcLQIDAQABo4IE7jCCBOowgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUKyzXUN2Lw7f8SY3-SfA7we0iKkEwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHeBgNVHR8EggHVMIIB0TB0oHKgcIZuaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwdqB0oHKGcGh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwZaBjoGGGX2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82L2N1cnJlbnQuY3JsMHqgeKB2hnRodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQCk-bujtojYUdAP4nS2AytCf4yyU9hwmlnILCtqo5DZ86iaXK1St3E4yqy3oHJiaFcmY9y43ZGKatYRVx_LvGwGe16Zj_Fa41_DWP2ffyrSBIJYbvrfQ5-TSaeU-sQwgAMO6qABg_3YXBtL6uW2gnnV7XHjh2tA-N10wreT-A73Aa8WtmmzNX9kTQFxNzie2_ubNyX9szdO5oJnCyclGvqjIZzqLbsY-xO9w-WADCKplgWHo41lT5NfQY_teLfRDkHYcao_1iaIyshzwTAKWykB8fEGUk7vOJfLJ_AV6m6VN2LqDtlPamfbOYxGtLMJsoTvKP7w7LOm4jsr-KEM2-ji&s=iSA-4Tm0xLwCly9uLb6VaIiKRbXC2ui8TIB9wMjmb_hxIopK5AQXJTjC_Yb6QJHZa0AylZipmxDMAjx7dC9wUXmMTpdXjsp_knukRn8fU-P7hfP8Rx8t6COfVdc2-BZL8Ab0Kplu2wGOirR6_9H6WSkM9PXEurFaukyQKRy19R6Q3ylCNK-IqAZNLSxkM4SfNYF_CsaLQrsVM7j5XOUX7FbL4IZF6t9j_J8YEqFKi4q7xSknff-WsFO_ASbhhSy1msGaIHPClbb9xDDJBe5bd8xZN_BPYRXBw2bhQqRG9lEgr8VbyatfMTG7naN1z_9HRdnRJ3czVMzC3faOJnj2lQ&h=qC86ct4GKmPX7dGVgtK9OmnJ-kT56qXBCAiS-sWDviw
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/38b3b08b-d6bb-4003-aeeb-ed59f9fa2a3e*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
-      - '658'
+      - '656'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Oct 2026 23:42:24 GMT
+      - Mon, 02 Nov 2026 20:29:37 GMT
       etag:
-      - '"06002726-0000-3300-0000-6ad6aae10000"'
+      - '"b1002b93-0000-0600-0000-6ae8f2b20000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - cf572dd3-d360-4831-9c8d-69530e89ae67
+      - bd87e815-545b-488e-91a1-4f6b99f534f4
       pragma:
       - no-cache
       strict-transport-security:
@@ -53,19 +53,17 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-async-operation-timeout:
-      - P6D
+      - PT4H
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/centraluseuap/4582cfd7-418d-43ff-9fe1-80c6397caf48
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/westcentralus/f1a64f6c-d4c7-4f43-a91e-c437f76e61bf
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-ms-resource-provider-hint:
       - noPolling
-      x-ms-throttling-version:
-      - v1
       x-msedge-ref:
-      - 'Ref A: C5AB4A20DD704071BA0A9063A6084311 Ref B: SN4AA2022402019 Ref C: 2026-10-19T23:42:23Z'
+      - 'Ref A: 79270D3D975D4EA2AA358927D7D6D5EB Ref B: SN4AA2022301023 Ref C: 2026-11-02T20:29:36Z'
     status:
       code: 201
       message: Created
@@ -75,7 +73,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - agentfabric policy-group create
       Connection:
@@ -83,12 +81,12 @@ interactions:
       ParameterSetName:
       - -g -n -l --display-name --description --priority
       User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/4e711625-59c1-42f2-9904-6045b581cf10*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=639280501453616991&c=MIIH8TCCBtmgAwIBAgIRAPJpd3xVinKSJ9wNON3aJq0wDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA5MTIxODI3MTRaFw0yNjEyMDgwMDI3MTRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtrq-nGtYhHBtWDz9tdA3lHltyOBzRSJah13j9T-Z2JjGFq5D1tO1AVMbEyroXTXr9B63Ev_xfAuI_cdCm6hmJnM_5Z5s44PX-qVkI4G_q-AhN1uHwzkp4Z6q0IOgVXI0fW6OasIqmMu2BEKZpC9_TgySSmnDIVDvTT1yAEc_z7SbpQ7t0995w3KE76oD7XJz2dDGplUDGO97ZWN7Cs9vSR3SvEmhfGAv5_6JkIfCX-qzre86nwGbyBq5vTJhKnoDvCISUyNOY6-S6PJhQJ5-xUQUZ0v8k5WUKUEQREUJx9krbphTzjjEWK-4pmI-BbZXwn7c1A9F0Qx0haYziFmcLQIDAQABo4IE7jCCBOowgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUKyzXUN2Lw7f8SY3-SfA7we0iKkEwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHeBgNVHR8EggHVMIIB0TB0oHKgcIZuaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwdqB0oHKGcGh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwZaBjoGGGX2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82L2N1cnJlbnQuY3JsMHqgeKB2hnRodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQCk-bujtojYUdAP4nS2AytCf4yyU9hwmlnILCtqo5DZ86iaXK1St3E4yqy3oHJiaFcmY9y43ZGKatYRVx_LvGwGe16Zj_Fa41_DWP2ffyrSBIJYbvrfQ5-TSaeU-sQwgAMO6qABg_3YXBtL6uW2gnnV7XHjh2tA-N10wreT-A73Aa8WtmmzNX9kTQFxNzie2_ubNyX9szdO5oJnCyclGvqjIZzqLbsY-xO9w-WADCKplgWHo41lT5NfQY_teLfRDkHYcao_1iaIyshzwTAKWykB8fEGUk7vOJfLJ_AV6m6VN2LqDtlPamfbOYxGtLMJsoTvKP7w7LOm4jsr-KEM2-ji&s=iSA-4Tm0xLwCly9uLb6VaIiKRbXC2ui8TIB9wMjmb_hxIopK5AQXJTjC_Yb6QJHZa0AylZipmxDMAjx7dC9wUXmMTpdXjsp_knukRn8fU-P7hfP8Rx8t6COfVdc2-BZL8Ab0Kplu2wGOirR6_9H6WSkM9PXEurFaukyQKRy19R6Q3ylCNK-IqAZNLSxkM4SfNYF_CsaLQrsVM7j5XOUX7FbL4IZF6t9j_J8YEqFKi4q7xSknff-WsFO_ASbhhSy1msGaIHPClbb9xDDJBe5bd8xZN_BPYRXBw2bhQqRG9lEgr8VbyatfMTG7naN1z_9HRdnRJ3czVMzC3faOJnj2lQ&h=qC86ct4GKmPX7dGVgtK9OmnJ-kT56qXBCAiS-sWDviw
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/38b3b08b-d6bb-4003-aeeb-ed59f9fa2a3e*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/4e711625-59c1-42f2-9904-6045b581cf10*0000000000000000000000000000000000000000000000000000000000000000","name":"4e711625-59c1-42f2-9904-6045b581cf10*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Accepted","startTime":"2026-10-19T23:42:25.0051513Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/38b3b08b-d6bb-4003-aeeb-ed59f9fa2a3e*0000000000000000000000000000000000000000000000000000000000000000","name":"38b3b08b-d6bb-4003-aeeb-ed59f9fa2a3e*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Accepted","startTime":"2026-11-02T20:29:37.6814146Z"}'
     headers:
       cache-control:
       - no-cache
@@ -97,9 +95,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Oct 2026 23:42:26 GMT
+      - Mon, 02 Nov 2026 20:29:39 GMT
       etag:
-      - '"0100edf3-0000-3300-0000-6ad6aae10000"'
+      - '"41008311-0000-3300-0000-6ae8f2b20000"'
       expires:
       - '-1'
       pragma:
@@ -111,11 +109,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/ffa365de-7d54-466c-86a1-27223c7d3ca4
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/1a22c2c0-6336-4b00-bbd8-2ac281492c32
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 256B10AD5F41487B82EF7F805309C6C0 Ref B: SN4AA2022401049 Ref C: 2026-10-19T23:42:27Z'
+      - 'Ref A: 6DB2F3F1C20245E4BCDB30BF5A12024F Ref B: SN4AA2022305051 Ref C: 2026-11-02T20:29:39Z'
     status:
       code: 200
       message: OK
@@ -125,7 +123,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - agentfabric policy-group create
       Connection:
@@ -133,23 +131,23 @@ interactions:
       ParameterSetName:
       - -g -n -l --display-name --description --priority
       User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/4e711625-59c1-42f2-9904-6045b581cf10*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=639280501453616991&c=MIIH8TCCBtmgAwIBAgIRAPJpd3xVinKSJ9wNON3aJq0wDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA5MTIxODI3MTRaFw0yNjEyMDgwMDI3MTRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtrq-nGtYhHBtWDz9tdA3lHltyOBzRSJah13j9T-Z2JjGFq5D1tO1AVMbEyroXTXr9B63Ev_xfAuI_cdCm6hmJnM_5Z5s44PX-qVkI4G_q-AhN1uHwzkp4Z6q0IOgVXI0fW6OasIqmMu2BEKZpC9_TgySSmnDIVDvTT1yAEc_z7SbpQ7t0995w3KE76oD7XJz2dDGplUDGO97ZWN7Cs9vSR3SvEmhfGAv5_6JkIfCX-qzre86nwGbyBq5vTJhKnoDvCISUyNOY6-S6PJhQJ5-xUQUZ0v8k5WUKUEQREUJx9krbphTzjjEWK-4pmI-BbZXwn7c1A9F0Qx0haYziFmcLQIDAQABo4IE7jCCBOowgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUKyzXUN2Lw7f8SY3-SfA7we0iKkEwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHeBgNVHR8EggHVMIIB0TB0oHKgcIZuaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwdqB0oHKGcGh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwZaBjoGGGX2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82L2N1cnJlbnQuY3JsMHqgeKB2hnRodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQCk-bujtojYUdAP4nS2AytCf4yyU9hwmlnILCtqo5DZ86iaXK1St3E4yqy3oHJiaFcmY9y43ZGKatYRVx_LvGwGe16Zj_Fa41_DWP2ffyrSBIJYbvrfQ5-TSaeU-sQwgAMO6qABg_3YXBtL6uW2gnnV7XHjh2tA-N10wreT-A73Aa8WtmmzNX9kTQFxNzie2_ubNyX9szdO5oJnCyclGvqjIZzqLbsY-xO9w-WADCKplgWHo41lT5NfQY_teLfRDkHYcao_1iaIyshzwTAKWykB8fEGUk7vOJfLJ_AV6m6VN2LqDtlPamfbOYxGtLMJsoTvKP7w7LOm4jsr-KEM2-ji&s=iSA-4Tm0xLwCly9uLb6VaIiKRbXC2ui8TIB9wMjmb_hxIopK5AQXJTjC_Yb6QJHZa0AylZipmxDMAjx7dC9wUXmMTpdXjsp_knukRn8fU-P7hfP8Rx8t6COfVdc2-BZL8Ab0Kplu2wGOirR6_9H6WSkM9PXEurFaukyQKRy19R6Q3ylCNK-IqAZNLSxkM4SfNYF_CsaLQrsVM7j5XOUX7FbL4IZF6t9j_J8YEqFKi4q7xSknff-WsFO_ASbhhSy1msGaIHPClbb9xDDJBe5bd8xZN_BPYRXBw2bhQqRG9lEgr8VbyatfMTG7naN1z_9HRdnRJ3czVMzC3faOJnj2lQ&h=qC86ct4GKmPX7dGVgtK9OmnJ-kT56qXBCAiS-sWDviw
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/38b3b08b-d6bb-4003-aeeb-ed59f9fa2a3e*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/4e711625-59c1-42f2-9904-6045b581cf10*0000000000000000000000000000000000000000000000000000000000000000","name":"4e711625-59c1-42f2-9904-6045b581cf10*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Succeeded","startTime":"2026-10-19T23:42:25.0051513Z","endTime":"2026-10-19T23:42:30.422552Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/38b3b08b-d6bb-4003-aeeb-ed59f9fa2a3e*0000000000000000000000000000000000000000000000000000000000000000","name":"38b3b08b-d6bb-4003-aeeb-ed59f9fa2a3e*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Succeeded","startTime":"2026-11-02T20:29:37.6814146Z","endTime":"2026-11-02T20:29:43.8626309Z","properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '636'
+      - '637'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Oct 2026 23:42:59 GMT
+      - Mon, 02 Nov 2026 20:30:11 GMT
       etag:
-      - '"0100f2f3-0000-3300-0000-6ad6aae60000"'
+      - '"41008411-0000-3300-0000-6ae8f2b70000"'
       expires:
       - '-1'
       pragma:
@@ -161,11 +159,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/2142554a-e89c-4621-a420-a93bde8798eb
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/0bc966d9-c4cd-4f4a-b88f-d1841e97c002
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 76B7504AD6A644188669FF55B3C13580 Ref B: SN4AA2022303035 Ref C: 2026-10-19T23:42:59Z'
+      - 'Ref A: C2E873C1344B4588B98FD751ADEF9F61 Ref B: SN4AA2022302019 Ref C: 2026-11-02T20:30:11Z'
     status:
       code: 200
       message: OK
@@ -175,7 +173,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - agentfabric policy-group create
       Connection:
@@ -183,24 +181,24 @@ interactions:
       ParameterSetName:
       - -g -n -l --display-name --description --priority
       User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-10-07-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-19T23:42:24.8773518Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-19T23:42:24.8773518Z"},"properties":{"displayName":"CLI
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:29:37.532431Z"},"properties":{"displayName":"CLI
         scenario policy group","description":"Disposable CLI test","priority":100,"networkSecurityPolicies":null,"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '659'
+      - '657'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Oct 2026 23:43:00 GMT
+      - Mon, 02 Nov 2026 20:30:13 GMT
       etag:
-      - '"010034e2-0000-3400-0000-6ad6aae60000"'
+      - '"66086c60-0000-0700-0000-6ae8f2b70000"'
       expires:
       - '-1'
       pragma:
@@ -216,7 +214,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: 72D46DF9087F40AC89B7F8BCA7838234 Ref B: SN4AA2022303045 Ref C: 2026-10-19T23:43:00Z'
+      - 'Ref A: BC7CA35DC50047329340204B5F474EDC Ref B: SN4AA2022304027 Ref C: 2026-11-02T20:30:13Z'
     status:
       code: 200
       message: OK
@@ -226,7 +224,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - agentfabric policy-group wait
       Connection:
@@ -234,24 +232,24 @@ interactions:
       ParameterSetName:
       - -g -n --created
       User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-10-07-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-19T23:42:24.8773518Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-19T23:42:24.8773518Z"},"properties":{"displayName":"CLI
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:29:37.532431Z"},"properties":{"displayName":"CLI
         scenario policy group","description":"Disposable CLI test","priority":100,"networkSecurityPolicies":null,"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '659'
+      - '657'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Oct 2026 23:43:03 GMT
+      - Mon, 02 Nov 2026 20:30:15 GMT
       etag:
-      - '"010034e2-0000-3400-0000-6ad6aae60000"'
+      - '"66086c60-0000-0700-0000-6ae8f2b70000"'
       expires:
       - '-1'
       pragma:
@@ -266,10 +264,8 @@ interactions:
       - 'True'
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
-      x-ms-throttling-version:
-      - v1
       x-msedge-ref:
-      - 'Ref A: 5B7240A76910469586F9DEF30C3E5C52 Ref B: SN4AA2022302035 Ref C: 2026-10-19T23:43:03Z'
+      - 'Ref A: 9E42BEECDD1247FEB1DCD65BC40EBFEF Ref B: SN4AA2022305011 Ref C: 2026-11-02T20:30:15Z'
     status:
       code: 200
       message: OK
@@ -279,7 +275,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - agentfabric policy-group show
       Connection:
@@ -287,24 +283,24 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-10-07-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-19T23:42:24.8773518Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-19T23:42:24.8773518Z"},"properties":{"displayName":"CLI
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:29:37.532431Z"},"properties":{"displayName":"CLI
         scenario policy group","description":"Disposable CLI test","priority":100,"networkSecurityPolicies":null,"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '659'
+      - '657'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Oct 2026 23:43:04 GMT
+      - Mon, 02 Nov 2026 20:30:15 GMT
       etag:
-      - '"010034e2-0000-3400-0000-6ad6aae60000"'
+      - '"66086c60-0000-0700-0000-6ae8f2b70000"'
       expires:
       - '-1'
       pragma:
@@ -320,7 +316,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: 7015780CA226483DAD98ACA6EF7B77AA Ref B: SN4AA2022301027 Ref C: 2026-10-19T23:43:04Z'
+      - 'Ref A: F7957C891E17404E82A9B1AD81261646 Ref B: SN4AA2022305053 Ref C: 2026-11-02T20:30:16Z'
     status:
       code: 200
       message: OK
@@ -330,7 +326,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - agentfabric policy-group list
       Connection:
@@ -338,22 +334,22 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups?api-version=2026-10-07-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups?api-version=2026-11-03-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"centraluseuap","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-19T23:42:24.8773518Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-19T23:42:24.8773518Z"},"properties":{"displayName":"CLI
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:29:37.532431Z"},"properties":{"displayName":"CLI
         scenario policy group","description":"Disposable CLI test","priority":100,"provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '640'
+      - '638'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Oct 2026 23:43:06 GMT
+      - Mon, 02 Nov 2026 20:30:18 GMT
       expires:
       - '-1'
       pragma:
@@ -365,15 +361,898 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 2081b00f-e169-443b-8db3-59a6129352bb
+      - 2ebf801f-9c2c-40d0-bae7-e791942b078d
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '98'
-      x-ms-throttling-version:
-      - v1
+      - '99'
       x-msedge-ref:
-      - 'Ref A: 34CC80B638CF425F9C25D40DA584649B Ref B: SN4AA2022303045 Ref C: 2026-10-19T23:43:06Z'
+      - 'Ref A: 5F771CE6A8AD4BFEBD5E33C8D5F1025C Ref B: SN4AA2022304021 Ref C: 2026-11-02T20:30:18Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westcentralus", "properties": {"networkSecurityPolicies":
+      [{"type": "FqdnFiltering", "destination": {"type": "Fqdns", "fqdns": ["example.com"]},
+      "direction": "Outbound", "name": "allowOutbound", "ports": [443], "priority":
+      10, "source": {"type": "WorkloadIdPatterns", "patterns": ["spiffe://contoso.com/ns/*/sa/*"]}}],
+      "priority": 100}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '350'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:30:20.6238139Z"},"properties":{"displayName":null,"description":null,"priority":100,"networkSecurityPolicies":[{"type":"FqdnFiltering","name":"allowOutbound","priority":10,"direction":"Outbound","ports":[443],"source":{"type":"WorkloadIdPatterns","patterns":["spiffe://contoso.com/ns/*/sa/*"]},"destination":{"type":"Fqdns","fqdns":["example.com"]}}],"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/09049c2c-fd4b-4a39-b0aa-aa9b6cbc0f1f*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '853'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:30:20 GMT
+      etag:
+      - '"b1000d9a-0000-0600-0000-6ae8f2dc0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 3681f045-af6d-40f2-9eb2-02ce6bdfdb0f
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT4H
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/westcentralus/3a135499-0ccb-4903-9edc-a89b0440fa98
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: F7B158379CA64B8B81672336D29CE6CC Ref B: SN4AA2022304037 Ref C: 2026-11-02T20:30:20Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/09049c2c-fd4b-4a39-b0aa-aa9b6cbc0f1f*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/09049c2c-fd4b-4a39-b0aa-aa9b6cbc0f1f*0000000000000000000000000000000000000000000000000000000000000000","name":"09049c2c-fd4b-4a39-b0aa-aa9b6cbc0f1f*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Accepted","startTime":"2026-11-02T20:30:20.6492158Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:30:22 GMT
+      etag:
+      - '"41008e11-0000-3300-0000-6ae8f2dc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/8b6ddfd5-832d-474c-9ff4-434559176fa2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: FB98463624A644D994525E12EEC18B38 Ref B: SN4AA2022304039 Ref C: 2026-11-02T20:30:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/09049c2c-fd4b-4a39-b0aa-aa9b6cbc0f1f*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/09049c2c-fd4b-4a39-b0aa-aa9b6cbc0f1f*0000000000000000000000000000000000000000000000000000000000000000","name":"09049c2c-fd4b-4a39-b0aa-aa9b6cbc0f1f*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Succeeded","startTime":"2026-11-02T20:30:20.6492158Z","endTime":"2026-11-02T20:30:26.0957138Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '637'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:30:53 GMT
+      etag:
+      - '"41008f11-0000-3300-0000-6ae8f2e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/d86ce250-b491-47e1-9e7e-b44a7ed87385
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 7AE1DE97DF794820954F8557A3490222 Ref B: SN4AA2022301045 Ref C: 2026-11-02T20:30:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:30:20.6238139Z"},"properties":{"displayName":null,"description":null,"priority":100,"networkSecurityPolicies":[{"type":"FqdnFiltering","name":"allowOutbound","priority":10,"direction":"Outbound","ports":[443],"source":{"type":"WorkloadIdPatterns","patterns":["spiffe://contoso.com/ns/*/sa/*"]},"destination":{"type":"Fqdns","fqdns":["example.com"]}}],"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '854'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:30:54 GMT
+      etag:
+      - '"6608b261-0000-0700-0000-6ae8f2e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-msedge-ref:
+      - 'Ref A: C2DE07544FEE4D578649F84B983444B6 Ref B: SN4AA2022301047 Ref C: 2026-11-02T20:30:55Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westcentralus", "properties": {"networkSecurityPolicies":
+      [{"type": "Mcp", "defaultAction": "Deny", "destination": {"type": "Fqdns", "fqdns":
+      ["mcp.contoso.com"]}, "rules": [{"action": "Allow", "matchingConditions": {"destinations":
+      {"toolMatching": {"names": {"matchType": "ExactMatch", "values": ["search"]}}}},
+      "name": "allow-search", "priority": 100}], "source": {"type": "WorkloadIdPatterns",
+      "patterns": ["spiffe://contoso.com/ns/agents/sa/*"]}}, {"type": "TlsInspection",
+      "certificate": {"mode": "AzureManagedCA"}, "defaultAction": "Inspect", "source":
+      {"type": "WorkloadIdPatterns", "patterns": ["spiffe://contoso.com/ns/agents/sa/*"]}}],
+      "priority": 100}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '678'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:30:58.1386347Z"},"properties":{"displayName":null,"description":null,"priority":100,"networkSecurityPolicies":[{"type":"Mcp","defaultAction":"Deny","source":{"type":"WorkloadIdPatterns","patterns":["spiffe://contoso.com/ns/agents/sa/*"]},"destination":{"type":"Fqdns","fqdns":["mcp.contoso.com"]},"rules":[{"name":"allow-search","priority":100,"action":"Allow","matchingConditions":{"destinations":{"toolMatching":{"names":{"values":["search"],"matchType":"ExactMatch"}}}}}]},{"type":"TlsInspection","source":{"type":"WorkloadIdPatterns","patterns":["spiffe://contoso.com/ns/agents/sa/*"]},"certificate":{"mode":"AzureManagedCA"},"defaultAction":"Inspect"}],"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/3a84fff6-fb5f-4d4a-a7b7-c1b615227b16*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '1160'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:30:58 GMT
+      etag:
+      - '"b100d4a0-0000-0600-0000-6ae8f3030000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 4de0d6fb-5a31-4619-ac9f-6505b0de8f0c
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT4H
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/westcentralus/57c67c0f-b2b6-4877-9821-48869aaba0f5
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: D6231AE629604619B54F42C926AE0FCA Ref B: SN4AA2022301019 Ref C: 2026-11-02T20:30:57Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/3a84fff6-fb5f-4d4a-a7b7-c1b615227b16*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/3a84fff6-fb5f-4d4a-a7b7-c1b615227b16*0000000000000000000000000000000000000000000000000000000000000000","name":"3a84fff6-fb5f-4d4a-a7b7-c1b615227b16*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Accepted","startTime":"2026-11-02T20:30:58.2995653Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:31:01 GMT
+      etag:
+      - '"4100a911-0000-3300-0000-6ae8f3020000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/46ca0425-520e-459f-8b44-89d363810d04
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 2ED3D48DD6A64D8EAF9ED4748D99A347 Ref B: SN4AA2022304035 Ref C: 2026-11-02T20:31:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/3a84fff6-fb5f-4d4a-a7b7-c1b615227b16*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/3a84fff6-fb5f-4d4a-a7b7-c1b615227b16*0000000000000000000000000000000000000000000000000000000000000000","name":"3a84fff6-fb5f-4d4a-a7b7-c1b615227b16*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Succeeded","startTime":"2026-11-02T20:30:58.2995653Z","endTime":"2026-11-02T20:31:04.40001Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '635'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:31:32 GMT
+      etag:
+      - '"4100aa11-0000-3300-0000-6ae8f3090000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/c59544de-a691-4864-bec4-d9feac8f9375
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 537435D3AC50470C94B6F005DFC88F51 Ref B: SN4AA2022301051 Ref C: 2026-11-02T20:31:33Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:30:58.1386347Z"},"properties":{"displayName":null,"description":null,"priority":100,"networkSecurityPolicies":[{"type":"Mcp","defaultAction":"Deny","source":{"type":"WorkloadIdPatterns","patterns":["spiffe://contoso.com/ns/agents/sa/*"]},"destination":{"type":"Fqdns","fqdns":["mcp.contoso.com"]},"rules":[{"name":"allow-search","priority":100,"action":"Allow","matchingConditions":{"destinations":{"toolMatching":{"names":{"values":["search"],"matchType":"ExactMatch"}}}}}]},{"type":"TlsInspection","source":{"type":"WorkloadIdPatterns","patterns":["spiffe://contoso.com/ns/agents/sa/*"]},"certificate":{"mode":"AzureManagedCA"},"defaultAction":"Inspect"}],"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1161'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:31:33 GMT
+      etag:
+      - '"6608bc62-0000-0700-0000-6ae8f3080000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-msedge-ref:
+      - 'Ref A: 4B8B3DD6D249494C8533637253FE7696 Ref B: SN4AA2022302037 Ref C: 2026-11-02T20:31:33Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westcentralus", "properties": {"networkSecurityPolicies":
+      [{"type": "TlsInspection", "certificate": {"mode": "AzureManagedCA"}, "defaultAction":
+      "Bypass", "rules": [{"action": "Inspect", "destinations": [{"type": "Fqdns",
+      "fqdns": ["api.contoso.com", "*.contoso.net"]}], "name": "inspectContosoApi",
+      "priority": 100}], "source": {"type": "WorkloadIdPatterns", "patterns": ["spiffe://contoso.com/ns/default/sa/*"]}}],
+      "priority": 100}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '448'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:31:36.2887404Z"},"properties":{"displayName":null,"description":null,"priority":100,"networkSecurityPolicies":[{"type":"TlsInspection","source":{"type":"WorkloadIdPatterns","patterns":["spiffe://contoso.com/ns/default/sa/*"]},"certificate":{"mode":"AzureManagedCA"},"defaultAction":"Bypass","rules":[{"name":"inspectContosoApi","priority":100,"action":"Inspect","destinations":[{"type":"Fqdns","fqdns":["api.contoso.com","*.contoso.net"]}]}]}],"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/69b915b1-fd29-4801-86ed-cf9019b0d1dd*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '946'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:31:36 GMT
+      etag:
+      - '"b100b7a6-0000-0600-0000-6ae8f3280000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - ee8af143-f456-47ac-9cb0-a8f3866c148a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT4H
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/westcentralus/68874f0c-b159-4404-9bee-cdec7c4fc755
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: F1E769E6BE4340D9A07CEC2A1EF873AD Ref B: SN4AA2022304019 Ref C: 2026-11-02T20:31:35Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/69b915b1-fd29-4801-86ed-cf9019b0d1dd*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/69b915b1-fd29-4801-86ed-cf9019b0d1dd*0000000000000000000000000000000000000000000000000000000000000000","name":"69b915b1-fd29-4801-86ed-cf9019b0d1dd*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Accepted","startTime":"2026-11-02T20:31:36.3739777Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:31:37 GMT
+      etag:
+      - '"4100ac11-0000-3300-0000-6ae8f3280000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/3cb77568-1dca-4a57-89af-80390b7e9658
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6ADEA357D9C2431ABF418B2C030A2753 Ref B: SN4AA2022304019 Ref C: 2026-11-02T20:31:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/69b915b1-fd29-4801-86ed-cf9019b0d1dd*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/69b915b1-fd29-4801-86ed-cf9019b0d1dd*0000000000000000000000000000000000000000000000000000000000000000","name":"69b915b1-fd29-4801-86ed-cf9019b0d1dd*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Succeeded","startTime":"2026-11-02T20:31:36.3739777Z","endTime":"2026-11-02T20:31:41.9744266Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '637'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:32:10 GMT
+      etag:
+      - '"4100ad11-0000-3300-0000-6ae8f32e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/9ad1c5ec-4d90-437a-84b7-ac69f75f34ca
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 676617870DA64360A3845B181398D6F9 Ref B: SN4AA2022304025 Ref C: 2026-11-02T20:32:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:31:36.2887404Z"},"properties":{"displayName":null,"description":null,"priority":100,"networkSecurityPolicies":[{"type":"TlsInspection","source":{"type":"WorkloadIdPatterns","patterns":["spiffe://contoso.com/ns/default/sa/*"]},"certificate":{"mode":"AzureManagedCA"},"defaultAction":"Bypass","rules":[{"name":"inspectContosoApi","priority":100,"action":"Inspect","destinations":[{"type":"Fqdns","fqdns":["api.contoso.com","*.contoso.net"]}]}]}],"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '947'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:32:11 GMT
+      etag:
+      - '"66089263-0000-0700-0000-6ae8f32e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-msedge-ref:
+      - 'Ref A: 788FEC7AF23B438992FC1104C77E75A2 Ref B: SN4AA2022303035 Ref C: 2026-11-02T20:32:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westcentralus", "properties": {"networkSecurityPolicies":
+      [{"type": "UrlFiltering", "defaultAction": "Deny", "rules": [{"hostname": "example.invalid",
+      "name": "optional-action", "paths": ["/smoke"], "priority": 1}], "source": {"type":
+      "WorkloadIdPatterns", "patterns": ["spiffe://cli.example/ns/test/sa/none"]}}],
+      "priority": 100}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '345'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:32:13.6921538Z"},"properties":{"displayName":null,"description":null,"priority":100,"networkSecurityPolicies":[{"type":"UrlFiltering","defaultAction":"Deny","source":{"type":"WorkloadIdPatterns","patterns":["spiffe://cli.example/ns/test/sa/none"]},"destination":null,"rules":[{"name":"optional-action","priority":1,"hostname":"example.invalid","method":null,"paths":["/smoke"]}]}],"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/3d492c32-ff92-4e35-81a0-12ec3093784a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '883'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:32:13 GMT
+      etag:
+      - '"b1007cac-0000-0600-0000-6ae8f34e0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 78a7059c-bc43-435d-b007-53ce03a5a7b1
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT4H
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/westcentralus/39685b27-15ac-49a1-8d43-819998308931
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-msedge-ref:
+      - 'Ref A: 9AB22EC812CC469082A597BA268D8868 Ref B: SN4AA2022305011 Ref C: 2026-11-02T20:32:13Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/3d492c32-ff92-4e35-81a0-12ec3093784a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/3d492c32-ff92-4e35-81a0-12ec3093784a*0000000000000000000000000000000000000000000000000000000000000000","name":"3d492c32-ff92-4e35-81a0-12ec3093784a*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Accepted","startTime":"2026-11-02T20:32:13.7372836Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:32:14 GMT
+      etag:
+      - '"4100bd11-0000-3300-0000-6ae8f34e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/406a89ce-401b-4a1c-9980-ce92f737387f
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 4847758395D443BFA02E1FC304E14387 Ref B: SN4AA2022301049 Ref C: 2026-11-02T20:32:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/3d492c32-ff92-4e35-81a0-12ec3093784a*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/3d492c32-ff92-4e35-81a0-12ec3093784a*0000000000000000000000000000000000000000000000000000000000000000","name":"3d492c32-ff92-4e35-81a0-12ec3093784a*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Succeeded","startTime":"2026-11-02T20:32:13.7372836Z","endTime":"2026-11-02T20:32:19.8800672Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '637'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:32:45 GMT
+      etag:
+      - '"4100c011-0000-3300-0000-6ae8f3540000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/a291965c-2228-444a-8ad1-b5703046ab56
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: AF8F7C0B09244D22926C4D9B72ABF713 Ref B: SN4AA2022305031 Ref C: 2026-11-02T20:32:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --priority --network-security-policies
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:32:13.6921538Z"},"properties":{"displayName":null,"description":null,"priority":100,"networkSecurityPolicies":[{"type":"UrlFiltering","defaultAction":"Deny","source":{"type":"WorkloadIdPatterns","patterns":["spiffe://cli.example/ns/test/sa/none"]},"destination":null,"rules":[{"name":"optional-action","priority":1,"hostname":"example.invalid","method":null,"paths":["/smoke"]}]}],"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '884'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:32:45 GMT
+      etag:
+      - '"66089b64-0000-0700-0000-6ae8f3530000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-msedge-ref:
+      - 'Ref A: 42DBF4CD07BF4FE0B2514221B85D34FB Ref B: SN4AA2022301045 Ref C: 2026-11-02T20:32:46Z'
     status:
       code: 200
       message: OK
@@ -383,7 +1262,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - agentfabric policy-group update
       Connection:
@@ -395,9 +1274,9 @@ interactions:
       ParameterSetName:
       - -g -n --tags --no-wait
       User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-10-07-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
   response:
     body:
       string: 'null'
@@ -405,7 +1284,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/92119a20-120d-48c4-93c0-3076de1b6440*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=639280501916420197&c=MIIH8TCCBtmgAwIBAgIRAPJpd3xVinKSJ9wNON3aJq0wDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA5MTIxODI3MTRaFw0yNjEyMDgwMDI3MTRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtrq-nGtYhHBtWDz9tdA3lHltyOBzRSJah13j9T-Z2JjGFq5D1tO1AVMbEyroXTXr9B63Ev_xfAuI_cdCm6hmJnM_5Z5s44PX-qVkI4G_q-AhN1uHwzkp4Z6q0IOgVXI0fW6OasIqmMu2BEKZpC9_TgySSmnDIVDvTT1yAEc_z7SbpQ7t0995w3KE76oD7XJz2dDGplUDGO97ZWN7Cs9vSR3SvEmhfGAv5_6JkIfCX-qzre86nwGbyBq5vTJhKnoDvCISUyNOY6-S6PJhQJ5-xUQUZ0v8k5WUKUEQREUJx9krbphTzjjEWK-4pmI-BbZXwn7c1A9F0Qx0haYziFmcLQIDAQABo4IE7jCCBOowgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUKyzXUN2Lw7f8SY3-SfA7we0iKkEwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHeBgNVHR8EggHVMIIB0TB0oHKgcIZuaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwdqB0oHKGcGh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwZaBjoGGGX2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82L2N1cnJlbnQuY3JsMHqgeKB2hnRodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQCk-bujtojYUdAP4nS2AytCf4yyU9hwmlnILCtqo5DZ86iaXK1St3E4yqy3oHJiaFcmY9y43ZGKatYRVx_LvGwGe16Zj_Fa41_DWP2ffyrSBIJYbvrfQ5-TSaeU-sQwgAMO6qABg_3YXBtL6uW2gnnV7XHjh2tA-N10wreT-A73Aa8WtmmzNX9kTQFxNzie2_ubNyX9szdO5oJnCyclGvqjIZzqLbsY-xO9w-WADCKplgWHo41lT5NfQY_teLfRDkHYcao_1iaIyshzwTAKWykB8fEGUk7vOJfLJ_AV6m6VN2LqDtlPamfbOYxGtLMJsoTvKP7w7LOm4jsr-KEM2-ji&s=s6fQtBHV5uerCx6aoK7QFRkNCD8JuSrKSSlMQqtYpWCEeXxy_Un7do_7bbbY7QWc2H3wjNXVfpd0tFMtQ2uO5xUNTw-B618gYMs-7OXmwIFGQU3CwnmTMh58vbYRAspfnSdT2xCe_SIfytVvjMpZRqMr7wdl3EMoohype4-7bhHq7dhgzewE3D7SQnhSUJwJ0qiOcl6W_yDo3ZSftt4iHIfXMfGokrPLk-ciNuZq0jDqADk9cSZf6SA4zKFjsPUivZHYzrIH5IBLzjeT-aFepbzLR5quhvkwdYvfNZEOe4THa4ggPNWpzw93bF7EGXr1Z1--G2I9sJZIRy7TKt851Q&h=d8TvduTOalZjk1vwiUlwCkt_GHumiCNUUWKUpQYpal4
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/80b8b86d-faad-40cb-8b8c-d7b2ccd0cd19*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -413,15 +1292,15 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Oct 2026 23:43:11 GMT
+      - Mon, 02 Nov 2026 20:32:47 GMT
       etag:
-      - '"06007126-0000-3300-0000-6ad6ab0f0000"'
+      - '"b10041b1-0000-0600-0000-6ae8f3700000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/92119a20-120d-48c4-93c0-3076de1b6440*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=639280501916420197&c=MIIH8TCCBtmgAwIBAgIRAPJpd3xVinKSJ9wNON3aJq0wDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA5MTIxODI3MTRaFw0yNjEyMDgwMDI3MTRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtrq-nGtYhHBtWDz9tdA3lHltyOBzRSJah13j9T-Z2JjGFq5D1tO1AVMbEyroXTXr9B63Ev_xfAuI_cdCm6hmJnM_5Z5s44PX-qVkI4G_q-AhN1uHwzkp4Z6q0IOgVXI0fW6OasIqmMu2BEKZpC9_TgySSmnDIVDvTT1yAEc_z7SbpQ7t0995w3KE76oD7XJz2dDGplUDGO97ZWN7Cs9vSR3SvEmhfGAv5_6JkIfCX-qzre86nwGbyBq5vTJhKnoDvCISUyNOY6-S6PJhQJ5-xUQUZ0v8k5WUKUEQREUJx9krbphTzjjEWK-4pmI-BbZXwn7c1A9F0Qx0haYziFmcLQIDAQABo4IE7jCCBOowgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUKyzXUN2Lw7f8SY3-SfA7we0iKkEwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHeBgNVHR8EggHVMIIB0TB0oHKgcIZuaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwdqB0oHKGcGh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwZaBjoGGGX2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82L2N1cnJlbnQuY3JsMHqgeKB2hnRodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQCk-bujtojYUdAP4nS2AytCf4yyU9hwmlnILCtqo5DZ86iaXK1St3E4yqy3oHJiaFcmY9y43ZGKatYRVx_LvGwGe16Zj_Fa41_DWP2ffyrSBIJYbvrfQ5-TSaeU-sQwgAMO6qABg_3YXBtL6uW2gnnV7XHjh2tA-N10wreT-A73Aa8WtmmzNX9kTQFxNzie2_ubNyX9szdO5oJnCyclGvqjIZzqLbsY-xO9w-WADCKplgWHo41lT5NfQY_teLfRDkHYcao_1iaIyshzwTAKWykB8fEGUk7vOJfLJ_AV6m6VN2LqDtlPamfbOYxGtLMJsoTvKP7w7LOm4jsr-KEM2-ji&s=FC_Te1ZnDl0mQChRwYRGIER8LrXZZBwrb651wgFqYZ6pv8yrfg1sr5ipXSdqqbe8UerSvL7NWtIWAYlVb5WOgGgA5vUiUWSTZWxOu6lBSwUCBeAIzAI3724W3nRfxR8lyFirG09yb5efQcAWRdkgudrZ4aDwoz79qEUh4Zs4DVhMNhRg9xVRVIk6UroFDXpWXhZ_A_jLGBVZ9owY-YoZX0NsuejTALOm-pNdm9EMFKaRxRR40lDH35RpNP4r4BBk89ljUEZMwj29uzu6CuBGuYA1wxXKqECdVJQvnF_xv_ejF_CF-eKip_p_JTAma3_G-X6JUmJ8eo0bc00IRl_qWw&h=d8TvduTOalZjk1vwiUlwCkt_GHumiCNUUWKUpQYpal4
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/80b8b86d-faad-40cb-8b8c-d7b2ccd0cd19*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       mise-correlation-id:
-      - 0928484a-6212-4ed3-8059-b3833d13633a
+      - 8ee1cb83-a709-42c5-8137-5887bec3c508
       pragma:
       - no-cache
       strict-transport-security:
@@ -431,19 +1310,17 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-async-operation-timeout:
-      - P6D
+      - PT4H
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/centraluseuap/ff09cb52-eeb9-48ce-8c5c-701f6e6b4e63
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/westcentralus/0020593a-3571-4b2c-a562-0e9ae854a88e
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-ms-resource-provider-hint:
       - noPolling
-      x-ms-throttling-version:
-      - v1
       x-msedge-ref:
-      - 'Ref A: 241B80707F4746F88977CECB9A2871EE Ref B: SN4AA2022402053 Ref C: 2026-10-19T23:43:10Z'
+      - 'Ref A: 2E1FF9EC64214FDFB3CB9D762B55B4D7 Ref B: SN4AA2022301025 Ref C: 2026-11-02T20:32:47Z'
     status:
       code: 202
       message: Accepted
@@ -453,7 +1330,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - agentfabric policy-group wait
       Connection:
@@ -461,115 +1338,23 @@ interactions:
       ParameterSetName:
       - -g -n --updated
       User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-10-07-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"centraluseuap","tags":{"stage":"updated"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-19T23:42:24.8773518Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-19T23:43:11.2357635Z"},"properties":{"provisioningState":"Accepted"}}'
-    headers:
-      content-length:
-      - '551'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 19 Oct 2026 23:43:13 GMT
-      etag:
-      - '"06007126-0000-3300-0000-6ad6ab0f0000"'
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '99'
-      x-ms-throttling-version:
-      - v1
-      x-msedge-ref:
-      - 'Ref A: 8852BBDA66DA496A99519C4B7F426049 Ref B: SN4AA2022402049 Ref C: 2026-10-19T23:43:13Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - agentfabric policy-group wait
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --updated
-      User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-10-07-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"centraluseuap","tags":{"stage":"updated"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-19T23:42:24.8773518Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-19T23:43:11.2357635Z"},"properties":{"provisioningState":"Succeeded"}}'
-    headers:
-      content-length:
-      - '552'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 19 Oct 2026 23:43:45 GMT
-      etag:
-      - '"01003ae2-0000-3400-0000-6ad6ab140000"'
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '99'
-      x-ms-throttling-version:
-      - v1
-      x-msedge-ref:
-      - 'Ref A: 059129FF4DF74F52BF5A7CF62D379A05 Ref B: SN4AA2022401017 Ref C: 2026-10-19T23:43:45Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - agentfabric policy-group show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n
-      User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-10-07-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"centraluseuap","tags":{"stage":"updated"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-19T23:42:24.8773518Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-19T23:43:11.2357635Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{"stage":"updated"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:32:47.9188499Z"},"properties":{"provisioningState":"Accepted"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '552'
+      - '550'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Oct 2026 23:43:46 GMT
+      - Mon, 02 Nov 2026 20:32:49 GMT
       etag:
-      - '"01003ae2-0000-3400-0000-6ad6ab140000"'
+      - '"b10041b1-0000-0600-0000-6ae8f3700000"'
       expires:
       - '-1'
       pragma:
@@ -584,10 +1369,102 @@ interactions:
       - 'True'
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
-      x-ms-throttling-version:
-      - v1
       x-msedge-ref:
-      - 'Ref A: 0F48A6F7548C40A88A8EFB3849001318 Ref B: SN4AA2022403039 Ref C: 2026-10-19T23:43:47Z'
+      - 'Ref A: 259CBB750D2F4E94AC164DDC9426F410 Ref B: SN4AA2022302011 Ref C: 2026-11-02T20:32:48Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --updated
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{"stage":"updated"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:32:47.9188499Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '551'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:33:20 GMT
+      etag:
+      - '"66088265-0000-0700-0000-6ae8f3750000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-msedge-ref:
+      - 'Ref A: EB9606FDC68444BE963C4AE08E41108D Ref B: SN4AA2022402021 Ref C: 2026-11-02T20:33:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - agentfabric policy-group show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","name":"cliafpg000002","type":"microsoft.networksecurity/policygroups","location":"westcentralus","tags":{"stage":"updated"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-11-02T20:29:37.532431Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-11-02T20:32:47.9188499Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '551'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 02 Nov 2026 20:33:20 GMT
+      etag:
+      - '"66088265-0000-0700-0000-6ae8f3750000"'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-msedge-ref:
+      - 'Ref A: 365B232228A74D0DA1FE2B580AF2D7DF Ref B: SN4AA2022402033 Ref C: 2026-11-02T20:33:20Z'
     status:
       code: 200
       message: OK
@@ -597,7 +1474,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - agentfabric policy-group delete
       Connection:
@@ -607,9 +1484,9 @@ interactions:
       ParameterSetName:
       - -g -n --yes
       User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-10-07-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
   response:
     body:
       string: 'null'
@@ -617,7 +1494,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/f956f95c-7e80-4882-a9a0-1faffe87719d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=639280502296113341&c=MIIH8TCCBtmgAwIBAgIRAPJpd3xVinKSJ9wNON3aJq0wDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA5MTIxODI3MTRaFw0yNjEyMDgwMDI3MTRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtrq-nGtYhHBtWDz9tdA3lHltyOBzRSJah13j9T-Z2JjGFq5D1tO1AVMbEyroXTXr9B63Ev_xfAuI_cdCm6hmJnM_5Z5s44PX-qVkI4G_q-AhN1uHwzkp4Z6q0IOgVXI0fW6OasIqmMu2BEKZpC9_TgySSmnDIVDvTT1yAEc_z7SbpQ7t0995w3KE76oD7XJz2dDGplUDGO97ZWN7Cs9vSR3SvEmhfGAv5_6JkIfCX-qzre86nwGbyBq5vTJhKnoDvCISUyNOY6-S6PJhQJ5-xUQUZ0v8k5WUKUEQREUJx9krbphTzjjEWK-4pmI-BbZXwn7c1A9F0Qx0haYziFmcLQIDAQABo4IE7jCCBOowgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUKyzXUN2Lw7f8SY3-SfA7we0iKkEwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHeBgNVHR8EggHVMIIB0TB0oHKgcIZuaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwdqB0oHKGcGh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwZaBjoGGGX2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82L2N1cnJlbnQuY3JsMHqgeKB2hnRodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQCk-bujtojYUdAP4nS2AytCf4yyU9hwmlnILCtqo5DZ86iaXK1St3E4yqy3oHJiaFcmY9y43ZGKatYRVx_LvGwGe16Zj_Fa41_DWP2ffyrSBIJYbvrfQ5-TSaeU-sQwgAMO6qABg_3YXBtL6uW2gnnV7XHjh2tA-N10wreT-A73Aa8WtmmzNX9kTQFxNzie2_ubNyX9szdO5oJnCyclGvqjIZzqLbsY-xO9w-WADCKplgWHo41lT5NfQY_teLfRDkHYcao_1iaIyshzwTAKWykB8fEGUk7vOJfLJ_AV6m6VN2LqDtlPamfbOYxGtLMJsoTvKP7w7LOm4jsr-KEM2-ji&s=sHDYHPLUNG3YADOdwaQg1mSq428SzsurD7nILiDEm-8PzE29btbkn635IKdOamcRjUSVjfjfNYccmS-tJXkp53wdTzsTZ8FNf3sY5kPpY5yLRIEY33s7LQbqFUQfQYc_PXIwJL8qUPQ_IMUlU3Joa4Ah2xbMURvlb7HU2DYce-G3guKwwZEwfCFrYnzrSP_-_C4O0nMPFrH2WLz8jFAcfJ1zN9h9BdNYk5TrTKM_CzucwT6PSo7uHyaJpLia21_TdXyoMcJzpzItKFF6vNIFXeSfJXF-vpBQfxr04IXqmNqbta3pZa_tb87yXepEpsdKFoysNDGrkcaCYWZlA7TukQ&h=FoxepMaRh6x0GjmIc9kVNBDW2scEEjYOs2zfBzLHXXM
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/7789f7ae-b8ab-4a73-9663-39a494732a14*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -625,15 +1502,15 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Oct 2026 23:43:49 GMT
+      - Mon, 02 Nov 2026 20:33:21 GMT
       etag:
-      - '"0600b026-0000-3300-0000-6ad6ab350000"'
+      - '"b1008ab9-0000-0600-0000-6ae8f3920000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/f956f95c-7e80-4882-a9a0-1faffe87719d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=639280502296113341&c=MIIH8TCCBtmgAwIBAgIRAPJpd3xVinKSJ9wNON3aJq0wDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA5MTIxODI3MTRaFw0yNjEyMDgwMDI3MTRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtrq-nGtYhHBtWDz9tdA3lHltyOBzRSJah13j9T-Z2JjGFq5D1tO1AVMbEyroXTXr9B63Ev_xfAuI_cdCm6hmJnM_5Z5s44PX-qVkI4G_q-AhN1uHwzkp4Z6q0IOgVXI0fW6OasIqmMu2BEKZpC9_TgySSmnDIVDvTT1yAEc_z7SbpQ7t0995w3KE76oD7XJz2dDGplUDGO97ZWN7Cs9vSR3SvEmhfGAv5_6JkIfCX-qzre86nwGbyBq5vTJhKnoDvCISUyNOY6-S6PJhQJ5-xUQUZ0v8k5WUKUEQREUJx9krbphTzjjEWK-4pmI-BbZXwn7c1A9F0Qx0haYziFmcLQIDAQABo4IE7jCCBOowgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUKyzXUN2Lw7f8SY3-SfA7we0iKkEwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHeBgNVHR8EggHVMIIB0TB0oHKgcIZuaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwdqB0oHKGcGh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwZaBjoGGGX2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82L2N1cnJlbnQuY3JsMHqgeKB2hnRodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQCk-bujtojYUdAP4nS2AytCf4yyU9hwmlnILCtqo5DZ86iaXK1St3E4yqy3oHJiaFcmY9y43ZGKatYRVx_LvGwGe16Zj_Fa41_DWP2ffyrSBIJYbvrfQ5-TSaeU-sQwgAMO6qABg_3YXBtL6uW2gnnV7XHjh2tA-N10wreT-A73Aa8WtmmzNX9kTQFxNzie2_ubNyX9szdO5oJnCyclGvqjIZzqLbsY-xO9w-WADCKplgWHo41lT5NfQY_teLfRDkHYcao_1iaIyshzwTAKWykB8fEGUk7vOJfLJ_AV6m6VN2LqDtlPamfbOYxGtLMJsoTvKP7w7LOm4jsr-KEM2-ji&s=nOHCRyeG98NtabQLpF0qYRK-F71j2DcYYfswebqCs71rHifCzVklwrY-FHcwy7YUR6q4L1PqvGR5A6oWzZWWzcB3htXvYRgRINfpcvKRTKAJH7aatMABTDjKjRcC2zAkaJuSw2LtyOL2OY1veohDvCYf4D5MFy-gUtXVYTiBY3ndcH5EmcZXztGZ2qFo1evmqNpN0QIRmGKWTjQ-Z1gS5m6UFIzaHKjprRfg3K6BHX5AiCxt2Uz9ACNEFFftzyOsDt6tMym-ugXGDh8mV9wwdezQ2syvJBZWH7ZghZZT9A5wWcG0ZeBYu5lhIosxaNFxGbUAYThKpoWQPcO-BMeOaw&h=FoxepMaRh6x0GjmIc9kVNBDW2scEEjYOs2zfBzLHXXM
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/7789f7ae-b8ab-4a73-9663-39a494732a14*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       mise-correlation-id:
-      - 86b7c3bf-0973-4be8-9803-2e67590ff1d2
+      - 72457dc4-0248-4891-a86f-b5b515fbe590
       pragma:
       - no-cache
       strict-transport-security:
@@ -643,17 +1520,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/centraluseuap/a70c4e95-a005-4194-abe0-30c8737bfee9
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/westcentralus/994d5586-4fd4-4e69-91f8-692bea9dffe8
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-ms-resource-provider-hint:
       - noPolling
-      x-ms-throttling-version:
-      - v1
       x-msedge-ref:
-      - 'Ref A: C6DA43161F0E49E483EE4167EE34A6AE Ref B: SN4AA2022402031 Ref C: 2026-10-19T23:43:48Z'
+      - 'Ref A: D7FE05BB1F354E3D9EAF3A3040A40AE9 Ref B: SN4AA2022401021 Ref C: 2026-11-02T20:33:21Z'
     status:
       code: 202
       message: Accepted
@@ -663,7 +1538,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - agentfabric policy-group delete
       Connection:
@@ -671,17 +1546,17 @@ interactions:
       ParameterSetName:
       - -g -n --yes
       User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/f956f95c-7e80-4882-a9a0-1faffe87719d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=639280502296113341&c=MIIH8TCCBtmgAwIBAgIRAPJpd3xVinKSJ9wNON3aJq0wDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA5MTIxODI3MTRaFw0yNjEyMDgwMDI3MTRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtrq-nGtYhHBtWDz9tdA3lHltyOBzRSJah13j9T-Z2JjGFq5D1tO1AVMbEyroXTXr9B63Ev_xfAuI_cdCm6hmJnM_5Z5s44PX-qVkI4G_q-AhN1uHwzkp4Z6q0IOgVXI0fW6OasIqmMu2BEKZpC9_TgySSmnDIVDvTT1yAEc_z7SbpQ7t0995w3KE76oD7XJz2dDGplUDGO97ZWN7Cs9vSR3SvEmhfGAv5_6JkIfCX-qzre86nwGbyBq5vTJhKnoDvCISUyNOY6-S6PJhQJ5-xUQUZ0v8k5WUKUEQREUJx9krbphTzjjEWK-4pmI-BbZXwn7c1A9F0Qx0haYziFmcLQIDAQABo4IE7jCCBOowgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUKyzXUN2Lw7f8SY3-SfA7we0iKkEwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHeBgNVHR8EggHVMIIB0TB0oHKgcIZuaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwdqB0oHKGcGh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwZaBjoGGGX2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82L2N1cnJlbnQuY3JsMHqgeKB2hnRodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQCk-bujtojYUdAP4nS2AytCf4yyU9hwmlnILCtqo5DZ86iaXK1St3E4yqy3oHJiaFcmY9y43ZGKatYRVx_LvGwGe16Zj_Fa41_DWP2ffyrSBIJYbvrfQ5-TSaeU-sQwgAMO6qABg_3YXBtL6uW2gnnV7XHjh2tA-N10wreT-A73Aa8WtmmzNX9kTQFxNzie2_ubNyX9szdO5oJnCyclGvqjIZzqLbsY-xO9w-WADCKplgWHo41lT5NfQY_teLfRDkHYcao_1iaIyshzwTAKWykB8fEGUk7vOJfLJ_AV6m6VN2LqDtlPamfbOYxGtLMJsoTvKP7w7LOm4jsr-KEM2-ji&s=sHDYHPLUNG3YADOdwaQg1mSq428SzsurD7nILiDEm-8PzE29btbkn635IKdOamcRjUSVjfjfNYccmS-tJXkp53wdTzsTZ8FNf3sY5kPpY5yLRIEY33s7LQbqFUQfQYc_PXIwJL8qUPQ_IMUlU3Joa4Ah2xbMURvlb7HU2DYce-G3guKwwZEwfCFrYnzrSP_-_C4O0nMPFrH2WLz8jFAcfJ1zN9h9BdNYk5TrTKM_CzucwT6PSo7uHyaJpLia21_TdXyoMcJzpzItKFF6vNIFXeSfJXF-vpBQfxr04IXqmNqbta3pZa_tb87yXepEpsdKFoysNDGrkcaCYWZlA7TukQ&h=FoxepMaRh6x0GjmIc9kVNBDW2scEEjYOs2zfBzLHXXM
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/7789f7ae-b8ab-4a73-9663-39a494732a14*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/f956f95c-7e80-4882-a9a0-1faffe87719d*0000000000000000000000000000000000000000000000000000000000000000","name":"f956f95c-7e80-4882-a9a0-1faffe87719d*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Deleting","startTime":"2026-10-19T23:43:49.2738226Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/7789f7ae-b8ab-4a73-9663-39a494732a14*0000000000000000000000000000000000000000000000000000000000000000","name":"7789f7ae-b8ab-4a73-9663-39a494732a14*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Deleting","startTime":"2026-11-02T20:33:22.3358564Z"}'
     headers:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/centraluseuap/operationStatuses/f956f95c-7e80-4882-a9a0-1faffe87719d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=639280502307306808&c=MIIHlDCCBnygAwIBAgIQEWqq0LXHm9_RoSQk3rtLtzANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBXVVMyIENBIDAxMB4XDTI2MDkyMzA2MDIzOVoXDTI2MTIxODEyMDIzOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCTL3s1G4HRJxCxQWgaa1QhZF9rCHBTzLl8phyc14DtHqFD1UEEvU8TdKIkn63TfPvm-CD5nDTQJhmqP3TQ4a1zbeIZvN26UwO-f2zs8v284_6vqmQYpp074W-XCE3yUu6xZi0c2RjrWXRE0C83U9RwiZBkm4sAg6EaNrBTlMtlbtByJMhA9KOAfS_ME_eoDeS2P_o__hD4yg538D4itpA1Yp3-XcF3vu3MgpyPUf4o8rU8J3Y9-jIPfdgYdhE-QPuKdwKQu0Aov3aNNHzv_aJivc4z22sXdAC9MeLP59Q0e1QaF_moRqk0Sr9AyE7J1ohMafagWSkQ-fj_5H83r6J9AgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTI83RcASQN5gnS06-jdiNGf7b_JDAfBgNVHSMEGDAWgBSs43L6A7Jznj2VyO-HW67dG6HtaDCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jcmxzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvOTcvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzk3L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jcmxzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvOTcvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMS85Ny9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NhY2VydHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0dXMyL2NhY2VydHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWV3ZXN0dXMycGtpLndlc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBtlTS-mdvGIKziCDp4X9OVPqRLuoH48ib0L8ZVUxxNXw-O3sl-lio6Y7V0Xqv47B1Ru94KfFJZpXsF6u0Gk7IcfpKl2PltvEAmAKSdpsOElmGW0MeH-AsmLU-uRKqaIGsDrnsyJuLqtILSJ_GCMnG1VbnaqOJFmoBMj7f_unbCkVhb6MmyJC4sd_klisVbuUnjtp_Cgp2Wc_HeRKPemyn8alnsmHVOO0NHWIR41o6dNQCt7LJ5nM5rQd2Fww6uP0eqn3jQiNE0nl_zOqY8Me96xb0gWGe9D4aRXyAG_j-B4_gTga7SVfy92csbUhBWi9huq3gKSoRRpuS_4dQqvDVj&s=XK9po6KfU4MGNr5r30O6ukpdrsQNSMzjhhxwBvYZHiGKThb_n_ymFaEaeKLoUnE3YdQzKYgAWFQCBVE_C0oab1CI6I-6XNUEA8p03qG8kgPctveH0ZsMtjNBnyf89syAcjn4Euhji1aRnSL8_cbCQzswHtq4OxVjTfi8aE1ZaRqBIIhbLHCCF2Hw1P4AcbIx9g7ByJBDUELuFPNfCoNu79fcUv-kJFP-7QwVu4pfjqQ0ULSQEWlICJ1NxZI5dYVey0cPKSjP-wjo5kFl9AGPt98FcdUJwh_8-pjE922Apjk0M6BhU0Lvppliq_ekPD2-M4BGC_A7PHB4ep0IDpNK1Q&h=bhSjFE8xCuLlD5EotDHpMfG25q0GjaQvGZ7VTfl3eA8
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/centraluseuap/operationStatuses/7789f7ae-b8ab-4a73-9663-39a494732a14*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       cache-control:
       - no-cache
       content-length:
@@ -689,13 +1564,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Oct 2026 23:43:50 GMT
+      - Mon, 02 Nov 2026 20:33:22 GMT
       etag:
-      - '"01002df4-0000-3300-0000-6ad6ab350000"'
+      - '"4100ee11-0000-3300-0000-6ae8f3920000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/centraluseuap/operationStatuses/f956f95c-7e80-4882-a9a0-1faffe87719d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=639280502307306808&c=MIIHlDCCBnygAwIBAgIQEWqq0LXHm9_RoSQk3rtLtzANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBXVVMyIENBIDAxMB4XDTI2MDkyMzA2MDIzOVoXDTI2MTIxODEyMDIzOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCTL3s1G4HRJxCxQWgaa1QhZF9rCHBTzLl8phyc14DtHqFD1UEEvU8TdKIkn63TfPvm-CD5nDTQJhmqP3TQ4a1zbeIZvN26UwO-f2zs8v284_6vqmQYpp074W-XCE3yUu6xZi0c2RjrWXRE0C83U9RwiZBkm4sAg6EaNrBTlMtlbtByJMhA9KOAfS_ME_eoDeS2P_o__hD4yg538D4itpA1Yp3-XcF3vu3MgpyPUf4o8rU8J3Y9-jIPfdgYdhE-QPuKdwKQu0Aov3aNNHzv_aJivc4z22sXdAC9MeLP59Q0e1QaF_moRqk0Sr9AyE7J1ohMafagWSkQ-fj_5H83r6J9AgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBTI83RcASQN5gnS06-jdiNGf7b_JDAfBgNVHSMEGDAWgBSs43L6A7Jznj2VyO-HW67dG6HtaDCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jcmxzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvOTcvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzk3L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jcmxzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvOTcvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMS85Ny9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NhY2VydHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0dXMyL2NhY2VydHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWV3ZXN0dXMycGtpLndlc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBtlTS-mdvGIKziCDp4X9OVPqRLuoH48ib0L8ZVUxxNXw-O3sl-lio6Y7V0Xqv47B1Ru94KfFJZpXsF6u0Gk7IcfpKl2PltvEAmAKSdpsOElmGW0MeH-AsmLU-uRKqaIGsDrnsyJuLqtILSJ_GCMnG1VbnaqOJFmoBMj7f_unbCkVhb6MmyJC4sd_klisVbuUnjtp_Cgp2Wc_HeRKPemyn8alnsmHVOO0NHWIR41o6dNQCt7LJ5nM5rQd2Fww6uP0eqn3jQiNE0nl_zOqY8Me96xb0gWGe9D4aRXyAG_j-B4_gTga7SVfy92csbUhBWi9huq3gKSoRRpuS_4dQqvDVj&s=FxXRJGQPmXUejGf03DHjYgSUAWg3kalxcSR0rp2m82mzbFw94Ls4rvkmjTRN2jTgi26JXM_bP_4bM8CvadeA3BOfiV44HIp7qTEpHWpCf04GJeSYg6GTgnrZau7d0n9LovzslPxvCoo_PWCgFN0Yfi6bXw0VzlodeaccdDC2YekI5qznjMUplnxPUWXMTd0MPtW6nGSV0yLorTP5gDzjkCUmhuYopHKxi3TMTiAUa2ncrsxP7spYTXfNqVFbeVP2ONR4AmyK9B9JmCqI7W1DqPIlegLYB3RCoDicXiJ1Jz_DvhgG9_tW_odsS04XDaV-eC_WfgOl49sV6iU3RvmqRg&h=bhSjFE8xCuLlD5EotDHpMfG25q0GjaQvGZ7VTfl3eA8
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/centraluseuap/operationStatuses/7789f7ae-b8ab-4a73-9663-39a494732a14*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
       pragma:
       - no-cache
       strict-transport-security:
@@ -705,13 +1580,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/0b9b6a1e-f0af-4496-8975-1b4c523be870
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/1f2ca0a4-7b0c-4102-80fc-a5bafc04e19b
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-ms-resource-provider-hint:
       - noPolling
       x-msedge-ref:
-      - 'Ref A: 954FFDA9738141ED85C98D9F9E9BF484 Ref B: SN4AA2022403021 Ref C: 2026-10-19T23:43:50Z'
+      - 'Ref A: EA3DC4D184BB4EB6975FCA8F6BEB573C Ref B: SN4AA2022402035 Ref C: 2026-11-02T20:33:22Z'
     status:
       code: 202
       message: Accepted
@@ -721,7 +1596,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - agentfabric policy-group delete
       Connection:
@@ -729,12 +1604,12 @@ interactions:
       ParameterSetName:
       - -g -n --yes
       User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/f956f95c-7e80-4882-a9a0-1faffe87719d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=639280502296113341&c=MIIH8TCCBtmgAwIBAgIRAPJpd3xVinKSJ9wNON3aJq0wDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA5MTIxODI3MTRaFw0yNjEyMDgwMDI3MTRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtrq-nGtYhHBtWDz9tdA3lHltyOBzRSJah13j9T-Z2JjGFq5D1tO1AVMbEyroXTXr9B63Ev_xfAuI_cdCm6hmJnM_5Z5s44PX-qVkI4G_q-AhN1uHwzkp4Z6q0IOgVXI0fW6OasIqmMu2BEKZpC9_TgySSmnDIVDvTT1yAEc_z7SbpQ7t0995w3KE76oD7XJz2dDGplUDGO97ZWN7Cs9vSR3SvEmhfGAv5_6JkIfCX-qzre86nwGbyBq5vTJhKnoDvCISUyNOY6-S6PJhQJ5-xUQUZ0v8k5WUKUEQREUJx9krbphTzjjEWK-4pmI-BbZXwn7c1A9F0Qx0haYziFmcLQIDAQABo4IE7jCCBOowgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUKyzXUN2Lw7f8SY3-SfA7we0iKkEwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHeBgNVHR8EggHVMIIB0TB0oHKgcIZuaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwdqB0oHKGcGh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwZaBjoGGGX2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82L2N1cnJlbnQuY3JsMHqgeKB2hnRodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQCk-bujtojYUdAP4nS2AytCf4yyU9hwmlnILCtqo5DZ86iaXK1St3E4yqy3oHJiaFcmY9y43ZGKatYRVx_LvGwGe16Zj_Fa41_DWP2ffyrSBIJYbvrfQ5-TSaeU-sQwgAMO6qABg_3YXBtL6uW2gnnV7XHjh2tA-N10wreT-A73Aa8WtmmzNX9kTQFxNzie2_ubNyX9szdO5oJnCyclGvqjIZzqLbsY-xO9w-WADCKplgWHo41lT5NfQY_teLfRDkHYcao_1iaIyshzwTAKWykB8fEGUk7vOJfLJ_AV6m6VN2LqDtlPamfbOYxGtLMJsoTvKP7w7LOm4jsr-KEM2-ji&s=sHDYHPLUNG3YADOdwaQg1mSq428SzsurD7nILiDEm-8PzE29btbkn635IKdOamcRjUSVjfjfNYccmS-tJXkp53wdTzsTZ8FNf3sY5kPpY5yLRIEY33s7LQbqFUQfQYc_PXIwJL8qUPQ_IMUlU3Joa4Ah2xbMURvlb7HU2DYce-G3guKwwZEwfCFrYnzrSP_-_C4O0nMPFrH2WLz8jFAcfJ1zN9h9BdNYk5TrTKM_CzucwT6PSo7uHyaJpLia21_TdXyoMcJzpzItKFF6vNIFXeSfJXF-vpBQfxr04IXqmNqbta3pZa_tb87yXepEpsdKFoysNDGrkcaCYWZlA7TukQ&h=FoxepMaRh6x0GjmIc9kVNBDW2scEEjYOs2zfBzLHXXM
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/7789f7ae-b8ab-4a73-9663-39a494732a14*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/f956f95c-7e80-4882-a9a0-1faffe87719d*0000000000000000000000000000000000000000000000000000000000000000","name":"f956f95c-7e80-4882-a9a0-1faffe87719d*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Succeeded","startTime":"2026-10-19T23:43:49.2738226Z","endTime":"2026-10-19T23:43:54.7603576Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/7789f7ae-b8ab-4a73-9663-39a494732a14*0000000000000000000000000000000000000000000000000000000000000000","name":"7789f7ae-b8ab-4a73-9663-39a494732a14*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Succeeded","startTime":"2026-11-02T20:33:22.3358564Z","endTime":"2026-11-02T20:33:27.9085497Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -743,9 +1618,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Oct 2026 23:44:21 GMT
+      - Mon, 02 Nov 2026 20:33:57 GMT
       etag:
-      - '"010031f4-0000-3300-0000-6ad6ab3a0000"'
+      - '"4100f011-0000-3300-0000-6ae8f3970000"'
       expires:
       - '-1'
       pragma:
@@ -757,11 +1632,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/aad8a071-c7ff-4dc2-ae80-e8216ff51aa2
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/71902d86-2537-49b2-ba91-bbf101c8d188
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: D0A4C8FFF31845A283CDF3C8D3210298 Ref B: SN4AA2022402019 Ref C: 2026-10-19T23:44:22Z'
+      - 'Ref A: E3A328B949224C30883789AD076324EC Ref B: SN4AA2022402029 Ref C: 2026-11-02T20:33:58Z'
     status:
       code: 200
       message: OK
@@ -771,7 +1646,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - agentfabric policy-group delete
       Connection:
@@ -779,12 +1654,12 @@ interactions:
       ParameterSetName:
       - -g -n --yes
       User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/f956f95c-7e80-4882-a9a0-1faffe87719d*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=639280502296113341&c=MIIH8TCCBtmgAwIBAgIRAPJpd3xVinKSJ9wNON3aJq0wDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgRVUyQyBDQSAwMTAeFw0yNjA5MTIxODI3MTRaFw0yNjEyMDgwMDI3MTRaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtrq-nGtYhHBtWDz9tdA3lHltyOBzRSJah13j9T-Z2JjGFq5D1tO1AVMbEyroXTXr9B63Ev_xfAuI_cdCm6hmJnM_5Z5s44PX-qVkI4G_q-AhN1uHwzkp4Z6q0IOgVXI0fW6OasIqmMu2BEKZpC9_TgySSmnDIVDvTT1yAEc_z7SbpQ7t0995w3KE76oD7XJz2dDGplUDGO97ZWN7Cs9vSR3SvEmhfGAv5_6JkIfCX-qzre86nwGbyBq5vTJhKnoDvCISUyNOY6-S6PJhQJ5-xUQUZ0v8k5WUKUEQREUJx9krbphTzjjEWK-4pmI-BbZXwn7c1A9F0Qx0haYziFmcLQIDAQABo4IE7jCCBOowgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUKyzXUN2Lw7f8SY3-SfA7we0iKkEwHwYDVR0jBBgwFoAUz1EBqulDLGR2G0rwqsDykvhPw7swggHeBgNVHR8EggHVMIIB0TB0oHKgcIZuaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwdqB0oHKGcGh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzYvY3VycmVudC5jcmwwZaBjoGGGX2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jcmxzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS82L2N1cnJlbnQuY3JsMHqgeKB2hnRodHRwOi8vY2NtZWVhc3R1czJldWFwcGtpLmVhc3R1czJldWFwLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWVhc3R1czJldWFwaWNhMDEvNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQCk-bujtojYUdAP4nS2AytCf4yyU9hwmlnILCtqo5DZ86iaXK1St3E4yqy3oHJiaFcmY9y43ZGKatYRVx_LvGwGe16Zj_Fa41_DWP2ffyrSBIJYbvrfQ5-TSaeU-sQwgAMO6qABg_3YXBtL6uW2gnnV7XHjh2tA-N10wreT-A73Aa8WtmmzNX9kTQFxNzie2_ubNyX9szdO5oJnCyclGvqjIZzqLbsY-xO9w-WADCKplgWHo41lT5NfQY_teLfRDkHYcao_1iaIyshzwTAKWykB8fEGUk7vOJfLJ_AV6m6VN2LqDtlPamfbOYxGtLMJsoTvKP7w7LOm4jsr-KEM2-ji&s=nOHCRyeG98NtabQLpF0qYRK-F71j2DcYYfswebqCs71rHifCzVklwrY-FHcwy7YUR6q4L1PqvGR5A6oWzZWWzcB3htXvYRgRINfpcvKRTKAJH7aatMABTDjKjRcC2zAkaJuSw2LtyOL2OY1veohDvCYf4D5MFy-gUtXVYTiBY3ndcH5EmcZXztGZ2qFo1evmqNpN0QIRmGKWTjQ-Z1gS5m6UFIzaHKjprRfg3K6BHX5AiCxt2Uz9ACNEFFftzyOsDt6tMym-ugXGDh8mV9wwdezQ2syvJBZWH7ZghZZT9A5wWcG0ZeBYu5lhIosxaNFxGbUAYThKpoWQPcO-BMeOaw&h=FoxepMaRh6x0GjmIc9kVNBDW2scEEjYOs2zfBzLHXXM
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/7789f7ae-b8ab-4a73-9663-39a494732a14*0000000000000000000000000000000000000000000000000000000000000000?api-version=2026-04-16-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/f956f95c-7e80-4882-a9a0-1faffe87719d*0000000000000000000000000000000000000000000000000000000000000000","name":"f956f95c-7e80-4882-a9a0-1faffe87719d*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Succeeded","startTime":"2026-10-19T23:43:49.2738226Z","endTime":"2026-10-19T23:43:54.7603576Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkSecurity/locations/CENTRALUSEUAP/operationStatuses/7789f7ae-b8ab-4a73-9663-39a494732a14*0000000000000000000000000000000000000000000000000000000000000000","name":"7789f7ae-b8ab-4a73-9663-39a494732a14*0000000000000000000000000000000000000000000000000000000000000000","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002","status":"Succeeded","startTime":"2026-11-02T20:33:22.3358564Z","endTime":"2026-11-02T20:33:27.9085497Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -793,9 +1668,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Oct 2026 23:44:24 GMT
+      - Mon, 02 Nov 2026 20:34:00 GMT
       etag:
-      - '"010031f4-0000-3300-0000-6ad6ab3a0000"'
+      - '"4100f011-0000-3300-0000-6ae8f3970000"'
       expires:
       - '-1'
       pragma:
@@ -807,11 +1682,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/6ce959c0-37f2-47fc-8f29-cc12ebdec770
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f79854c7-f250-4f2f-9573-fae92335b4f9/southcentralus/86d754d4-a386-447f-a265-714e26f5512a
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
+      - '16498'
       x-msedge-ref:
-      - 'Ref A: E6951516DB8A457E8CD8205C85400461 Ref B: SN4AA2022403011 Ref C: 2026-10-19T23:44:24Z'
+      - 'Ref A: 254797BE080044AFA18AACE9620BE112 Ref B: SN4AA2022402037 Ref C: 2026-11-02T20:34:00Z'
     status:
       code: 200
       message: OK
@@ -821,7 +1696,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - agentfabric policy-group wait
       Connection:
@@ -829,13 +1704,14 @@ interactions:
       ParameterSetName:
       - -g -n --deleted
       User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-10-07-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups/cliafpg000002?api-version=2026-11-03-preview
   response:
     body:
       string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.NetworkSecurity/policyGroups/cliafpg000002''
-        under resource group ''clitestafpg000001'' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+        under resource group ''clitestafpg000001'' was not found. For more details
+        please go to https://aka.ms/ARMResourceNotFoundFix"}}'
     headers:
       cache-control:
       - no-cache
@@ -844,7 +1720,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Oct 2026 23:44:25 GMT
+      - Mon, 02 Nov 2026 20:34:01 GMT
       expires:
       - '-1'
       pragma:
@@ -858,7 +1734,7 @@ interactions:
       x-ms-failure-cause:
       - gateway
       x-msedge-ref:
-      - 'Ref A: CF33809DCC8C40569C8ED7953ED57B6D Ref B: SN4AA2022403045 Ref C: 2026-10-19T23:44:26Z'
+      - 'Ref A: 66160DF1818144A79D71E310B36F3CE1 Ref B: SN4AA2022403033 Ref C: 2026-11-02T20:34:01Z'
     status:
       code: 404
       message: Not Found
@@ -868,7 +1744,7 @@ interactions:
       Accept:
       - application/json
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       CommandName:
       - agentfabric policy-group list
       Connection:
@@ -876,35 +1752,35 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.90.0 azsdk-python-core/1.39.0 Python/3.13.14 (Windows-11-10.0.26300-SP0)
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.14.7 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups?api-version=2026-10-07-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestafpg000001/providers/Microsoft.NetworkSecurity/policyGroups?api-version=2026-11-03-preview
   response:
     body:
       string: '{"value":[]}'
     headers:
+      cache-control:
+      - no-cache
       content-length:
       - '12'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 19 Oct 2026 23:44:28 GMT
+      - Mon, 02 Nov 2026 20:34:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-original-request-ids:
-      - 0f65f9aa-1795-4fc0-acfe-6ea348af55a1
-      x-ms-providerhub-traffic:
-      - 'True'
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
-      x-ms-throttling-version:
-      - v1
       x-msedge-ref:
-      - 'Ref A: E538497582DB48BC8D98E4F3A1A1BE9E Ref B: SN4AA2022401039 Ref C: 2026-10-19T23:44:28Z'
+      - 'Ref A: 284477D94FB146DE9CE2DC2F88487375 Ref B: SN4AA2022401051 Ref C: 2026-11-02T20:34:02Z'
     status:
       code: 200
       message: OK

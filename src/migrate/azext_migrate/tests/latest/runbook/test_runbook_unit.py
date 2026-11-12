@@ -1803,6 +1803,22 @@ class ExecutionParameterCommandTests(unittest.TestCase):
 
 class ConfigureRendererTests(unittest.TestCase):
 
+    def test_client_schema_validation(self):
+        import shutil
+        import subprocess
+
+        node = shutil.which('node')
+        if not node:
+            self.skipTest('Node.js is required for client-side runtime tests')
+        html_text = configure_renderer.render(
+            _CFG_INPUTS, _CFG_SPEC, {"runbook": "r"})
+        result = subprocess.run(
+            [node, os.path.join(os.path.dirname(__file__),
+                               'test_configure_schema.js')],
+            input=html_text, text=True, capture_output=True, check=False,
+            timeout=60)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_build_meta_parses_ids_when_args_absent(self):
         meta = configure_renderer.build_meta(
             None, None, None, _CFG_INPUTS)
@@ -1823,6 +1839,8 @@ class ConfigureRendererTests(unittest.TestCase):
                 "stepInputs": {"s-1": {"note": "</script><b>x"}}}}
         html_text = configure_renderer.render(root, None, {"runbook": "r"})
         self.assertNotIn('__RUNBOOK_DATA__', html_text)
+        self.assertNotIn('__SCHEMA_VALIDATOR__', html_text)
+        self.assertNotIn('RunbookSchema', html_text)
         self.assertNotIn('</script><b>x', html_text)
         self.assertIn('\\u003c', html_text)
         self.assertIn('s-1', html_text)

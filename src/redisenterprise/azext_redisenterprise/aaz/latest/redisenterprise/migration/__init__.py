@@ -13,5 +13,6 @@ from ._list import *
 from ._show import *
 from ._start import *
 from ._undo import *
+from ._unlink_migrated_endpoint import *
 from ._validate import *
 from ._wait import *

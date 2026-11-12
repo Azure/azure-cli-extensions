@@ -20,6 +20,18 @@ aro create:
       rule_exclusions:
       - option_length_too_long
 
+aro identity create-required:
+  parameters:
+    vnet_resource_group_name:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+
+aro identity get-required:
+  parameters:
+    vnet_resource_group_name:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+
 aro hcp cluster create:
   parameters:
     managed_resource_group_name:

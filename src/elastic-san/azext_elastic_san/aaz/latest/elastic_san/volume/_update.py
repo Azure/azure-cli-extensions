@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -93,6 +93,12 @@ class Update(AAZCommand):
             help="State of the operation on the resource.",
             nullable=True,
         )
+        _args_schema.managed_by = AAZListArg(
+            options=["--managed-by"],
+            arg_group="Properties",
+            help="Information about Azure services owning the ElasticSan volume resource.",
+            nullable=True,
+        )
         _args_schema.size_gib = AAZIntArg(
             options=["--size-gib"],
             arg_group="Properties",
@@ -109,6 +115,36 @@ class Update(AAZCommand):
         creation_data.source_id = AAZStrArg(
             options=["source-id"],
             help="Fully qualified resource ID for the resource. E.g. \"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}\"",
+            nullable=True,
+        )
+
+        managed_by = cls._args_schema.managed_by
+        managed_by.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.managed_by.Element
+        _element.client_id = AAZStrArg(
+            options=["client-id"],
+            help="ClientId of the application managing the resource",
+            nullable=True,
+        )
+        _element.resource_ids = AAZListArg(
+            options=["resource-ids"],
+            help="ARM Resource IDs of the resources managing the volume",
+            nullable=True,
+        )
+        _element.version = AAZIntArg(
+            options=["version"],
+            help="Version number to keep track of resources using the Volume",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
+        )
+
+        resource_ids = cls._args_schema.managed_by.Element.resource_ids
+        resource_ids.Element = AAZResourceIdArg(
             nullable=True,
         )
         return cls._args_schema
@@ -199,7 +235,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -306,7 +342,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -369,12 +405,27 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("creationData", AAZObjectType, ".creation_data")
+                properties.set_prop("managedBy", AAZListType, ".managed_by")
                 properties.set_prop("sizeGiB", AAZIntType, ".size_gib", typ_kwargs={"flags": {"required": True}})
 
             creation_data = _builder.get(".properties.creationData")
             if creation_data is not None:
                 creation_data.set_prop("createSource", AAZStrType, ".create_source")
                 creation_data.set_prop("sourceId", AAZStrType, ".source_id")
+
+            managed_by = _builder.get(".properties.managedBy")
+            if managed_by is not None:
+                managed_by.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.managedBy[]")
+            if _elements is not None:
+                _elements.set_prop("clientId", AAZStrType, ".client_id")
+                _elements.set_prop("resourceIds", AAZListType, ".resource_ids")
+                _elements.set_prop("version", AAZIntType, ".version")
+
+            resource_ids = _builder.get(".properties.managedBy[].resourceIds")
+            if resource_ids is not None:
+                resource_ids.set_elements(AAZStrType, ".")
 
             return _instance_value
 
@@ -426,7 +477,7 @@ class _UpdateHelper:
         properties.creation_data = AAZObjectType(
             serialized_name="creationData",
         )
-        properties.managed_by = AAZObjectType(
+        properties.managed_by = AAZListType(
             serialized_name="managedBy",
         )
         properties.provisioning_state = AAZStrType(
@@ -455,9 +506,19 @@ class _UpdateHelper:
         )
 
         managed_by = _schema_volume_read.properties.managed_by
-        managed_by.resource_id = AAZStrType(
-            serialized_name="resourceId",
+        managed_by.Element = AAZObjectType()
+
+        _element = _schema_volume_read.properties.managed_by.Element
+        _element.client_id = AAZStrType(
+            serialized_name="clientId",
         )
+        _element.resource_ids = AAZListType(
+            serialized_name="resourceIds",
+        )
+        _element.version = AAZIntType()
+
+        resource_ids = _schema_volume_read.properties.managed_by.Element.resource_ids
+        resource_ids.Element = AAZStrType()
 
         storage_target = _schema_volume_read.properties.storage_target
         storage_target.provisioning_state = AAZStrType(
