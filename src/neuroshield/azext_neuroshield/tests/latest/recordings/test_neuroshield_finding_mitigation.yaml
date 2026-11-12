@@ -1,0 +1,1316 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource finding mitigate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource --finding-id
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01/mitigate?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":78,"commandsSummary":"Prevent
+        sockets from enabling User Datagram Protocol encapsulation (UDP_ENCAP), blocking
+        new setup of the documented encrypted-packet attack path while preserving
+        ordinary datagram traffic. Legitimate applications that newly enable this
+        encapsulation will fail, and sockets configured before enforcement remain
+        exposed.","isRollbackable":true,"status":"Queued"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","name":"CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616+00:00"}},{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"Queued"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","name":"CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616+00:00"}},{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"Queued"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","name":"CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616+00:00"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4167'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:50:59 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 18a0a00e-df48-439a-98d2-e02ef1d3b083
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '138'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/48b44970-ca75-4ace-9b43-13a487a10fdc
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: E38004CE9746499D86B761C4A4B770FD Ref B: SG2AA1040512062 Ref C: 2026-11-11T04:50:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","name":"CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":78,"commandsSummary":"Prevent
+        sockets from enabling User Datagram Protocol encapsulation (UDP_ENCAP), blocking
+        new setup of the documented encrypted-packet attack path while preserving
+        ordinary datagram traffic. Legitimate applications that newly enable this
+        encapsulation will fail, and sockets configured before enforcement remain
+        exposed.","isRollbackable":true,"status":"Queued"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","name":"CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"Queued"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","name":"CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"Queued"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43500-danlope-scale-vm-01-block-loopback-udp-delivery","name":"CVE-2026-43500-danlope-scale-vm-01-block-loopback-udp-delivery","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43500-danlope-scale-vm-01","cveId":"CVE-2026-43500","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":53,"commandsSummary":"Block
+        local loopback delivery over the User Datagram Protocol (UDP), interrupting
+        the documented local packet-injection route to RxRPC. This also interrupts
+        all legitimate loopback UDP communication and protects only the network namespace
+        where the rule runs.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43500-danlope-scale-vm-01-deny-new-rxrpc-sockets","name":"CVE-2026-43500-danlope-scale-vm-01-deny-new-rxrpc-sockets","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43500-danlope-scale-vm-01","cveId":"CVE-2026-43500","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Block
+        new sockets for the Linux remote procedure call networking interface (AF_RXRPC).
+        This prevents local programs from opening the implicated interface, but also
+        prevents legitimate applications from opening new RxRPC connections; existing
+        sockets are not revoked.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-76642-danlope-scale-vm-01-block-filesystem-cloning","name":"CVE-2026-76642-danlope-scale-vm-01-block-filesystem-cloning","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-76642-danlope-scale-vm-01","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":54,"commandsSummary":"Block
+        filesystem cloning through the open_tree system call, preventing the documented
+        identity-mapped clone from being created. This affects legitimate clone-based
+        mount operations across the host and does not stop the separate ownership
+        and permission attack.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-76642-danlope-scale-vm-01-remove-vulnerable-fstab-hooks","name":"CVE-2026-76642-danlope-scale-vm-01-remove-vulnerable-fstab-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-76642-danlope-scale-vm-01","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":77,"commandsSummary":"Remove
+        mount-time identity mapping (X-mount.idmap) and ownership or permission adjustment
+        (X-mount.owner, X-mount.group, X-mount.mode) from the filesystem table. Ordinary
+        mounting remains available, but workloads relying on these adjustments may
+        lose access or fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-danlope-scale-vm-01-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":62,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-make-fstab-bind-mounts-root-only","name":"CVE-2026-78410-danlope-scale-vm-01-make-fstab-bind-mounts-root-only","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":85,"commandsSummary":"Require
+        administrator privileges for all bind mounts authorized through fstab, preventing
+        local unprivileged users from reaching the vulnerable operation. Existing
+        mounts remain available, but users lose the ability to initiate these bind
+        mounts themselves.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-remove-bind-ownership-hooks","name":"CVE-2026-78410-danlope-scale-vm-01-remove-bind-ownership-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Remove
+        automatic ownership and permission changes from bind mounts while keeping
+        the mounts available. Applications that depend on those changes must receive
+        administrator-managed permissions instead; unauthorized source redirection
+        is not prevented by this control alone.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-remove-mount-setuid-privilege","name":"CVE-2026-78410-danlope-scale-vm-01-remove-mount-setuid-privilege","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Remove
+        set-user-ID (SUID) privilege from the deployed mount utility so an unprivileged
+        invocation cannot perform the vulnerable root-level operation. This also disables
+        other legitimate user mounts that rely on this utility acquiring root privileges;
+        administrator mounting remains available.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82049-danlope-scale-vm-01-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-danlope-scale-vm-01-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82049-danlope-scale-vm-01","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":78,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82049-danlope-scale-vm-01-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-danlope-scale-vm-01-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82049-danlope-scale-vm-01","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":58,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-bounded-document-rendering","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-bounded-document-rendering","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":74,"commandsSummary":"Keep
+        basic Plain Old Documentation (POD) rendering available through a guarded
+        entry point that fixes the output width and restricts indentation directives
+        before parsing. Callers must be rerouted; non-ASCII documents, advanced formatting
+        blocks, oversized documents, and documents exceeding the conservative indentation
+        limits are rejected.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-raw-document-output","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-raw-document-output","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":62,"commandsSummary":"Replace
+        formatting of untrusted Plain Old Documentation (POD) with raw-text output,
+        avoiding the vulnerable formatter entirely. Callers must be rerouted to this
+        entry point; rendered layout, color, and terminal formatting are lost.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-resource-limited-render-worker","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-resource-limited-render-worker","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":64,"commandsSummary":"Run
+        each untrusted documentation-formatting job in a separate worker with memory,
+        CPU-time, output-file-size, and elapsed-time limits. Callers must use this
+        worker; a malicious document can still make its own request fail, and legitimate
+        large or slow jobs may be terminated.","isRollbackable":true,"status":"AwaitingApproval"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20192'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:51:04 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 49037780-3595-4789-8f28-66bded61a3d2
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '46'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/1b313099-e113-4db7-b7fd-c55349060bab
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 696751C5732E4BA29CE67846E8846676 Ref B: SG2AA1040520025 Ref C: 2026-11-11T04:51:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","name":"CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":78,"commandsSummary":"Prevent
+        sockets from enabling User Datagram Protocol encapsulation (UDP_ENCAP), blocking
+        new setup of the documented encrypted-packet attack path while preserving
+        ordinary datagram traffic. Legitimate applications that newly enable this
+        encapsulation will fail, and sockets configured before enforcement remain
+        exposed.","isRollbackable":true,"status":"Failed","statusDetails":"Neuron
+        reported Failed: TetragonApplyFailed."}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","name":"CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"Queued"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","name":"CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"Queued"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43500-danlope-scale-vm-01-block-loopback-udp-delivery","name":"CVE-2026-43500-danlope-scale-vm-01-block-loopback-udp-delivery","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43500-danlope-scale-vm-01","cveId":"CVE-2026-43500","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":53,"commandsSummary":"Block
+        local loopback delivery over the User Datagram Protocol (UDP), interrupting
+        the documented local packet-injection route to RxRPC. This also interrupts
+        all legitimate loopback UDP communication and protects only the network namespace
+        where the rule runs.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43500-danlope-scale-vm-01-deny-new-rxrpc-sockets","name":"CVE-2026-43500-danlope-scale-vm-01-deny-new-rxrpc-sockets","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43500-danlope-scale-vm-01","cveId":"CVE-2026-43500","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Block
+        new sockets for the Linux remote procedure call networking interface (AF_RXRPC).
+        This prevents local programs from opening the implicated interface, but also
+        prevents legitimate applications from opening new RxRPC connections; existing
+        sockets are not revoked.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-76642-danlope-scale-vm-01-block-filesystem-cloning","name":"CVE-2026-76642-danlope-scale-vm-01-block-filesystem-cloning","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-76642-danlope-scale-vm-01","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":54,"commandsSummary":"Block
+        filesystem cloning through the open_tree system call, preventing the documented
+        identity-mapped clone from being created. This affects legitimate clone-based
+        mount operations across the host and does not stop the separate ownership
+        and permission attack.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-76642-danlope-scale-vm-01-remove-vulnerable-fstab-hooks","name":"CVE-2026-76642-danlope-scale-vm-01-remove-vulnerable-fstab-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-76642-danlope-scale-vm-01","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":77,"commandsSummary":"Remove
+        mount-time identity mapping (X-mount.idmap) and ownership or permission adjustment
+        (X-mount.owner, X-mount.group, X-mount.mode) from the filesystem table. Ordinary
+        mounting remains available, but workloads relying on these adjustments may
+        lose access or fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-danlope-scale-vm-01-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":62,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-make-fstab-bind-mounts-root-only","name":"CVE-2026-78410-danlope-scale-vm-01-make-fstab-bind-mounts-root-only","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":85,"commandsSummary":"Require
+        administrator privileges for all bind mounts authorized through fstab, preventing
+        local unprivileged users from reaching the vulnerable operation. Existing
+        mounts remain available, but users lose the ability to initiate these bind
+        mounts themselves.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-remove-bind-ownership-hooks","name":"CVE-2026-78410-danlope-scale-vm-01-remove-bind-ownership-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Remove
+        automatic ownership and permission changes from bind mounts while keeping
+        the mounts available. Applications that depend on those changes must receive
+        administrator-managed permissions instead; unauthorized source redirection
+        is not prevented by this control alone.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-remove-mount-setuid-privilege","name":"CVE-2026-78410-danlope-scale-vm-01-remove-mount-setuid-privilege","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Remove
+        set-user-ID (SUID) privilege from the deployed mount utility so an unprivileged
+        invocation cannot perform the vulnerable root-level operation. This also disables
+        other legitimate user mounts that rely on this utility acquiring root privileges;
+        administrator mounting remains available.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82049-danlope-scale-vm-01-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-danlope-scale-vm-01-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82049-danlope-scale-vm-01","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":78,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82049-danlope-scale-vm-01-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-danlope-scale-vm-01-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82049-danlope-scale-vm-01","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":58,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-bounded-document-rendering","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-bounded-document-rendering","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":74,"commandsSummary":"Keep
+        basic Plain Old Documentation (POD) rendering available through a guarded
+        entry point that fixes the output width and restricts indentation directives
+        before parsing. Callers must be rerouted; non-ASCII documents, advanced formatting
+        blocks, oversized documents, and documents exceeding the conservative indentation
+        limits are rejected.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-raw-document-output","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-raw-document-output","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":62,"commandsSummary":"Replace
+        formatting of untrusted Plain Old Documentation (POD) with raw-text output,
+        avoiding the vulnerable formatter entirely. Callers must be rerouted to this
+        entry point; rendered layout, color, and terminal formatting are lost.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-resource-limited-render-worker","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-resource-limited-render-worker","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":64,"commandsSummary":"Run
+        each untrusted documentation-formatting job in a separate worker with memory,
+        CPU-time, output-file-size, and elapsed-time limits. Callers must use this
+        worker; a malicious document can still make its own request fail, and legitimate
+        large or slow jobs may be terminated.","isRollbackable":true,"status":"AwaitingApproval"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:51:37 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - a0c5ed6b-077e-4880-9813-4648130bd4c2
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '58'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/969a2a44-2a6c-4bd3-9d8b-4863742226b2
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 2C6CA45F6F9D4CA683E1F9C17853FE22 Ref B: SG2AA1070303025 Ref C: 2026-11-11T04:51:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","name":"CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":78,"commandsSummary":"Prevent
+        sockets from enabling User Datagram Protocol encapsulation (UDP_ENCAP), blocking
+        new setup of the documented encrypted-packet attack path while preserving
+        ordinary datagram traffic. Legitimate applications that newly enable this
+        encapsulation will fail, and sockets configured before enforcement remain
+        exposed.","isRollbackable":true,"status":"Failed","statusDetails":"Neuron
+        reported Failed: TetragonApplyFailed."}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","name":"CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"Queued"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","name":"CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"Queued"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43500-danlope-scale-vm-01-block-loopback-udp-delivery","name":"CVE-2026-43500-danlope-scale-vm-01-block-loopback-udp-delivery","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43500-danlope-scale-vm-01","cveId":"CVE-2026-43500","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":53,"commandsSummary":"Block
+        local loopback delivery over the User Datagram Protocol (UDP), interrupting
+        the documented local packet-injection route to RxRPC. This also interrupts
+        all legitimate loopback UDP communication and protects only the network namespace
+        where the rule runs.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43500-danlope-scale-vm-01-deny-new-rxrpc-sockets","name":"CVE-2026-43500-danlope-scale-vm-01-deny-new-rxrpc-sockets","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43500-danlope-scale-vm-01","cveId":"CVE-2026-43500","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Block
+        new sockets for the Linux remote procedure call networking interface (AF_RXRPC).
+        This prevents local programs from opening the implicated interface, but also
+        prevents legitimate applications from opening new RxRPC connections; existing
+        sockets are not revoked.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-76642-danlope-scale-vm-01-block-filesystem-cloning","name":"CVE-2026-76642-danlope-scale-vm-01-block-filesystem-cloning","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-76642-danlope-scale-vm-01","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":54,"commandsSummary":"Block
+        filesystem cloning through the open_tree system call, preventing the documented
+        identity-mapped clone from being created. This affects legitimate clone-based
+        mount operations across the host and does not stop the separate ownership
+        and permission attack.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-76642-danlope-scale-vm-01-remove-vulnerable-fstab-hooks","name":"CVE-2026-76642-danlope-scale-vm-01-remove-vulnerable-fstab-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-76642-danlope-scale-vm-01","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":77,"commandsSummary":"Remove
+        mount-time identity mapping (X-mount.idmap) and ownership or permission adjustment
+        (X-mount.owner, X-mount.group, X-mount.mode) from the filesystem table. Ordinary
+        mounting remains available, but workloads relying on these adjustments may
+        lose access or fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-danlope-scale-vm-01-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":62,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-make-fstab-bind-mounts-root-only","name":"CVE-2026-78410-danlope-scale-vm-01-make-fstab-bind-mounts-root-only","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":85,"commandsSummary":"Require
+        administrator privileges for all bind mounts authorized through fstab, preventing
+        local unprivileged users from reaching the vulnerable operation. Existing
+        mounts remain available, but users lose the ability to initiate these bind
+        mounts themselves.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-remove-bind-ownership-hooks","name":"CVE-2026-78410-danlope-scale-vm-01-remove-bind-ownership-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Remove
+        automatic ownership and permission changes from bind mounts while keeping
+        the mounts available. Applications that depend on those changes must receive
+        administrator-managed permissions instead; unauthorized source redirection
+        is not prevented by this control alone.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-remove-mount-setuid-privilege","name":"CVE-2026-78410-danlope-scale-vm-01-remove-mount-setuid-privilege","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Remove
+        set-user-ID (SUID) privilege from the deployed mount utility so an unprivileged
+        invocation cannot perform the vulnerable root-level operation. This also disables
+        other legitimate user mounts that rely on this utility acquiring root privileges;
+        administrator mounting remains available.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82049-danlope-scale-vm-01-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-danlope-scale-vm-01-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82049-danlope-scale-vm-01","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":78,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82049-danlope-scale-vm-01-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-danlope-scale-vm-01-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82049-danlope-scale-vm-01","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":58,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-bounded-document-rendering","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-bounded-document-rendering","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":74,"commandsSummary":"Keep
+        basic Plain Old Documentation (POD) rendering available through a guarded
+        entry point that fixes the output width and restricts indentation directives
+        before parsing. Callers must be rerouted; non-ASCII documents, advanced formatting
+        blocks, oversized documents, and documents exceeding the conservative indentation
+        limits are rejected.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-raw-document-output","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-raw-document-output","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":62,"commandsSummary":"Replace
+        formatting of untrusted Plain Old Documentation (POD) with raw-text output,
+        avoiding the vulnerable formatter entirely. Callers must be rerouted to this
+        entry point; rendered layout, color, and terminal formatting are lost.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-resource-limited-render-worker","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-resource-limited-render-worker","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":64,"commandsSummary":"Run
+        each untrusted documentation-formatting job in a separate worker with memory,
+        CPU-time, output-file-size, and elapsed-time limits. Callers must use this
+        worker; a malicious document can still make its own request fail, and legitimate
+        large or slow jobs may be terminated.","isRollbackable":true,"status":"AwaitingApproval"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:52:09 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - ee2b506c-6610-4af1-8eff-6c2920a720bd
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '17'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/43e28b08-dec8-409a-be8d-c377f83bbc74
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 2426264BA27B4EDB935D98D8879E2CC6 Ref B: SG2AA1070303062 Ref C: 2026-11-11T04:52:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","name":"CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":78,"commandsSummary":"Prevent
+        sockets from enabling User Datagram Protocol encapsulation (UDP_ENCAP), blocking
+        new setup of the documented encrypted-packet attack path while preserving
+        ordinary datagram traffic. Legitimate applications that newly enable this
+        encapsulation will fail, and sockets configured before enforcement remain
+        exposed.","isRollbackable":true,"status":"Failed","statusDetails":"Neuron
+        reported Failed: TetragonApplyFailed."}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","name":"CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"Queued"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","name":"CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"Queued"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43500-danlope-scale-vm-01-block-loopback-udp-delivery","name":"CVE-2026-43500-danlope-scale-vm-01-block-loopback-udp-delivery","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43500-danlope-scale-vm-01","cveId":"CVE-2026-43500","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":53,"commandsSummary":"Block
+        local loopback delivery over the User Datagram Protocol (UDP), interrupting
+        the documented local packet-injection route to RxRPC. This also interrupts
+        all legitimate loopback UDP communication and protects only the network namespace
+        where the rule runs.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43500-danlope-scale-vm-01-deny-new-rxrpc-sockets","name":"CVE-2026-43500-danlope-scale-vm-01-deny-new-rxrpc-sockets","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43500-danlope-scale-vm-01","cveId":"CVE-2026-43500","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Block
+        new sockets for the Linux remote procedure call networking interface (AF_RXRPC).
+        This prevents local programs from opening the implicated interface, but also
+        prevents legitimate applications from opening new RxRPC connections; existing
+        sockets are not revoked.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-76642-danlope-scale-vm-01-block-filesystem-cloning","name":"CVE-2026-76642-danlope-scale-vm-01-block-filesystem-cloning","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-76642-danlope-scale-vm-01","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":54,"commandsSummary":"Block
+        filesystem cloning through the open_tree system call, preventing the documented
+        identity-mapped clone from being created. This affects legitimate clone-based
+        mount operations across the host and does not stop the separate ownership
+        and permission attack.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-76642-danlope-scale-vm-01-remove-vulnerable-fstab-hooks","name":"CVE-2026-76642-danlope-scale-vm-01-remove-vulnerable-fstab-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-76642-danlope-scale-vm-01","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":77,"commandsSummary":"Remove
+        mount-time identity mapping (X-mount.idmap) and ownership or permission adjustment
+        (X-mount.owner, X-mount.group, X-mount.mode) from the filesystem table. Ordinary
+        mounting remains available, but workloads relying on these adjustments may
+        lose access or fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-danlope-scale-vm-01-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":62,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-make-fstab-bind-mounts-root-only","name":"CVE-2026-78410-danlope-scale-vm-01-make-fstab-bind-mounts-root-only","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":85,"commandsSummary":"Require
+        administrator privileges for all bind mounts authorized through fstab, preventing
+        local unprivileged users from reaching the vulnerable operation. Existing
+        mounts remain available, but users lose the ability to initiate these bind
+        mounts themselves.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-remove-bind-ownership-hooks","name":"CVE-2026-78410-danlope-scale-vm-01-remove-bind-ownership-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Remove
+        automatic ownership and permission changes from bind mounts while keeping
+        the mounts available. Applications that depend on those changes must receive
+        administrator-managed permissions instead; unauthorized source redirection
+        is not prevented by this control alone.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-remove-mount-setuid-privilege","name":"CVE-2026-78410-danlope-scale-vm-01-remove-mount-setuid-privilege","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Remove
+        set-user-ID (SUID) privilege from the deployed mount utility so an unprivileged
+        invocation cannot perform the vulnerable root-level operation. This also disables
+        other legitimate user mounts that rely on this utility acquiring root privileges;
+        administrator mounting remains available.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82049-danlope-scale-vm-01-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-danlope-scale-vm-01-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82049-danlope-scale-vm-01","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":78,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82049-danlope-scale-vm-01-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-danlope-scale-vm-01-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82049-danlope-scale-vm-01","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":58,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-bounded-document-rendering","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-bounded-document-rendering","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":74,"commandsSummary":"Keep
+        basic Plain Old Documentation (POD) rendering available through a guarded
+        entry point that fixes the output width and restricts indentation directives
+        before parsing. Callers must be rerouted; non-ASCII documents, advanced formatting
+        blocks, oversized documents, and documents exceeding the conservative indentation
+        limits are rejected.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-raw-document-output","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-raw-document-output","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":62,"commandsSummary":"Replace
+        formatting of untrusted Plain Old Documentation (POD) with raw-text output,
+        avoiding the vulnerable formatter entirely. Callers must be rerouted to this
+        entry point; rendered layout, color, and terminal formatting are lost.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-resource-limited-render-worker","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-resource-limited-render-worker","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":64,"commandsSummary":"Run
+        each untrusted documentation-formatting job in a separate worker with memory,
+        CPU-time, output-file-size, and elapsed-time limits. Callers must use this
+        worker; a malicious document can still make its own request fail, and legitimate
+        large or slow jobs may be terminated.","isRollbackable":true,"status":"AwaitingApproval"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:52:43 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 65f5dd1c-0064-439c-8f99-3f4801ffa62d
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '49'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/f37220ba-0edb-4de5-80e5-acf352df5323
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 9912E950444645AA852E65ABBA48C511 Ref B: SG2AA1070303062 Ref C: 2026-11-11T04:52:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","name":"CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":78,"commandsSummary":"Prevent
+        sockets from enabling User Datagram Protocol encapsulation (UDP_ENCAP), blocking
+        new setup of the documented encrypted-packet attack path while preserving
+        ordinary datagram traffic. Legitimate applications that newly enable this
+        encapsulation will fail, and sockets configured before enforcement remain
+        exposed.","isRollbackable":true,"status":"Failed","statusDetails":"Neuron
+        reported Failed: TetragonApplyFailed."}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","name":"CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"Queued"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","name":"CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"Queued"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43500-danlope-scale-vm-01-block-loopback-udp-delivery","name":"CVE-2026-43500-danlope-scale-vm-01-block-loopback-udp-delivery","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43500-danlope-scale-vm-01","cveId":"CVE-2026-43500","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":53,"commandsSummary":"Block
+        local loopback delivery over the User Datagram Protocol (UDP), interrupting
+        the documented local packet-injection route to RxRPC. This also interrupts
+        all legitimate loopback UDP communication and protects only the network namespace
+        where the rule runs.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43500-danlope-scale-vm-01-deny-new-rxrpc-sockets","name":"CVE-2026-43500-danlope-scale-vm-01-deny-new-rxrpc-sockets","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43500-danlope-scale-vm-01","cveId":"CVE-2026-43500","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Block
+        new sockets for the Linux remote procedure call networking interface (AF_RXRPC).
+        This prevents local programs from opening the implicated interface, but also
+        prevents legitimate applications from opening new RxRPC connections; existing
+        sockets are not revoked.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-76642-danlope-scale-vm-01-block-filesystem-cloning","name":"CVE-2026-76642-danlope-scale-vm-01-block-filesystem-cloning","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-76642-danlope-scale-vm-01","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":54,"commandsSummary":"Block
+        filesystem cloning through the open_tree system call, preventing the documented
+        identity-mapped clone from being created. This affects legitimate clone-based
+        mount operations across the host and does not stop the separate ownership
+        and permission attack.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-76642-danlope-scale-vm-01-remove-vulnerable-fstab-hooks","name":"CVE-2026-76642-danlope-scale-vm-01-remove-vulnerable-fstab-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-76642-danlope-scale-vm-01","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":77,"commandsSummary":"Remove
+        mount-time identity mapping (X-mount.idmap) and ownership or permission adjustment
+        (X-mount.owner, X-mount.group, X-mount.mode) from the filesystem table. Ordinary
+        mounting remains available, but workloads relying on these adjustments may
+        lose access or fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-danlope-scale-vm-01-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":62,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-make-fstab-bind-mounts-root-only","name":"CVE-2026-78410-danlope-scale-vm-01-make-fstab-bind-mounts-root-only","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":85,"commandsSummary":"Require
+        administrator privileges for all bind mounts authorized through fstab, preventing
+        local unprivileged users from reaching the vulnerable operation. Existing
+        mounts remain available, but users lose the ability to initiate these bind
+        mounts themselves.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-remove-bind-ownership-hooks","name":"CVE-2026-78410-danlope-scale-vm-01-remove-bind-ownership-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Remove
+        automatic ownership and permission changes from bind mounts while keeping
+        the mounts available. Applications that depend on those changes must receive
+        administrator-managed permissions instead; unauthorized source redirection
+        is not prevented by this control alone.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-remove-mount-setuid-privilege","name":"CVE-2026-78410-danlope-scale-vm-01-remove-mount-setuid-privilege","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Remove
+        set-user-ID (SUID) privilege from the deployed mount utility so an unprivileged
+        invocation cannot perform the vulnerable root-level operation. This also disables
+        other legitimate user mounts that rely on this utility acquiring root privileges;
+        administrator mounting remains available.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82049-danlope-scale-vm-01-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-danlope-scale-vm-01-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82049-danlope-scale-vm-01","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":78,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82049-danlope-scale-vm-01-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-danlope-scale-vm-01-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82049-danlope-scale-vm-01","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":58,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-bounded-document-rendering","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-bounded-document-rendering","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":74,"commandsSummary":"Keep
+        basic Plain Old Documentation (POD) rendering available through a guarded
+        entry point that fixes the output width and restricts indentation directives
+        before parsing. Callers must be rerouted; non-ASCII documents, advanced formatting
+        blocks, oversized documents, and documents exceeding the conservative indentation
+        limits are rejected.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-raw-document-output","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-raw-document-output","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":62,"commandsSummary":"Replace
+        formatting of untrusted Plain Old Documentation (POD) with raw-text output,
+        avoiding the vulnerable formatter entirely. Callers must be rerouted to this
+        entry point; rendered layout, color, and terminal formatting are lost.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-resource-limited-render-worker","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-resource-limited-render-worker","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":64,"commandsSummary":"Run
+        each untrusted documentation-formatting job in a separate worker with memory,
+        CPU-time, output-file-size, and elapsed-time limits. Callers must use this
+        worker; a malicious document can still make its own request fail, and legitimate
+        large or slow jobs may be terminated.","isRollbackable":true,"status":"AwaitingApproval"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:53:16 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 13ab02ed-42d0-47f9-b48b-d10f4454d5ec
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '27'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/165304af-00f0-45a8-a5e4-2eb388d10e45
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A325611F52684D81BA4BBCB59749C2FE Ref B: SG2AA1070303054 Ref C: 2026-11-11T04:53:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","name":"CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":78,"commandsSummary":"Prevent
+        sockets from enabling User Datagram Protocol encapsulation (UDP_ENCAP), blocking
+        new setup of the documented encrypted-packet attack path while preserving
+        ordinary datagram traffic. Legitimate applications that newly enable this
+        encapsulation will fail, and sockets configured before enforcement remain
+        exposed.","isRollbackable":true,"status":"Failed","statusDetails":"Neuron
+        reported Failed: TetragonApplyFailed."}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","name":"CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"Queued"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","name":"CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"Queued"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43500-danlope-scale-vm-01-block-loopback-udp-delivery","name":"CVE-2026-43500-danlope-scale-vm-01-block-loopback-udp-delivery","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43500-danlope-scale-vm-01","cveId":"CVE-2026-43500","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":53,"commandsSummary":"Block
+        local loopback delivery over the User Datagram Protocol (UDP), interrupting
+        the documented local packet-injection route to RxRPC. This also interrupts
+        all legitimate loopback UDP communication and protects only the network namespace
+        where the rule runs.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43500-danlope-scale-vm-01-deny-new-rxrpc-sockets","name":"CVE-2026-43500-danlope-scale-vm-01-deny-new-rxrpc-sockets","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43500-danlope-scale-vm-01","cveId":"CVE-2026-43500","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Block
+        new sockets for the Linux remote procedure call networking interface (AF_RXRPC).
+        This prevents local programs from opening the implicated interface, but also
+        prevents legitimate applications from opening new RxRPC connections; existing
+        sockets are not revoked.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-76642-danlope-scale-vm-01-block-filesystem-cloning","name":"CVE-2026-76642-danlope-scale-vm-01-block-filesystem-cloning","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-76642-danlope-scale-vm-01","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":54,"commandsSummary":"Block
+        filesystem cloning through the open_tree system call, preventing the documented
+        identity-mapped clone from being created. This affects legitimate clone-based
+        mount operations across the host and does not stop the separate ownership
+        and permission attack.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-76642-danlope-scale-vm-01-remove-vulnerable-fstab-hooks","name":"CVE-2026-76642-danlope-scale-vm-01-remove-vulnerable-fstab-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-76642-danlope-scale-vm-01","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":77,"commandsSummary":"Remove
+        mount-time identity mapping (X-mount.idmap) and ownership or permission adjustment
+        (X-mount.owner, X-mount.group, X-mount.mode) from the filesystem table. Ordinary
+        mounting remains available, but workloads relying on these adjustments may
+        lose access or fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-danlope-scale-vm-01-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":62,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-make-fstab-bind-mounts-root-only","name":"CVE-2026-78410-danlope-scale-vm-01-make-fstab-bind-mounts-root-only","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":85,"commandsSummary":"Require
+        administrator privileges for all bind mounts authorized through fstab, preventing
+        local unprivileged users from reaching the vulnerable operation. Existing
+        mounts remain available, but users lose the ability to initiate these bind
+        mounts themselves.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-remove-bind-ownership-hooks","name":"CVE-2026-78410-danlope-scale-vm-01-remove-bind-ownership-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Remove
+        automatic ownership and permission changes from bind mounts while keeping
+        the mounts available. Applications that depend on those changes must receive
+        administrator-managed permissions instead; unauthorized source redirection
+        is not prevented by this control alone.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-remove-mount-setuid-privilege","name":"CVE-2026-78410-danlope-scale-vm-01-remove-mount-setuid-privilege","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Remove
+        set-user-ID (SUID) privilege from the deployed mount utility so an unprivileged
+        invocation cannot perform the vulnerable root-level operation. This also disables
+        other legitimate user mounts that rely on this utility acquiring root privileges;
+        administrator mounting remains available.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82049-danlope-scale-vm-01-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-danlope-scale-vm-01-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82049-danlope-scale-vm-01","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":78,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82049-danlope-scale-vm-01-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-danlope-scale-vm-01-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82049-danlope-scale-vm-01","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":58,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-bounded-document-rendering","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-bounded-document-rendering","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":74,"commandsSummary":"Keep
+        basic Plain Old Documentation (POD) rendering available through a guarded
+        entry point that fixes the output width and restricts indentation directives
+        before parsing. Callers must be rerouted; non-ASCII documents, advanced formatting
+        blocks, oversized documents, and documents exceeding the conservative indentation
+        limits are rejected.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-raw-document-output","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-raw-document-output","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":62,"commandsSummary":"Replace
+        formatting of untrusted Plain Old Documentation (POD) with raw-text output,
+        avoiding the vulnerable formatter entirely. Callers must be rerouted to this
+        entry point; rendered layout, color, and terminal formatting are lost.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-resource-limited-render-worker","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-resource-limited-render-worker","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":64,"commandsSummary":"Run
+        each untrusted documentation-formatting job in a separate worker with memory,
+        CPU-time, output-file-size, and elapsed-time limits. Callers must use this
+        worker; a malicious document can still make its own request fail, and legitimate
+        large or slow jobs may be terminated.","isRollbackable":true,"status":"AwaitingApproval"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20255'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:53:51 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 1783c1e6-fcc1-40c1-a859-d6ecfa4c1292
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '30'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/8f992a26-d116-464e-8ada-af3361edfc64
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B684C7500BD2401D916C8902BD77F772 Ref B: SG2AA1040515052 Ref C: 2026-11-11T04:53:49Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","name":"CVE-2026-43284-danlope-scale-vm-01-cve-2026-43284-block-udp-encap","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":78,"commandsSummary":"Prevent
+        sockets from enabling User Datagram Protocol encapsulation (UDP_ENCAP), blocking
+        new setup of the documented encrypted-packet attack path while preserving
+        ordinary datagram traffic. Legitimate applications that newly enable this
+        encapsulation will fail, and sockets configured before enforcement remain
+        exposed.","isRollbackable":true,"status":"Failed","statusDetails":"Neuron
+        reported Failed: TetragonApplyFailed."}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","name":"CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"Succeeded","appliedTime":"2026-11-11T04:54:14.6856716+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","name":"CVE-2026-43284-danlope-scale-vm-01-prevent-new-user-namespaces","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:50:59.9378616Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":55,"commandsSummary":"Prevent
+        creation of new user namespaces, blocking ordinary local users from obtaining
+        the network administration capability (CAP_NET_ADMIN) through that route.
+        Rootless containers and other namespace-based sandboxes may stop launching;
+        existing namespaces and privileged network configuration remain possible.","isRollbackable":true,"status":"Queued"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43500-danlope-scale-vm-01-block-loopback-udp-delivery","name":"CVE-2026-43500-danlope-scale-vm-01-block-loopback-udp-delivery","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43500-danlope-scale-vm-01","cveId":"CVE-2026-43500","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":53,"commandsSummary":"Block
+        local loopback delivery over the User Datagram Protocol (UDP), interrupting
+        the documented local packet-injection route to RxRPC. This also interrupts
+        all legitimate loopback UDP communication and protects only the network namespace
+        where the rule runs.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43500-danlope-scale-vm-01-deny-new-rxrpc-sockets","name":"CVE-2026-43500-danlope-scale-vm-01-deny-new-rxrpc-sockets","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43500-danlope-scale-vm-01","cveId":"CVE-2026-43500","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Block
+        new sockets for the Linux remote procedure call networking interface (AF_RXRPC).
+        This prevents local programs from opening the implicated interface, but also
+        prevents legitimate applications from opening new RxRPC connections; existing
+        sockets are not revoked.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-76642-danlope-scale-vm-01-block-filesystem-cloning","name":"CVE-2026-76642-danlope-scale-vm-01-block-filesystem-cloning","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-76642-danlope-scale-vm-01","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":54,"commandsSummary":"Block
+        filesystem cloning through the open_tree system call, preventing the documented
+        identity-mapped clone from being created. This affects legitimate clone-based
+        mount operations across the host and does not stop the separate ownership
+        and permission attack.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-76642-danlope-scale-vm-01-remove-vulnerable-fstab-hooks","name":"CVE-2026-76642-danlope-scale-vm-01-remove-vulnerable-fstab-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-76642-danlope-scale-vm-01","cveId":"CVE-2026-76642","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":77,"commandsSummary":"Remove
+        mount-time identity mapping (X-mount.idmap) and ownership or permission adjustment
+        (X-mount.owner, X-mount.group, X-mount.mode) from the filesystem table. Ordinary
+        mounting remains available, but workloads relying on these adjustments may
+        lose access or fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-danlope-scale-vm-01-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":62,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-make-fstab-bind-mounts-root-only","name":"CVE-2026-78410-danlope-scale-vm-01-make-fstab-bind-mounts-root-only","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":85,"commandsSummary":"Require
+        administrator privileges for all bind mounts authorized through fstab, preventing
+        local unprivileged users from reaching the vulnerable operation. Existing
+        mounts remain available, but users lose the ability to initiate these bind
+        mounts themselves.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-remove-bind-ownership-hooks","name":"CVE-2026-78410-danlope-scale-vm-01-remove-bind-ownership-hooks","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Remove
+        automatic ownership and permission changes from bind mounts while keeping
+        the mounts available. Applications that depend on those changes must receive
+        administrator-managed permissions instead; unauthorized source redirection
+        is not prevented by this control alone.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-78410-danlope-scale-vm-01-remove-mount-setuid-privilege","name":"CVE-2026-78410-danlope-scale-vm-01-remove-mount-setuid-privilege","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-78410-danlope-scale-vm-01","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":76,"commandsSummary":"Remove
+        set-user-ID (SUID) privilege from the deployed mount utility so an unprivileged
+        invocation cannot perform the vulnerable root-level operation. This also disables
+        other legitimate user mounts that rely on this utility acquiring root privileges;
+        administrator mounting remains available.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82049-danlope-scale-vm-01-runtime-systemd-deny-link-creation","name":"CVE-2026-82049-danlope-scale-vm-01-runtime-systemd-deny-link-creation","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82049-danlope-scale-vm-01","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":78,"commandsSummary":"Prevent
+        hard-link and symbolic-link creation in running services whose main executable
+        has a conventional Python name. The services are briefly restarted, and legitimate
+        operations requiring links will fail; ordinary file extraction can continue.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82049-danlope-scale-vm-01-runtime-tetragon-deny-links-x86-64","name":"CVE-2026-82049-danlope-scale-vm-01-runtime-tetragon-deny-links-x86-64","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82049-danlope-scale-vm-01","cveId":"CVE-2026-82049","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":58,"commandsSummary":"Block
+        creation of hard links and symbolic links across the host so archive extraction
+        cannot create the escaping link. This also prevents legitimate link creation
+        by all applications and can disrupt installation, deployment, and archive
+        workflows.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-bounded-document-rendering","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-bounded-document-rendering","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":74,"commandsSummary":"Keep
+        basic Plain Old Documentation (POD) rendering available through a guarded
+        entry point that fixes the output width and restricts indentation directives
+        before parsing. Callers must be rerouted; non-ASCII documents, advanced formatting
+        blocks, oversized documents, and documents exceeding the conservative indentation
+        limits are rejected.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-raw-document-output","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-raw-document-output","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":62,"commandsSummary":"Replace
+        formatting of untrusted Plain Old Documentation (POD) with raw-text output,
+        avoiding the vulnerable formatter entirely. Callers must be rerouted to this
+        entry point; rendered layout, color, and terminal formatting are lost.","isRollbackable":true,"status":"AwaitingApproval"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-82560-danlope-scale-vm-01-runtime-resource-limited-render-worker","name":"CVE-2026-82560-danlope-scale-vm-01-runtime-resource-limited-render-worker","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-82560-danlope-scale-vm-01","cveId":"CVE-2026-82560","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":64,"commandsSummary":"Run
+        each untrusted documentation-formatting job in a separate worker with memory,
+        CPU-time, output-file-size, and elapsed-time limits. Callers must use this
+        worker; a malicious document can still make its own request fail, and legitimate
+        large or slow jobs may be terminated.","isRollbackable":true,"status":"AwaitingApproval"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20362'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:54:24 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 1166d6a8-4805-4c3f-9337-1f367b1ef2d9
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '45'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/4e6ac8ba-7bd9-427f-bf6d-816d37725507
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3826305D43F04D27A69DB96B24396CDD Ref B: SG2AA1040515023 Ref C: 2026-11-11T04:54:24Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource finding rollback
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource --finding-id
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01/rollback?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:54:14.6856716+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","name":"CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:54:27.7665172+00:00"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1459'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:54:28 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - f303190a-09fd-416d-9d36-f23ca470bc9a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '95'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/d3dd8d8b-5033-4ed6-810b-a43fb6ee0d1d
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 7687188F19E44ABEADC56CABD719ECD0 Ref B: SG2AA1040519025 Ref C: 2026-11-11T04:54:27Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","name":"CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:54:27.7665172Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:54:14.6856716+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1404'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:54:29 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - e54ca0bb-4b1a-494f-a74b-73cb1bc65ec0
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '8'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/dd32c1c1-b743-4269-8b54-b861aa257a96
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A6EFF5C0934F4AD3B3CD8F503BF3698B Ref B: SG2AA1070303031 Ref C: 2026-11-11T04:54:30Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","name":"CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:54:27.7665172Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:54:14.6856716+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1404'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:55:03 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - acf9b7ee-7259-48e2-8280-cf97472f96dd
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '10'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/9da88f52-7026-47fe-9625-c85ccc065b57
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 228B11D3CC864853B1599AA887BA61FB Ref B: SG2AA1070301060 Ref C: 2026-11-11T04:55:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","name":"CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:54:27.7665172Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:54:14.6856716+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1404'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:55:35 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 3521f88f-7695-44f8-9436-7e0a08a89204
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '9'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/5b7a0926-7d96-4c5c-bff0-3bdaad7a0957
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C3D454BDD8A94AF3931AEA8F2EAEA79F Ref B: SG2AA1040517060 Ref C: 2026-11-11T04:55:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","name":"CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:54:27.7665172Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:54:14.6856716+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1404'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:56:08 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 069ae64f-6147-4306-a31e-76b2c49acc0c
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '14'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/cf24f309-8938-4504-8589-d1bbf1b52dbc
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: AC6E96E5F4104948928E3D51261BD561 Ref B: SG2AA1040512040 Ref C: 2026-11-11T04:56:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","name":"CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:54:27.7665172Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:54:14.6856716+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1404'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:56:40 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 13770934-b30a-4a55-b688-731c6c9424f5
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '11'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/fa089f89-5fc9-4d62-a621-69879680e74f
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: E230BD46375E45219038A8D8399F902F Ref B: SG2AA1040520029 Ref C: 2026-11-11T04:56:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/mitigations/CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","name":"CVE-2026-43284-danlope-scale-vm-01-disable-modular-esp","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:54:27.7665172Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/danlope-scale-vm-01-k8ex8x/findings/CVE-2026-43284-danlope-scale-vm-01","cveId":"CVE-2026-43284","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/danlope-scale-rg/providers/Microsoft.Compute/virtualMachines/danlope-scale-vm-01","score":70,"commandsSummary":"Disable
+        encrypted-packet processing through Encapsulating Security Payload (ESP) for
+        both IP versions, removing the vulnerable decryption path. Legitimate encrypted
+        tunnels using this capability will be unavailable; active consumers may prevent
+        removal.","isRollbackable":true,"status":"RolledBack","appliedTime":"2026-11-11T04:54:14.6856716+00:00","statusDetails":"Neuron
+        reported RolledBack."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1388'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Nov 2026 04:57:14 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 27ca10ea-643f-4597-9940-ccb281e2e65a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '16'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/4965cbed-4869-4118-a202-ff45413df3e5
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 61329BC8FDA9404F9A2888DB0121C52A Ref B: SG2AA1040512025 Ref C: 2026-11-11T04:57:13Z'
+    status:
+      code: 200
+      message: OK
+version: 1
