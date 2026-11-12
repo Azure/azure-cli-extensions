@@ -78,14 +78,16 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
         assert job['jobName'] == job_name
         assert job['status'] == "Cancelled"
 
-        self.cmd('az cosmosdb identity assign -n {acc} -g {rg}')
+        identity = self.cmd('az cosmosdb identity assign -n {acc} -g {rg}').get_output_in_json()
+        self.kwargs['source_principal_id'] = identity['principalId']
         self.cmd('az cosmosdb update -n {acc} -g {rg} --default-identity="SystemAssignedIdentity"')
 
         self.cmd('az cosmosdb create --disable-local-auth true -n {remote_acc} -g {rg} --locations regionName={loc}')
         self.cmd('az cosmosdb show -n {remote_acc} -g {rg}').get_output_in_json()
+        self.cmd('az cosmosdb sql role assignment create --account-name {remote_acc} -g {rg} --role-definition-id 00000000-0000-0000-0000-000000000002 --scope "/" --principal-id {source_principal_id}')
 
         # Cross Account Copy Job
-        self.cmd('az cosmosdb copy create -g {rg} --job-name {cross_account_job_name} --src-account {remote_acc} --dest-account {acc} --src-nosql database={database_name} container={container_name} --dest-nosql database={database_name} container={container_name_copied}')
+        self.cmd('az cosmosdb copy create -g {rg} --job-name {cross_account_job_name} --src-account {acc} --dest-account {remote_acc} --src-nosql database={database_name} container={container_name} --dest-nosql database={database_name} container={container_name_copied}')
 
         # Show job
         job = self.cmd('az cosmosdb copy show -g {rg} --account-name {acc} --job-name {cross_account_job_name}').get_output_in_json()
@@ -93,10 +95,11 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
         assert job['source']['component'] == 'CosmosDBSql'
         assert job['source']['databaseName'] == database_name
         assert job['source']['containerName'] == container_name
-        assert job['source']['remoteAccountName'] == remote_acc
+        assert not job['source'].get('remoteAccountName')
         assert job['destination']['component'] == 'CosmosDBSql'
         assert job['destination']['databaseName'] == database_name
         assert job['destination']['containerName'] == container_name_copied
+        assert job['destination']['remoteAccountName'] == remote_acc
 
         # Enable Full Fidelity Change Feed
         self.cmd('az resource update --name {acc} --resource-group {rg} --set properties.enableFullFidelityChangeFeed=true --resource-type databaseAccounts --namespace Microsoft.DocumentDB')
