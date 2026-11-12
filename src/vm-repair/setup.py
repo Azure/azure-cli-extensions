@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "2.4.6"
+VERSION = "2.5.1"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -52,6 +52,8 @@ setup(
             'scripts/win-mount-encrypted-disk.ps1',
             'scripts/win-mount-encrypted-disk-bitlockerV.ps1',
             'scripts/linux-build_setup-cloud-init.txt',
+            'scripts/linux-mana-driver-probe.sh',
+            'scripts/win-mana-driver-probe.ps1',
             'azext_metadata.json'
         ]
     },
