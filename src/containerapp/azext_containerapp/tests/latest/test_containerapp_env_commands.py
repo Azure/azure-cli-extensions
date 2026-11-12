@@ -10,7 +10,7 @@ import json
 import tempfile
 from azure.cli.command_modules.containerapp._utils import format_location
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse, RecordingProcessor
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckExists, live_only, StorageAccountPreparer, LogAnalyticsWorkspacePreparer)
 
 from .common import TEST_LOCATION, STAGE_LOCATION
@@ -18,6 +18,49 @@ from .custom_preparers import SubnetPreparer
 from .utils import create_vnet_subnet
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+
+
+class LogAnalyticsSharedKeyReplacer(RecordingProcessor):
+    _SHARED_KEY_FIELDS = {"sharedKey", "primarySharedKey", "secondarySharedKey"}
+
+    @classmethod
+    def _sanitize_body(cls, body):
+        if not body:
+            return body
+
+        try:
+            payload = json.loads(body)
+        except (TypeError, ValueError):
+            return body
+
+        changed = False
+
+        def sanitize(value):
+            nonlocal changed
+            if isinstance(value, dict):
+                for key, child in value.items():
+                    if key in cls._SHARED_KEY_FIELDS and isinstance(child, str):
+                        value[key] = "fake-log-analytics-key"
+                        changed = True
+                    else:
+                        sanitize(child)
+            elif isinstance(value, list):
+                for child in value:
+                    sanitize(child)
+
+        sanitize(payload)
+        return json.dumps(payload, separators=(",", ":")) if changed else body
+
+    def process_request(self, request):
+        request["body"] = self._sanitize_body(request.get("body"))
+        return request
+
+    def process_response(self, response):
+        body = response.get("body", {})
+        if isinstance(body, dict):
+            body["string"] = self._sanitize_body(body.get("string"))
+        return response
+
 
 class ContainerappEnvIdentityTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
@@ -897,7 +940,11 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
 class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(
+            *arg,
+            random_config_dir=True,
+            recording_processors=[LogAnalyticsSharedKeyReplacer()],
+            **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="australiaeast")
@@ -939,7 +986,10 @@ class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):
         ])
 
         storage_account_name = self.create_random_name(prefix='cappstorage', length=24)
-        storage_account = self.cmd('storage account create -g {} -n {} --https-only'.format(resource_group, storage_account_name)).get_output_in_json()["id"]
+        storage_account = self.cmd(
+            'storage account create -g {} -n {} --https-only '
+            '--tags "Az.Sec.DisableLocalAuth.Storage::Skip=true"'
+            .format(resource_group, storage_account_name)).get_output_in_json()["id"]
         # update env log destination from none to azure-monitor
         self.cmd('containerapp env update -g {} -n {} --logs-destination azure-monitor --storage-account {}'.format(resource_group, env_name, storage_account))
 

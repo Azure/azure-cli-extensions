@@ -36,7 +36,9 @@ class ContainerAppJobsExecutionsLocationNotInStageTest(ScenarioTest):
         share = self.create_random_name(prefix='share', length=24)
 
         self.cmd(
-            f'az storage account create --resource-group {resource_group}  --name {storage} --location {location} --kind StorageV2 --sku Standard_LRS --enable-large-file-share --output none')
+            f'az storage account create --resource-group {resource_group} --name {storage} '
+            f'--location {location} --kind StorageV2 --sku Standard_LRS '
+            '--enable-large-file-share --tags "Az.Sec.DisableLocalAuth.Storage::Skip=true" --output none')
         self.cmd(
             f'az storage share-rm create --resource-group {resource_group}  --storage-account {storage} --name {share} --quota 1024 --enabled-protocols SMB --output none')
 
