@@ -12,6 +12,7 @@
 import asyncio
 import concurrent
 import concurrent.futures
+import io
 import os
 import os.path
 import sys
@@ -27,7 +28,8 @@ from azure.cli.core import get_default_cli
 
 def run_az_cli(args):
     cli = get_default_cli()
-    cli.invoke(args)
+    # stdout is the SSH transport; formatted CLI output must stay off that channel.
+    cli.invoke(args, out_file=io.StringIO())
     if not cli.result:
         raise Exception("az cli failed")  # pylint: disable=broad-exception-raised
     if cli.result.result:
@@ -125,4 +127,5 @@ class SshConnector:  # pylint: disable=too-few-public-methods
                 await run_streams(pool)
 
 
-SshConnector().connect_ssh()
+if __name__ == "__main__":
+    SshConnector().connect_ssh()
