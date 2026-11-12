@@ -9,10 +9,16 @@
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     from azure.cli.core.commands import CliCommandType
-    from azext_workload_manager.custom import RuntimeBindingCreate
+    from azext_workload_manager.custom import CapabilityCreate, RuntimeBindingCreate, RuntimeLinkCreate
+    self.command_table[
+        'workload-manager workload-space capability create'
+    ] = CapabilityCreate(loader=self)
     self.command_table[
         'workload-manager workload-space runtime-binding create'
     ] = RuntimeBindingCreate(loader=self)
+    self.command_table[
+        'workload-manager workload-space runtime-link create'
+    ] = RuntimeLinkCreate(loader=self)
     workload_space_up_commands = CliCommandType(
         operations_tmpl='azext_workload_manager._workload_space_up#{}'
     )

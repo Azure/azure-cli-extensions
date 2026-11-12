@@ -20,7 +20,12 @@ PodSnapshotRestore capabilities.
 
 Use an existing resource group in the selected subscription. Configure the required
 provider and feature registrations and Workload Manager service permissions before
-running the command. Choose a deployment location supported by the service.
+running the command. The subscription must be enabled for the Workload Manager
+preview, with Microsoft.Compute, Microsoft.ContainerService,
+Microsoft.ContainerInstance, Microsoft.Network and Microsoft.ManagedIdentity
+registered. Service identities need permission to manage the runtime resources and
+networking. Choose a supported deployment location with sufficient AKS, compute,
+networking and ACI capacity.
 
 Managed AKS and managed ACI are the default::
 
