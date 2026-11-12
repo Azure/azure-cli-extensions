@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.1
+++++++
+* `az quota --help`: Fix typo in command group short-summary ("Manag" -> "Manage")
+
 1.0.0
 ++++++
 * Add new commands `az quota request list/show` to support manage quota request
