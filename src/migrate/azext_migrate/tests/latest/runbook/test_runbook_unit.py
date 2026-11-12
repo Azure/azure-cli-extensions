@@ -1821,7 +1821,7 @@ class ConfigureRendererTests(unittest.TestCase):
     def test_render_bulk_clear_preserves_non_editable_overrides(self):
         html_text = configure_renderer.render(_CFG_INPUTS, None, {"runbook": "r"})
         self.assertIn(
-            'entityFields(sid).filter(f => rules[f].isEditable !== false)'
+            'entityFields(sid).filter(f => rulesFor(sid)[f].isEditable !== false)'
             '.forEach(f => delete ov[f]);', html_text)
         self.assertNotIn('entityFields(sid).forEach(f => delete ov[f]);', html_text)
 

@@ -57,6 +57,21 @@ function editor(data = {}, clauses = { allOf: rules }, extraFields = {}, entitie
 }
 const exported = e => JSON.parse(e.run('buildInputsJson()')).inputs.stepInputs[sid];
 
+test('bulk removal clears saved and unsaved overrides when conditional fields are hidden', () => {
+  for (const saved of [false, true]) {
+    const e = editor({ [action]: 'Create', workloadOverrides: {
+      a: { [action]: 'Validate', [shareId]: 'override-id', serviceValue: 'keep' }
+    } }, undefined, { serviceValue: { type: 'string', scope: 'Entity', isEditable: false } });
+    if (saved) e.run('savedSnapshot = JSON.stringify(DOC.stepInputs)');
+    assert.doesNotThrow(() => e.nodes.get('entClear').listeners.click({
+      preventDefault() {}, stopPropagation() {}
+    }));
+    assert.deepEqual(e.data.workloadOverrides.a, { serviceValue: 'keep' });
+    assert.doesNotMatch(e.nodes.get('ovPane').innerHTML, /value="override-id"/);
+    assert.equal(e.run(`effective('${sid}', 'a', '${action}')`), 'Create');
+  }
+});
+
 test('Create requires all three inputs, excludes share ID, and gates command preparation', () => {
   const e = editor({ [action]: 'Create', [shareId]: 'stale-id' });
   assert.equal(e.run('uploadBlocked()'), true);

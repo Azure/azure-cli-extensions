@@ -1076,7 +1076,7 @@ function renderOverrides() {
     // empty JSON object and upload validation still passes.
     const ov = (DOC.stepInputs[sid].workloadOverrides || {})[cur.id];
     if (ov && typeof ov === 'object' && !Array.isArray(ov)) {
-      entityFields(sid).filter(f => rules[f].isEditable !== false).forEach(f => delete ov[f]);
+      entityFields(sid).filter(f => rulesFor(sid)[f].isEditable !== false).forEach(f => delete ov[f]);
     } else {
       ensureWo(sid, cur.id);
     }
