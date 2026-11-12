@@ -1,0 +1,397 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing product list-by-billing-account
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea%3Ad6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/products?api-version=2024-04-01
+  response:
+    body:
+      string: '{"totalCount":19,"value":[{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/30d76dc4-93c6-4638-dbcd-8b64f0882e9b","name":"30d76dc4-93c6-4638-dbcd-8b64f0882e9b","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JJQN","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"01/25/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"01/26/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/f8ac451d-d74f-4061-d6e4-6423529a9834","name":"f8ac451d-d74f-4061-d6e4-6423529a9834","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"01/29/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"01/30/2024","quantity":6,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/f9fb7c28-d948-479f-c7e7-c5beb90f78d9","name":"f9fb7c28-d948-479f-c7e7-c5beb90f78d9","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"monthy
+        to daily with bill freq","endDate":"02/01/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/02/2024","quantity":2,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/b86b7abf-8931-44e6-c398-6ae34277d48a","name":"b86b7abf-8931-44e6-c398-6ae34277d48a","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0J9SN","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"split
+        daily to daily","endDate":"11/05/2024","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        Dyn365Financials Advanced User","productTypeId":"CFQ7TTC0LH37","skuId":"0001","skuDescription":"Test
+        Dyn365Financials Advanced User","purchaseDate":"02/06/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/107339b1-4986-452c-c55e-52df0b1c8e26","name":"107339b1-4986-452c-c55e-52df0b1c8e26","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0J7MR","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"Daily
+        to Daily 1","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Communication
+        Credits","productTypeId":"CFQ7TTC0J1VP","skuId":"000B","skuDescription":"TEST
+        - Communications Credits","purchaseDate":"02/08/2024","quantity":7,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/355f11ab-835e-412d-d3c7-f8d4780c0a34","name":"355f11ab-835e-412d-d3c7-f8d4780c0a34","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"Monthly
+        to daily","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/08/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/025af6a5-ce26-43be-d1c7-b48b61ad65b3","name":"025af6a5-ce26-43be-d1c7-b48b61ad65b3","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0K6MK","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"split
+        monthly to daily","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5 Conversions","productTypeId":"CFQ7TTC0P7FB","skuId":"0001","skuDescription":"Test
+        - M365 E5 Conversions","purchaseDate":"02/08/2024","quantity":1,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/9d584daf-a9c8-4a99-c5e6-5ae35f30b556","name":"9d584daf-a9c8-4a99-c5e6-5ae35f30b556","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"monthly
+        to daily add seats","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/08/2024","quantity":4,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/fe03f085-6116-40f7-d1b6-1fc84a4fcac5","name":"fe03f085-6116-40f7-d1b6-1fc84a4fcac5","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0K6MK","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"daily
+        to monthly","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5 Conversions","productTypeId":"CFQ7TTC0P7FB","skuId":"0001","skuDescription":"Test
+        - M365 E5 Conversions","purchaseDate":"02/08/2024","quantity":10,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/f3395769-1607-4f7b-d53e-0bf05807d8ff","name":"f3395769-1607-4f7b-d53e-0bf05807d8ff","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0J7MR","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"daily
+        to daily add seats","endDate":"02/08/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Communication
+        Credits","productTypeId":"CFQ7TTC0J1VP","skuId":"000B","skuDescription":"TEST
+        - Communications Credits","purchaseDate":"02/09/2024","quantity":6,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/6BRO-F3NA-BG7-TGB/products/c0a31de2-aac7-4fa2-c606-917f034cbcbf","name":"c0a31de2-aac7-4fa2-c606-917f034cbcbf","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/9ea04beecb25435781b6a9c112a4713b","billingProfileDisplayName":"BillingProfile2","endDate":"02/08/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/9ea04beecb25435781b6a9c112a4713b/invoiceSections/YB7U-KJHC-PJA-TGB","invoiceSectionDisplayName":"BillingProfile2","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/09/2024","quantity":2,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/bd724d81-3717-4e0c-c5e7-3378da5996a9","name":"bd724d81-3717-4e0c-c5e7-3378da5996a9","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0J7MR","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"02/08/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Communication
+        Credits","productTypeId":"CFQ7TTC0J1VP","skuId":"000B","skuDescription":"TEST
+        - Communications Credits","purchaseDate":"02/09/2024","quantity":1,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/96cf6462-a3a7-491b-d9a3-a2e2569ded0d","name":"96cf6462-a3a7-491b-d9a3-a2e2569ded0d","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/09/2024","quantity":1,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/73a83ad5-0371-4d83-cd5f-ace2484327ce","name":"73a83ad5-0371-4d83-cd5f-ace2484327ce","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"02/08/2027","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/09/2024","quantity":2,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/RVTW-BBMQ-BG7-TGB/products/b0c1f834-ca02-4f8f-d52a-a985df87bddb","name":"b0c1f834-ca02-4f8f-d52a-a985df87bddb","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0R1FG","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/RVTW-BBMQ-BG7-TGB","billingProfileDisplayName":"TestTestDanGreco","endDate":"06/13/2024","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/RVTW-BBMQ-BG7-TGB/invoiceSections/OWFM-UEAA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Azure
+        Active Directory Premium P1","productTypeId":"CFQ7TTC0LHPX","skuId":"0001","skuDescription":"Azure
+        Active Directory Premium P1","purchaseDate":"02/14/2024","quantity":2,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/c19f56c2-6e3d-4526-d8b7-c648526e147d","name":"c19f56c2-6e3d-4526-d8b7-c648526e147d","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0HVNZ","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"03/20/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        Dyn365Financials Advanced User","productTypeId":"CFQ7TTC0LH37","skuId":"0001","skuDescription":"Test
+        Dyn365Financials Advanced User","purchaseDate":"03/21/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/01ca24c3-83a7-49ce-d10e-d5d82abeae15","name":"01ca24c3-83a7-49ce-d10e-d5d82abeae15","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0HVVF","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"03/20/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        Dyn365Financials Limited User","productTypeId":"CFQ7TTC0LH3K","skuId":"0001","skuDescription":"Test
+        Dyn365Financials Limited User","purchaseDate":"03/21/2024","quantity":2,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/70d9a267-5828-410d-de9b-8c5995bc647a","name":"70d9a267-5828-410d-de9b-8c5995bc647a","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0HVLM","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"03/22/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        Dyn365Financials Limited User","productTypeId":"CFQ7TTC0LH3K","skuId":"0001","skuDescription":"Test
+        Dyn365Financials Limited User","purchaseDate":"03/23/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/6BRO-F3NA-BG7-TGB/products/06be7523-3571-4d2d-d43c-9090ab3bfbca","name":"06be7523-3571-4d2d-d43c-9090ab3bfbca","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0P184","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/9ea04beecb25435781b6a9c112a4713b","billingProfileDisplayName":"BillingProfile2","endDate":"09/08/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/9ea04beecb25435781b6a9c112a4713b/invoiceSections/JQQD-DDYS-PJA-TGB","invoiceSectionDisplayName":"bailing4","productType":"Microsoft
+        365 Business Basic","productTypeId":"CFQ7TTC0LH18","skuId":"0001","skuDescription":"Microsoft
+        365 Business Basic","purchaseDate":"08/23/2024","quantity":2,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"}]}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '21261'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Oct 2024 06:51:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2839.777
+      x-msedge-ref:
+      - 'Ref A: D0DD396BD20F40ECAB278A5B22CE41F3 Ref B: CO6AA3150219049 Ref C: 2024-10-24T06:51:33Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing product list-by-billing-profile
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --billing-profile-name
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea%3Ad6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/products?api-version=2024-04-01
+  response:
+    body:
+      string: '{"totalCount":16,"value":[{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/30d76dc4-93c6-4638-dbcd-8b64f0882e9b","name":"30d76dc4-93c6-4638-dbcd-8b64f0882e9b","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JJQN","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"01/25/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"01/26/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/f8ac451d-d74f-4061-d6e4-6423529a9834","name":"f8ac451d-d74f-4061-d6e4-6423529a9834","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"01/29/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"01/30/2024","quantity":6,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/f9fb7c28-d948-479f-c7e7-c5beb90f78d9","name":"f9fb7c28-d948-479f-c7e7-c5beb90f78d9","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"monthy
+        to daily with bill freq","endDate":"02/01/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/02/2024","quantity":2,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/b86b7abf-8931-44e6-c398-6ae34277d48a","name":"b86b7abf-8931-44e6-c398-6ae34277d48a","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0J9SN","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"split
+        daily to daily","endDate":"11/05/2024","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        Dyn365Financials Advanced User","productTypeId":"CFQ7TTC0LH37","skuId":"0001","skuDescription":"Test
+        Dyn365Financials Advanced User","purchaseDate":"02/06/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/107339b1-4986-452c-c55e-52df0b1c8e26","name":"107339b1-4986-452c-c55e-52df0b1c8e26","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0J7MR","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"Daily
+        to Daily 1","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Communication
+        Credits","productTypeId":"CFQ7TTC0J1VP","skuId":"000B","skuDescription":"TEST
+        - Communications Credits","purchaseDate":"02/08/2024","quantity":7,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/355f11ab-835e-412d-d3c7-f8d4780c0a34","name":"355f11ab-835e-412d-d3c7-f8d4780c0a34","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"Monthly
+        to daily","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/08/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/025af6a5-ce26-43be-d1c7-b48b61ad65b3","name":"025af6a5-ce26-43be-d1c7-b48b61ad65b3","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0K6MK","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"split
+        monthly to daily","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5 Conversions","productTypeId":"CFQ7TTC0P7FB","skuId":"0001","skuDescription":"Test
+        - M365 E5 Conversions","purchaseDate":"02/08/2024","quantity":1,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/9d584daf-a9c8-4a99-c5e6-5ae35f30b556","name":"9d584daf-a9c8-4a99-c5e6-5ae35f30b556","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"monthly
+        to daily add seats","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/08/2024","quantity":4,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/fe03f085-6116-40f7-d1b6-1fc84a4fcac5","name":"fe03f085-6116-40f7-d1b6-1fc84a4fcac5","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0K6MK","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"daily
+        to monthly","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5 Conversions","productTypeId":"CFQ7TTC0P7FB","skuId":"0001","skuDescription":"Test
+        - M365 E5 Conversions","purchaseDate":"02/08/2024","quantity":10,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/f3395769-1607-4f7b-d53e-0bf05807d8ff","name":"f3395769-1607-4f7b-d53e-0bf05807d8ff","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0J7MR","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"daily
+        to daily add seats","endDate":"02/08/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Communication
+        Credits","productTypeId":"CFQ7TTC0J1VP","skuId":"000B","skuDescription":"TEST
+        - Communications Credits","purchaseDate":"02/09/2024","quantity":6,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/bd724d81-3717-4e0c-c5e7-3378da5996a9","name":"bd724d81-3717-4e0c-c5e7-3378da5996a9","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0J7MR","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"02/08/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Communication
+        Credits","productTypeId":"CFQ7TTC0J1VP","skuId":"000B","skuDescription":"TEST
+        - Communications Credits","purchaseDate":"02/09/2024","quantity":1,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/96cf6462-a3a7-491b-d9a3-a2e2569ded0d","name":"96cf6462-a3a7-491b-d9a3-a2e2569ded0d","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/09/2024","quantity":1,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/73a83ad5-0371-4d83-cd5f-ace2484327ce","name":"73a83ad5-0371-4d83-cd5f-ace2484327ce","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"02/08/2027","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/09/2024","quantity":2,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/c19f56c2-6e3d-4526-d8b7-c648526e147d","name":"c19f56c2-6e3d-4526-d8b7-c648526e147d","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0HVNZ","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"03/20/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        Dyn365Financials Advanced User","productTypeId":"CFQ7TTC0LH37","skuId":"0001","skuDescription":"Test
+        Dyn365Financials Advanced User","purchaseDate":"03/21/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/01ca24c3-83a7-49ce-d10e-d5d82abeae15","name":"01ca24c3-83a7-49ce-d10e-d5d82abeae15","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0HVVF","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"03/20/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        Dyn365Financials Limited User","productTypeId":"CFQ7TTC0LH3K","skuId":"0001","skuDescription":"Test
+        Dyn365Financials Limited User","purchaseDate":"03/21/2024","quantity":2,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/70d9a267-5828-410d-de9b-8c5995bc647a","name":"70d9a267-5828-410d-de9b-8c5995bc647a","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0HVLM","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"03/22/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        Dyn365Financials Limited User","productTypeId":"CFQ7TTC0LH3K","skuId":"0001","skuDescription":"Test
+        Dyn365Financials Limited User","purchaseDate":"03/23/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"}]}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '18013'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Oct 2024 06:51:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2839.777
+      x-msedge-ref:
+      - 'Ref A: 3998966E16894DA894B103C31F551B4C Ref B: CO6AA3150218019 Ref C: 2024-10-24T06:51:34Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing product list-by-invoice-section
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --billing-profile-name --invoice-section-name
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea%3Ad6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB/products?api-version=2024-04-01
+  response:
+    body:
+      string: '{"totalCount":16,"value":[{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/30d76dc4-93c6-4638-dbcd-8b64f0882e9b","name":"30d76dc4-93c6-4638-dbcd-8b64f0882e9b","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JJQN","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"01/25/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"01/26/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/f8ac451d-d74f-4061-d6e4-6423529a9834","name":"f8ac451d-d74f-4061-d6e4-6423529a9834","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"01/29/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"01/30/2024","quantity":6,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/f9fb7c28-d948-479f-c7e7-c5beb90f78d9","name":"f9fb7c28-d948-479f-c7e7-c5beb90f78d9","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"monthy
+        to daily with bill freq","endDate":"02/01/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/02/2024","quantity":2,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/b86b7abf-8931-44e6-c398-6ae34277d48a","name":"b86b7abf-8931-44e6-c398-6ae34277d48a","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0J9SN","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"split
+        daily to daily","endDate":"11/05/2024","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        Dyn365Financials Advanced User","productTypeId":"CFQ7TTC0LH37","skuId":"0001","skuDescription":"Test
+        Dyn365Financials Advanced User","purchaseDate":"02/06/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/107339b1-4986-452c-c55e-52df0b1c8e26","name":"107339b1-4986-452c-c55e-52df0b1c8e26","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0J7MR","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"Daily
+        to Daily 1","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Communication
+        Credits","productTypeId":"CFQ7TTC0J1VP","skuId":"000B","skuDescription":"TEST
+        - Communications Credits","purchaseDate":"02/08/2024","quantity":7,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/355f11ab-835e-412d-d3c7-f8d4780c0a34","name":"355f11ab-835e-412d-d3c7-f8d4780c0a34","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"Monthly
+        to daily","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/08/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/025af6a5-ce26-43be-d1c7-b48b61ad65b3","name":"025af6a5-ce26-43be-d1c7-b48b61ad65b3","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0K6MK","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"split
+        monthly to daily","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5 Conversions","productTypeId":"CFQ7TTC0P7FB","skuId":"0001","skuDescription":"Test
+        - M365 E5 Conversions","purchaseDate":"02/08/2024","quantity":1,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/9d584daf-a9c8-4a99-c5e6-5ae35f30b556","name":"9d584daf-a9c8-4a99-c5e6-5ae35f30b556","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"monthly
+        to daily add seats","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/08/2024","quantity":4,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/fe03f085-6116-40f7-d1b6-1fc84a4fcac5","name":"fe03f085-6116-40f7-d1b6-1fc84a4fcac5","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0K6MK","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"daily
+        to monthly","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5 Conversions","productTypeId":"CFQ7TTC0P7FB","skuId":"0001","skuDescription":"Test
+        - M365 E5 Conversions","purchaseDate":"02/08/2024","quantity":10,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/f3395769-1607-4f7b-d53e-0bf05807d8ff","name":"f3395769-1607-4f7b-d53e-0bf05807d8ff","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0J7MR","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","displayName":"daily
+        to daily add seats","endDate":"02/08/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Communication
+        Credits","productTypeId":"CFQ7TTC0J1VP","skuId":"000B","skuDescription":"TEST
+        - Communications Credits","purchaseDate":"02/09/2024","quantity":6,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/bd724d81-3717-4e0c-c5e7-3378da5996a9","name":"bd724d81-3717-4e0c-c5e7-3378da5996a9","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0J7MR","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"02/08/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Communication
+        Credits","productTypeId":"CFQ7TTC0J1VP","skuId":"000B","skuDescription":"TEST
+        - Communications Credits","purchaseDate":"02/09/2024","quantity":1,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/96cf6462-a3a7-491b-d9a3-a2e2569ded0d","name":"96cf6462-a3a7-491b-d9a3-a2e2569ded0d","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"02/07/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/09/2024","quantity":1,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/73a83ad5-0371-4d83-cd5f-ace2484327ce","name":"73a83ad5-0371-4d83-cd5f-ace2484327ce","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JWXX","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"02/08/2027","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"02/09/2024","quantity":2,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/c19f56c2-6e3d-4526-d8b7-c648526e147d","name":"c19f56c2-6e3d-4526-d8b7-c648526e147d","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0HVNZ","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"03/20/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        Dyn365Financials Advanced User","productTypeId":"CFQ7TTC0LH37","skuId":"0001","skuDescription":"Test
+        Dyn365Financials Advanced User","purchaseDate":"03/21/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/01ca24c3-83a7-49ce-d10e-d5d82abeae15","name":"01ca24c3-83a7-49ce-d10e-d5d82abeae15","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0HVVF","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"03/20/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        Dyn365Financials Limited User","productTypeId":"CFQ7TTC0LH3K","skuId":"0001","skuDescription":"Test
+        Dyn365Financials Limited User","purchaseDate":"03/21/2024","quantity":2,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"},{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/70d9a267-5828-410d-de9b-8c5995bc647a","name":"70d9a267-5828-410d-de9b-8c5995bc647a","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0HVLM","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"03/22/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        Dyn365Financials Limited User","productTypeId":"CFQ7TTC0LH3K","skuId":"0001","skuDescription":"Test
+        Dyn365Financials Limited User","purchaseDate":"03/23/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"}]}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '18013'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Oct 2024 06:51:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2839.777
+      x-msedge-ref:
+      - 'Ref A: CE7615B10DF341C99D94938D94C495AC Ref B: CO6AA3150218011 Ref C: 2024-10-24T06:51:34Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing product get
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --product-name
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea%3Ad6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/products/30d76dc4-93c6-4638-dbcd-8b64f0882e9b?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Billing/billingAccounts/HWEG-Q6HX-BG7-TGB/products/30d76dc4-93c6-4638-dbcd-8b64f0882e9b","name":"30d76dc4-93c6-4638-dbcd-8b64f0882e9b","properties":{"autoRenew":"On","availabilityId":"CFQ7TTC0JJQN","billingFrequency":"P1M","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB","billingProfileDisplayName":"Test_Test_Dailyinvoicing_usethisone","endDate":"01/25/2025","invoiceSectionId":"/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/HWEG-Q6HX-BG7-TGB/invoiceSections/3GOG-XYPA-PJA-TGB","invoiceSectionDisplayName":"Test_Test_Dailyinvoicing","productType":"Test
+        - Modern M365 E5","productTypeId":"CFQ7TTC0JG7P","skuId":"0001","skuDescription":"Test
+        - M365 E5 New Commerce Testing","purchaseDate":"01/26/2024","quantity":3,"status":"AutoRenew","tenantId":"473a1d36-579e-4bf9-a54c-81f682d19a7c"},"type":"Microsoft.Billing/billingAccounts/products"}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1103'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Oct 2024 06:51:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-service-version:
+      - 10.6.2839.777
+      x-msedge-ref:
+      - 'Ref A: E0B33ACED8A84F98B5B4CB3EBCCD4030 Ref B: CO6AA3150219031 Ref C: 2024-10-24T06:51:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"destinationInvoiceSectionId": "/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea:d6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/billingProfiles/9ea04beecb25435781b6a9c112a4713b/invoiceSections/YB7U-KJHC-PJA-TGB"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing product validate-move-eligibility
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '247'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --billing-account-name --product-name --destination-invoice-section-id
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/e00f22a3-bacf-5b74-3aaa-d503043532ea%3Ad6b82951-c3bf-485c-82a2-52da136cb99d_2019-05-31/products/30d76dc4-93c6-4638-dbcd-8b64f0882e9b/validateMoveEligibility?api-version=2024-04-01
+  response:
+    body:
+      string: '{"isMoveEligible":false,"errorDetails":{"code":"InsufficientPermissionOnSource","message":"User
+        does not have permission to change the billing profile for this product."}}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2024-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '171'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Oct 2024 06:51:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '199'
+      x-ms-service-version:
+      - 10.6.2839.777
+      x-msedge-ref:
+      - 'Ref A: 54B68CD654894EB5938979F82EA9D511 Ref B: CO6AA3150217039 Ref C: 2024-10-24T06:51:35Z'
+    status:
+      code: 200
+      message: OK
+version: 1
