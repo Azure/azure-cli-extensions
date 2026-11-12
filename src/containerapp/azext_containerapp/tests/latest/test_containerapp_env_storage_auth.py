@@ -10,6 +10,7 @@ from azure.cli.testsdk import JMESPathCheck, KeyVaultPreparer, ResourceGroupPrep
 from azure.cli.testsdk.decorators import serial_test
 
 from .common import TEST_LOCATION, STAGE_LOCATION
+from .custom_preparers import SubnetPreparer
 
 
 STORAGE_FILE_DATA_SMB_MI_ADMIN_ROLE_ID = "a235d3ee-5935-4cfb-8cc5-a3303ad5995e"
@@ -38,11 +39,15 @@ class ContainerappEnvStorageAuthTest(ScenarioTest):
 
     @serial_test()
     @ResourceGroupPreparer(location="eastus")
+    @SubnetPreparer(
+        location=AUTH_TEST_LOCATION,
+        location_replace_stage="eastus",
+        delegations="Microsoft.App/environments")
     @KeyVaultPreparer(
         name_prefix="vault",
         location=AUTH_TEST_LOCATION,
         additional_params="--enable-rbac-authorization false")
-    def test_containerapp_env_storage_auth_crud(self, resource_group, key_vault):
+    def test_containerapp_env_storage_auth_crud(self, resource_group, subnet_id, key_vault):
         location = self._test_location()
         environment_name = self.create_random_name(prefix="env", length=24)
         environment_storage_name = self.create_random_name(prefix="mount", length=20)
@@ -68,7 +73,8 @@ class ContainerappEnvStorageAuthTest(ScenarioTest):
             f'az identity create -g {resource_group} -n {identity_name}').get_output_in_json()
         self.cmd(
             f'containerapp env create -g {resource_group} -n {environment_name} --location {location} '
-            f'--mi-system-assigned --mi-user-assigned {identity["id"]} --logs-destination none')
+            f'--mi-system-assigned --mi-user-assigned {identity["id"]} --logs-destination none '
+            f'--infrastructure-subnet-resource-id {subnet_id}')
         environment = self._wait_for_environment(resource_group, environment_name)
 
         secret = self.cmd(

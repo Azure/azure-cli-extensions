@@ -15,7 +15,7 @@ from azure.cli.command_modules.containerapp._utils import format_location
 from unittest import mock
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
 
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse, RecordingProcessor, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckNotExists, JMESPathCheckExists, live_only, StorageAccountPreparer, LogAnalyticsWorkspacePreparer)
 from azure.mgmt.core.tools import parse_resource_id
 
@@ -25,6 +25,52 @@ from .custom_preparers import SubnetPreparer
 from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests, prepare_containerapp_env_v1_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+
+
+class FunctionSecretsReplacer(RecordingProcessor):
+    def process_response(self, response):
+        body = response.get("body", {}).get("string")
+        if not body:
+            return response
+
+        try:
+            payload = json.loads(body)
+        except (TypeError, ValueError):
+            return response
+
+        changed = False
+        properties = payload.get("properties")
+        if isinstance(properties, dict) and "token" in properties:
+            properties["token"] = "fake-token"
+            changed = True
+
+        output = payload.get("output")
+        if isinstance(output, str):
+            try:
+                function_output = json.loads(output)
+            except ValueError:
+                function_output = None
+
+            if isinstance(function_output, dict):
+                output_changed = False
+                value = function_output.get("value")
+                if isinstance(value, dict):
+                    keys = value.get("keys")
+                    if isinstance(keys, list):
+                        for key in keys:
+                            if isinstance(key, dict) and key.get("name") in {"default", "_master"}:
+                                key["value"] = "fake-function-key"
+                                output_changed = True
+                    if value.get("name") in {"default", "_master"}:
+                        value["value"] = "fake-function-key"
+                        output_changed = True
+                if output_changed:
+                    payload["output"] = json.dumps(function_output, separators=(",", ":"))
+                    changed = True
+
+        if changed:
+            response["body"]["string"] = json.dumps(payload, separators=(",", ":"))
+        return response
 
 
 class ContainerappFunctionTests(ScenarioTest):
@@ -43,8 +89,11 @@ class ContainerappFunctionTests(ScenarioTest):
             pass
 
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
-    
+        super().__init__(
+            *arg,
+            random_config_dir=True,
+            recording_processors=[FunctionSecretsReplacer()],
+            **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -253,7 +302,10 @@ class ContainerappFunctionTests(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
-    def test_containerapp_function_keys(self, resource_group):
+    @SubnetPreparer(
+        location="eastus2",
+        delegations=None)
+    def test_containerapp_function_keys(self, resource_group, subnet_id):
         """Test function keys show/list/set functionality"""
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
@@ -271,7 +323,9 @@ class ContainerappFunctionTests(ScenarioTest):
 
         # Step 1: Create storage account
         self.cmd(
-            f'storage account create -n {storage_account_name} -g {resource_group} --location {location} --sku Standard_LRS',
+            f'storage account create -n {storage_account_name} -g {resource_group} '
+            f'--location {location} --sku Standard_LRS '
+            '--tags "Az.Sec.DisableLocalAuth.Storage::Skip=true"',
             checks=[JMESPathCheck("provisioningState", "Succeeded")]
         )
         time.sleep(20)
@@ -282,7 +336,12 @@ class ContainerappFunctionTests(ScenarioTest):
         ).output.strip()
 
         # Step 2: Prepare Container App environment
-        env = prepare_containerapp_env_v1_for_app_e2e_tests(self, location=functionapp_location) # this is temporary and will be removed in future 
+        env_name = self.create_random_name("env", length=24)
+        env = self.cmd(
+            f'containerapp env create -g {resource_group} -n {env_name} '
+            f'--location {functionapp_location} --logs-destination none '
+            f'--enable-workload-profiles false --infrastructure-subnet-resource-id {subnet_id}'
+        ).get_output_in_json()["id"]
         time.sleep(100)
         
         # Step 3: Create the function app (container app)
