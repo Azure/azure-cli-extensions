@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.0.5
+* Fix `az datafactory trigger start`: retry with a clear error when the trigger is still being provisioned
+
 1.0.4
 * Support Oracle V2 in Azure Data Factory
 
