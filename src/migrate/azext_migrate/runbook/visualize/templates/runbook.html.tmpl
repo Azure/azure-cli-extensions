@@ -356,9 +356,14 @@ $refresh<title>$title</title>
   .att__row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .att__n { font-weight: 600; font-size: 12px; }
   .att__t { color: var(--muted); font-size: 11px; }
-  .att__err { color: #a4262c; font-size: 12px; margin-top: 3px;
+  .att__err, .issue-details pre { color: #a4262c;
     background: #fde7e9; border: 1px solid #f1c2c6; border-radius: 4px;
-    padding: 4px 8px; }
+  }
+  .att__err { font-size: 12px; margin-top: 3px; padding: 4px 8px; }
+  .issue-details { min-width: 0; font-size: 12px; }
+  .issue-details summary { color: var(--accent); cursor: pointer; }
+  .issue-details pre { white-space: pre-wrap; overflow-wrap: anywhere;
+    padding: 12px; max-height: 320px; overflow: auto; }
   .out { border-radius: 6px; padding: 9px 11px; border: 1px solid; }
   .out--partial { background: #fff4ce; border-color: #e5c766; }
   .out--final { background: #dff6dd; border-color: #a5d6a7; }

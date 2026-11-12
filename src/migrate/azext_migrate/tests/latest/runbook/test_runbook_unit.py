@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import io
+import html
 import json
 import os
 import copy
@@ -2171,6 +2172,69 @@ class ExecutionStatusParsingTests(unittest.TestCase):
         self.assertIn('Attempt 1', html_text)
         self.assertIn('class="retry"', html_text)
         self.assertIn('Dependency', html_text)
+
+    def test_execution_render_preserves_nested_errors_per_context(self):
+        doc = copy.deepcopy(_STATUS_DETAIL_DOC)
+        step = doc['workstreams'][0]['steps'][0]
+        entity = step['entityExecutions'][0]
+        attempt = entity['attempts'][0]
+        expected = []
+        for node, context in ((step, 'step'), (attempt, 'attempt'),
+                              (entity, 'workload')):
+            details = {
+                'code': 'ValidationFailed',
+                'message': 'Review the error for details.',
+                'errors': [
+                    {'code': context + '.TargetDatabaseAlreadyExists',
+                     'message': 'Database <db> already exists & is Online.'},
+                    {'code': context + '.InvalidInput',
+                     'message': '</pre><script>alert("error")</script>',
+                     'errors': [{'code': 'Nested', 'message': 'More detail'}]},
+                ],
+            }
+            node['errorDetails'] = details
+            expected.append(details['errors'])
+        before = copy.deepcopy(doc)
+        view = visualize_viewmodel.build_execution_view(doc, title='X')
+        row = view.workstreams[0].steps[0]
+        self.assertEqual(row.error_details, step['errorDetails'])
+        self.assertEqual(row.entities[0].error_details, entity['errorDetails'])
+        self.assertEqual(row.entities[0].attempts[0]['error_details'],
+                         attempt['errorDetails'])
+        rendered = visualize_renderer.render(
+            visualize_graph.build_execution_graph(doc, title='X'), view=view)
+        blocks = re.findall(
+            r'<details class="issue-details"><summary>Issue details</summary>'
+            r'<pre>(.*?)</pre></details>', rendered, re.DOTALL)
+        self.assertEqual(
+            [json.loads(html.unescape(block)) for block in blocks], expected)
+        self.assertIn('ValidationFailed: Review the error for details.',
+                      rendered)
+        self.assertNotIn('<script>alert("error")</script>', rendered)
+        self.assertEqual(doc, before)
+
+    def test_execution_render_error_details_without_nested_errors(self):
+        for error in (None, {}, 'invalid',
+                      {'code': 'Failed', 'message': 'Original message'},
+                      {'errors': [{'code': 'Nested', 'message': 'Details'}]}):
+            with self.subTest(error=error):
+                doc = {'workstreams': [{'steps': [{
+                    'stepId': 's1', 'status': 'Failed',
+                    'entityExecutions': [{
+                        'entity': 'vm', 'status': 'Failed',
+                        'errorDetails': error}],
+                }]}]}
+                view = visualize_viewmodel.build_execution_view(doc, 'X')
+                rendered = visualize_renderer.render(
+                    visualize_graph.build_execution_graph(doc), view=view)
+                blocks = re.findall(
+                    r'<details class="issue-details">.*?<pre>(.*?)</pre>',
+                    rendered, re.DOTALL)
+                expected = ([error.get('errors') or error]
+                            if isinstance(error, dict) and error else [])
+                self.assertEqual(
+                    [json.loads(html.unescape(block)) for block in blocks],
+                    expected)
 
     def test_execution_overview_uses_service_counts(self):
         overview = transformers.execution_overview(_STATUS_TOOL_DOC)
