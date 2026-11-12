@@ -96,6 +96,26 @@ def get_dmverity_vhd_path() -> Path:
     return Path(__file__).parent / "bin" / binary_name
 
 
+def prepare_dmverity_vhd_binary() -> Path:
+    """Return the host dmverity-vhd binary path, ensuring it exists and is executable."""
+    path = get_dmverity_vhd_path()
+
+    # check if the extension binary exists
+    if not os.path.exists(path):
+        eprint("The extension binary file cannot be located.")
+    if not os.access(path, os.X_OK):
+        # add executable permissions for the current user if they don't exist
+        os.chmod(path, os.stat(path).st_mode | stat.S_IXUSR)
+
+    return path
+
+
+def validate_host_supports_platform(platform: str) -> None:  # pylint: disable=redefined-outer-name
+    if host_os == "Darwin" and platform.startswith("windows"):
+        eprint("Windows container policies cannot be generated on MacOS. Use --platform linux/amd64.")
+
+
+
 class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
     # static variable to cache layer hashes between container groups
     layer_cache = {}
@@ -113,15 +133,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
                 f.write(dmverity_vhd_fetch_resp.content)
 
     def __init__(self):
-        self.policy_bin = str(get_dmverity_vhd_path())
-
-        # check if the extension binary exists
-        if not os.path.exists(self.policy_bin):
-            eprint("The extension binary file cannot be located.")
-        if not os.access(self.policy_bin, os.X_OK):
-            # add executable permissions for the current user if they don't exist
-            st = os.stat(self.policy_bin)
-            os.chmod(self.policy_bin, st.st_mode | stat.S_IXUSR)
+        self.policy_bin = str(prepare_dmverity_vhd_binary())
 
     def get_policy_image_layers(  # pylint: disable=redefined-outer-name
         self,
@@ -132,6 +144,8 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
         faster_hashing=False,
         skip_win_ver_check=False,
     ) -> Dict[str, List[str]]:
+        validate_host_supports_platform(platform)
+
         image_name = f"{image}:{tag}"
         # populate layer info
         if self.layer_cache.get(image_name):

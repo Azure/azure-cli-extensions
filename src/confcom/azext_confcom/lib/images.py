@@ -7,7 +7,7 @@ import functools
 import logging
 import subprocess
 import docker
-from azext_confcom.rootfs_proxy import get_dmverity_vhd_path
+from azext_confcom.rootfs_proxy import prepare_dmverity_vhd_binary, validate_host_supports_platform
 
 
 logger = logging.getLogger(__name__)
@@ -57,7 +57,8 @@ def get_image_platform(image_reference: str) -> str:
 
 def get_image_layers(image: str, platform: str = "linux/amd64") -> list[str]:
 
-    binary_path = get_dmverity_vhd_path()
+    validate_host_supports_platform(platform)
+    binary_path = prepare_dmverity_vhd_binary()
     get_image(image)
 
     arg_list = [binary_path.as_posix(), "-d", "roothash", "-i", image]
