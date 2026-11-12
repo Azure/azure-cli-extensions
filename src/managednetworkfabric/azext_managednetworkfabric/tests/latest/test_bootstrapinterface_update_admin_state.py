@@ -28,7 +28,7 @@ def call_scenario1(test):
     setup_scenario1(test)
     step_update_admin_state(
         test,
-        checks=[test.check("@", {})],
+        checks=[test.check("status", "Succeeded")],
     )
     step_show(
         test,
