@@ -1327,12 +1327,12 @@ function exportedInputs() {
     }));
     Object.keys(rulesFor(sid)).forEach(f => {
       // Move shared values into allowed workloads to prevent excluded workloads
-      // from inheriting them.
+      // from inheriting them, retaining inactive property names as null.
       if (!base.excluded.has(f) && !states.some(e => e.excluded.has(f))) return;
       const value = output[f];
-      delete output[f];
+      output[f] = null;
       states.forEach(({ eid, excluded, values }) => {
-        if (excluded.has(f)) delete values[f];
+        if (excluded.has(f)) values[f] = null;
         else if (!hasOverride(sid, eid, f) && !isEmpty(data[f])) values[f] = value;
       });
     });
