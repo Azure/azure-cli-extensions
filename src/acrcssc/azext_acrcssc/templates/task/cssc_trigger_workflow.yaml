@@ -2,7 +2,8 @@ version: v1.1.0
 alias:
   values:
     ScanImageAndSchedulePatchTask: cssc-scan-image
-    maxLimit: 100
+    maxLimit: __CSSC_IMAGE_LIMIT__
+    scheduleParallelism: 10
 steps:
   - cmd: bash -c 'echo "Inside cssc-trigger-workflow task, getting list of images to be patched based on --filter-policy for Registry {{.Run.Registry}}."'
   - cmd: cssc acr cssc patch --filter-policy csscpolicies/patchpolicy:v1 --dry-run > filterRepos.txt
@@ -22,43 +23,99 @@ steps:
       - ACR_EXPERIMENTAL_CSSC=true
   - cmd: bash -c 'sed -n "/^Listing/,/^Matches/ {/^Listing/b;/^Matches/b;/^Repo/b;p}" filterReposWithPatchTags.txt' > filteredReposAndTags.txt
   - cmd: bash -c 'sed -n "/^Configured Tag Convention:/p" filterReposWithPatchTags.txt' > tagConvention.txt
-  - cmd: az login --identity --allow-no-subscriptions
+  - id: refresh-trivy-db
+    timeout: 900
+    cmd: |
+        cssc -c '
+        upstreamDb="ghcr.io/aquasecurity/trivy-db:2"
+        fallbackDb="public.ecr.aws/aquasecurity/trivy-db:2"
+        mirrorRepo="{{.Run.Registry}}/csscpolicies/trivy-db"
+        upstreamDigest=$(oras manifest fetch --descriptor "$upstreamDb" 2>/dev/null | jq -r ".digest // empty")
+        mirrorDigest=$(oras manifest fetch --descriptor "$mirrorRepo:2" 2>/dev/null | jq -r ".digest // empty")
+        echo "Trivy DB upstream digest: ${upstreamDigest:-unavailable}, registry copy digest: ${mirrorDigest:-missing}"
+        copySource=""
+        if [ -n "$upstreamDigest" ]; then
+          if [ "$upstreamDigest" = "$mirrorDigest" ]; then
+            echo "Trivy DB registry copy is current, skipping copy."
+          else
+            copySource="$upstreamDb"
+          fi
+        elif [ -z "$mirrorDigest" ]; then
+          copySource="$fallbackDb"
+        else
+          echo "WARNING: could not resolve $upstreamDb, keeping the existing registry copy."
+        fi
+        if [ -n "$copySource" ]; then
+          if oras copy "$copySource" "$mirrorRepo:2"; then
+            echo "Trivy DB copied from $copySource to $mirrorRepo:2"
+            newDigest=$(oras manifest fetch --descriptor "$mirrorRepo:2" 2>/dev/null | jq -r ".digest // empty")
+            if [ -n "$mirrorDigest" ] && [ -n "$newDigest" ] && [ "$mirrorDigest" != "$newDigest" ]; then
+              oras manifest delete --force "$mirrorRepo@$mirrorDigest" >/dev/null 2>&1 && echo "Deleted previous Trivy DB copy $mirrorDigest" || echo "WARNING: could not delete previous Trivy DB copy $mirrorDigest"
+            fi
+          else
+            echo "WARNING: Trivy DB copy failed, scans will use the existing registry copy or public sources."
+          fi
+        fi
+        exit 0'
+    entryPoint: /bin/bash
+  - cmd: az login --identity --allow-no-subscriptions --output none
   - id: scan-and-schedule-patch
-    timeout: 1800
+    timeout: 3300
     cmd: |
         az -c '
-        counter=0
-        batchSize=10
-        sleepDuration=30
+        maxParallel=$scheduleParallelism
         RegistryBaseName={{.Run.Registry}}
         if [[ $RegistryBaseName == *-* ]]; then
           RegistryBaseName="${RegistryBaseName%%-*}"
           echo "DNL registry name detected, readjusting RegistryBaseName to $RegistryBaseName for task scheduling"
         fi
-        while read line;do \
-        IFS=',' read -r -a array <<< "${line}"
-        RepoName=${array[0]}
-        OriginalTag=${array[1]}
-        TagName=${array[2]}
-        IncrementedTagNumber=""
+        export AZURE_CORE_COLLECT_TELEMETRY=false
+        RegistryResourceGroup=$(az acr show --name $RegistryBaseName --query resourceGroup --output tsv 2>/dev/null)
+        ResourceGroupArgs=""
+        if [ -n "$RegistryResourceGroup" ]; then
+          ResourceGroupArgs="--resource-group $RegistryResourceGroup"
+        fi
         echo "Tag Convention details: $(cat tagConvention.txt)"
         if grep -q "floating" tagConvention.txt; then
-          IncrementedTagNumber="patched"
+          DefaultPatchTag="patched"
         else
-          IncrementedTagNumber="1"
+          DefaultPatchTag="1"
         fi
-        if [ $TagName == "N/A" ]; then
-          TagName=$OriginalTag
-        elif [[ $TagName =~ -([0-9]{1,3})$ ]]; then
-          TagNumber=${BASH_REMATCH[1]}
-          IncrementedTagNumber=$((TagNumber+1))
-        fi
-        echo "Scheduling $ScanImageAndSchedulePatchTask for ${RegistryBaseName}/$RepoName, Tag:$TagName, OriginalTag:$OriginalTag, PatchTag:$OriginalTag-$IncrementedTagNumber"; \
-        az acr task run --name $ScanImageAndSchedulePatchTask --registry $RegistryBaseName --set SOURCE_REPOSITORY=$RepoName --set SOURCE_IMAGE_TAG=$TagName --set SOURCE_IMAGE_ORIGINAL_TAG=$OriginalTag --set SOURCE_IMAGE_NEWPATCH_TAG=$IncrementedTagNumber --no-wait; \
-        counter=$((counter+1)); \
-        if [ $((counter%batchSize)) -eq 0 ]; then \
-          echo "Waiting for $sleepDuration seconds before scheduling scans for next batch of images"; \
-          sleep $sleepDuration; \
-        fi; \
-        done < filteredReposAndTags.txt;'
+        failedList=$(mktemp)
+        scheduleScan() {
+          RepoName=$1
+          OriginalTag=$2
+          TagName=$3
+          IncrementedTagNumber=$DefaultPatchTag
+          if [ "$TagName" == "N/A" ]; then
+            TagName=$OriginalTag
+          elif [[ $TagName =~ -([0-9]{1,3})$ ]]; then
+            IncrementedTagNumber=$((BASH_REMATCH[1]+1))
+          fi
+          for attempt in 1 2 3; do
+            if output=$(az acr task run --name $ScanImageAndSchedulePatchTask --registry $RegistryBaseName $ResourceGroupArgs --set SOURCE_REPOSITORY=$RepoName --set SOURCE_IMAGE_TAG=$TagName --set SOURCE_IMAGE_ORIGINAL_TAG=$OriginalTag --set SOURCE_IMAGE_NEWPATCH_TAG=$IncrementedTagNumber --no-wait 2>&1); then
+              echo "Scheduled $ScanImageAndSchedulePatchTask for ${RegistryBaseName}/$RepoName, Tag:$TagName, OriginalTag:$OriginalTag, PatchTag:$OriginalTag-$IncrementedTagNumber. $(echo "$output" | grep -o "ID: [a-z0-9]*" | head -1)"
+              return 0
+            fi
+            echo "Attempt $attempt to schedule $ScanImageAndSchedulePatchTask for $RepoName:$TagName failed: $(echo "$output" | tail -1)"
+            sleep $((attempt * 15))
+          done
+          echo "$RepoName:$TagName" >> $failedList
+          return 1
+        }
+        scheduledCount=0
+        while IFS="," read -r RepoName OriginalTag TagName _; do
+          if [ -z "$RepoName" ]; then continue; fi
+          while [ $(jobs -rp | wc -l) -ge $maxParallel ]; do wait -n; done
+          scheduleScan "$RepoName" "$OriginalTag" "$TagName" &
+          scheduledCount=$((scheduledCount+1))
+        done < filteredReposAndTags.txt
+        wait
+        failedCount=$(grep -c . $failedList)
+        echo "Scan scheduling finished: $((scheduledCount-failedCount)) of $scheduledCount images scheduled, $failedCount failed."
+        if [ $failedCount -gt 0 ]; then
+          echo "Images that could not be scheduled:"
+          cat $failedList
+          exit 1
+        fi'
     entryPoint: /bin/bash

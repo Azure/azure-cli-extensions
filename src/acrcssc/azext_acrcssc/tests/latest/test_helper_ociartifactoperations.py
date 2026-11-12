@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from unittest import mock
 from unittest.mock import MagicMock, patch
-from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch
+from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch, delete_trivy_db_copy, _oras_client
 from azure.cli.core.mock import DummyCli
 
 
@@ -104,3 +104,41 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
         cmd = mock.MagicMock()
         cmd.cli_ctx = DummyCli()
         return cmd
+
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations._get_acr_token')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations.parse_resource_id')
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations.acr_repository_delete')
+    def test_delete_trivy_db_copy_missing_repository_does_not_fail(self, mock_acr_repository_delete, mock_parse_resource_id, mock_get_acr_token):
+        cmd = self._setup_cmd()
+        registry = MagicMock()
+        mock_parse_resource_id.return_value = {"resource_group": "test_rg", "subscription": "test_subscription"}
+        mock_get_acr_token.return_value = "test_token"
+        mock_acr_repository_delete.side_effect = Exception("repository not found")
+
+        delete_trivy_db_copy(cmd, registry)
+
+        self.assertEqual(mock_acr_repository_delete.call_args.kwargs["repository"], "csscpolicies/trivy-db")
+
+    @mock.patch('azext_acrcssc.helper._ociartifactoperations._get_acr_token')
+    def test_oras_client_ignores_docker_config_credentials(self, mock_get_acr_token):
+        import base64
+        import json
+        import os
+        import tempfile
+        import oras.container
+        mock_get_acr_token.return_value = "acr_refresh_token"
+        registry = MagicMock()
+        registry.id = "/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ContainerRegistry/registries/myreg"
+        registry.name = "myreg"
+        registry.login_server = "myreg.azurecr.io"
+        with tempfile.TemporaryDirectory() as home_dir:
+            # what `az acr login` writes: an `auth` entry with an empty password plus an identity token
+            os.makedirs(os.path.join(home_dir, ".docker"))
+            empty_password_auth = base64.b64encode(b"00000000-0000-0000-0000-000000000000:").decode()
+            with open(os.path.join(home_dir, ".docker", "config.json"), "w") as f:
+                json.dump({"auths": {"myreg.azurecr.io": {"auth": empty_password_auth, "identitytoken": "x"}}}, f)
+            with mock.patch.dict(os.environ, {"HOME": home_dir}):
+                client = _oras_client(registry)
+                client.auth.load_configs(oras.container.Container("myreg.azurecr.io/csscpolicies/patchpolicy:v1"))
+        expected = base64.b64encode(b"00000000-0000-0000-0000-000000000000:acr_refresh_token").decode()
+        self.assertEqual(client.auth._basic_auth, expected)

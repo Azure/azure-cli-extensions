@@ -8,8 +8,10 @@ import tempfile
 import unittest
 from unittest import mock
 from ..._validators import (
-    _validate_schedule, validate_run_type, check_continuous_task_exists, validate_continuouspatch_config_v1
+    _validate_schedule, validate_run_type, check_continuous_task_exists, validate_continuouspatch_config_v1,
+    validate_continuous_patch_v1_image_limit
 )
+from ...helper._constants import CONTINUOUSPATCH_IMAGE_LIMIT
 
 from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError
 from azure.cli.core.mock import DummyCli
@@ -34,6 +36,11 @@ class AcrCsscCommandsTests(unittest.TestCase):
 
         for timespan in test_cases:
             self.assertRaises(InvalidArgumentValueError, _validate_schedule, timespan)
+
+    def test_validate_continuous_patch_v1_image_limit(self):
+        validate_continuous_patch_v1_image_limit(f"Matches found: {CONTINUOUSPATCH_IMAGE_LIMIT}")
+        with self.assertRaises(InvalidArgumentValueError):
+            validate_continuous_patch_v1_image_limit(f"Matches found: {CONTINUOUSPATCH_IMAGE_LIMIT + 1}")
 
     def test_validate_run_type_valid(self):
         test_cases = [
