@@ -314,6 +314,60 @@ def _invoke_run_command(script_name, vm_name, rg_name, is_linux, parameters=None
     return stdout, stderr
 
 
+MANA_PROBE_MARKER = 'VMREPAIR_MANA_PROBE'
+LINUX_MANA_PROBE_SCRIPT = 'linux-mana-driver-probe.sh'
+WINDOWS_MANA_PROBE_SCRIPT = 'win-mana-driver-probe.ps1'
+MANA_PROBE_VALUES = {
+    'hardware': {'mana', 'mellanox', 'none', 'unknown'},
+    'driver': {'present', 'missing', 'unknown'}
+}
+
+
+def _parse_mana_probe_output(stdout):
+    """
+    Return {'hardware': ..., 'driver': ...} from the probe's single marker line, or None when the output
+    does not contain exactly one well-formed marker line.
+    """
+    marker_lines = [line.strip() for line in (stdout or '').splitlines()
+                    if line.strip().startswith(MANA_PROBE_MARKER + ' ')]
+    if len(marker_lines) != 1:
+        return None
+    fields = marker_lines[0].split()[1:]
+    result = {}
+    for field in fields:
+        name, separator, value = field.partition('=')
+        if not separator or name not in MANA_PROBE_VALUES or name in result or value not in MANA_PROBE_VALUES[name]:
+            return None
+        result[name] = value
+    if set(result) != set(MANA_PROBE_VALUES):
+        return None
+    return result
+
+
+def _check_guest_mana_driver(vm_name, resource_group_name, is_linux):
+    """
+    Run the packaged read-only MANA probe in the guest and return
+    {'hardware': mana|mellanox|none|unknown, 'driver': present|missing|unknown, 'source': run-command|skipped}.
+
+    Never raises. 'unknown' means not determined and must not be read as absent: Run Command needs a ready
+    VM agent and outbound guest connectivity to return results, so it is least reliable when guest
+    networking is broken. Not currently called by any command.
+    """
+    script_name = LINUX_MANA_PROBE_SCRIPT if is_linux else WINDOWS_MANA_PROBE_SCRIPT
+    try:
+        stdout, _ = _invoke_run_command(script_name, vm_name, resource_group_name, is_linux)
+    except (AzCommandError, InvalidArgumentValueError, KeyError, IndexError, TypeError, ValueError) as exception:
+        logger.debug('Guest MANA probe could not run: %s', type(exception).__name__)
+        return {'hardware': 'unknown', 'driver': 'unknown', 'source': 'skipped'}
+
+    parsed = _parse_mana_probe_output(stdout)
+    if parsed is None:
+        logger.debug('Guest MANA probe returned unrecognized output.')
+        return {'hardware': 'unknown', 'driver': 'unknown', 'source': 'run-command'}
+    parsed['source'] = 'run-command'
+    return parsed
+
+
 def _get_current_vmrepair_version():
     from azure.cli.core.extension.operations import list_extensions
     version = [ext['version'] for ext in list_extensions() if ext['name'] == 'vm-repair']

@@ -107,3 +107,18 @@ customEvents
     and isnotempty(tostring(customDimensions.postResetHealthy))
 | summarize invocations = count() by withSchema, version = tostring(application_Version)
 ```
+
+#### Internal guest MANA probe (not yet used by any command) ####
+
+The extension ships two read-only probe scripts, `scripts/linux-mana-driver-probe.sh` and
+`scripts/win-mana-driver-probe.ps1`, and an internal helper that runs the OS-appropriate one through Run
+Command. No command calls it yet, and it adds no parameters. It reports:
+
+| Field | Values | Linux check | Windows check |
+|---|---|---|---|
+| `hardware` | `mana`, `mellanox`, `none`, `unknown` | PCI vendor/device `1414:00ba` is MANA; vendor `15b3` is Mellanox. | Present PCI device `VEN_1414&DEV_00BA` is MANA; `VEN_15B3` is Mellanox. |
+| `driver` | `present`, `missing`, `unknown` | `mana` module loaded, built in, or present as a module file for the running kernel. | On MANA hardware only: a `Microsoft Azure Network Adapter` network adapter exists. Otherwise `unknown`. |
+
+Any failure to run the probe or read its output returns `unknown`, never `missing`. Run Command needs a
+ready VM agent and outbound guest connectivity to return results, so the probe is least reliable when
+guest networking is broken; it is therefore not used to gate `az vm repair reset-nic`.
