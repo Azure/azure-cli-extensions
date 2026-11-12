@@ -215,7 +215,7 @@ class Recommendvmsku(AAZCommand):
             options=["max-output-tokens"],
             help="The maximum number of generated output tokens per inference request. Must be supplied together with `promptTokens`, and the two must total from 1 through 131072.",
             fmt=AAZIntArgFormat(
-                maximum=131072,
+                maximum=2147483647,
                 minimum=0,
             ),
         )
@@ -223,7 +223,7 @@ class Recommendvmsku(AAZCommand):
             options=["prompt-tokens"],
             help="The number of prompt, or input, tokens per inference request. Must be supplied together with `maxOutputTokens`, and the two must total from 1 through 131072.",
             fmt=AAZIntArgFormat(
-                maximum=131072,
+                maximum=2147483647,
                 minimum=0,
             ),
         )
