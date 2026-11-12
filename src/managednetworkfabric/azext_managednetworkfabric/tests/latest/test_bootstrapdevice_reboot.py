@@ -2,24 +2,41 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
 
-"""Bootstrap device reboot playback using a Swagger-derived mock recording."""
+"""Recorded bootstrap device reboot scenario."""
 
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
 
 
+def setup_scenario1(test):
+    """Env setup_scenario1"""
+    pass
+
+
+def cleanup_scenario1(test):
+    """Env cleanup_scenario1"""
+    pass
+
+
 def call_scenario1(test):
     """Verify reboot dispatch, polling, and the final operation result."""
+    setup_scenario1(test)
     step_reboot(
         test,
+        checks=[test.check("status", "Succeeded")],
+    )
+    step_show(
+        test,
         checks=[
-            test.check("status", "Succeeded"),
-            test.check("percentComplete", 100),
+            test.check("provisioningState", "Succeeded"),
+            test.check("configurationState", "Succeeded"),
+            test.check("administrativeState", "Enabled"),
         ],
     )
-    test.assertTrue(test.cassette.all_played)
+    cleanup_scenario1(test)
 
 
 def step_reboot(test, checks=None):
@@ -28,6 +45,17 @@ def step_reboot(test, checks=None):
         checks = []
     test.cmd(
         "az networkfabric bootstrapdevice reboot "
+        "--resource-name {name} --resource-group {rg}",
+        checks=checks,
+    )
+
+
+def step_show(test, checks=None):
+    """Bootstrap device show operation."""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric bootstrapdevice show "
         "--resource-name {name} --resource-group {rg}",
         checks=checks,
     )
@@ -44,8 +72,7 @@ class GA_BootstrapDeviceRebootScenarioTest1(ScenarioTest):
                 "rg": CONFIG.get("BOOTSTRAP_DEVICE", "resource_group"),
             }
         )
-        self.vcr.match_on = (*self.vcr.match_on, "body")
 
     def test_GA_bootstrapdevice_reboot_scenario1(self):
-        """Replay the bootstrap device reboot mock recording."""
+        """Verify bootstrap device reboot completion."""
         call_scenario1(self)

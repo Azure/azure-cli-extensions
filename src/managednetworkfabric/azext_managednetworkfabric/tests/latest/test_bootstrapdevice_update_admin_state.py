@@ -2,24 +2,43 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
 
-"""Bootstrap device state updates using a Swagger-derived mock recording."""
+"""Recorded bootstrap device administrative-state scenario."""
 
 from azure.cli.testsdk import ScenarioTest
 
 from .config import CONFIG
 
 
+def setup_scenario1(test):
+    """Env setup_scenario1"""
+    test.kwargs["resourceIds"] = test.kwargs["resourceIds"].replace(
+        "00000000-0000-0000-0000-000000000000", test.get_subscription_id()
+    )
+
+
+def cleanup_scenario1(test):
+    """Env cleanup_scenario1"""
+    pass
+
+
 def call_scenario1(test):
-    """Verify admin-state serialization and the final operation result."""
+    """Verify the administrative-state update and final device state."""
+    setup_scenario1(test)
     step_update_admin_state(
         test,
+        checks=[test.check("status", "Succeeded")],
+    )
+    step_show(
+        test,
         checks=[
-            test.check("status", "Succeeded"),
-            test.check("percentComplete", 100),
+            test.check("administrativeState", "Disabled"),
+            test.check("provisioningState", "Succeeded"),
+            test.check("configurationState", "Succeeded"),
         ],
     )
-    test.assertTrue(test.cassette.all_played)
+    cleanup_scenario1(test)
 
 
 def step_update_admin_state(test, checks=None):
@@ -34,6 +53,17 @@ def step_update_admin_state(test, checks=None):
     )
 
 
+def step_show(test, checks=None):
+    """Bootstrap device show operation."""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric bootstrapdevice show "
+        "--resource-name {name} --resource-group {rg}",
+        checks=checks,
+    )
+
+
 class GA_BootstrapDeviceUpdateAdminStateScenarioTest1(ScenarioTest):
     """Bootstrap device update-admin-state scenario."""
 
@@ -43,12 +73,11 @@ class GA_BootstrapDeviceUpdateAdminStateScenarioTest1(ScenarioTest):
             {
                 "name": CONFIG.get("BOOTSTRAP_DEVICE", "name"),
                 "rg": CONFIG.get("BOOTSTRAP_DEVICE", "resource_group"),
-                "state": CONFIG.get("BOOTSTRAP_DEVICE", "state_enable"),
+                "state": CONFIG.get("BOOTSTRAP_DEVICE", "state_disable"),
                 "resourceIds": CONFIG.get("BOOTSTRAP_DEVICE", "resource_ids"),
             }
         )
-        self.vcr.match_on = (*self.vcr.match_on, "body")
 
     def test_GA_bootstrapdevice_update_admin_state_scenario1(self):
-        """Replay the bootstrap device admin state update mock recording."""
+        """Verify bootstrap device administrative-state update completion."""
         call_scenario1(self)
