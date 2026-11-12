@@ -1,0 +1,52 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - commvault cloud-account show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.13.15 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-commvault-test/providers/Commvault.ContentStore/cloudAccounts/cca-commvault-test?api-version=2026-09-30
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-commvault-test/providers/Commvault.ContentStore/cloudAccounts/cca-commvault-test","name":"cca-commvault-test","type":"commvault.contentstore/cloudaccounts","location":"eastus","systemData":{"createdBy":"user@contoso.com","createdByType":"User","createdAt":"2026-08-11T09:28:23.2590391Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-15T07:05:07.44028Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-commvault-test/providers/Microsoft.ManagedIdentity/userAssignedIdentities/commvault-mi":{"clientId":"33333333-3333-3333-3333-333333333333","principalId":"44444444-4444-4444-4444-444444444444"}}},"properties":{"marketplace":{"subscriptionId":"55555555-5555-5555-5555-555555555555","subscriptionStatus":"Subscribed","offerDetails":{"publisherId":"commvault","offerId":"commvault-cloud-azure-native-service","planId":"commvault-cloud-native-service-v2","planName":"Commvault Cloud Azure Native Service v2","termUnit":"P1M","termId":"gmz7xq9ge3py"}},"user":{"firstName":"Test User","lastName":"Test User","emailAddress":"user@contoso.com"},"provisioningState":"Succeeded","ssoUrl":"https://contoso.metallic.io/identity/initOpenIdAuthFlow.do?clientId=66666666-6666-6666-6666-666666666666&tid=11111111-1111-1111-1111-111111111111"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1432'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Oct 2026 19:25:38 GMT
+      etag:
+      - '"96005a55-0000-0300-0000-6ad07b360000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 3124AA1D36AF4C4EA0C2849AD087216F Ref B: SG2AA1070305042 Ref C: 2026-10-26T19:25:38Z'
+    status:
+      code: 200
+      message: OK
+version: 1
