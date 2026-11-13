@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.5.0
++++++
+* Support container-bound parameterized fragment imports
+
 2.4.1
 +++++
 * Retain Windows exec argument arrays and additionally emit Windows-quoted command lines to work around hcsshim passing CommandLine as one argument, including probes and lifecycle hooks

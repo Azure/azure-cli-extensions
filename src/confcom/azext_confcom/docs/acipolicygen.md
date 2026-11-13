@@ -300,6 +300,44 @@ Note that a unique name for each container is required.
 az confcom acipolicygen -i config.json
 ```
 
+#### Example 14
+
+Set `container_name` on a fragment import to use a parameterized fragment instead of inlining that container's policy.
+For a container named `my-image` in an ARM template, save the following as `fragments.json`:
+
+```json
+{
+    "fragments": [
+        {
+            "feed": "contoso.azurecr.io/example",
+            "includes": ["containers"],
+            "issuer": "did:x509:...",
+            "minimum_svn": "1",
+            "container_name": "my-image",
+            "parameters": {
+                "command": ["python3", "main.py"]
+            }
+        }
+    ]
+}
+```
+
+Replace the example fragment identity and parameter values with those required by your fragment.
+
+```bash
+az confcom acipolicygen --template-file template.json --include-fragments -j fragments.json --outraw-pretty-print
+```
+
+Alternatively, embed the same `fragments` array alongside `containers` in an `--input` configuration file, as in Example 13:
+
+```bash
+az confcom acipolicygen --input config.json --include-fragments --outraw-pretty-print
+```
+
+For `--input`, fragment imports come from the configuration file, not `-j`.
+External fragment files also work with `--virtual-node-yaml`.
+See the [field reference](./v1_json_file_format.md#parameterized-fragment-bindings) for matching rules and parameter requirements.
+
 ## AKS Virtual Node
 
 Azure Kubernetes Service (AKS) allows pods to be scheduled on Azure Container Instances (ACI) using the [AKS Virtual Node](https://learn.microsoft.com/en-us/azure/aks/virtual-nodes) feature.
