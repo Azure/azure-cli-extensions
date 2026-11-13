@@ -21,7 +21,7 @@ from azure.cli.core import extension
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, ResourceNotFoundError
 from azure.cli.core.extension import DevExtension
 
-from azext_logicapp import _context, _run_execution, _runtime_doctor, _workflow, custom
+from azext_logicapp import _context, _managed_api, _run_execution, _runtime_doctor, _workflow, custom
 
 
 PRIVATE = "private-provider-value-must-not-appear"
@@ -131,6 +131,58 @@ class CliContractRegressions(unittest.TestCase):
         self.assertEqual("", text)
         client.get.assert_called_once_with("operationGroups/serviceBus/operations/sendMessage",
                                            params={"$expand": "properties/manifest"})
+
+    def test_managed_schema_flag_and_json_query_preserve_operation_inputs(self):
+        from types import SimpleNamespace
+
+        fixture = Path(__file__).parent / "fixtures" / "managed_connector_weather.swagger.json"
+        swagger = json.loads(fixture.read_text(encoding="utf-8"))
+        requests = []
+
+        def sender(_cli_ctx, method, url, **_options):
+            requests.append((method, url))
+            payload = swagger if url.endswith("export=true") else {"name": "CurrentWeather"}
+            return SimpleNamespace(content=json.dumps(payload).encode("utf-8"))
+
+        connector = "/subscriptions/sub1/providers/Microsoft.Web/locations/eastus/managedApis/msnweather"
+        arguments = ["logicapp", "connector", "managed", "operation", "show",
+                     "--connector", connector, "--operation", "CurrentWeather"]
+        with mock.patch.object(_managed_api, "send_raw_request", side_effect=sender):
+            metadata, _ = self.invoke(arguments)
+            self.assertNotIn("inputSchema", metadata)
+            expanded, _ = self.invoke(arguments + ["--include-input-schema"])
+            self.assertEqual(swagger["definitions"], expanded["inputSchema"]["definitions"])
+            self.assertEqual(swagger["paths"]["/current"]["parameters"],
+                             expanded["inputSchema"]["pathParameters"])
+            required, _ = self.invoke(arguments + ["--include-input-schema"],
+                                      query="inputSchema.operationParameters[?required].name")
+            self.assertEqual(["location"], required)
+            self.invoke(["logicapp", "connector", "managed", "operation", "list",
+                         "--connector", connector, "--include-input-schema"], expected=2)
+        self.assertEqual(5, len(requests))
+        self.assertEqual(["GET"] * 5, [request[0] for request in requests])
+
+    def test_managed_schema_failures_do_not_return_catalog_metadata_success(self):
+        from types import SimpleNamespace
+
+        connector = "/subscriptions/sub1/providers/Microsoft.Web/locations/eastus/managedApis/msnweather"
+        arguments = ["logicapp", "connector", "managed", "operation", "show",
+                     "--connector", connector, "--operation", "CurrentWeather", "--include-input-schema"]
+        responses = (
+            [json.dumps([PRIVATE])],
+            ['{"name":"CurrentWeather"}', json.dumps({
+                "swagger": "2.0", "paths": {"/current": {
+                    "$ref": "#/paths/~1shared", "get": {"operationId": "CurrentWeather"}
+                }}
+            })],
+        )
+        for contents in responses:
+            with self.subTest(contents=contents), mock.patch.object(
+                    _managed_api, "send_raw_request",
+                    side_effect=[SimpleNamespace(content=value.encode("utf-8")) for value in contents]) as send:
+                _, text = self.invoke(arguments, expected=1)
+                self.assertEqual("", text)
+                self.assertEqual(len(contents), send.call_count)
 
     def test_context_create_omitted_port_is_a_plain_default_and_explicit_ports_stay_validated(self):
         storage = mock.patch.object(_context, "store_path", return_value=str(self.root / "contexts.json"))
