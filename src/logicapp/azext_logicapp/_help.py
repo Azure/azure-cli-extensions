@@ -868,9 +868,18 @@ examples:
 helps['logicapp connector managed operation show'] = """
 type: command
 short-summary: Show one operation for an Azure managed connector.
+long-summary: >
+  By default, returns APIHub operation catalog metadata. --include-input-schema
+  also requests the connector's Swagger 2.0 export and adds inputSchema, including
+  parameter definitions and references. External references are never fetched;
+  dynamic metadata is preserved but not resolved.
 examples:
   - name: Show the Office 365 SendEmailV2 operation.
     text: az logicapp connector managed operation show --location eastus --connector office365 --operation SendEmailV2
+  - name: Include the managed connector operation input schema.
+    text: >
+      az logicapp connector managed operation show --location eastus --connector
+      msnweather --operation CurrentWeather --include-input-schema
 """
 
 helps['logicapp runtime start'] = """

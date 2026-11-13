@@ -608,8 +608,9 @@ def connector_managed_operation_list(cmd, connector, location=None, kind="all", 
         cmd, connector, location=location, kind=kind, search=search, max_items=max_items, next_token=next_token)
 
 
-def connector_managed_operation_show(cmd, connector, operation, location=None):
-    return _managed_api.connector_managed_operation_show(cmd, connector, operation, location=location)
+def connector_managed_operation_show(cmd, connector, operation, location=None, include_input_schema=False):
+    return _managed_api.connector_managed_operation_show(
+        cmd, connector, operation, location=location, include_input_schema=include_input_schema)
 
 
 def runtime_doctor(cmd, path=None, context=None, port=None, probe_timeout=2, strict=False):

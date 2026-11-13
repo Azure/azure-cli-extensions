@@ -282,6 +282,8 @@ def load_arguments(self, _):
         c.argument('connector', options_list=['--connector'], required=True, help='Managed API name or ARM managedApis id.')
         c.argument('operation', options_list=['--operation'], required=True, help='Operation name or id.')
         c.argument('location', options_list=['--location', '-l'], help='Azure location. Required when --connector is a name.')
+        c.argument('include_input_schema', options_list=['--include-input-schema'], action='store_true',
+                   help='Fetch the connector Swagger export and include the selected operation input schema.')
 
     with self.argument_context('logicapp runtime doctor') as c:
         c.argument('path', arg_type=path_type, help='Local project root. Defaults to active local context or current directory.')

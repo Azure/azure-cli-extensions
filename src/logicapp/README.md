@@ -50,7 +50,7 @@ The original capabilities remain part of this contribution:
 | `dependency check/install/uninstall` | Inspect or explicitly manage selected developer tools without modifying global PATH. |
 | `runtime start/show/stop` | Manage owned local hosts and shared CLI-owned storage with PID/birth-identity guards. |
 | `connector`, `connector operation` | Inspect built-in runtime connector and trigger/action catalogs. |
-| `connector managed`, `connector managed operation` | Inspect the ARM managed connector catalog. |
+| `connector managed`, `connector managed operation` | Inspect the ARM managed connector catalog and optionally export operation input schemas. |
 | `connection create/list/show/test/delete` | Author local wiring or manage deployed connections, with explicit targeting, authentication and retention limits. |
 | `connection acl`, `identity` | Inspect/manage access policies and assigned identities; these do not prove the caller's effective RBAC. |
 | `run start/list/show`, `run action` | Invoke and inspect supported runtime executions and recorded action content. |
@@ -94,6 +94,25 @@ workflow, connection test or data-plane operation runs. Local host keys remain
 headers, and deployed requests use the existing ARM authentication path.
 Default show and list output, list filtering/pagination and request counts are
 unchanged; there is no per-operation manifest fan-out on list.
+
+## Discover managed connector input schemas
+
+`connector managed operation show` continues to return APIHub operation
+metadata by default. Add `--include-input-schema` to also fetch the connector's
+Swagger 2.0 export and return an `inputSchema` object containing the selected
+operation's path-level and operation-level parameters, reusable parameter
+definitions, schema definitions, and the original dynamic metadata and `$ref`s:
+
+```powershell
+az logicapp connector managed operation show --location eastus --connector msnweather --operation CurrentWeather --include-input-schema --output json
+```
+
+The export is fetched from the managed connector ARM resource URI with
+`export=true`. Operation IDs must match uniquely. External `$ref` targets are
+reported but never fetched, and dynamic values/schema extensions are retained
+without attempting designer/runtime lookups. A selected path item with an
+unresolved `$ref` fails rather than returning potentially incomplete inherited
+input parameters.
 
 ## Create, plan and run local workflow tests
 
