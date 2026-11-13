@@ -1,0 +1,2413 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --service-group-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans?api-version=2026-10-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/ropsrec-ae8b4619ab0c16f7","name":"ropsrec-ae8b4619ab0c16f7","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-06T13:43:41.8041728Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-06T13:43:41.8041728Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"provisioningState":"Failed","planType":"Zonal","planState":"Warning","planDescription":"Owned
+        recorded scenario Get.Resource","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"9c497b49-7ca0-ebf4-4762-45e6258bc52d","orderId":0,"description":"Owned
+        default recovery group Get.Resource"},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/ropsrec-ae8b4619ab0c16f7/recoveryGroups/9c497b49-7ca0-ebf4-4762-45e6258bc52d","name":"9c497b49-7ca0-ebf4-4762-45e6258bc52d","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"}}}}]}'
+    headers:
+      content-length:
+      - '1295'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:29:21 GMT
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: BAA6DF83A01C4854930A52112BA4D61B Ref B: PNQ231110908040 Ref C: 2026-11-13T11:29:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "properties": {"planDescription":
+      "Native CLI lifecycle", "planType": "Zonal", "recoveryGroupsSetting": {"defaultGroup":
+      {"properties": {"description": "Native CLI lifecycle", "groupUniqueId": "88888888-0000-0000-0000-000000000001",
+      "orderId": 0}}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '291'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --plan-type --plan-description --recovery-groups --system-assigned --no-wait
+        --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:29:22.4541661Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"planDescription":"Native
+        CLI lifecycle","planType":"Zonal","recoveryGroupsSetting":{"defaultGroup":{"properties":{"description":"Native
+        CLI lifecycle","groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0}}},"provisioningState":"Accepted"}}'
+    headers:
+      accept-ranges:
+      - bytes
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/9420da43-063e-46f6-aea7-b18c89f015ca*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '873'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:29:28 GMT
+      etag:
+      - '"0c00a7dc-0000-2300-0000-6af6f4980000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20261113T112926Z-17b55b9d57f8rrxdhC1IADp4n000000038a0000000005za8
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '799'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: EE519BF4E0DF467793D082EC1E99B0BC Ref B: PNQ231110907036 Ref C: 2026-11-13T11:29:22Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:29:22.4541661Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"planDescription":"Native
+        CLI lifecycle","planType":"Zonal","recoveryGroupsSetting":{"defaultGroup":{"properties":{"description":"Native
+        CLI lifecycle","groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0}}},"provisioningState":"Accepted"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '873'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:29:28 GMT
+      etag:
+      - '"0c00a7dc-0000-2300-0000-6af6f4980000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: A28AD7FCE64945309C5FF1EE0F4D222F Ref B: PNQ231110907025 Ref C: 2026-11-13T11:29:28Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:29:22.4541661Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"planDescription":"Native
+        CLI lifecycle","planType":"Zonal","recoveryGroupsSetting":{"defaultGroup":{"properties":{"description":"Native
+        CLI lifecycle","groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0}}},"provisioningState":"Accepted"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '873'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:29:34 GMT
+      etag:
+      - '"0c00a7dc-0000-2300-0000-6af6f4980000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 52611579A57C48E5AE80FCCD83E23BFC Ref B: PNQ231110907025 Ref C: 2026-11-13T11:29:34Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:29:22.4541661Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"provisioningState":"InProgress","planType":"Zonal","planState":"Warning","planDescription":"Native
+        CLI lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle"},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1220'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:29:40 GMT
+      etag:
+      - '"0c00b0dc-0000-2300-0000-6af6f4a00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 508EEB0D34404A83B751541CE516B106 Ref B: PNQ231110908040 Ref C: 2026-11-13T11:29:40Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:29:22.4541661Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"provisioningState":"InProgress","planType":"Zonal","planState":"Warning","planDescription":"Native
+        CLI lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":null},"latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1359'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:29:46 GMT
+      etag:
+      - '"0c00b6dc-0000-2300-0000-6af6f4aa0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 5C474EC926C24BDEA32FBA1E4514AA98 Ref B: PNQ231110908040 Ref C: 2026-11-13T11:29:46Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:29:22.4541661Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","planType":"Zonal","planState":"Warning","planDescription":"Native
+        CLI lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":null},"latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1358'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:29:52 GMT
+      etag:
+      - '"0c00b7dc-0000-2300-0000-6af6f4ab0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 55E92B966E0C4B2DB14F32F1F6B6BB88 Ref B: PNQ231110908025 Ref C: 2026-11-13T11:29:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:29:22.4541661Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","planType":"Zonal","planState":"Warning","planDescription":"Native
+        CLI lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":null},"latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1358'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:29:53 GMT
+      etag:
+      - '"0c00b7dc-0000-2300-0000-6af6f4ab0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 3791C5ED814D44D68DC22050E9B35013 Ref B: PNQ231110906031 Ref C: 2026-11-13T11:29:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"planDescription": "Updated native lifecycle"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '63'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --plan-description --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PATCH
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      accept-ranges:
+      - bytes
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/983e0a4f-453a-4a6a-a5f8-aa6d6750ba1d*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:29:56 GMT
+      etag:
+      - '"0c00c5dc-0000-2300-0000-6af6f4b40000"'
+      expires:
+      - '-1'
+      location:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/983e0a4f-453a-4a6a-a5f8-aa6d6750ba1d*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20261113T112955Z-er16cb5f4fbvtcgmhC1IADpaa400000032fg000000001rze
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '799'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 0BB75341D08B481A99171674BCDC0737 Ref B: PNQ231110906036 Ref C: 2026-11-13T11:29:54Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --plan-description --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/983e0a4f-453a-4a6a-a5f8-aa6d6750ba1d*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/983e0a4f-453a-4a6a-a5f8-aa6d6750ba1d*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","name":"983e0a4f-453a-4a6a-a5f8-aa6d6750ba1d*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","resourceId":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","status":"Accepted","startTime":"2026-11-13T11:29:55.3073885Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '530'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:29:57 GMT
+      etag:
+      - '"0f005126-0000-3300-0000-6af6f4b30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 722D2A3477894E31957712DE683D9C65 Ref B: PNQ231110909040 Ref C: 2026-11-13T11:29:57Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --plan-description --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/983e0a4f-453a-4a6a-a5f8-aa6d6750ba1d*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/983e0a4f-453a-4a6a-a5f8-aa6d6750ba1d*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","name":"983e0a4f-453a-4a6a-a5f8-aa6d6750ba1d*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","resourceId":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","status":"Succeeded","startTime":"2026-11-13T11:29:55.3073885Z","endTime":"2026-11-13T11:30:14.7785721Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '590'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:30:28 GMT
+      etag:
+      - '"0f002129-0000-3300-0000-6af6f4cc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 629E03EBEA084962ABEEC262C4E62B7B Ref B: PNQ231110909036 Ref C: 2026-11-13T11:30:28Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --plan-description --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/983e0a4f-453a-4a6a-a5f8-aa6d6750ba1d*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/983e0a4f-453a-4a6a-a5f8-aa6d6750ba1d*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","name":"983e0a4f-453a-4a6a-a5f8-aa6d6750ba1d*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","resourceId":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","status":"Succeeded","startTime":"2026-11-13T11:29:55.3073885Z","endTime":"2026-11-13T11:30:14.7785721Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '590'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:30:29 GMT
+      etag:
+      - '"0f002129-0000-3300-0000-6af6f4cc0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 45FBD96F578A47D3ACBC10F674C66755 Ref B: PNQ231110906029 Ref C: 2026-11-13T11:30:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --plan-description --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:29:54.8575944Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Succeeded","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1360'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:30:29 GMT
+      etag:
+      - '"0c00ffdc-0000-2300-0000-6af6f4c70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 561BBEF9A4A649B488A4CBDC9332CC6B Ref B: PNQ231110908052 Ref C: 2026-11-13T11:30:30Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan identity assign
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --system-assigned --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:29:54.8575944Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Succeeded","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1360'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:30:31 GMT
+      etag:
+      - '"0c00ffdc-0000-2300-0000-6af6f4c70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: A1719EBECE7244A7BDD371B318C8EA22 Ref B: PNQ231110906042 Ref C: 2026-11-13T11:30:30Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan identity assign
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '40'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --system-assigned --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PATCH
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      accept-ranges:
+      - bytes
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/9b453a7b-6c21-42b9-b18d-0fe258586a77*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:30:34 GMT
+      etag:
+      - '"0c0007dd-0000-2300-0000-6af6f4da0000"'
+      expires:
+      - '-1'
+      location:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/9b453a7b-6c21-42b9-b18d-0fe258586a77*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20261113T113033Z-er16cb5f4fbrtg7nhC1IADwvsw00000038h000000000g40u
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '799'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 1D83DEB1D3EE43B788B1934D53421822 Ref B: PNQ231110907060 Ref C: 2026-11-13T11:30:32Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan identity assign
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --system-assigned --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/9b453a7b-6c21-42b9-b18d-0fe258586a77*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/9b453a7b-6c21-42b9-b18d-0fe258586a77*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","name":"9b453a7b-6c21-42b9-b18d-0fe258586a77*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","resourceId":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","status":"Accepted","startTime":"2026-11-13T11:30:33.6122201Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '530'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:30:35 GMT
+      etag:
+      - '"0f00732a-0000-3300-0000-6af6f4d90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 7725C3F1F8E54344A81D9CF673D0A5AF Ref B: PNQ231110909052 Ref C: 2026-11-13T11:30:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan identity assign
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --system-assigned --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/9b453a7b-6c21-42b9-b18d-0fe258586a77*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/9b453a7b-6c21-42b9-b18d-0fe258586a77*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","name":"9b453a7b-6c21-42b9-b18d-0fe258586a77*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","resourceId":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","status":"Succeeded","startTime":"2026-11-13T11:30:33.6122201Z","endTime":"2026-11-13T11:30:51.4588606Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '590'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:05 GMT
+      etag:
+      - '"0f00152d-0000-3300-0000-6af6f4f20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 17FB4C83237E4BD8BA9D7B80696B0107 Ref B: PNQ231110908025 Ref C: 2026-11-13T11:31:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan identity assign
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --system-assigned --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/9b453a7b-6c21-42b9-b18d-0fe258586a77*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/9b453a7b-6c21-42b9-b18d-0fe258586a77*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","name":"9b453a7b-6c21-42b9-b18d-0fe258586a77*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","resourceId":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","status":"Succeeded","startTime":"2026-11-13T11:30:33.6122201Z","endTime":"2026-11-13T11:30:51.4588606Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '590'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:06 GMT
+      etag:
+      - '"0f00152d-0000-3300-0000-6af6f4f20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 4AA7B648173E4853BAFD38DAFA3E3EDE Ref B: PNQ231110908025 Ref C: 2026-11-13T11:31:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan identity assign
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --system-assigned --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:30:32.9295816Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Succeeded","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      content-length:
+      - '1360'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:08 GMT
+      etag:
+      - '"0c0010dd-0000-2300-0000-6af6f4ec0000"'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 69446F5CF32C4758A19DFC66AF384ADC Ref B: PNQ231110907052 Ref C: 2026-11-13T11:31:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan identity wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --interval --timeout --custom --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:30:32.9295816Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Succeeded","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1360'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:08 GMT
+      etag:
+      - '"0c0010dd-0000-2300-0000-6af6f4ec0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: A1804A8E06CE494193E3C450D9340FDE Ref B: PNQ231110908023 Ref C: 2026-11-13T11:31:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan identity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:30:32.9295816Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Succeeded","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1360'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:09 GMT
+      etag:
+      - '"0c0010dd-0000-2300-0000-6af6f4ec0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 4776856BE0A54CC5A38AF6AD1D375EE5 Ref B: PNQ231110908025 Ref C: 2026-11-13T11:31:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:30:32.9295816Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Succeeded","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1360'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:10 GMT
+      etag:
+      - '"0c0010dd-0000-2300-0000-6af6f4ec0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 08158172D25E40BAA57B4B5312FB6D4A Ref B: PNQ231110907062 Ref C: 2026-11-13T11:31:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan identity remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --system-assigned --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:30:32.9295816Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Succeeded","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1360'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:11 GMT
+      etag:
+      - '"0c0010dd-0000-2300-0000-6af6f4ec0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 8771A392B5704461AF1DFD0237931D3F Ref B: PNQ231110909036 Ref C: 2026-11-13T11:31:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "None"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan identity remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '30'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --system-assigned --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PATCH
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      accept-ranges:
+      - bytes
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/cf52cf61-b732-4316-879e-f5b853cf15d6*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:14 GMT
+      etag:
+      - '"0c0023dd-0000-2300-0000-6af6f5020000"'
+      expires:
+      - '-1'
+      location:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/cf52cf61-b732-4316-879e-f5b853cf15d6*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20261113T113112Z-er16cb5f4fbrc294hC1IADsn2c0000002z1g000000002v4x
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '799'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: B1B0E2848E7040669A589E7204A087E6 Ref B: PNQ231110908036 Ref C: 2026-11-13T11:31:11Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan identity remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --system-assigned --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/cf52cf61-b732-4316-879e-f5b853cf15d6*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/cf52cf61-b732-4316-879e-f5b853cf15d6*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","name":"cf52cf61-b732-4316-879e-f5b853cf15d6*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","resourceId":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","status":"Accepted","startTime":"2026-11-13T11:31:12.5987968Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '530'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:14 GMT
+      etag:
+      - '"0f00cd2e-0000-3300-0000-6af6f5010000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 33BE94DCA6FD41049F68D11A4839B233 Ref B: PNQ231110906054 Ref C: 2026-11-13T11:31:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan identity remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --system-assigned --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/cf52cf61-b732-4316-879e-f5b853cf15d6*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/cf52cf61-b732-4316-879e-f5b853cf15d6*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","name":"cf52cf61-b732-4316-879e-f5b853cf15d6*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","resourceId":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","status":"Succeeded","startTime":"2026-11-13T11:31:12.5987968Z","endTime":"2026-11-13T11:31:33.3120384Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '590'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:44 GMT
+      etag:
+      - '"0f009231-0000-3300-0000-6af6f51b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 7EFE529BC1DA4B7C9BFA02205DFB335A Ref B: PNQ231110909040 Ref C: 2026-11-13T11:31:45Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan identity remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --system-assigned --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/cf52cf61-b732-4316-879e-f5b853cf15d6*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/cf52cf61-b732-4316-879e-f5b853cf15d6*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","name":"cf52cf61-b732-4316-879e-f5b853cf15d6*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A","resourceId":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","status":"Succeeded","startTime":"2026-11-13T11:31:12.5987968Z","endTime":"2026-11-13T11:31:33.3120384Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '590'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:46 GMT
+      etag:
+      - '"0f009231-0000-3300-0000-6af6f51b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: CCF848C19C10424DA40CDC3C811D916D Ref B: PNQ231110906025 Ref C: 2026-11-13T11:31:45Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan identity remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --system-assigned --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:31:12.1946682Z"},"identity":{"type":"None"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Succeeded","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1247'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:47 GMT
+      etag:
+      - '"0c0041dd-0000-2300-0000-6af6f5150000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 285D4D2E019644FE8B7ADDDF6A4FA931 Ref B: PNQ231110907029 Ref C: 2026-11-13T11:31:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan identity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:31:12.1946682Z"},"identity":{"type":"None"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Succeeded","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1247'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:48 GMT
+      etag:
+      - '"0c0041dd-0000-2300-0000-6af6f5150000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 4ABB962199BD43D09F85E44DC4F695A4 Ref B: PNQ231110907023 Ref C: 2026-11-13T11:31:48Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:31:12.1946682Z"},"identity":{"type":"None"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Succeeded","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1247'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:48 GMT
+      etag:
+      - '"0c0041dd-0000-2300-0000-6af6f5150000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: B128EABBD2BB4E8F841B0D0C7610839E Ref B: PNQ231110909054 Ref C: 2026-11-13T11:31:48Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan recovery-job list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryJobs?api-version=2026-10-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 0450585B889B49A5AE91B2E6C890C19B Ref B: PNQ231110908060 Ref C: 2026-11-13T11:31:49Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --yes --no-wait --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: DELETE
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      accept-ranges:
+      - bytes
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/528ccac9-8dd4-4490-bde6-ae216a812e12*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:52 GMT
+      etag:
+      - '"0c004ddd-0000-2300-0000-6af6f5290000"'
+      expires:
+      - '-1'
+      location:
+      - https://eastus2euap.management.azure.com/providers/Microsoft.AzureResilienceManagement/locations/EASTUS2EUAP/operationStatuses/528ccac9-8dd4-4490-bde6-ae216a812e12*D469373905F3B1CE261792728303EF4B9F90B58CAB6E08F9239CA12B8832003A?api-version=2026-10-01&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20261113T113152Z-16b94c8dd67lk4phhC1BL1nc94000000377g000000001sdd
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-tenant-deletes:
+      - '799'
+      x-ms-resource-provider-hint:
+      - noPolling
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: E85A64EB19034CAABABA5564E3CD2590 Ref B: PNQ231110909060 Ref C: 2026-11-13T11:31:50Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --deleted --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:31:12.1946682Z"},"identity":{"type":"None"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Deleting","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1246'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:54 GMT
+      etag:
+      - '"0c004ddd-0000-2300-0000-6af6f5290000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 8382F8E357C84B36A57AEB13CBFB7661 Ref B: PNQ231110906023 Ref C: 2026-11-13T11:31:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --deleted --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:31:12.1946682Z"},"identity":{"type":"None"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Deleting","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1246'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:31:59 GMT
+      etag:
+      - '"0c0055dd-0000-2300-0000-6af6f52e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 3F383085E1774351AD5B8F1B3FD7C571 Ref B: PNQ231110909062 Ref C: 2026-11-13T11:31:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --deleted --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:31:12.1946682Z"},"identity":{"type":"None"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Deleting","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1246'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:32:05 GMT
+      etag:
+      - '"0c0055dd-0000-2300-0000-6af6f52e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 42E68CE0C4BD4787B21351D2E112B394 Ref B: PNQ231110907025 Ref C: 2026-11-13T11:32:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --deleted --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:31:12.1946682Z"},"identity":{"type":"None"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Deleting","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1246'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:32:11 GMT
+      etag:
+      - '"0c0055dd-0000-2300-0000-6af6f52e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 5AA2533E88B2417C920670AF1D332655 Ref B: PNQ231110909025 Ref C: 2026-11-13T11:32:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --deleted --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:31:12.1946682Z"},"identity":{"type":"None"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Deleting","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1246'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:32:17 GMT
+      etag:
+      - '"0c0055dd-0000-2300-0000-6af6f52e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 2C0F2A6B5D764338AE8104FC67447DAB Ref B: PNQ231110906034 Ref C: 2026-11-13T11:32:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --deleted --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:31:12.1946682Z"},"identity":{"type":"None"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Deleting","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1246'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:32:23 GMT
+      etag:
+      - '"0c0055dd-0000-2300-0000-6af6f52e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 5EC239B436C143C4BCD3AB743C20499D Ref B: PNQ231110909040 Ref C: 2026-11-13T11:32:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --deleted --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:31:12.1946682Z"},"identity":{"type":"None"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Deleting","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1246'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:32:29 GMT
+      etag:
+      - '"0c0055dd-0000-2300-0000-6af6f52e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 423048329BC84EFD814310664CCD5570 Ref B: PNQ231110907034 Ref C: 2026-11-13T11:32:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --deleted --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:31:12.1946682Z"},"identity":{"type":"None"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Deleting","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1246'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:32:35 GMT
+      etag:
+      - '"0c0055dd-0000-2300-0000-6af6f52e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 4A515841EC5A4A3EA4700BD7454FD4C2 Ref B: PNQ231110906036 Ref C: 2026-11-13T11:32:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --deleted --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:31:12.1946682Z"},"identity":{"type":"None"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Deleting","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1246'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:32:40 GMT
+      etag:
+      - '"0c0055dd-0000-2300-0000-6af6f52e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: B666B18CE45D4746BF97F46382E2DB52 Ref B: PNQ231110909060 Ref C: 2026-11-13T11:32:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --deleted --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:31:12.1946682Z"},"identity":{"type":"None"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Deleting","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      content-length:
+      - '1246'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:32:47 GMT
+      etag:
+      - '"0c0055dd-0000-2300-0000-6af6f52e0000"'
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 5187101CA02D42A8847A7B71134FA2A5 Ref B: PNQ231110909062 Ref C: 2026-11-13T11:32:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --deleted --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:31:12.1946682Z"},"identity":{"type":"None"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"Deleting","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1246'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:32:54 GMT
+      etag:
+      - '"0c0055dd-0000-2300-0000-6af6f52e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: A13CD3FCBF794631A80E0863BF014EE0 Ref B: PNQ231110906040 Ref C: 2026-11-13T11:32:53Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --deleted --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001","name":"roclidrl000001","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-13T11:29:22.4541661Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-13T11:31:12.1946682Z"},"identity":{"type":"None"},"properties":{"planType":"Zonal","planState":"Warning","planDescription":"Updated
+        native lifecycle","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"88888888-0000-0000-0000-000000000001","orderId":0,"description":"Native
+        CLI lifecycle","preActions":null,"postActions":null},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001/recoveryGroups/88888888-0000-0000-0000-000000000001","name":"88888888-0000-0000-0000-000000000001","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"},"additionalGroups":[]},"provisioningState":"InProgress","latestFailoverStatus":null,"latestValidationStatus":null,"errorDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1248'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:32:59 GMT
+      etag:
+      - '"0c008cdd-0000-2300-0000-6af6f56a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 268E2823239F4627B8F10593762A5715 Ref B: PNQ231110909054 Ref C: 2026-11-13T11:32:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --deleted --interval --timeout --service-group-name --recovery-plan-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001?api-version=2026-10-01
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The resource ''Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/roclidrl000001''
+        could not be found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '217'
+      content-type:
+      - application/json
+      date:
+      - Fri, 13 Nov 2026 11:33:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: E41B6A504E5E487BA9CA662B5D070328 Ref B: PNQ231110909034 Ref C: 2026-11-13T11:33:05Z'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - resiliency recovery-plan list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --service-group-name --subscription
+      User-Agent:
+      - AZURECLI/2.92.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans?api-version=2026-10-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/ropsrec-ae8b4619ab0c16f7","name":"ropsrec-ae8b4619ab0c16f7","type":"microsoft.azureresiliencemanagement/recoveryplans","systemData":{"createdBy":"recording-principal","createdByType":"User","createdAt":"2026-11-06T13:43:41.8041728Z","lastModifiedBy":"recording-principal","lastModifiedByType":"User","lastModifiedAt":"2026-11-06T13:43:41.8041728Z"},"identity":{"principalId":"00000000-0000-0000-0000-000000000004","tenantId":"00000000-0000-0000-0000-000000000000","type":"SystemAssigned"},"properties":{"provisioningState":"Failed","planType":"Zonal","planState":"Warning","planDescription":"Owned
+        recorded scenario Get.Resource","recoveryGroupsSetting":{"defaultGroup":{"properties":{"groupUniqueId":"9c497b49-7ca0-ebf4-4762-45e6258bc52d","orderId":0,"description":"Owned
+        default recovery group Get.Resource"},"id":"/providers/Microsoft.Management/serviceGroups/ro-shared-recording-sg/providers/Microsoft.AzureResilienceManagement/recoveryPlans/ropsrec-ae8b4619ab0c16f7/recoveryGroups/9c497b49-7ca0-ebf4-4762-45e6258bc52d","name":"9c497b49-7ca0-ebf4-4762-45e6258bc52d","type":"Microsoft.AzureResilienceManagement/recoveryPlans/recoveryGroups"}}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1295'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Nov 2026 11:33:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 7E56035AB3724D4B814904F891D28C0B Ref B: PNQ231110907040 Ref C: 2026-11-13T11:33:06Z'
+    status:
+      code: 200
+      message: OK
+version: 1
