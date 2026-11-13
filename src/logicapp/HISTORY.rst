@@ -3,6 +3,17 @@
 Release History
 ===============
 
+1.0.0b3
++++++++
+
+* Add ``connector operation show --include-manifest`` for read-only built-in
+  operation input schema discovery on local and deployed runtimes. Preserve the
+  complete runtime manifest without resolving dynamic references or executing
+  connector operations; report unavailable manifests explicitly.
+* Add ``connector managed operation show --include-input-schema`` to export
+  selected Swagger 2.0 operation inputs. Preserve schema references and dynamic
+  metadata without fetching external references or invoking connector operations.
+
 1.0.0b2
 +++++++
 
