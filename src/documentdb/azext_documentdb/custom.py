@@ -242,7 +242,7 @@ class Restore(_MongoClusterCreate):
     Creates a new mongo cluster from the backup of an existing (or deleted) source
     cluster at the requested point in time.
 
-    Supported target configuration options include authentication modes,
+    Supported target configuration options include native authentication,
     customer-managed key encryption, user-assigned managed identities, storage
     type, public network access, and resource tags.
 
@@ -250,11 +250,11 @@ class Restore(_MongoClusterCreate):
     availability, Data API, network bypass, and preview features are not supported
     by this command.
 
+    Configure Microsoft Entra ID authentication and assign users after the restore
+    completes, keeping restore permissions separate from data-access authorization.
+
     :example: Restore a cluster with native authentication.
         az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123!
-
-    :example: Restore a Microsoft Entra-only cluster.
-        az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MyEntraCluster --restore-time "2026-06-30T10:00:00Z" --auth-allowed-modes MicrosoftEntraID
 
     :example: Restore a cluster with a storage type and public network access setting.
         az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123! --storage-type PremiumSSDv2 --public-network-access Disabled
@@ -286,6 +286,11 @@ class Restore(_MongoClusterCreate):
                 "public_network_access",
                 "tags",
             })
+        from azure.cli.core.aaz import AAZArgEnum
+        args_schema.auth_allowed_modes.Element.enum = AAZArgEnum({"NativeAuth": "NativeAuth"})
+        args_schema.auth_allowed_modes._help["short-summary"] = (
+            "Authentication mode for the restored cluster. Only NativeAuth is supported. "
+            "Configure Microsoft Entra ID authentication and assign users after restore.")
         args_schema.storage_type._help["short-summary"] = (
             "Storage type for the restored cluster.")
         args_schema.public_network_access._help["short-summary"] = (
@@ -295,11 +300,11 @@ class Restore(_MongoClusterCreate):
         args_schema.admin_user._required = False
         args_schema.admin_user._help["short-summary"] = (
             "The administrator user name. Required for NativeAuth, including CMK "
-            "restores using NativeAuth. Omit for Microsoft Entra ID only.")
+            "restores using NativeAuth.")
         args_schema.admin_password._required = False
         args_schema.admin_password._help["short-summary"] = (
             "The administrator password. Required for NativeAuth, including CMK "
-            "restores using NativeAuth. Omit for Microsoft Entra ID only.")
+            "restores using NativeAuth.")
         args_schema.source_cluster = AAZStrArg(
             options=["--source-cluster"],
             arg_group="Restore",
@@ -327,32 +332,22 @@ class Restore(_MongoClusterCreate):
             raise InvalidArgumentValueError(
                 "--admin-user and --admin-password must be provided together.")
 
+        has_encryption = has_value(args.encryption)
         auth_modes = (
             args.auth_allowed_modes.to_serialized_data()
             if has_value(args.auth_allowed_modes)
             else None
         )
-        if auth_modes == []:
+        if auth_modes is not None and auth_modes != ["NativeAuth"]:
             raise InvalidArgumentValueError(
-                "--auth-allowed-modes must contain at least one authentication mode.")
-        if auth_modes and len(set(auth_modes)) != len(auth_modes):
-            raise InvalidArgumentValueError(
-                "--auth-allowed-modes must not contain duplicate values.")
-        has_encryption = has_value(args.encryption)
+                "--auth-allowed-modes accepts only a single NativeAuth value during restore. "
+                "Configure Microsoft Entra ID authentication and assign users after restore.")
         # The official PITR CMK request omits both authConfig and administrator,
         # while the legacy NativeAuth request requires new administrator credentials.
-        requires_admin = (
-            (auth_modes is None and not has_encryption)
-            or (auth_modes is not None and "NativeAuth" in auth_modes)
-        )
-        if requires_admin and not has_admin_user:
+        if (auth_modes is not None or not has_encryption) and not has_admin_user:
             raise InvalidArgumentValueError(
                 "--admin-user and --admin-password are required when NativeAuth is "
-                "enabled, or when --auth-allowed-modes and --encryption are omitted.")
-        if auth_modes == ["MicrosoftEntraID"] and has_admin_user:
-            raise InvalidArgumentValueError(
-                "--admin-user and --admin-password cannot be used when "
-                "--auth-allowed-modes is MicrosoftEntraID only.")
+                "specified or --encryption is omitted.")
 
         if has_encryption:
             cmk = args.encryption.customer_managed_key_encryption

@@ -150,7 +150,7 @@ The restore command supports the following optional target configuration setting
 
 | Setting | CLI parameter |
 | --- | --- |
-| Authentication modes | `--auth-allowed-modes` |
+| Native authentication only | `--auth-allowed-modes NativeAuth` |
 | Customer-managed key encryption | `--encryption` |
 | User-assigned managed identities | `--user-assigned` |
 | Storage type | `--storage-type` |
@@ -163,9 +163,15 @@ this command. The restore-specific service schema rejects the `previewFeatures`
 property, so preview features such as `GeoReplicas` cannot be specified as restore
 overrides.
 
-The existing native-authentication behavior remains the default. When
-`--auth-allowed-modes` and `--encryption` are both omitted, both administrator
-arguments are required.
+`restore --auth-allowed-modes` accepts only `NativeAuth`; Microsoft Entra ID and mixed
+authentication modes cannot be selected with this command. Configure Entra authentication
+and assign users after the restore completes, keeping restore permissions separate from data-access
+authorization. Use `mongocluster update` to configure authentication and
+`mongocluster microsoft-entra-user assign` to assign users on the restored cluster.
+Authentication options on `create` and `update` are unchanged.
+
+The existing native-authentication behavior remains the default. Both administrator
+arguments are required when `NativeAuth` is specified or `--encryption` is omitted.
 
 ```bash
 az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 \
@@ -173,13 +179,21 @@ az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --locat
     --admin-user dbadmin --admin-password MyP@ssw0rd123!
 ```
 
-For Microsoft Entra-only authentication, omit the native administrator credentials.
+After the restored cluster is ready, enable Microsoft Entra ID alongside native
+authentication and assign the intended Entra user. This example grants that user
+administrative access to the restored cluster:
 
 ```bash
-az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 \
-    --source-cluster MyEntraCluster --restore-time "2026-06-30T10:00:00Z" \
-    --auth-allowed-modes MicrosoftEntraID
+az documentdb mongocluster update -n RestoredCluster -g MyResourceGroup \
+    --auth-allowed-modes NativeAuth MicrosoftEntraID
+
+az documentdb mongocluster microsoft-entra-user assign \
+    --cluster-name RestoredCluster -g MyResourceGroup \
+    --object-id <entra-user-object-id> --type User --role db=admin role=root
 ```
+
+Verify that the user can connect with Microsoft Entra ID before optionally disabling
+native authentication with `mongocluster update --auth-allowed-modes MicrosoftEntraID`.
 
 Customer-managed-key restore accepts the same user-assigned identity and encryption
 shape as cluster creation. The identity referenced by the encryption configuration

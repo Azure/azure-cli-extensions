@@ -5,7 +5,7 @@ Release History
 
 1.1.0b2
 +++++++
-* Add Microsoft Entra-only and dual-authentication options to point-in-time restore.
+* Keep Microsoft Entra ID authentication and user assignment separate from point-in-time restore.
 * Add customer-managed-key and user-assigned identity options to point-in-time restore.
 * Add storage type and public network access options to point-in-time restore.
 * Add optional resource tags to point-in-time restore.

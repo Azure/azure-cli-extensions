@@ -172,22 +172,6 @@ class RestoreTest(unittest.TestCase):
             },
         }, content)
 
-    def test_target_configuration_with_entra_auth_payload(self):
-        content = self._serialize_content(self._create_command(
-            auth_allowed_modes=["MicrosoftEntraID"],
-            storage_type="PremiumSSDv2",
-            public_network_access="Disabled",
-            tags={"environment": "entra-restored"},
-        ))
-
-        self.assertNotIn("administrator", content["properties"])
-        self.assertEqual(
-            ["MicrosoftEntraID"], content["properties"]["authConfig"]["allowedModes"])
-        self.assertEqual({"type": "PremiumSSDv2"}, content["properties"]["storage"])
-        self.assertEqual("Disabled", content["properties"]["publicNetworkAccess"])
-        self.assertEqual({"environment": "entra-restored"}, content["tags"])
-        self.assertNotIn("tags", content["properties"])
-
     def test_target_configuration_with_cmk_payload(self):
         content = self._serialize_content(self._create_command(
             admin_user="dbadmin",
@@ -221,7 +205,7 @@ class RestoreTest(unittest.TestCase):
         ]
         restore_schema = self._create_command().get_arguments_schema()
 
-        for argument in ("storage_type", "public_network_access", "tags"):
+        for argument in ("storage_type", "public_network_access", "tags", "auth_allowed_modes"):
             with self.subTest(argument=argument):
                 self.assertTrue(getattr(restore_schema, argument)._registered)
                 self.assertFalse(getattr(restore_schema, argument)._required)
@@ -238,45 +222,60 @@ class RestoreTest(unittest.TestCase):
                 for schema in schemas:
                     self.assertTrue(getattr(schema, argument)._registered)
 
-    def test_entra_only_payload_omits_administrator(self):
-        content = self._serialize_content(self._create_command(
-            auth_allowed_modes=["MicrosoftEntraID"],
-        ))
+        self.assertEqual(["NativeAuth"], restore_schema.auth_allowed_modes.Element.enum.to_choices())
+        for schema in schemas:
+            self.assertCountEqual(
+                ["NativeAuth", "MicrosoftEntraID"],
+                schema.auth_allowed_modes.Element.enum.to_choices(),
+            )
 
-        self.assertNotIn("administrator", content["properties"])
-        self.assertEqual(
-            ["MicrosoftEntraID"],
-            content["properties"]["authConfig"]["allowedModes"],
-        )
-
-    def test_dual_auth_payload_includes_administrator(self):
+    def test_explicit_native_auth_payload(self):
         content = self._serialize_content(self._create_command(
             admin_user="dbadmin",
             admin_password="P@ssword123!",
-            auth_allowed_modes=["NativeAuth", "MicrosoftEntraID"],
+            auth_allowed_modes=["NativeAuth"],
         ))
+        self.assertEqual({
+            "location": "eastus2",
+            "properties": {
+                "administrator": {"userName": "dbadmin", "password": "P@ssword123!"},
+                "authConfig": {"allowedModes": ["NativeAuth"]},
+                "createMode": "PointInTimeRestore",
+                "restoreParameters": {
+                    "pointInTimeUTC": "2026-06-30T10:00:00Z",
+                    "sourceResourceId": self._SOURCE_ID,
+                },
+            },
+        }, content)
 
-        self.assertEqual(
-            ["NativeAuth", "MicrosoftEntraID"],
-            content["properties"]["authConfig"]["allowedModes"],
+    def test_restore_rejects_entra_authentication_modes(self):
+        for modes in (["MicrosoftEntraID"], ["NativeAuth", "MicrosoftEntraID"]):
+            with self.subTest(modes=modes):
+                command = self._create_command(auth_allowed_modes=modes)
+                with self.assertRaisesRegex(InvalidArgumentValueError, "single NativeAuth"):
+                    command.pre_operations()
+
+    def test_native_auth_requires_administrator_even_with_cmk(self):
+        command = self._create_command(
+            auth_allowed_modes=["NativeAuth"],
+            mi_user_assigned=[self._IDENTITY_ID],
+            encryption=self._cmk_encryption(),
         )
-        self.assertEqual(
-            "dbadmin",
-            content["properties"]["administrator"]["userName"],
-        )
-
-    def test_native_auth_requires_administrator_credentials(self):
-        command = self._create_command(auth_allowed_modes=["NativeAuth"])
-
-        with self.assertRaisesRegex(
-                InvalidArgumentValueError, "required when NativeAuth is enabled"):
+        with self.assertRaisesRegex(InvalidArgumentValueError, "NativeAuth is specified"):
             command.pre_operations()
+
+    def test_restore_rejects_empty_or_duplicate_authentication_modes(self):
+        for modes in ([], ["NativeAuth", "NativeAuth"]):
+            with self.subTest(modes=modes):
+                command = self._create_command(auth_allowed_modes=modes)
+                with self.assertRaisesRegex(InvalidArgumentValueError, "single NativeAuth"):
+                    command.pre_operations()
 
     def test_legacy_restore_requires_administrator_credentials(self):
         command = self._create_command()
 
         with self.assertRaisesRegex(
-                InvalidArgumentValueError, "auth-allowed-modes and --encryption are omitted"):
+                InvalidArgumentValueError, "--encryption is omitted"):
             command.pre_operations()
 
     def test_administrator_credentials_must_be_provided_together(self):
@@ -284,33 +283,6 @@ class RestoreTest(unittest.TestCase):
 
         with self.assertRaisesRegex(
                 InvalidArgumentValueError, "must be provided together"):
-            command.pre_operations()
-
-    def test_entra_only_rejects_administrator_credentials(self):
-        command = self._create_command(
-            admin_user="dbadmin",
-            admin_password="P@ssword123!",
-            auth_allowed_modes=["MicrosoftEntraID"],
-        )
-
-        with self.assertRaisesRegex(
-                InvalidArgumentValueError, "cannot be used"):
-            command.pre_operations()
-
-    def test_authentication_modes_reject_duplicate_values(self):
-        command = self._create_command(
-            auth_allowed_modes=["MicrosoftEntraID", "MicrosoftEntraID"],
-        )
-
-        with self.assertRaisesRegex(
-                InvalidArgumentValueError, "must not contain duplicate values"):
-            command.pre_operations()
-
-    def test_authentication_modes_reject_empty_list(self):
-        command = self._create_command(auth_allowed_modes=[])
-
-        with self.assertRaisesRegex(
-                InvalidArgumentValueError, "must contain at least one"):
             command.pre_operations()
 
     def test_cmk_payload_includes_matching_user_assigned_identity(self):
