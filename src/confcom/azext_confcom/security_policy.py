@@ -36,7 +36,7 @@ from azext_confcom.template_util import (case_insensitive_dict_get,
                                          get_values_for_params,
                                          get_volume_claim_templates,
                                          is_sidecar, pretty_print_func,
-                                         print_func, process_configmap,
+                                         process_configmap,
                                          process_env_vars_from_config,
                                          process_env_vars_from_template,
                                          process_env_vars_from_yaml,
@@ -266,7 +266,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             eprint("Unknown output type for serialization.")
 
         policy_str = self._policy_serialization(
-            output_type == OutputType.PRETTY_PRINT, include_sidecars=include_sidecars, omit_id=omit_id
+            include_sidecars=include_sidecars, omit_id=omit_id
         )
 
         if rego_boilerplate:
@@ -569,7 +569,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         output = self.get_serialized_output(output_type)
         os_util.write_str_to_file(file_path, output)
 
-    def _policy_serialization(self, pretty_print=False, include_sidecars: bool = True, omit_id: bool = False) -> str:
+    def _policy_serialization(self, include_sidecars: bool = True, omit_id: bool = False) -> str:
         policy = []
         regular_container_images = self.get_images()
 
@@ -593,9 +593,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             for c in self._container_definitions
         ]
 
-        if pretty_print:
-            return pretty_print_func(policy)
-        return print_func(policy)
+        return pretty_print_func(policy)
 
     # pylint: disable=R0914, R0915, R0912
     def populate_policy_content_for_all_images(

@@ -16,6 +16,7 @@ from itertools import product
 
 from azext_confcom.custom import acipolicygen_confcom
 from azext_confcom.lib.serialization import policy_deserialize
+from azext_confcom.template_util import extract_containers_from_text
 
 
 
@@ -298,7 +299,8 @@ def test_acipolicygen_with_containers_field_changed():
             container_definitions=[json.loads('{"id": "test"}')]
         )
     actual_policy = buffer.getvalue()
-    assert '"id":"test"' in actual_policy
+    containers = json.loads(extract_containers_from_text(actual_policy, "containers := "))
+    assert any(container.get("id") == "test" for container in containers)
 
 
 @pytest.mark.parametrize(
