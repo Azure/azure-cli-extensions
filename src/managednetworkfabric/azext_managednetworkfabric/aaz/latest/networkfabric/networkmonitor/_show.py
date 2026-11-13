@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get NetworkMonitor GET method.
 
     :example: Show the Network Monitor
-        az networkfabric networkmonitor show --resource-group example-rg --network-monitor-name example-monitor
+        az networkfabric networkmonitor show --resource-group "example-rg" --network-monitor-name "example-monitor"
     """
 
     _aaz_info = {

@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update to update certain properties of the NetworkMonitor resource.
 
     :example: Update the Network Monitor
-        az networkfabric networkmonitor update --network-monitor-name example-nm --resource-group example-rg --bmp-configuration '{"stationConfigurationState":"Enabled","scopeResourceId":"/subscriptions/1234ABCD-0A1B-1234-5678-123456ABCDEF/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric","stationName":"name","stationIp":"10.0.0.1","stationPort":62695,"stationConnectionMode":"Active","stationConnectionProperties":{"keepaliveIdleTime":49,"probeInterval":3558,"probeCount":45},"stationNetwork":"/subscriptions/1234ABCD-0A1B-1234-5678-123456ABCDEF/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/example-l3domain/internalNetworks/example-internalnetwork","monitoredNetworks":["/subscriptions/1234ABCD-0A1B-1234-5678-123456ABCDEF/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/example-l3domain"],"exportPolicy":"All","monitoredAddressFamilies":["All"]}'
+        az networkfabric networkmonitor update --network-monitor-name "example-nm" --resource-group "example-rg" --bmp-configuration station-configuration-state="Enabled" scope-resource-id="/subscriptions/1234ABCD-0A1B-1234-5678-123456ABCDEF/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric" station-name="name" station-ip="10.0.0.1" station-port="62695" station-connection-mode="Active" station-connection-properties="{keepalive-idle-time:49,probe-interval:3558,probe-count:45}" station-network="/subscriptions/1234ABCD-0A1B-1234-5678-123456ABCDEF/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/example-l3domain/internalNetworks/example-internalnetwork" monitored-networks="[/subscriptions/1234ABCD-0A1B-1234-5678-123456ABCDEF/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/example-l3domain]" export-policy="All" monitored-address-families="[All]"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
         az networkfabric networkmonitor update --bmp-configuration "??"
@@ -62,18 +62,6 @@ class Update(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Body",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
-
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -82,6 +70,11 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="BGP Monitoring Protocol (BMP) Configurations for the Network Monitor.",
             nullable=True,
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Properties",
+            help="Resource tags.",
         )
 
         bmp_configuration = cls._args_schema.bmp_configuration
@@ -189,6 +182,9 @@ class Update(AAZCommand):
                 minimum=1,
             ),
         )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):

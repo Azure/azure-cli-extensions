@@ -8,7 +8,7 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
-from azure.cli.core.commands.parameters import (get_enum_type)
+from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
@@ -30,6 +30,17 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             c.argument('endpoint_kind', arg_type=get_enum_type(['Source', 'Target']),
                        help='The Endpoint resource kind, source or target.')
 
+    for command in ['create-for-storage-container', 'update-for-storage-container',
+                    'create-for-storage-smb-file-share', 'update-for-storage-smb-file-share']:
+        with self.argument_context('storage-mover endpoint ' + command) as c:
+            c.argument('enable_cross_tenant_transfer', arg_type=get_three_state_flag(),
+                       options_list=('--enable-cross-tenant-transfer', '--enable-cross-tenant'),
+                       help='Enable this endpoint for cross-tenant data transfers.')
+            c.argument('allowed_storage_accounts', nargs='*',
+                       options_list=('--allowed-storage-accounts', '--allowed-accounts'),
+                       help='Space-separated ARM resource IDs of allowed partner-tenant storage accounts. '
+                            'Replaces the entire list. Use this option without values to clear the list.')
+
     with self.argument_context('storage-mover endpoint create-for-storage-container') as c:
         c.argument('blob_container_name', options_list=('--container-name'),
                    help='The name of the Storage blob container that is the target destination.')
@@ -39,8 +50,18 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     with self.argument_context('storage-mover endpoint create-for-nfs') as c:
         c.argument('export', help='The directory being exported from the server.')
         c.argument('host', help='The host name or IP address of the server exporting the file system.')
-        c.argument('nfs_version', arg_type=get_enum_type(['NFSauto', 'NFSv3', 'NFSv4']),
+        c.argument('nfs_version', arg_type=get_enum_type(['NFSauto', 'NFSv3', 'NFSv4', 'NFSv4_1']),
                    help='The NFS protocol version.')
+
+    for command in ['create-for-nfs', 'update-for-nfs']:
+        with self.argument_context('storage-mover endpoint ' + command) as c:
+            c.argument('source_type', arg_type=get_enum_type(['NfsMount', 'FSX-EFS']),
+                       help='The NFS mount source type.')
+
+    for command in ['create-for-smb', 'update-for-smb']:
+        with self.argument_context('storage-mover endpoint ' + command) as c:
+            c.argument('source_type', arg_type=get_enum_type(['SmbMount', 'FSX-SMB']),
+                       help='The SMB mount source type.')
 
     with self.argument_context('storage-mover endpoint create-for-storage-smb-file-share') as c:
         c.argument('file_share_name', help='The name of the Azure Storage file share.')

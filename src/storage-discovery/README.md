@@ -40,6 +40,13 @@ az storage-discovery workspace update \
   --tags environment=production team=storage
 ```
 
+```commandline
+az storage-discovery workspace update \
+  --resource-group myRG \
+  --name myWorkspace \
+  --capabilities "{azure-blob-storage:{capacity-details:{status:Disabled}}}"
+```
+
 ### az storage-discovery workspace list ###
 ```commandline
 az storage-discovery workspace list --resource-group myRG

@@ -18,7 +18,7 @@ class Upgrade(AAZCommand):
     """Upgrades the version of the Network Device.
 
     :example: Upgrade the Network Device
-        az networkfabric device upgrade --resource-group example-rg --resource-name example-device --version 1.0.0
+        az networkfabric device upgrade --resource-group "example-rg" --resource-name "example-device" --version "1.0.0"
     """
 
     _aaz_info = {

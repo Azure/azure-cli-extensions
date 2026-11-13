@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "redisenterprise migration unlink-migrated-endpoint",
+    is_preview=True,
 )
 class UnlinkMigratedEndpoint(AAZCommand):
     """Unlink the endpoint migrated from Azure Cache for Redis Basic, Standard, or Premium tiers to Azure Managed Redis.
@@ -24,9 +25,9 @@ class UnlinkMigratedEndpoint(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-09-01",
+        "version": "2026-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default/unlinkmigratedendpoint", "2026-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/migrations/default/unlinkmigratedendpoint", "2026-10-01-preview"],
         ]
     }
 
@@ -129,7 +130,7 @@ class UnlinkMigratedEndpoint(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-09-01",
+                    "api-version", "2026-10-01-preview",
                     required=True,
                 ),
             }

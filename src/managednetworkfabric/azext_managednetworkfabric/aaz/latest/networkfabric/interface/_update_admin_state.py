@@ -18,7 +18,7 @@ class UpdateAdminState(AAZCommand):
     """Update the admin state of the Network Interface.
 
     :example: Update admin state of Network Interface
-        az networkfabric interface update-admin-state -g "example-rg" --network-device-name "example-device" --resource-name "example-interface" --state "Enable"
+        az networkfabric interface update-admin-state --resource-group "example-rg" --network-device-name "example-device" --resource-name "example-interface" --state "Enable"
     """
 
     _aaz_info = {

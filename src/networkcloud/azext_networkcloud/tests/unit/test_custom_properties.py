@@ -5,7 +5,6 @@
 # flake8: noqa
 
 import os
-import subprocess
 import time
 import unittest
 from unittest import mock
@@ -23,119 +22,52 @@ class TestCustomProperties(unittest.TestCase):
     """Test CustomProperties methods"""
 
     def test_resulturl_output(self):
-        self.cmd = mock.Mock()
-
-        # Mock args
-        args = mock.Mock()
-        self.cmd.ctx = mock.Mock()
-        self.cmd.ctx.args = args
-
-        # Mock deserialize method
-        self.cmd.deserialize_output.return_value = mock.Mock()
-
-        # Mock vars
-        self.cmd.ctx.vars = mock.Mock()
-        self.cmd.ctx.vars.instance = mock.Mock()
-
-        # Mock output head
-        self.cmd.ctx.vars.instance.properties = mock.Mock()
-        self.cmd.ctx.vars.instance.properties.output_head = mock.Mock()
-        self.cmd.ctx.vars.instance.properties.output_head.to_serialized_data = (
-            mock.Mock(side_effect="HEADER")
-        )
-
-        # Validate URL download skipped when result URL not provided
-        with mock.patch("urllib.request.urlopen") as mock_urlopen:
-            # Set output dir to undefined
-            self.cmd.ctx.args.output = AAZUndefined
-
-            # Set result url to undefined
-            self.cmd.ctx.vars.instance.properties.resultUrl = AAZUndefined
-            self.cmd.ctx.vars.instance.properties.resultRef = AAZUndefined
-
-            CustomActionProperties()._output(self.cmd, args)
-            mock_urlopen.assert_not_called()
-
-        # Mock result URL
-        test_url = "https://aka.ms/fakeurl"
-        self.cmd.ctx.vars.instance.properties.resultUrl = mock.Mock()
-        self.cmd.ctx.vars.instance.properties.resultUrl.to_serialized_data = mock.Mock(
-            side_effect=test_url
-        )
-
-        # Validate results not downloaded when no output dir provided
-        with mock.patch("urllib.request.urlopen") as mock_urlopen:
-            # Set output dir to undefined
-            self.cmd.ctx.args.output = AAZUndefined
-
-            CustomActionProperties()._output(self.cmd, args)
-            mock_urlopen.assert_not_called()
-
-        # Validate exceptions handled
-        with mock.patch("urllib.request.urlopen") as mock_urlopen:
-            test_output_dir = "/path/to/test/output/dir"
-            self.cmd.ctx.args.output = mock.Mock()
-            self.cmd.ctx.args.output.to_serialized_data.return_value = test_output_dir
-
-            # Raise exception when calling tar lib
-            with mock.patch("tarfile.open") as tar_open:
-                tar_open.side_effect = Exception
-                with self.assertRaises(Exception):
-                    CustomActionProperties()._output(self.cmd, args)
-
-            # Raise exception when calling URL
-            mock_urlopen.side_effect = Exception
-            with self.assertRaises(Exception):
-                CustomActionProperties()._output(self.cmd, args)
+        self._check_output_download("resultUrl")
 
     def test_resultref_output(self):
-        self.cmd = mock.Mock()
+        self._check_output_download("resultRef")
 
-        # Mock args
-        args = mock.Mock()
-        self.cmd.ctx = mock.Mock()
-        self.cmd.ctx.args = args
-
-        # Validate URL download skipped when resultRef not provided
-        with mock.patch("subprocess.run") as mock_subprocess_run:
-            # Set output dir to undefined
-            self.cmd.ctx.args.output = AAZUndefined
-
-            # Set result url to undefined
-            self.cmd.ctx.vars.instance.properties.resultRef = AAZUndefined
-
-            CustomActionProperties()._output(self.cmd, args)
-            mock_subprocess_run.assert_not_called()
-
-        # Mock result URL
-        test_url = "https://aka.ms/fakeurl"
-        self.cmd.ctx.vars.instance.properties.resultRef = mock.Mock()
-        self.cmd.ctx.vars.instance.properties.resultRef.to_serialized_data = mock.Mock(
-            side_effect=test_url
-        )
-
-        # Validate results not downloaded when no output dir provided
-        with mock.patch("subprocess.run") as mock_subprocess_run:
-            # Set output dir to undefined
-            self.cmd.ctx.args.output = AAZUndefined
-
-            CustomActionProperties()._output(self.cmd, args)
-            mock_subprocess_run.assert_not_called()
-
-        # Validate exceptions handled
-        with mock.patch("subprocess.run") as mock_subprocess_run:
-            test_output_dir = "/path/to/test/output/dir"
-            self.cmd.ctx.args.output = test_output_dir
-
-            # Simulate subprocess.run raising an error
-            mock_subprocess_run.side_effect = subprocess.CalledProcessError(
-                returncode=1, cmd="az storage blob download", stderr="Simulated error"
+    def _check_output_download(self, property_name):
+        cmd = mock.Mock()
+        args = cmd.ctx.args
+        properties = cmd.ctx.vars.instance.properties
+        properties.output_head = AAZUndefined
+        properties.resultUrl = AAZUndefined
+        properties.resultRef = AAZUndefined
+        args.output = AAZUndefined
+        target = "azext_networkcloud.operations.custom_properties._download_and_extract"
+        with mock.patch(target) as download:
+            CustomActionProperties._output(cmd)
+            download.assert_not_called()
+            cmd.deserialize_output.assert_called_once_with(
+                cmd.ctx.vars.instance, client_flatten=True
             )
+            url = "https://results.blob.core.windows.net/results/output.tar.gz"
+            value = mock.Mock()
+            value.to_serialized_data.return_value = url
+            setattr(properties, property_name, value)
+            CustomActionProperties._output(cmd)
+            download.assert_not_called()
 
-            # Raise exception when downloading blob
-            mock_subprocess_run.side_effect = Exception
-            with self.assertRaises(AzureInternalError) as cm:
-                CustomActionProperties()._output(self.cmd, args)
+            args.output = "/path/to/output"
+            args.expected_storage_host.to_serialized_data.return_value = (
+                "results.blob.core.windows.net"
+            )
+            args.expected_sha256.to_serialized_data.return_value = "a" * 64
+            CustomActionProperties._output(cmd)
+            auth = {"cli_ctx": cmd.cli_ctx} if property_name == "resultRef" else {}
+            download.assert_called_once_with(
+                url, args.output, "results.blob.core.windows.net", "a" * 64, **auth
+            )
+            download.reset_mock()
+            args.expected_sha256 = AAZUndefined
+            CustomActionProperties._output(cmd)
+            download.assert_called_once_with(
+                url, args.output, "results.blob.core.windows.net", None, **auth
+            )
+            download.side_effect = ValueError("checksum mismatch")
+            with self.assertRaisesRegex(AzureInternalError, "checksum mismatch"):
+                CustomActionProperties._output(cmd)
 
     def test_safe_remove_file_success(self):
         """Test _safe_remove_file successfully removes a file"""

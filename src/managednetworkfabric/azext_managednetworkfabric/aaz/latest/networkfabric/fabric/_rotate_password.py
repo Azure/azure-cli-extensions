@@ -18,7 +18,7 @@ class RotatePassword(AAZCommand):
     """Creates new passwords, then updates the Terminal Server and Network Devices to use the new passwords.  Note that disabled devices cannot be updated and must be resynchronized with the new passwords once they are enabled.  Fails if any of the devices could not be updated with the new password. Failed devices should be resynchronized with the new passwords once possible.
 
     :example: Create new passwords, then updates the Terminal Server and Network Devices to use the new passwords
-        az networkfabric fabric rotate-password --resource-group example-rg --resource-name example-fabric
+        az networkfabric fabric rotate-password --resource-group "example-rg" --resource-name "example-fabric"
     """
 
     _aaz_info = {

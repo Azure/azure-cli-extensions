@@ -1706,7 +1706,7 @@ def cosmosdb_copy_job(client,
                       dest_mongo_vcore=None,
                       job_name=None,
                       worker_count=0,
-                      host_copy_on_src=False,
+                      host_copy_on_src=True,
                       mode="Offline"):
     job_create_properties = {}
     if dest_account is None and dest_mongo_vcore is None:
@@ -1749,7 +1749,6 @@ def cosmosdb_copy_job(client,
     if dest_cassandra is not None:
         if destination is not None:
             raise CLIError('Invalid input: multiple destination components')
-        destination = dest_cassandra
         if is_cross_account and host_copy_on_src:
             destination = CosmosCassandraDataTransferDataSourceSink(keyspace_name=dest_cassandra.keyspace_name, table_name=dest_cassandra.table_name, remote_account_name=remote_account_name)
         else:

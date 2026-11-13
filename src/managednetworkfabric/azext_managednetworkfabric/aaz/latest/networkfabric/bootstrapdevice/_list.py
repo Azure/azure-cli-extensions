@@ -18,10 +18,10 @@ class List(AAZCommand):
     """List all the Network Bootstrap Device resources in a given subscription.
 
     :example: List the Bootstrap Device for Subscription
-        az networkfabric bootstrapdevice list --subscription <subscriptionId>
+        az networkfabric bootstrapdevice list --subscription "<subscriptionId>"
 
     :example: List the Bootstrap Device for Resource Group
-        az networkfabric bootstrapdevice list --resource-group example-rg
+        az networkfabric bootstrapdevice list --resource-group "example-rg"
     """
 
     _aaz_info = {
