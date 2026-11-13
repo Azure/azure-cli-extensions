@@ -12,13 +12,13 @@ az extension add --name koreai-artemis
 ## Examples
 
 ```bash
-az artemis organization list
-az artemis organization show \
+az koreai artemis organization list
+az koreai artemis organization show \
   --resource-group contoso-rg \
   --organization-name contoso-org
-az artemis organization workspace list \
+az koreai artemis organization workspace list \
   --resource-group contoso-rg \
   --organization-name contoso-org
 ```
 
-Run `az artemis --help` to see the complete preview command surface.
+Run `az koreai artemis --help` to see the complete preview command surface.
