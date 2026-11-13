@@ -1,0 +1,429 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+import unittest
+from unittest.mock import Mock
+
+from vcr.request import Request
+
+from azure.cli.core import get_default_cli
+from azure.cli.core.aaz._command_ctx import AAZCommandCtx
+from azure.cli.core.azclierror import InvalidArgumentValueError
+
+from azext_documentdb.aaz.latest.documentdb.mongocluster import Create, Update
+from azext_documentdb.custom import Restore
+from azext_documentdb.tests.latest.test_documentdb import MongoClusterOperationTokenReplacer
+
+
+class RestoreTest(unittest.TestCase):
+
+    _SUBSCRIPTION_ID = "00000000-0000-0000-0000-000000000000"
+    _SOURCE_ID = (
+        "/subscriptions/00000000-0000-0000-0000-000000000000/"
+        "resourceGroups/source-rg/providers/Microsoft.DocumentDB/"
+        "mongoClusters/source-cluster"
+    )
+    _IDENTITY_ID = (
+        "/subscriptions/00000000-0000-0000-0000-000000000000/"
+        "resourceGroups/identity-rg/providers/Microsoft.ManagedIdentity/"
+        "userAssignedIdentities/documentdb-cmk"
+    )
+    _KEY_URL = "https://example.vault.azure.net/keys/documentdb-cmk"
+
+    def _create_command(self, **overrides):
+        command_args = {
+            "subscription": self._SUBSCRIPTION_ID,
+            "resource_group": "restore-rg",
+            "cluster_name": "restored-cluster",
+            "location": "eastus2",
+            "source_cluster": self._SOURCE_ID,
+            "restore_time": "2026-06-30T10:00:00Z",
+            **overrides,
+        }
+        command = Restore(cli_ctx=get_default_cli())
+        command.ctx = AAZCommandCtx(
+            command.cli_ctx,
+            command.get_arguments_schema(),
+            command_args,
+            no_wait_arg="no_wait",
+        )
+        command.ctx.format_args()
+        return command
+
+    def _serialize_content(self, command):
+        command.pre_operations()
+        command.ctx.get_http_client = Mock(return_value=Mock())
+        operation = command.MongoClustersCreateOrUpdate(ctx=command.ctx)
+        return operation.content
+
+    def _cmk_encryption(self, identity_id=None):
+        return {
+            "customer_managed_key_encryption": {
+                "key_encryption_key_identity": {
+                    "identity_type": "UserAssignedIdentity",
+                    "user_assigned_identity_resource_id": (
+                        identity_id or self._IDENTITY_ID
+                    ),
+                },
+                "key_encryption_key_url": self._KEY_URL,
+            }
+        }
+
+    def test_legacy_native_auth_payload_is_unchanged(self):
+        content = self._serialize_content(self._create_command(
+            admin_user="dbadmin",
+            admin_password="P@ssword123!",
+        ))
+
+        self.assertEqual({
+            "location": "eastus2",
+            "properties": {
+                "administrator": {
+                    "password": "P@ssword123!",
+                    "userName": "dbadmin",
+                },
+                "createMode": "PointInTimeRestore",
+                "restoreParameters": {
+                    "pointInTimeUTC": "2026-06-30T10:00:00Z",
+                    "sourceResourceId": self._SOURCE_ID,
+                },
+            },
+        }, content)
+
+    def test_tags_payload(self):
+        for tags in (
+                {"environment": "restored", "team": "documentdb"},
+                {"description": "restored cluster", "empty": ""},
+                {}):
+            with self.subTest(tags=tags):
+                content = self._serialize_content(self._create_command(
+                    admin_user="dbadmin",
+                    admin_password="P@ssword123!",
+                    tags=tags,
+                ))
+
+                self.assertEqual({
+                    "location": "eastus2",
+                    "tags": tags,
+                    "properties": {
+                        "administrator": {
+                            "password": "P@ssword123!",
+                            "userName": "dbadmin",
+                        },
+                        "createMode": "PointInTimeRestore",
+                        "restoreParameters": {
+                            "pointInTimeUTC": "2026-06-30T10:00:00Z",
+                            "sourceResourceId": self._SOURCE_ID,
+                        },
+                    },
+                }, content)
+
+    def test_storage_type_payload(self):
+        for storage_type in ("PremiumSSD", "PremiumSSDv2"):
+            with self.subTest(storage_type=storage_type):
+                content = self._serialize_content(self._create_command(
+                    admin_user="dbadmin",
+                    admin_password="P@ssword123!",
+                    storage_type=storage_type,
+                ))
+
+                self.assertEqual({"type": storage_type}, content["properties"]["storage"])
+                self.assertNotIn("publicNetworkAccess", content["properties"])
+
+    def test_public_network_access_payload(self):
+        for public_network_access in ("Enabled", "Disabled"):
+            with self.subTest(public_network_access=public_network_access):
+                content = self._serialize_content(self._create_command(
+                    admin_user="dbadmin",
+                    admin_password="P@ssword123!",
+                    public_network_access=public_network_access,
+                ))
+
+                self.assertEqual(
+                    public_network_access, content["properties"]["publicNetworkAccess"])
+                self.assertNotIn("storage", content["properties"])
+
+    def test_target_configuration_payload(self):
+        content = self._serialize_content(self._create_command(
+            admin_user="dbadmin",
+            admin_password="P@ssword123!",
+            storage_type="PremiumSSDv2",
+            public_network_access="Disabled",
+            tags={"environment": "restored"},
+        ))
+
+        self.assertEqual({
+            "location": "eastus2",
+            "tags": {"environment": "restored"},
+            "properties": {
+                "administrator": {
+                    "password": "P@ssword123!",
+                    "userName": "dbadmin",
+                },
+                "createMode": "PointInTimeRestore",
+                "restoreParameters": {
+                    "pointInTimeUTC": "2026-06-30T10:00:00Z",
+                    "sourceResourceId": self._SOURCE_ID,
+                },
+                "storage": {"type": "PremiumSSDv2"},
+                "publicNetworkAccess": "Disabled",
+            },
+        }, content)
+
+    def test_target_configuration_with_cmk_payload(self):
+        content = self._serialize_content(self._create_command(
+            admin_user="dbadmin",
+            admin_password="P@ssword123!",
+            mi_user_assigned=[self._IDENTITY_ID],
+            encryption=self._cmk_encryption(),
+            storage_type="PremiumSSDv2",
+            public_network_access="Disabled",
+            tags={"environment": "cmk-restored"},
+        ))
+
+        self.assertEqual("UserAssigned", content["identity"]["type"])
+        self.assertIn(self._IDENTITY_ID, content["identity"]["userAssignedIdentities"])
+        self.assertEqual(
+            self._KEY_URL,
+            content["properties"]["encryption"]["customerManagedKeyEncryption"]["keyEncryptionKeyUrl"],
+        )
+        self.assertEqual(
+            {"userName": "dbadmin", "password": "P@ssword123!"},
+            content["properties"]["administrator"],
+        )
+        self.assertEqual({"type": "PremiumSSDv2"}, content["properties"]["storage"])
+        self.assertEqual("Disabled", content["properties"]["publicNetworkAccess"])
+        self.assertEqual({"environment": "cmk-restored"}, content["tags"])
+        self.assertNotIn("tags", content["properties"])
+
+    def test_restore_argument_registration_is_independent(self):
+        schemas = [
+            command_type(cli_ctx=get_default_cli()).get_arguments_schema()
+            for command_type in (Create, Update)
+        ]
+        restore_schema = self._create_command().get_arguments_schema()
+
+        for argument in ("storage_type", "public_network_access", "tags", "auth_allowed_modes"):
+            with self.subTest(argument=argument):
+                self.assertTrue(getattr(restore_schema, argument)._registered)
+                self.assertFalse(getattr(restore_schema, argument)._required)
+                for schema in schemas:
+                    self.assertTrue(getattr(schema, argument)._registered)
+                    self.assertFalse(getattr(schema, argument)._required)
+
+        for argument in (
+                "server_version", "tier", "storage_size", "shard_count",
+                "high_availability", "data_api_mode", "network_bypass_mode",
+                "preview_features"):
+            with self.subTest(argument=argument):
+                self.assertFalse(getattr(restore_schema, argument)._registered)
+                for schema in schemas:
+                    self.assertTrue(getattr(schema, argument)._registered)
+
+        self.assertEqual(["NativeAuth"], restore_schema.auth_allowed_modes.Element.enum.to_choices())
+        for schema in schemas:
+            self.assertCountEqual(
+                ["NativeAuth", "MicrosoftEntraID"],
+                schema.auth_allowed_modes.Element.enum.to_choices(),
+            )
+
+    def test_explicit_native_auth_payload(self):
+        content = self._serialize_content(self._create_command(
+            admin_user="dbadmin",
+            admin_password="P@ssword123!",
+            auth_allowed_modes=["NativeAuth"],
+        ))
+        self.assertEqual({
+            "location": "eastus2",
+            "properties": {
+                "administrator": {"userName": "dbadmin", "password": "P@ssword123!"},
+                "authConfig": {"allowedModes": ["NativeAuth"]},
+                "createMode": "PointInTimeRestore",
+                "restoreParameters": {
+                    "pointInTimeUTC": "2026-06-30T10:00:00Z",
+                    "sourceResourceId": self._SOURCE_ID,
+                },
+            },
+        }, content)
+
+    def test_restore_rejects_entra_authentication_modes(self):
+        for modes in (["MicrosoftEntraID"], ["NativeAuth", "MicrosoftEntraID"]):
+            with self.subTest(modes=modes):
+                command = self._create_command(auth_allowed_modes=modes)
+                with self.assertRaisesRegex(InvalidArgumentValueError, "single NativeAuth"):
+                    command.pre_operations()
+
+    def test_native_auth_requires_administrator_even_with_cmk(self):
+        command = self._create_command(
+            auth_allowed_modes=["NativeAuth"],
+            mi_user_assigned=[self._IDENTITY_ID],
+            encryption=self._cmk_encryption(),
+        )
+        with self.assertRaisesRegex(InvalidArgumentValueError, "NativeAuth is specified"):
+            command.pre_operations()
+
+    def test_restore_rejects_empty_or_duplicate_authentication_modes(self):
+        for modes in ([], ["NativeAuth", "NativeAuth"]):
+            with self.subTest(modes=modes):
+                command = self._create_command(auth_allowed_modes=modes)
+                with self.assertRaisesRegex(InvalidArgumentValueError, "single NativeAuth"):
+                    command.pre_operations()
+
+    def test_legacy_restore_requires_administrator_credentials(self):
+        command = self._create_command()
+
+        with self.assertRaisesRegex(
+                InvalidArgumentValueError, "--encryption is omitted"):
+            command.pre_operations()
+
+    def test_administrator_credentials_must_be_provided_together(self):
+        command = self._create_command(admin_user="dbadmin")
+
+        with self.assertRaisesRegex(
+                InvalidArgumentValueError, "must be provided together"):
+            command.pre_operations()
+
+    def test_cmk_payload_includes_matching_user_assigned_identity(self):
+        content = self._serialize_content(self._create_command(
+            mi_user_assigned=[self._IDENTITY_ID],
+            encryption=self._cmk_encryption(),
+        ))
+
+        self.assertNotIn("administrator", content["properties"])
+        self.assertNotIn("authConfig", content["properties"])
+        self.assertEqual("UserAssigned", content["identity"]["type"])
+        self.assertIn(
+            self._IDENTITY_ID,
+            content["identity"]["userAssignedIdentities"],
+        )
+        cmk = content["properties"]["encryption"]["customerManagedKeyEncryption"]
+        self.assertEqual(self._KEY_URL, cmk["keyEncryptionKeyUrl"])
+        self.assertEqual(
+            self._IDENTITY_ID,
+            cmk["keyEncryptionKeyIdentity"]["userAssignedIdentityResourceId"],
+        )
+
+    def test_cmk_native_auth_payload_includes_administrator(self):
+        content = self._serialize_content(self._create_command(
+            admin_user="dbadmin",
+            admin_password="P@ssword123!",
+            mi_user_assigned=[self._IDENTITY_ID],
+            encryption=self._cmk_encryption(),
+        ))
+
+        self.assertEqual(
+            {"userName": "dbadmin", "password": "P@ssword123!"},
+            content["properties"]["administrator"],
+        )
+        self.assertNotIn("authConfig", content["properties"])
+        self.assertEqual("UserAssigned", content["identity"]["type"])
+        self.assertIn(self._IDENTITY_ID, content["identity"]["userAssignedIdentities"])
+        cmk = content["properties"]["encryption"]["customerManagedKeyEncryption"]
+        self.assertEqual(self._KEY_URL, cmk["keyEncryptionKeyUrl"])
+        self.assertEqual(
+            self._IDENTITY_ID,
+            cmk["keyEncryptionKeyIdentity"]["userAssignedIdentityResourceId"],
+        )
+
+    def test_cmk_identity_must_be_assigned_to_cluster(self):
+        command = self._create_command(
+            admin_user="dbadmin",
+            admin_password="P@ssword123!",
+            mi_user_assigned=["/subscriptions/example/identity/other"],
+            encryption=self._cmk_encryption(),
+        )
+
+        with self.assertRaisesRegex(
+                InvalidArgumentValueError, "must also be supplied"):
+            command.pre_operations()
+
+    def test_cmk_requires_complete_encryption_configuration(self):
+        command = self._create_command(
+            admin_user="dbadmin",
+            admin_password="P@ssword123!",
+            mi_user_assigned=[self._IDENTITY_ID],
+            encryption={
+                "customer_managed_key_encryption": {
+                    "key_encryption_key_identity": {
+                        "identity_type": "UserAssignedIdentity",
+                        "user_assigned_identity_resource_id": self._IDENTITY_ID,
+                    },
+                }
+            },
+        )
+
+        with self.assertRaisesRegex(
+                InvalidArgumentValueError, "key-encryption-key-url"):
+            command.pre_operations()
+
+
+class OperationTokenReplacerTest(unittest.TestCase):
+
+    _URL = (
+        "https://management.example.test/subscriptions/example/providers/"
+        "Microsoft.DocumentDB/locations/example/mongoClusterAzureAsyncOperation/op"
+        "?api-version=2026-06-15-preview&t=timestamp&c=encrypted%2Bvalue&s=signature&h=hash"
+    )
+    _SANITIZED_URL = (
+        "https://management.example.test/subscriptions/example/providers/"
+        "Microsoft.DocumentDB/locations/example/mongoClusterAzureAsyncOperation/op"
+        "?api-version=2026-06-15-preview&t=REDACTED&c=REDACTED&s=REDACTED&h=REDACTED"
+    )
+    _RESULT_URL = _URL.replace("mongoClusterAzureAsyncOperation", "mongoClusterOperationResults")
+    _SANITIZED_RESULT_URL = _SANITIZED_URL.replace(
+        "mongoClusterAzureAsyncOperation", "mongoClusterOperationResults",
+    )
+
+    def test_request_tokens_are_redacted_without_changing_operation_or_api(self):
+        for url, sanitized in (
+                (self._URL, self._SANITIZED_URL),
+                (self._RESULT_URL, self._SANITIZED_RESULT_URL)):
+            with self.subTest(url=url):
+                processor = MongoClusterOperationTokenReplacer()
+                request = Request("GET", url, None, {})
+                self.assertEqual(sanitized, processor.process_request(request).uri)
+
+    def test_response_headers_and_echoed_body_url_are_redacted(self):
+        processor = MongoClusterOperationTokenReplacer()
+        response = {
+            "headers": {
+                "Azure-AsyncOperation": [self._URL],
+                "Location": [self._RESULT_URL],
+                "content-type": ["application/json"],
+            },
+            "body": {"string": '{"name": "' + self._RESULT_URL + '"}'},
+        }
+        result = processor.process_response(response)
+        self.assertEqual([self._SANITIZED_URL], result["headers"]["Azure-AsyncOperation"])
+        self.assertEqual([self._SANITIZED_RESULT_URL], result["headers"]["Location"])
+        self.assertEqual(
+            '{"name": "' + self._SANITIZED_RESULT_URL + '"}', result["body"]["string"],
+        )
+
+    def test_previously_registered_request_url_is_redacted_in_response_body(self):
+        processor = MongoClusterOperationTokenReplacer()
+        processor.process_request(Request("GET", self._URL, None, {}))
+        response = {
+            "headers": {"content-type": ["application/json"]},
+            "body": {"string": '{"name": "' + self._URL + '"}'},
+        }
+        self.assertEqual(
+            '{"name": "' + self._SANITIZED_URL + '"}',
+            processor.process_response(response)["body"]["string"],
+        )
+
+    def test_other_endpoints_and_already_sanitized_urls_are_unchanged(self):
+        for url in (
+                self._URL.replace("/mongoClusterAzureAsyncOperation/", "/otherOperation/"),
+                self._SANITIZED_URL,
+                self._SANITIZED_RESULT_URL):
+            with self.subTest(url=url):
+                processor = MongoClusterOperationTokenReplacer()
+                self.assertEqual(url, processor.process_request(Request("GET", url, None, {})).uri)
+                self.assertEqual([], processor.names_name)
+
+
+if __name__ == "__main__":
+    unittest.main()

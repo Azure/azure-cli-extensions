@@ -9,7 +9,15 @@
 # pylint: disable=too-many-statements, protected-access
 
 from knack.log import get_logger
-from azure.cli.core.aaz import register_command, AAZStrArg, AAZObjectType, AAZStrType
+from azure.cli.core.aaz import (
+    register_command,
+    AAZDictType,
+    AAZIdentityObjectType,
+    AAZListType,
+    AAZObjectType,
+    AAZStrArg,
+    AAZStrType,
+)
 from azext_documentdb.aaz.latest.documentdb.mongocluster import Create as _MongoClusterCreate
 from azext_documentdb.aaz.latest.documentdb.mongocluster import Update as _MongoClusterUpdate
 from azext_documentdb.aaz.latest.documentdb.mongocluster.entra_user import Assign as _UserAssign
@@ -234,8 +242,25 @@ class Restore(_MongoClusterCreate):
     Creates a new mongo cluster from the backup of an existing (or deleted) source
     cluster at the requested point in time.
 
-    :example: Restore a cluster to a point in time.
+    Supported target configuration options include native authentication,
+    customer-managed key encryption, user-assigned managed identities, storage
+    type, public network access, and resource tags.
+
+    Overrides for server version, compute tier, storage size, shard count, high
+    availability, Data API, network bypass, and preview features are not supported
+    by this command.
+
+    Configure Microsoft Entra ID authentication and assign users after the restore
+    completes, keeping restore permissions separate from data-access authorization.
+
+    :example: Restore a cluster with native authentication.
         az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123!
+
+    :example: Restore a cluster with a storage type and public network access setting.
+        az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123! --storage-type PremiumSSDv2 --public-network-access Disabled
+
+    :example: Restore a cluster with resource tags.
+        az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123! --tags environment=restored team=documentdb
     """
 
     # Own schema caches so deregistering the base ``create`` flags never mutates
@@ -248,9 +273,38 @@ class Restore(_MongoClusterCreate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         _keep_only_args(
             args_schema,
-            {"cluster_name", "resource_group", "location", "admin_user", "admin_password"})
-        args_schema.admin_user._required = True
-        args_schema.admin_password._required = True
+            {
+                "cluster_name",
+                "resource_group",
+                "location",
+                "admin_user",
+                "admin_password",
+                "auth_allowed_modes",
+                "mi_user_assigned",
+                "encryption",
+                "storage_type",
+                "public_network_access",
+                "tags",
+            })
+        from azure.cli.core.aaz import AAZArgEnum
+        args_schema.auth_allowed_modes.Element.enum = AAZArgEnum({"NativeAuth": "NativeAuth"})
+        args_schema.auth_allowed_modes._help["short-summary"] = (
+            "Authentication mode for the restored cluster. Only NativeAuth is supported. "
+            "Configure Microsoft Entra ID authentication and assign users after restore.")
+        args_schema.storage_type._help["short-summary"] = (
+            "Storage type for the restored cluster.")
+        args_schema.public_network_access._help["short-summary"] = (
+            "Public network access setting for the restored cluster.")
+        args_schema.tags._help["short-summary"] = (
+            "Resource tags for the restored cluster.")
+        args_schema.admin_user._required = False
+        args_schema.admin_user._help["short-summary"] = (
+            "The administrator user name. Required for NativeAuth, including CMK "
+            "restores using NativeAuth.")
+        args_schema.admin_password._required = False
+        args_schema.admin_password._help["short-summary"] = (
+            "The administrator password. Required for NativeAuth, including CMK "
+            "restores using NativeAuth.")
         args_schema.source_cluster = AAZStrArg(
             options=["--source-cluster"],
             arg_group="Restore",
@@ -268,7 +322,58 @@ class Restore(_MongoClusterCreate):
         return args_schema
 
     def pre_operations(self):
+        from azure.cli.core.aaz import has_value
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+
         args = self.ctx.args
+        has_admin_user = has_value(args.admin_user)
+        has_admin_password = has_value(args.admin_password)
+        if has_admin_user != has_admin_password:
+            raise InvalidArgumentValueError(
+                "--admin-user and --admin-password must be provided together.")
+
+        has_encryption = has_value(args.encryption)
+        auth_modes = (
+            args.auth_allowed_modes.to_serialized_data()
+            if has_value(args.auth_allowed_modes)
+            else None
+        )
+        if auth_modes is not None and auth_modes != ["NativeAuth"]:
+            raise InvalidArgumentValueError(
+                "--auth-allowed-modes accepts only a single NativeAuth value during restore. "
+                "Configure Microsoft Entra ID authentication and assign users after restore.")
+        # The official PITR CMK request omits both authConfig and administrator,
+        # while the legacy NativeAuth request requires new administrator credentials.
+        if (auth_modes is not None or not has_encryption) and not has_admin_user:
+            raise InvalidArgumentValueError(
+                "--admin-user and --admin-password are required when NativeAuth is "
+                "specified or --encryption is omitted.")
+
+        if has_encryption:
+            cmk = args.encryption.customer_managed_key_encryption
+            identity = cmk.key_encryption_key_identity
+            required_values = (
+                identity.identity_type,
+                identity.user_assigned_identity_resource_id,
+                cmk.key_encryption_key_url,
+            )
+            if not all(has_value(value) for value in required_values):
+                raise InvalidArgumentValueError(
+                    "--encryption requires identity-type, "
+                    "user-assigned-identity-resource-id, and key-encryption-key-url.")
+
+            assigned_identities = (
+                args.mi_user_assigned.to_serialized_data()
+                if has_value(args.mi_user_assigned)
+                else []
+            )
+            cmk_identity = identity.user_assigned_identity_resource_id.to_serialized_data()
+            if cmk_identity.lower() not in {
+                    assigned_identity.lower() for assigned_identity in assigned_identities}:
+                raise InvalidArgumentValueError(
+                    "The CMK user-assigned-identity-resource-id must also be supplied "
+                    "through --user-assigned.")
+
         args.source_cluster = _resolve_cluster_id(
             self.ctx, args.source_cluster.to_serialized_data())
 
@@ -281,14 +386,33 @@ class Restore(_MongoClusterCreate):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}},
             )
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop(
                 "location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop(
+                    "userAssigned",
+                    AAZListType,
+                    ".mi_user_assigned",
+                    typ_kwargs={"flags": {"action": "create"}})
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_const("createMode", "PointInTimeRestore", AAZStrType)
                 properties.set_prop("administrator", AAZObjectType)
+                properties.set_prop("authConfig", AAZObjectType)
+                properties.set_prop("encryption", AAZObjectType, ".encryption")
+                properties.set_prop(
+                    "publicNetworkAccess", AAZStrType, ".public_network_access")
+                properties.set_prop("storage", AAZObjectType)
                 properties.set_prop(
                     "restoreParameters", AAZObjectType, typ_kwargs={"flags": {"required": True}})
 
@@ -299,6 +423,41 @@ class Restore(_MongoClusterCreate):
                     "password", AAZStrType, ".admin_password",
                     typ_kwargs={"flags": {"secret": True}})
 
+            auth_config = _builder.get(".properties.authConfig")
+            if auth_config is not None:
+                auth_config.set_prop("allowedModes", AAZListType, ".auth_allowed_modes")
+
+            allowed_modes = _builder.get(".properties.authConfig.allowedModes")
+            if allowed_modes is not None:
+                allowed_modes.set_elements(AAZStrType, ".")
+
+            encryption = _builder.get(".properties.encryption")
+            if encryption is not None:
+                encryption.set_prop(
+                    "customerManagedKeyEncryption",
+                    AAZObjectType,
+                    ".customer_managed_key_encryption")
+
+            cmk_encryption = _builder.get(
+                ".properties.encryption.customerManagedKeyEncryption")
+            if cmk_encryption is not None:
+                cmk_encryption.set_prop(
+                    "keyEncryptionKeyIdentity",
+                    AAZObjectType,
+                    ".key_encryption_key_identity")
+                cmk_encryption.set_prop(
+                    "keyEncryptionKeyUrl", AAZStrType, ".key_encryption_key_url")
+
+            key_identity = _builder.get(
+                ".properties.encryption.customerManagedKeyEncryption."
+                "keyEncryptionKeyIdentity")
+            if key_identity is not None:
+                key_identity.set_prop("identityType", AAZStrType, ".identity_type")
+                key_identity.set_prop(
+                    "userAssignedIdentityResourceId",
+                    AAZStrType,
+                    ".user_assigned_identity_resource_id")
+
             restore_parameters = _builder.get(".properties.restoreParameters")
             if restore_parameters is not None:
                 restore_parameters.set_prop(
@@ -306,6 +465,14 @@ class Restore(_MongoClusterCreate):
                     typ_kwargs={"flags": {"required": True}})
                 restore_parameters.set_prop(
                     "pointInTimeUTC", AAZStrType, ".restore_time")
+
+            storage = _builder.get(".properties.storage")
+            if storage is not None:
+                storage.set_prop("type", AAZStrType, ".storage_type")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
