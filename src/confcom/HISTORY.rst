@@ -6,6 +6,7 @@ Release History
 2.5.0
 +++++
 * Support container-bound parameterized fragment imports
+* Add ``--env-rule-format`` to ``acifragmentgen`` to generate environment rules with separate name and value fields
 
 2.4.1
 +++++

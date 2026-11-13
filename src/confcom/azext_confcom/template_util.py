@@ -1203,10 +1203,47 @@ def translate_signals(signals: List[str]) -> List[int]:
     return signals
 
 
+def _name_value_env_rule_covers_rule(policy_env_rule, container_env_rule):
+    # policy_env_rule comes from an existing policy or imported fragment;
+    # container_env_rule comes from the container being checked.
+    # Check coverage, not exact equality, as the pattern-only path in
+    # compare_env_vars also allows literal values matched by policy regex rules.
+    if "name" not in policy_env_rule or "name" not in container_env_rule:
+        raise ValueError("Both environment rules must have a name")
+
+    for field in ("name", "value"):
+        policy_strategy = policy_env_rule[f"{field}_strategy"]
+        container_strategy = container_env_rule[f"{field}_strategy"]
+        if policy_strategy == container_strategy and policy_env_rule[field] == container_env_rule[field]:
+            continue
+        # A regex can cover a literal, but do not infer containment between different regexes.
+        if policy_strategy != "re2" or container_strategy != "string":
+            return False
+        if re.fullmatch(policy_env_rule[field], container_env_rule[field]) is None:
+            return False
+    return True
+
+
 def compare_env_vars(
     id_val, env_list1: List[Dict[str, Any]], env_list2: List[Dict[str, Any]]
 ) -> Dict[str, List[str]]:
     reason_list = {}
+    # Check rules with name and value
+    if any("name" in rule for rule in env_list1 + env_list2):
+        for container_env_rule in env_list2:
+            if "name" in container_env_rule and not any(
+                _name_value_env_rule_covers_rule(policy_env_rule, container_env_rule)
+                for policy_env_rule in env_list1
+                if "name" in policy_env_rule
+            ):
+                reason_list.setdefault(id_val, {}).setdefault(
+                    config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS, []
+                ).append(f"environment variable with rule '{container_env_rule}' is not in the policy")
+        # Keep only pattern env rules
+        env_list1 = [rule for rule in env_list1 if "name" not in rule]
+        env_list2 = [rule for rule in env_list2 if "name" not in rule]
+
+    # Check pattern env rules
     policy_env_rules_regex = [
         case_insensitive_dict_get(i, config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE)
         for i in env_list1
