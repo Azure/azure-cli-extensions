@@ -92,6 +92,34 @@ class RestoreTest(unittest.TestCase):
             },
         }, content)
 
+    def test_tags_payload(self):
+        for tags in (
+                {"environment": "restored", "team": "documentdb"},
+                {"description": "restored cluster", "empty": ""},
+                {}):
+            with self.subTest(tags=tags):
+                content = self._serialize_content(self._create_command(
+                    admin_user="dbadmin",
+                    admin_password="P@ssword123!",
+                    tags=tags,
+                ))
+
+                self.assertEqual({
+                    "location": "eastus2",
+                    "tags": tags,
+                    "properties": {
+                        "administrator": {
+                            "password": "P@ssword123!",
+                            "userName": "dbadmin",
+                        },
+                        "createMode": "PointInTimeRestore",
+                        "restoreParameters": {
+                            "pointInTimeUTC": "2026-06-30T10:00:00Z",
+                            "sourceResourceId": self._SOURCE_ID,
+                        },
+                    },
+                }, content)
+
     def test_storage_type_payload(self):
         for storage_type in ("PremiumSSD", "PremiumSSDv2"):
             with self.subTest(storage_type=storage_type):
@@ -123,10 +151,12 @@ class RestoreTest(unittest.TestCase):
             admin_password="P@ssword123!",
             storage_type="PremiumSSDv2",
             public_network_access="Disabled",
+            tags={"environment": "restored"},
         ))
 
         self.assertEqual({
             "location": "eastus2",
+            "tags": {"environment": "restored"},
             "properties": {
                 "administrator": {
                     "password": "P@ssword123!",
@@ -147,6 +177,7 @@ class RestoreTest(unittest.TestCase):
             auth_allowed_modes=["MicrosoftEntraID"],
             storage_type="PremiumSSDv2",
             public_network_access="Disabled",
+            tags={"environment": "entra-restored"},
         ))
 
         self.assertNotIn("administrator", content["properties"])
@@ -154,6 +185,8 @@ class RestoreTest(unittest.TestCase):
             ["MicrosoftEntraID"], content["properties"]["authConfig"]["allowedModes"])
         self.assertEqual({"type": "PremiumSSDv2"}, content["properties"]["storage"])
         self.assertEqual("Disabled", content["properties"]["publicNetworkAccess"])
+        self.assertEqual({"environment": "entra-restored"}, content["tags"])
+        self.assertNotIn("tags", content["properties"])
 
     def test_target_configuration_with_cmk_payload(self):
         content = self._serialize_content(self._create_command(
@@ -163,6 +196,7 @@ class RestoreTest(unittest.TestCase):
             encryption=self._cmk_encryption(),
             storage_type="PremiumSSDv2",
             public_network_access="Disabled",
+            tags={"environment": "cmk-restored"},
         ))
 
         self.assertEqual("UserAssigned", content["identity"]["type"])
@@ -177,6 +211,8 @@ class RestoreTest(unittest.TestCase):
         )
         self.assertEqual({"type": "PremiumSSDv2"}, content["properties"]["storage"])
         self.assertEqual("Disabled", content["properties"]["publicNetworkAccess"])
+        self.assertEqual({"environment": "cmk-restored"}, content["tags"])
+        self.assertNotIn("tags", content["properties"])
 
     def test_restore_argument_registration_is_independent(self):
         schemas = [
@@ -185,14 +221,18 @@ class RestoreTest(unittest.TestCase):
         ]
         restore_schema = self._create_command().get_arguments_schema()
 
-        for argument in ("storage_type", "public_network_access"):
+        for argument in ("storage_type", "public_network_access", "tags"):
             with self.subTest(argument=argument):
                 self.assertTrue(getattr(restore_schema, argument)._registered)
                 self.assertFalse(getattr(restore_schema, argument)._required)
+                for schema in schemas:
+                    self.assertTrue(getattr(schema, argument)._registered)
+                    self.assertFalse(getattr(schema, argument)._required)
 
         for argument in (
                 "server_version", "tier", "storage_size", "shard_count",
-                "high_availability", "data_api_mode", "network_bypass_mode"):
+                "high_availability", "data_api_mode", "network_bypass_mode",
+                "preview_features"):
             with self.subTest(argument=argument):
                 self.assertFalse(getattr(restore_schema, argument)._registered)
                 for schema in schemas:

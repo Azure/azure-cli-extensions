@@ -11,6 +11,7 @@
 from knack.log import get_logger
 from azure.cli.core.aaz import (
     register_command,
+    AAZDictType,
     AAZIdentityObjectType,
     AAZListType,
     AAZObjectType,
@@ -243,10 +244,11 @@ class Restore(_MongoClusterCreate):
 
     Supported target configuration options include authentication modes,
     customer-managed key encryption, user-assigned managed identities, storage
-    type, and public network access.
+    type, public network access, and resource tags.
 
     Overrides for server version, compute tier, storage size, shard count, high
-    availability, Data API, and network bypass are not supported by this command.
+    availability, Data API, network bypass, and preview features are not supported
+    by this command.
 
     :example: Restore a cluster with native authentication.
         az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123!
@@ -256,6 +258,9 @@ class Restore(_MongoClusterCreate):
 
     :example: Restore a cluster with a storage type and public network access setting.
         az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123! --storage-type PremiumSSDv2 --public-network-access Disabled
+
+    :example: Restore a cluster with resource tags.
+        az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 --source-cluster MySourceCluster --restore-time "2026-06-30T10:00:00Z" --admin-user dbadmin --admin-password MyP@ssw0rd123! --tags environment=restored team=documentdb
     """
 
     # Own schema caches so deregistering the base ``create`` flags never mutates
@@ -279,11 +284,14 @@ class Restore(_MongoClusterCreate):
                 "encryption",
                 "storage_type",
                 "public_network_access",
+                "tags",
             })
         args_schema.storage_type._help["short-summary"] = (
             "Storage type for the restored cluster.")
         args_schema.public_network_access._help["short-summary"] = (
             "Public network access setting for the restored cluster.")
+        args_schema.tags._help["short-summary"] = (
+            "Resource tags for the restored cluster.")
         args_schema.admin_user._required = False
         args_schema.admin_user._help["short-summary"] = (
             "The administrator user name. Required for NativeAuth, including CMK "
@@ -387,6 +395,7 @@ class Restore(_MongoClusterCreate):
             _builder.set_prop(
                 "location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
             if identity is not None:
@@ -465,6 +474,10 @@ class Restore(_MongoClusterCreate):
             storage = _builder.get(".properties.storage")
             if storage is not None:
                 storage.set_prop("type", AAZStrType, ".storage_type")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 

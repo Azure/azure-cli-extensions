@@ -434,12 +434,25 @@ class DocumentdbScenario(ScenarioTest):
             public_network_access='Disabled',
         )
 
-    def _test_restore_target_configuration(self, extra, storage_type, public_network_access):
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_restore_tags', location='eastus2')
+    def test_documentdb_mongocluster_restore_tags(self, resource_group):
+        self._test_restore_target_configuration(
+            '--tags environment=restored team=documentdb',
+            storage_type='PremiumSSD',
+            public_network_access='Enabled',
+            expected_tags={'environment': 'restored', 'team': 'documentdb'},
+        )
+
+    def _test_restore_target_configuration(
+            self, extra, storage_type, public_network_access, expected_tags=None):
         self._base_kwargs()
         self.kwargs['restored'] = self.create_random_name('cli-mc-rst', 20)
 
-        self._create_cluster(
-            extra='--public-network-access Enabled', storage_type='PremiumSSD')
+        create_extra = '--public-network-access Enabled'
+        if expected_tags is not None:
+            create_extra += ' --tags environment=source sourceOnly=present'
+        self._create_cluster(extra=create_extra, storage_type='PremiumSSD')
         self.cmd(
             'documentdb mongocluster show -n {cluster} -g {rg}',
             checks=[
@@ -447,7 +460,9 @@ class DocumentdbScenario(ScenarioTest):
                 self.check('properties.clusterStatus', 'Ready'),
                 self.check('properties.storage.type', 'PremiumSSD'),
                 self.check('properties.publicNetworkAccess', 'Enabled'),
-            ],
+            ] + ([
+                self.check('tags', {'environment': 'source', 'sourceOnly': 'present'}),
+            ] if expected_tags is not None else []),
         )
         self._wait_for_restore_point()
         self._cmd_retry(
@@ -470,7 +485,10 @@ class DocumentdbScenario(ScenarioTest):
                 self.check('properties.storage.sizeGb', 128),
                 self.check('properties.publicNetworkAccess', public_network_access),
                 self.check('properties.authConfig.allowedModes', ['NativeAuth']),
-            ],
+                self.check('properties.administrator.userName', '{admin}'),
+            ] + ([
+                self.check('tags', expected_tags),
+            ] if expected_tags is not None else []),
         )
         self._cmd_retry('documentdb mongocluster delete -n {restored} -g {rg} --yes')
         self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
@@ -537,6 +555,56 @@ class DocumentdbScenario(ScenarioTest):
                 self.check('length(properties.authConfig.allowedModes)', 1),
                 self.not_exists('properties.administrator.userName'),
                 self.not_exists('properties.administrator.password'),
+            ],
+        )
+        self._cmd_retry('documentdb mongocluster delete -n {restored} -g {rg} --yes')
+        self._cmd_retry('documentdb mongocluster delete -n {cluster} -g {rg} --yes')
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_documentdb_restore_dual', location='eastus2')
+    def test_documentdb_mongocluster_restore_dual_auth(self, resource_group):
+        self._base_kwargs()
+        self.kwargs['restored'] = self.create_random_name('cli-mc-rst', 20)
+
+        self._create_cluster(
+            extra='--auth-allowed-modes NativeAuth MicrosoftEntraID',
+            storage_type='PremiumSSD',
+        )
+        self.cmd(
+            'documentdb mongocluster show -n {cluster} -g {rg}',
+            checks=[
+                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('properties.clusterStatus', 'Ready'),
+                self.check(
+                    'sort(properties.authConfig.allowedModes)',
+                    ['MicrosoftEntraID', 'NativeAuth']),
+                self.check('properties.administrator.userName', '{admin}'),
+            ],
+        )
+        self._wait_for_restore_point()
+        self._cmd_retry(
+            'documentdb mongocluster restore -n {restored} -g {rg} --location {loc} '
+            '--source-cluster {cluster} --restore-time {restore_time} '
+            '--auth-allowed-modes NativeAuth MicrosoftEntraID '
+            '--admin-user {admin} --password {password} --no-wait'
+        )
+        self.cmd(
+            'documentdb mongocluster wait -n {restored} -g {rg} '
+            '--custom "properties.provisioningState==\'Succeeded\' && '
+            'properties.clusterStatus==\'Ready\'" --interval 60 --timeout 7200'
+        )
+        self.cmd(
+            'documentdb mongocluster show -n {restored} -g {rg}',
+            checks=[
+                self.check('name', '{restored}'),
+                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('properties.clusterStatus', 'Ready'),
+                self.check(
+                    'sort(properties.authConfig.allowedModes)',
+                    ['MicrosoftEntraID', 'NativeAuth']),
+                self.check('properties.administrator.userName', '{admin}'),
+                self.check('properties.storage.type', 'PremiumSSD'),
+                self.check('properties.storage.sizeGb', 128),
             ],
         )
         self._cmd_retry('documentdb mongocluster delete -n {restored} -g {rg} --yes')

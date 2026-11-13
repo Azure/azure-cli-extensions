@@ -101,6 +101,49 @@ az documentdb mongocluster replica promote -n MyReplica -g MyResourceGroup \
     --source-cluster MyCluster --mode Switchover --promote-option Forced
 ```
 
+### Private Link
+
+Private Link is managed through Azure CLI's core networking commands rather than a
+dedicated `az documentdb mongocluster` subgroup:
+
+| Operation | Command group |
+| --- | --- |
+| Create, inspect, or delete a private endpoint in a virtual network | `az network private-endpoint` |
+| Discover the cluster's Private Link group ID and required DNS zones | `az network private-link-resource` |
+| List, inspect, approve, reject, or delete service-side endpoint connections | `az network private-endpoint-connection` |
+
+Use the cluster resource ID to discover its Private Link resources and list its
+connections. For a restored cluster, use the restored cluster's name and resource group.
+
+```bash
+clusterId=$(az documentdb mongocluster show -n MyCluster -g MyResourceGroup --query id -o tsv)
+
+az network private-link-resource list --id "$clusterId"
+az network private-endpoint-connection list --id "$clusterId"
+```
+
+For connection-specific commands such as `show`, `approve`, `reject`, and `delete`,
+pass the service-side connection ID returned by the connection list command to `--id`,
+not the cluster ID or the network private endpoint ID.
+
+The target subresource for endpoint creation is `MongoCluster`. Configure the virtual
+network, subnet, and private DNS integration as described in the
+[DocumentDB Private Link guide](https://learn.microsoft.com/azure/documentdb/how-to-private-link).
+Use the required DNS zone names returned by the Private Link resource list for your environment.
+
+Core networking commands select their own API versions. When an explicit DocumentDB
+API version is required, use `az rest`, for example:
+
+```bash
+az rest --method get --url "${clusterId}/privateLinkResources?api-version=2026-06-15-preview"
+az rest --method get --url "${clusterId}/privateEndpointConnections?api-version=2026-06-15-preview"
+```
+
+The restore option `--public-network-access Disabled` only disables public access; it
+does not create a private endpoint, approve a connection, or configure private DNS.
+Dedicated DocumentDB Private Link commands are a separate extension enhancement, not
+part of the restore command.
+
 ### Point-in-time restore
 
 The restore command supports the following optional target configuration settings:
@@ -112,9 +155,13 @@ The restore command supports the following optional target configuration setting
 | User-assigned managed identities | `--user-assigned` |
 | Storage type | `--storage-type` |
 | Public network access | `--public-network-access` |
+| Resource tags | `--tags` |
 
 Overrides for server version, compute tier, storage size, shard count, high
-availability, Data API, and network bypass are not supported by this command.
+availability, Data API, network bypass, and preview features are not supported by
+this command. The restore-specific service schema rejects the `previewFeatures`
+property, so preview features such as `GeoReplicas` cannot be specified as restore
+overrides.
 
 The existing native-authentication behavior remains the default. When
 `--auth-allowed-modes` and `--encryption` are both omitted, both administrator
@@ -154,4 +201,15 @@ az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --locat
     --source-cluster MyCluster --restore-time "2026-06-30T10:00:00Z" \
     --admin-user dbadmin --admin-password MyP@ssw0rd123! \
     --storage-type PremiumSSDv2 --public-network-access Disabled
+```
+
+Specify tags for the restored cluster with `--tags`. The supplied map sets the target
+tags rather than merging with the source cluster's tags. Omitting this option leaves
+the restore request unchanged.
+
+```bash
+az documentdb mongocluster restore -n RestoredCluster -g MyResourceGroup --location eastus2 \
+    --source-cluster MyCluster --restore-time "2026-06-30T10:00:00Z" \
+    --admin-user dbadmin --admin-password MyP@ssw0rd123! \
+    --tags environment=restored team=documentdb
 ```

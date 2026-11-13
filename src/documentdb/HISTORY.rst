@@ -8,6 +8,8 @@ Release History
 * Add Microsoft Entra-only and dual-authentication options to point-in-time restore.
 * Add customer-managed-key and user-assigned identity options to point-in-time restore.
 * Add storage type and public network access options to point-in-time restore.
+* Add optional resource tags to point-in-time restore.
+* Document existing core networking and REST command paths for Private Link.
 * Preserve the existing native-authentication restore payload when new options are omitted.
 * Expand restore validation, help, and test coverage.
 
