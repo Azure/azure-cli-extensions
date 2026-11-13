@@ -1,4 +1,4 @@
-# pylint: disable=line-too-long,useless-suppression
+# pylint: disable=line-too-long,useless-suppression,too-many-lines
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -44,24 +44,18 @@ _SERIALIZER.client_side_validation = False
 
 
 def build_list_by_fleet_request(
-    resource_group_name: str,
-    fleet_name: str,
-    subscription_id: str,
-    *,
-    top: Optional[int] = None,
-    skip_token: Optional[str] = None,
-    **kwargs: Any
+    resource_group_name: str, fleet_name: str, subscription_id: str, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/updateStrategies",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/managedNamespaces",
     )
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
@@ -77,10 +71,6 @@ def build_list_by_fleet_request(
 
     # Construct parameters
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-    if top is not None:
-        _params["$top"] = _SERIALIZER.query("top", top, "int")
-    if skip_token is not None:
-        _params["$skipToken"] = _SERIALIZER.query("skip_token", skip_token, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
@@ -89,18 +79,18 @@ def build_list_by_fleet_request(
 
 
 def build_get_request(
-    resource_group_name: str, fleet_name: str, update_strategy_name: str, subscription_id: str, **kwargs: Any
+    resource_group_name: str, fleet_name: str, managed_namespace_name: str, subscription_id: str, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/updateStrategies/{updateStrategyName}",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/managedNamespaces/{managedNamespaceName}",
     )
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
@@ -110,11 +100,11 @@ def build_get_request(
         "fleetName": _SERIALIZER.url(
             "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
         ),
-        "updateStrategyName": _SERIALIZER.url(
-            "update_strategy_name",
-            update_strategy_name,
+        "managedNamespaceName": _SERIALIZER.url(
+            "managed_namespace_name",
+            managed_namespace_name,
             "str",
-            max_length=50,
+            max_length=63,
             min_length=1,
             pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
         ),
@@ -134,7 +124,7 @@ def build_get_request(
 def build_create_or_update_request(
     resource_group_name: str,
     fleet_name: str,
-    update_strategy_name: str,
+    managed_namespace_name: str,
     subscription_id: str,
     *,
     if_match: Optional[str] = None,
@@ -144,14 +134,14 @@ def build_create_or_update_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/updateStrategies/{updateStrategyName}",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/managedNamespaces/{managedNamespaceName}",
     )
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
@@ -161,11 +151,11 @@ def build_create_or_update_request(
         "fleetName": _SERIALIZER.url(
             "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
         ),
-        "updateStrategyName": _SERIALIZER.url(
-            "update_strategy_name",
-            update_strategy_name,
+        "managedNamespaceName": _SERIALIZER.url(
+            "managed_namespace_name",
+            managed_namespace_name,
             "str",
-            max_length=50,
+            max_length=63,
             min_length=1,
             pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
         ),
@@ -188,10 +178,10 @@ def build_create_or_update_request(
     return HttpRequest(method="PUT", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_delete_request(
+def build_update_request(
     resource_group_name: str,
     fleet_name: str,
-    update_strategy_name: str,
+    managed_namespace_name: str,
     subscription_id: str,
     *,
     if_match: Optional[str] = None,
@@ -200,13 +190,14 @@ def build_delete_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
+    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/updateStrategies/{updateStrategyName}",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/managedNamespaces/{managedNamespaceName}",
     )
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
@@ -216,11 +207,64 @@ def build_delete_request(
         "fleetName": _SERIALIZER.url(
             "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
         ),
-        "updateStrategyName": _SERIALIZER.url(
-            "update_strategy_name",
-            update_strategy_name,
+        "managedNamespaceName": _SERIALIZER.url(
+            "managed_namespace_name",
+            managed_namespace_name,
             "str",
-            max_length=50,
+            max_length=63,
+            min_length=1,
+            pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+        ),
+    }
+
+    _url: str = _url.format(**path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    if if_match is not None:
+        _headers["If-Match"] = _SERIALIZER.header("if_match", if_match, "str")
+    if content_type is not None:
+        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="PATCH", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_delete_request(
+    resource_group_name: str,
+    fleet_name: str,
+    managed_namespace_name: str,
+    subscription_id: str,
+    *,
+    if_match: Optional[str] = None,
+    **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/managedNamespaces/{managedNamespaceName}",
+    )
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "fleetName": _SERIALIZER.url(
+            "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+        ),
+        "managedNamespaceName": _SERIALIZER.url(
+            "managed_namespace_name",
+            managed_namespace_name,
+            "str",
+            max_length=63,
             min_length=1,
             pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
         ),
@@ -239,14 +283,14 @@ def build_delete_request(
     return HttpRequest(method="DELETE", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-class FleetUpdateStrategiesOperations:
+class FleetManagedNamespacesOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
         :class:`~azure.mgmt.containerservicefleet.ContainerServiceFleetMgmtClient`'s
-        :attr:`fleet_update_strategies` attribute.
+        :attr:`fleet_managed_namespaces` attribute.
     """
 
     models = _models
@@ -262,35 +306,26 @@ class FleetUpdateStrategiesOperations:
 
     @distributed_trace
     def list_by_fleet(
-        self,
-        resource_group_name: str,
-        fleet_name: str,
-        top: Optional[int] = None,
-        skip_token: Optional[str] = None,
-        **kwargs: Any
-    ) -> ItemPaged["_models.FleetUpdateStrategy"]:
-        """List FleetUpdateStrategy resources by Fleet.
+        self, resource_group_name: str, fleet_name: str, **kwargs: Any
+    ) -> ItemPaged["_models.FleetManagedNamespace"]:
+        """List FleetManagedNamespace resources by Fleet.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param top: The number of result items to return. Default value is None.
-        :type top: int
-        :param skip_token: The page-continuation token to use with a paged version of this API. Default
-         value is None.
-        :type skip_token: str
-        :return: An iterator like instance of either FleetUpdateStrategy or the result of cls(response)
+        :return: An iterator like instance of either FleetManagedNamespace or the result of
+         cls(response)
         :rtype:
-         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservicefleet.models.FleetUpdateStrategy]
+         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservicefleet.models.FleetManagedNamespace]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.FleetUpdateStrategyListResult] = kwargs.pop("cls", None)
+        cls: ClsType[_models.FleetManagedNamespaceListResult] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -307,8 +342,6 @@ class FleetUpdateStrategiesOperations:
                     resource_group_name=resource_group_name,
                     fleet_name=fleet_name,
                     subscription_id=self._config.subscription_id,
-                    top=top,
-                    skip_token=skip_token,
                     api_version=api_version,
                     headers=_headers,
                     params=_params,
@@ -333,7 +366,7 @@ class FleetUpdateStrategiesOperations:
             return _request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("FleetUpdateStrategyListResult", pipeline_response)
+            deserialized = self._deserialize("FleetManagedNamespaceListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
@@ -362,19 +395,19 @@ class FleetUpdateStrategiesOperations:
 
     @distributed_trace
     def get(
-        self, resource_group_name: str, fleet_name: str, update_strategy_name: str, **kwargs: Any
-    ) -> _models.FleetUpdateStrategy:
-        """Get a FleetUpdateStrategy.
+        self, resource_group_name: str, fleet_name: str, managed_namespace_name: str, **kwargs: Any
+    ) -> _models.FleetManagedNamespace:
+        """Get a FleetManagedNamespace.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param update_strategy_name: The name of the UpdateStrategy resource. Required.
-        :type update_strategy_name: str
-        :return: FleetUpdateStrategy or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservicefleet.models.FleetUpdateStrategy
+        :param managed_namespace_name: The name of the fleet managed namespace resource. Required.
+        :type managed_namespace_name: str
+        :return: FleetManagedNamespace or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservicefleet.models.FleetManagedNamespace
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -389,12 +422,12 @@ class FleetUpdateStrategiesOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.FleetUpdateStrategy] = kwargs.pop("cls", None)
+        cls: ClsType[_models.FleetManagedNamespace] = kwargs.pop("cls", None)
 
         _request = build_get_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            update_strategy_name=update_strategy_name,
+            managed_namespace_name=managed_namespace_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             headers=_headers,
@@ -417,7 +450,7 @@ class FleetUpdateStrategiesOperations:
             )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("FleetUpdateStrategy", pipeline_response.http_response)
+        deserialized = self._deserialize("FleetManagedNamespace", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -428,8 +461,8 @@ class FleetUpdateStrategiesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        update_strategy_name: str,
-        resource: Union[_models.FleetUpdateStrategy, IO[bytes]],
+        managed_namespace_name: str,
+        resource: Union[_models.FleetManagedNamespace, IO[bytes]],
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         **kwargs: Any
@@ -455,12 +488,12 @@ class FleetUpdateStrategiesOperations:
         if isinstance(resource, (IOBase, bytes)):
             _content = resource
         else:
-            _json = self._serialize.body(resource, "FleetUpdateStrategy")
+            _json = self._serialize.body(resource, "FleetManagedNamespace")
 
         _request = build_create_or_update_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            update_strategy_name=update_strategy_name,
+            managed_namespace_name=managed_namespace_name,
             subscription_id=self._config.subscription_id,
             if_match=if_match,
             if_none_match=if_none_match,
@@ -495,6 +528,9 @@ class FleetUpdateStrategiesOperations:
 
         response_headers = {}
         if response.status_code == 201:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
             response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
@@ -509,25 +545,25 @@ class FleetUpdateStrategiesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        update_strategy_name: str,
-        resource: _models.FleetUpdateStrategy,
+        managed_namespace_name: str,
+        resource: _models.FleetManagedNamespace,
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.FleetUpdateStrategy]:
-        """Create a FleetUpdateStrategy.
+    ) -> LROPoller[_models.FleetManagedNamespace]:
+        """Create a FleetManagedNamespace.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param update_strategy_name: The name of the UpdateStrategy resource. Required.
-        :type update_strategy_name: str
+        :param managed_namespace_name: The name of the fleet managed namespace resource. Required.
+        :type managed_namespace_name: str
         :param resource: Resource create parameters. Required.
-        :type resource: ~azure.mgmt.containerservicefleet.models.FleetUpdateStrategy
+        :type resource: ~azure.mgmt.containerservicefleet.models.FleetManagedNamespace
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -537,10 +573,10 @@ class FleetUpdateStrategiesOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of LROPoller that returns either FleetUpdateStrategy or the result of
+        :return: An instance of LROPoller that returns either FleetManagedNamespace or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.FleetUpdateStrategy]
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.FleetManagedNamespace]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -549,23 +585,23 @@ class FleetUpdateStrategiesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        update_strategy_name: str,
+        managed_namespace_name: str,
         resource: IO[bytes],
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.FleetUpdateStrategy]:
-        """Create a FleetUpdateStrategy.
+    ) -> LROPoller[_models.FleetManagedNamespace]:
+        """Create a FleetManagedNamespace.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param update_strategy_name: The name of the UpdateStrategy resource. Required.
-        :type update_strategy_name: str
+        :param managed_namespace_name: The name of the fleet managed namespace resource. Required.
+        :type managed_namespace_name: str
         :param resource: Resource create parameters. Required.
         :type resource: IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
@@ -577,10 +613,10 @@ class FleetUpdateStrategiesOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of LROPoller that returns either FleetUpdateStrategy or the result of
+        :return: An instance of LROPoller that returns either FleetManagedNamespace or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.FleetUpdateStrategy]
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.FleetManagedNamespace]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -589,34 +625,34 @@ class FleetUpdateStrategiesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        update_strategy_name: str,
-        resource: Union[_models.FleetUpdateStrategy, IO[bytes]],
+        managed_namespace_name: str,
+        resource: Union[_models.FleetManagedNamespace, IO[bytes]],
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         **kwargs: Any
-    ) -> LROPoller[_models.FleetUpdateStrategy]:
-        """Create a FleetUpdateStrategy.
+    ) -> LROPoller[_models.FleetManagedNamespace]:
+        """Create a FleetManagedNamespace.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param update_strategy_name: The name of the UpdateStrategy resource. Required.
-        :type update_strategy_name: str
-        :param resource: Resource create parameters. Is either a FleetUpdateStrategy type or a
+        :param managed_namespace_name: The name of the fleet managed namespace resource. Required.
+        :type managed_namespace_name: str
+        :param resource: Resource create parameters. Is either a FleetManagedNamespace type or a
          IO[bytes] type. Required.
-        :type resource: ~azure.mgmt.containerservicefleet.models.FleetUpdateStrategy or IO[bytes]
+        :type resource: ~azure.mgmt.containerservicefleet.models.FleetManagedNamespace or IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
         :param if_none_match: The request should only proceed if no entity matches this string. Default
          value is None.
         :type if_none_match: str
-        :return: An instance of LROPoller that returns either FleetUpdateStrategy or the result of
+        :return: An instance of LROPoller that returns either FleetManagedNamespace or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.FleetUpdateStrategy]
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.FleetManagedNamespace]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -624,7 +660,7 @@ class FleetUpdateStrategiesOperations:
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.FleetUpdateStrategy] = kwargs.pop("cls", None)
+        cls: ClsType[_models.FleetManagedNamespace] = kwargs.pop("cls", None)
         polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
@@ -632,7 +668,7 @@ class FleetUpdateStrategiesOperations:
             raw_result = self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 fleet_name=fleet_name,
-                update_strategy_name=update_strategy_name,
+                managed_namespace_name=managed_namespace_name,
                 resource=resource,
                 if_match=if_match,
                 if_none_match=if_none_match,
@@ -647,7 +683,7 @@ class FleetUpdateStrategiesOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("FleetUpdateStrategy", pipeline_response.http_response)
+            deserialized = self._deserialize("FleetManagedNamespace", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -661,13 +697,247 @@ class FleetUpdateStrategiesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return LROPoller[_models.FleetUpdateStrategy].from_continuation_token(
+            return LROPoller[_models.FleetManagedNamespace].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return LROPoller[_models.FleetUpdateStrategy](
+        return LROPoller[_models.FleetManagedNamespace](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
+
+    def _update_initial(
+        self,
+        resource_group_name: str,
+        fleet_name: str,
+        managed_namespace_name: str,
+        properties: Union[_models.FleetManagedNamespacePatch, IO[bytes]],
+        if_match: Optional[str] = None,
+        **kwargs: Any
+    ) -> Iterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[Iterator[bytes]] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(properties, (IOBase, bytes)):
+            _content = properties
+        else:
+            _json = self._serialize.body(properties, "FleetManagedNamespacePatch")
+
+        _request = build_update_request(
+            resource_group_name=resource_group_name,
+            fleet_name=fleet_name,
+            managed_namespace_name=managed_namespace_name,
+            subscription_id=self._config.subscription_id,
+            if_match=if_match,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            content=_content,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            try:
+                response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @overload
+    def begin_update(
+        self,
+        resource_group_name: str,
+        fleet_name: str,
+        managed_namespace_name: str,
+        properties: _models.FleetManagedNamespacePatch,
+        if_match: Optional[str] = None,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> LROPoller[_models.FleetManagedNamespace]:
+        """Update a FleetManagedNamespace.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param fleet_name: The name of the Fleet resource. Required.
+        :type fleet_name: str
+        :param managed_namespace_name: The name of the fleet managed namespace resource. Required.
+        :type managed_namespace_name: str
+        :param properties: The resource properties to be updated. Required.
+        :type properties: ~azure.mgmt.containerservicefleet.models.FleetManagedNamespacePatch
+        :param if_match: The request should only proceed if an entity matches this string. Default
+         value is None.
+        :type if_match: str
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of LROPoller that returns either FleetManagedNamespace or the result of
+         cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.FleetManagedNamespace]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    def begin_update(
+        self,
+        resource_group_name: str,
+        fleet_name: str,
+        managed_namespace_name: str,
+        properties: IO[bytes],
+        if_match: Optional[str] = None,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> LROPoller[_models.FleetManagedNamespace]:
+        """Update a FleetManagedNamespace.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param fleet_name: The name of the Fleet resource. Required.
+        :type fleet_name: str
+        :param managed_namespace_name: The name of the fleet managed namespace resource. Required.
+        :type managed_namespace_name: str
+        :param properties: The resource properties to be updated. Required.
+        :type properties: IO[bytes]
+        :param if_match: The request should only proceed if an entity matches this string. Default
+         value is None.
+        :type if_match: str
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :return: An instance of LROPoller that returns either FleetManagedNamespace or the result of
+         cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.FleetManagedNamespace]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace
+    def begin_update(
+        self,
+        resource_group_name: str,
+        fleet_name: str,
+        managed_namespace_name: str,
+        properties: Union[_models.FleetManagedNamespacePatch, IO[bytes]],
+        if_match: Optional[str] = None,
+        **kwargs: Any
+    ) -> LROPoller[_models.FleetManagedNamespace]:
+        """Update a FleetManagedNamespace.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param fleet_name: The name of the Fleet resource. Required.
+        :type fleet_name: str
+        :param managed_namespace_name: The name of the fleet managed namespace resource. Required.
+        :type managed_namespace_name: str
+        :param properties: The resource properties to be updated. Is either a
+         FleetManagedNamespacePatch type or a IO[bytes] type. Required.
+        :type properties: ~azure.mgmt.containerservicefleet.models.FleetManagedNamespacePatch or
+         IO[bytes]
+        :param if_match: The request should only proceed if an entity matches this string. Default
+         value is None.
+        :type if_match: str
+        :return: An instance of LROPoller that returns either FleetManagedNamespace or the result of
+         cls(response)
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.FleetManagedNamespace]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.FleetManagedNamespace] = kwargs.pop("cls", None)
+        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = self._update_initial(
+                resource_group_name=resource_group_name,
+                fleet_name=fleet_name,
+                managed_namespace_name=managed_namespace_name,
+                properties=properties,
+                if_match=if_match,
+                api_version=api_version,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("FleetManagedNamespace", pipeline_response.http_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})  # type: ignore
+            return deserialized
+
+        if polling is True:
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "original-uri"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(PollingMethod, NoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return LROPoller[_models.FleetManagedNamespace].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return LROPoller[_models.FleetManagedNamespace](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
@@ -675,7 +945,7 @@ class FleetUpdateStrategiesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        update_strategy_name: str,
+        managed_namespace_name: str,
         if_match: Optional[str] = None,
         **kwargs: Any
     ) -> Iterator[bytes]:
@@ -696,7 +966,7 @@ class FleetUpdateStrategiesOperations:
         _request = build_delete_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            update_strategy_name=update_strategy_name,
+            managed_namespace_name=managed_namespace_name,
             subscription_id=self._config.subscription_id,
             if_match=if_match,
             api_version=api_version,
@@ -713,7 +983,7 @@ class FleetUpdateStrategiesOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
+        if response.status_code not in [202, 204]:
             try:
                 response.read()  # Load the body in memory and close the socket
             except (StreamConsumedError, StreamClosedError):
@@ -742,19 +1012,19 @@ class FleetUpdateStrategiesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        update_strategy_name: str,
+        managed_namespace_name: str,
         if_match: Optional[str] = None,
         **kwargs: Any
     ) -> LROPoller[None]:
-        """Delete a FleetUpdateStrategy.
+        """Delete a FleetManagedNamespace.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param update_strategy_name: The name of the UpdateStrategy resource. Required.
-        :type update_strategy_name: str
+        :param managed_namespace_name: The name of the fleet managed namespace resource. Required.
+        :type managed_namespace_name: str
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -774,7 +1044,7 @@ class FleetUpdateStrategiesOperations:
             raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
                 fleet_name=fleet_name,
-                update_strategy_name=update_strategy_name,
+                managed_namespace_name=managed_namespace_name,
                 if_match=if_match,
                 api_version=api_version,
                 cls=lambda x, y, z: x,
@@ -791,7 +1061,7 @@ class FleetUpdateStrategiesOperations:
 
         if polling is True:
             polling_method: PollingMethod = cast(
-                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs)
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
             )
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())

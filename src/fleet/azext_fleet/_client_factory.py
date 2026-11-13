@@ -64,6 +64,10 @@ def cf_cluster_mesh_profiles(cli_ctx, *_):
     return get_container_service_client(cli_ctx).cluster_mesh_profiles
 
 
+def cf_identity_binding_profiles(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).identity_binding_profiles
+
+
 def get_provider_client(cli_ctx):
     return get_mgmt_service_client(
         cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)

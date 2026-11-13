@@ -49,13 +49,13 @@ def build_list_by_fleet_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/clusterMeshProfiles",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/identityBindingProfiles",
     )
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
@@ -79,18 +79,18 @@ def build_list_by_fleet_request(
 
 
 def build_get_request(
-    resource_group_name: str, fleet_name: str, cluster_mesh_profile_name: str, subscription_id: str, **kwargs: Any
+    resource_group_name: str, fleet_name: str, identity_binding_profile_name: str, subscription_id: str, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/clusterMeshProfiles/{clusterMeshProfileName}",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/identityBindingProfiles/{identityBindingProfileName}",
     )
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
@@ -100,9 +100,9 @@ def build_get_request(
         "fleetName": _SERIALIZER.url(
             "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
         ),
-        "clusterMeshProfileName": _SERIALIZER.url(
-            "cluster_mesh_profile_name",
-            cluster_mesh_profile_name,
+        "identityBindingProfileName": _SERIALIZER.url(
+            "identity_binding_profile_name",
+            identity_binding_profile_name,
             "str",
             max_length=63,
             min_length=1,
@@ -124,7 +124,7 @@ def build_get_request(
 def build_create_or_update_request(
     resource_group_name: str,
     fleet_name: str,
-    cluster_mesh_profile_name: str,
+    identity_binding_profile_name: str,
     subscription_id: str,
     *,
     if_match: Optional[str] = None,
@@ -134,14 +134,14 @@ def build_create_or_update_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/clusterMeshProfiles/{clusterMeshProfileName}",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/identityBindingProfiles/{identityBindingProfileName}",
     )
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
@@ -151,9 +151,9 @@ def build_create_or_update_request(
         "fleetName": _SERIALIZER.url(
             "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
         ),
-        "clusterMeshProfileName": _SERIALIZER.url(
-            "cluster_mesh_profile_name",
-            cluster_mesh_profile_name,
+        "identityBindingProfileName": _SERIALIZER.url(
+            "identity_binding_profile_name",
+            identity_binding_profile_name,
             "str",
             max_length=63,
             min_length=1,
@@ -181,7 +181,7 @@ def build_create_or_update_request(
 def build_delete_request(
     resource_group_name: str,
     fleet_name: str,
-    cluster_mesh_profile_name: str,
+    identity_binding_profile_name: str,
     subscription_id: str,
     *,
     if_match: Optional[str] = None,
@@ -190,13 +190,13 @@ def build_delete_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/clusterMeshProfiles/{clusterMeshProfileName}",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/identityBindingProfiles/{identityBindingProfileName}",
     )
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
@@ -206,9 +206,9 @@ def build_delete_request(
         "fleetName": _SERIALIZER.url(
             "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
         ),
-        "clusterMeshProfileName": _SERIALIZER.url(
-            "cluster_mesh_profile_name",
-            cluster_mesh_profile_name,
+        "identityBindingProfileName": _SERIALIZER.url(
+            "identity_binding_profile_name",
+            identity_binding_profile_name,
             "str",
             max_length=63,
             min_length=1,
@@ -232,7 +232,7 @@ def build_delete_request(
 def build_apply_request(
     resource_group_name: str,
     fleet_name: str,
-    cluster_mesh_profile_name: str,
+    identity_binding_profile_name: str,
     subscription_id: str,
     *,
     if_match: Optional[str] = None,
@@ -241,13 +241,13 @@ def build_apply_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-06-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-11-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/clusterMeshProfiles/{clusterMeshProfileName}/apply",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/identityBindingProfiles/{identityBindingProfileName}/apply",
     )
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
@@ -257,9 +257,9 @@ def build_apply_request(
         "fleetName": _SERIALIZER.url(
             "fleet_name", fleet_name, "str", max_length=63, min_length=1, pattern=r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
         ),
-        "clusterMeshProfileName": _SERIALIZER.url(
-            "cluster_mesh_profile_name",
-            cluster_mesh_profile_name,
+        "identityBindingProfileName": _SERIALIZER.url(
+            "identity_binding_profile_name",
+            identity_binding_profile_name,
             "str",
             max_length=63,
             min_length=1,
@@ -280,14 +280,14 @@ def build_apply_request(
     return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-class ClusterMeshProfilesOperations:
+class IdentityBindingProfilesOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
         :class:`~azure.mgmt.containerservicefleet.ContainerServiceFleetMgmtClient`'s
-        :attr:`cluster_mesh_profiles` attribute.
+        :attr:`identity_binding_profiles` attribute.
     """
 
     models = _models
@@ -304,24 +304,25 @@ class ClusterMeshProfilesOperations:
     @distributed_trace
     def list_by_fleet(
         self, resource_group_name: str, fleet_name: str, **kwargs: Any
-    ) -> ItemPaged["_models.ClusterMeshProfile"]:
-        """List ClusterMeshProfile resources by Fleet.
+    ) -> ItemPaged["_models.IdentityBindingProfile"]:
+        """List IdentityBindingProfile resources by Fleet.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :return: An iterator like instance of either ClusterMeshProfile or the result of cls(response)
+        :return: An iterator like instance of either IdentityBindingProfile or the result of
+         cls(response)
         :rtype:
-         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservicefleet.models.ClusterMeshProfile]
+         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservicefleet.models.IdentityBindingProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ClusterMeshProfileListResult] = kwargs.pop("cls", None)
+        cls: ClsType[_models.IdentityBindingProfileListResult] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -362,7 +363,7 @@ class ClusterMeshProfilesOperations:
             return _request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("ClusterMeshProfileListResult", pipeline_response)
+            deserialized = self._deserialize("IdentityBindingProfileListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
@@ -391,19 +392,20 @@ class ClusterMeshProfilesOperations:
 
     @distributed_trace
     def get(
-        self, resource_group_name: str, fleet_name: str, cluster_mesh_profile_name: str, **kwargs: Any
-    ) -> _models.ClusterMeshProfile:
-        """Get a ClusterMeshProfile.
+        self, resource_group_name: str, fleet_name: str, identity_binding_profile_name: str, **kwargs: Any
+    ) -> _models.IdentityBindingProfile:
+        """Get a IdentityBindingProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param cluster_mesh_profile_name: The name of the ClusterMeshProfile resource. Required.
-        :type cluster_mesh_profile_name: str
-        :return: ClusterMeshProfile or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservicefleet.models.ClusterMeshProfile
+        :param identity_binding_profile_name: The name of the IdentityBindingProfile resource.
+         Required.
+        :type identity_binding_profile_name: str
+        :return: IdentityBindingProfile or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservicefleet.models.IdentityBindingProfile
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -418,12 +420,12 @@ class ClusterMeshProfilesOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ClusterMeshProfile] = kwargs.pop("cls", None)
+        cls: ClsType[_models.IdentityBindingProfile] = kwargs.pop("cls", None)
 
         _request = build_get_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            cluster_mesh_profile_name=cluster_mesh_profile_name,
+            identity_binding_profile_name=identity_binding_profile_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             headers=_headers,
@@ -446,7 +448,7 @@ class ClusterMeshProfilesOperations:
             )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ClusterMeshProfile", pipeline_response.http_response)
+        deserialized = self._deserialize("IdentityBindingProfile", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
@@ -457,8 +459,8 @@ class ClusterMeshProfilesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        cluster_mesh_profile_name: str,
-        resource: Union[_models.ClusterMeshProfile, IO[bytes]],
+        identity_binding_profile_name: str,
+        resource: Union[_models.IdentityBindingProfile, IO[bytes]],
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         **kwargs: Any
@@ -484,12 +486,12 @@ class ClusterMeshProfilesOperations:
         if isinstance(resource, (IOBase, bytes)):
             _content = resource
         else:
-            _json = self._serialize.body(resource, "ClusterMeshProfile")
+            _json = self._serialize.body(resource, "IdentityBindingProfile")
 
         _request = build_create_or_update_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            cluster_mesh_profile_name=cluster_mesh_profile_name,
+            identity_binding_profile_name=identity_binding_profile_name,
             subscription_id=self._config.subscription_id,
             if_match=if_match,
             if_none_match=if_none_match,
@@ -538,25 +540,26 @@ class ClusterMeshProfilesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        cluster_mesh_profile_name: str,
-        resource: _models.ClusterMeshProfile,
+        identity_binding_profile_name: str,
+        resource: _models.IdentityBindingProfile,
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterMeshProfile]:
-        """Create a ClusterMeshProfile.
+    ) -> LROPoller[_models.IdentityBindingProfile]:
+        """Create a IdentityBindingProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param cluster_mesh_profile_name: The name of the ClusterMeshProfile resource. Required.
-        :type cluster_mesh_profile_name: str
+        :param identity_binding_profile_name: The name of the IdentityBindingProfile resource.
+         Required.
+        :type identity_binding_profile_name: str
         :param resource: Resource create parameters. Required.
-        :type resource: ~azure.mgmt.containerservicefleet.models.ClusterMeshProfile
+        :type resource: ~azure.mgmt.containerservicefleet.models.IdentityBindingProfile
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -566,10 +569,10 @@ class ClusterMeshProfilesOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of LROPoller that returns either ClusterMeshProfile or the result of
+        :return: An instance of LROPoller that returns either IdentityBindingProfile or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.ClusterMeshProfile]
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.IdentityBindingProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -578,23 +581,24 @@ class ClusterMeshProfilesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        cluster_mesh_profile_name: str,
+        identity_binding_profile_name: str,
         resource: IO[bytes],
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterMeshProfile]:
-        """Create a ClusterMeshProfile.
+    ) -> LROPoller[_models.IdentityBindingProfile]:
+        """Create a IdentityBindingProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param cluster_mesh_profile_name: The name of the ClusterMeshProfile resource. Required.
-        :type cluster_mesh_profile_name: str
+        :param identity_binding_profile_name: The name of the IdentityBindingProfile resource.
+         Required.
+        :type identity_binding_profile_name: str
         :param resource: Resource create parameters. Required.
         :type resource: IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
@@ -606,10 +610,10 @@ class ClusterMeshProfilesOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: An instance of LROPoller that returns either ClusterMeshProfile or the result of
+        :return: An instance of LROPoller that returns either IdentityBindingProfile or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.ClusterMeshProfile]
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.IdentityBindingProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -618,34 +622,35 @@ class ClusterMeshProfilesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        cluster_mesh_profile_name: str,
-        resource: Union[_models.ClusterMeshProfile, IO[bytes]],
+        identity_binding_profile_name: str,
+        resource: Union[_models.IdentityBindingProfile, IO[bytes]],
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterMeshProfile]:
-        """Create a ClusterMeshProfile.
+    ) -> LROPoller[_models.IdentityBindingProfile]:
+        """Create a IdentityBindingProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param cluster_mesh_profile_name: The name of the ClusterMeshProfile resource. Required.
-        :type cluster_mesh_profile_name: str
-        :param resource: Resource create parameters. Is either a ClusterMeshProfile type or a IO[bytes]
-         type. Required.
-        :type resource: ~azure.mgmt.containerservicefleet.models.ClusterMeshProfile or IO[bytes]
+        :param identity_binding_profile_name: The name of the IdentityBindingProfile resource.
+         Required.
+        :type identity_binding_profile_name: str
+        :param resource: Resource create parameters. Is either a IdentityBindingProfile type or a
+         IO[bytes] type. Required.
+        :type resource: ~azure.mgmt.containerservicefleet.models.IdentityBindingProfile or IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
         :param if_none_match: The request should only proceed if no entity matches this string. Default
          value is None.
         :type if_none_match: str
-        :return: An instance of LROPoller that returns either ClusterMeshProfile or the result of
+        :return: An instance of LROPoller that returns either IdentityBindingProfile or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.ClusterMeshProfile]
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.IdentityBindingProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -653,7 +658,7 @@ class ClusterMeshProfilesOperations:
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ClusterMeshProfile] = kwargs.pop("cls", None)
+        cls: ClsType[_models.IdentityBindingProfile] = kwargs.pop("cls", None)
         polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
@@ -661,7 +666,7 @@ class ClusterMeshProfilesOperations:
             raw_result = self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 fleet_name=fleet_name,
-                cluster_mesh_profile_name=cluster_mesh_profile_name,
+                identity_binding_profile_name=identity_binding_profile_name,
                 resource=resource,
                 if_match=if_match,
                 if_none_match=if_none_match,
@@ -676,7 +681,7 @@ class ClusterMeshProfilesOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ClusterMeshProfile", pipeline_response.http_response)
+            deserialized = self._deserialize("IdentityBindingProfile", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -690,13 +695,13 @@ class ClusterMeshProfilesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return LROPoller[_models.ClusterMeshProfile].from_continuation_token(
+            return LROPoller[_models.IdentityBindingProfile].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return LROPoller[_models.ClusterMeshProfile](
+        return LROPoller[_models.IdentityBindingProfile](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )
 
@@ -704,7 +709,7 @@ class ClusterMeshProfilesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        cluster_mesh_profile_name: str,
+        identity_binding_profile_name: str,
         if_match: Optional[str] = None,
         **kwargs: Any
     ) -> Iterator[bytes]:
@@ -725,7 +730,7 @@ class ClusterMeshProfilesOperations:
         _request = build_delete_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            cluster_mesh_profile_name=cluster_mesh_profile_name,
+            identity_binding_profile_name=identity_binding_profile_name,
             subscription_id=self._config.subscription_id,
             if_match=if_match,
             api_version=api_version,
@@ -771,19 +776,20 @@ class ClusterMeshProfilesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        cluster_mesh_profile_name: str,
+        identity_binding_profile_name: str,
         if_match: Optional[str] = None,
         **kwargs: Any
     ) -> LROPoller[None]:
-        """Delete a ClusterMeshProfile.
+        """Delete a IdentityBindingProfile.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param cluster_mesh_profile_name: The name of the ClusterMeshProfile resource. Required.
-        :type cluster_mesh_profile_name: str
+        :param identity_binding_profile_name: The name of the IdentityBindingProfile resource.
+         Required.
+        :type identity_binding_profile_name: str
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -803,7 +809,7 @@ class ClusterMeshProfilesOperations:
             raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
                 fleet_name=fleet_name,
-                cluster_mesh_profile_name=cluster_mesh_profile_name,
+                identity_binding_profile_name=identity_binding_profile_name,
                 if_match=if_match,
                 api_version=api_version,
                 cls=lambda x, y, z: x,
@@ -839,7 +845,7 @@ class ClusterMeshProfilesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        cluster_mesh_profile_name: str,
+        identity_binding_profile_name: str,
         if_match: Optional[str] = None,
         **kwargs: Any
     ) -> Iterator[bytes]:
@@ -860,7 +866,7 @@ class ClusterMeshProfilesOperations:
         _request = build_apply_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            cluster_mesh_profile_name=cluster_mesh_profile_name,
+            identity_binding_profile_name=identity_binding_profile_name,
             subscription_id=self._config.subscription_id,
             if_match=if_match,
             api_version=api_version,
@@ -906,33 +912,35 @@ class ClusterMeshProfilesOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        cluster_mesh_profile_name: str,
+        identity_binding_profile_name: str,
         if_match: Optional[str] = None,
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterMeshProfile]:
-        """Applies the cluster mesh profile to selected fleet members.
+    ) -> LROPoller[_models.IdentityBindingProfile]:
+        """Applies the identity binding profile to the selected fleet members, creating, updating or
+        deleting the corresponding managedClusters/identityBindings resources.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param cluster_mesh_profile_name: The name of the ClusterMeshProfile resource. Required.
-        :type cluster_mesh_profile_name: str
+        :param identity_binding_profile_name: The name of the IdentityBindingProfile resource.
+         Required.
+        :type identity_binding_profile_name: str
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
-        :return: An instance of LROPoller that returns either ClusterMeshProfile or the result of
+        :return: An instance of LROPoller that returns either IdentityBindingProfile or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.ClusterMeshProfile]
+         ~azure.core.polling.LROPoller[~azure.mgmt.containerservicefleet.models.IdentityBindingProfile]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.ClusterMeshProfile] = kwargs.pop("cls", None)
+        cls: ClsType[_models.IdentityBindingProfile] = kwargs.pop("cls", None)
         polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
@@ -940,7 +948,7 @@ class ClusterMeshProfilesOperations:
             raw_result = self._apply_initial(
                 resource_group_name=resource_group_name,
                 fleet_name=fleet_name,
-                cluster_mesh_profile_name=cluster_mesh_profile_name,
+                identity_binding_profile_name=identity_binding_profile_name,
                 if_match=if_match,
                 api_version=api_version,
                 cls=lambda x, y, z: x,
@@ -952,7 +960,7 @@ class ClusterMeshProfilesOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ClusterMeshProfile", pipeline_response.http_response)
+            deserialized = self._deserialize("IdentityBindingProfile", pipeline_response.http_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
@@ -966,12 +974,12 @@ class ClusterMeshProfilesOperations:
         else:
             polling_method = polling
         if cont_token:
-            return LROPoller[_models.ClusterMeshProfile].from_continuation_token(
+            return LROPoller[_models.IdentityBindingProfile].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return LROPoller[_models.ClusterMeshProfile](
+        return LROPoller[_models.IdentityBindingProfile](
             self._client, raw_result, get_long_running_output, polling_method  # type: ignore
         )

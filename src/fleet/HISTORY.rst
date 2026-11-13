@@ -197,3 +197,7 @@ Release History
 1.11.2
 ++++++
 * Fix ``az fleet get-credentials`` and ``az fleet namespace get-credentials`` to use the discovered ``kubelogin`` executable when converting kubeconfigs to Azure CLI authentication, including executable paths containing spaces.
+
+1.12.0
+++++++
+* Add 2026-11-02-preview API version and ``az fleet identitybindingprofile`` commands.
