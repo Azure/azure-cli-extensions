@@ -2395,3 +2395,196 @@ class FragmentContainerBindings(unittest.TestCase):
                 )
                 self.assertEqual(policies[0].get_images(), [])
                 self.assertIn(self.fragment, policies[0].get_fragments())
+
+
+class FragmentEnvironmentRuleFormat(unittest.TestCase):
+    def setUp(self):
+        from azext_confcom import container, custom, security_policy, template_util
+
+        self.container = container
+        self.custom = custom
+        self.security_policy = security_policy
+        self.template_util = template_util
+
+    def _generate(self, source="image", platform="linux/amd64", **kwargs):
+        image = "contoso.azurecr.io/app:latest"
+        image_info = {
+            "Os": platform.split("/")[0],
+            "Architecture": "amd64",
+            "Env": ["IMAGE_ONLY=a=b", "OVERRIDE=image-value", "EMPTY="],
+            "Cmd": ["app"],
+            "WorkingDir": "/",
+            "User": "",
+        }
+        with tempfile.TemporaryDirectory() as folder:
+            input_path = Path(folder) / "input.json"
+            input_path.write_text(json.dumps({
+                "containers": [{
+                    "name": "app",
+                    "properties": {
+                        "image": image,
+                        "environmentVariables": [
+                            {"name": "OVERRIDE", "value": "custom-value"},
+                            {"name": "CUSTOM_.+", "value": "value=(one|two)", "regex": True},
+                        ],
+                    },
+                }],
+            }))
+            output_path = Path(folder) / "output.rego"
+            with patch.object(self.security_policy, "validate_image_platform"), \
+                    patch.object(self.security_policy, "get_image_info", return_value=(image_info, None)), \
+                    patch.object(self.security_policy, "SecurityPolicyProxy") as proxy, \
+                    patch.object(self.custom, "get_all_fragment_contents", return_value=[]):
+                proxy.return_value.get_policy_image_layers.return_value = {"layers": ["test-layer"]}
+                self.custom.acifragmentgen_confcom(
+                    image_name=image if source == "image" else None,
+                    input_path=str(input_path) if source == "json" else None,
+                    tar_mapping_location=None,
+                    namespace="envformat",
+                    svn="1",
+                    feed=None,
+                    key=None,
+                    chain=None,
+                    minimum_svn=None,
+                    output_filename=str(output_path),
+                    no_print=True,
+                    platform=platform,
+                    **kwargs,
+                )
+            text = output_path.read_text()
+        containers, _ = self.template_util.extract_containers_and_fragments_from_text(text)
+        return text, containers[0]
+
+    def test_pattern_default_is_unchanged(self):
+        for source in ("image", "json"):
+            with self.subTest(source=source):
+                default_text, container = self._generate(source=source)
+                pattern_text, _ = self._generate(source=source, env_rule_format="pattern")
+                self.assertEqual(default_text, pattern_text)
+                self.assertIn(
+                    {"pattern": "IMAGE_ONLY=a=b", "strategy": "string", "required": False},
+                    container["env_rules"],
+                )
+                self.assertTrue(all("pattern" in rule and "name" not in rule for rule in container["env_rules"]))
+
+    def test_name_value_format_preserves_image_input_and_injected_rules(self):
+        for source in ("image", "json"):
+            for platform in ("linux/amd64", "windows/amd64"):
+                with self.subTest(source=source, platform=platform):
+                    text, container = self._generate(
+                        source=source,
+                        platform=platform,
+                        env_rule_format="name-value",
+                        prerelease_policy_api=platform.startswith("linux"),
+                    )
+                    self.assertIn('framework_version := "0.5.0"', text)
+                    self.assertEqual(container["layers"], ["test-layer"])
+                    _, pattern_container = self._generate(
+                        source=source,
+                        platform=platform,
+                        prerelease_policy_api=platform.startswith("linux"),
+                    )
+                    pattern_rules = [{
+                        "pattern": f'{rule["name"]}={rule["value"]}',
+                        "strategy": rule["value_strategy"],
+                        "required": rule["required"],
+                    } for rule in container["env_rules"]]
+                    self.assertEqual(pattern_rules, pattern_container["env_rules"])
+                    rules = {rule["name"]: rule for rule in container["env_rules"]}
+                    self.assertTrue(all("pattern" not in rule for rule in rules.values()))
+                    self.assertEqual(rules["IMAGE_ONLY"], {
+                        "name": "IMAGE_ONLY", "name_strategy": "string",
+                        "value": "a=b", "value_strategy": "string", "required": False,
+                    })
+                    self.assertEqual(rules["EMPTY"]["value"], "")
+                    self.assertEqual(
+                        rules["OVERRIDE"]["value"], "custom-value" if source == "json" else "image-value"
+                    )
+                    self.assertEqual(
+                        sum(rule["name"] == "OVERRIDE" for rule in container["env_rules"]), 1
+                    )
+                    if source == "json":
+                        self.assertEqual(rules["CUSTOM_.+"], {
+                            "name": "CUSTOM_.+", "name_strategy": "re2",
+                            "value": "value=(one|two)", "value_strategy": "re2", "required": False,
+                        })
+                    if platform.startswith("linux"):
+                        self.assertEqual(rules["TERM"], {
+                            "name": "TERM", "name_strategy": "string",
+                            "value": "xterm", "value_strategy": "string", "required": False,
+                        })
+                    else:
+                        self.assertNotIn("TERM", rules)
+                        self.assertEqual(rules["IDENTITY_ENDPOINT"]["value_strategy"], "re2")
+
+    def test_name_value_format_retains_required_flag(self):
+        rules = self.container.extract_env_rules({
+            "environmentVariables": [{"name": "REQUIRED", "value": "", "strategy": "string", "required": True}],
+        }, env_rule_format="name-value")
+        self.assertEqual(rules, [{
+            "name": "REQUIRED", "name_strategy": "string",
+            "value": "", "value_strategy": "string", "required": True,
+        }])
+
+    def test_name_value_format_rejects_deployed_linux_framework_and_import_generation(self):
+        for options, message in (
+            ({}, "Use --prerelease-policy-api"),
+            ({"generate_import": True}, "cannot be used with --generate-import"),
+        ):
+            with self.subTest(options=options), self.assertLogs(level="ERROR") as logs:
+                with self.assertRaises(SystemExit):
+                    self._generate(env_rule_format="name-value", **options)
+                self.assertIn(message, logs.output[0])
+
+        with patch.object(self.security_policy, "validate_image_platform"), self.assertLogs(level="ERROR") as logs:
+            with self.assertRaises(SystemExit):
+                self.security_policy.load_policy_from_image_name(
+                    "contoso.azurecr.io/app:latest", env_rule_format="name-value"
+                )
+            self.assertIn("Use --prerelease-policy-api", logs.output[0])
+
+    def test_name_value_format_checks_selected_framework_version(self):
+        for platform, prerelease, setting, version, supported in (
+            ("linux/amd64", False, "DEFAULT_POLICY_FRAMEWORK_VERSION", "0.5.0", True),
+            ("linux/amd64", False, "DEFAULT_POLICY_FRAMEWORK_VERSION", "0.10.0", True),
+            ("linux/amd64", True, "PRERELEASE_POLICY_FRAMEWORK_VERSION", "0.4.99", False),
+            ("windows/amd64", False, "PRERELEASE_POLICY_FRAMEWORK_VERSION", "0.4.99", False),
+        ):
+            with self.subTest(platform=platform, version=version), \
+                    patch.object(self.security_policy.config, setting, version), \
+                    patch.object(self.security_policy, "package_version", return_value="test-version"):
+                options = {
+                    "platform": platform,
+                    "prerelease_policy_api": prerelease,
+                    "env_rule_format": "name-value",
+                }
+                if supported:
+                    text, _ = self._generate(**options)
+                    self.assertIn(f'framework_version := "{version}"', text)
+                else:
+                    with self.assertLogs(level="ERROR") as logs, self.assertRaises(SystemExit):
+                        self._generate(**options)
+                    self.assertIn("confcom test-version", logs.output[0])
+                    self.assertIn("Use --prerelease-policy-api", logs.output[0])
+
+    def test_fragment_coverage_does_not_ignore_name_value_rules(self):
+        with patch.object(self.security_policy, "validate_image_platform"):
+            policy = self.security_policy.load_policy_from_image_name(
+                "contoso.azurecr.io/app:latest", prerelease_policy_api=True, env_rule_format="name-value"
+            )
+        image = policy.get_images()[0]
+        image.get_environment_rules().append({
+            "name": "Port", "name_strategy": "string",
+            "value": "8080", "value_strategy": "string", "required": False,
+        })
+        fragment = image.get_policy_json()
+        policy.set_fragment_contents([fragment])
+        self.assertTrue(policy.should_eliminate_container_covered_by_fragments(image))
+        fragment["env_rules"][0]["value"] = "different"
+        self.assertFalse(policy.should_eliminate_container_covered_by_fragments(image))
+        fragment["env_rules"] = [{
+            "pattern": f'{rule["name"]}={rule["value"]}',
+            "strategy": rule["value_strategy"],
+            "required": rule["required"],
+        } for rule in image.get_policy_json()["env_rules"]]
+        self.assertFalse(policy.should_eliminate_container_covered_by_fragments(image))

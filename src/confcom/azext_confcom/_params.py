@@ -278,6 +278,13 @@ def load_arguments(self, _):
 
     with self.argument_context("confcom acifragmentgen") as c:
         c.argument(
+            "env_rule_format",
+            options_list=("--env-rule-format",),
+            choices=["pattern", "name-value"],
+            default="pattern",
+            help="Format of generated environment rules.",
+        )
+        c.argument(
             "image_name",
             options_list=("--image"),
             required=False,

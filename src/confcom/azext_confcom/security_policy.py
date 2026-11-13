@@ -7,13 +7,15 @@ import copy
 import json
 import warnings
 from enum import Enum, auto
+from importlib.metadata import version as package_version
 from typing import Any, Dict, List, Optional, Tuple, Union
+from packaging.version import Version
 from pydantic import TypeAdapter
 
 import deepdiff
 from azext_confcom import config, os_util
 from azext_confcom.lib.policy import Container
-from azext_confcom.container import ContainerImage, UserContainerImage
+from azext_confcom.container import ContainerImage, UserContainerImage, create_environment_rule
 from azext_confcom.errors import eprint
 from azext_confcom.fragment_util import resolve_fragment_imports, sanitize_fragment_fields
 from azext_confcom.oras_proxy import create_list_of_standalone_imports
@@ -57,6 +59,25 @@ class OutputType(Enum):
     PRETTY_PRINT = auto()
 
 
+def get_policy_framework_version(platform, prerelease_policy_api=False):
+    return (
+        config.PRERELEASE_POLICY_FRAMEWORK_VERSION
+        if platform.startswith("windows") or prerelease_policy_api
+        else config.DEFAULT_POLICY_FRAMEWORK_VERSION
+    )
+
+
+def validate_env_rule_format(env_rule_format, platform, prerelease_policy_api):
+    if env_rule_format not in ("pattern", "name-value"):
+        eprint("Environment rule format must be pattern or name-value.")
+    framework_version = get_policy_framework_version(platform, prerelease_policy_api)
+    if env_rule_format == "name-value" and Version(framework_version) < Version("0.5.0"):
+        eprint(
+            f"confcom {package_version('confcom')}: the selected output does not support name-value "
+            "environment rules. Use --prerelease-policy-api."
+        )
+
+
 class AciPolicy:  # pylint: disable=too-many-instance-attributes
     all_params = {}
     all_vars = {}
@@ -79,6 +100,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         prerelease_policy_api: bool = False,
         from_input: bool = False,
         platform: str = "linux/amd64",
+        env_rule_format: str = "pattern",
     ) -> None:
         self._rootfs_proxy = None
         self._platform = None
@@ -90,6 +112,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self._fragments = rego_fragments
         self._existing_fragments = existing_rego_fragments
         self._prerelease_policy_api = prerelease_policy_api
+        self._env_rule_format = env_rule_format
         self._fragment_contents = fragment_contents
         self._container_definitions = container_definitions or []
 
@@ -198,9 +221,11 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 )
 
             if not is_sidecar(c[config.POLICY_FIELD_CONTAINERS_ID]):
-                container_image = UserContainerImage.from_json(c, is_vn2=is_vn2, from_input=from_input)
+                container_image = UserContainerImage.from_json(
+                    c, is_vn2=is_vn2, from_input=from_input, env_rule_format=env_rule_format
+                )
             else:
-                container_image = ContainerImage.from_json(c)
+                container_image = ContainerImage.from_json(c, env_rule_format=env_rule_format)
             container_image.parse_all_parameters_and_variables(self.all_params, self.all_vars)
             container_results.append(container_image)
 
@@ -208,6 +233,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         if self._platform is None:
             self._platform = platform
 
+        validate_env_rule_format(env_rule_format, self._platform, prerelease_policy_api)
         self._images = container_results
 
     def __enter__(self) -> Any:
@@ -255,14 +281,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
     def generate_fragment(self, namespace: str, svn: str, output_type: int, omit_id: bool = False) -> str:
         # get rid of fields that aren't strictly needed for the fragment import
         sanitized_fragments = sanitize_fragment_fields(self.get_fragments())
-        use_prerelease_policy = (
-            self._platform.startswith("windows") or self._prerelease_policy_api
-        )
-        framework_version = (
-            config.PRERELEASE_POLICY_FRAMEWORK_VERSION
-            if use_prerelease_policy
-            else config.DEFAULT_POLICY_FRAMEWORK_VERSION
-        )
+        framework_version = get_policy_framework_version(self._platform, self._prerelease_policy_api)
         return config.CUSTOMER_REGO_FRAGMENT % (
             namespace,
             pretty_print_func(svn),
@@ -314,11 +333,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             if use_prerelease_policy
             else config.DEFAULT_POLICY_API_VERSION
         )
-        framework_version = (
-            config.PRERELEASE_POLICY_FRAMEWORK_VERSION
-            if use_prerelease_policy
-            else config.DEFAULT_POLICY_FRAMEWORK_VERSION
-        )
+        framework_version = get_policy_framework_version(self._platform, self._prerelease_policy_api)
 
         # determine if we're outputting for a sidecar or not
         if self._images and self._images[0].get_id() and is_sidecar(self._images[0].get_id()):
@@ -691,12 +706,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
                     # merge envs for user container image
                     envs = image_info.get("Env") or []
-                    env_names = [
-                        env_var[
-                            config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE
-                        ].split("=")[0]
-                        for env_var in image.get_environment_rules()
-                    ]
+                    env_names = image.get_environment_rule_names()
 
                     for env in envs:
                         name, value = env.split("=", 1)
@@ -704,11 +714,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                         # keep user set environment variables
                         if name not in env_names:
                             image.get_environment_rules().append(
-                                {
-                                    config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE: f"{name}={value}",
-                                    config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_STRATEGY: "string",
-                                    config.POLICY_FIELD_CONTAINERS_ELEMENTS_REQUIRED: False,
-                                }
+                                create_environment_rule(name, value, "string", env_rule_format=self._env_rule_format)
                             )
 
                     # merge signals for user container image
@@ -1184,6 +1190,7 @@ def load_policy_from_arm_template_file(
 def load_policy_from_image_name(
     image_names: Union[List[str], str], debug_mode: bool = False, disable_stdio: bool = False,
     platform: str = "linux/amd64", tar_mapping=None, prerelease_policy_api: bool = False,
+    env_rule_format: str = "pattern",
 ) -> AciPolicy:
     # can either take a list of image names or a single image name
     if isinstance(image_names, str):
@@ -1222,6 +1229,7 @@ def load_policy_from_image_name(
         debug_mode=debug_mode,
         disable_stdio=disable_stdio,
         prerelease_policy_api=prerelease_policy_api,
+        env_rule_format=env_rule_format,
     )
 
 
@@ -1234,6 +1242,7 @@ def load_policy_from_json_file(
     platform: str = "linux/amd64",
     tar_mapping=None,
     prerelease_policy_api: bool = False,
+    env_rule_format: str = "pattern",
 ) -> AciPolicy:
     json_content = os_util.load_str_from_file(data)
     return load_policy_from_json(
@@ -1245,6 +1254,7 @@ def load_policy_from_json_file(
         platform=platform,
         tar_mapping=tar_mapping,
         prerelease_policy_api=prerelease_policy_api,
+        env_rule_format=env_rule_format,
     )
 
 
@@ -1258,6 +1268,7 @@ def load_policy_from_json(
     platform: str = "linux/amd64",
     tar_mapping=None,
     prerelease_policy_api: bool = False,
+    env_rule_format: str = "pattern",
 ) -> AciPolicy:
     output_containers = []
     # 1) Parse incoming string as JSON
@@ -1498,6 +1509,7 @@ def load_policy_from_json(
         mapped_directories=mapped_directories,
         prerelease_policy_api=prerelease_policy_api,
         platform=platform,
+        env_rule_format=env_rule_format,
     )
 
 

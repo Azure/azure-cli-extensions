@@ -139,6 +139,10 @@ helps[
     short-summary: Create a Confidential Container Policy Fragment for ACI.
 
     parameters:
+        - name: --env-rule-format
+          type: string
+          short-summary: 'Format of generated environment rules: pattern (default) or name-value'
+
         - name: --image
           type: string
           short-summary: 'Image to use for the generated policy fragment'
