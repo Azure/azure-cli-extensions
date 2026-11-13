@@ -219,7 +219,7 @@ def _handle_relay_connection_delay(cmd, message):
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
-def install_client_side_proxy(arc_proxy_folder):
+def install_client_side_proxy(cmd, arc_proxy_folder):
 
     client_operating_system = _get_client_operating_system()
     client_architecture = _get_client_architeture()
@@ -241,14 +241,40 @@ def install_client_side_proxy(arc_proxy_folder):
             for f in older_version_files:
                 file_utils.delete_file(f, f"failed to delete older version file {f}", warning=True)
 
-        _download_proxy_from_MCR(install_dir, proxy_name, client_operating_system, client_architecture)
+        _download_proxy_from_MCR(cmd, install_dir, proxy_name, client_operating_system, client_architecture)
         _check_proxy_installation(install_dir, proxy_name)
 
     return install_location
 
 
-def _download_proxy_from_MCR(dest_dir, proxy_name, operating_system, architecture):
-    mar_target = f"{consts.CLIENT_PROXY_MCR_TARGET}/{operating_system.lower()}/{architecture}/ssh-proxy"
+def get_mcr_path(active_directory_endpoint: str) -> str:
+    active_directory_array = active_directory_endpoint.split(".")
+
+    if active_directory_endpoint.endswith((".us", ".cn")):
+        return "mcr.microsoft.com"
+
+    mcr_postfix = "com"
+    if len(active_directory_array) == 4 and active_directory_array[2] == "microsoft":
+        mcr_postfix = active_directory_array[3].strip("/")
+    elif len(active_directory_array) == 5:
+        mcr_postfix = (
+            active_directory_array[2]
+            + "."
+            + active_directory_array[3]
+            + "."
+            + active_directory_array[4].strip("/")
+        )
+
+    mcr_url = f"mcr.microsoft.{mcr_postfix}"
+    return mcr_url
+
+
+def _download_proxy_from_MCR(cmd, dest_dir, proxy_name, operating_system, architecture):
+    hostname = get_mcr_path(cmd.cli_ctx.cloud.endpoints.active_directory)
+    mar_target = (
+        f"{hostname}/{consts.CLIENT_PROXY_MCR_REPOSITORY}/"
+        f"{operating_system.lower()}/{architecture}/ssh-proxy"
+    )
     logger.debug("Downloading Arc Connectivity Proxy from %s in Microsoft Artifact Regristy.", mar_target)
 
     client = oras.client.OrasClient()

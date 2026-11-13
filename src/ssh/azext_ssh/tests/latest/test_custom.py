@@ -432,7 +432,7 @@ class SshCustomCommandTest(unittest.TestCase):
 
         custom._do_ssh_op(cmd, op_info, mock_op)
 
-        mock_get_proxy.assert_called_once_with('proxy')
+        mock_get_proxy.assert_called_once_with(cmd, 'proxy')
         mock_get_relay_info.assert_called_once_with(cmd, 'rg', 'vm', 'Microsoft.HybridCompute/machines', None, "port", False)
         mock_op.assert_called_once_with(op_info, False, False)
         mock_get_cert.assert_not_called()
@@ -483,7 +483,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_check_files.assert_called_once_with("publicfile", "privatefile", None, "client")
         mock_get_mod_exp.assert_called_once_with("public")
         mock_write_cert.assert_called_once_with("certificate", "public-aadcert.pub")
-        mock_get_proxy.assert_called_once_with('proxy')
+        mock_get_proxy.assert_called_once_with(cmd, 'proxy')
         mock_get_relay_info.assert_called_once_with(cmd, 'rg', 'vm', 'Microsoft.HybridCompute/machines', 3600, 'port', False)
         mock_op.assert_called_once_with(op_info, False, True)
 
