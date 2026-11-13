@@ -3,11 +3,16 @@
 Release History
 ===============
 
-Upcoming Changes
+3.0.0b7
 +++++++++++++++
 * Support inline conditional input rules in runbook and execution parameter
   editors: const-based conditions select required inputs and exclude fields
   marked false from controls, validation, and saved parameters.
+* Fix removal of workload overrides to preserve non-editable service-set values
+  and handle conditionally hidden inputs.
+* Show step approval confirmation only after the approval request succeeds.
+* Provide the command to reopen the live execution view when monitoring stops.
+* Show expandable error details for execution steps, workloads, and attempts.
 
 3.0.0b6
 +++++++++++++++

@@ -57,13 +57,28 @@ function editor(data = {}, clauses = { allOf: rules }, extraFields = {}, entitie
 }
 const exported = e => JSON.parse(e.run('buildInputsJson()')).inputs.stepInputs[sid];
 
+test('bulk removal clears saved and unsaved overrides when conditional fields are hidden', () => {
+  for (const saved of [false, true]) {
+    const e = editor({ [action]: 'Create', workloadOverrides: {
+      a: { [action]: 'Validate', [shareId]: 'override-id', serviceValue: 'keep' }
+    } }, undefined, { serviceValue: { type: 'string', scope: 'Entity', isEditable: false } });
+    if (saved) e.run('savedSnapshot = JSON.stringify(DOC.stepInputs)');
+    assert.doesNotThrow(() => e.nodes.get('entClear').listeners.click({
+      preventDefault() {}, stopPropagation() {}
+    }));
+    assert.deepEqual(e.data.workloadOverrides.a, { serviceValue: 'keep' });
+    assert.doesNotMatch(e.nodes.get('ovPane').innerHTML, /value="override-id"/);
+    assert.equal(e.run(`effective('${sid}', 'a', '${action}')`), 'Create');
+  }
+});
+
 test('Create requires all three inputs, excludes share ID, and gates command preparation', () => {
   const e = editor({ [action]: 'Create', [shareId]: 'stale-id' });
   assert.equal(e.run('uploadBlocked()'), true);
   assert.equal(e.nodes.get('copyBtn').disabled, true);
   assert.equal(e.run(`stepIssues('${sid}').length`), 3);
   assert.doesNotMatch(e.nodes.get('form').innerHTML, /data-row="[^"]+\|targetFileShareId"/);
-  assert.equal(Object.hasOwn(exported(e), shareId), false);
+  assert.equal(exported(e)[shareId], null);
   Object.assign(e.data, createValues);
   e.run('refreshValidation()');
   assert.equal(e.run('uploadBlocked()'), false);
@@ -82,11 +97,25 @@ test('Validate requires share ID and ignores excluded required fields and invali
   assert.equal(e.run(`stepIssues('${sid}')[0].f`), shareId);
   for (const f of [...createFields, ...optionalCreateFields]) {
     assert.doesNotMatch(e.nodes.get('form').innerHTML, new RegExp(`data-row="[^"]+\\|${f}"`));
-    assert.equal(Object.hasOwn(exported(e), f), false);
+    assert.equal(exported(e)[f], null);
   }
   e.data[shareId] = 'id';
   assert.equal(e.run('uploadBlocked()'), false);
   assert.equal(exported(e)[shareId], 'id');
+});
+
+test('required-only condition changes preserve values when fields become optional', () => {
+  const e = editor({ [action]: 'Create', [shareId]: 'id', ...createValues,
+    targetFileShareTier: 'premium', workloadOverrides: { a: {} } },
+  { allOf: rules.map(rule => ({ if: rule.if, then: { required: rule.then.required } })) });
+  e.run(`setValue('D|${sid}|${action}', 'Validate')`);
+  const out = exported(e);
+  for (const f of createFields) {
+    assert.equal(out[f], 'value');
+    assert.doesNotMatch(e.nodes.get('form').innerHTML, new RegExp(`${f}<span class="req"`));
+  }
+  assert.equal(out.targetFileShareTier, 'premium');
+  assert.equal(out[shareId], 'id');
 });
 
 test('empty, missing, null, and unrecognized actions do not activate either branch', () => {
@@ -117,10 +146,14 @@ test('changing action refreshes required markers in both panes without destroyin
   assert.doesNotMatch(e.nodes.get('ovPane').innerHTML, /data-row="[^"]+\|targetStorageAccountId"/);
   assert.doesNotMatch(e.nodes.get('form').innerHTML, /targetStorageAccountId<span class="req"/);
   assert.equal(exported(e)[shareId], 'id');
+  for (const f of [...createFields, ...optionalCreateFields]) {
+    assert.equal(exported(e)[f], null);
+    assert.equal(exported(e).workloadOverrides.a[f], null);
+  }
   e.run(`setValue('D|${sid}|${action}', 'Create')`);
   assert.match(e.nodes.get('form').innerHTML, /targetStorageAccountId<span class="req"/);
   assert.match(e.nodes.get('ovPane').innerHTML, /targetStorageAccountId<span class="req"/);
-  assert.equal(Object.hasOwn(exported(e), shareId), false);
+  assert.equal(exported(e)[shareId], null);
   assert.equal(JSON.stringify(e.data), before);
 });
 
@@ -146,14 +179,17 @@ test('per-workload conditions use inherited action and honor independent action 
   assert.equal(e.nodes.get('form').innerHTML, before);
   assert.equal(JSON.stringify(e.data), dataBefore);
   const out = exported(e);
-  assert.equal(Object.hasOwn(out, shareId), false);
+  assert.equal(out[shareId], null);
   assert.equal(out.workloadOverrides.b[shareId], 'shared-id');
   for (const f of createFields) {
-    assert.equal(Object.hasOwn(out, f), false);
+    assert.equal(out[f], null);
     assert.equal(out.workloadOverrides.a[f], 'value');
-    assert.equal(Object.hasOwn(out.workloadOverrides.b, f), false);
+    assert.equal(out.workloadOverrides.b[f], null);
   }
-  assert.equal(Object.hasOwn(out.workloadOverrides.a, shareId), false);
+  assert.equal(out.workloadOverrides.a[shareId], null);
+  const reloaded = editor(out);
+  assert.deepEqual(exported(reloaded), out);
+  assert.equal(reloaded.run('uploadBlocked()'), false);
 });
 
 test('unselected step inputs keep defined fields and required flags regardless of workload conditions', () => {
@@ -186,9 +222,9 @@ test('filtered exports preserve complex inherited values and explicit workload o
     }] }, { settings: { type: 'object', scope: 'Entity', isEditable: true } });
   const before = JSON.stringify(e.root);
   const out = exported(e);
-  assert.equal(Object.hasOwn(out, 'settings'), false);
+  assert.equal(out.settings, null);
   assert.deepEqual(out.workloadOverrides.a.settings, settings);
-  assert.equal(Object.hasOwn(out.workloadOverrides.b, 'settings'), false);
+  assert.equal(out.workloadOverrides.b.settings, null);
   assert.deepEqual(out.workloadOverrides.c.settings, { folders: ['custom'] });
   assert.equal(JSON.stringify(e.root), before);
 });
@@ -235,13 +271,13 @@ test('shared conditional errors appear once while retaining each workload issue'
   }
 });
 
-test('false properties remove excluded overrides including non-spec keys without mutating editor data', () => {
+test('false properties retain null keys in excluded overrides including non-spec workloads without mutating editor data', () => {
   const e = editor({ [action]: 'Validate', [shareId]: 'id',
     workloadOverrides: { a: { targetFileShareName: 'stale' }, extra: { targetFileShareName: 'also-stale' } } },
   undefined, {}, ['a']);
   const out = exported(e);
-  assert.equal(Object.hasOwn(out.workloadOverrides.a, 'targetFileShareName'), false);
-  assert.equal(Object.hasOwn(out.workloadOverrides.extra, 'targetFileShareName'), false);
+  assert.equal(out.workloadOverrides.a.targetFileShareName, null);
+  assert.equal(out.workloadOverrides.extra.targetFileShareName, null);
   assert.equal(e.data.workloadOverrides.a.targetFileShareName, 'stale');
 });
 
@@ -260,7 +296,7 @@ test('false exclusion wins over conditional and descriptor required flags', () =
       then: { required: [shareId], properties: { [shareId]: false } } }
   ] }, { [shareId]: { ...fields[shareId], required: true } });
   assert.equal(e.run('uploadBlocked()'), false);
-  assert.equal(Object.hasOwn(exported(e), shareId), false);
+  assert.equal(exported(e)[shareId], null);
   assert.doesNotMatch(e.nodes.get('form').innerHTML, /data-row="[^"]+\|targetFileShareId"/);
 });
 

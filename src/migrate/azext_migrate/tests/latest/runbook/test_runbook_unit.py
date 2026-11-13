@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import io
+import html
 import json
 import os
 import copy
@@ -1442,9 +1443,9 @@ class ExecutionAutoViewTests(unittest.TestCase):
         self.assertTrue(vis.call_args.kwargs.get('watch'))
 
     def test_open_execution_view_watch_failure_is_actionable(self):
-        # A mid-watch failure (e.g. a denied status-download poll) must not
-        # be reported as an "open" failure: the execution already started,
-        # so surface the re-check command instead.
+        # A mid-watch failure (e.g. a transient ARM outage or denied
+        # status-download poll) must not be reported as an "open" failure:
+        # the execution already started, so point back to the live view.
         with mock.patch.object(
                 execution_cmds, 'visualize',
                 side_effect=Exception('Forbidden')), \
@@ -1452,7 +1453,8 @@ class ExecutionAutoViewTests(unittest.TestCase):
             execution_cmds._open_execution_view(
                 mock.Mock(), RG, PROJECT, RUNBOOK, "e9")
         msg = ' '.join(str(c.args) for c in log.warning.call_args_list)
-        self.assertIn('execution show', msg)
+        self.assertIn('execution visualize', msg)
+        self.assertIn('--watch', msg)
         self.assertNotIn('Could not open the execution view', msg)
 
 
@@ -1521,13 +1523,26 @@ class ExecutionStepCommandTests(unittest.TestCase):
 
     def test_approve_posts_provide_approval(self):
         self.client.post_action.return_value = {"ok": True}
-        execution_step_cmds.approve(
-            mock.Mock(), RG, PROJECT, RUNBOOK, "e1", "step1",
-            entities=["ent1"])
+        with mock.patch.object(execution_step_cmds.logger, 'warning') as warning:
+            self.client.post_action.side_effect = lambda *args: (
+                warning.assert_not_called() or {"ok": True})
+            result = execution_step_cmds.approve(
+                mock.Mock(), RG, PROJECT, RUNBOOK, "e1", "step1",
+                entities=["ent1"])
+            warning.assert_called_once_with("Step approval recorded.")
+        self.assertEqual(result, {"ok": True})
         self.client.post_action.assert_called_once_with(
             self._execution_id(), 'ProvideApproval',
             {"action": "Approve", "targetId": "step1",
              "entities": ["ent1"]})
+
+    def test_approve_failure_does_not_log_success(self):
+        self.client.post_action.side_effect = RuntimeError("Approval failed")
+        with mock.patch.object(execution_step_cmds.logger, 'warning') as warning:
+            with self.assertRaisesRegex(RuntimeError, "Approval failed"):
+                execution_step_cmds.approve(
+                    mock.Mock(), RG, PROJECT, RUNBOOK, "e1", "step1")
+            warning.assert_not_called()
 
     def test_complete_posts_update_step_status(self):
         self.client.post_action.return_value = {"ok": True}
@@ -1802,6 +1817,13 @@ class ExecutionParameterCommandTests(unittest.TestCase):
 
 
 class ConfigureRendererTests(unittest.TestCase):
+
+    def test_render_bulk_clear_preserves_non_editable_overrides(self):
+        html_text = configure_renderer.render(_CFG_INPUTS, None, {"runbook": "r"})
+        self.assertIn(
+            'entityFields(sid).filter(f => rulesFor(sid)[f].isEditable !== false)'
+            '.forEach(f => delete ov[f]);', html_text)
+        self.assertNotIn('entityFields(sid).forEach(f => delete ov[f]);', html_text)
 
     def test_client_schema_validation(self):
         import shutil
@@ -2150,6 +2172,69 @@ class ExecutionStatusParsingTests(unittest.TestCase):
         self.assertIn('Attempt 1', html_text)
         self.assertIn('class="retry"', html_text)
         self.assertIn('Dependency', html_text)
+
+    def test_execution_render_preserves_nested_errors_per_context(self):
+        doc = copy.deepcopy(_STATUS_DETAIL_DOC)
+        step = doc['workstreams'][0]['steps'][0]
+        entity = step['entityExecutions'][0]
+        attempt = entity['attempts'][0]
+        expected = []
+        for node, context in ((step, 'step'), (attempt, 'attempt'),
+                              (entity, 'workload')):
+            details = {
+                'code': 'ValidationFailed',
+                'message': 'Review the error for details.',
+                'errors': [
+                    {'code': context + '.TargetDatabaseAlreadyExists',
+                     'message': 'Database <db> already exists & is Online.'},
+                    {'code': context + '.InvalidInput',
+                     'message': '</pre><script>alert("error")</script>',
+                     'errors': [{'code': 'Nested', 'message': 'More detail'}]},
+                ],
+            }
+            node['errorDetails'] = details
+            expected.append(details['errors'])
+        before = copy.deepcopy(doc)
+        view = visualize_viewmodel.build_execution_view(doc, title='X')
+        row = view.workstreams[0].steps[0]
+        self.assertEqual(row.error_details, step['errorDetails'])
+        self.assertEqual(row.entities[0].error_details, entity['errorDetails'])
+        self.assertEqual(row.entities[0].attempts[0]['error_details'],
+                         attempt['errorDetails'])
+        rendered = visualize_renderer.render(
+            visualize_graph.build_execution_graph(doc, title='X'), view=view)
+        blocks = re.findall(
+            r'<details class="issue-details"><summary>Issue details</summary>'
+            r'<pre>(.*?)</pre></details>', rendered, re.DOTALL)
+        self.assertEqual(
+            [json.loads(html.unescape(block)) for block in blocks], expected)
+        self.assertIn('ValidationFailed: Review the error for details.',
+                      rendered)
+        self.assertNotIn('<script>alert("error")</script>', rendered)
+        self.assertEqual(doc, before)
+
+    def test_execution_render_error_details_without_nested_errors(self):
+        for error in (None, {}, 'invalid',
+                      {'code': 'Failed', 'message': 'Original message'},
+                      {'errors': [{'code': 'Nested', 'message': 'Details'}]}):
+            with self.subTest(error=error):
+                doc = {'workstreams': [{'steps': [{
+                    'stepId': 's1', 'status': 'Failed',
+                    'entityExecutions': [{
+                        'entity': 'vm', 'status': 'Failed',
+                        'errorDetails': error}],
+                }]}]}
+                view = visualize_viewmodel.build_execution_view(doc, 'X')
+                rendered = visualize_renderer.render(
+                    visualize_graph.build_execution_graph(doc), view=view)
+                blocks = re.findall(
+                    r'<details class="issue-details">.*?<pre>(.*?)</pre>',
+                    rendered, re.DOTALL)
+                expected = ([error.get('errors') or error]
+                            if isinstance(error, dict) and error else [])
+                self.assertEqual(
+                    [json.loads(html.unescape(block)) for block in blocks],
+                    expected)
 
     def test_execution_overview_uses_service_counts(self):
         overview = transformers.execution_overview(_STATUS_TOOL_DOC)

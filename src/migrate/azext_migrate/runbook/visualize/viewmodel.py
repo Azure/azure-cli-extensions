@@ -24,11 +24,12 @@ class EntityProgress:
     # pylint: disable=too-many-instance-attributes
     def __init__(self, name, status, status_reason=None, error=None,
                  total_attempts=None, attempts=None, tool_status=None,
-                 outputs=None, completed=False):
+                 outputs=None, completed=False, error_details=None):
         self.name = name
         self.status = status
         self.status_reason = status_reason
         self.error = error
+        self.error_details = error_details
         self.total_attempts = total_attempts
         self.attempts = attempts or []
         # Tool-reported migration status (e.g. Replicating, Migrating) — a
@@ -52,7 +53,7 @@ class StepRow:
                  dep_details=None, entity_groups=None, status_reason=None,
                  error=None, retry_count=0, attempts=None,
                  user_comment=None, outputs=None, started=None, ended=None,
-                 description=None):
+                 description=None, error_details=None):
         self.id = step_id
         self.name = name
         self.deps = deps or []
@@ -72,6 +73,7 @@ class StepRow:
         # count, per-attempt history, and any manual sign-off comment.
         self.status_reason = status_reason
         self.error = error
+        self.error_details = error_details
         self.retry_count = retry_count
         self.attempts = attempts or []
         self.user_comment = user_comment
@@ -364,7 +366,7 @@ def _output_map(outputs):
 
 
 def _attempt_views(attempts):
-    """Project raw attempts to ``{number, status, error, started, ended}``."""
+    """Project attempt status, times, error summary, and structured details."""
     views = []
     for attempt in attempts or []:
         if not isinstance(attempt, dict):
@@ -373,6 +375,7 @@ def _attempt_views(attempts):
             'number': attempt.get('attemptNumber'),
             'status': attempt.get('status'),
             'error': _error_text(attempt),
+            'error_details': attempt.get('errorDetails'),
             'started': attempt.get('startTime'),
             'ended': attempt.get('endTime'),
         })
@@ -402,6 +405,7 @@ def build_execution_view(document, title):
                     _entity_status(e),
                     status_reason=e.get('statusReason'),
                     error=_error_text(e),
+                    error_details=e.get('errorDetails'),
                     total_attempts=(e.get('totalAttempts')
                                     or len(e.get('attempts') or [])),
                     attempts=_attempt_views(e.get('attempts')),
@@ -420,6 +424,7 @@ def build_execution_view(document, title):
                 entity_groups=_step_groups(step, group_map),
                 status_reason=step.get('statusReason'),
                 error=_error_text(step),
+                error_details=step.get('errorDetails'),
                 retry_count=_failed_attempts(step),
                 attempts=_attempt_views(step.get('attempts')),
                 user_comment=step.get('userComment'),
