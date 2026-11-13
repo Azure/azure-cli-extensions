@@ -105,7 +105,16 @@ definitions, schema definitions, and the original dynamic metadata and `$ref`s:
 
 ```powershell
 az logicapp connector managed operation show --location eastus --connector msnweather --operation CurrentWeather --include-input-schema --output json
+az logicapp connector managed operation show --location eastus --connector msnweather --operation CurrentWeather --include-input-schema --query "inputSchema.{operationParameters: operationParameters, parameterDefinitions: parameterDefinitions}" --output json
 ```
+
+References are not dereferenced. An entry in `pathParameters` or
+`operationParameters` may be only a reference such as
+`{"$ref": "#/parameters/Location"}`; inspect the matching key (`Location`) in
+`inputSchema.parameterDefinitions` for its name, location, type, `required` and
+enum. Filtering only inline entries, for example
+`operationParameters[?required]`, can omit required inputs. For MSN Weather
+`CurrentWeather`, the required `Location` and `units` inputs are references.
 
 The export is fetched from the managed connector ARM resource URI with
 `export=true`. Operation IDs must match uniquely. External `$ref` targets are

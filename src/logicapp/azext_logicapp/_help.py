@@ -872,7 +872,10 @@ long-summary: >
   By default, returns APIHub operation catalog metadata. --include-input-schema
   also requests the connector's Swagger 2.0 export and adds inputSchema, including
   parameter definitions and references. External references are never fetched;
-  dynamic metadata is preserved but not resolved.
+  dynamic metadata is preserved but not resolved. Parameters given as references
+  such as "#/parameters/Location" are not dereferenced; inspect the matching key
+  in inputSchema.parameterDefinitions, because filtering only inline parameters
+  can omit required inputs.
 examples:
   - name: Show the Office 365 SendEmailV2 operation.
     text: az logicapp connector managed operation show --location eastus --connector office365 --operation SendEmailV2
@@ -880,6 +883,11 @@ examples:
     text: >
       az logicapp connector managed operation show --location eastus --connector
       msnweather --operation CurrentWeather --include-input-schema
+  - name: Show operation parameters with the reusable definitions their references point to.
+    text: >
+      az logicapp connector managed operation show --location eastus --connector
+      msnweather --operation CurrentWeather --include-input-schema --query
+      "inputSchema.{operationParameters: operationParameters, parameterDefinitions: parameterDefinitions}"
 """
 
 helps['logicapp runtime start'] = """
