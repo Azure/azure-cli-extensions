@@ -15,7 +15,7 @@ from azext_confcom import config, os_util
 from azext_confcom.lib.policy import Container
 from azext_confcom.container import ContainerImage, UserContainerImage
 from azext_confcom.errors import eprint
-from azext_confcom.fragment_util import sanitize_fragment_fields
+from azext_confcom.fragment_util import resolve_fragment_imports, sanitize_fragment_fields
 from azext_confcom.oras_proxy import create_list_of_standalone_imports
 from azext_confcom.rootfs_proxy import SecurityPolicyProxy
 from azext_confcom.template_util import (case_insensitive_dict_get,
@@ -595,8 +595,10 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         tar_location = ""
         if isinstance(tar_mapping, str):
             tar_location = tar_mapping
-        proxy = self._get_rootfs_proxy()
         container_images = self.get_images()
+        if not container_images:
+            return
+        proxy = self._get_rootfs_proxy()
 
         if isinstance(tar_mapping, str) and len(container_images) > 1:
             eprint(
@@ -905,7 +907,7 @@ def _set_infrastructure_svn(rego_fragments, infrastructure_svn) -> None:
         logger.warning("--infrastructure-svn has no effect because no infrastructure fragment is included.")
 
 
-# pylint: disable=R0914,
+# pylint: disable=R0914, R0912
 def load_policy_from_arm_template_str(
     template_data: str,
     parameter_data: str,
@@ -962,6 +964,19 @@ def load_policy_from_arm_template_str(
 
     container_groups = []
 
+    container_names = []
+    for resource in aci_list:
+        properties = case_insensitive_dict_get(resource, config.ACI_FIELD_TEMPLATE_PROPERTIES)
+        for field in (config.ACI_FIELD_TEMPLATE_CONTAINERS, config.ACI_FIELD_TEMPLATE_INIT_CONTAINERS):
+            for container in case_insensitive_dict_get(properties, field) or []:
+                name = case_insensitive_dict_get(container, config.ACI_FIELD_CONTAINERS_NAME)
+                container_names.append(
+                    find_value_in_params_and_vars(all_params, all_vars, name) if name else name
+                )
+    fragments_without_container_name, fragments_by_container_name = resolve_fragment_imports(
+        rego_imports, container_names
+    )
+
     for resource in aci_list:
         # initialize the list of containers we need to generate policies for
         containers = []
@@ -1012,10 +1027,10 @@ def load_policy_from_arm_template_str(
         standalone_fragments = extract_standalone_fragments(container_group_properties)
         if standalone_fragments:
             standalone_fragment_imports = create_list_of_standalone_imports(standalone_fragments)
-            unique_imports = set(rego_imports)
+            unique_imports = set(fragments_without_container_name)
             for fragment in standalone_fragment_imports:
                 if fragment not in unique_imports:
-                    rego_imports.append(fragment)
+                    fragments_without_container_name.append(fragment)
                     unique_imports.add(fragment)
 
         if diff_mode:
@@ -1033,9 +1048,9 @@ def load_policy_from_arm_template_str(
             )
             if not group_exclude_default_fragments else []
         )
-        if rego_imports:
+        if fragments_without_container_name:
             # error check the rego imports for invalid data types
-            processed_imports = process_fragment_imports(rego_imports)
+            processed_imports = process_fragment_imports(fragments_without_container_name)
             rego_fragments.extend(processed_imports)
         _set_infrastructure_svn(rego_fragments, infrastructure_svn)
 
@@ -1061,6 +1076,15 @@ def load_policy_from_arm_template_str(
             container_name = case_insensitive_dict_get(
                 container, config.ACI_FIELD_CONTAINERS_NAME
             )
+
+            resolved_name = (
+                find_value_in_params_and_vars(all_params, all_vars, container_name)
+                if container_name else container_name
+            )
+            bound_fragments = fragments_by_container_name.get(resolved_name, [])
+            if bound_fragments:
+                rego_fragments.extend(bound_fragments)
+                continue
 
             if not image_name:
                 eprint(
@@ -1114,6 +1138,7 @@ def load_policy_from_arm_template_str(
                 debug_mode=debug_mode,
                 fragment_contents=fragment_contents,
                 prerelease_policy_api=prerelease_policy_api,
+                platform=platform,
             )
         )
     return container_groups
@@ -1341,7 +1366,21 @@ def load_policy_from_json(
             f' and field ["{config.ACI_FIELD_CONTAINERS_REGO_FRAGMENTS}"] can not both be empty.'
         )
 
+    container_names = [
+        case_insensitive_dict_get(container, config.ACI_FIELD_CONTAINERS_NAME)
+        for container in input_containers
+    ]
+    fragments_without_container_name, fragments_by_container_name = resolve_fragment_imports(
+        rego_fragments, container_names
+    )
+    rego_fragments = list(fragments_without_container_name)
+
     for container in input_containers:
+        explicit_name = case_insensitive_dict_get(container, config.ACI_FIELD_CONTAINERS_NAME)
+        bound_fragments = fragments_by_container_name.get(explicit_name, [])
+        if bound_fragments:
+            rego_fragments.extend(bound_fragments)
+            continue
         container_properties = case_insensitive_dict_get(
             container, config.ACI_FIELD_TEMPLATE_PROPERTIES
         )
@@ -1458,6 +1497,7 @@ def load_policy_from_json(
         allow_registry_changes_dropping=allow_registry_changes_dropping,
         mapped_directories=mapped_directories,
         prerelease_policy_api=prerelease_policy_api,
+        platform=platform,
     )
 
 
@@ -1528,7 +1568,20 @@ def load_policy_from_virtual_node_yaml_str(
 
     # we only want to look at the things that create containers
     yaml_contents = filter_non_pod_resources(yaml_contents)
-    for yaml in yaml_contents:
+    workloads = [(yaml, convert_to_pod_spec(yaml)) for yaml in yaml_contents]
+    container_names = []
+    for _, normalized_yaml in workloads:
+        spec = case_insensitive_dict_get(normalized_yaml, "spec")
+        for field in (config.ACI_FIELD_TEMPLATE_CONTAINERS, config.ACI_FIELD_TEMPLATE_INIT_CONTAINERS):
+            for container in case_insensitive_dict_get(spec, field) or []:
+                container_names.append(
+                    case_insensitive_dict_get(container, config.VIRTUAL_NODE_YAML_NAME)
+                )
+    fragments_without_container_name, fragments_by_container_name = resolve_fragment_imports(
+        rego_imports, container_names
+    )
+
+    for yaml, normalized_yaml in workloads:
         # extract existing policy and fragments for diff mode
         metadata = case_insensitive_dict_get(yaml, config.VIRTUAL_NODE_YAML_METADATA)
         annotations = case_insensitive_dict_get(metadata, config.VIRTUAL_NODE_YAML_ANNOTATIONS)
@@ -1545,7 +1598,6 @@ def load_policy_from_virtual_node_yaml_str(
                 # In non-diff mode, we ignore the error and proceed without the policy
                 existing_containers, existing_fragments = ([], [])
         # because there are many ways to get pod information, we normalize them so the interface is the same
-        normalized_yaml = convert_to_pod_spec(yaml)
         volume_claim_templates = get_volume_claim_templates(yaml)
 
         normalized_metadata = case_insensitive_dict_get(normalized_yaml, config.VIRTUAL_NODE_YAML_METADATA)
@@ -1575,13 +1627,18 @@ def load_policy_from_virtual_node_yaml_str(
                 platform, is_vn2=True, prerelease_policy_api=prerelease_policy_api
             )
         ) if not exclude_default_fragments else []
-        if rego_imports:
+        if fragments_without_container_name:
             # error check the rego imports for invalid data types
-            processed_imports = process_fragment_imports(rego_imports)
+            processed_imports = process_fragment_imports(fragments_without_container_name)
             rego_fragments.extend(processed_imports)
         _set_infrastructure_svn(rego_fragments, infrastructure_svn)
 
         for container in containers + init_containers:
+            container_name = case_insensitive_dict_get(container, config.VIRTUAL_NODE_YAML_NAME)
+            bound_fragments = fragments_by_container_name.get(container_name, [])
+            if bound_fragments:
+                rego_fragments.extend(bound_fragments)
+                continue
             # image and name
             image = case_insensitive_dict_get(container, config.ACI_FIELD_TEMPLATE_IMAGE)
             if not image:
@@ -1729,6 +1786,7 @@ def load_policy_from_virtual_node_yaml_str(
                 existing_rego_fragments=existing_fragments,
                 fragment_contents=fragment_contents,
                 prerelease_policy_api=prerelease_policy_api,
+                platform=platform,
             )
         )
     return all_policies

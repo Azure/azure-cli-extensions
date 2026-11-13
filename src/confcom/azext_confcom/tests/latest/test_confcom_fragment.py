@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import copy
 import json
 import os
 from pathlib import Path
@@ -11,6 +12,7 @@ import tempfile
 import time
 import unittest
 from tarfile import TarFile
+from unittest.mock import patch
 
 import azext_confcom.config as config
 import docker
@@ -27,7 +29,7 @@ from azext_confcom.security_policy import (OutputType, UserContainerImage,
                                            load_policy_from_json)
 from azext_confcom.template_util import (
     DockerClient, case_insensitive_dict_get, decompose_confidential_properties,
-    extract_containers_and_fragments_from_text)
+    extract_containers_and_fragments_from_text, extract_containers_from_text)
 from azext_confcom.tests.latest.test_confcom_tar import create_tar_file
 from azure.cli.testsdk import ScenarioTest
 from knack.util import CLIError
@@ -2168,3 +2170,228 @@ class InitialFragmentErrors(ScenarioTest):
 
             finally:
                 force_delete_silently(filename)
+
+
+class FragmentContainerBindings(unittest.TestCase):
+    def setUp(self):
+        # Import after conftest.py run_on_wheel so these modules and our mocks
+        # use the same wheel module instances.
+        from azext_confcom import fragment_util, security_policy
+
+        self.fragment_util = fragment_util
+        self.security_policy = security_policy
+        self.fragment = {
+            "feed": "contoso.azurecr.io/example",
+            "includes": ["containers"],
+            "issuer": "did:x509:test",
+            "minimum_svn": "1",
+            "container_name": "app",
+            "parameters": {"command": ["echo", "hello"]},
+        }
+
+    def _load_policy(self, source, containers, platform="linux/amd64", init_containers=None):
+        if source == "json":
+            return self.security_policy.load_policy_from_json(
+                json.dumps({"version": "1.0", "containers": containers, "fragments": [self.fragment]}),
+                platform=platform,
+            )
+        if source == "arm":
+            return self.security_policy.load_policy_from_arm_template_str(
+                json.dumps({
+                    "resources": [{
+                        "type": "Microsoft.ContainerInstance/containerGroups",
+                        "properties": {"containers": containers, "initContainers": init_containers or []},
+                    }],
+                }),
+                None,
+                rego_imports=[self.fragment],
+                platform=platform,
+            )[0]
+        return self.security_policy.load_policy_from_virtual_node_yaml_str(
+            json.dumps({
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "metadata": {"name": "test-pod"},
+                "spec": {"containers": containers, "initContainers": init_containers or []},
+            }),
+            rego_imports=[self.fragment],
+            platform=platform,
+        )[0]
+
+    # Verify resolve_fragment_imports preserves per-import parameters and leaves the input unchanged.
+    def test_resolve_fragment_imports_preserves_parameter_instances(self):
+        fragment_without_container_name = {
+            key: value for key, value in self.fragment.items() if key not in ("container_name", "parameters")
+        }
+        fragment_for_other_container = copy.deepcopy(self.fragment)
+        fragment_for_other_container["container_name"] = "other"
+        fragment_for_other_container["parameters"]["command"] = ["echo", "other"]
+        fragment_without_parameters = dict(self.fragment)
+        fragment_without_parameters.pop("parameters")
+        fragments = [
+            fragment_without_container_name,
+            self.fragment,
+            fragment_for_other_container,
+            fragment_without_parameters,
+        ]
+        original_fragments = copy.deepcopy(fragments)
+
+        # The second import for "app" is retained with parameters defaulted to {}.
+        expected_fragment_with_default_parameters = dict(fragment_without_parameters)
+        expected_fragment_with_default_parameters["parameters"] = {}
+
+        fragments_without_container_name, fragments_by_container_name = self.fragment_util.resolve_fragment_imports(
+            fragments, ["app", "other"]
+        )
+
+        self.assertEqual(fragments_without_container_name, [fragment_without_container_name])
+        self.assertEqual(
+            fragments_by_container_name["app"], [self.fragment, expected_fragment_with_default_parameters]
+        )
+        self.assertEqual(fragments_by_container_name["other"], [fragment_for_other_container])
+        fragments_by_container_name["app"][0]["parameters"]["command"].append("changed")
+        self.assertEqual(fragments, original_fragments)
+
+    # Verify resolve_fragment_imports rejects invalid fields and parameters without a container_name.
+    def test_resolve_fragment_imports_rejects_invalid_fields(self):
+        for invalid_fields, expected_message in [
+            ({"container_name": None}, "container_name must be a non-empty string"),
+            ({"container_name": ""}, "container_name must be a non-empty string"),
+            ({"container_name": " "}, "container_name must be a non-empty string"),
+            ({"container_name": 1}, "container_name must be a non-empty string"),
+            ({"parameters": []}, "parameters must be an object"),
+            ({"parameters": None}, "parameters must be an object"),
+            ({"minimum_svn": "invalid"}, "can only be a string with an integer value"),
+        ]:
+            with self.subTest(fields=invalid_fields):
+                fragment_with_invalid_fields = dict(self.fragment)
+                fragment_with_invalid_fields.update(invalid_fields)
+                with self.assertLogs(level="ERROR") as error_logs:
+                    with self.assertRaises(SystemExit):
+                        self.fragment_util.resolve_fragment_imports([fragment_with_invalid_fields], ["app"])
+                self.assertIn(expected_message, error_logs.output[0])
+
+        with self.assertRaises(SystemExit):
+            self.fragment_util.resolve_fragment_imports(["not an object"], ["app"])
+        fragment_without_container_name = dict(self.fragment)
+        fragment_without_container_name.pop("container_name")
+        with self.assertLogs(level="ERROR") as error_logs:
+            with self.assertRaises(SystemExit):
+                self.fragment_util.resolve_fragment_imports([fragment_without_container_name], ["app"])
+        self.assertIn(
+            "container_name is required for fragment imports that specify parameters.", error_logs.output[0]
+        )
+
+    # Verify resolve_fragment_imports requires exactly one case-sensitive container name match.
+    def test_resolve_fragment_imports_requires_one_exact_container_name_match(self):
+        for container_names in ([], ["App"], ["app", "app"]):
+            with self.subTest(container_names=container_names):
+                with self.assertLogs(level="ERROR") as error_logs:
+                    with self.assertRaises(SystemExit):
+                        self.fragment_util.resolve_fragment_imports([self.fragment], container_names)
+                expected_message = f"must match exactly one container; found {container_names.count('app')}"
+                self.assertIn(expected_message, error_logs.output[0])
+
+    # Verify get_all_fragment_contents only passes imports without container_name to the fragment pull function.
+    def test_get_all_fragment_contents_skips_imports_with_container_name(self):
+        fragment_without_container_name = {
+            key: value for key, value in self.fragment.items() if key not in ("container_name", "parameters")
+        }
+        with patch(
+            "azext_confcom.oras_proxy.pull_all_standalone_fragments", return_value=([], [])
+        ) as pull_all_standalone_fragments:
+            fragment_contents = self.fragment_util.get_all_fragment_contents(
+                [], [fragment_without_container_name, self.fragment]
+            )
+        self.assertEqual(fragment_contents, [])
+        pull_all_standalone_fragments.assert_called_once_with([fragment_without_container_name])
+
+    # Verify policy loaders serialize fragment-only policies with the requested platform's container defaults.
+    def test_policy_loaders_serialize_fragment_only_policies_for_requested_platform(self):
+        for source in ("json", "arm", "yaml"):
+            for platform in ("linux/amd64", "windows/amd64"):
+                with self.subTest(source=source, platform=platform):
+                    policy = self._load_policy(source, [{"name": "app"}], platform)
+                    policy.populate_policy_content_for_all_images()
+                    output = policy.get_serialized_output(self.security_policy.OutputType.RAW)
+                    serialized_fragments = json.loads(extract_containers_from_text(output, "fragments := "))
+                    expected_serialized_fragment = {
+                        key: value for key, value in self.fragment.items() if key != "container_name"
+                    }
+                    self.assertIn(expected_serialized_fragment, serialized_fragments)
+                    serialized_containers = json.loads(extract_containers_from_text(output, "containers := "))
+                    expected_containers = config.DEFAULT_CONTAINERS if platform.startswith("linux") else []
+                    self.assertEqual(serialized_containers, expected_containers)
+
+    # Verify policy loaders retain inline containers without fragment imports alongside container-name imports.
+    def test_policy_loaders_retain_containers_without_fragment_imports(self):
+        image = "mcr.microsoft.com/azurelinux/distroless/base:3.0"
+        for source in ("json", "arm", "yaml"):
+            with self.subTest(source=source):
+                container_without_fragment_import = {"name": "other", "properties": {"image": image}}
+                if source == "yaml":
+                    container_without_fragment_import = {"name": "other", "image": image}
+                with patch("azext_confcom.security_policy.validate_image_platform"):
+                    policy = self._load_policy(source, [{"name": "app"}, container_without_fragment_import])
+                self.assertEqual([container.get_container_image() for container in policy.get_images()], [image])
+                self.assertIn(self.fragment, policy.get_fragments())
+
+    # Verify ARM and YAML loaders match init container names and reject names shared with regular containers.
+    def test_policy_loaders_match_init_container_names_and_reject_duplicate_names(self):
+        image = "mcr.microsoft.com/azurelinux/distroless/base:3.0"
+        for source in ("arm", "yaml"):
+            with self.subTest(source=source):
+                regular_container = {"name": "other", "properties": {"image": image}}
+                if source == "yaml":
+                    regular_container = {"name": "other", "image": image}
+                with patch("azext_confcom.security_policy.validate_image_platform"):
+                    policy = self._load_policy(source, [regular_container], init_containers=[{"name": "app"}])
+                self.assertEqual([container.get_container_image() for container in policy.get_images()], [image])
+                self.assertIn(self.fragment, policy.get_fragments())
+                with self.assertRaises(SystemExit):
+                    self._load_policy(source, [{"name": "app"}], init_containers=[{"name": "app"}])
+
+    # Verify loaders reject container_name matches in multiple container groups (ARM) or pods (YAML).
+    def test_policy_loaders_reject_duplicate_container_names_across_container_groups_or_pods(self):
+        container_group_resource = {
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "properties": {"containers": [{"name": "app"}]},
+        }
+        pod = {"kind": "Pod", "metadata": {"name": "pod"}, "spec": {"containers": [{"name": "app"}]}}
+        for source in ("arm", "yaml"):
+            with self.subTest(source=source):
+                with self.assertLogs(level="ERROR") as error_logs:
+                    with self.assertRaises(SystemExit):
+                        if source == "arm":
+                            self.security_policy.load_policy_from_arm_template_str(
+                                json.dumps({"resources": [container_group_resource, container_group_resource]}),
+                                None,
+                                rego_imports=[self.fragment],
+                            )
+                        else:
+                            self.security_policy.load_policy_from_virtual_node_yaml_str(
+                                json.dumps(pod) + "\n---\n" + json.dumps(pod),
+                                rego_imports=[self.fragment],
+                            )
+                self.assertIn("must match exactly one container; found 2", error_logs.output[0])
+
+    # Verify load_policy_from_arm_template_str accepts imports targeting parameter- or variable-based container names.
+    def test_load_policy_from_arm_template_str_matches_parameter_and_variable_container_names(self):
+        template = {
+            "parameters": {"name": {"type": "string", "defaultValue": "default"}},
+            "variables": {"name": "app"},
+            "resources": [{
+                "type": "Microsoft.ContainerInstance/containerGroups",
+                "properties": {"containers": [{"name": "[parameters('name')]"}]},
+            }],
+        }
+        for expression in ("[parameters('name')]", "[variables('name')]"):
+            with self.subTest(expression=expression):
+                template["resources"][0]["properties"]["containers"][0]["name"] = expression
+                policies = self.security_policy.load_policy_from_arm_template_str(
+                    json.dumps(template),
+                    json.dumps({"parameters": {"name": {"value": "app"}}}),
+                    rego_imports=[self.fragment],
+                )
+                self.assertEqual(policies[0].get_images(), [])
+                self.assertIn(self.fragment, policies[0].get_fragments())
