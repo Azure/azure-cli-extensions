@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b32
+++++++++++++++
+* [BREAKING CHANGE] Removed the ignored ``--storage`` argument from ``az quantum job submit``, ``az quantum execute``, and ``az quantum run``. Commands using this argument now report an unrecognized-argument error. Remove it from scripts; jobs continue to use workspace-linked storage. The workspace-level ``--storage-account`` argument is unchanged.
+
 1.0.0b31
 ++++++++++++++
 * Made ``--storage-account`` optional for ``az quantum workspace create``. When omitted, Azure Quantum provisions managed storage.
