@@ -11,7 +11,6 @@
 
 import sys
 import ssl
-import json
 import socket
 import time
 import traceback
@@ -28,6 +27,7 @@ from websocket import create_connection, WebSocket
 from azure.core.exceptions import HttpResponseError
 from azure.cli.core._profile import Profile
 from azure.cli.core.util import should_disable_connection_verify
+from azure.mgmt.core.tools import parse_resource_id
 
 from knack.util import CLIError
 from knack.log import get_logger
@@ -78,9 +78,8 @@ class TunnelServer:
             return is_port_open
 
     def _get_auth_token(self):
-        profile = Profile(cli_ctx=self.cli_ctx)
-        # Generate an Azure token with the VSTS resource app id
-        auth_token, _, _ = profile.get_raw_token()
+        subscription_id = parse_resource_id(self.bastion['id'])['subscription']
+        auth_token, _, _ = Profile(cli_ctx=self.cli_ctx).get_raw_token(subscription=subscription_id)
         content = {
             'resourceId': self.remote_host,
             'protocol': 'tcptunnel',
@@ -95,20 +94,23 @@ class TunnelServer:
         else:
             custom_header = {}
 
-        logger.debug("Content: %s", str(content))
         web_address = f"https://{self.bastion_endpoint}/api/tokens"
         response = requests.post(web_address, data=content, headers=custom_header,
                                  verify=not should_disable_connection_verify())
-        response_json = None
-
-        if response.content is not None:
-            response_json = json.loads(response.content.decode("utf-8"))
-
         if response.status_code not in [200]:
-            if response_json is not None and response_json["message"] is not None:
-                raise HttpResponseError(response=response, message=response_json["message"])
-            raise HttpResponseError(response=response)
+            message = f"Bastion tunnel authentication failed (HTTP {response.status_code})."
+            try:
+                error = response.json()
+            except ValueError as ex:
+                raise HttpResponseError(response=response, message=message) from ex
+            if isinstance(error, dict) and error.get("message"):
+                message = f"{message} {error['message']}"
+            raise HttpResponseError(
+                response=response,
+                message=message
+            )
 
+        response_json = response.json()
         self.last_token = response_json["authToken"]
         self.node_id = response_json["nodeId"]
         return response_json["websocketToken"]
@@ -151,8 +153,9 @@ class TunnelServer:
             debugger_thread.join()
             web_socket_thread.join()
         except Exception as ex:  # pylint: disable=broad-except
-            logger.info('Exception in handling client: %s', ex)
+            logger.error('Bastion connection failed: %s', ex)
         finally:
+            client.close()
             with self.connection_lock:
                 self.active_connections -= 1
                 if self.active_connections == 0:
