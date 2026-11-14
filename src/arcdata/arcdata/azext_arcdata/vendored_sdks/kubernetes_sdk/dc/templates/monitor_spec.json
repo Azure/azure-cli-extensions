@@ -1,0 +1,177 @@
+{
+  "apiVersion": "arcdata.microsoft.com/v3",
+  "kind": "Monitor",
+  "metadata": {
+    "name": "monitorstack"
+  },
+  "spec": {
+    "metrics": {
+      "database": {
+        "influxdb": {
+          "enable": true,
+          "storage": {
+            "data": {
+              "volumes": [
+                {
+                  "size": "10Gi",
+                  "className": ""
+                }
+              ]
+            },
+            "logs": {
+              "volumes": [
+                {
+                  "size": "10Gi",
+                  "className": ""
+                }
+              ]
+            }
+          },
+          "scheduling": {
+            "default": {
+              "resources": {
+                "limits": {
+                  "cpu": "400m",
+                  "memory": "2Gi"
+                },
+                "requests": {
+                  "cpu": "200m",
+                  "memory": "800Mi"
+                }
+              }
+            }
+          },
+          "settings": {
+            "retentionPeriodDays": 14
+          }
+        }
+      },
+      "userInterface": {
+        "grafana": {
+          "enable": false,
+          "services": {
+            "primary": {
+              "type": "NodePort"
+            }
+          },
+          "storage": {
+            "data": {
+              "volumes": [
+                {
+                  "size": "10Gi",
+                  "className": ""
+                }
+              ]
+            },
+            "logs": {
+              "volumes": [
+                {
+                  "size": "10Gi",
+                  "className": ""
+                }
+              ]
+            }
+          },
+          "scheduling": {
+            "default": {
+              "resources": {
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "500Mi"
+                },
+                "requests": {
+                  "cpu": "20m",
+                  "memory": "200Mi"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "logs": {
+      "database": {
+        "opensearch": {
+          "enable": true,
+          "storage": {
+            "data": {
+              "volumes": [
+                {
+                  "size": "10Gi",
+                  "className": ""
+                }
+              ]
+            },
+            "logs": {
+              "volumes": [
+                {
+                  "size": "10Gi",
+                  "className": ""
+                }
+              ]
+            }
+          },
+          "scheduling": {
+            "default": {
+              "resources": {
+                "limits": {
+                  "cpu": "2",
+                  "memory": "2Gi"
+                },
+                "requests": {
+                  "cpu": "200m",
+                  "memory": "1600Mi"
+                }
+              }
+            }
+          },
+          "settings": {
+            "vm.max_map_count": -1
+          }
+        }
+      },
+      "userInterface": {
+        "OpenSearchDashboards": {
+          "enable": false,
+          "services": {
+            "primary": {
+              "type": "NodePort"
+            }
+          },
+          "storage": {
+            "data": {
+              "volumes": [
+                {
+                  "size": "10Gi",
+                  "className": ""
+                }
+              ]
+            },
+            "logs": {
+              "volumes": [
+                {
+                  "size": "10Gi",
+                  "className": ""
+                }
+              ]
+            }
+          },
+          "scheduling": {
+            "default": {
+              "resources": {
+                "limits": {
+                  "cpu": "2",
+                  "memory": "2Gi"
+                },
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "500Mi"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

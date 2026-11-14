@@ -1,0 +1,52 @@
+{
+    "${DOLLAR}schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/ServiceModel.json",
+    "contentVersion": "0.0.0.1",
+    "serviceMetadata": {
+        "serviceGroup": "azure-cli-extension",
+        "ServiceIdentifier": "ca486455-1a37-40b8-9d7c-9fb79233c8f0",
+        "environment": "prod"
+    },
+    "serviceResourceGroupDefinitions": [
+        {
+            "name": "arcdata-ev2-helper",
+            "serviceResourceDefinitions": [
+                {
+                    "name": "AzPush",
+                    "composedOf": {
+                        "extension": {
+                            "shell": [
+                                {
+                                    "type": "shellExtension",
+                                    "properties": {
+                                        "imageName": "adm-ubuntu-1804-l",
+                                        "imageVersion": "v30"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "scopeTags": [
+                        {
+                            "name": "BuildInfo"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "serviceResourceGroups": [
+        {
+            "azureResourceGroupName": "arcdata-ev2-helper",
+            "location": "East US",
+            "instanceOf": "arcdata-ev2-helper",
+            "azureSubscriptionId": "${AZURE_SUBSCRIPTION_ID}",
+            "serviceResources": [
+                {
+                    "name": "AzPush",
+                    "instanceOf": "AzPush",
+                    "rolloutParametersPath": "Parameters.json"
+                }
+            ]
+        }
+    ]
+}

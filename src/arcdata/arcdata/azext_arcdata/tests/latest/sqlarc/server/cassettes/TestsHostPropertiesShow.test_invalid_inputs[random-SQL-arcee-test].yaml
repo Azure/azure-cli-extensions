@@ -1,0 +1,54 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/arcee-test/providers/Microsoft.HybridCompute/machines/random-SQL/extensions/WindowsAgent.SqlServer?api-version=2023-03-15-preview
+  response:
+    body:
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.HybridCompute/machines/random-SQL/extensions/WindowsAgent.SqlServer''
+        under resource group ''arcee-test'' was not found. For more details please
+        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '259'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 15 Feb 2024 08:44:06 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 6E4663E04B5D4F5E913564B0DDAE5D71 Ref B: MAA201060516019 Ref C: 2024-02-15T08:44:06Z'
+      x-ms-correlation-request-id:
+      - 0743bc21-4219-4594-abbb-0b09462b698c
+      x-ms-failure-cause:
+      - gateway
+      x-ms-request-id:
+      - 0743bc21-4219-4594-abbb-0b09462b698c
+      x-ms-routing-request-id:
+      - SOUTHINDIA:20240215T084406Z:0743bc21-4219-4594-abbb-0b09462b698c
+    status:
+      code: 404
+      message: Not Found
+version: 1

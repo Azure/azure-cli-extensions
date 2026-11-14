@@ -1,0 +1,28 @@
+{
+  "apiVersion": "sql.arcdata.microsoft.com/v13",
+  "kind": "SqlManagedInstance",
+  "metadata": {
+    "name": "sql"
+  },
+  "spec": {
+    "backup": {
+      "recoveryPointObjectiveInSeconds": 300
+    },
+    "storage": {
+      "data": {
+        "volumes": [
+          {
+            "size": "5Gi"
+          }
+        ]
+      },
+      "logs": {
+        "volumes": [
+          {
+            "size": "5Gi"
+          }
+        ]
+      }
+    }
+  }
+}

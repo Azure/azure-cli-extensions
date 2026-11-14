@@ -1,0 +1,109 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - 6080db9a-c6be-11ee-b361-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/aagonzalez-ci-test-mk6/providers/Microsoft.AzureArcData/sqlServerInstances/ARCBOX-SQL?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/aagonzalez-CI-Test-mk6/providers/Microsoft.AzureArcData/sqlServerInstances/ArcBox-SQL","name":"ArcBox-SQL","type":"microsoft.azurearcdata/sqlserverinstances","location":"eastus","systemData":{"createdBy":"a12e8ccb-0fcd-46f8-b6a1-b9df7a9d7231","createdByType":"Application","createdAt":"2024-02-08T16:58:34.0669699Z","lastModifiedBy":"a12e8ccb-0fcd-46f8-b6a1-b9df7a9d7231","lastModifiedByType":"Application","lastModifiedAt":"2024-02-08T20:12:20.787441Z"},"properties":{"version":"SQL
+        Server 2019","edition":"Developer","containerResourceId":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourcegroups/aagonzalez-CI-Test-mk6/providers/Microsoft.HybridCompute/machines/ArcBox-SQL","createTime":null,"vCore":"1","cores":null,"status":"Connected","patchLevel":"15.0.2104.1","collation":"SQL_Latin1_General_CP1_CI_AS","currentVersion":"15.0.2000.5","instanceName":"MSSQLSERVER","tcpDynamicPorts":"","tcpStaticPorts":"1433","productId":"Unknown","licenseType":"Free","azureDefenderStatusLastUpdated":null,"azureDefenderStatus":"Unknown","provisioningState":"Succeeded","lastInventoryUploadTime":"2024-02-08T20:12:18.5694017Z","lastUsageUploadTime":"2024-02-08T19:57:46.3792906Z","hostType":null,"alwaysOnRole":"None","failoverCluster":null,"backupPolicy":{"retentionPeriodDays":10,"fullBackupDays":7,"differentialBackupHours":12,"transactionLogBackupMinutes":5},"upgradeLockedUntil":null,"monitoring":{"enabled":true}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '1495'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 08 Feb 2024 20:12:25 GMT
+      ETag:
+      - '"cb022d5f-0000-0100-0000-65c535a50000"'
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 23F2F53981CF46F7BA32F54C183A2938 Ref B: BN1AA2051013037 Ref C: 2024-02-08T20:12:26Z'
+      x-ms-correlation-request-id:
+      - 6f1394ed-b22c-4387-b51b-716274639bce
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99999'
+      x-ms-request-id:
+      - bc32b24e-6ad3-4771-b010-eb451fd1e594
+      x-ms-routing-request-id:
+      - EASTUS:20240208T201226Z:6f1394ed-b22c-4387-b51b-716274639bce
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://mock-host//subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourcegroups/aagonzalez-CI-Test-mk6/providers/Microsoft.HybridCompute/machines/ArcBox-SQL/extensions/WindowsAgent.SqlServer?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/aagonzalez-CI-Test-mk6/providers/Microsoft.HybridCompute/machines/ArcBox-SQL/extensions/WindowsAgent.SqlServer","name":"WindowsAgent.SqlServer","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.AzureData","type":"WindowsAgent.SqlServer","typeHandlerVersion":"1.1.2566.109","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"SqlManagement":{"IsEnabled":true},"ExcludedSqlInstances":[""],"LicenseType":"LicenseOnly","cloudprovider":"N/A"},"provisioningState":"Updating","instanceView":{"name":"WindowsAgent.SqlServer","type":"WindowsAgent.SqlServer","typeHandlerVersion":"1.1.2566.109","status":{}}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '756'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 08 Feb 2024 20:12:26 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: F5DD453979A14224888FC851893F3C36 Ref B: BN1AA2051015021 Ref C: 2024-02-08T20:12:26Z'
+      x-ms-correlation-request-id:
+      - e9804451-f9a6-45da-a223-e1d2fde72dbf
+      x-ms-ratelimit-remaining-subscription-reads:
+      - '11999'
+      x-ms-request-id:
+      - 6c81768c-ecf2-466d-9bac-cdc42d7d80d3
+      x-ms-routing-request-id:
+      - EASTUS:20240208T201227Z:e9804451-f9a6-45da-a223-e1d2fde72dbf
+    status:
+      code: 200
+      message: OK
+version: 1

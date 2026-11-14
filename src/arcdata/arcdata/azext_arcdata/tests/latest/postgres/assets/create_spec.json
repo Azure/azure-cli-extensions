@@ -1,0 +1,23 @@
+{
+    "apiVersion":"arcdata.microsoft.com/v1beta6",
+    "kind":"PostgreSql",
+    "metadata":{
+        "name":"pg-ut00002",
+        "namespace":"test"
+        },
+    "spec":{
+        "scheduling": {
+            "default": {
+                "resources": {
+                    "requests": {"memory": "256Mi", "cpu": 1},
+                    "limits": {"memory": "1Gi", "cpu": 4}
+                }
+            }
+        },
+        "storage": {
+            "data": {"volumes": [{"size": "5Gi"}]},
+            "logs": {"volumes": [{"size": "5Gi"}]},
+            "backups": {"volumes": [{"size": "5Gi"}]}
+        }
+    }
+}

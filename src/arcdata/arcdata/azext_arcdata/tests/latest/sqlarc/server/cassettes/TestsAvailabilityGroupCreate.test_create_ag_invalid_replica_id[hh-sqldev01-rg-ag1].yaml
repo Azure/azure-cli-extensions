@@ -1,0 +1,153 @@
+interactions:
+- request:
+    body: client_id=04b07795-8ddb-461a-bbee-02f9e1bf7b46&grant_type=refresh_token&client_info=1&claims=%7B%22access_token%22%3A+%7B%22xms_cc%22%3A+%7B%22values%22%3A+%5B%22CP1%22%5D%7D%7D%7D&refresh_token=1.ARoAv4j5cvGGr0GRqy180BHbR5V3sATbjRpGu-4C-eG_e0YaAMQaAA.AgABAwEAAABVrSpeuWamRam2jAF1XRQEAwDs_wUA9P_L4wxwQlTaMl3511wTV5t3Bv4XV6JlhjPs95XwsNx82FVD-L3lghOSrFDLyeNxOm0qJcAcyZ-eoxCWTv9pMz0ly3XlDqW-emnj6-FlPkNVJRKkosKBDWfErYQDYE-uqF72LQ9krq2nJk2RbSk1vmxvtp-4uAnIdIsFNkxBNqLBxoyE7urEBzpAJ0I4-dZ6qvURrfK5AL-vn0vAWEOi7epETIJLlH034AXCKxqMGvcQksc_5l0tvK7dum4e0Rn9ZAyqjy3zkBOueaq44hyc7z3qRS_xG_aWnxSOIj9A6r9Qc_74jRDphuJIRZbmFqG9_3_sw4reouR28TMJe5k1XZpR4ePMIw0n2t-qlotH-DkqZncawSxITXL3F5odfuu_5S6wjYzM4nzN7plwGtfDrZ-RkX3A-Rp319kAYIKRI4u5VhQIrusDeZYQUSfsOm01sYxJQO78auWMa58i5djQLLqK2Kbyrg-vG9hNX3UJT4r6bsDHPa6vJuCx7-z1j1a14IMFnholMRrrLBYfBUl_JAQ-jE4GztLP99JI_ljgDL4ULH8IjwtQ8cKPgxkqClJehJl2vKN78yggbbWQTJnhDvzOcMa_NT8Je6r2el56-LiDqvjhmQDIA48QcKI_-t2tCCQ36KO-z6uAlF0PBGoeSOFa76PTn3v0sOe4_KA_JQcValPaY2kHqAP0RTzAwId3V1sMDJmmR662wRyq8ExF10f4EbLIlMc_wigWkG7iyW6xjsGEs3rt8K-Acqw94iYMglFaFsUm5LMrFP_ioX94rs-Ok20vnGC-RK5adD7GBoWUyZvOTCdeRoStRBmNI66ApI2pTW05ImvThyOvdAQ5UckSEn99j_kPcRNg-RYuNIRB0w1nmeuhAIyqkj4yPooAU2f8NSwBPbEgyg0t0YhS11MBPhIEjhfodowQgZAQy-Qi6QbDI-oTfPEia_lR3r17UKEWu0DDcU61Rb8fN3eTZfsgp-OUdy12BfABz9GXpyeuK1Zr86kSFRG9M-OgNxjZlokDEphlcAjh6Cu_KOomal4C_yP0HCxrrQI210huZiPD3ZHm46RFS3_Em2RONdo-KyGhAUQVd-anI_gviB7uFxK_5Bg0_Fdv-UKLO7c6vKu-HReJfvXac0oYG9DOGfEjrDTpuRl8B-LDoxJ4cakPEMtkcIGIxQ&scope=https%3A%2F%2Fmanagement.azure.com%2F.default+offline_access+openid+profile
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1556'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      User-Agent:
+      - python-requests/2.32.3
+      X-AnchorMailbox:
+      - Oid:12096bc6-d0f0-41da-827a-279e3ba94899@72f988bf-86f1-41af-91ab-2d7cd011db47
+      client-request-id:
+      - 16e56ae2-4aee-4d3e-8faa-17dfdc94cc87
+      x-client-cpu:
+      - x64
+      x-client-current-telemetry:
+      - 4|84,3|
+      x-client-last-telemetry:
+      - 4|0|||
+      x-client-os:
+      - win32
+      x-client-sku:
+      - MSAL.Python
+      x-client-ver:
+      - 1.20.0
+      x-ms-lib-capability:
+      - retry-after, h429
+    method: POST
+    uri: https://mock-host/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token
+  response:
+    body:
+      string: '{"token_type": "Bearer", "scope": "https://management.azure.com/user_impersonation
+        https://management.azure.com/.default", "expires_in": 5397, "ext_expires_in":
+        5397, "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IkNOdjBPSTNSd3FsSEZFVm5hb01Bc2hDSDJYRSIsImtpZCI6IkNOdjBPSTNSd3FsSEZFVm5hb01Bc2hDSDJYRSJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuYXp1cmUuY29tIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3LyIsImlhdCI6MTc0MzYyNzAzMiwibmJmIjoxNzQzNjI3MDMyLCJleHAiOjE3NDM2MzI3MzAsIl9jbGFpbV9uYW1lcyI6eyJncm91cHMiOiJzcmMxIn0sIl9jbGFpbV9zb3VyY2VzIjp7InNyYzEiOnsiZW5kcG9pbnQiOiJodHRwczovL2dyYXBoLndpbmRvd3MubmV0LzcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0Ny91c2Vycy8xMjA5NmJjNi1kMGYwLTQxZGEtODI3YS0yNzllM2JhOTQ4OTkvZ2V0TWVtYmVyT2JqZWN0cyJ9fSwiYWNyIjoiMSIsImFpbyI6IkFhUUFXLzhaQUFBQU53b1R2NURvQ2RGRlhoMjNHQWVWQjVabHk0dkFWdWR6c1FlQlI1RDVxRldFQU9aVDBTYnluOWxyZ1pLWUFhNGxNK1Bkc1pGS0tTQTlwWGMvekJtTmoyRUZNUnN1bFdWWFVNTmNvQWliQlcrOUZGUjIzdXU2eGY3MkMza3lHZEhQNzZGVVdrR1o4YWVQSzhzV0krMlRmVXdLS2hkL0VEaFdZcmdKV2J6aXR1Z2pTdUVWT3JadDZTUHkyQWFYbHl2WXdzYjlDdElPV1Q3NXBhMTJCRmtBckE9PSIsImFtciI6WyJmaWRvIiwicnNhIiwibWZhIl0sImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2IiwiYXBwaWRhY3IiOiIwIiwiZGV2aWNlaWQiOiJkODAwNjQxZi0wZGYzLTQ3NjUtYjcwYi1iMDc4ZjYyYTA5NDYiLCJmYW1pbHlfbmFtZSI6IkhvbGRlciIsImdpdmVuX25hbWUiOiJIYXNhbmkiLCJpZHR5cCI6InVzZXIiLCJpcGFkZHIiOiIxNzIuMTcyLjM0LjExNSIsIm5hbWUiOiJIYXNhbmkgSG9sZGVyIiwib2lkIjoiMTIwOTZiYzYtZDBmMC00MWRhLTgyN2EtMjc5ZTNiYTk0ODk5Iiwib25wcmVtX3NpZCI6IlMtMS01LTIxLTIxMjc1MjExODQtMTYwNDAxMjkyMC0xODg3OTI3NTI3LTU3OTEzNTExIiwicHVpZCI6IjEwMDMyMDAxRkU2RDZBOEUiLCJyaCI6IjEuQVJvQXY0ajVjdkdHcjBHUnF5MTgwQkhiUjBaSWYza0F1dGRQdWtQYXdmajJNQk1hQU1RYUFBLiIsInNjcCI6InVzZXJfaW1wZXJzb25hdGlvbiIsInNpZCI6IjgyYjM3MzcwLWQ3MTktNGU1My1iMGFlLWVjODAyNWRiN2NiNiIsInN1YiI6IlNtUGRPUG9kY08td1lJTzM4em15aDhmN2l0X053a0Y5R18tVWJ2Rjkwc28iLCJ0aWQiOiI3MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDciLCJ1bmlxdWVfbmFtZSI6Imhhc2FuaWhvbGRlckBtaWNyb3NvZnQuY29tIiwidXBuIjoiaGFzYW5paG9sZGVyQG1pY3Jvc29mdC5jb20iLCJ1dGkiOiJzcVA3SGpXTGRVT3hJSlBEWXJ0MEFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX2lkcmVsIjoiMSAxNiIsInhtc190Y2R0IjoxMjg5MjQxNTQ3fQ.gP67EWjaWEEq6Q2ja65Bzsi7JrWo5d2xpapeIGIxKrHVFlBXe6IbTujFizOVNTSCkz6VcNqIALih1hsmaJ8U6gLH6yD3m349P--9ERponshRWB1if6wU7axJEIB2cMTPyEAHRbgytsjQ0PQ7Rnw4P853hj098sEZmasYoK_zh0SfCTD55Xn23i8kkqG4uyXHSk0-wwjLg1OJVLoGXfsZv5RolovrugTwr1dnE1uk6CbaXnxV2OEdn_Ty4sqLDRUQtjrnUcV0j9db1D30v1-1rOTJ3TnU8Dw9njPohA5326sm0OyqLbfphgjeNQJUg6zL_scssCTQsIo6BC7S5qvH3Q",
+        "refresh_token": "1.ARoAv4j5cvGGr0GRqy180BHbR5V3sATbjRpGu-4C-eG_e0YaAMQaAA.AgABAwEAAABVrSpeuWamRam2jAF1XRQEAwDs_wUA9P-Em8b1QeW67xTW6IWRbjmSf24nSM9i_FI22MFMiGHdX912GXa9UGWBkVG5qaiqXL9uILFMOba-41zijSNA5PF-F-x8v8O-SH9kOvyJMManVIeV04GzfAK5v4BQnG0x7INb4ds5RUIzX9VZgYNwSGfYHMdP0T4E0WGl1cLbWmtaWBEfJPnY-cpUqtHqh6jxfB18tMIIeegiE2sUP2xFKbglgAdXNdYJs5aUGeCB6RSND9O7JAQdozQkv5nj_6LZnjMUrw7irxPCXLlDHpY3gtSU_pkUTdj-nKV0joTfKaXuHs0ulb065qDA8gI9PSDyNc5eB8c0NbPJmnG4d_neTC5dfSA5OCNCYTqTc0skBBY2abhue4JpOMHtFg2kdwGjkEgY9-xDod4Bm7Ie-UEeE1mjl08xz7x4zZiV89adQRT7tyEAdzDP7khYLsKXbn8s-Uaz72vap6yAhSU8QHju9vWPnz2BazmqfA6BGxya4VyLoB1QUUnCr51Lweom8Q4nEXSDWJukNeWZ0Vg0QNrrecUim0ctNtItFA8Qie1FyNMjlfwjZhwoTn_E1Nn0mHFYuvqHlyyTBYdVXbayneLMAz0JRYHIicxrIPWy-_3Y3canpjvtWPo3Xy9T0Nw_H_nC77c473GyzIZxNEvKU9nqZvJ78mUC0Zsi7aPHkrU8fsulQNaQhVtUI7EKytBM2K2G9P_la_IS5-Q6GnmzwYE3OSBFpySMOCT74sQQyzXPhX3LtvnzGi4osLY98zQO66NiYmMzoXH4fMCjtY7qhdJZ0b4YYEzLnW2Ii-sWJup_mpdAwys9gHBZtWVpdwVgYaX5s2E12Mu0uSysTayxpuCDG_KaKwaMVA8r0ChTzQk5I-KKNLVudqvpbxesOlhlvH2X_Kt8KUuc8OBX6qtf2SIvERyQxBn8xlnn4CHbQh75QxKRio2nXFFRlaHJvh_OwB9gUOomfNtP8mOLksHE-3tEjUqpXK4y-NZw0p26Z4d0NUvjrKV0zfMOJMuF3_kL0iBboBW2FbNR3QE94A43M7-g-3YIRnn4HZULpwKYxR-eny1p-lIQfsDSHV2xkas9UMwz0nkfQZXqHK39TJ7FKC-YZopM1qEl3mBcIhLV50tyPJe3yywgNkQ6OdgKnUM9Y9sbxOKbexxIITdf-oJ60hLy",
+        "foci": "1", "id_token": "eyJxxxx",
+        "client_info": "eyJ1aWQiOiIxMjA5NmJjNi1kMGYwLTQxZGEtODI3YS0yNzllM2JhOTQ4OTkiLCJ1dGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3In0"}'
+    headers:
+      Cache-Control:
+      - no-store, no-cache
+      Content-Length:
+      - '5726'
+      Content-Security-Policy-Report-Only:
+      - object-src 'none'; base-uri 'self'; script-src 'self' 'nonce-hRAMlsA3p7mRq4dU-i19ig'
+        'unsafe-inline' 'unsafe-eval' https://*.msauth.net https://*.msftauth.net
+        https://*.msftauthimages.net https://*.msauthimages.net https://*.msidentity.com
+        https://*.microsoftonline-p.com https://*.microsoftazuread-sso.com https://*.azureedge.net
+        https://*.outlook.com https://*.office.com https://*.office365.com https://*.microsoft.com
+        https://*.bing.com 'report-sample'; report-uri https://csp.microsoft.com/report/ESTS-UX-All
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Wed, 02 Apr 2025 20:55:32 GMT
+      Expires:
+      - '-1'
+      P3P:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - fpc=AgYcNm5X6mNOhoPouDVsDEkV2iMTAQAAAEObf98OAAAA; expires=Fri, 02-May-2025
+        20:55:32 GMT; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
+      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-XSS-Protection:
+      - '0'
+      client-request-id:
+      - 16e56ae2-4aee-4d3e-8faa-17dfdc94cc87
+      x-ms-clitelem:
+      - 1,0,0,3110534.6645,
+      x-ms-ests-server:
+      - 2.1.20465.4 - NCUS ProdSlices
+      x-ms-request-id:
+      - 1efba3b2-8b35-4375-b120-93c362bb7400
+      x-ms-srs:
+      - 1.P
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"availabilityGroupName": "ag1", "replicas": [{"serverInstance": "/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/hh-sqldev01-rg/providers/Microsoft.AzureArcData/sqlServerInstances/sql3000",
+      "endpointName": "", "endpointUrl": "tcp://ALL:5022", "endpointConnectLogin":
+      "FG\\Administrator", "availabilityMode": "SYNCHRONOUS_COMMIT", "failoverMode":
+      "MANUAL", "seedingMode": "AUTOMATIC", "backupPriority": 50, "secondaryRoleAllowConnections":
+      "NO", "primaryRoleAllowConnections": "ALL", "sessionTimeout": 10}], "databases":
+      ["appdb01"], "failureConditionLevel": 3, "healthCheckTimeout": 30000, "dbFailover":
+      "OFF", "dtcSupport": "NONE"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '652'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02615.887 Python/3.10.11 (Windows-10-10.0.26100-SP0)
+      x-ms-client-request-id:
+      - d0cbf2bf-1004-11f0-a56a-8cb87e67d26f
+    method: POST
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/hh-sqldev01-rg/providers/Microsoft.AzureArcData/sqlServerInstances/sql3000/createAvailabilityGroup?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.AzureArcData/SqlServerInstances/sql3000''
+        under resource group ''hh-sqldev01-rg'' was not found. For more details please
+        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '235'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Wed, 02 Apr 2025 20:55:32 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: CBAAF6AA80FE4CD49C3DEA8DE6663A44 Ref B: BN1AA2051012017 Ref C: 2025-04-02T20:55:33Z'
+      x-ms-correlation-request-id:
+      - aca02279-7810-4c0c-bb85-a53c8e268467
+      x-ms-failure-cause:
+      - gateway
+      x-ms-request-id:
+      - aca02279-7810-4c0c-bb85-a53c8e268467
+      x-ms-routing-request-id:
+      - EASTUS2:20250402T205533Z:aca02279-7810-4c0c-bb85-a53c8e268467
+    status:
+      code: 404
+      message: Not Found
+version: 1

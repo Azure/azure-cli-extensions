@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ model.secretName }}
+type: Opaque
+data:
+  username: {{ model.base64Username }}
+  password: {{ model.base64Password }}

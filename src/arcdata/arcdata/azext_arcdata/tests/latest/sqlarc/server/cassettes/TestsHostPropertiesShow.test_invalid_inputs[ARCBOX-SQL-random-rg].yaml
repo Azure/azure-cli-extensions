@@ -1,0 +1,53 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/random-rg/providers/Microsoft.HybridCompute/machines/ARCBOX-SQL/extensions/WindowsAgent.SqlServer?api-version=2023-03-15-preview
+  response:
+    body:
+      string: '{"error": {"code": "ResourceGroupNotFound", "message": "Resource group
+        ''random-rg'' could not be found."}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '101'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 15 Feb 2024 08:44:05 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 8AC4F6A2901048C995EDFA3A0D733418 Ref B: MAA201060516033 Ref C: 2024-02-15T08:44:06Z'
+      x-ms-correlation-request-id:
+      - 82ede376-f168-4479-b2f9-623e4dc0478c
+      x-ms-failure-cause:
+      - gateway
+      x-ms-request-id:
+      - 82ede376-f168-4479-b2f9-623e4dc0478c
+      x-ms-routing-request-id:
+      - SOUTHINDIA:20240215T084406Z:82ede376-f168-4479-b2f9-623e4dc0478c
+    status:
+      code: 404
+      message: Not Found
+version: 1

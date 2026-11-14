@@ -1,0 +1,73 @@
+{
+   "apiVersion": "arcdata.microsoft.com/v5",
+   "kind": "DataController",
+   "metadata": {
+      "name": "datacontroller"
+   },
+   "spec": {
+      "infrastructure": "gcp",
+      "credentials": {
+         "serviceAccount": "sa-arc-controller",
+         "dockerRegistry": "arc-private-registry"
+      },
+      "resources": {
+         "controller": {
+            "requests": {
+               "cpu": "400m",
+               "memory": "2Gi"
+            },
+            "limits": {
+               "cpu": "1800m",
+               "memory": "2Gi"
+            }
+         },
+         "controllerDb": {
+            "requests": {
+               "cpu": "200m",
+               "memory": "4Gi"
+            },
+            "limits": {
+               "cpu": "800m",
+               "memory": "6Gi"
+            }
+         }
+      },
+      "storage": {
+         "data": {
+           "className": "standard",
+           "accessMode": "ReadWriteOnce",
+           "size": "15Gi"
+         },
+         "logs": {
+           "className": "standard",
+           "accessMode": "ReadWriteOnce",
+           "size": "10Gi"
+         }
+      },
+      "security": {
+         "allowDumps": true,
+         "allowNodeMetricsCollection": true,
+         "allowPodMetricsCollection": true
+      },
+      "services": [
+         {
+            "name": "controller",
+            "serviceType": "LoadBalancer",
+            "port": 30080
+         }
+      ],
+      "settings": {
+         "azure": {
+            "autoUploadMetrics": "false",
+            "autoUploadLogs": "false"
+         },
+         "controller": {
+            "logs.rotation.size": "5000",
+            "logs.rotation.days": "7"
+         },
+         "ElasticSearch": {
+            "vm.max_map_count": "-1"
+         }
+      }
+   }
+}

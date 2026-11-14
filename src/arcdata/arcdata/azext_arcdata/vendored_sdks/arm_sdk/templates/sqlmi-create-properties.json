@@ -1,0 +1,125 @@
+{
+    "properties": {
+        "licenseType": "LicenseIncluded",
+        "k8sRaw": {
+            "spec": {
+                "scheduling": {
+                    "default": {
+                        "resources": {
+                            "requests": {
+                                "cpu": "2",
+                                "memory": "4Gi"
+                            },
+                            "limits": {
+                                "cpu": "4",
+                                "memory": "8Gi"
+                            }
+                        }
+                    }
+                },
+                "replicas": 1,
+                "dev": false,
+                "services": {
+                    "primary": {
+                        "type": "",
+                        "labels": {},
+                        "annotations": {}
+                    },
+                    "readableSecondaries": {
+                        "type": "",
+                        "labels": {},
+                        "annotations": {}
+                    }
+                },
+                "storage": {
+                    "data": {
+                        "volumes": [
+                            {
+                                "className": "",
+                                "size": "5Gi",
+                                "labels": {},
+                                "annotations": {}
+                            }
+                        ]
+                    },
+                    "logs": {
+                        "volumes": [
+                            {
+                                "className": "",
+                                "size": "5Gi",
+                                "labels": {},
+                                "annotations": {}
+                            }
+                        ]
+                    },
+                    "datalogs": {
+                        "volumes": [
+                            {
+                                "className": "",
+                                "size": "5Gi",
+                                "labels": {},
+                                "annotations": {}
+                            }
+                        ]
+                    },
+                    "backups": {
+                        "volumes": [
+                            {
+                                "className": "",
+                                "size": "5Gi",
+                                "labels": {},
+                                "annotations": {}
+                            }
+                        ]
+                    },
+                    "haOrchestratorLogs": {
+                          "volumes": [
+                              {
+                                  "className": "",
+                                  "size": "5Gi",
+                                  "labels": {},
+                                  "annotations": {}
+                              }
+                          ]
+                      }
+                },
+                "backup": {
+                    "retentionPeriodInDays": "7"
+                },
+                "security": {
+                    "adminLoginSecret": "",
+                    "serviceCertificateSecret": ""
+                },
+                "metadata": {
+                    "namespace": "",
+                    "labels": "",
+                    "annotations": ""
+                },
+                "others": {
+                    "noexternalEndpoint": true,
+                    "certificatePublicKeyFile": "",
+                    "certificatePrivateKeyFile": ""
+                },
+                "settings": {
+                    "collation": "SQL_Latin1_General_CP1_CI_AS",
+                    "language": {
+                        "lcid": "1033"
+                    },
+                    "sqlagent": {
+                        "enabled": "false"
+                    },
+                    "timezone": "UTC",
+                    "traceflags": []
+                },
+                "preferredPrimaryReplica":"",
+                "primary_replica_failover_interval":"",
+                "dryRun": false
+            }
+        }
+    },
+    "sku": {
+        "name": "vCore",
+        "tier": "GeneralPurpose"
+    },
+    "tags": {}
+  }
