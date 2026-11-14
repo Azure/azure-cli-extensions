@@ -115,7 +115,6 @@ def validate_host_supports_platform(platform: str) -> None:  # pylint: disable=r
         eprint("Windows container policies cannot be generated on MacOS. Use --platform linux/amd64.")
 
 
-
 class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
     # static variable to cache layer hashes between container groups
     layer_cache = {}
