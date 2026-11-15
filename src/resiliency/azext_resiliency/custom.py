@@ -36,6 +36,9 @@ from .aaz.latest.resiliency.goal_assignment import (
     Update as _GoalAssignmentUpdate,
     UpdateGoalResource as _GoalAssignmentUpdateGoalResource,
 )
+from .aaz.latest.resiliency.goal_assignment.goal_resource import (
+    Show as _GoalResourceShow,
+)
 from .aaz.latest.resiliency.operation_status import (
     Show as _OperationStatusShow,
 )
@@ -212,6 +215,27 @@ class RecoveryPlanValidateForReprotect(_RecoveryPlanValidateForReprotect):
             _DecodeStringPropertiesOn200, _OperationIdQueryCompatibility,
             _RecoveryPlanValidateForReprotect.RecoveryPlanActionsValidateForReprotect):
         pass
+
+
+# The 2026-10-01 spec limits goalResourceName to ^[a-zA-Z0-9-]{3,24}$ (the goal assignment's
+# pattern), but the service names goal resources by GUID (36 characters), as returned by
+# `goal-resource list`. Accept those names. Remove after the spec pattern is fixed.
+@register_command("resiliency goal-assignment goal-resource show")
+class GoalResourceShow(_GoalResourceShow):
+    """Get a goal resource.
+
+    :example: Get a goal resource by the name returned by `az resiliency goal-assignment goal-resource list`
+        az resiliency goal-assignment goal-resource show --service-group-name production-sg --goal-assignment-name zonal-resiliency-goal --goal-resource-name 3f2b8c1e-7d4a-4e6b-9a1c-5d8e2f7b4c90
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        # The generated argument can't be redefined, so only its format is replaced.
+        args_schema.goal_resource_name._fmt = AAZStrArgFormat(  # pylint: disable=protected-access
+            pattern="^[a-zA-Z0-9-]{3,36}$",
+        )
+        return args_schema
 
 
 # The service identifies each item of updateGoalResources by the goal resource's own ARM ID
