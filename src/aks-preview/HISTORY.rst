@@ -2463,3 +2463,4 @@ Pending
 
 * new feature `enable-cluster-autoscaler`
 * default agentType is VMSS
+
