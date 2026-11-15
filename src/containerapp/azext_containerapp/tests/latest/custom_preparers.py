@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import os
 import time
 
 from azure.cli.command_modules.containerapp._utils import format_location
@@ -17,7 +18,8 @@ from .common import STAGE_LOCATION
 
 class ConnectedClusterPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
     def __init__(self, name_prefix='aks', location='eastus2euap', aks_name='my-aks-cluster', connected_cluster_name='my-connected-cluster',
-                 resource_group_parameter_name='resource_group', skip_delete=False, skip_connected_cluster=False):
+                 resource_group_parameter_name='resource_group', skip_delete=False, skip_connected_cluster=False,
+                 skip_pre_onboarding_checks=False):
         super(ConnectedClusterPreparer, self).__init__(name_prefix, 15)
         self.cli_ctx = get_dummy_cli()
         self.location = location
@@ -26,6 +28,7 @@ class ConnectedClusterPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         self.resource_group_parameter_name = resource_group_parameter_name
         self.skip_delete = skip_delete
         self.skip_connected_cluster = skip_connected_cluster
+        self.skip_pre_onboarding_checks = skip_pre_onboarding_checks
 
     def create_resource(self, name, **kwargs):
         group = self._get_resource_group(**kwargs)
@@ -40,7 +43,16 @@ class ConnectedClusterPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             self.live_only_execute(self.cli_ctx, f'az aks get-credentials --resource-group {group} --name {self.infra_cluster} --overwrite-existing --admin')
 
             if not self.skip_connected_cluster:
-                self.live_only_execute(self.cli_ctx, f'az connectedk8s connect --resource-group {group} --name {self.connected_cluster_name} --location {arc_location}')
+                original_azure_local_disconnected = os.environ.get("AZURE_LOCAL_DISCONNECTED")
+                if self.skip_pre_onboarding_checks:
+                    os.environ["AZURE_LOCAL_DISCONNECTED"] = "true"
+                try:
+                    self.live_only_execute(self.cli_ctx, f'az connectedk8s connect --resource-group {group} --name {self.connected_cluster_name} --location {arc_location}')
+                finally:
+                    if original_azure_local_disconnected is None:
+                        os.environ.pop("AZURE_LOCAL_DISCONNECTED", None)
+                    else:
+                        os.environ["AZURE_LOCAL_DISCONNECTED"] = original_azure_local_disconnected
                 connected_cluster = self.live_only_execute(self.cli_ctx, f'az connectedk8s show --resource-group {group} --name {self.connected_cluster_name}').get_output_in_json()
                 while connected_cluster is not None and connected_cluster["connectivityStatus"] == "Connecting":
                     time.sleep(5)

@@ -25,6 +25,7 @@ from azure.cli.core.azclierror import (
     ResourceNotFoundError,
     ArgumentUsageError,
     MutuallyExclusiveArgumentError)
+from azure.cli.core.util import get_safe_executable_path
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobDecorator
@@ -1898,12 +1899,15 @@ def patch_cli_call(cmd, resource_group, container_app_name, container_name, targ
         logger.warning("Applying patch for container app: " + container_app_name + " container: " + container_name)
         validate_image_name(target_image_name)
         validate_image_name(new_run_image)
+        docker_exec_path = get_safe_executable_path("docker")
+        if not docker_exec_path:
+            raise CLIError("Docker executable could not be found.")
         subprocess.run([pack_exec_path, "rebase", "-q", target_image_name, "--run-image", new_run_image, "--force"], check=True)
         new_target_image_name = target_image_name.split(":")[0] + ":" + new_run_image.split(":")[1]
         validate_image_name(new_target_image_name)
-        subprocess.run(["docker", "tag", target_image_name, new_target_image_name], check=True)
+        subprocess.run([docker_exec_path, "tag", target_image_name, new_target_image_name], check=True)
         logger.debug(f"Publishing {new_target_image_name} to registry...")
-        subprocess.run(["docker", "push", "-q", new_target_image_name], check=True)
+        subprocess.run([docker_exec_path, "push", "-q", new_target_image_name], check=True)
         logger.warning("Patch applied and published successfully.\nNew image: " + new_target_image_name)
     except Exception:
         logger.error("Error: Failed to apply patch and publish. Check if registry is logged in and has write access.")

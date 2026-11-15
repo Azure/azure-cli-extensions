@@ -321,33 +321,40 @@ def create_and_verify_containerapp_up_for_default_registry_image(
 
 
 def create_extension_and_custom_location(test_cls, resource_group, connected_cluster_name, custom_location_name):
-    try:
-        connected_cluster = test_cls.cmd(f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
-        while connected_cluster["connectivityStatus"] == "Connecting":
-            time.sleep(5)
-            connected_cluster = test_cls.cmd(f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
+    if not (test_cls.is_live or test_cls.in_recording):
+        return
 
-        connected_cluster_id = connected_cluster.get('id')
-        location = TEST_LOCATION
-        if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastasia"
-        extension = test_cls.cmd(f'az k8s-extension create'
-                                 f' --resource-group {resource_group}'
-                                 f' --name containerapp-ext'
-                                 f' --cluster-type connectedClusters'
-                                 f' --cluster-name {connected_cluster_name}'
-                                 f' --extension-type "Microsoft.App.Environment" '
-                                 f' --release-train stable'
-                                 f' --auto-upgrade-minor-version true'
-                                 f' --scope cluster'
-                                 f' --release-namespace appplat-ns'
-                                 f' --configuration-settings "Microsoft.CustomLocation.ServiceAccount=default"'
-                                 f' --configuration-settings "appsNamespace=appplat-ns"'
-                                 f' --configuration-settings "clusterName={connected_cluster_name}"'
-                                 f' --configuration-settings "envoy.annotations.service.beta.kubernetes.io/azure-load-balancer-resource-group={resource_group}"').get_output_in_json()
-        test_cls.cmd(f'az customlocation create -g {resource_group} -n {custom_location_name} -l {location} --host-resource-id {connected_cluster_id} --namespace appplat-ns -c {extension["id"]}')
-    except:
-        pass
+    connected_cluster = test_cls.cmd(
+        f'az connectedk8s show --resource-group {resource_group} '
+        f'--name {connected_cluster_name}').get_output_in_json()
+    while connected_cluster["connectivityStatus"] == "Connecting":
+        time.sleep(5)
+        connected_cluster = test_cls.cmd(
+            f'az connectedk8s show --resource-group {resource_group} '
+            f'--name {connected_cluster_name}').get_output_in_json()
+
+    connected_cluster_id = connected_cluster.get('id')
+    location = TEST_LOCATION
+    if format_location(location) == format_location(STAGE_LOCATION):
+        location = "eastasia"
+    extension = test_cls.cmd(f'az k8s-extension create'
+                             f' --resource-group {resource_group}'
+                             f' --name containerapp-ext'
+                             f' --cluster-type connectedClusters'
+                             f' --cluster-name {connected_cluster_name}'
+                             f' --extension-type "Microsoft.App.Environment" '
+                             f' --release-train stable'
+                             f' --auto-upgrade-minor-version true'
+                             f' --scope cluster'
+                             f' --release-namespace appplat-ns'
+                             f' --configuration-settings "Microsoft.CustomLocation.ServiceAccount=default"'
+                             f' --configuration-settings "appsNamespace=appplat-ns"'
+                             f' --configuration-settings "clusterName={connected_cluster_name}"'
+                             f' --configuration-settings "envoy.annotations.service.beta.kubernetes.io/azure-load-balancer-resource-group={resource_group}"').get_output_in_json()
+    test_cls.cmd(
+        f'az customlocation create -g {resource_group} -n {custom_location_name} '
+        f'-l {location} --host-resource-id {connected_cluster_id} '
+        f'--namespace appplat-ns -c {extension["id"]}')
 
 
 def verify_containerapp_create_exception(
