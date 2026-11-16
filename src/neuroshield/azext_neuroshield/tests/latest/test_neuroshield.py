@@ -6,6 +6,8 @@
 import os
 import re
 import time
+import unittest
+from unittest import mock
 
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.core.util import send_raw_request
@@ -119,15 +121,58 @@ class NeuroshieldScenario(ScenarioTest):
         self.cmd("neuroshield delete -g {rg} -n {ns} --yes")
         self.cmd("neuroshield list -g {rg}", checks=[self.check("length(@)", 0)])
 
+    def _mitigation(self, name):
+        return self.cmd("neuroshield protected-resource mitigation show -g {rg} --neuroshield-name {ns} "
+                        "--protected-resource {pr} -n " + name).get_output_in_json()["properties"]
+
     def _wait_mitigation(self, name, done):
         for _ in range(40):
-            status = self.cmd("neuroshield protected-resource mitigation show -g {rg} --neuroshield-name {ns} "
-                              "--protected-resource {pr} -n " + name).get_output_in_json()["properties"]["status"]
+            status = self._mitigation(name)["status"]
             if status in done:
                 return status
             if self.is_live:
                 time.sleep(30)
         self.fail(f"mitigation {name} did not reach {done}")
+
+    def _poll_settled(self, names):
+        """Bounded poll until none of the mitigations can still run; returns the last seen properties."""
+        for _ in range(40):
+            props = {name: self._mitigation(name) for name in names}
+            if _settled([p["status"] for p in props.values()]):
+                break
+            if self.is_live:
+                time.sleep(30)
+        return props
+
+    def _rollback_succeeded(self, names):
+        """Failure-safe cleanup: roll back every succeeded mitigation until none of them can still run.
+
+        Rolling back one mitigation lets the next Queued one of the finding run, so repeat until nothing new
+        succeeds; each mitigation is rolled back at most once, which bounds the loop.
+        """
+        attempted, errors = set(), []
+        while True:
+            props = self._poll_settled(names)
+            todo = [n for n, p in props.items() if p["status"] == "Succeeded" and n not in attempted]
+            if not todo:
+                break
+            for name in todo:
+                attempted.add(name)
+                if not props[name].get("isRollbackable"):
+                    errors.append(f"{name} succeeded but is not rollbackable")
+                    continue
+                try:
+                    self.cmd("neuroshield protected-resource mitigation rollback -g {rg} --neuroshield-name {ns} "
+                             "--protected-resource {pr} --mitigation-id " + name)
+                    status = self._wait_mitigation(name, ("RolledBack", "RollbackFailed"))
+                    if status != "RolledBack":
+                        errors.append(f"{name} rollback ended {status}")
+                except Exception as ex:  # pylint: disable=broad-except
+                    errors.append(f"{name} rollback raised {ex!r}")
+        if not _settled(p["status"] for p in props.values()):
+            errors.append(f"still running: {props}")
+        if errors:
+            raise AssertionError("mitigation cleanup failed: " + "; ".join(errors))
 
     # Findings are produced by the Neuron agent on a real VM, so these tests run against a
     # service-provided NeuroShield (Manual response mode) that already has findings.
@@ -135,15 +180,15 @@ class NeuroshieldScenario(ScenarioTest):
     def _use_finding(self, pr, finding):
         self.kwargs.update({
             "rg": os.environ.get("AZURE_TEST_NEUROSHIELD_FINDING_RG", "satyaTestRG"),
-            "ns": os.environ.get("AZURE_TEST_NEUROSHIELD_FINDING_NS", "Satya-NS-Manual-1"),
+            "ns": os.environ.get("AZURE_TEST_NEUROSHIELD_FINDING_NS", "ns-isolated-cuap-1113-8469"),
             "pr": pr,
             "finding": finding,
         })
         return "-g {rg} --neuroshield-name {ns} --protected-resource {pr}"
 
     def test_neuroshield_mitigation_execute(self):
-        pr_args = self._use_finding("satya-rpaas-ns3-br41x5", "CVE-2026-24061-satya-rpaas-ns3")
-        self.kwargs["mitigation"] = "CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port"
+        pr_args = self._use_finding("nsisolated11158469-2", "CVE-2026-78410-nsisolated11158469-2")
+        self.kwargs["mitigation"] = "CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations"
 
         self.cmd("neuroshield protected-resource finding show " + pr_args + " -n {finding}", checks=[
             self.check("name", "{finding}"),
@@ -152,8 +197,10 @@ class NeuroshieldScenario(ScenarioTest):
         self.cmd("neuroshield protected-resource mitigation show " + pr_args + " -n {mitigation}", checks=[
             self.check("properties.status", "AwaitingApproval"),
             self.check("properties.isRollbackable", True),
+            self.check("properties.rank", 4),
         ])
 
+        self.addCleanup(self._rollback_succeeded, [self.kwargs["mitigation"]])
         result = self.cmd("neuroshield protected-resource mitigation execute " + pr_args + " --mitigation-id {mitigation}",
                           checks=[self.check("name", "{mitigation}")]).get_output_in_json()
         self.assertNotEqual(result["properties"]["status"], "AwaitingApproval")
@@ -164,24 +211,72 @@ class NeuroshieldScenario(ScenarioTest):
         self.assertEqual(self._wait_mitigation(self.kwargs["mitigation"], ("RolledBack", "RollbackFailed")),
                          "RolledBack")
 
-    # Mitigating a finding approves all its AwaitingApproval mitigations, but only one runs at a
-    # time and the rest stay queued once it succeeds. Rollback then targets the succeeded one.
+    # Mitigating a finding approves all its AwaitingApproval mitigations; they run one at a time by rank.
+    # Rollback then targets the succeeded one; cleanup handles whatever runs after it (see _settled).
     def test_neuroshield_finding_mitigation(self):
-        pr_args = self._use_finding("danlope-scale-vm-01-k8ex8x", "CVE-2026-43284-danlope-scale-vm-01")
+        pr_args = self._use_finding("nsisolated11158469-2", "CVE-2026-82049-nsisolated11158469-2")
+
+        pending = [m["name"] for m in self.cmd("neuroshield protected-resource mitigation list " + pr_args)
+                   .get_output_in_json()
+                   if m["properties"]["findingId"].endswith("/" + self.kwargs["finding"])
+                   and m["properties"]["status"] == "AwaitingApproval"]
+        self.assertTrue(pending, "finding has no AwaitingApproval mitigations")
+        self.addCleanup(self._rollback_succeeded, pending)
 
         queued = self.cmd("neuroshield protected-resource finding mitigate " + pr_args + " --finding-id {finding}",
                           checks=[self.check("length(value) > `0`", True)]).get_output_in_json()["value"]
-        names = {m["name"] for m in queued}
-        for _ in range(60):
-            mitigations = self.cmd("neuroshield protected-resource mitigation list " + pr_args).get_output_in_json()
-            succeeded = [m["name"] for m in mitigations
-                         if m["name"] in names and m["properties"]["status"] == "Succeeded"]
-            if succeeded:
-                break
-            if self.is_live:
-                time.sleep(30)
-        else:
-            self.fail(f"no mitigation of {self.kwargs['finding']} succeeded")
+        self.assertCountEqual([m["name"] for m in queued], pending)
+
+        props = self._poll_settled(pending)
+        statuses = {n: p["status"] for n, p in props.items()}
+        self.assertTrue(_settled(statuses.values()), statuses)
+        succeeded = [n for n, s in statuses.items() if s == "Succeeded"]
+        self.assertTrue(succeeded, statuses)
+
         self.cmd("neuroshield protected-resource finding rollback " + pr_args + " --finding-id {finding}",
                  checks=[self.check("value[].name", succeeded)])
         self.assertEqual(self._wait_mitigation(succeeded[0], ("RolledBack", "RollbackFailed")), "RolledBack")
+
+
+# Service behavior (NeuroShield team, verified live): mitigations of a finding run one at a time by rank.
+# While one is Succeeded or Skipped, the remaining Queued ones do not run. A Failed one, or rolling back
+# the Succeeded one, lets the next Queued mitigation run.
+_DONE = {"AwaitingApproval", "Succeeded", "Failed", "Skipped", "RolledBack", "RollbackFailed"}
+_BLOCKS_QUEUE = {"Succeeded", "Skipped"}
+
+
+def _settled(statuses):
+    statuses = list(statuses)
+    blocked = bool(_BLOCKS_QUEUE.intersection(statuses))
+    return all(s in _DONE or (s == "Queued" and blocked) for s in statuses)
+
+
+class MitigationCleanupTest(unittest.TestCase):
+
+    def test_cleanup_rolls_back_after_failure(self):
+        finding = "/findings/CVE-2026-82049-nsisolated11158469-2"
+        state = {"m1": "AwaitingApproval", "m2": "AwaitingApproval"}
+
+        def cmd(command, checks=None):  # pylint: disable=unused-argument
+            name = command.split()[-1]
+            if "mitigation list" in command:
+                body = [{"name": n, "properties": {"status": s, "findingId": finding}} for n, s in state.items()]
+            elif "finding mitigate" in command:
+                state.update(m1="Succeeded", m2="Queued")
+                body = {"value": [{"name": n} for n in state]}
+            elif "finding rollback" in command:
+                raise AssertionError("simulated failure")
+            elif "mitigation rollback" in command:
+                state[name] = "RolledBack"
+                state.update({n: "Succeeded" for n, s in state.items() if s == "Queued"})  # queue resumes
+                body = {}
+            else:
+                body = {"properties": {"status": state[name], "isRollbackable": True}}
+            return mock.Mock(get_output_in_json=lambda: body)
+
+        test = NeuroshieldScenario("test_neuroshield_finding_mitigation")
+        test.cmd = cmd
+        with self.assertRaisesRegex(AssertionError, "simulated failure"):
+            test.test_neuroshield_finding_mitigation()
+        self.assertTrue(test.doCleanups())
+        self.assertEqual(state, {"m1": "RolledBack", "m2": "RolledBack"})

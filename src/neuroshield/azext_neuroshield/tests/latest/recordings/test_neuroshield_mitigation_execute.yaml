@@ -15,27 +15,29 @@ interactions:
       User-Agent:
       - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3?api-version=2026-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2?api-version=2026-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","name":"CVE-2026-24061-satya-rpaas-ns3","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/findings","properties":{"cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","severity":"High","description":"GNU
-        Inetutils telnetd allows unauthenticated remote attackers to supply a malicious
-        username environment variable and bypass authentication to obtain root access.","reason":"Installed
-        version is below the vendor fix.\n- inetutils-telnetd 2:2.5-3ubuntu4: Installed
-        version is below the vendor fix.","detectedTime":"2026-10-20T19:56:07.2702343+00:00","status":"Active"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","name":"CVE-2026-78410-nsisolated11158469-2","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/findings","properties":{"cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","severity":"High","description":"util-linux''s
+        privileged mount utility lets a local unprivileged user who can replace an
+        authorized bind-mount source or ancestor redirect the mount to another host
+        directory and change its ownership or permissions when the /etc/fstab entry
+        requests those changes.","reason":"Installed version is in a source-backed
+        affected range.\n- libmount1 2.39.3-9ubuntu6.6: Installed version is in a
+        source-backed affected range.","detectedTime":"2026-11-16T05:57:42.7427859+00:00","status":"Active"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '975'
+      - '1099'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 11 Nov 2026 04:08:23 GMT
+      - Mon, 16 Nov 2026 06:43:18 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - c85c03e5-610d-4470-8cc5-0a2629fd49e8
+      - 71fa6a85-da8e-4a40-a227-423325068bcf
       pragma:
       - no-cache
       strict-transport-security:
@@ -45,15 +47,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '19'
+      - '17'
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/a9fd4ccf-5c01-4180-aa70-7ed54c6cef05
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/5848cb39-8519-4338-ae04-b736a6b12f27
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: F724595115774F3BA28F004A5FF7FEF2 Ref B: SG2AA1070305052 Ref C: 2026-11-11T04:08:22Z'
+      - 'Ref A: 746972EDD7394E8F8867EBE60725C811 Ref B: SG2AA1070306062 Ref C: 2026-11-16T06:43:18Z'
     status:
       code: 200
       message: OK
@@ -73,27 +75,26 @@ interactions:
       User-Agent:
       - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations?api-version=2026-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
-        all incoming traffic to the locally registered Telnet port, including local
-        connections to that port. Legitimate Telnet access on that port stops, while
-        other services remain available; custom Telnet listeners on other ports are
-        not covered.","isRollbackable":true,"status":"AwaitingApproval"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"AwaitingApproval"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1210'
+      - '1226'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 11 Nov 2026 04:08:26 GMT
+      - Mon, 16 Nov 2026 06:43:21 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 3b9d4d23-0564-47d7-b828-02952f986831
+      - 3f404762-1658-440b-b2c6-5418c24a0b48
       pragma:
       - no-cache
       strict-transport-security:
@@ -103,15 +104,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '24'
+      - '15'
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/928f2827-61f7-4e7a-a0ea-69a2505efb73
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/5dd4be02-9094-4d29-bc77-c29fa4ceb240
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 4324705F13C041818F224383E0F0741C Ref B: SG2AA1040518025 Ref C: 2026-11-11T04:08:25Z'
+      - 'Ref A: 5CD11C2710BD45AB8CD5FE14BAB39C9A Ref B: SG2AA1040518054 Ref C: 2026-11-16T06:43:21Z'
     status:
       code: 200
       message: OK
@@ -133,27 +134,26 @@ interactions:
       User-Agent:
       - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port/execute?api-version=2026-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations/execute?api-version=2026-10-01-preview
   response:
     body:
-      string: '{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
-        all incoming traffic to the locally registered Telnet port, including local
-        connections to that port. Legitimate Telnet access on that port stops, while
-        other services remain available; custom Telnet listeners on other ports are
-        not covered.","isRollbackable":true,"status":"Queued"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:08:28.5652773+00:00"}}'
+      string: '{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"Queued"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:43:24.3067606+00:00"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1334'
+      - '1350'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 11 Nov 2026 04:08:29 GMT
+      - Mon, 16 Nov 2026 06:43:24 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 74fd240d-d76d-4574-b1eb-e8b5d50b24ec
+      - 1d7a948f-30e2-4d1c-8f38-4ab602151780
       pragma:
       - no-cache
       strict-transport-security:
@@ -163,9 +163,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '64'
+      - '46'
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/835306ac-e92b-4745-99a6-c531406f4a6f
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/232ee5c2-c595-4182-bd28-bd90ab0556ec
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-writes:
@@ -173,7 +173,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: EF897338FEBA4B72BF192A14E2F1D6B6 Ref B: SG2AA1070304025 Ref C: 2026-11-11T04:08:28Z'
+      - 'Ref A: 000244B068E74632B79A77CCEE5E4808 Ref B: SG2AA1040513025 Ref C: 2026-11-16T06:43:24Z'
     status:
       code: 200
       message: OK
@@ -193,27 +193,26 @@ interactions:
       User-Agent:
       - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations?api-version=2026-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:08:28.5652773Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
-        all incoming traffic to the locally registered Telnet port, including local
-        connections to that port. Legitimate Telnet access on that port stops, while
-        other services remain available; custom Telnet listeners on other ports are
-        not covered.","isRollbackable":true,"status":"Queued"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:43:24.3067606Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"Queued"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1291'
+      - '1307'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 11 Nov 2026 04:08:31 GMT
+      - Mon, 16 Nov 2026 06:43:27 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 8ede5480-57ac-471f-885e-97654639e32a
+      - 70b1c1a9-3c9f-445a-9435-6d176b646cdb
       pragma:
       - no-cache
       strict-transport-security:
@@ -223,15 +222,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '25'
+      - '9'
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/2686b5c9-683e-45b1-b43a-84bfa73a7b95
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/ee2990f9-2b37-4d11-8bfd-2f313bcd4317
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: CB66F8CF90084EF4B07A777686E5DF70 Ref B: SG2AA1040515060 Ref C: 2026-11-11T04:08:31Z'
+      - 'Ref A: 9C7A224C6A9C44A6A10B1595E77135B7 Ref B: SG2AA1040517040 Ref C: 2026-11-16T06:43:27Z'
     status:
       code: 200
       message: OK
@@ -251,28 +250,302 @@ interactions:
       User-Agent:
       - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations?api-version=2026-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:08:28.5652773Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
-        all incoming traffic to the locally registered Telnet port, including local
-        connections to that port. Legitimate Telnet access on that port stops, while
-        other services remain available; custom Telnet listeners on other ports are
-        not covered.","isRollbackable":true,"status":"Succeeded","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:43:24.3067606Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1307'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:44:00 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d7fdc8e9-8ad5-438f-9701-dd92d97cc0c9
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '16'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/4bbf3f52-7be0-4a9b-a86e-19a7027d5ca7
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 57C40E1E1E59414F92CDBB986C903F3D Ref B: SG2AA1070303040 Ref C: 2026-11-16T06:44:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:43:24.3067606Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1307'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:44:34 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 8a70abd8-a7db-43d2-828b-4afbb291cf33
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '11'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/southeastasia/2f054220-881c-4935-9a86-a83fdac3e1c1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6169FF14195D48A5A2EA68696F037A6C Ref B: SG2AA1040517023 Ref C: 2026-11-16T06:44:33Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:43:24.3067606Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1307'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:45:07 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 6d94a50d-7289-446d-a75f-376ba14e894d
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '16'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/839ff7ca-ec15-46be-a60b-2b178762f57e
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 9B689FB5446A41ABB276040252DEA9F7 Ref B: SG2AA1040516025 Ref C: 2026-11-16T06:45:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:43:24.3067606Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"Queued"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1307'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:45:40 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c411a24f-653c-447d-8880-a2e69395d858
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '17'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/4d92577c-4fa2-4945-be0d-c139f04de4e7
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: E6FE42CF225B465D9B88C5529543B65A Ref B: SG2AA1040513029 Ref C: 2026-11-16T06:45:40Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"GatewayTimeout","message":"The gateway did not receive
+        a response from ''Microsoft.NetworkSecurity'' within the specified time period."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '153'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:46:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-msedge-ref:
+      - 'Ref A: 23608F00B4A043E3991582FA85912239 Ref B: SG2AA1040512029 Ref C: 2026-11-16T06:46:13Z'
+    status:
+      code: 504
+      message: Gateway Timeout
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:43:24.3067606Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"Succeeded","appliedTime":"2026-11-16T06:45:50.9709789+00:00","statusDetails":"Neuron
         reported Succeeded: Applied."}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1398'
+      - '1414'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 11 Nov 2026 04:09:04 GMT
+      - Mon, 16 Nov 2026 06:46:34 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 93076469-783b-4b75-a226-9f947f4ea6df
+      - 5f348cdf-2b85-48f9-bde1-eccf068d3b2c
       pragma:
       - no-cache
       strict-transport-security:
@@ -282,15 +555,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '21'
+      - '17'
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/ea4cde23-6bcd-4171-9255-5f57a66c5bdd
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/86ed0ba3-d4e7-4924-9952-b4a5bc03bbc4
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 1B077803C19F44B99F7EB84E41B80520 Ref B: SG2AA1070302029 Ref C: 2026-11-11T04:09:03Z'
+      - 'Ref A: CF3854C385E24AB2A6FBF28C26E725F6 Ref B: SG2AA1040516042 Ref C: 2026-11-16T06:46:34Z'
     status:
       code: 200
       message: OK
@@ -312,28 +585,27 @@ interactions:
       User-Agent:
       - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port/rollback?api-version=2026-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations/rollback?api-version=2026-10-01-preview
   response:
     body:
-      string: '{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
-        all incoming traffic to the locally registered Telnet port, including local
-        connections to that port. Legitimate Telnet access on that port stops, while
-        other services remain available; custom Telnet listeners on other ports are
-        not covered.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
-        reported Succeeded: Applied."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:09:06.4303534+00:00"}}'
+      string: '{"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-16T06:45:50.9709789+00:00","statusDetails":"Neuron
+        reported Succeeded: Applied."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"createdByType":null,"createdAt":null,"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:46:37.7737482+00:00"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1450'
+      - '1466'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 11 Nov 2026 04:09:06 GMT
+      - Mon, 16 Nov 2026 06:46:37 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - b0ea4724-afaa-41db-93eb-afe4cb69246b
+      - f5fa4108-b208-43a2-852e-1256b27e856c
       pragma:
       - no-cache
       strict-transport-security:
@@ -343,9 +615,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '58'
+      - '22'
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/0b4b0b9f-7f64-4708-9b5d-ff5e56c2c843
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/01a71421-83f6-45b7-bba0-e16b31a3a8bf
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-writes:
@@ -353,7 +625,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 3593E2F11D2144C289B698B42B596691 Ref B: SG2AA1070302025 Ref C: 2026-11-11T04:09:06Z'
+      - 'Ref A: ED1AF2EDD9904B90ADC8225620A4FD63 Ref B: SG2AA1070301031 Ref C: 2026-11-16T06:46:37Z'
     status:
       code: 200
       message: OK
@@ -373,28 +645,27 @@ interactions:
       User-Agent:
       - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations?api-version=2026-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:09:06.4303534Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
-        all incoming traffic to the locally registered Telnet port, including local
-        connections to that port. Legitimate Telnet access on that port stops, while
-        other services remain available; custom Telnet listeners on other ports are
-        not covered.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:46:37.7737482Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-16T06:45:50.9709789+00:00","statusDetails":"Neuron
         reported Succeeded: Applied."}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1407'
+      - '1423'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 11 Nov 2026 04:09:09 GMT
+      - Mon, 16 Nov 2026 06:46:41 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 07d1bead-5eda-4029-bed2-44e8d0204398
+      - d79e4c6c-385b-47c2-9c85-e7ac608e86ee
       pragma:
       - no-cache
       strict-transport-security:
@@ -404,15 +675,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '14'
+      - '18'
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/bcd22c69-b6e8-4cd2-8acb-8cb9c2168e6f
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/f2bc4a97-5fb8-41f2-871a-b26e45b64c64
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 105FC626745D4D0381D1C5A667AACF56 Ref B: SG2AA1040517023 Ref C: 2026-11-11T04:09:09Z'
+      - 'Ref A: 4060BF90A9164636BAF3401259418135 Ref B: SG2AA1040519042 Ref C: 2026-11-16T06:46:40Z'
     status:
       code: 200
       message: OK
@@ -432,28 +703,27 @@ interactions:
       User-Agent:
       - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations?api-version=2026-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:09:06.4303534Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
-        all incoming traffic to the locally registered Telnet port, including local
-        connections to that port. Legitimate Telnet access on that port stops, while
-        other services remain available; custom Telnet listeners on other ports are
-        not covered.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:46:37.7737482Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-16T06:45:50.9709789+00:00","statusDetails":"Neuron
         reported Succeeded: Applied."}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1407'
+      - '1423'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 11 Nov 2026 04:09:42 GMT
+      - Mon, 16 Nov 2026 06:47:14 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 57343133-63af-4c3a-8fb5-7fa325b26774
+      - 1f0fb136-d035-4b93-9843-a28bea7e4b17
       pragma:
       - no-cache
       strict-transport-security:
@@ -463,15 +733,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '10'
+      - '18'
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/f8377177-182d-462a-8c4b-d64ca4dea075
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/74ab3ea6-4397-494a-a255-af839ceb4e82
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 32B3A46E3AEA4CBD888EE0A04EF48039 Ref B: SG2AA1070305025 Ref C: 2026-11-11T04:09:41Z'
+      - 'Ref A: 8B2433A5FD0A4215B50AA54C88959F78 Ref B: SG2AA1070305031 Ref C: 2026-11-16T06:47:14Z'
     status:
       code: 200
       message: OK
@@ -491,87 +761,27 @@ interactions:
       User-Agent:
       - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations?api-version=2026-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:09:06.4303534Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
-        all incoming traffic to the locally registered Telnet port, including local
-        connections to that port. Legitimate Telnet access on that port stops, while
-        other services remain available; custom Telnet listeners on other ports are
-        not covered.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:46:37.7737482Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-16T06:45:50.9709789+00:00","statusDetails":"Neuron
         reported Succeeded: Applied."}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1407'
+      - '1423'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 11 Nov 2026 04:10:14 GMT
+      - Mon, 16 Nov 2026 06:47:48 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 7f794423-8850-4ca0-b1cb-869481acfd5c
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-envoy-upstream-service-time:
-      - '10'
-      x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/c2017daa-035a-4f39-9742-9013befc5596
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-      x-msedge-ref:
-      - 'Ref A: 6919D19DD80E4BB8B7379D1909F0333D Ref B: SG2AA1040517052 Ref C: 2026-11-11T04:10:15Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - neuroshield protected-resource mitigation show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --neuroshield-name --protected-resource -n
-      User-Agent:
-      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:09:06.4303534Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
-        all incoming traffic to the locally registered Telnet port, including local
-        connections to that port. Legitimate Telnet access on that port stops, while
-        other services remain available; custom Telnet listeners on other ports are
-        not covered.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
-        reported Succeeded: Applied."}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1407'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 11 Nov 2026 04:10:48 GMT
-      expires:
-      - '-1'
-      mise-correlation-id:
-      - 607d636b-1944-463d-8642-55fda2cfe75d
+      - 059f71aa-371e-42f0-b463-31ba3e21022d
       pragma:
       - no-cache
       strict-transport-security:
@@ -583,13 +793,13 @@ interactions:
       x-envoy-upstream-service-time:
       - '9'
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/cc26ff03-44a0-4a57-a3ba-cac74723682b
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/c4320149-3fea-4018-be29-30b194f761a6
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 3DB252244C324F5ABE74BC3C380E5070 Ref B: SG2AA1070301040 Ref C: 2026-11-11T04:10:47Z'
+      - 'Ref A: D20486AA475B45FE95845D62C5657860 Ref B: SG2AA1070301060 Ref C: 2026-11-16T06:47:47Z'
     status:
       code: 200
       message: OK
@@ -609,28 +819,27 @@ interactions:
       User-Agent:
       - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations?api-version=2026-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:09:06.4303534Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
-        all incoming traffic to the locally registered Telnet port, including local
-        connections to that port. Legitimate Telnet access on that port stops, while
-        other services remain available; custom Telnet listeners on other ports are
-        not covered.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:46:37.7737482Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"RollbackInProgress","appliedTime":"2026-11-16T06:45:50.9709789+00:00","statusDetails":"Neuron
         reported Succeeded: Applied."}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1407'
+      - '1423'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 11 Nov 2026 04:11:20 GMT
+      - Mon, 16 Nov 2026 06:48:21 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 2907c1c9-485d-46f6-b9d5-c412dcc85b28
+      - 2735cc06-23d9-4671-9022-4160521fa786
       pragma:
       - no-cache
       strict-transport-security:
@@ -642,13 +851,13 @@ interactions:
       x-envoy-upstream-service-time:
       - '19'
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/e95cc780-11b8-41e7-bae9-05063cf9e00f
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/f4abf117-40c6-413b-806e-86a80c6d5823
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 803D2AF5AC804666AC8767CCD69CA0C4 Ref B: SG2AA1070306023 Ref C: 2026-11-11T04:11:20Z'
+      - 'Ref A: 05952BD6443048F8924E92D5B7ECB63C Ref B: SG2AA1070303029 Ref C: 2026-11-16T06:48:20Z'
     status:
       code: 200
       message: OK
@@ -668,28 +877,27 @@ interactions:
       User-Agent:
       - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port?api-version=2026-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations?api-version=2026-10-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/mitigations/CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","name":"CVE-2026-24061-satya-rpaas-ns3-block-registered-telnet-port","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-11T04:09:06.4303534Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/Satya-NS-Manual-1/protectedResources/satya-rpaas-ns3-br41x5/findings/CVE-2026-24061-satya-rpaas-ns3","cveId":"CVE-2026-24061","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SATYA-NEUROSHIELD-TESTRESOURCES/providers/Microsoft.Compute/virtualMachines/satya-rpaas-ns3","score":36,"commandsSummary":"Block
-        all incoming traffic to the locally registered Telnet port, including local
-        connections to that port. Legitimate Telnet access on that port stops, while
-        other services remain available; custom Telnet listeners on other ports are
-        not covered.","isRollbackable":true,"status":"RolledBack","appliedTime":"2026-11-11T04:08:47.2808493+00:00","statusDetails":"Neuron
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:46:37.7737482Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"RolledBack","appliedTime":"2026-11-16T06:45:50.9709789+00:00","statusDetails":"Neuron
         reported RolledBack."}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1391'
+      - '1407'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 11 Nov 2026 04:11:53 GMT
+      - Mon, 16 Nov 2026 06:48:54 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 0525e3c9-bf7b-4b4a-8bec-2836e77f07b3
+      - 5b38d2ee-d265-49da-9551-8c2269d7d9bc
       pragma:
       - no-cache
       strict-transport-security:
@@ -699,15 +907,73 @@ interactions:
       x-content-type-options:
       - nosniff
       x-envoy-upstream-service-time:
-      - '10'
+      - '8'
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/d671923b-b47f-49be-a324-011e50afb9ff
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/37e8f43b-1e50-4642-9f29-ae360875654e
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: F326C4D1485A4E12B7DDF435F2799A18 Ref B: SG2AA1070304042 Ref C: 2026-11-11T04:11:53Z'
+      - 'Ref A: 1588083225B046D5BA2850EEDE34ECB3 Ref B: SG2AA1070305060 Ref C: 2026-11-16T06:48:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - neuroshield protected-resource mitigation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --neuroshield-name --protected-resource -n
+      User-Agent:
+      - AZURECLI/2.93.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-11-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations?api-version=2026-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/mitigations/CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","name":"CVE-2026-78410-nsisolated11158469-2-deny-bind-and-cloned-mount-operations","type":"Microsoft.NetworkSecurity/neuroShields/protectedResources/mitigations","systemData":{"lastModifiedByType":"User","lastModifiedAt":"2026-11-16T06:46:37.7737482Z"},"properties":{"findingId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.NetworkSecurity/neuroShields/ns-isolated-cuap-1113-8469/protectedResources/nsisolated11158469-2/findings/CVE-2026-78410-nsisolated11158469-2","cveId":"CVE-2026-78410","virtualMachineArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/satyaTestRG/providers/Microsoft.Compute/virtualMachines/nsisolated11158469-2","rank":4,"commandsSummary":"Block
+        new bind mounts and cloned mount trees on the host, preventing the vulnerable
+        mount operation. Existing mounts remain available, but applications and container
+        workflows that need new bind mounts or mount-tree clones will fail.","isRollbackable":true,"status":"RolledBack","appliedTime":"2026-11-16T06:45:50.9709789+00:00","statusDetails":"Neuron
+        reported RolledBack."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Nov 2026 06:48:56 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 578e54f5-477b-4044-87c0-8f348e38e9c0
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '14'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=fec45554-4165-4d29-81ab-9f8687770e79/japanwest/d4d10083-3272-43b5-82c0-99aad2acf0ce
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16498'
+      x-msedge-ref:
+      - 'Ref A: F9A1609D6E264F8CAE9B3335B3F97D65 Ref B: SG2AA1040515023 Ref C: 2026-11-16T06:48:57Z'
     status:
       code: 200
       message: OK
