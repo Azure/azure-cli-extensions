@@ -43,7 +43,7 @@ logger = get_logger(__name__)
 
 # type variables
 ManagedCluster = TypeVar("ManagedCluster")
-allowed_extensions = ["microsoft.dataprotection.kubernetes"]
+allowed_extensions = ["microsoft.dataprotection.kubernetes", "microsoft.podsnapshot"]
 
 # Resource identifiers and command controls do not describe FlexNodes capabilities.
 _FLEXNODES_COMMON_PARAMETERS = {
