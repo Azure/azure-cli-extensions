@@ -2,6 +2,11 @@
 
 Release History
 ===============
+3.1.0
++++++
+* `az network manager ipam-pool`: Upgrade API version to `2026-01-01`
+* `az network manager ipam-pool create/update`: Add `--min-allocation-size` and `--max-allocation-size`; support clearing allocation bounds on update with an empty string
+
 3.0.2
 +++++
 * `az network manager connect-config create`: Fix `--hub` `resource-id` to accept any ARM resource ID (e.g. `Microsoft.Network/virtualHubs` and sub-resources like `connectionPolicies`)

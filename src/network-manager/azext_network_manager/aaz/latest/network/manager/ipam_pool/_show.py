@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-05-01",
+        "version": "2026-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/ipampools/{}", "2024-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/ipampools/{}", "2026-01-01"],
         ]
     }
 
@@ -136,7 +136,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01",
+                    "api-version", "2026-01-01",
                     required=True,
                 ),
             }
@@ -169,6 +169,9 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -202,6 +205,12 @@ class Show(AAZCommand):
             properties.ip_address_type = AAZListType(
                 serialized_name="ipAddressType",
                 flags={"read_only": True},
+            )
+            properties.max_allocation_size = AAZStrType(
+                serialized_name="maxAllocationSize",
+            )
+            properties.min_allocation_size = AAZStrType(
+                serialized_name="minAllocationSize",
             )
             properties.parent_pool_name = AAZStrType(
                 serialized_name="parentPoolName",
