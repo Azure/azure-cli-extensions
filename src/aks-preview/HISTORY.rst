@@ -16,6 +16,10 @@ Pending
 * Upgrade Insights reports and tables explicitly show missing agent-pool evaluations instead of reporting an incomplete combined evaluation as passed.
 * Upgrade Insights commands preserve parser-accepted output and query abbreviations, including `--out json`, `--out=json`, and `--que`.
 
+22.0.0b17
+++++++++++
+* Vendor SDK for 2026-09-02-preview API version.
+
 22.0.0b16
 +++++++++
 * `az aks create/update`: `--kms-infrastructure-encryption` now only accepts `Enabled`, since infrastructure encryption for Kubernetes resource objects cannot be turned off once it has been turned on.
