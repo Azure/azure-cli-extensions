@@ -2969,22 +2969,16 @@ def aks_agentpool_get_rollback_versions(cmd,   # pylint: disable=unused-argument
     return upgrade_profile.recently_used_versions
 
 
-def aks_agentpool_get_bootstrap_data(cmd,
+def aks_agentpool_get_bootstrap_data(cmd,  # pylint: disable=unused-argument
                                      client,
                                      resource_group_name,
                                      cluster_name,
                                      nodepool_name):
     """Get bootstrap data for a FlexNodes pool."""
-    ListBootstrapDataRequest = cmd.get_models(
-        "ListBootstrapDataRequest",
-        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-        operation_group="agent_pools",
-    )
     result = client.list_bootstrap_data(
         resource_group_name,
         cluster_name,
         nodepool_name,
-        ListBootstrapDataRequest(),
         logging_enable=False,
     )
     return result.as_dict()
