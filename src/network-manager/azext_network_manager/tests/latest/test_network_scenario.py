@@ -955,6 +955,36 @@ class NetworkScenarioTest(ScenarioTest):
 
 class IpamPoolUpdateTest(unittest.TestCase):
 
+    def test_ipam_pool_update_no_wait(self):
+        from types import SimpleNamespace
+        from unittest.mock import Mock, patch
+        from azext_network_manager.aaz.latest.network.manager.ipam_pool import Update
+
+        args_schema = Update._build_arguments_schema()
+        for status in (200, 201, 202):
+            for no_wait in (False, True):
+                with self.subTest(status=status, no_wait=no_wait):
+                    args = args_schema._ValueCls(schema=args_schema, data=args_schema.process_data({
+                        'network_manager_name': 'manager',
+                        'pool_name': 'pool',
+                        'resource_group': 'rg',
+                    }))
+                    args.no_wait = no_wait
+                    client = Mock()
+                    client.send_request.return_value = SimpleNamespace(
+                        http_response=SimpleNamespace(status_code=status),
+                    )
+                    operation = Update.IpamPoolsCreate(ctx=SimpleNamespace(
+                        args=args,
+                        subscription_id='00000000-0000-0000-0000-000000000000',
+                        get_http_client=Mock(return_value=client),
+                    ))
+                    with patch.object(operation, 'make_request'):
+                        result = operation()
+                    self.assertIs(result, client.build_lro_polling.return_value)
+                    client.build_lro_polling.assert_called_once()
+                    self.assertEqual(client.build_lro_polling.call_args.args[0], no_wait)
+
     def test_ipam_pool_update_serialization(self):
         from types import SimpleNamespace
         from azext_network_manager.aaz.latest.network.manager.ipam_pool import Update

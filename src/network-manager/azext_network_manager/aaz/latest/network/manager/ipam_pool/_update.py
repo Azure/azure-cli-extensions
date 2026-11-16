@@ -28,6 +28,8 @@ class Update(AAZCommand):
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
@@ -336,7 +338,7 @@ class Update(AAZCommand):
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [202]:
                 return self.client.build_lro_polling(
-                    False,
+                    self.ctx.args.no_wait,
                     session,
                     self.on_200_201,
                     self.on_error,
@@ -345,7 +347,7 @@ class Update(AAZCommand):
                 )
             if session.http_response.status_code in [200, 201]:
                 return self.client.build_lro_polling(
-                    False,
+                    self.ctx.args.no_wait,
                     session,
                     self.on_200_201,
                     self.on_error,
