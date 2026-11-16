@@ -88,6 +88,7 @@ class CrossClusterNetworkScenarioTest(ScenarioTest):
             '--network-plugin azure '
             '--network-dataplane cilium '
             '--enable-acns '
+            '--enable-aad '
             '--vnet-subnet-id {node_subnet1_id} '
             '--pod-subnet-id {pod_subnet1_id} '
             '--skip-subnet-role-assignment',
@@ -100,6 +101,7 @@ class CrossClusterNetworkScenarioTest(ScenarioTest):
             '--network-plugin azure '
             '--network-dataplane cilium '
             '--enable-acns '
+            '--enable-aad '
             '--vnet-subnet-id {node_subnet2_id} '
             '--pod-subnet-id {pod_subnet2_id} '
             '--skip-subnet-role-assignment',
