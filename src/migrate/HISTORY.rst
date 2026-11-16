@@ -3,7 +3,7 @@
 Release History
 ===============
 
-3.0.0b8
+Upcoming
 +++++++++++++++
 * Add local runbook execution through ``AZURE_MIGRATE_EXECUTION_ENDPOINT``,
   including start from local spec/parameter files, status/watch, visualization,
