@@ -713,6 +713,108 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az group delete --name {rg} --yes --no-wait')
 
     @serial_test()
+    @ResourceGroupPreparer(name_prefix='test_network_manager_ipam_allocation_bounds', location='eastus2')
+    def test_network_manager_ipam_pool_allocation_bounds(self, resource_group):
+        self.kwargs.update({
+            'manager_name': self.create_random_name('manager-', 16),
+            'pool_name': self.create_random_name('pool-', 12),
+            'ipv6_pool_name': self.create_random_name('pool-v6-', 16),
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+            'ipv6_max': str(2 ** 121),
+        })
+
+        self.cmd('network manager create --name {manager_name} --resource-group {rg} '
+                 '--scope-accesses Connectivity --network-manager-scopes subscriptions={sub} '
+                 '--location eastus2')
+
+        self.cmd('network manager ipam-pool create --name {pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg} --location eastus2 --address-prefixes 10.0.0.0/16 '
+                 '--min-allocation-size 16 --max-allocation-size 256', checks=[
+                     self.check('properties.minAllocationSize', '16'),
+                     self.check('properties.maxAllocationSize', '256'),
+                 ])
+        self.cmd('network manager ipam-pool show --name {pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg}', checks=[
+                     self.check('properties.minAllocationSize', '16'),
+                     self.check('properties.maxAllocationSize', '256'),
+                 ])
+        self.cmd('network manager ipam-pool list --manager-name {manager_name} --resource-group {rg}', checks=[
+            self.check("[?name=='{pool_name}'].properties.minAllocationSize | [0]", '16'),
+            self.check("[?name=='{pool_name}'].properties.maxAllocationSize | [0]", '256'),
+        ])
+
+        self.cmd('network manager ipam-pool update --name {pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg} --address-prefixes 10.0.0.0/16 10.1.0.0/16 --parent-pool-name "" '
+                 '--min-allocation-size 32 --max-allocation-size 512', checks=[
+                     self.check('properties.addressPrefixes[1]', '10.1.0.0/16'),
+                     self.check('properties.minAllocationSize', '32'),
+                     self.check('properties.maxAllocationSize', '512'),
+                 ])
+        self.cmd('network manager ipam-pool update --name {pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg} --min-allocation-size 64', checks=[
+                     self.check('properties.minAllocationSize', '64'),
+                     self.check('properties.maxAllocationSize', '512'),
+                 ])
+        self.cmd('network manager ipam-pool update --name {pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg} --description "Keep allocation bounds"', checks=[
+                     self.check('properties.minAllocationSize', '64'),
+                     self.check('properties.maxAllocationSize', '512'),
+                 ])
+        self.cmd('network manager ipam-pool update --name {pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg} --min-allocation-size ""', checks=[
+                     self.check('properties.minAllocationSize', None),
+                     self.check('properties.maxAllocationSize', '512'),
+                 ])
+        self.cmd('network manager ipam-pool update --name {pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg} --min-allocation-size 16 --max-allocation-size ""', checks=[
+                     self.check('properties.minAllocationSize', '16'),
+                     self.check('properties.maxAllocationSize', None),
+                 ])
+        self.cmd('network manager ipam-pool update --name {pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg} --max-allocation-size 256', checks=[
+                     self.check('properties.minAllocationSize', '16'),
+                     self.check('properties.maxAllocationSize', '256'),
+                 ])
+
+        for bounds in ('--min-allocation-size 24', '--min-allocation-size 512',
+                       '--max-allocation-size 262144'):
+            self.cmd('network manager ipam-pool update --name {pool_name} --manager-name {manager_name} '
+                     '--resource-group {rg} ' + bounds, expect_failure=True)
+
+        self.cmd('network manager ipam-pool update --name {pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg} --min-allocation-size "" --max-allocation-size ""', checks=[
+                     self.check('properties.minAllocationSize', None),
+                     self.check('properties.maxAllocationSize', None),
+                 ])
+        self.cmd('network manager ipam-pool show --name {pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg}', checks=[
+                     self.check('properties.minAllocationSize', None),
+                     self.check('properties.maxAllocationSize', None),
+                 ])
+
+        self.cmd('network manager ipam-pool create --name {ipv6_pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg} --location eastus2 --address-prefixes 2000::/7 '
+                 '--min-allocation-size 2 --max-allocation-size {ipv6_max}', checks=[
+                     self.check('properties.minAllocationSize', '2'),
+                     self.check('properties.maxAllocationSize', '{ipv6_max}'),
+                 ])
+        self.cmd('network manager ipam-pool update --name {ipv6_pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg} --min-allocation-size 4', checks=[
+                     self.check('properties.minAllocationSize', '4'),
+                     self.check('properties.maxAllocationSize', '{ipv6_max}'),
+                 ])
+
+        # ponytail: ResourceGroupPreparer cleans up the manager without stale child-resource checks.
+        self.cmd('network manager ipam-pool delete --name {ipv6_pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg} --yes')
+        self.cmd('network manager ipam-pool wait --name {ipv6_pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg} --deleted --interval 5 --timeout 120')
+        self.cmd('network manager ipam-pool delete --name {pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg} --yes')
+        self.cmd('network manager ipam-pool wait --name {pool_name} --manager-name {manager_name} '
+                 '--resource-group {rg} --deleted --interval 5 --timeout 120')
+
+    @serial_test()
     @ResourceGroupPreparer(name_prefix='test_network_manager_connect_config_with_capabilities', location='eastus2euap')
     @VirtualNetworkPreparer()
     def test_network_manager_connect_config_with_capabilities(self, virtual_network, resource_group):
@@ -849,3 +951,76 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az resource wait --deleted --name {workspace_name} --resource-group {rg} --resource-type {workspace_resource_type}')
 
         self.cmd('az group delete --name {rg} --yes --no-wait')
+
+
+class IpamPoolUpdateTest(unittest.TestCase):
+
+    def test_ipam_pool_update_no_wait(self):
+        from types import SimpleNamespace
+        from unittest.mock import Mock, patch
+        from azext_network_manager.aaz.latest.network.manager.ipam_pool import Update
+
+        args_schema = Update._build_arguments_schema()
+        for status in (200, 201, 202):
+            for no_wait in (False, True):
+                with self.subTest(status=status, no_wait=no_wait):
+                    args = args_schema._ValueCls(schema=args_schema, data=args_schema.process_data({
+                        'network_manager_name': 'manager',
+                        'pool_name': 'pool',
+                        'resource_group': 'rg',
+                    }))
+                    args.no_wait = no_wait
+                    client = Mock()
+                    client.send_request.return_value = SimpleNamespace(
+                        http_response=SimpleNamespace(status_code=status),
+                    )
+                    operation = Update.IpamPoolsCreate(ctx=SimpleNamespace(
+                        args=args,
+                        subscription_id='00000000-0000-0000-0000-000000000000',
+                        get_http_client=Mock(return_value=client),
+                    ))
+                    with patch.object(operation, 'make_request'):
+                        result = operation()
+                    self.assertIs(result, client.build_lro_polling.return_value)
+                    client.build_lro_polling.assert_called_once()
+                    self.assertEqual(client.build_lro_polling.call_args.args[0], no_wait)
+
+    def test_ipam_pool_update_serialization(self):
+        from types import SimpleNamespace
+        from azext_network_manager.aaz.latest.network.manager.ipam_pool import Update
+
+        args_schema = Update._build_arguments_schema()
+        instance_schema = Update.IpamPoolsGet._build_schema_on_200()
+        properties = {
+            'addressPrefixes': ['10.0.0.0/16'],
+            'parentPoolName': 'parent',
+            'minAllocationSize': '16',
+            'maxAllocationSize': '256',
+        }
+        cases = (
+            ({'address_prefixes': ['10.1.0.0/16'], 'parent_pool_name': ''},
+             {'addressPrefixes': ['10.1.0.0/16'], 'parentPoolName': ''}),
+            ({'min_allocation_size': '32', 'max_allocation_size': '512'},
+             {'minAllocationSize': '32', 'maxAllocationSize': '512'}),
+            ({'min_allocation_size': '64'}, {'minAllocationSize': '64'}),
+            ({'description': 'Keep bounds'}, {'description': 'Keep bounds'}),
+            ({'min_allocation_size': ''}, {'minAllocationSize': ''}),
+            ({'max_allocation_size': ''}, {'maxAllocationSize': ''}),
+            ({'min_allocation_size': '', 'max_allocation_size': ''},
+             {'minAllocationSize': '', 'maxAllocationSize': ''}),
+            ({'max_allocation_size': str(2 ** 121)}, {'maxAllocationSize': str(2 ** 121)}),
+        )
+        for values, changes in cases:
+            with self.subTest(values=values):
+                args = args_schema._ValueCls(schema=args_schema, data=args_schema.process_data(None))
+                for name, value in values.items():
+                    args[name] = value
+                instance = instance_schema._ValueCls(
+                    schema=instance_schema,
+                    data=instance_schema.process_data({'location': 'eastus2euap', 'properties': properties}),
+                )
+                Update.InstanceUpdateByJson(ctx=SimpleNamespace(args=args))._update_instance(instance)
+                expected = dict(properties, **changes)
+                self.assertEqual(Update.IpamPoolsCreate.serialize_content(instance), {
+                    'location': 'eastus2euap', 'properties': expected,
+                })

@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-05-01",
+        "version": "2026-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/ipampools/{}", "2024-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/ipampools/{}", "2026-01-01"],
         ]
     }
 
@@ -45,6 +45,10 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.if_match = AAZStrArg(
+            options=["--if-match"],
+            help="The entity state (ETag) version of the pool to update. This value can be omitted or set to \"*\" to apply the operation unconditionally.",
+        )
         _args_schema.network_manager_name = AAZStrArg(
             options=["--manager-name", "--network-manager-name"],
             help="The name of the network manager.",
@@ -103,6 +107,16 @@ class Create(AAZCommand):
             options=["--display-name"],
             arg_group="Properties",
             help="String representing a friendly name for the resource.",
+        )
+        _args_schema.max_allocation_size = AAZStrArg(
+            options=["--max-allocation-size"],
+            arg_group="Properties",
+            help="Maximum number of IP addresses allowed for allocations from this IpamPool to be compliant. Must be greater than or equal to the minimum allocation size. If not specified or empty, no maximum is enforced.",
+        )
+        _args_schema.min_allocation_size = AAZStrArg(
+            options=["--min-allocation-size"],
+            arg_group="Properties",
+            help="Minimum number of IP addresses required for allocations from this IpamPool to be compliant. Must be less than or equal to the maximum allocation size. If not specified or empty, no minimum is enforced.",
         )
         _args_schema.parent_pool_name = AAZStrArg(
             options=["--parent-pool-name"],
@@ -199,7 +213,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01",
+                    "api-version", "2026-01-01",
                     required=True,
                 ),
             }
@@ -208,6 +222,9 @@ class Create(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "If-Match", self.ctx.args.if_match,
+                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
@@ -233,6 +250,8 @@ class Create(AAZCommand):
                 properties.set_prop("addressPrefixes", AAZListType, ".address_prefixes", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("displayName", AAZStrType, ".display_name")
+                properties.set_prop("maxAllocationSize", AAZStrType, ".max_allocation_size")
+                properties.set_prop("minAllocationSize", AAZStrType, ".min_allocation_size")
                 properties.set_prop("parentPoolName", AAZStrType, ".parent_pool_name")
 
             address_prefixes = _builder.get(".properties.addressPrefixes")
@@ -263,6 +282,9 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -296,6 +318,12 @@ class Create(AAZCommand):
             properties.ip_address_type = AAZListType(
                 serialized_name="ipAddressType",
                 flags={"read_only": True},
+            )
+            properties.max_allocation_size = AAZStrType(
+                serialized_name="maxAllocationSize",
+            )
+            properties.min_allocation_size = AAZStrType(
+                serialized_name="minAllocationSize",
             )
             properties.parent_pool_name = AAZStrType(
                 serialized_name="parentPoolName",
