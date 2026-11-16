@@ -14,6 +14,7 @@ import io
 import json
 import os
 import tempfile
+import time
 import zipfile
 from urllib.request import Request, urlopen
 
@@ -52,6 +53,7 @@ _STATUS_SUFFIX = 'status.json'
 
 # Local ZIP file magic; a SAS download may be a ZIP archive or a raw blob.
 _ZIP_MAGIC = b'PK\x03\x04'
+_REPLACE_ATTEMPTS = 5
 
 
 def _is_zip(data):
@@ -368,7 +370,8 @@ def write_text(path, text):
     The content is written to a temporary file in the same directory and then
     atomically moved into place with :func:`os.replace`. This guarantees a
     reader (e.g. a browser auto-reloading the file during ``--watch``) never
-    observes a partially written file.
+    observes a partially written file. Windows readers can briefly block the
+    replacement; retry those errors before reporting an actionable failure.
     """
     absolute = os.path.abspath(path)
     parent = os.path.dirname(absolute)
@@ -379,7 +382,22 @@ def write_text(path, text):
     try:
         with os.fdopen(fd, 'w', encoding='utf-8') as handle:
             handle.write(text)
-        os.replace(tmp, absolute)
+        for attempt in range(_REPLACE_ATTEMPTS):
+            try:
+                os.replace(tmp, absolute)
+                break
+            except PermissionError as ex:
+                if getattr(ex, 'winerror', None) not in (5, 32, 33):
+                    raise
+                if attempt == _REPLACE_ATTEMPTS - 1:
+                    raise CLIInternalError(
+                        f"Could not replace output file '{absolute}'. Check write "
+                        "permissions, close applications holding the file "
+                        "open, or choose another --file path.") from ex
+                logger.debug(
+                    'Windows blocked replacement of %s; retrying (%s/%s).',
+                    absolute, attempt + 1, _REPLACE_ATTEMPTS)
+                time.sleep(0.1 * (2 ** attempt))
     except BaseException:
         try:
             os.remove(tmp)

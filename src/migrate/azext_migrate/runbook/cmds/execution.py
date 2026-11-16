@@ -5,14 +5,16 @@
 """Runbook execution command implementations (start/show/list +
 pause/resume/cancel)."""
 
+import os
 import time
 
 from knack.log import get_logger
-from azure.cli.core.azclierror import CLIInternalError, ManualInterrupt
+from azure.cli.core.azclierror import CLIInternalError, ManualInterrupt, InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_subscription_id
 
 from azext_migrate.shared import arm_ids
 from azext_migrate.shared.arm_client import ArmClient
+from azext_migrate.shared.execution_endpoint_client import ExecutionEndpointClient
 from azext_migrate.shared import files
 from azext_migrate.runbook import models, transformers
 from azext_migrate.runbook.models import ExecutionAction
@@ -110,7 +112,7 @@ def _execution_id_from_result(result):
     return (result.get('properties') or {}).get('executionId')
 
 
-def start(cmd, resource_group_name, project_name, runbook_name,
+def start(cmd, resource_group_name=None, project_name=None, runbook_name=None,
           no_wait=False, no_visualize=False):
     """Start a new execution of a runbook.
 
@@ -118,6 +120,9 @@ def start(cmd, resource_group_name, project_name, runbook_name,
     service mints the execution GUID and returns the execution resource
     (synchronously, or carried in the async operation status).
     """
+    endpoint = os.environ.get('AZURE_MIGRATE_EXECUTION_ENDPOINT')
+    if endpoint:
+        return _start_development_execution(cmd, endpoint, no_wait, no_visualize)
     resource_id = _runbook_id(
         cmd, resource_group_name, project_name, runbook_name)
     client = ArmClient(cmd)
@@ -146,6 +151,29 @@ def start(cmd, resource_group_name, project_name, runbook_name,
     _emit_execution(cmd, execution)
     _open_execution_view(
         cmd, resource_group_name, project_name, runbook_name, execution_id)
+    return None
+
+
+def _start_development_execution(cmd, endpoint, no_wait=False, no_visualize=False):
+    spec_file = os.environ.get('AZURE_MIGRATE_EXECUTION_SPEC_FILE')
+    parameters_file = os.environ.get('AZURE_MIGRATE_EXECUTION_PARAMETERS_FILE')
+    if not spec_file or not parameters_file:
+        raise InvalidArgumentValueError(
+            'Development execution requires AZURE_MIGRATE_EXECUTION_SPEC_FILE '
+            'and AZURE_MIGRATE_EXECUTION_PARAMETERS_FILE.')
+    client = ExecutionEndpointClient(endpoint)
+    result = client.request('POST', '/local/executions', {
+        'spec': files.read_json_file(spec_file),
+        'parameters': files.read_json_file(parameters_file),
+    })
+    if no_wait:
+        return result
+    execution_id = result['executionId']
+    execution = _status_payload(client.status(execution_id))
+    if no_visualize:
+        return execution
+    _emit_execution(cmd, execution)
+    _open_execution_view(cmd, None, None, None, execution_id)
     return None
 
 
@@ -182,25 +210,38 @@ def _open_execution_view(cmd, resource_group_name, project_name,
         # The execution has already started; only the live (watch) view
         # stopped (e.g. a status-download poll was denied or timed out).
         # Report it as such, with the command to re-check status.
+        command = 'az migrate runbook execution visualize'
+        if not os.environ.get('AZURE_MIGRATE_EXECUTION_ENDPOINT'):
+            command += ' -g %s --project-name %s --runbook-name %s' % (
+                resource_group_name, project_name, runbook_name)
+        command += ' --execution-id %s --watch' % execution_id
         logger.warning(
             "Stopped showing the live execution view: %s\n"
             "The execution '%s' is unaffected. Reopen the live view with:\n"
-            "  az migrate runbook execution visualize -g %s --project-name %s "
-            "--runbook-name %s --execution-id %s --watch",
-            ex, execution_id, resource_group_name, project_name,
-            runbook_name, execution_id)
+            "  %s",
+            ex, execution_id, command)
 
 
-def list_(cmd, resource_group_name, project_name, runbook_name):
+def list_(cmd, resource_group_name=None, project_name=None, runbook_name=None):
     """List the executions of a runbook."""
+    endpoint = os.environ.get('AZURE_MIGRATE_EXECUTION_ENDPOINT')
+    if endpoint:
+        return ExecutionEndpointClient(endpoint).request('GET', '/local/executions')
     collection_id = _runbook_id(
         cmd, resource_group_name, project_name, runbook_name) + '/executions'
     return ArmClient(cmd).list(collection_id)
 
 
-def show(cmd, resource_group_name, project_name, runbook_name,
-         execution_id, step_id=None, watch=False, interval=60):
+def show(cmd, resource_group_name=None, project_name=None, runbook_name=None,
+         execution_id=None, step_id=None, watch=False, interval=60):
     """Show (optionally watch) a runbook execution's status."""
+    endpoint = os.environ.get('AZURE_MIGRATE_EXECUTION_ENDPOINT')
+    if endpoint:
+        client = ExecutionEndpointClient(endpoint)
+        if watch:
+            return _watch(cmd, None, execution_id, step_id, interval,
+                          fetch_status=lambda: _status_payload(client.status(execution_id)))
+        return _project(_status_payload(client.status(execution_id)), step_id)
     resource_id = _execution_resource_id(
         cmd, resource_group_name, project_name, runbook_name, execution_id)
     if watch:
@@ -208,24 +249,24 @@ def show(cmd, resource_group_name, project_name, runbook_name,
     return _project(_fetch_status(cmd, resource_id), step_id)
 
 
-def pause(cmd, resource_group_name, project_name, runbook_name,
-          execution_id):
+def pause(cmd, resource_group_name=None, project_name=None, runbook_name=None,
+          execution_id=None):
     """Pause an in-progress execution."""
     return _perform(
         cmd, resource_group_name, project_name, runbook_name,
         execution_id, ExecutionAction.PAUSE)
 
 
-def resume(cmd, resource_group_name, project_name, runbook_name,
-           execution_id):
+def resume(cmd, resource_group_name=None, project_name=None, runbook_name=None,
+           execution_id=None):
     """Resume a paused execution."""
     return _perform(
         cmd, resource_group_name, project_name, runbook_name,
         execution_id, ExecutionAction.RESUME)
 
 
-def cancel(cmd, resource_group_name, project_name, runbook_name,
-           execution_id):
+def cancel(cmd, resource_group_name=None, project_name=None, runbook_name=None,
+           execution_id=None):
     """Cancel an in-progress or paused execution."""
     return _perform(
         cmd, resource_group_name, project_name, runbook_name,
@@ -234,6 +275,9 @@ def cancel(cmd, resource_group_name, project_name, runbook_name,
 
 def _perform(cmd, resource_group_name, project_name, runbook_name,
              execution_id, action):
+    endpoint = os.environ.get('AZURE_MIGRATE_EXECUTION_ENDPOINT')
+    if endpoint:
+        return ExecutionEndpointClient(endpoint).action(execution_id, action.value)
     resource_id = _execution_resource_id(
         cmd, resource_group_name, project_name, runbook_name, execution_id)
     body = models.build_perform_action_body(action)
@@ -263,14 +307,14 @@ def _terminal(execution):
 
 
 def _watch(cmd, resource_id, execution_id, step_id,
-           interval):  # pragma: no cover - interactive polling loop
+           interval, fetch_status=None):  # pragma: no cover - interactive polling loop
     """Re-render the execution status table until a terminal state."""
     logger.warning(
         "Watching execution '%s' (interval: %ss). Press Ctrl+C to stop.",
         execution_id, interval)
     try:
         while True:
-            execution = _fetch_status(cmd, resource_id)
+            execution = fetch_status() if fetch_status else _fetch_status(cmd, resource_id)
             _render(execution)
             if _terminal(execution):
                 logger.warning(
@@ -307,6 +351,7 @@ def visualize(cmd, resource_group_name=None, project_name=None,
               runbook_name=None, execution_id=None, file=None,
               no_open=False, watch=False, interval=60, from_file=None):
     """Render an execution's status as a self-contained HTML graph."""
+    endpoint = os.environ.get('AZURE_MIGRATE_EXECUTION_ENDPOINT')
     name = runbook_name or 'runbook'
     exec_label = execution_id or 'local'
     context = {'resource_group': resource_group_name, 'project': project_name,
@@ -322,6 +367,9 @@ def visualize(cmd, resource_group_name=None, project_name=None,
         if not no_open:
             files.open_in_browser(path, required=True)
         return {'path': path}
+    if endpoint:
+        return _visualize_development_execution(
+            cmd, endpoint, name, execution_id, target, watch, interval, no_open)
     resource_id = _execution_resource_id(
         cmd, resource_group_name, project_name, runbook_name, execution_id)
     if watch:
@@ -333,6 +381,24 @@ def visualize(cmd, resource_group_name=None, project_name=None,
         context=context)
     logger.warning(
         'Runbook execution visualization saved to %s', path)
+    if not no_open:
+        files.open_in_browser(path, required=True)
+    return {'path': path}
+
+
+def _visualize_development_execution(cmd, endpoint, runbook_name, execution_id,
+                                     target, watch, interval, no_open):
+    client = ExecutionEndpointClient(endpoint)
+
+    def fetch():
+        return _status_payload(client.status(execution_id))
+
+    if watch:
+        return _watch_visualize(
+            cmd, None, runbook_name, execution_id, target, interval, no_open,
+            fetch_status=fetch)
+    path = _write_visualization(
+        fetch(), runbook_name, execution_id or 'local', target)
     if not no_open:
         files.open_in_browser(path, required=True)
     return {'path': path}
@@ -351,7 +417,7 @@ def _write_visualization(execution, runbook_name, execution_id, target,
 
 def _watch_visualize(cmd, resource_id, runbook_name, execution_id, target,
                      interval, no_open,
-                     context=None):  # pragma: no cover - interactive loop
+                     context=None, fetch_status=None):  # pragma: no cover - interactive loop
     """Regenerate the HTML snapshot on an interval until a terminal state."""
     logger.warning(
         "Watching execution '%s' (interval: %ss). Press Ctrl+C to stop.",
@@ -359,7 +425,7 @@ def _watch_visualize(cmd, resource_id, runbook_name, execution_id, target,
     opened = False
     try:
         while True:
-            execution = _fetch_status(cmd, resource_id)
+            execution = fetch_status() if fetch_status else _fetch_status(cmd, resource_id)
             terminal = _terminal(execution)
             # While running, bake an auto-reload tag so the browser refreshes
             # itself; on the final (terminal) snapshot omit it so it stops.

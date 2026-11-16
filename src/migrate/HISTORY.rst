@@ -3,6 +3,14 @@
 Release History
 ===============
 
+3.0.0b8
++++++++++++++++
+* Add local runbook execution through ``AZURE_MIGRATE_EXECUTION_ENDPOINT``,
+  including start from local spec/parameter files, status/watch, visualization,
+  pause/resume/cancel, and step approval, retry, and manual completion.
+* Retry transient Windows file-lock errors when replacing generated HTML files
+  during visualization watch.
+
 3.0.0b7
 +++++++++++++++
 * Support inline conditional input rules in runbook and execution parameter
