@@ -9,7 +9,9 @@ import os
 import time
 
 from knack.log import get_logger
-from azure.cli.core.azclierror import CLIInternalError, ManualInterrupt, InvalidArgumentValueError
+from azure.cli.core.azclierror import (
+    CLIInternalError, ManualInterrupt, InvalidArgumentValueError, RequiredArgumentMissingError,
+)
 from azure.cli.core.commands.client_factory import get_subscription_id
 
 from azext_migrate.shared import arm_ids
@@ -31,6 +33,14 @@ logger = get_logger(__name__)
 
 
 def _runbook_id(cmd, resource_group_name, project_name, runbook_name):
+    missing = [option for option, value in (
+        ('--resource-group', resource_group_name),
+        ('--project-name', project_name),
+        ('--runbook-name', runbook_name),
+    ) if not value]
+    if missing:
+        raise RequiredArgumentMissingError(
+            '%s required for cloud execution.' % ', '.join(missing))
     subscription_id = get_subscription_id(cmd.cli_ctx)
     project = arm_ids.migrate_project_id(
         subscription_id, resource_group_name, project_name)
@@ -389,6 +399,7 @@ def visualize(cmd, resource_group_name=None, project_name=None,
 def _visualize_development_execution(cmd, endpoint, runbook_name, execution_id,
                                      target, watch, interval, no_open):
     client = ExecutionEndpointClient(endpoint)
+    context = {'execution': execution_id, 'local_execution': True}
 
     def fetch():
         return _status_payload(client.status(execution_id))
@@ -396,9 +407,9 @@ def _visualize_development_execution(cmd, endpoint, runbook_name, execution_id,
     if watch:
         return _watch_visualize(
             cmd, None, runbook_name, execution_id, target, interval, no_open,
-            fetch_status=fetch)
+            context=context, fetch_status=fetch)
     path = _write_visualization(
-        fetch(), runbook_name, execution_id or 'local', target)
+        fetch(), runbook_name, execution_id or 'local', target, context=context)
     if not no_open:
         files.open_in_browser(path, required=True)
     return {'path': path}

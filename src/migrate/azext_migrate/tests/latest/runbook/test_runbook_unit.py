@@ -4269,15 +4269,68 @@ class ExecutionEndpointCommandTests(unittest.TestCase):
         self.request.assert_not_called()
 
     def test_visualization_reuses_renderer_and_watch(self):
-        with mock.patch.object(execution_cmds, '_write_visualization', return_value='graph.html'), \
+        context = {'execution': EXECUTION_ID, 'local_execution': True}
+        with mock.patch.object(execution_cmds, '_write_visualization', return_value='graph.html') as write, \
                 mock.patch.object(execution_cmds.files, 'open_in_browser') as browser:
             self.assertEqual(
                 execution_cmds.visualize(None, execution_id=EXECUTION_ID, interval=0),
                 {'path': 'graph.html'})
+            self.assertEqual(write.call_args.kwargs['context'], context)
             browser.assert_called_once()
         with mock.patch.object(execution_cmds, '_watch_visualize', return_value={}) as watch:
             execution_cmds.visualize(None, execution_id=EXECUTION_ID, watch=True, no_open=True)
+            self.assertEqual(watch.call_args.kwargs['context'], context)
             self.assertEqual(watch.call_args.kwargs['fetch_status']()['status'], 'AwaitingUserAction')
+
+    def test_development_visualization_renders_runnable_commands(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = os.path.join(directory, 'execution.html')
+            execution_cmds.visualize(
+                None, RG, PROJECT, RUNBOOK, EXECUTION_ID, file=target, no_open=True)
+            with open(target, encoding='utf-8') as stream:
+                document = html.unescape(stream.read())
+        for action in ('pause', 'resume', 'cancel', 'visualize'):
+            self.assertIn(
+                'data-cmd="az migrate runbook execution %s --execution-id %s"'
+                % (action, EXECUTION_ID), document)
+        for argument in ('--resource-group', '--project-name', '--runbook-name', '<execution>'):
+            self.assertNotIn(argument, document)
+
+    def test_cloud_commands_require_runbook_identity_before_resolving_subscription(self):
+        commands = (
+            (execution_cmds.start, {'no_wait': True}),
+            (execution_cmds.list_, {}),
+            (execution_cmds.show, {'execution_id': EXECUTION_ID}),
+            (execution_cmds.pause, {'execution_id': EXECUTION_ID}),
+            (execution_cmds.resume, {'execution_id': EXECUTION_ID}),
+            (execution_cmds.cancel, {'execution_id': EXECUTION_ID}),
+            (execution_cmds.visualize, {'execution_id': EXECUTION_ID, 'no_open': True}),
+            (execution_step_cmds.approve, {'execution_id': EXECUTION_ID, 'step_id': 'gate'}),
+            (execution_step_cmds.complete, {'execution_id': EXECUTION_ID, 'step_id': 'manual', 'comment': 'Done'}),
+            (execution_step_cmds.retry, {'execution_id': EXECUTION_ID, 'step_id': 'failed'}),
+        )
+        identity = {'resource_group_name': RG, 'project_name': PROJECT, 'runbook_name': RUNBOOK}
+        with mock.patch.dict(os.environ, {'AZURE_MIGRATE_EXECUTION_ENDPOINT': ''}), \
+                mock.patch.object(execution_cmds, 'get_subscription_id') as subscription, \
+                mock.patch.object(execution_cmds, 'ArmClient') as arm, \
+                mock.patch.object(execution_step_cmds, 'ArmClient') as step_arm:
+            for command, kwargs in commands:
+                for field, option in (('resource_group_name', '--resource-group'),
+                                      ('project_name', '--project-name'), ('runbook_name', '--runbook-name')):
+                    for value in (None, ''):
+                        arguments = dict(identity, **kwargs)
+                        if value is None:
+                            arguments.pop(field)
+                        else:
+                            arguments[field] = value
+                        with self.subTest(command=command.__name__, field=field, value=value), \
+                                self.assertRaises(RequiredArgumentMissingError) as error:
+                            command(None, **arguments)
+                        self.assertIn(option, str(error.exception))
+            subscription.assert_not_called()
+            arm.assert_not_called()
+            step_arm.assert_not_called()
+        self.request.assert_not_called()
 
     def test_unset_environment_preserves_arm_commands(self):
         with mock.patch.dict(os.environ), \
