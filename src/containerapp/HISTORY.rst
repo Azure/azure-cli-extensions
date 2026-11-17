@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* [BREAKING CHANGE] 'az containerapp env create': Change default value of '--logs-destination' from 'log-analytics' to 'azure-monitor'
 * Resolve Docker with Azure CLI's safe executable lookup before invoking it from local build and patch flows
 * Require Azure CLI 2.92.0 or later
 
