@@ -328,7 +328,9 @@ def _parse_mana_probe_output(stdout):
     Return {'hardware': ..., 'driver': ...} from the probe's single marker line, or None when the output
     does not contain exactly one well-formed marker line.
     """
-    marker_lines = [line.strip() for line in (stdout or '').splitlines()
+    if not isinstance(stdout, str):
+        return None
+    marker_lines = [line.strip() for line in stdout.splitlines()
                     if line.strip().startswith(MANA_PROBE_MARKER + ' ')]
     if len(marker_lines) != 1:
         return None
@@ -356,7 +358,9 @@ def _check_guest_mana_driver(vm_name, resource_group_name, is_linux):
     script_name = LINUX_MANA_PROBE_SCRIPT if is_linux else WINDOWS_MANA_PROBE_SCRIPT
     try:
         stdout, _ = _invoke_run_command(script_name, vm_name, resource_group_name, is_linux)
-    except (AzCommandError, InvalidArgumentValueError, KeyError, IndexError, TypeError, ValueError) as exception:
+    # OSError covers a missing or unlaunchable az; AttributeError a run-command response of an unexpected shape.
+    except (AzCommandError, InvalidArgumentValueError, OSError, AttributeError,
+            KeyError, IndexError, TypeError, ValueError) as exception:
         logger.debug('Guest MANA probe could not run: %s', type(exception).__name__)
         return {'hardware': 'unknown', 'driver': 'unknown', 'source': 'skipped'}
 

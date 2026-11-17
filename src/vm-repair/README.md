@@ -116,8 +116,8 @@ Command. No command calls it yet, and it adds no parameters. It reports:
 
 | Field | Values | Linux check | Windows check |
 |---|---|---|---|
-| `hardware` | `mana`, `mellanox`, `none`, `unknown` | PCI vendor/device `1414:00ba` is MANA; vendor `15b3` is Mellanox. | Present PCI device `VEN_1414&DEV_00BA` is MANA; `VEN_15B3` is Mellanox. |
-| `driver` | `present`, `missing`, `unknown` | `mana` module loaded, built in, or present as a module file for the running kernel. | On MANA hardware only: a `Microsoft Azure Network Adapter` network adapter exists. Otherwise `unknown`. |
+| `hardware` | `mana`, `mellanox`, `none`, `unknown` | PCI vendor/device `1414:00ba` is MANA; vendor `15b3` is Mellanox. `none` only if every PCI entry was read; an unreadable entry gives `unknown` unless MANA was found. | Present PCI device `VEN_1414&DEV_00BA` is MANA; `VEN_15B3` is Mellanox. |
+| `driver` | `present`, `missing`, `unknown` | `mana` module loaded, built in, or present as a module file for the running kernel. `missing` only if the built-in list and module tree were both read without error. | On MANA hardware only: a `Microsoft Azure Network Adapter` network adapter exists. Otherwise `unknown`. |
 
 Any failure to run the probe or read its output returns `unknown`, never `missing`. Run Command needs a
 ready VM agent and outbound guest connectivity to return results, so the probe is least reliable when

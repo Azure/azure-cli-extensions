@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import ast
+import json
 import os
 import re
 import unittest
@@ -39,7 +40,8 @@ class ManaProbeOutputParsingTests(unittest.TestCase):
 
     def test_unrecognized_output_is_rejected(self):
         cases = [
-            None, '', 'no marker here',
+            None, '', 'no marker here', 123, ['VMREPAIR_MANA_PROBE hardware=mana driver=present'],
+            {'message': 'VMREPAIR_MANA_PROBE hardware=mana driver=present'},
             'VMREPAIR_MANA_PROBE hardware=mana',
             'VMREPAIR_MANA_PROBE hardware=intel driver=present',
             'VMREPAIR_MANA_PROBE hardware=mana driver=yes',
@@ -81,13 +83,28 @@ class CheckGuestManaDriverTests(unittest.TestCase):
         failures = [
             AzCommandError('The VM agent is not ready or the operation timed out.'),
             KeyError('value'), IndexError('list index out of range'),
-            ValueError('Expecting value'), TypeError('NoneType'),
+            ValueError('Expecting value'), TypeError('NoneType'), AttributeError('split'),
+            FileNotFoundError('az launcher not found'), PermissionError('access denied'),
             repair_utils.InvalidArgumentValueError('unsupported character')
         ]
         for failure in failures:
             with self.subTest(failure=type(failure).__name__):
                 invoke.side_effect = failure
                 self.assertEqual(UNKNOWN, repair_utils._check_guest_mana_driver('vm', 'rg', False))
+
+    @patch('azext_vm_repair.repair_utils._call_az_command', side_effect=FileNotFoundError('az'))
+    def test_launcher_failure_through_run_command_is_unknown(self, _):
+        for is_linux in (True, False):
+            with self.subTest(is_linux=is_linux):
+                self.assertEqual(UNKNOWN, repair_utils._check_guest_mana_driver('vm', 'rg', is_linux))
+
+    @patch('azext_vm_repair.repair_utils._call_az_command')
+    def test_non_string_run_command_message_is_unknown(self, call_az):
+        call_az.return_value = json.dumps({'value': [{'message': ['unexpected']}, {'message': ''}]})
+        for is_linux, source in ((True, 'skipped'), (False, 'run-command')):
+            with self.subTest(is_linux=is_linux):
+                self.assertEqual({'hardware': 'unknown', 'driver': 'unknown', 'source': source},
+                                 repair_utils._check_guest_mana_driver('vm', 'rg', is_linux))
 
     @patch('azext_vm_repair.repair_utils._invoke_run_command', return_value=('unexpected output', ''))
     def test_unreadable_output_is_unknown_not_missing(self, _):
